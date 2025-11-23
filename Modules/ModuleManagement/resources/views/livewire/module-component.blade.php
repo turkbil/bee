@@ -41,11 +41,13 @@
                             @endforeach
                         </select>
                     </div>
-                    <!-- Domain Gösterim -->
+                    @if($isCentral)
+                    <!-- Domain Gösterim - Sadece Central -->
                     <button wire:click="toggleDomains" class="btn btn-outline-primary btn-icon" data-bs-toggle="tooltip"
                         title="{{ $showDomains ? __('modulemanagement::admin.hide_domains') : __('modulemanagement::admin.show_domains') }}">
                         <i class="fas fa-globe"></i>
                     </button>
+                    @endif
                     <!-- Sayfa Adeti Seçimi -->
                     <div style="min-width: 60px">
                         <select wire:model.live="perPage" class="form-select listing-filter-select">
@@ -106,41 +108,63 @@
                         <div class="me-auto">
                             <h3 class="card-title mb-0">{{ $module->display_name }}</h3>
                         </div>
+                        @php
+                        // Dropdown'da gösterilecek link var mı kontrol et
+                        $hasModuleIndex = Route::has('admin.' . $module->name . '.index');
+                        $hasSettings = $module->settings && Route::has('admin.settingmanagement.values');
+                        $hasUrlSettings = $module->type === 'content';
+                        $hasDropdownItems = $hasModuleIndex || $hasSettings || $hasUrlSettings || $isCentral;
+                        @endphp
+
+                        @if($hasDropdownItems)
                         <div class="dropdown">
                             <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
                             </a>
-                            
+
                             <div class="dropdown-menu dropdown-menu-end">
-                                @if($module->settings)
-                                {{-- Ayarlar bağlantısını geçici olarak kaldır veya kontrol ekle --}}
-                                @if(Route::has('admin.settingmanagement.values'))
+                                {{-- Modül Index Sayfası - Hem Central hem Tenant --}}
+                                @if($hasModuleIndex)
+                                <a href="{{ route('admin.' . $module->name . '.index') }}"
+                                    class="dropdown-item">
+                                    <i class="fas fa-list me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.view_list') }}
+                                </a>
+                                @endif
+
+                                @if($hasSettings)
+                                {{-- Ayarlar - Hem Central hem Tenant görebilir --}}
                                 <a href="{{ route('admin.settingmanagement.values', ['group' => $module->settings]) }}"
                                     class="dropdown-item">
                                     <i class="fas fa-cog me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.settings') }}
                                 </a>
                                 @endif
-                                @endif
 
-                                @if($module->type === 'content')
+                                @if($hasUrlSettings)
+                                {{-- URL Ayarları - Hem Central hem Tenant görebilir --}}
                                 <a href="{{ route('admin.modulemanagement.slug-manage', $module->name) }}"
                                     class="dropdown-item">
                                     <i class="fas fa-link me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.url_settings') }}
                                 </a>
                                 @endif
 
+                                @if($isCentral)
+                                {{-- Düzenle - Sadece Central --}}
                                 <a href="{{ route('admin.modulemanagement.manage', $module->module_id) }}"
                                     class="dropdown-item">
                                     <i class="fas fa-edit me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.edit') }}
                                 </a>
+                                {{-- Sil - Sadece Central --}}
                                 <button class="dropdown-item text-danger" wire:click="$dispatch('showDeleteModal', {'module': 'module', 'id': {{ $module->module_id }}, 'title': '{{ $module->display_name }}'})">
                                     <i class="fas fa-trash me-2" style="width: 14px;"></i>{{ __('modulemanagement::admin.delete') }}
                                 </button>
+                                @endif
                             </div>
                         </div>
+                        @endif
                     </div>
 
-                    <!-- Domain Listesi -->
+                    @if($isCentral)
+                    <!-- Domain Listesi - Sadece Central -->
                     <div class="list-group list-group-flush">
                         <div class="list-group-item py-2 bg-muted-lt">
                             <div class="d-flex align-items-center">
@@ -157,15 +181,15 @@
                         @endphp
                         <div class="list-group-item py-2 list-group-item-action">
                             <div class="d-flex align-items-center">
-                                <span class="avatar avatar-xs me-2 bg-{{ $isActive ? 'secondary' : 'secondary' }}-lt">
+                                <span class="avatar avatar-xs me-2 bg-{{ $isActive ? 'success' : 'secondary' }}-lt">
                                     <i class="fas fa-globe fa-sm"></i>
                                 </span>
                                 <div class="flex-fill">{{ $domain->title ?? $domain->id }}</div>
-                                <div class="pretty p-switch p-slim">
+                                <div class="pretty p-switch p-fill">
                                     <input type="checkbox"
                                         wire:click="toggleDomainStatus({{ $module->module_id }}, '{{ $domain->id }}')"
                                         {{ $isActive ? 'checked' : '' }} />
-                                    <div class="state p-warning">
+                                    <div class="state p-success">
                                         <label></label>
                                     </div>
                                 </div>
@@ -178,13 +202,13 @@
                                 @php
                                 $activeDomains = $module->tenants->where('pivot.is_active', true)->take(3);
                                 @endphp
-                                
+
                                 @forelse($activeDomains as $tenant)
                                 <span class="badge bg-light-lt">{{ $tenant->title ?? $tenant->id }}</span>
                                 @empty
                                 <span class="badge bg-secondary-lt">{{ __('modulemanagement::admin.unassigned') }}</span>
                                 @endforelse
-                                
+
                                 @if($module->tenants->where('pivot.is_active', true)->count() > 3)
                                 <span class="badge bg-light-lt">
                                     +{{ $module->tenants->where('pivot.is_active', true)->count() - 3 }}
@@ -194,6 +218,7 @@
                         </div>
                         @endif
                     </div>
+                    @endif
 
                     <!-- Kart Footer -->
                     <div class="card-footer">
@@ -203,6 +228,8 @@
                                     {{ ucfirst($module->type) }}
                                 </span>
                             </div>
+                            @if($isCentral)
+                            {{-- Aktif/Pasif Toggle - Sadece Central --}}
                             <div class="d-flex align-items-center gap-3">
                                 <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
                                     <input type="checkbox" wire:click="toggleActive({{ $module->module_id }})"
@@ -216,6 +243,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Ne Yapilacak?</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: system-ui, sans-serif;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #60a5fa;
+        }
+        h2 {
+            font-size: 1.3rem;
+            margin: 30px 0 15px;
+            color: #fbbf24;
+        }
+        .box {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .red { border-left: 4px solid #ef4444; }
+        .green { border-left: 4px solid #22c55e; }
+        .blue { border-left: 4px solid #3b82f6; }
+        .yellow { border-left: 4px solid #fbbf24; }
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        .tag-red { background: #ef4444; }
+        .tag-green { background: #22c55e; }
+        .tag-blue { background: #3b82f6; }
+        ul { margin-left: 20px; }
+        li { margin: 5px 0; }
+        .arrow { color: #fbbf24; margin: 0 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel Analizi</h1>
+
+        <h2>SORUN</h2>
+        <div class="box red">
+            <p>Mevcut plan her seyi <strong>UserManagement</strong> modulune koyuyor.</p>
+            <p style="margin-top:10px">Bu yanlis cunku Kupon ve Abonelik baska yerlerde de kullanilacak.</p>
+        </div>
+
+        <h2>COZUM: 2 Yeni Modul</h2>
+
+        <div class="box green">
+            <p><span class="tag tag-green">YENI</span> <strong>Subscription Modulu</strong></p>
+            <ul>
+                <li>Abonelik Planlari</li>
+                <li>Abonelikler</li>
+            </ul>
+        </div>
+
+        <div class="box green">
+            <p><span class="tag tag-green">YENI</span> <strong>Coupon Modulu</strong></p>
+            <ul>
+                <li>Kuponlar</li>
+                <li>Kupon Kullanimlari</li>
+            </ul>
+        </div>
+
+        <div class="box blue">
+            <p><span class="tag tag-blue">MEVCUT</span> <strong>UserManagement Guncelleme</strong></p>
+            <ul>
+                <li>Kullanici listesine yeni kolonlar</li>
+                <li>Kullanici detayina yeni sekmeler (Cihazlar, Abonelik, Loglar)</li>
+            </ul>
+        </div>
+
+        <h2>MENU YAPISI</h2>
+        <div class="box yellow">
+            <p><strong>Abonelik</strong> (yeni menu grubu)</p>
+            <ul>
+                <li>Planlar</li>
+                <li>Abonelikler</li>
+            </ul>
+            <p style="margin-top:15px"><strong>Pazarlama</strong> (yeni menu grubu)</p>
+            <ul>
+                <li>Kuponlar</li>
+            </ul>
+        </div>
+
+        <h2>ONAY</h2>
+        <div class="box blue">
+            <p>Bu yapiyi onayliyor musun?</p>
+            <p style="margin-top:10px"><strong>"UYGUNDUR"</strong> de, TODO'yu buna gore guncelleyeyim.</p>
+        </div>
+    </div>
+</body>
+</html>

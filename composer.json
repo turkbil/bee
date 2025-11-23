@@ -165,6 +165,9 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true,
             "wikimedia/composer-merge-plugin": true
+        },
+        "audit": {
+            "ignore": ["[\"PKSA-365x-2zjk-pt47\"]"]
         }
     },
     "minimum-stability": "stable",

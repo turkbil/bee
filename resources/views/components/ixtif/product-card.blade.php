@@ -263,10 +263,15 @@ document.addEventListener('alpine:init', () => {
 
             try {
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+                // localStorage'dan cart_id al (varsa)
+                const cartId = localStorage.getItem('cart_id');
+                console.log('🛒 Alpine: Current cart_id from localStorage:', cartId);
                 console.log('🛒 Alpine: Sending request to /api/cart/add');
 
                 const response = await fetch('/api/cart/add', {
                     method: 'POST',
+                    credentials: 'same-origin',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': token,
@@ -274,7 +279,8 @@ document.addEventListener('alpine:init', () => {
                     },
                     body: JSON.stringify({
                         product_id: this.productId,
-                        quantity: 1
+                        quantity: 1,
+                        cart_id: cartId ? parseInt(cartId) : null
                     })
                 });
 
@@ -284,9 +290,21 @@ document.addEventListener('alpine:init', () => {
                 if (data.success) {
                     this.success = true;
 
+                    // API'den dönen cart_id'yi localStorage'a kaydet
+                    if (data.data && data.data.cart_id) {
+                        localStorage.setItem('cart_id', data.data.cart_id);
+                        console.log('💾 Alpine: cart_id saved to localStorage:', data.data.cart_id);
+                    }
+
+                    // CartWidget'ı güncelle - Window event (daha güvenilir)
+                    window.dispatchEvent(new CustomEvent('cart-updated', {
+                        detail: { cartId: data.data?.cart_id, itemCount: data.data?.item_count }
+                    }));
+                    console.log('✅ Alpine: window.dispatchEvent(cart-updated)');
+
+                    // Livewire dispatch (yedek)
                     if (typeof Livewire !== 'undefined') {
                         Livewire.dispatch('cartUpdated');
-                        console.log('✅ Alpine: Livewire.dispatch(cartUpdated)');
                     }
 
                     setTimeout(() => { this.success = false; }, 2000);
@@ -589,7 +607,6 @@ document.addEventListener('alpine:init', () => {
                         {{-- Add to Cart Button --}}
                         <button
                             type="button"
-                            x-data="addToCartButton({{ $productId }})"
                             @click="addToCart()"
                             :disabled="loading || success"
                             class="flex-shrink-0 border-2 border-blue-600 dark:border-blue-400 hover:border-blue-700 dark:hover:border-blue-300 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"

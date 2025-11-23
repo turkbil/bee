@@ -1,544 +1,904 @@
-<div class="media-library-manager" x-data="mediaLibraryUploader('{{ route('admin.mediamanagement.library.upload', [], false) }}', '{{ csrf_token() }}', '{{ $this->getId() }}')">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div></div>
-        <a href="{{ route('admin.mediamanagement.thumbmaker-guide') }}" class="btn btn-ghost-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/><line x1="9" y1="9" x2="10" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>
-            </svg>
-            Thumbmaker Kılavuzu
-        </a>
+<div class="file-manager"
+     x-data="fileManager('{{ route('admin.mediamanagement.library.upload', [], false) }}', '{{ csrf_token() }}', '{{ $this->getId() }}')"
+     @keydown.window="handleKeydown($event)"
+     @contextmenu.prevent="handleGlobalContext($event)">
+
+    @php
+        $previewableMedia = $mediaItems->filter(fn($m) => $this->isPreviewable($m))->map(fn($m) => [
+            'url' => $this->isVideo($m) ? $m->getUrl() : thumb($m, 1920, 1920, ['quality' => 90]),
+            'thumb' => $this->isVideo($m) ? $m->getUrl() : thumb($m, 400, 400, ['quality' => 80]),
+            'name' => $m->name,
+            'id' => $m->id,
+            'isVideo' => $this->isVideo($m),
+            'mimeType' => $m->mime_type
+        ])->values()->toArray();
+
+        $allMedia = $mediaItems->map(fn($m) => [
+            'id' => $m->id,
+            'name' => $m->name ?? $m->file_name,
+            'file_name' => $m->file_name,
+            'size' => $m->size,
+            'url' => $m->computed_url ?? $m->getUrl()
+        ])->values()->toArray();
+    @endphp
+
+    <style>
+        /* ========== LIGHT MODE (DEFAULT) ========== */
+        .file-manager {
+            height: calc(100vh - 180px);
+            display: flex;
+            flex-direction: column;
+        }
+        .fm-toolbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e6e7e9;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .fm-toolbar .btn { padding: 6px 10px; font-size: 13px; }
+        .fm-toolbar .btn-icon { padding: 6px 8px; }
+        .fm-toolbar .divider {
+            width: 1px;
+            height: 24px;
+            background: #e6e7e9;
+            margin: 0 4px;
+        }
+        .fm-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .fm-sidebar {
+            width: 220px;
+            background: #f6f8fb;
+            border-right: 1px solid #e6e7e9;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .fm-sidebar-section {
+            padding: 12px;
+            border-bottom: 1px solid #e6e7e9;
+        }
+        .fm-sidebar-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #626976;
+            margin-bottom: 8px;
+        }
+        .fm-sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #1d273b;
+            gap: 8px;
+        }
+        .fm-sidebar-item:hover { background: #e6e7e9; }
+        .fm-sidebar-item.active { background: #e8f1fd; color: #206bc4; }
+        .fm-sidebar-item i { width: 16px; font-size: 12px; color: #626976; }
+        .fm-sidebar-item.active i { color: #206bc4; }
+        .fm-sidebar-item .count {
+            margin-left: auto;
+            font-size: 11px;
+            color: #626976;
+        }
+        .fm-stats-text {
+            color: #6b7280;
+        }
+        .fm-stats-text strong {
+            color: #1f2937;
+        }
+        .fm-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #ffffff;
+        }
+        .fm-breadcrumb {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(98,105,118,.16);
+            font-size: 12px;
+            color: #626976;
+            flex-shrink: 0;
+        }
+        .fm-breadcrumb a { color: #206bc4; text-decoration: none; }
+        .fm-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            position: relative;
+        }
+        .fm-loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            display: none;
+        }
+        .fm-loading-overlay.active {
+            display: flex;
+        }
+        [data-bs-theme="dark"] .fm-loading-overlay {
+            background: rgba(24,36,51,0.9) !important;
+        }
+        .fm-loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .fm-grid {
+            display: grid;
+            gap: 4px;
+        }
+        .fm-grid.size-sm { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
+        .fm-grid.size-md { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+        .fm-grid.size-lg { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+        .fm-grid.size-xl { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+
+        .fm-grid.size-sm .fm-item-thumb { width: 48px; height: 48px; }
+        .fm-grid.size-md .fm-item-thumb { width: 80px; height: 80px; }
+        .fm-grid.size-lg .fm-item-thumb { width: 100%; height: 120px; }
+        .fm-grid.size-xl .fm-item-thumb { width: 100%; height: 180px; }
+
+        .fm-grid.size-lg .fm-item-thumb img,
+        .fm-grid.size-xl .fm-item-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .fm-grid.size-lg .fm-item { padding: 6px; }
+        .fm-grid.size-xl .fm-item { padding: 8px; }
+        .fm-grid.size-lg .fm-item-name { font-size: 12px; }
+        .fm-grid.size-xl .fm-item-name { font-size: 13px; }
+        .fm-grid.size-lg .fm-item-size { font-size: 11px; }
+        .fm-grid.size-xl .fm-item-size { font-size: 12px; }
+        .fm-item {
+            padding: 8px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.1s;
+        }
+        .fm-item:hover { background: #f6f8fb; }
+        .fm-item.selected { background: #e8f1fd; border-color: #206bc4; }
+        .fm-item-thumb {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e6e7e9;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .fm-item-thumb img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .fm-item-name {
+            font-size: 11px;
+            color: #1d273b;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0 2px;
+        }
+        .fm-item-size {
+            font-size: 10px;
+            color: #626976;
+        }
+        .fm-list {
+            font-size: 13px;
+        }
+        .fm-list-header {
+            display: grid;
+            grid-template-columns: 32px 40px 1fr 80px 80px 100px;
+            padding: 8px 12px;
+            background: #f6f8fb;
+            border-bottom: 1px solid #e6e7e9;
+            font-weight: 600;
+            font-size: 11px;
+            color: #626976;
+            text-transform: uppercase;
+            position: sticky;
+            top: 0;
+        }
+        .fm-list-row {
+            display: grid;
+            grid-template-columns: 32px 40px 1fr 80px 80px 100px;
+            padding: 6px 12px;
+            border-bottom: 1px solid rgba(98,105,118,.16);
+            align-items: center;
+            cursor: pointer;
+            color: #1d273b;
+        }
+        .fm-list-row:hover { background: #f6f8fb; }
+        .fm-list-row.selected { background: #e8f1fd; }
+        .fm-list-thumb {
+            width: 32px;
+            height: 32px;
+            border-radius: 2px;
+            object-fit: contain;
+            background: #e6e7e9;
+        }
+        .fm-statusbar {
+            padding: 6px 12px;
+            border-top: 1px solid #e6e7e9;
+            font-size: 11px;
+            color: #626976;
+            background: #f6f8fb;
+            display: flex;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .fm-context {
+            position: fixed;
+            background: #ffffff;
+            border: 1px solid #e6e7e9;
+            border-radius: 6px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-width: 160px;
+            padding: 4px 0;
+            z-index: 9999;
+        }
+        .fm-context-item {
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1d273b;
+        }
+        .fm-context-item:hover { background: #f6f8fb; }
+        .fm-context-item.danger { color: #d63939; }
+        .fm-context-divider { height: 1px; background: #e6e7e9; margin: 4px 0; }
+        .fm-upload-zone {
+            border: 2px dashed #e6e7e9;
+            border-radius: 6px;
+            padding: 24px 16px;
+            text-align: center;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+        .fm-upload-zone.dropping {
+            border-color: #206bc4;
+            background: #e8f1fd;
+        }
+        .fm-lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .fm-lightbox img, .fm-lightbox video {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+        .fm-lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            color: #000;
+        }
+        .fm-lightbox-nav.prev { left: 20px; }
+        .fm-lightbox-nav.next { right: 20px; }
+        .fm-lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #000;
+        }
+
+        /* ========== DARK MODE (data-bs-theme="dark") ========== */
+        [data-bs-theme="dark"] .fm-toolbar {
+            background: #182433 !important;
+            border-color: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-toolbar .divider {
+            background: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-sidebar {
+            background: #101827 !important;
+            border-color: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-sidebar-section {
+            border-color: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-sidebar-title {
+            color: #9ca3af !important;
+        }
+        [data-bs-theme="dark"] .fm-sidebar-item {
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-sidebar-item:hover {
+            background: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-sidebar-item.active {
+            background: #2563eb !important;
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-sidebar-item i {
+            color: #9ca3af !important;
+        }
+        [data-bs-theme="dark"] .fm-sidebar-item.active i {
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-sidebar-item .count {
+            color: #6b7280 !important;
+        }
+        [data-bs-theme="dark"] .fm-stats-text {
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .fm-stats-text strong {
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-main {
+            background: #182433 !important;
+            border-color: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-breadcrumb {
+            color: #d1d5db !important;
+            border-color: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-breadcrumb a {
+            color: #60a5fa !important;
+        }
+        [data-bs-theme="dark"] .fm-item {
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-item:hover {
+            background: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-item.selected {
+            background: #1e3a5f !important;
+            border-color: #3b82f6 !important;
+        }
+        [data-bs-theme="dark"] .fm-item-thumb {
+            background: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-item-name {
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-item-size {
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .fm-list-header {
+            background: #101827 !important;
+            border-color: #2d3a4d !important;
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .fm-list-row {
+            border-color: #2d3a4d !important;
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-list-row:hover {
+            background: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-list-row.selected {
+            background: #1e3a5f !important;
+        }
+        [data-bs-theme="dark"] .fm-list-row .text-muted {
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .fm-list-thumb {
+            background: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-statusbar {
+            background: #101827 !important;
+            border-color: #2d3a4d !important;
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .fm-statusbar kbd {
+            background: #2d3a4d !important;
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-context {
+            background: #182433 !important;
+            border-color: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-context-item {
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-context-item:hover {
+            background: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-context-item.danger {
+            color: #f87171 !important;
+        }
+        [data-bs-theme="dark"] .fm-context-divider {
+            background: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .fm-upload-zone {
+            border-color: #2d3a4d !important;
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .fm-upload-zone.dropping {
+            background: #1e3a5f !important;
+            border-color: #3b82f6 !important;
+        }
+        [data-bs-theme="dark"] .fm-empty-state {
+            color: #9ca3af !important;
+        }
+        /* Form elements */
+        [data-bs-theme="dark"] .fm-toolbar .form-control,
+        [data-bs-theme="dark"] .fm-toolbar .form-select {
+            background: #182433 !important;
+            border-color: #2d3a4d !important;
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .fm-toolbar .form-control::placeholder {
+            color: #9ca3af !important;
+        }
+        [data-bs-theme="dark"] .fm-toolbar .input-icon-addon {
+            background: #182433 !important;
+            border-color: #2d3a4d !important;
+            color: #9ca3af !important;
+        }
+        [data-bs-theme="dark"] .file-manager .badge {
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .file-manager .badge.bg-secondary-lt {
+            background: #374151 !important;
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .file-manager .text-muted {
+            color: #d1d5db !important;
+        }
+        /* Modal */
+        [data-bs-theme="dark"] .file-manager .modal-content {
+            background: #182433 !important;
+            border-color: #2d3a4d !important;
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .file-manager .modal-header {
+            border-color: #2d3a4d !important;
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .file-manager .modal-footer {
+            border-color: #2d3a4d !important;
+        }
+        [data-bs-theme="dark"] .file-manager .modal-title {
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .file-manager .form-label {
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .file-manager .btn-close {
+            filter: invert(1) !important;
+        }
+        [data-bs-theme="dark"] .file-manager .input-group-text {
+            background: #101827 !important;
+            border-color: #2d3a4d !important;
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .file-manager .form-control,
+        [data-bs-theme="dark"] .file-manager .form-select {
+            background: #182433 !important;
+            border-color: #2d3a4d !important;
+            color: #ffffff !important;
+        }
+        /* Pagination */
+        [data-bs-theme="dark"] .file-manager .pagination .page-link,
+        [data-bs-theme="dark"] .file-manager .page-link {
+            background: #182433 !important;
+            border-color: #2d3a4d !important;
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .file-manager .pagination .page-item.active .page-link,
+        [data-bs-theme="dark"] .file-manager .page-item.active .page-link {
+            background: #2563eb !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+        [data-bs-theme="dark"] .file-manager .pagination .page-item.disabled .page-link,
+        [data-bs-theme="dark"] .file-manager .page-item.disabled .page-link {
+            background: #101827 !important;
+            border-color: #2d3a4d !important;
+            color: #4b5563 !important;
+        }
+        [data-bs-theme="dark"] .file-manager .pagination .page-link:hover,
+        [data-bs-theme="dark"] .file-manager .page-link:hover {
+            background: #2d3a4d !important;
+            border-color: #374151 !important;
+            color: #ffffff !important;
+        }
+    </style>
+
+    <!-- TOOLBAR -->
+    <div class="fm-toolbar">
+        <button class="btn btn-primary btn-sm" @click="$refs.uploader.click()" :disabled="isUploading" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Bilgisayardan dosya seç">
+            <i class="fas fa-upload me-1"></i> Yükle
+        </button>
+        <input type="file" multiple x-ref="uploader" class="d-none" @change="handleUpload($event)" accept="image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.zip,.rar">
+
+        <div class="divider"></div>
+
+        <button class="btn btn-sm" :class="viewMode === 'grid' ? 'btn-secondary' : 'btn-ghost-secondary'" @click="viewMode = 'grid'; localStorage.setItem('fmViewMode', 'grid')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Izgara görünümü">
+            <i class="fas fa-th-large"></i>
+        </button>
+        <button class="btn btn-sm" :class="viewMode === 'list' ? 'btn-secondary' : 'btn-ghost-secondary'" @click="viewMode = 'list'; localStorage.setItem('fmViewMode', 'list')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Liste görünümü">
+            <i class="fas fa-list"></i>
+        </button>
+
+        <div class="divider"></div>
+
+        <button class="btn btn-ghost-secondary btn-sm" @click="selectAll()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Tümünü seç (Ctrl+A)">
+            <i class="fas fa-check-double me-1"></i> Tümü
+        </button>
+        <button class="btn btn-ghost-danger btn-sm" @click="deleteSelected()" :disabled="selected.length === 0" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Seçili dosyaları sil (Delete)">
+            <i class="fas fa-trash me-1"></i> Sil
+        </button>
+
+        <div class="divider"></div>
+
+        <!-- Thumbnail Size -->
+        <div class="btn-group btn-group-sm" role="group">
+            <button class="btn" :class="thumbSize === 'sm' ? 'btn-secondary' : 'btn-ghost-secondary'" @click="setThumbSize('sm')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Küçük önizleme">
+                S
+            </button>
+            <button class="btn" :class="thumbSize === 'md' ? 'btn-secondary' : 'btn-ghost-secondary'" @click="setThumbSize('md')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Normal önizleme">
+                M
+            </button>
+            <button class="btn" :class="thumbSize === 'lg' ? 'btn-secondary' : 'btn-ghost-secondary'" @click="setThumbSize('lg')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Büyük önizleme">
+                L
+            </button>
+            <button class="btn" :class="thumbSize === 'xl' ? 'btn-secondary' : 'btn-ghost-secondary'" @click="setThumbSize('xl')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Çok büyük önizleme">
+                XL
+            </button>
+        </div>
+
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <div class="input-icon" style="width: 200px;">
+                <span class="input-icon-addon"><i class="fas fa-search"></i></span>
+                <input type="text" class="form-control form-control-sm" wire:model.live.debounce.500ms="search" placeholder="Ara...">
+            </div>
+            <select class="form-select form-select-sm" wire:model.live="perPage" style="width: 80px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sayfa başına dosya sayısı">
+                <option value="48">48</option>
+                <option value="96">96</option>
+                <option value="150">150</option>
+                <option value="200">200</option>
+            </select>
+        </div>
     </div>
 
-    <div class="row row-cards mb-4 g-3">
-        <div class="col-sm-6 col-xl-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="text-secondary">{{ __('mediamanagement::admin.stats_total') }}</div>
-                    <div class="h2 mb-0">{{ number_format($stats['total'] ?? 0) }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="text-secondary">{{ __('mediamanagement::admin.stats_total_size') }}</div>
-                    <div class="h2 mb-0">{{ $this->formatBytes($stats['total_size'] ?? 0, 1) }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="text-secondary">{{ __('mediamanagement::admin.stats_last_30_days') }}</div>
-                    <div class="h2 mb-0">{{ number_format($stats['last_30_days'] ?? 0) }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card card-sm">
-                <div class="card-body">
-                    <div class="text-secondary">{{ __('mediamanagement::admin.stats_unused') }}</div>
-                    <div class="h2 mb-0">{{ number_format($stats['unlinked'] ?? 0) }}</div>
-                </div>
-            </div>
-        </div>
+    <!-- UPLOAD ZONE (Always visible) -->
+    <div class="fm-upload-zone mx-2 mt-2"
+         :class="{ 'dropping': isDragging }"
+         @click="$refs.uploader.click()"
+         @dragover.prevent="isDragging = true"
+         @dragleave.prevent="isDragging = false"
+         @drop.prevent="isDragging = false; handleDrop($event)"
+         style="cursor: pointer;">
+        <i class="fas fa-cloud-upload-alt fa-lg text-primary me-2"></i>
+        <span class="small">Dosyaları buraya sürükleyin veya tıklayarak seçin</span>
+        <span class="text-muted ms-2 small">(Çoklu seçim desteklenir)</span>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header d-flex align-items-center justify-content-between">
-            <div>
-                <h3 class="card-title mb-0">{{ __('mediamanagement::admin.library_upload_title') }}</h3>
-                <div class="text-secondary small">{{ __('mediamanagement::admin.library_upload_help') }}</div>
-            </div>
-            <div>
-                <button class="btn btn-primary" x-on:click="triggerUpload()" :disabled="isUploading">
-                    <span x-show="isUploading" class="spinner-border spinner-border-sm me-2"></span>
-                    {{ __('mediamanagement::admin.upload_to_library') }}
-                </button>
-            </div>
-        </div>
-        <div class="card-body">
-            <div x-data="{ dropping: false }" x-on:dragover.prevent="dropping = true" x-on:dragleave.prevent="dropping = false" x-on:drop.prevent="dropping = false; handleDrop($event)" class="border border-dashed rounded-3 p-4 text-center" :class="dropping ? 'border-primary bg-primary-subtle' : ''">
-                <input type="file" multiple x-ref="uploader" class="d-none" x-on:change="handleSelect($event)">
-                <div class="mb-2">
-                    <i class="fas fa-cloud-upload-alt fa-2x text-primary"></i>
-                </div>
-                <div class="fw-bold">{{ __('mediamanagement::admin.drag_drop_files') }}</div>
-                <div class="text-secondary small">{{ __('mediamanagement::admin.library_upload_formats') }}</div>
-                <div class="mt-3">
-                    <button type="button" class="btn btn-outline-primary" x-on:click="$refs.uploader.click()">
-                        {{ __('mediamanagement::admin.choose_files') }}
-                    </button>
-                </div>
-                <div class="mt-3" x-show="isUploading" x-transition>
-                    <span class="spinner-border spinner-border-sm me-2"></span>{{ __('mediamanagement::admin.uploading') }}
-                </div>
-            </div>
-            <template x-if="uploadErrors.length">
-                <div class="text-danger small mt-2" x-text="uploadErrors.join('\n')"></div>
-            </template>
-        </div>
-    </div>
+    <!-- BODY -->
+    <div class="fm-body"
+         @dragover.prevent="isDragging = true"
+         @dragleave.prevent="isDragging = false"
+         @drop.prevent="isDragging = false; handleDrop($event)">
 
-    <div class="card mb-3">
-        <div class="card-body">
-            <div class="row g-2 align-items-end">
-                <div class="col-lg-3 col-md-5">
-                    <div class="input-icon">
-                        <span class="input-icon-addon">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
-                        </span>
-                        <input type="text" class="form-control" wire:model.live.debounce.500ms="search" placeholder="{{ __('mediamanagement::admin.search_placeholder') }}">
-                    </div>
+        <!-- SIDEBAR -->
+        <div class="fm-sidebar">
+            <!-- Collections -->
+            <div class="fm-sidebar-section">
+                <div class="fm-sidebar-title">Koleksiyonlar</div>
+                <div class="fm-sidebar-item {{ !$collectionFilter ? 'active' : '' }}"
+                     wire:click="$set('collectionFilter', null)">
+                    <i class="fas fa-folder"></i>
+                    <span>Tümü</span>
+                    <span class="count">{{ $stats['total'] ?? 0 }}</span>
                 </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
-                    <select class="form-select" wire:model.live="typeFilter">
-                        <option value="">{{ __('mediamanagement::admin.all_types') }}</option>
-                        @foreach($mediaTypes as $typeKey => $typeConfig)
-                            <option value="{{ $typeKey }}">{{ $typeConfig['label'] ?? \Illuminate\Support\Str::headline($typeKey) }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
-                    <select class="form-select" wire:model.live="collectionFilter">
-                        <option value="">{{ __('mediamanagement::admin.all_collections') }}</option>
-                        @foreach($availableCollections as $collection)
-                            <option value="{{ $collection }}">{{ \Illuminate\Support\Str::headline(str_replace('_', ' ', $collection)) }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
-                    <select class="form-select" wire:model.live="dateFilter">
-                        <option value="all">{{ __('mediamanagement::admin.date_all') }}</option>
-                        <option value="24h">Son 24 Saat</option>
-                        <option value="7d">Son 7 Gün</option>
-                        <option value="30d">Son 30 Gün</option>
-                        <option value="90d">Son 90 Gün</option>
-                        <option value="year">Bu Yıl</option>
-                    </select>
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-3">
-                    <select class="form-select" wire:model.live="perPage">
-                        @foreach([12, 24, 48, 96] as $size)
-                            <option value="{{ $size }}">{{ $size }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-3">
-                    <button class="btn btn-icon" type="button" wire:click="resetFilters" title="Filtreleri Sıfırla">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"/><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <!-- Advanced Filters -->
-            <div class="collapse mt-3" id="advancedFilters">
-                <div class="border-top pt-3">
-                    <div class="row g-2">
-                        <div class="col-md-6">
-                            <label class="form-label">{{ __('mediamanagement::admin.model') }}</label>
-                            <select class="form-select" wire:model.live="moduleFilter">
-                                <option value="">{{ __('mediamanagement::admin.all_models') }}</option>
-                                @foreach($availableModules as $module)
-                                    <option value="{{ $module }}">{{ $this->moduleLabel($module) }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">{{ __('mediamanagement::admin.disk') }}</label>
-                            <select class="form-select" wire:model.live="diskFilter">
-                                <option value="">{{ __('mediamanagement::admin.all_disks') }}</option>
-                                @foreach($availableDisks as $disk)
-                                    <option value="{{ $disk }}">{{ \Illuminate\Support\Str::upper($disk) }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @if($availableModules->count() > 0 || $availableDisks->count() > 0)
-                <div class="mt-2">
-                    <button class="btn btn-sm btn-ghost-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFilters">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5.5 5h13a1 1 0 0 1 .5 1.5l-5 5.5l0 7l-4 -3l0 -4l-5 -5.5a1 1 0 0 1 .5 -1.5"/>
-                        </svg>
-                        Gelişmiş Filtreler
-                    </button>
-                </div>
-            @endif
-        </div>
-    </div>
-
-    <!-- Bulk Actions Bar -->
-    @if(count($selectedItems) > 0)
-        <div class="card mb-3 bg-primary-lt border-primary" x-data="{ bulkAction: '' }">
-            <div class="card-body py-2">
-                <div class="row align-items-center">
-                    <div class="col-auto">
-                        <span class="text-primary fw-bold">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11l3 3l8 -8"/><path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9"/>
-                            </svg>
-                            {{ count($selectedItems) }} öğe seçildi
-                        </span>
-                    </div>
-                    <div class="col">
-                        <div class="d-flex gap-2 align-items-center">
-                            <button class="btn btn-sm btn-primary"
-                                    @click="$wire.getSelectedMediaLinks().then(links => {
-                                        const text = links.join(' ');
-                                        navigator.clipboard.writeText(text);
-                                        $dispatch('toast', {
-                                            title: 'Başarılı',
-                                            message: '{{ count($selectedItems) }} medya linki kopyalandı',
-                                            type: 'success'
-                                        });
-                                    })">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"/>
-                                </svg>
-                                Linkleri Kopyala
-                            </button>
-                            <button class="btn btn-sm btn-danger"
-                                    @click.prevent="if(confirm('Seçili {{ count($selectedItems) }} medyayı silmek istediğinize emin misiniz?')) { $wire.bulkDelete() }">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="4" y1="7" x2="20" y2="7"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
-                                </svg>
-                                Toplu Sil
-                            </button>
-                            <button class="btn btn-sm btn-ghost-secondary ms-auto"
-                                    wire:click="$set('selectedItems', [])">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                                </svg>
-                                Seçimi Temizle
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    @if($mediaItems->count())
-        @php
-        $previewableMedia = $mediaItems->filter(function($media) {
-            return $this->isPreviewable($media);
-        })->map(function($media) {
-            $isVideo = $this->isVideo($media);
-            return [
-                'url' => $isVideo ? $media->getUrl() : thumb($media, 1920, 1920, ['quality' => 90]),
-                'thumb' => $isVideo ? $media->getUrl() : thumb($media, 400, 400, ['quality' => 80, 'scale' => 1]),
-                'name' => $media->name,
-                'id' => $media->id,
-                'isVideo' => $isVideo,
-                'mimeType' => $media->mime_type
-            ];
-        })->values()->toArray();
-        @endphp
-        <div x-data="{
-            showLightbox: false,
-            currentIndex: 0,
-            mediaList: @js($previewableMedia),
-            lastCheckedIndex: null,
-            allMediaIds: @js($mediaItems->pluck('id')->toArray()),
-            get currentMedia() {
-                return this.mediaList[this.currentIndex] || {};
-            },
-            openLightbox(index) {
-                this.currentIndex = index;
-                this.showLightbox = true;
-                document.body.style.overflow = 'hidden';
-            },
-            closeLightbox() {
-                this.showLightbox = false;
-                document.body.style.overflow = '';
-            },
-            nextMedia() {
-                if (this.currentIndex < this.mediaList.length - 1) {
-                    this.currentIndex++;
-                }
-            },
-            prevMedia() {
-                if (this.currentIndex > 0) {
-                    this.currentIndex--;
-                }
-            },
-            handleCheckboxClick(event, mediaId, currentIndex) {
-                if (event.shiftKey && this.lastCheckedIndex !== null) {
-                    event.preventDefault();
-                    const start = Math.min(this.lastCheckedIndex, currentIndex);
-                    const end = Math.max(this.lastCheckedIndex, currentIndex);
-                    const idsToSelect = this.allMediaIds.slice(start, end + 1);
-
-                    // Livewire selectedItems'ı güncelle
-                    const currentSelected = $wire.get('selectedItems');
-                    const newSelected = [...new Set([...currentSelected, ...idsToSelect])];
-                    $wire.set('selectedItems', newSelected);
-                }
-                this.lastCheckedIndex = currentIndex;
-            }
-        }"
-        @keydown.escape.window="if(showLightbox) { closeLightbox(); }"
-        @keydown.arrow-right.window="if(showLightbox) { nextMedia(); }"
-        @keydown.arrow-left.window="if(showLightbox) { prevMedia(); }">
-            <style>
-                /* Media Grid: 5 kolonlar (xl+) */
-                @media (min-width: 1200px) {
-                    .media-card-col { flex: 0 0 auto; width: 20%; max-width: 20%; }
-                }
-                /* Media Grid: 7 kolonlar (lg) */
-                @media (min-width: 992px) and (max-width: 1199px) {
-                    .media-card-col { flex: 0 0 auto; width: 14.28%; max-width: 14.28%; }
-                }
-                /* Media Grid: 4 kolonlar (md) */
-                @media (min-width: 768px) and (max-width: 991px) {
-                    .media-card-col { flex: 0 0 auto; width: 25%; max-width: 25%; }
-                }
-                /* Media Grid: 3 kolonlar (sm) */
-                @media (min-width: 576px) and (max-width: 767px) {
-                    .media-card-col { flex: 0 0 auto; width: 33.33%; max-width: 33.33%; }
-                }
-                /* Media Grid: 2 kolonlar (xs) */
-                @media (max-width: 575px) {
-                    .media-card-col { flex: 0 0 auto; width: 50%; max-width: 50%; }
-                }
-            </style>
-            <div class="row row-cards g-2">
-                @php $previewableIndex = 0; @endphp
-                @foreach($mediaItems as $index => $media)
-                    <div class="media-card-col" x-data="{ copied: false }">
-                        <div class="card card-sm h-100" wire:key="media-card-{{ $media->id }}">
-                            <!-- Thumbnail Preview -->
-                            <div class="ratio ratio-1x1 card-img-top position-relative"
-                                 @if($this->isPreviewable($media))
-                                 style="cursor: zoom-in;"
-                                 @click="openLightbox({{ $previewableIndex }})"
-                                 @php $previewableIndex++; @endphp
-                                 @endif>
-                                @if($this->isPreviewable($media))
-                                    <img src="{{ thumb($media, 400, 400, ['quality' => 80, 'scale' => 1]) }}"
-                                         alt="{{ $media->name }}"
-                                         class="object-fit-cover w-100 h-100"
-                                         loading="lazy">
-                                    <!-- Checkbox Selection (Sağ Üst) -->
-                                    <div class="position-absolute top-0 end-0 m-2" style="right: 0;">
-                                        <input type="checkbox"
-                                               wire:model.live="selectedItems"
-                                               value="{{ $media->id }}"
-                                               class="form-check-input"
-                                               style="width: 1.25rem; height: 1.25rem; cursor: pointer; background-color: rgba(255,255,255,0.9); border: 2px solid #206bc4;"
-                                               id="checkbox-{{ $media->id }}"
-                                               @click.stop="handleCheckboxClick($event, {{ $media->id }}, {{ $index }})"
-                                               @checked(in_array($media->id, $selectedItems))>
-                                    </div>
-                                @else
-                                    <div class="d-flex flex-column align-items-center justify-content-center h-100 text-secondary bg-light">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
-                                        </svg>
-                                        <div class="fw-bold text-uppercase small mt-1">{{ strtoupper(pathinfo($media->file_name, PATHINFO_EXTENSION)) }}</div>
-                                        <div class="badge badge-sm bg-azure-lt text-dark mt-1">{{ $this->formatBytes($media->size) }}</div>
-                                    </div>
-                                    <!-- Checkbox Selection for Non-Image Files (Sağ Üst) -->
-                                    <div class="position-absolute top-0 end-0 m-2" style="right: 0;">
-                                        <input type="checkbox"
-                                               wire:model.live="selectedItems"
-                                               value="{{ $media->id }}"
-                                               class="form-check-input"
-                                               style="width: 1.25rem; height: 1.25rem; cursor: pointer; background-color: rgba(255,255,255,0.9); border: 2px solid #206bc4;"
-                                               id="checkbox-{{ $media->id }}"
-                                               @click.stop="handleCheckboxClick($event, {{ $media->id }}, {{ $index }})"
-                                               @checked(in_array($media->id, $selectedItems))>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <!-- Compact Card Body -->
-                            <div class="card-body p-2">
-                                <div class="text-truncate small" title="{{ $media->name ?? $media->file_name }}">
-                                    <strong>{{ \Illuminate\Support\Str::limit($media->name ?? $media->file_name, 20) }}</strong>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center" style="font-size: 0.625rem;">
-                                    <span class="text-muted">{{ optional($media->created_at)->format('d.m.Y') }}</span>
-                                    <span class="badge badge-sm bg-secondary">{{ $this->formatBytes($media->size) }}</span>
-                                </div>
-                            </div>
-
-                            <!-- Compact Footer -->
-                            <div class="card-footer p-1">
-                                <div class="btn-list justify-content-center">
-                                    <button class="btn btn-sm btn-icon"
-                                            @click.stop="navigator.clipboard.writeText('{{ addslashes($media->computed_url ?? $media->getUrl()) }}'); copied = true; setTimeout(() => copied = false, 2000);"
-                                            title="URL Kopyala"
-                                            :class="copied ? 'btn-success' : 'btn-ghost-secondary'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2"/>
-                                        </svg>
-                                    </button>
-                                    <button class="btn btn-sm btn-icon btn-ghost-primary"
-                                            wire:click="openEditModal({{ $media->id }})"
-                                            title="{{ __('admin.edit') }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"/><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"/><path d="M16 5l3 3"/>
-                                        </svg>
-                                    </button>
-                                    <button class="btn btn-sm btn-icon btn-ghost-danger"
-                                            @click.prevent="if(confirm('{{ __('mediamanagement::admin.confirm_delete') }}')) { $wire.deleteMedia({{ $media->id }}) }"
-                                            title="{{ __('admin.delete') }}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="4" y1="7" x2="20" y2="7"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                @foreach($availableCollections as $collection)
+                    <div class="fm-sidebar-item {{ $collectionFilter === $collection ? 'active' : '' }}"
+                         wire:click="$set('collectionFilter', '{{ $collection }}')">
+                        <i class="fas fa-folder"></i>
+                        <span>{{ \Illuminate\Support\Str::limit(\Illuminate\Support\Str::headline(str_replace('_', ' ', $collection)), 15) }}</span>
                     </div>
                 @endforeach
             </div>
 
-            <!-- Global Lightbox Modal -->
-            <template x-if="showLightbox">
-                <div @click="closeLightbox()"
-                     class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-                     style="z-index: 9999; background: rgba(0,0,0,0.95); cursor: pointer;">
-
-                    <!-- Close Button -->
-                    <button @click.stop="closeLightbox()"
-                            class="btn btn-icon btn-light position-absolute top-0 end-0 m-3"
-                            style="z-index: 10001;">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                        </svg>
-                    </button>
-
-                    <!-- Previous Button -->
-                    <button @click.stop="prevMedia()"
-                            x-show="currentIndex > 0"
-                            class="btn btn-icon btn-light position-absolute start-0 top-50 translate-middle-y ms-3"
-                            style="z-index: 10001;">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="15 6 9 12 15 18"/>
-                        </svg>
-                    </button>
-
-                    <!-- Next Button -->
-                    <button @click.stop="nextMedia()"
-                            x-show="currentIndex < mediaList.length - 1"
-                            class="btn btn-icon btn-light position-absolute end-0 top-50 translate-middle-y me-3"
-                            style="z-index: 10001;">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="9 6 15 12 9 18"/>
-                        </svg>
-                    </button>
-
-                    <!-- Media Container -->
-                    <div class="d-flex flex-column align-items-center justify-content-center" style="max-width: 90%; max-height: 90vh;" @click.stop>
-                        <!-- Image -->
-                        <template x-if="!currentMedia.isVideo">
-                            <img :src="currentMedia.url"
-                                 :alt="currentMedia.name"
-                                 class="img-fluid"
-                                 style="max-width: 100%; max-height: 85vh; object-fit: contain; cursor: default;">
-                        </template>
-
-                        <!-- Video -->
-                        <template x-if="currentMedia.isVideo">
-                            <video controls
-                                   class="img-fluid"
-                                   style="max-width: 100%; max-height: 85vh; object-fit: contain; cursor: default;"
-                                   preload="metadata">
-                                <source :src="currentMedia.url" :type="currentMedia.mimeType">
-                                Tarayıcınız video oynatmayı desteklemiyor.
-                            </video>
-                        </template>
-
-                        <!-- Media Info -->
-                        <div class="text-white mt-3 text-center">
-                            <div class="fw-bold" x-text="currentMedia.name"></div>
-                            <div class="text-muted small">
-                                <span x-text="`${currentIndex + 1} / ${mediaList.length}`"></span>
-                                <span x-show="currentMedia.isVideo" class="ms-2 badge bg-primary">Video</span>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Types -->
+            <div class="fm-sidebar-section">
+                <div class="fm-sidebar-title">Dosya Türü</div>
+                <div class="fm-sidebar-item {{ !$typeFilter ? 'active' : '' }}"
+                     wire:click="$set('typeFilter', null)">
+                    <i class="fas fa-file"></i>
+                    <span>Tüm Türler</span>
                 </div>
-            </template>
-        </div>
+                @foreach($mediaTypes as $typeKey => $typeConfig)
+                    <div class="fm-sidebar-item {{ $typeFilter === $typeKey ? 'active' : '' }}"
+                         wire:click="$set('typeFilter', '{{ $typeKey }}')">
+                        <i class="fas fa-{{ $typeKey === 'image' ? 'image' : ($typeKey === 'video' ? 'video' : ($typeKey === 'document' ? 'file-alt' : 'file')) }}"></i>
+                        <span>{{ $typeConfig['label'] ?? \Illuminate\Support\Str::headline($typeKey) }}</span>
+                    </div>
+                @endforeach
+            </div>
 
-        <div class="mt-4">
-            {{ $mediaItems->links() }}
-        </div>
-    @else
-        <div class="card">
-            <div class="card-body text-center text-secondary py-5">
-                <i class="fas fa-images fa-2x mb-2"></i>
-                <div>{{ __('mediamanagement::admin.no_results') }}</div>
+            <!-- Date Filter -->
+            <div class="fm-sidebar-section">
+                <div class="fm-sidebar-title">Tarih</div>
+                @foreach(['all' => 'Tümü', '24h' => 'Son 24 Saat', '7d' => 'Son 7 Gün', '30d' => 'Son 30 Gün'] as $key => $label)
+                    <div class="fm-sidebar-item {{ $dateFilter === $key ? 'active' : '' }}"
+                         wire:click="$set('dateFilter', '{{ $key }}')">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ $label }}</span>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Stats -->
+            <div class="fm-sidebar-section">
+                <div class="fm-sidebar-title">İstatistikler</div>
+                <div class="fm-stats-text" style="font-size: 11px;">
+                    <div class="mb-1"><strong>{{ number_format($stats['total'] ?? 0) }}</strong> dosya</div>
+                    <div class="mb-1"><strong>{{ $this->formatBytes($stats['total_size'] ?? 0, 1) }}</strong> toplam</div>
+                    <div><strong>{{ number_format($stats['last_30_days'] ?? 0) }}</strong> son 30 gün</div>
+                </div>
             </div>
         </div>
-    @endif
 
+        <!-- MAIN CONTENT -->
+        <div class="fm-main">
+            <!-- Breadcrumb -->
+            <div class="fm-breadcrumb">
+                <a href="#" wire:click.prevent="resetFilters">Medya Kütüphanesi</a>
+                @if($collectionFilter)
+                    <span class="mx-1">/</span>
+                    <span>{{ \Illuminate\Support\Str::headline(str_replace('_', ' ', $collectionFilter)) }}</span>
+                @endif
+                @if($typeFilter)
+                    <span class="mx-1">/</span>
+                    <span>{{ $mediaTypes[$typeFilter]['label'] ?? \Illuminate\Support\Str::headline($typeFilter) }}</span>
+                @endif
+                @if($search)
+                    <span class="mx-1">/</span>
+                    <span>"{{ $search }}"</span>
+                @endif
+            </div>
+
+            <!-- Content -->
+            <div class="fm-content" @click="clearSelection($event)" id="fm-content-area"
+                 x-init="
+                    mediaList = {{ Js::from($previewableMedia) }};
+                    allMediaIds = {{ Js::from($mediaItems->pluck('id')->toArray()) }};
+                    allMediaData = {{ Js::from($allMedia) }};
+                 ">
+
+                <!-- Loading Overlay -->
+                <div wire:loading.class="active" wire:target="gotoPage, previousPage, nextPage, setPage, perPage, search, typeFilter, collectionFilter, dateFilter, moduleFilter, diskFilter, sortField, sortDirection" class="fm-loading-overlay">
+                    <div class="fm-loading-spinner"></div>
+                </div>
+
+                <!-- Content hidden during loading -->
+                <div wire:loading.remove wire:target="gotoPage, previousPage, nextPage, setPage, perPage, search, typeFilter, collectionFilter, dateFilter, moduleFilter, diskFilter, sortField, sortDirection">
+                @if($mediaItems->count())
+                    <!-- GRID VIEW -->
+                    <div class="fm-grid" :class="'size-' + thumbSize" x-show="viewMode === 'grid'">
+                        @foreach($mediaItems as $index => $media)
+                            <div class="fm-item"
+                                 :class="{ 'selected': selected.includes({{ $media->id }}) }"
+                                 @click.stop="handleItemClick($event, {{ $media->id }}, {{ $index }})"
+                                 @dblclick="openPreview({{ $media->id }})"
+                                 @contextmenu.prevent.stop="openContext($event, {{ $media->id }})">
+                                <div class="fm-item-thumb">
+                                    @if($this->isPreviewable($media))
+                                        <img src="{{ thumb($media, 300, 300, ['quality' => 80]) }}" alt="{{ $media->name }}" loading="lazy">
+                                    @else
+                                        <i class="fas fa-file fa-2x text-secondary"></i>
+                                    @endif
+                                </div>
+                                <div class="fm-item-name" title="{{ $media->name ?? $media->file_name }}">
+                                    {{ \Illuminate\Support\Str::limit($media->name ?? pathinfo($media->file_name, PATHINFO_FILENAME), 12) }}
+                                </div>
+                                <div class="fm-item-size">{{ $this->formatBytes($media->size) }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- LIST VIEW -->
+                    <div class="fm-list" x-show="viewMode === 'list'">
+                        <div class="fm-list-header">
+                            <div><input type="checkbox" @change="toggleAll($event)" :checked="selected.length === allMediaIds.length && allMediaIds.length > 0"></div>
+                            <div></div>
+                            <div>Ad</div>
+                            <div>Boyut</div>
+                            <div>Tür</div>
+                            <div>Tarih</div>
+                        </div>
+                        @foreach($mediaItems as $index => $media)
+                            <div class="fm-list-row"
+                                 :class="{ 'selected': selected.includes({{ $media->id }}) }"
+                                 @click.stop="handleItemClick($event, {{ $media->id }}, {{ $index }})"
+                                 @dblclick="openPreview({{ $media->id }})"
+                                 @contextmenu.prevent.stop="openContext($event, {{ $media->id }})">
+                                <div><input type="checkbox" :checked="selected.includes({{ $media->id }})" @click.stop="toggleSelect({{ $media->id }})"></div>
+                                <div>
+                                    @if($this->isPreviewable($media))
+                                        <img src="{{ thumb($media, 64, 64, ['quality' => 60]) }}" class="fm-list-thumb" loading="lazy">
+                                    @else
+                                        <div class="fm-list-thumb d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-file text-secondary"></i>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    {{ $media->name ?? $media->file_name }}
+                                </div>
+                                <div class="text-muted">{{ $this->formatBytes($media->size) }}</div>
+                                <div><span class="badge bg-secondary-lt">{{ strtoupper(pathinfo($media->file_name, PATHINFO_EXTENSION)) }}</span></div>
+                                <div class="text-muted">{{ optional($media->created_at)->format('d.m.y H:i') }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-5 fm-empty-state">
+                        <i class="fas fa-folder-open fa-3x mb-3"></i>
+                        <div>Dosya bulunamadı</div>
+                    </div>
+                @endif
+                </div>
+
+            <!-- Pagination -->
+            @if($mediaItems->hasPages())
+                <div class="px-3 py-2 border-top">
+                    {{ $mediaItems->links() }}
+                </div>
+            @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- STATUS BAR -->
+    <div class="fm-statusbar">
+        <div>
+            <span x-show="selected.length > 0">
+                <strong x-text="selected.length"></strong> seçili |
+            </span>
+            {{ $mediaItems->total() }} dosya
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span x-show="selected.length === 1" class="text-muted small">
+                <a href="#" @click.prevent="$wire.openEditModal(selected[0])" class="text-decoration-none">
+                    <i class="fas fa-edit me-1"></i>Düzenle
+                </a>
+                <span class="mx-2">|</span>
+                <a href="#" @click.prevent="openPreview(selected[0])" class="text-decoration-none">
+                    <i class="fas fa-eye me-1"></i>Önizle
+                </a>
+            </span>
+            <span class="text-muted small ms-2">
+                Ctrl/⌘+Tık: Çoklu seç |
+                Shift+Tık: Aralık seç |
+                Çift tık: Önizle |
+                Sağ tık: Menü
+            </span>
+        </div>
+    </div>
+
+    <!-- CONTEXT MENU -->
+    <div class="fm-context" x-show="context.show" x-cloak
+         :style="`left: ${context.x}px; top: ${context.y}px;`"
+         @click.away="context.show = false">
+        <div class="fm-context-item" @click="openPreview(context.id)">
+            <i class="fas fa-eye"></i> Önizle
+        </div>
+        <div class="fm-context-item" @click="copyUrl(context.id)">
+            <i class="fas fa-copy"></i> URL Kopyala
+        </div>
+        <div class="fm-context-item" @click="download(context.id)">
+            <i class="fas fa-download"></i> İndir
+        </div>
+        <div class="fm-context-divider"></div>
+        <div class="fm-context-item" @click="$wire.openEditModal(context.id); context.show = false;">
+            <i class="fas fa-edit"></i> Düzenle
+        </div>
+        <div class="fm-context-divider"></div>
+        <div class="fm-context-item danger" @click="deleteItem(context.id)">
+            <i class="fas fa-trash"></i> Sil
+        </div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <template x-if="lightbox.show">
+        <div class="fm-lightbox" @click="lightbox.show = false" @keydown.escape.window="lightbox.show = false"
+             @keydown.arrow-left.window="prevMedia()" @keydown.arrow-right.window="nextMedia()">
+            <button class="fm-lightbox-close" @click.stop="lightbox.show = false">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="fm-lightbox-nav prev" @click.stop="prevMedia()" x-show="lightbox.index > 0">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <template x-if="!currentMedia.isVideo">
+                <img :src="currentMedia.url" :alt="currentMedia.name" @click.stop>
+            </template>
+            <template x-if="currentMedia.isVideo">
+                <video controls @click.stop>
+                    <source :src="currentMedia.url" :type="currentMedia.mimeType">
+                </video>
+            </template>
+            <button class="fm-lightbox-nav next" @click.stop="nextMedia()" x-show="lightbox.index < mediaList.length - 1">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </template>
+
+    <!-- EDIT MODAL -->
     @if($editingMediaId)
-        <div class="modal-backdrop fade show" style="z-index: 1050; opacity: 0.5;"></div>
-        <div class="modal fade show d-block" tabindex="-1" role="dialog" style="z-index: 1055;">
-            <div class="modal-dialog modal-lg" role="document">
+        <div class="modal fade show d-block" style="background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <form wire:submit.prevent="saveMedia">
                         <div class="modal-header">
-                            <h5 class="modal-title">{{ __('mediamanagement::admin.edit_media_caption') }}</h5>
+                            <h5 class="modal-title">Medya Düzenle</h5>
                             <button type="button" class="btn-close" wire:click="closeEditModal"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="row g-3 mb-3">
+                            <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">
-                                        {{ __('mediamanagement::admin.title_single') }}
-                                        <span class="text-muted small">(Görünen Ad)</span>
-                                    </label>
+                                    <label class="form-label">Görünen Ad</label>
                                     <input type="text" class="form-control" wire:model.defer="editForm.name">
-                                    @error('editForm.name')
-                                        <div class="text-danger small">{{ $message }}</div>
-                                    @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">
-                                        Dosya Adı
-                                        <span class="text-muted small">(Slug-friendly)</span>
-                                    </label>
+                                    <label class="form-label">Dosya Adı</label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" wire:model.defer="editForm.file_name" placeholder="ornek-dosya">
+                                        <input type="text" class="form-control" wire:model.defer="editForm.file_name">
                                         <span class="input-group-text">.{{ $editForm['extension'] ?? '' }}</span>
                                     </div>
-                                    @error('editForm.file_name')
-                                        <div class="text-danger small">{{ $message }}</div>
-                                    @enderror
-                                    <div class="form-text">Türkçe karakterler otomatik temizlenecek</div>
                                 </div>
-                            </div>
-                            <div class="row g-3">
                                 @foreach($locales as $locale)
                                     <div class="col-md-6">
-                                        <label class="form-label">{{ __('mediamanagement::admin.title') }} ({{ strtoupper($locale) }})</label>
-                                        <input type="text" class="form-control" wire:model.defer="editForm.title.{{ $locale }}">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">{{ __('mediamanagement::admin.alt_text') }} ({{ strtoupper($locale) }})</label>
+                                        <label class="form-label">Alt Text ({{ strtoupper($locale) }})</label>
                                         <input type="text" class="form-control" wire:model.defer="editForm.alt_text.{{ $locale }}">
-                                    </div>
-                                    <div class="col-12">
-                                        <label class="form-label">{{ __('mediamanagement::admin.description') }} ({{ strtoupper($locale) }})</label>
-                                        <textarea class="form-control" rows="2" wire:model.defer="editForm.description.{{ $locale }}"></textarea>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-link" wire:click="closeEditModal">{{ __('admin.cancel') }}</button>
-                            <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="saveMedia">
-                                <span wire:loading wire:target="saveMedia" class="spinner-border spinner-border-sm me-2"></span>
-                                {{ __('admin.save') }}
-                            </button>
+                            <button type="button" class="btn btn-link" wire:click="closeEditModal">İptal</button>
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
                         </div>
                     </form>
                 </div>
@@ -549,99 +909,265 @@
 
 @push('scripts')
 <script>
-    window.mediaLibraryUploader = function(uploadUrl, csrfToken, componentId) {
-        return {
-            copied: false,
-            isUploading: false,
-            uploadErrors: [],
-            triggerUpload() {
-                this.$refs?.uploader?.click();
-            },
-            handleSelect(event) {
-                const files = Array.from(event?.target?.files || []);
-                if (files.length) {
-                    this.upload(files);
-                    event.target.value = '';
+window.fileManager = function(uploadUrl, csrfToken, componentId) {
+    return {
+        // State
+        viewMode: localStorage.getItem('fmViewMode') || 'grid',
+        thumbSize: localStorage.getItem('fmThumbSize') || 'md',
+        selected: [],
+        lastIndex: null,
+        isUploading: false,
+        isDragging: false,
+        showUpload: false,
+
+        // Data
+        allMediaIds: [],
+        allMediaData: [],
+        mediaList: [],
+
+        // Context menu
+        context: { show: false, x: 0, y: 0, id: null },
+
+        // Lightbox
+        lightbox: { show: false, index: 0 },
+
+        get currentMedia() {
+            return this.mediaList[this.lightbox.index] || {};
+        },
+
+        // Selection - FIXED shift+click
+        handleItemClick(event, id, index) {
+            if (event.shiftKey && this.lastIndex !== null) {
+                // Shift+click: select range
+                const start = Math.min(this.lastIndex, index);
+                const end = Math.max(this.lastIndex, index);
+                const rangeIds = this.allMediaIds.slice(start, end + 1);
+                this.selected = [...new Set([...this.selected, ...rangeIds])];
+            } else if (event.ctrlKey || event.metaKey) {
+                // Ctrl+click: toggle single
+                this.toggleSelect(id);
+            } else {
+                // Normal click: select only this
+                this.selected = [id];
+            }
+            this.lastIndex = index;
+            this.syncSelection();
+        },
+
+        toggleSelect(id) {
+            const idx = this.selected.indexOf(id);
+            if (idx === -1) {
+                this.selected.push(id);
+            } else {
+                this.selected.splice(idx, 1);
+            }
+            this.syncSelection();
+        },
+
+        selectAll() {
+            // Toggle: if all selected, deselect all; otherwise select all
+            if (this.selected.length === this.allMediaIds.length) {
+                this.selected = [];
+            } else {
+                this.selected = [...this.allMediaIds];
+            }
+            this.syncSelection();
+        },
+
+        clearSelection(event) {
+            if (event.target.classList.contains('fm-content')) {
+                this.selected = [];
+                this.syncSelection();
+            }
+        },
+
+        toggleAll(event) {
+            if (event.target.checked) {
+                this.selected = [...this.allMediaIds];
+            } else {
+                this.selected = [];
+            }
+            this.syncSelection();
+        },
+
+        syncSelection() {
+            this.$wire.set('selectedItems', this.selected);
+        },
+
+        setThumbSize(size) {
+            this.thumbSize = size;
+            localStorage.setItem('fmThumbSize', size);
+        },
+
+        // Context menu
+        openContext(event, id) {
+            this.context = {
+                show: true,
+                x: Math.min(event.clientX, window.innerWidth - 180),
+                y: Math.min(event.clientY, window.innerHeight - 250),
+                id: id
+            };
+            if (!this.selected.includes(id)) {
+                this.selected = [id];
+                this.syncSelection();
+            }
+        },
+
+        handleGlobalContext(event) {
+            this.context.show = false;
+        },
+
+        // Actions
+        copyUrl(id) {
+            const media = this.allMediaData.find(m => m.id === id);
+            if (media) {
+                navigator.clipboard.writeText(media.url);
+                this.$dispatch('toast', { title: 'Başarılı', message: 'URL kopyalandı', type: 'success' });
+            }
+            this.context.show = false;
+        },
+
+        download(id) {
+            const media = this.allMediaData.find(m => m.id === id);
+            if (media) {
+                const link = document.createElement('a');
+                link.href = media.url;
+                link.download = media.file_name;
+                link.click();
+            }
+            this.context.show = false;
+        },
+
+        deleteItem(id) {
+            if (confirm('Bu dosyayı silmek istediğinize emin misiniz?')) {
+                this.$wire.deleteMedia(id);
+            }
+            this.context.show = false;
+        },
+
+        deleteSelected() {
+            if (this.selected.length === 0) return;
+            if (confirm(`${this.selected.length} dosyayı silmek istediğinize emin misiniz?`)) {
+                this.$wire.bulkDelete();
+                this.selected = [];
+            }
+        },
+
+        // Lightbox
+        openPreview(id) {
+            const index = this.mediaList.findIndex(m => m.id === id);
+            if (index !== -1) {
+                this.lightbox = { show: true, index: index };
+                document.body.style.overflow = 'hidden';
+            }
+        },
+
+        prevMedia() {
+            if (this.lightbox.index > 0) this.lightbox.index--;
+        },
+
+        nextMedia() {
+            if (this.lightbox.index < this.mediaList.length - 1) this.lightbox.index++;
+        },
+
+        // Keyboard
+        handleKeydown(event) {
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName)) return;
+
+            if (event.key === 'Escape') {
+                if (this.lightbox.show) {
+                    this.lightbox.show = false;
+                    document.body.style.overflow = '';
+                } else {
+                    this.selected = [];
+                    this.syncSelection();
                 }
-            },
-            handleDrop(event) {
-                const files = Array.from(event?.dataTransfer?.files || []);
-                if (files.length) {
-                    this.upload(files);
-                }
-            },
-            upload(files, retryCount = 0) {
-                const formData = new FormData();
-                files.forEach(file => formData.append('files[]', file));
-                formData.append('_token', csrfToken);
+            }
+            // Ctrl+A (Windows) or Cmd+A (Mac)
+            if ((event.ctrlKey || event.metaKey) && event.key === 'a') {
+                event.preventDefault();
+                this.selectAll();
+            }
+            // Delete or Backspace (Mac)
+            if ((event.key === 'Delete' || event.key === 'Backspace') && this.selected.length > 0) {
+                event.preventDefault();
+                this.deleteSelected();
+            }
+            if (event.key === 'F2' && this.selected.length === 1) {
+                event.preventDefault();
+                this.$wire.openEditModal(this.selected[0]);
+            }
+            if (event.key === 'Enter' && this.selected.length === 1) {
+                event.preventDefault();
+                this.openPreview(this.selected[0]);
+            }
+        },
 
-                if (retryCount === 0) {
-                    this.isUploading = true;
-                    this.uploadErrors = [];
-                }
+        // Upload
+        handleUpload(event) {
+            const files = Array.from(event.target.files || []);
+            if (files.length) this.upload(files);
+            event.target.value = '';
+        },
 
-                const url = uploadUrl.startsWith('http') ? uploadUrl : `${window.location.origin}${uploadUrl}`;
+        handleDrop(event) {
+            const files = Array.from(event.dataTransfer?.files || []);
+            if (files.length) this.upload(files);
+        },
 
-                fetch(url, {
-                    method: 'POST',
-                    body: formData,
-                    credentials: 'same-origin',
-                    cache: 'no-store',
-                    keepalive: true, // SSL handshake için
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Connection': 'keep-alive', // SSL bağlantısını koru
-                    },
-                })
-                    .then(async response => {
-                        if (!response.ok) {
-                            const data = await response.json().catch(() => ({}));
-                            throw data;
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        const uploadedCount = data?.uploaded_count ?? 0;
-                        const errors = data?.errors ?? [];
-                        window.Livewire?.find(componentId)?.call('handleUploadCompleted', uploadedCount, errors);
-                        this.isUploading = false;
-                    })
-                    .catch(error => {
-                        console.error('Media library upload error (attempt ' + (retryCount + 1) + '):', error);
+        upload(files) {
+            this.isUploading = true;
+            const formData = new FormData();
+            files.forEach(f => formData.append('files[]', f));
+            formData.append('_token', csrfToken);
 
-                        // SSL error detected and first attempt - auto retry once
-                        if (retryCount === 0 && error?.message && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
-                            console.log('🔄 SSL handshake error detected, retrying media library upload automatically...');
-                            setTimeout(() => {
-                                this.upload(files, 1);
-                            }, 200);
-                            return;
-                        }
-
-                        // Final failure
-                        const errors = [];
-                        if (error?.errors) {
-                            Object.values(error.errors).forEach(val => {
-                                if (Array.isArray(val)) {
-                                    errors.push(...val);
-                                } else if (typeof val === 'string') {
-                                    errors.push(val);
-                                }
-                            });
-                        } else if (error?.message) {
-                            errors.push(error.message);
-                        } else {
-                            errors.push('{{ __('mediamanagement::admin.library_upload_failed') }}');
-                        }
-
-                        this.uploadErrors = errors;
-                        window.Livewire?.find(componentId)?.call('handleUploadCompleted', 0, [{ errors }]);
-                        this.isUploading = false;
-                    });
-            },
-        };
+            fetch(uploadUrl.startsWith('http') ? uploadUrl : `${location.origin}${uploadUrl}`, {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin',
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(r => r.json())
+            .then(data => {
+                window.Livewire?.find(componentId)?.call('handleUploadCompleted', data.uploaded_count || 0, data.errors || []);
+            })
+            .catch(() => {
+                this.$dispatch('toast', { title: 'Hata', message: 'Yükleme başarısız', type: 'error' });
+            })
+            .finally(() => {
+                this.isUploading = false;
+            });
+        }
     };
+};
+
+// Initialize Bootstrap tooltips (with check)
+function initTooltips() {
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+            // Dispose existing tooltip if any
+            const existing = bootstrap.Tooltip.getInstance(tooltipTriggerEl);
+            if (existing) existing.dispose();
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initTooltips);
+
+// Re-initialize tooltips after Livewire navigation
+document.addEventListener('livewire:navigated', initTooltips);
+
+// Scroll to top when page changes
+document.addEventListener('livewire:init', function() {
+    Livewire.hook('morph.updated', ({ el, component }) => {
+        // Scroll content area to top after update
+        const contentArea = document.getElementById('fm-content-area');
+        if (contentArea) {
+            contentArea.scrollTop = 0;
+        }
+    });
+});
 </script>
 @endpush

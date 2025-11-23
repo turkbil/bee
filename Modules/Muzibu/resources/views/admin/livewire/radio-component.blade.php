@@ -1,5 +1,5 @@
 @php
-    View::share('pretitle', 'Sayfa Listesi');
+    View::share('pretitle', __('muzibu::admin.radio_list'));
 @endphp
 
 <div class="radio-component-wrapper">
@@ -23,36 +23,43 @@
                         wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px;">
-                        <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
+                        <div class="small mb-2">{{ __('admin.updating') }}</div>
                         <div class="progress mb-1">
                             <div class="progress-bar progress-bar-indeterminate"></div>
                         </div>
                     </div>
                 </div>
-                <!-- Sağ Taraf (Switch ve Select) -->
-                <div class="col">
-                    <div class="d-flex align-items-center justify-content-end gap-3">
-                        <!-- Sayfa Adeti Seçimi -->
-                        <div style="width: 80px; min-width: 80px">
-                            <select wire:model.live="perPage" class="form-control listing-filter-select" data-choices
-                                data-choices-search="false" data-choices-filter="true">
-                                <option value="10">
-                                    <nobr>10</nobr>
-                                </option>
-                                <option value="50">
-                                    <nobr>50</nobr>
-                                </option>
-                                <option value="100">
-                                    <nobr>100</nobr>
-                                </option>
-                                <option value="500">
-                                    <nobr>500</nobr>
-                                </option>
-                                <option value="1000">
-                                    <nobr>1000</nobr>
-                                </option>
-                            </select>
+                <!-- Sağ Taraf -->
+                <div class="col-auto">
+                    <div class="d-flex align-items-center justify-content-end gap-2">
+                        <!-- Görünüm Toggle -->
+                        <div class="btn-group" role="group">
+                            <button type="button"
+                                wire:click="$set('detailedView', false)"
+                                class="btn btn-icon {{ !$detailedView ? 'btn-primary' : 'btn-ghost-secondary' }}"
+                                title="Minimal">
+                                <i class="fas fa-th-list"></i>
+                            </button>
+                            <button type="button"
+                                wire:click="$set('detailedView', true)"
+                                class="btn btn-icon {{ $detailedView ? 'btn-primary' : 'btn-ghost-secondary' }}"
+                                title="Detaylı">
+                                <i class="fas fa-table"></i>
+                            </button>
                         </div>
+
+                        <select wire:model.live="perPage" class="form-select" style="width: 75px;">
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+
+                        <!-- Yeni Radyo Ekle -->
+                        @hasmoduleaccess('muzibu', 'create')
+                        <a href="{{ route('admin.muzibu.radio.manage') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>{{ __('muzibu::admin.add_radio') }}
+                        </a>
+                        @endhasmoduleaccess
                     </div>
                 </div>
             </div>
@@ -79,22 +86,23 @@
                                     </button>
                                 </div>
                             </th>
-                            <th>
+                            <th style="min-width: 200px">
                                 <button
                                     class="table-sort {{ ($sortField ?? '') === 'title' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
                                     wire:click="sortBy('title')">
                                     {{ __('muzibu::admin.radio.title_field') }}
                                 </button>
                             </th>
-                            <th class="text-center" style="width: 80px" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="{{ __('muzibu::admin.radio.status') }}">
-                                <button
-                                    class="table-sort {{ ($sortField ?? '') === 'is_active' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
-                                    wire:click="sortBy('is_active')">
-                                    {{ __('muzibu::admin.radio.status') }}
-                                </button>
+                            <th class="text-center" style="width: 80px">{{ __('muzibu::admin.playlists') }}</th>
+                            <th class="text-center" style="width: 80px">{{ __('muzibu::admin.songs') }}</th>
+                            <th class="text-center" style="width: 80px">{{ __('muzibu::admin.duration') }}</th>
+                            @if($detailedView)
+                            <th class="text-center" style="min-width: 150px">{{ __('muzibu::admin.sectors') }}</th>
+                            @endif
+                            <th class="text-center" style="width: 70px">
+                                {{ __('muzibu::admin.radio.status') }}
                             </th>
-                            <th class="text-center" style="width: 160px">{{ __('admin.actions') }}</th>
+                            <th class="text-center" style="width: 120px">{{ __('admin.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="table-tbody">
@@ -152,9 +160,41 @@
                                         </div>
                                     @endif
                                 </td>
+                                <td class="text-center">
+                                    @php $playlistCount = $radio->playlists->count(); @endphp
+                                    @if($playlistCount > 0)
+                                        <span class="badge bg-cyan-lt">{{ $playlistCount }}</span>
+                                    @else
+                                        <span class="badge bg-secondary-lt">0</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @php $songsCount = $radio->getTotalSongsCount(); @endphp
+                                    @if($songsCount > 0)
+                                        <span class="badge bg-blue-lt">{{ $songsCount }}</span>
+                                    @else
+                                        <span class="badge bg-secondary-lt">0</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <span class="small text-muted">{{ $radio->getFormattedTotalDuration() }}</span>
+                                </td>
+                                @if($detailedView)
+                                <td class="text-center">
+                                    @if($radio->sectors && $radio->sectors->count() > 0)
+                                        <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                            @foreach($radio->sectors as $sector)
+                                                <span class="badge bg-purple-lt" style="font-size: 0.7rem;">{{ $sector->getTranslated('title', $currentSiteLocale) ?? $sector->getTranslated('title', 'tr') }}</span>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+                                @endif
                                 <td class="text-center align-middle">
                                     <button wire:click="toggleActive({{ $radio->radio_id }})"
-                                        class="btn btn-icon btn-sm {{ $radio->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
+                                        class="btn btn-icon btn-sm ps-1 pe-2 {{ $radio->is_active ? 'bg-transparent' : 'text-red bg-transparent' }}">
                                         <!-- Loading Durumu -->
                                         <div wire:loading wire:target="toggleActive({{ $radio->radio_id }})"
                                             class="spinner-border spinner-border-sm">
@@ -178,14 +218,12 @@
                                             style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
-                                        <x-ai-translation :entity-type="'radio'" :entity-id="$radio->radio_id"
-                                            tooltip="{{ __('admin.ai_translate') }}" />
                                         @hasmoduleaccess('muzibu', 'delete')
                                         <div class="dropdown">
-                                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                            <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false"
                                                 style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
-                                                <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                                                <i class="fa-solid fa-bars-sort fa-flip-horizontal link-secondary fa-lg"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a href="javascript:void(0);"
@@ -205,10 +243,10 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 8 : 7 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.radio.no_radios_found') }}</p>
-                                        <p class="empty-subtitle text-muted">
+                                        <p class="empty-subtitle">
                                             {{ __('muzibu::admin.radio.no_results') }}
                                         </p>
                                     </div>
@@ -226,7 +264,7 @@
                 {{ $radios->links() }}
             @else
                 <div class="d-flex justify-content-between align-items-center mb-0">
-                    <p class="small text-muted mb-0">
+                    <p class="small mb-0">
                         Toplam <span class="fw-semibold">{{ $radios->total() }}</span> sonuç
                     </p>
                 </div>

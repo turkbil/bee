@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Log;
 use Modules\Shop\App\Models\ShopProduct;
 use Modules\Shop\App\Models\ShopCategory;
 use Modules\Shop\App\Models\ShopBrand;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Spatie\Browsershot\Browsershot;
 
 class ShopController extends Controller
@@ -594,331 +593,106 @@ class ShopController extends Controller
     }
 
     /**
-     * Export product info as PDF with first/last pages using Browsershot
+     * Export product info as PDF using Browsershot (Chrome)
+     * Captures actual webpage screenshot for professional PDF
      */
     public function exportPdf(string $slug)
     {
         $locale = app()->getLocale();
 
         $product = ShopProduct::query()
-            ->with(['category', 'brand'])
+            ->with(['category', 'brand', 'media'])
             ->active()
             ->published()
-            ->where(function ($query) use ($slug, $locale) {
-                $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"{$locale}\"')) = ?", [$slug]);
-            })
+            ->where('slug->' . $locale, $slug)
             ->first();
 
         if (!$product) {
+            \Log::error('PDF Export: Product not found', ['slug' => $slug]);
             abort(404);
         }
 
-        $title = $product->getTranslated('title', $locale);
-        $productUrl = self::resolveProductUrl($product, $locale);
-        $filename = \Str::slug($title) . '-urun-katalogu.pdf';
-        $pdfPath = storage_path('app/temp/' . $filename);
-        $htmlPath = storage_path('app/temp/' . \Str::slug($title) . '-combined.html');
+        \Log::info('PDF Export: Product found', ['product_id' => $product->product_id, 'slug' => $slug]);
 
-        // Ensure temp directory exists
-        if (!file_exists(storage_path('app/temp'))) {
-            mkdir(storage_path('app/temp'), 0755, true);
-        }
+        // Increase PHP execution time for PDF generation
+        set_time_limit(120);
 
         try {
-            // Get current date in Turkish
-            $catalogDate = now()->locale('tr')->isoFormat('D MMMM YYYY');
+            $title = $product->getTranslated('title', $locale);
+            $filename = \Str::slug($title) . '-urun-katalogu.pdf';
 
-            // Logo fallback chain:
-            // 1. Tenant storage logo (white version for dark backgrounds)
-            // 2. Tenant storage logo (default version)
-            // 3. null → View will use site title instead
-            $logoUrl = null;
-            $logoWhitePath = storage_path('app/public/settings/logo-white.png');
-            $logoDefaultPath = storage_path('app/public/settings/logo.png');
+            // Get product page URL
+            $productUrl = self::resolveProductUrl($product, $locale);
 
-            if (file_exists($logoWhitePath)) {
-                $logoUrl = url('/storage/settings/logo-white.png');
-            } elseif (file_exists($logoDefaultPath)) {
-                $logoUrl = url('/storage/settings/logo.png');
-            }
+            \Log::info('PDF Export: Starting', ['url' => $productUrl, 'product_id' => $product->product_id]);
 
-            // Tenant info fallback (settings tablosundan)
-            $siteTitle = get_setting('site_title') ?? config('app.name', 'Platform');
-            $siteDomain = parse_url(url('/'), PHP_URL_HOST) ?? 'www.example.com';
-            $sitePhone = get_setting('contact_phone') ?? '';
-            $siteEmail = get_setting('contact_email') ?? 'info@' . $siteDomain;
-            $siteWhatsapp = get_setting('whatsapp_number') ?? $sitePhone;
+            // Generate PDF by capturing the actual product page URL directly
+            $pdfPath = tempnam(sys_get_temp_dir(), 'pdf_') . '.pdf';
 
-            // Product image URL
-            $productImage = null;
-            if ($product->hasMedia('featured_image')) {
-                $productImage = $product->getFirstMediaUrl('featured_image');
-            }
-
-            // Render first page body content
-            $firstPageBodyHtml = view('shop::themes.ixtif.pdf.first-page', [
-                'productTitle' => $title,
-                'logoUrl' => $logoUrl,
-                'siteTitle' => $siteTitle,
-                'siteDomain' => $siteDomain,
-                'sitePhone' => $sitePhone,
-                'siteEmail' => $siteEmail,
-                'catalogDate' => $catalogDate,
-                'productImage' => $productImage,
-            ])->render();
-
-            // Extract body content only
-            preg_match('/<body[^>]*>(.*?)<\/body>/is', $firstPageBodyHtml, $firstMatches);
-            $firstPageBody = $firstMatches[1] ?? '';
-
-            // Render last page body content
-            $lastPageBodyHtml = view('shop::themes.ixtif.pdf.last-page', [
-                'logoUrl' => $logoUrl,
-                'siteTitle' => $siteTitle,
-                'siteDomain' => $siteDomain,
-                'sitePhone' => $sitePhone,
-                'siteEmail' => $siteEmail,
-                'siteWhatsapp' => $siteWhatsapp,
-                'catalogDate' => $catalogDate,
-            ])->render();
-
-            // Extract body content only
-            preg_match('/<body[^>]*>(.*?)<\/body>/is', $lastPageBodyHtml, $lastMatches);
-            $lastPageBody = $lastMatches[1] ?? '';
-
-            // Fetch product content page via HTTP (with SSL verification disabled for local dev)
-            $context = stream_context_create([
-                'ssl' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                ],
-            ]);
-            $productPageHtml = file_get_contents($productUrl, false, $context);
-
-            // CSS to inject for product page cleanup
-            $productPageCss = '
-                /* ========== HIDE HEADER & FOOTER ========== */
-                body > header,
-                body > nav,
-                body > footer,
-                header[class*="bg-"],
-                footer[class*="bg-"],
-                .site-header,
-                .site-footer,
-                [id*="header"],
-                [id*="Header"],
-                [class*="header-"],
-                [class*="footer-"] {
+            // CSS to hide unwanted elements in PDF
+            $hideElementsCSS = '
+                header, .header, #header,
+                footer, .footer, #footer,
+                nav, .navbar, .navigation,
+                .sidebar, #sidebar, aside,
+                .breadcrumb, .breadcrumbs,
+                .floating-widget, .ai-chat-widget,
+                .cart-widget, .mini-cart,
+                .sticky-bar, .sticky-header,
+                .cookie-notice, .cookie-banner,
+                .back-to-top,
+                .whatsapp-button, .whatsapp-widget,
+                .pdf-download-button, .export-pdf,
+                #nprogress,
+                [data-hide-in-pdf="true"] {
                     display: none !important;
                 }
-
-                /* Hide TOC bar */
-                #toc-bar { display: none !important; }
-
-                /* ========== HIDE RIGHT SIDEBAR ========== */
-                #sticky-sidebar,
-                aside,
-                [class*="sidebar"],
-                .lg\:col-span-1 {
-                    display: none !important;
-                }
-
-                /* Make left content full width */
-                .lg\:col-span-2 {
-                    grid-column: span 3 / span 3 !important;
-                    max-width: 100% !important;
-                    width: 100% !important;
-                }
-
-                /* Force single column layout */
-                .grid.grid-cols-1.lg\:grid-cols-3 {
-                    grid-template-columns: 1fr !important;
-                }
-
-                /* ========== HIDE CONTACT FORM ========== */
-                #contact,
-                #trust-signals,
-                [id*="contact-form"],
-                form[action*="contact"] {
-                    display: none !important;
-                }
-
-                /* Hide Hero CTA Buttons */
-                #hero-section .flex.flex-col.sm\:flex-row,
-                #hero-section a[href="#contact"],
-                #hero-section a[href^="tel:"] {
-                    display: none !important;
-                }
-
-                /* ========== OPEN ALL ACCORDIONS (FAQ) ========== */
-                #faq [x-show],
-                [x-show][class*="faq"],
-                .accordion-content {
-                    display: block !important;
-                    opacity: 1 !important;
-                    max-height: none !important;
-                    height: auto !important;
-                    visibility: visible !important;
-                }
-
-                #faq .fa-chevron-down,
-                #faq .fa-chevron-up {
-                    display: none !important;
-                }
-
-                /* Force accordion buttons to show content */
-                [x-cloak] {
-                    display: block !important;
-                }
-
-                /* ========== SHOW ALL ICONS (Font Awesome fix) ========== */
-                .fa, .fas, .far, .fal, .fab, i[class*="fa-"] {
-                    font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "FontAwesome" !important;
-                    font-weight: 900 !important;
-                    display: inline-block !important;
-                    font-style: normal !important;
-                    font-variant: normal !important;
-                    text-rendering: auto !important;
-                    -webkit-font-smoothing: antialiased !important;
-                }
-
-                /* ========== SEKTÖRLER 3 COLUMN GRID ========== */
-                #industries .grid,
-                #target-industries .grid,
-                [id*="industr"] .grid {
-                    grid-template-columns: repeat(3, 1fr) !important;
-                    display: grid !important;
-                }
-
-                /* ========== HIDE FLOATING WIDGETS ========== */
-                .fixed,
-                [class*="fixed"],
-                [style*="position: fixed"] {
-                    display: none !important;
-                }
-
-                .sticky {
-                    position: relative !important;
-                }
-
-                /* ========== DISABLE ALL LINKS ========== */
-                a {
-                    pointer-events: none !important;
-                    text-decoration: none !important;
-                    cursor: default !important;
-                }
-
-                /* ========== PAGE BREAK CONTROL ========== */
-                section {
-                    page-break-inside: avoid !important;
-                    break-inside: avoid !important;
-                }
-
-                /* ========== PRINT OPTIMIZATION ========== */
                 body {
-                    background: white !important;
-                }
-
-                * {
                     -webkit-print-color-adjust: exact !important;
                     print-color-adjust: exact !important;
-                    color-adjust: exact !important;
                 }
             ';
 
-            // Inject CSS into product page HTML
-            $productPageHtml = str_replace(
-                '</head>',
-                '<style>' . $productPageCss . '</style></head>',
-                $productPageHtml
-            );
-
-            // Extract body content from product page
-            preg_match('/<body[^>]*>(.*?)<\/body>/is', $productPageHtml, $productMatches);
-            $productBodyContent = $productMatches[1] ?? '';
-
-            // Combine all 3 sections with page breaks - single HTML document
-            $combinedHtml = <<<HTML
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{$title} - İXTİF Ürün Kataloğu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @page {
-            size: A4;
-            margin: 0;
-        }
-
-        .pdf-page {
-            page-break-after: always;
-            page-break-inside: avoid;
-            min-height: 297mm;
-            width: 210mm;
-            position: relative;
-        }
-
-        .pdf-page:last-child {
-            page-break-after: auto;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-    </style>
-</head>
-<body>
-
-<!-- FIRST PAGE -->
-<div class="pdf-page">
-{$firstPageBody}
-</div>
-
-<!-- PRODUCT CONTENT PAGES -->
-<div style="padding: 10mm;">
-{$productBodyContent}
-</div>
-
-<!-- LAST PAGE -->
-<div class="pdf-page">
-{$lastPageBody}
-</div>
-
-</body>
-</html>
-HTML;
-
-            // Write combined HTML to temp file (for debugging if needed)
-            file_put_contents($htmlPath, $combinedHtml);
-
-            // Generate PDF from combined HTML
-            Browsershot::html($combinedHtml)
-                ->setNodeBinary('/opt/homebrew/bin/node')
-                ->setNpmBinary('/opt/homebrew/bin/npm')
-                ->addChromiumArguments(['no-sandbox', 'disable-setuid-sandbox'])
-                ->waitUntilNetworkIdle()
+            Browsershot::url($productUrl)
+                ->setNodeBinary('/usr/bin/node')
+                ->setNpmBinary('/usr/bin/npm')
+                ->setChromePath('/var/www/vhosts/tuufi.com/.puppeteer-cache/chrome/linux-141.0.7390.78/chrome-linux64/chrome')
+                ->addChromiumArguments([
+                    'no-sandbox',
+                    'disable-setuid-sandbox',
+                    'disable-dev-shm-usage',
+                    'disable-gpu',
+                ])
+                ->setOption('addStyleTag', json_encode(['content' => $hideElementsCSS]))
                 ->showBackground()
-                ->format('A4')
-                ->margins(0, 0, 0, 0)
-                ->windowSize(794, 1123)  // A4 at 96 DPI
+                ->emulateMedia('screen')
+                ->paperSize(210, 5000)  // A4 width (210mm), very tall height (5000mm)
+                ->margins(10, 10, 10, 10)
+                ->timeout(90000)
+                ->setDelay(2000)
                 ->save($pdfPath);
 
-            // Clean up temp HTML file
-            if (file_exists($htmlPath)) {
-                unlink($htmlPath);
+            // Check if PDF was created
+            if (!file_exists($pdfPath) || filesize($pdfPath) < 1000) {
+                throw new \Exception('PDF dosyası oluşturulamadı');
             }
 
-            return response()->download($pdfPath, $filename, [
-                'Content-Type' => 'application/pdf',
-            ])->deleteFileAfterSend(true);
+            \Log::info('PDF Export: Success', [
+                'product_id' => $product->product_id,
+                'file_size' => filesize($pdfPath)
+            ]);
+
+            // Return PDF response
+            $pdfContent = file_get_contents($pdfPath);
+            @unlink($pdfPath);
+
+            return response($pdfContent)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+                ->header('Content-Length', strlen($pdfContent))
+                ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
 
         } catch (\Exception $e) {
             \Log::error('PDF generation failed', [

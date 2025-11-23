@@ -40,6 +40,12 @@ class Tenant2ProductSearchService
     /**
      * WORKFLOW V2: Search method for ProductSearchNode
      *
+     * Uses HybridSearchService for proper sorting:
+     * 1. Homepage products first
+     * 2. Category sort_order
+     * 3. Stock > 0
+     * 4. Price > 0
+     *
      * @param string $userMessage User's search query
      * @param int $limit Result limit
      * @param int|null $categoryId Optional category filter
@@ -47,17 +53,28 @@ class Tenant2ProductSearchService
      */
     public function search(string $userMessage, int $limit = 50, ?int $categoryId = null): array
     {
-        // Extract keywords and detect category
-        $keywords = $this->extractKeywords($userMessage);
+        // Detect category (optional - for filtering)
         $detectedCategory = $categoryId ?? $this->detectCategoryId($userMessage);
 
-        Log::info('🏢 Tenant2: Product search', [
-            'keywords' => $keywords,
+        // 🚨 Fiyat tabanlı sorgu mu? (en ucuz, ucuz bir şey, ekonomik)
+        $isPriceQuery = $this->isPriceBasedQuery($userMessage);
+
+        // 🚨 Model araması mı? (F4 201, EPL153, vb.)
+        $extractedModel = $this->extractModelNumber($userMessage);
+
+        Log::info('🏢 Tenant2: Product search (HybridSearch)', [
+            'user_message' => mb_substr($userMessage, 0, 100),
             'detected_category' => $detectedCategory,
+            'is_price_query' => $isPriceQuery,
+            'extracted_model' => $extractedModel,
             'limit' => $limit
         ]);
 
-        if (empty($keywords)) {
+        // Pass user message directly to HybridSearch
+        // Meilisearch handles typo tolerance automatically (transpalet, trans palet, transpalat, etc.)
+        $hybridResults = $this->hybridSearch->search($userMessage, $detectedCategory, $limit);
+
+        if (empty($hybridResults)) {
             return [
                 'products' => collect(),
                 'products_found' => 0,
@@ -65,19 +82,140 @@ class Tenant2ProductSearchService
             ];
         }
 
-        // Search with Meilisearch + category filter
-        $searchQuery = implode(' ', $keywords);
-        $search = ShopProduct::search($searchQuery);
+        // 🚨 YEDEK PARÇA FİLTRESİ - Kullanıcı özellikle istemedikçe yedek parça gösterme!
+        $isSparePartRequest = $this->isSparePartRequest($userMessage);
 
-        if ($detectedCategory) {
-            $search->where('category_id', $detectedCategory);
+        // Yedek parça olarak kabul edilen ürün adları/kategorileri
+        $sparePartKeywords = [
+            // Elektronik parçalar
+            'devirdaim', 'şamandıra', 'sensör', 'kablo', 'konvektör', 'converter',
+            'geri ikaz', 'ikaz', 'korna', 'lamba', 'far', 'sinyal', 'anahtar',
+            'şalter', 'kontaktör', 'röle', 'sigorta', 'soket', 'akü soketi',
+            'voltaj', '12v', '24v', '12/24v', '48v', 'volt',
+
+            // Mekanik parçalar
+            'çatal', 'rulman', 'tekerlek', 'direksiyon', 'silindir', 'piston',
+            'pompa', 'filtre', 'balata', 'fren', 'conta', 'kayış', 'zincir',
+            'mil', 'yatak', 'kaplin', 'dişli', 'aks', 'şaft', 'burç', 'burc',
+            'dingil', 'askı', 'makas', 'amortisör', 'rotil', 'rot',
+            'menteşe', 'mentese', 'kaput', 'kapı', 'kilit', 'mandal',
+
+            // Yapısal parçalar
+            'sabitleme', 'levha', 'kızak', 'side shift', 'mast', 'çerçeve',
+            'kapak', 'muhafaza', 'koruma', 'panjur', 'cam', 'ayna',
+            'braket', 'bağlantı elemanı', 'civata', 'somun', 'pul',
+
+            // Hidrolik parçalar
+            'hidrolik', 'valf', 'hortum', 'keçe', 'segman', 'karter', 'tank',
+            'manifold', 'bağlantı', 'nipel', 'rekor', 'o-ring', 'oring',
+
+            // Ayar ve kalibrasyon parçaları
+            'ayar', 'teflon', 'asansör ayar', 'kalibrasyon', 'spacer', 'shim',
+
+            // Marka bazlı yedek parçalar (genellikle parça olarak satılır)
+            'tcm', 'toyota parça', 'linde parça', 'hyster parça',
+
+            // Genel kategoriler
+            'motor yedek', 'yedek parça', 'spare', 'aksesuar', 'parça',
+            'tamir', 'onarım', 'servis', 'bakım kiti'
+        ];
+
+        // Convert hybrid results to collection
+        $products = collect();
+        foreach ($hybridResults as $result) {
+            $productData = $result['product'];
+            $product = ShopProduct::find($productData['product_id']);
+            if ($product) {
+                // Yedek parça filtresi uygula
+                if (!$isSparePartRequest) {
+                    $productTitle = mb_strtolower($product->title['tr'] ?? '');
+                    $isSpare = false;
+
+                    foreach ($sparePartKeywords as $keyword) {
+                        if (str_contains($productTitle, $keyword)) {
+                            $isSpare = true;
+                            break;
+                        }
+                    }
+
+                    // Yedek parça ise atla
+                    if ($isSpare) {
+                        Log::debug('🚫 Yedek parça filtrelendi', ['product' => $product->title['tr']]);
+                        continue;
+                    }
+                }
+
+                $products->push($product);
+            }
         }
 
-        $products = $search->take($limit)->get();
+        // 🚨 POST-PROCESSING: Model eşleştirme ve fiyat sıralaması
 
-        Log::info('✅ Tenant2: Products found', [
+        // 1. Model araması varsa, exact match'leri öne al
+        if ($extractedModel && $products->isNotEmpty()) {
+            $products = $products->sortByDesc(function ($product) use ($extractedModel) {
+                $title = mb_strtolower($product->title['tr'] ?? '');
+                $model = mb_strtolower($extractedModel);
+
+                // Exact match en yüksek skor
+                if (str_contains($title, $model)) {
+                    // "F4 201" içeriyorsa 100 puan
+                    return 100;
+                }
+                // Kısmi eşleşme (sadece "F4" içeriyorsa ama "F4 201" aramışsa)
+                $baseModel = preg_replace('/\s*\d+$/', '', $model); // "F4 201" -> "F4"
+                if ($baseModel !== $model && str_contains($title, $baseModel)) {
+                    return 50;
+                }
+                return 0;
+            })->values();
+
+            Log::info('🎯 Model match sorting applied', [
+                'model' => $extractedModel,
+                'first_product' => $products->first()?->title['tr'] ?? null
+            ]);
+        }
+
+        // 2. Fiyat tabanlı sorgu ise, fiyata göre sırala
+        if ($isPriceQuery && $products->isNotEmpty()) {
+            // "En pahalı" sorgusu mu?
+            $isMostExpensive = str_contains(mb_strtolower($userMessage), 'en pahalı');
+
+            if ($isMostExpensive) {
+                // En pahalı önce (DESC)
+                $products = $products->sortByDesc(function ($product) {
+                    if (!$product->base_price || $product->base_price <= 0) {
+                        return 0; // Fiyatsız ürünleri en sona at
+                    }
+                    return $product->base_price;
+                })->values();
+
+                Log::info('💰 Price sorting applied (most expensive first)', [
+                    'first_product' => $products->first()?->title['tr'] ?? null,
+                    'first_price' => $products->first()?->base_price ?? 0
+                ]);
+            } else {
+                // En ucuz önce (ASC)
+                $products = $products->sortBy(function ($product) {
+                    // Fiyatsız ürünleri en sona at
+                    if (!$product->base_price || $product->base_price <= 0) {
+                        return PHP_INT_MAX;
+                    }
+                    return $product->base_price;
+                })->values();
+
+                Log::info('💰 Price sorting applied (cheapest first)', [
+                    'first_product' => $products->first()?->title['tr'] ?? null,
+                    'first_price' => $products->first()?->base_price ?? 0
+                ]);
+            }
+        }
+
+        Log::info('✅ Tenant2: Products found (HybridSearch)', [
             'count' => $products->count(),
-            'category_filtered' => $detectedCategory ? 'YES' : 'NO'
+            'category_filtered' => $detectedCategory ? 'YES' : 'NO',
+            'is_price_query' => $isPriceQuery,
+            'first_product' => $products->first()?->title['tr'] ?? null
         ]);
 
         return [
@@ -85,6 +223,70 @@ class Tenant2ProductSearchService
             'products_found' => $products->count(),
             'detected_category' => $detectedCategory
         ];
+    }
+
+    /**
+     * Fiyat tabanlı sorgu mu kontrol et
+     * "en ucuz", "ucuz bir şey", "ekonomik", "uygun fiyatlı" vb.
+     */
+    protected function isPriceBasedQuery(string $message): bool
+    {
+        $message = mb_strtolower($message);
+
+        $priceKeywords = [
+            'en ucuz',
+            'ucuz bir',
+            'ucuz ürün',
+            'ekonomik',
+            'uygun fiyat',
+            'bütçe',
+            'hesaplı',
+            'en uygun',
+            'fiyat listesi',
+            'en pahalı', // Bu da fiyat sorgusu, ama DESC sıralama gerekir
+        ];
+
+        foreach ($priceKeywords as $keyword) {
+            if (str_contains($message, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Model numarası çıkar
+     * "F4 201 fiyatı" -> "F4 201"
+     * "EPL153 var mı" -> "EPL153"
+     */
+    protected function extractModelNumber(string $message): ?string
+    {
+        $message = mb_strtolower($message);
+
+        // Model patterns - iXTİF specific
+        // F4, F4 201, EPL153, EFL352, CPD15, etc.
+        $patterns = [
+            '/\b(f4\s*\d+)\b/i',           // F4 201, F4 301
+            '/\b(f4)\b/i',                  // F4
+            '/\b(epl\s*\d+)\b/i',           // EPL153, EPL 153
+            '/\b(efl\s*\d+)\b/i',           // EFL352, EFL 352
+            '/\b(cpd\s*\d+)\b/i',           // CPD15, CPD 15
+            '/\b(ept\s*\d+)\b/i',           // EPT20
+            '/\b(efx\s*\d+)\b/i',           // EFX5
+            '/\b(tdl\s*\d+)\b/i',           // TDL
+            '/\b(wpl\s*\d+)\b/i',           // WPL
+            '/\b(rpl\s*\d+)\b/i',           // RPL
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $message, $matches)) {
+                // Boşlukları temizle
+                return trim(preg_replace('/\s+/', ' ', $matches[1]));
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -97,18 +299,26 @@ class Tenant2ProductSearchService
 
         // Product type keywords - TENANT 2 (iXtif) specific
         $productTypes = [
-            'transpalet', 'forklift', 'istif', 'istif makinesi',
+            'transpalet', 'trans palet', 'palet jack',  // Transpalet synonyms
+            'forklift', 'fork lift', 'portif',  // Forklift synonyms
+            'istif', 'istif makinesi', 'stacker',
             'akülü', 'elektrikli', 'manuel', 'palet', 'platform',
+            'li-ion', 'lityum', 'agm', 'jel akü',  // Battery types
             'kaldırıcı', 'yük', 'depo', 'lojistik', 'taşıyıcı',
             'makine', 'makina', 'ekipman', 'araç',
             'order picker', 'reach truck', 'otonom',
-            'cpd', 'ept', 'epl', 'efl', 'tdl'  // Model prefixes
+            'cpd', 'ept', 'epl', 'efl', 'tdl', 'wpl', 'rpl'  // Model prefixes
         ];
 
         foreach ($productTypes as $type) {
             if (str_contains($message, $type)) {
                 $keywords[] = $type;
             }
+        }
+
+        // Extract capacity/tonnage (e.g., "1.5 ton", "2 ton")
+        if (preg_match('/(\d+(?:[.,]\d+)?)\s*ton/i', $message, $matches)) {
+            $keywords[] = $matches[1] . ' ton';
         }
 
         return array_unique($keywords);
@@ -124,10 +334,15 @@ class Tenant2ProductSearchService
         // Category mapping - TENANT 2 (iXtif) specific
         $categoryMap = [
             'forklift' => 1,
+            'fork lift' => 1,
+            'portif' => 1,
             'transpalet' => 2,
+            'trans palet' => 2,
+            'palet jack' => 2,
             'palet' => 2,
             'istif' => 3,
             'istif makinesi' => 3,
+            'stacker' => 3,
             'order picker' => 4,
             'sipariş toplama' => 4,
             'otonom' => 5,
@@ -192,6 +407,18 @@ class Tenant2ProductSearchService
      */
     public function getCustomPrompts(): array
     {
+        // Settings'den iletişim bilgilerini al (TENANT-AWARE, hardcode YOK)
+        $contactInfo = \App\Helpers\AISettingsHelper::getContactInfo();
+        $phone = $contactInfo['phone'] ?? '';
+        $whatsapp = $contactInfo['whatsapp'] ?? '';
+        $email = $contactInfo['email'] ?? '';
+
+        // WhatsApp clean format
+        $cleanWhatsapp = preg_replace('/[^0-9]/', '', $whatsapp);
+        if (substr($cleanWhatsapp, 0, 1) === '0') {
+            $cleanWhatsapp = '90' . substr($cleanWhatsapp, 1);
+        }
+
         return [
             'product_recommendation' => "
 ## 🎯 İXTİF ÖZEL KURAL: ÜRÜN ÖNCELİKLENDİRME
@@ -286,7 +513,7 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
 ### 1. FİYATSIZ ÜRÜNLER (base_price = 0 veya price_on_request = true)
 **Ürün gösterilir, ancak fiyat yerine şu mesaj verilir:**
 > \"Fiyat bilgisi için lütfen müşteri temsilcilerimizle iletişime geçin.\"
-> \"Detaylı fiyat teklifi için 0216 755 3 555 numaralı telefonu arayabilir veya iletişim bilgilerinizi bırakabilirsiniz.\"
+> \"Detaylı fiyat teklifi için [{$phone}](tel:{$phone}) numaralı telefonu arayabilir veya [WhatsApp](https://wa.me/{$cleanWhatsapp}) üzerinden ulaşabilirsiniz.\"
 
 **❌ ASLA YAPMA:**
 - \"Bu ürünün fiyatı yok\"
@@ -298,7 +525,7 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
 [İXTİF CPD18FVL - Forklift](URL)
 - 1.8 ton kapasite
 - **Fiyat:** Müşteri temsilcilerimizle iletişime geçerek detaylı fiyat teklifi alabilirsiniz.
-- **İletişim:** 0216 755 3 555
+- **İletişim:** [{$phone}](tel:{$phone}) | [WhatsApp](https://wa.me/{$cleanWhatsapp})
 ```
 
 ### 2. STOKTA OLMAYAN ÜRÜNLER (current_stock = 0)
@@ -312,21 +539,21 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
 **✅ DOĞRU MESAJ:**
 ```
 \"Tedarik süresi ve stok bilgisi için lütfen müşteri hizmetlerimizle iletişime geçin.\"
-\"Sipariş ve teslimat bilgisi için numaranızı bırakabilir veya 0216 755 3 555'i arayabilirsiniz.\"
+\"Sipariş ve teslimat bilgisi için [{$phone}](tel:{$phone}) veya [WhatsApp](https://wa.me/{$cleanWhatsapp}) ile ulaşabilirsiniz.\"
 ```
 
 **✅ DOĞRU ÖRNEK:**
 ```
 [İXTİF EFL181 - Forklift](URL)
 - 1.8 ton kapasite, Li-Ion batarya
-- **Fiyat:** $3,450 USD
-- **Tedarik:** Sipariş ve teslimat süresi için 0216 755 3 555'i arayabilirsiniz.
+- **Fiyat:** \$3,450 USD
+- **Tedarik:** [{$phone}](tel:{$phone}) | [WhatsApp](https://wa.me/{$cleanWhatsapp})
 ```
 
 ### 3. HER İKİ DURUM VARSA (Fiyatsız + Stoksuz)
 ```
 \"Fiyat ve tedarik süresi bilgisi için müşteri temsilcilerimizle iletişime geçebilirsiniz.\"
-\"Detaylı bilgi için 0216 755 3 555'i arayın veya iletişim bilgilerinizi bırakın.\"
+\"Detaylı bilgi için [{$phone}](tel:{$phone}) veya [WhatsApp](https://wa.me/{$cleanWhatsapp}) ile ulaşın.\"
 ```
 
 **SONUÇ:** Tüm ürünler gösterilir, hiçbir ürün gizlenmez. AI, fiyat/stok eksikliğini nazikçe temsilci yönlendirmesi ile kapatır.
@@ -421,13 +648,13 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
             'forklift' => [
                 'id' => 1,
                 'name' => 'Forklift',
-                'keywords' => ['forklift', 'akülü forklift', 'elektrikli forklift',
+                'keywords' => ['forklift', 'fork lift', 'portif', 'akülü forklift', 'elektrikli forklift',
                                'en pahalı forklift', 'en ucuz forklift', 'ucuz forklift', 'pahalı forklift']
             ],
             'transpalet' => [
                 'id' => 2,
                 'name' => 'Transpalet',
-                'keywords' => ['transpalet', 'pallet truck', 'transpalet modeli', 'transpalet çeşitleri',
+                'keywords' => ['transpalet', 'trans palet', 'palet jack', 'pallet truck', 'transpalet modeli', 'transpalet çeşitleri',
                                'en pahalı transpalet', 'en ucuz transpalet', 'ucuz transpalet', 'pahalı transpalet']
             ],
             'istif-makinesi' => [

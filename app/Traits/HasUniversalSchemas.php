@@ -48,9 +48,19 @@ trait HasUniversalSchemas
             return null;
         }
 
+        // FAQPage için name oluştur (model başlığı + "Sık Sorulan Sorular")
+        $faqName = 'Sık Sorulan Sorular';
+        if (method_exists($this, 'getTranslated')) {
+            $modelTitle = $this->getTranslated('title', $locale);
+            if ($modelTitle) {
+                $faqName = $modelTitle . ' - Sık Sorulan Sorular';
+            }
+        }
+
         $faqSchema = [
             '@context' => 'https://schema.org',
             '@type' => 'FAQPage',
+            'name' => $faqName,
             'mainEntity' => [],
         ];
 

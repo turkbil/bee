@@ -133,9 +133,9 @@
 
     <!-- Modern Filtre ve Arama Bölümü -->
     <div class="card">
-        <div class="card-body">
+        <div class="card-body p-0">
             <!-- Header Bölümü -->
-            <div class="row mb-3">
+            <div class="row mx-2 my-3">
                 <!-- Arama Kutusu -->
                 <div class="col">
                     <div class="input-icon">
@@ -171,7 +171,7 @@
                             data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
                             <i class="fas fa-filter me-1"></i>
                             Filtreler
-                            @if(request('type') || request('feature_name') || request('is_demo') || (request('status') && request('status') !== 'active') || (request('tenant_id') && auth()->user()->isRoot()))
+                            @if(request('type') || request('feature_name') || request('is_demo') || (request('status') && request('status') !== 'active') || (request('tenant_id') && auth()->user()->isRoot()) || request('show_tests') || request('show_short'))
                             <span class="badge badge-primary ms-1">Aktif</span>
                             @endif
                         </button>
@@ -190,7 +190,7 @@
             </div>
             
             <!-- Filtre Bölümü - Açılır Kapanır -->
-            <div class="collapse mb-3" id="filterCollapse">
+            <div class="collapse mx-2 mb-3" id="filterCollapse">
                 <div class="card card-body">
                     <form method="GET" action="{{ route('admin.ai.conversations.index') }}" class="row g-3">
                         <input type="hidden" name="search" value="{{ request('search') }}">
@@ -252,7 +252,21 @@
                             </select>
                         </div>
                         @endif
-                        
+
+                        <!-- Gizli İçerik Filtreleri -->
+                        <div class="col-md-12 mt-3">
+                            <div class="d-flex flex-wrap gap-4">
+                                <label class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="show_tests" value="1" {{ request('show_tests') ? 'checked' : '' }}>
+                                    <span class="form-check-label">Test konuşmalarını göster</span>
+                                </label>
+                                <label class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="show_short" value="1" {{ request('show_short') ? 'checked' : '' }}>
+                                    <span class="form-check-label">Kısa konuşmaları göster (≤2 mesaj)</span>
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="col-md-12">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-filter me-2"></i>Filtrele
@@ -264,7 +278,7 @@
                     </form>
                     
                     <!-- Aktif Filtreler -->
-                    @if(request('search') || request('type') || request('feature_name') || request('is_demo') || (request('status') && request('status') !== 'active') || (request('tenant_id') && auth()->user()->isRoot()))
+                    @if(request('search') || request('type') || request('feature_name') || request('is_demo') || (request('status') && request('status') !== 'active') || (request('tenant_id') && auth()->user()->isRoot()) || request('show_tests') || request('show_short'))
                     <div class="d-flex flex-wrap gap-2 mt-3">
                         @if(request('search'))
                             <span class="badge bg-azure-lt">Arama: {{ request('search') }}</span>
@@ -285,6 +299,12 @@
                         @endif
                         @if(request('tenant_id') && auth()->user()->isRoot())
                             <span class="badge bg-cyan-lt">Tenant: {{ $filterOptions['tenants']->firstWhere('id', request('tenant_id'))->title ?? 'Tenant #' . request('tenant_id') }}</span>
+                        @endif
+                        @if(request('show_tests'))
+                            <span class="badge bg-orange-lt">Test Konuşmaları: Gösteriliyor</span>
+                        @endif
+                        @if(request('show_short'))
+                            <span class="badge bg-pink-lt">Kısa Konuşmalar: Gösteriliyor</span>
                         @endif
                     </div>
                     @endif
@@ -480,7 +500,7 @@
                                     <span class="text-muted small">N/A</span>
                                 @endif
                             </td>
-                            <td class="d-none d-lg-table-cell">{{ $conversation->messages()->count() }}</td>
+                            <td class="d-none d-lg-table-cell">{{ $conversation->messages_count }}</td>
                             <td class="d-none d-lg-table-cell">
                                 @if($conversation->status === 'active')
                                     <span class="badge bg-green-lt">Aktif</span>
@@ -611,10 +631,20 @@
                 </table>
             </div>
         </div>
-        
+
         <!-- Pagination -->
-        {{ $conversations->withQueryString()->links() }}
-        
+        <div class="card-footer">
+            @if ($conversations->hasPages())
+                {{ $conversations->withQueryString()->links('vendor.pagination.bootstrap-5') }}
+            @else
+                <div class="d-flex justify-content-between align-items-center mb-0">
+                    <p class="small text-muted mb-0">
+                        Toplam <span class="fw-semibold">{{ $conversations->total() }}</span> sonuç
+                    </p>
+                </div>
+            @endif
+        </div>
+
         <!-- Bulk Actions (Activity-logs tarzı) -->
         @if(count($conversations) > 0)
         <div class="position-fixed bottom-0 start-50 translate-middle-x mb-4" style="z-index: 1000; display: none;" id="bulkActionsPanel">
@@ -686,7 +716,23 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
+    // Markdown renderer
+    function renderMarkdown(text) {
+        if (!text) return '';
+        try {
+            // Configure marked for safe rendering
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+            return marked.parse(text);
+        } catch (e) {
+            return escapeHtml(text);
+        }
+    }
+
     // Activity-logs tarzı JavaScript
     let selectedItems = [];
     
@@ -913,7 +959,7 @@
                                     <strong>${title}</strong>
                                     <span class="text-muted ms-auto small">${new Date(message.created_at).toLocaleString('tr-TR')}</span>
                                 </div>
-                                <div class="ps-4" style="white-space: pre-wrap;">${escapeHtml(message.content)}</div>
+                                <div class="ps-4 markdown-content">${isUser ? escapeHtml(message.content) : renderMarkdown(message.content)}</div>
                                 ${message.token_count ? `<div class="ps-4 mt-1"><small class="text-muted">Token: ${message.token_count}</small></div>` : ''}
                             </div>
                         `;

@@ -339,6 +339,7 @@
 
 {{-- jQuery Library --}}
 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
 <script src="/admin-assets/js/plugins.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/multi-modal-manager.js?v={{ time() }}"></script>
 <script src="/admin-assets/js/tabler.min.js"></script>
@@ -584,7 +585,6 @@ document.addEventListener('livewire:init', () => {
             };
         });
 
-        console.log('✅ Alpine.js Global Store initialized (Livewire bundled)');
     }
 });
 </script>
@@ -615,7 +615,6 @@ function initializeAIContentSystem() {
             module: 'global',
             baseUrl: '/admin'
         });
-        console.log('🚀 Global AI Content System başlatıldı');
         return true;
     }
     return false;
@@ -627,7 +626,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Eğer yüklenmediyse, script'ler yüklendikten sonra tekrar dene
         setTimeout(() => {
             if (!initializeAIContentSystem()) {
-                console.log('ℹ️ AIContentGenerationSystem henüz yüklenmedi - script loading sırası nedeniyle normal');
             }
         }, 1000);
     }
@@ -748,20 +746,17 @@ window.addEventListener('load', function() {
 <script>
     // 🎆 Enterprise-level streaming translation integration
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('🚀 Enterprise Streaming Translation System Ready!');
         
         // ✅ Check if streaming translation is available
         if (typeof streamingTranslation !== 'undefined') {
             // Real-time connection status indicator
             streamingTranslation.on('connection_established', function() {
-                console.log('✅ WebSocket connection established - Real-time translation ready');
             });
             
             streamingTranslation.on('connection_failed', function() {
                 console.warn('⚠️ WebSocket connection failed - Falling back to polling mode');
             });
         } else {
-            console.log('📝 Streaming translation not available - Using standard translation mode');
         }
         
         // Global keyboard shortcuts for power users

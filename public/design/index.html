@@ -89,7 +89,15 @@
             { id: 53, name: '2 Aşamalı Checkout', file: 'checkout-2step/index.html', category: 'ecommerce', icon: 'fa-cart-shopping', count: 8, color: 'from-green-500 to-blue-500' },
             { id: 54, name: 'Review & Rating (Blog)', file: 'review-rating/index.html', category: 'content', icon: 'fa-star', count: 5, color: 'from-yellow-500 to-orange-500' },
             { id: 55, name: 'Blog Meta Info Card', file: 'blog-meta-card/index.html', category: 'content', icon: 'fa-info-circle', count: 10, color: 'from-blue-500 to-purple-500' },
-            { id: 56, name: 'Social Share (Blog)', file: 'social-share/index.html', category: 'social', icon: 'fa-share-nodes', count: 10, color: 'from-blue-500 to-cyan-500' }
+            { id: 56, name: 'Social Share (Blog)', file: 'social-share/index.html', category: 'social', icon: 'fa-share-nodes', count: 10, color: 'from-blue-500 to-cyan-500' },
+            { id: 57, name: 'Auth Themes - Login', file: 'auth-themes/login/design-1-minimal.html', category: 'auth', icon: 'fa-right-to-bracket', count: 5, color: 'from-blue-500 to-indigo-500' },
+            { id: 58, name: 'Auth Themes - Register', file: 'auth-themes/register/design-1-minimal.html', category: 'auth', icon: 'fa-user-plus', count: 5, color: 'from-green-500 to-emerald-500' },
+            { id: 59, name: 'Auth Themes - Forgot Password', file: 'auth-themes/forgot-password/design-1-minimal.html', category: 'auth', icon: 'fa-unlock-keyhole', count: 5, color: 'from-amber-500 to-orange-500' },
+            { id: 60, name: 'Auth Themes - Reset Password', file: 'auth-themes/reset-password/design-1-minimal.html', category: 'auth', icon: 'fa-key', count: 5, color: 'from-purple-500 to-pink-500' },
+            { id: 61, name: 'Auth Themes - Email Verification', file: 'auth-themes/email-verification/design-1-minimal.html', category: 'auth', icon: 'fa-envelope-circle-check', count: 5, color: 'from-cyan-500 to-blue-500' },
+            { id: 62, name: 'Auth Themes - 2FA Code', file: 'auth-themes/2fa-code/design-1-minimal.html', category: 'auth', icon: 'fa-shield-halved', count: 5, color: 'from-red-500 to-rose-500' },
+            { id: 63, name: 'Auth Themes - Profile', file: 'auth-themes/profile/design-1-minimal.html', category: 'auth', icon: 'fa-user-gear', count: 5, color: 'from-violet-500 to-purple-500' },
+            { id: 64, name: 'Auth Themes - Devices', file: 'auth-themes/devices/design-1-minimal.html', category: 'auth', icon: 'fa-laptop-mobile', count: 5, color: 'from-teal-500 to-cyan-500' }
         ],
         categories: [
             { id: 'all', name: 'Tümü', icon: 'fa-grid-2', color: 'bg-gradient-to-r from-blue-500 to-purple-500' },
@@ -102,7 +110,8 @@
             { id: 'contact', name: 'İletişim', icon: 'fa-phone', color: 'bg-gradient-to-r from-indigo-500 to-purple-500' },
             { id: 'support', name: 'Destek', icon: 'fa-life-ring', color: 'bg-gradient-to-r from-pink-500 to-rose-500' },
             { id: 'experimental', name: 'Deneysel', icon: 'fa-flask', color: 'bg-gradient-to-r from-fuchsia-500 to-pink-500' },
-            { id: 'compliance', name: 'Uyumluluk', icon: 'fa-shield-check', color: 'bg-gradient-to-r from-amber-500 to-orange-500' }
+            { id: 'compliance', name: 'Uyumluluk', icon: 'fa-shield-check', color: 'bg-gradient-to-r from-amber-500 to-orange-500' },
+            { id: 'auth', name: 'Auth', icon: 'fa-user-lock', color: 'bg-gradient-to-r from-indigo-500 to-purple-500' }
         ],
         get filteredSections() {
             return this.sections.filter(section => {

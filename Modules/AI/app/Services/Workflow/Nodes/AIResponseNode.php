@@ -4,6 +4,7 @@ namespace Modules\AI\App\Services\Workflow\Nodes;
 
 use Modules\AI\App\Services\AI\StreamingAIService;
 use Modules\AI\App\Services\AIService;
+use Modules\AI\App\Services\TenantServiceFactory;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -79,18 +80,19 @@ class AIResponseNode extends BaseNode
             $this->getConfig('system_prompt', '')
         );
 
-        // 🔥 TENANT-SPECIFIC PROMPT EKLEMESİ
-        // Tenant2PromptService'deki kuralları system prompt'a ekle
+        // 🔥 TENANT-SPECIFIC PROMPT EKLEMESİ (Factory Pattern - Dinamik)
+        // Her tenant kendi PromptService'ini kullanır, yoksa DefaultPromptService
         $tenantId = tenant('id') ?? null;
-        if (in_array($tenantId, [2, 3])) {
-            try {
-                $tenant2Service = new \Modules\AI\App\Services\Tenant\Tenant2PromptService();
-                $tenantPrompt = implode("\n", $tenant2Service->buildPrompt());
-                $systemPrompt = $tenantPrompt . "\n\n" . $systemPrompt;
-                \Log::info('✅ Tenant2PromptService loaded', ['tenant_id' => $tenantId]);
-            } catch (\Exception $e) {
-                \Log::warning('⚠️ Tenant2PromptService failed', ['error' => $e->getMessage()]);
-            }
+        try {
+            $tenantService = TenantServiceFactory::getPromptService($tenantId);
+            $tenantPrompt = implode("\n", $tenantService->buildPrompt());
+            $systemPrompt = $tenantPrompt . "\n\n" . $systemPrompt;
+            \Log::info('✅ TenantPromptService loaded', [
+                'tenant_id' => $tenantId,
+                'service' => get_class($tenantService)
+            ]);
+        } catch (\Exception $e) {
+            \Log::warning('⚠️ TenantPromptService failed', ['error' => $e->getMessage()]);
         }
 
         // 🚨🚨🚨 UNIVERSAL KURALLAR (TÜM TENANTLAR İÇİN) 🚨🚨🚨
@@ -122,39 +124,15 @@ UNIVERSAL;
 
         $systemPrompt = $universalRules . "\n\n---\n\n" . $systemPrompt;
 
-        // 🏭 TENANT 2 (İXTİF) ÖZEL KURALLARI
-        if (in_array($tenantId, [2, 3])) {
-            $ixtifRules = <<<'IXTIF'
-
-## İXTİF ÖZEL KURALLARI:
-
-### ÜRÜNLERİ NE ZAMAN GÖSTER
-✅ ÜRÜN GÖSTER:
-- Kategori + detay varsa: "2 ton elektrikli forklift" → ÜRÜN GÖSTER
-- Model adı varsa: "F4", "EPL153", "CPD18" → O ÜRÜNÜ GÖSTER
-- "En ucuz transpalet" → En ucuz transpaleti göster
-
-❌ SORU SOR (sadece bunlar için):
-- "Transpalet istiyorum" (sadece kategori, detay yok)
-- "Forklift bakıyorum" (sadece kategori)
-→ Tek soru sor: "Kaç ton ve elektrikli mi manuel mi?"
-
-### 🔴 ASLA OLUMSUZ YANIT VERME!
-❌ "Yok", "bulunamadı", "elimde yok", "mevcut değil" ASLA DEME!
-❌ Olumsuz hiçbir kelime kullanma!
-
-✅ Listede göremesen bile müşteri temsilcisine yönlendir:
-"Size en uygun seçenekleri sunabilmemiz için müşteri temsilcimiz sizinle iletişime geçsin!
-📞 0216 755 3 555 veya 📱 telefon numaranızı paylaşır mısınız?"
-
-Neden? Veritabanında kayıtlı olmayan ürünler de olabilir!
-
-### İLETİŞİM
-- Telefon: 0216 755 3 555
-- WhatsApp: 0501 005 67 58
-
-IXTIF;
-            $systemPrompt = $ixtifRules . "\n\n" . $systemPrompt;
+        // 🏭 TENANT-SPECIFIC ÖZEL KURALLARI (Factory'den dinamik alınır)
+        try {
+            $tenantService = TenantServiceFactory::getPromptService($tenantId);
+            $specialRules = $tenantService->getSpecialRules();
+            if (!empty($specialRules)) {
+                $systemPrompt = $specialRules . "\n\n" . $systemPrompt;
+            }
+        } catch (\Exception $e) {
+            \Log::warning('⚠️ TenantPromptService getSpecialRules failed', ['error' => $e->getMessage()]);
         }
 
         // Load AI config from directives (panelden düzenlenebilir)
@@ -548,30 +526,28 @@ IXTIF;
                 }
             }
 
-            // Final fallback - ✅ Smile kullan, business ikonları kaldır
+            // Final fallback - Basit ve doğal selamlama
             if (!$welcomeMessage) {
                 $defaults = [
-                    'Merhaba! 👋 Size nasıl yardımcı olabilirim?',
-                    'Hoş geldiniz! 😊 Hangi ürünü arıyorsunuz?',
-                    'Merhaba! Ne arıyordunuz? 👍',
-                    'İyi günler! 😊 Size nasıl yardımcı olabilirim?'
+                    'Merhaba! Size nasıl yardımcı olabilirim? 😊',
+                    'Merhaba! Nasıl yardımcı olabilirim?',
+                    'İyi günler! Size nasıl yardımcı olabilirim?'
                 ];
                 $welcomeMessage = $defaults[array_rand($defaults)];
             }
 
             // Ürün yoksa - 3 ADIMLI İLETİŞİM STRATEJİSİ
-            // ✅ İletişim bilgilerini settings'ten al (cache'li)
-            $contactPhone = setting('contact_phone_1', '');
-            $contactWhatsApp = setting('contact_whatsapp_1', '');
+            // ✅ İletişim bilgilerini tenant service'den al (dinamik)
+            $tenantService = TenantServiceFactory::getPromptService();
+            $contactInfo = $tenantService->getContactInfo();
+            $contactPhone = $contactInfo['phone'] ?? setting('contact_phone_1', '');
+            $contactWhatsApp = $contactInfo['whatsapp'] ?? setting('contact_whatsapp_1', '');
 
-            $noProductMessage = $this->getDirectiveValue('chatbot_no_product_response', 'string',
-                "Aradığınız ürünü bulamadım ama size yardımcı olmak istiyorum. 😊\n\n" .
-                "**📞 Telefon numaranızı paylaşır mısınız?** Müşteri temsilcimiz sizi arayıp detaylı bilgi verebilir.\n\n" .
-                "**Veya siz bizi arayabilirsiniz:**\n" .
-                ($contactPhone ? "📞 **{$contactPhone}**\n" : "") .
-                ($contactWhatsApp ? "💬 **{$contactWhatsApp}** (WhatsApp)\n\n" : "\n") .
-                "İletişim sayfamızdan da bize ulaşabilirsiniz. Nasıl ulaşacağınızı anlatayım mı? 😊"
-            );
+            // No product message - önce directive, yoksa tenant service, yoksa default
+            $noProductMessage = $this->getDirectiveValue('chatbot_no_product_response', 'string', null);
+            if (empty($noProductMessage)) {
+                $noProductMessage = $tenantService->getNoProductMessage();
+            }
 
             $enhancedPrompt .= "\n\n[KRITIK] URUN YOK!";
             $enhancedPrompt .= "\n\n" . $noProductMessage;

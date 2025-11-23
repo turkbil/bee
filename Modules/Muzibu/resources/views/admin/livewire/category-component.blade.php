@@ -103,7 +103,7 @@
                         <!-- Dinamik Başlık - Sol -->
                         <div class="col">
                             <h3 class="card-title mb-0">{{ __('muzibu::admin.categories') }}</h3>
-                            <p class="text-muted small mb-0">{{ __('muzibu::admin.category_management') }}</p>
+                            <p class="small mb-0">{{ __('muzibu::admin.category_management') }}</p>
                         </div>
                         <!-- Ortadaki Loading -->
                         <div class="col position-relative">
@@ -111,7 +111,7 @@
                                 wire:target="toggleCategoryStatus, updateOrder, addCategory, search"
                                 class="position-absolute top-50 start-50 translate-middle text-center"
                                 style="width: 100%; max-width: 250px; z-index: 10;">
-                                <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
+                                <div class="small mb-2">{{ __('admin.updating') }}</div>
                                 <div class="progress mb-1">
                                     <div class="progress-bar progress-bar-indeterminate"></div>
                                 </div>
@@ -154,7 +154,7 @@
 
                                         <!-- Drag Handle - MenuManagement Pattern -->
                                         <div class="category-drag-handle me-2">
-                                            <i class="fas fa-grip-vertical text-muted"></i>
+                                            <i class="fas fa-grip-vertical"></i>
                                         </div>
 
                                         <!-- Icon - MenuManagement Pattern -->
@@ -181,7 +181,7 @@
                                                     <!-- Active/Inactive Toggle -->
                                                     <div>
                                                         <button wire:click="toggleCategoryStatus({{ $item->category_id }})"
-                                                            class="btn btn-icon btn-sm {{ $item->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}"
+                                                            class="btn btn-icon btn-sm {{ $item->is_active ? 'bg-transparent' : 'text-red bg-transparent' }}"
                                                             data-bs-toggle="tooltip" data-bs-placement="top"
                                                             title="{{ $item->is_active ? __('admin.deactivate') : __('admin.activate') }}">
 
@@ -208,7 +208,7 @@
                                                     <!-- Menu Dropdown -->
                                                     <div class="lh-1">
                                                         <div class="dropdown mt-1">
-                                                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                                            <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown"
                                                                 aria-haspopup="true" aria-expanded="false">
                                                                 <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
                                                             </a>
@@ -231,10 +231,10 @@
                                 <div class="list-group-item py-4">
                                     <div class="empty">
                                         <div class="empty-img">
-                                            <i class="fas fa-folder-open fa-4x text-muted"></i>
+                                            <i class="fas fa-folder-open fa-4x"></i>
                                         </div>
                                         <p class="empty-title mt-2">{{ __('muzibu::admin.no_categories_found') }}</p>
-                                        <p class="empty-subtitle text-muted">{{ __('muzibu::admin.no_results') }}</p>
+                                        <p class="empty-subtitle">{{ __('muzibu::admin.no_results') }}</p>
                                     </div>
                                 </div>
                             @endforelse

@@ -59,9 +59,15 @@
                                                     @error('values.' . $setting->id)
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
+                                                    @if(isset($setting->help_text) && !empty($setting->help_text))
+                                                        <div class="form-text text-muted mt-2">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            {{ $setting->help_text }}
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 @break
-                                            
+
                                             @case('select')
                                                 @if(is_array($setting->options))
                                                     @php

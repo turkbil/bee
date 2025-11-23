@@ -17,7 +17,7 @@ class HLSService
     /**
      * HLS chunk süresi (saniye)
      */
-    const CHUNK_DURATION = 10; // 10 saniyelik parçalar
+    const CHUNK_DURATION = 4; // 4 saniyelik parçalar (hızlı başlatma için)
 
     /**
      * HLS playlist tipi
@@ -34,13 +34,15 @@ class HLSService
      *
      * @param string $mp3Path storage/muzibu/songs/song_xxx.mp3
      * @param bool $encrypt AES-128 encryption kullan?
+     * @param int|null $songId Song ID (klasör adı olarak kullanılır)
      * @return array ['hls_path' => 'song_hash/playlist.m3u8', 'encryption_key' => 'hex', 'success' => true/false]
      */
-    public function convertToHLS(string $mp3Path, bool $encrypt = true): array
+    public function convertToHLS(string $mp3Path, bool $encrypt = true, ?int $songId = null): array
     {
         try {
-            // 1. Benzersiz klasör oluştur (her şarkıya özel)
-            $songHash = Str::random(16);
+            // 1. Klasör oluştur - song_id varsa onu kullan (lazy conversion için)
+            // song_id yoksa random hash (eski uyumluluk)
+            $songHash = $songId ? (string) $songId : Str::random(16);
             $hlsFolder = self::HLS_STORAGE_PATH . '/' . $songHash;
             $storagePath = storage_path('app/public/' . $hlsFolder);
 
@@ -275,10 +277,21 @@ class HLSService
         // TODO: Token validation + rate limiting ekle
         // Şimdilik sadece key dosyasını döndür
 
-        $keyPath = storage_path('app/public/' . self::HLS_STORAGE_PATH . '/' . $songHash . '/enc.key');
+        // Tenant-aware storage path kullan
+        $relativePath = self::HLS_STORAGE_PATH . '/' . $songHash . '/enc.key';
 
-        if (file_exists($keyPath)) {
-            return file_get_contents($keyPath);
+        // Önce Storage facade ile dene (tenant-aware)
+        if (Storage::disk('public')->exists($relativePath)) {
+            return Storage::disk('public')->get($relativePath);
+        }
+
+        // Fallback: Manuel tenant path ile dene
+        $tenant = tenant();
+        if ($tenant) {
+            $manualPath = storage_path('tenant' . $tenant->id . '/app/public/' . $relativePath);
+            if (file_exists($manualPath)) {
+                return file_get_contents($manualPath);
+            }
         }
 
         return null;

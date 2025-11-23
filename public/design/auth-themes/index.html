@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Tema Tasarımları - Login/Register</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #818cf8, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; }
+        .intro {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border-left: 4px solid #818cf8;
+        }
+        .intro h3 { color: #818cf8; margin-bottom: 10px; }
+        .intro p { color: #cbd5e1; }
+
+        /* Theme Grid */
+        .theme-grid {
+            display: grid;
+            gap: 30px;
+        }
+        .theme-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+        .theme-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .theme-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        .theme-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-recommended { background: #10b981; color: white; }
+        .badge-popular { background: #f59e0b; color: white; }
+        .badge-premium { background: #8b5cf6; color: white; }
+
+        .theme-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        @media (max-width: 900px) {
+            .theme-body { grid-template-columns: 1fr; }
+        }
+
+        /* Preview Area */
+        .theme-preview {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        /* Theme Info */
+        .theme-info {
+            padding: 25px;
+            background: rgba(15, 23, 42, 0.5);
+            border-left: 1px solid #334155;
+        }
+        .theme-info h4 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        .theme-desc {
+            color: #94a3b8;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .feature-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        .feature-list li {
+            padding: 6px 0;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .feature-list li::before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+        }
+        .sector-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .sector-tag {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+
+        /* ========== THEME PREVIEWS ========== */
+
+        /* 1. MINIMAL THEME */
+        .preview-minimal {
+            background: #ffffff;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .minimal-form {
+            width: 100%;
+            max-width: 320px;
+        }
+        .minimal-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .minimal-logo-circle {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .minimal-title {
+            color: #1e293b;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .minimal-subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .minimal-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: #334155;
+            background: #f8fafc;
+        }
+        .minimal-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+        }
+        .minimal-btn {
+            width: 100%;
+            padding: 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .minimal-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        .minimal-link a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        /* 2. CORPORATE THEME */
+        .preview-corporate {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f2847 100%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .corporate-form {
+            width: 100%;
+            max-width: 340px;
+            background: white;
+            padding: 35px;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .corporate-logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .corporate-logo-text {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            letter-spacing: -1px;
+        }
+        .corporate-title {
+            color: #1e3a5f;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .corporate-label {
+            display: block;
+            color: #475569;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .corporate-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        .corporate-btn {
+            width: 100%;
+            padding: 12px;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+        .corporate-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* 3. CREATIVE THEME */
+        .preview-creative {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .creative-form {
+            width: 100%;
+            max-width: 320px;
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .creative-emoji {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        .creative-title {
+            color: #1e293b;
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .creative-subtitle {
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .creative-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .creative-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        .creative-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .creative-divider {
+            text-align: center;
+            margin: 20px 0;
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        .creative-social {
+            display: flex;
+            gap: 10px;
+        }
+        .creative-social-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            text-align: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* 4. DARK PRO THEME */
+        .preview-dark {
+            background: #0a0a0a;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .preview-dark::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+        }
+        .dark-form {
+            width: 100%;
+            max-width: 340px;
+            background: rgba(30, 30, 30, 0.9);
+            padding: 35px;
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        .dark-logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .dark-logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .dark-title {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .dark-subtitle {
+            color: #6b7280;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .dark-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            background: rgba(17, 24, 39, 0.8);
+            color: #e5e7eb;
+        }
+        .dark-input::placeholder {
+            color: #6b7280;
+        }
+        .dark-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+        .dark-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        .dark-link a {
+            color: #8b5cf6;
+            text-decoration: none;
+        }
+
+        /* 5. CLASSIC THEME */
+        .preview-classic {
+            background: #f3f4f6;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .classic-form {
+            width: 100%;
+            max-width: 360px;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .classic-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .classic-logo-img {
+            width: 120px;
+            height: 40px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 0.8rem;
+        }
+        .classic-title {
+            color: #111827;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .classic-label {
+            display: block;
+            color: #374151;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .classic-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        .classic-remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            color: #4b5563;
+        }
+        .classic-btn {
+            width: 100%;
+            padding: 11px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .classic-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.8rem;
+        }
+        .classic-links a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Auth Tema Tasarımları</h1>
+            <div class="meta">v16 | Login & Register Sayfaları | 5 Tema Seçeneği</div>
+        </header>
+
+        <div class="intro">
+            <h3>Nasıl Çalışacak?</h3>
+            <p>
+                Her tenant admin panelden kendi sektörüne uygun temayı seçer. Header ve footer tenant'ın ana temasından gelir,
+                sadece login/register form alanı seçilen auth temasını kullanır. Bu sayede marka tutarlılığı korunurken,
+                giriş sayfaları profesyonel ve sektöre uygun görünür.
+            </p>
+        </div>
+
+        <div class="theme-grid">
+
+            <!-- 1. MINIMAL -->
+            <div class="theme-card">
+                <div class="theme-header">
+                    <span class="theme-name" style="color: #3b82f6;">1. Minimal</span>
+                    <span class="theme-badge badge-recommended">Önerilen</span>
+                </div>
+                <div class="theme-body">
+                    <div class="theme-preview preview-minimal">
+                        <div class="minimal-form">
+                            <div class="minimal-logo">
+                                <div class="minimal-logo-circle">T</div>
+                            </div>
+                            <div class="minimal-title">Hoş Geldiniz</div>
+                            <div class="minimal-subtitle">Hesabınıza giriş yapın</div>
+                            <input type="text" class="minimal-input" placeholder="E-posta adresi">
+                            <input type="password" class="minimal-input" placeholder="Şifre">
+                            <button class="minimal-btn">Giriş Yap</button>
+                            <div class="minimal-link">
+                                Hesabınız yok mu? <a href="#">Kayıt Ol</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="theme-info">
+                        <h4>Tema Özellikleri</h4>
+                        <p class="theme-desc">
+                            Temiz çizgiler, bol beyaz alan ve odaklanmış kullanıcı deneyimi. Modern SaaS uygulamaları için ideal.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Sade ve anlaşılır arayüz</li>
+                            <li>Hızlı yükleme süresi</li>
+                            <li>Mobilde mükemmel görünüm</li>
+                            <li>Düşük görsel karmaşıklık</li>
+                            <li>Erişilebilirlik odaklı</li>
+                        </ul>
+                        <h4>Uygun Sektörler</h4>
+                        <div class="sector-tags">
+                            <span class="sector-tag">SaaS</span>
+                            <span class="sector-tag">Tech</span>
+                            <span class="sector-tag">Startup</span>
+                            <span class="sector-tag">E-ticaret</span>
+                            <span class="sector-tag">Fintech</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. CORPORATE -->
+            <div class="theme-card">
+                <div class="theme-header">
+                    <span class="theme-name" style="color: #1e3a5f;">2. Kurumsal</span>
+                    <span class="theme-badge badge-popular">Popüler</span>
+                </div>
+                <div class="theme-body">
+                    <div class="theme-preview preview-corporate">
+                        <div class="corporate-form">
+                            <div class="corporate-logo">
+                                <div class="corporate-logo-text">ACME</div>
+                            </div>
+                            <div class="corporate-title">Kullanıcı Girişi</div>
+                            <label class="corporate-label">E-posta</label>
+                            <input type="text" class="corporate-input" placeholder="ornek@sirket.com">
+                            <label class="corporate-label">Şifre</label>
+                            <input type="password" class="corporate-input" placeholder="••••••••">
+                            <button class="corporate-btn">Oturum Aç</button>
+                            <div class="corporate-footer">
+                                © 2025 ACME Ltd. Şti.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="theme-info">
+                        <h4>Tema Özellikleri</h4>
+                        <p class="theme-desc">
+                            Profesyonel ve güven veren tasarım. B2B ve kurumsal müşteriler için optimum.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Ciddi ve profesyonel görünüm</li>
+                            <li>Koyu mavi renk paleti</li>
+                            <li>Label'lı form alanları</li>
+                            <li>Şirket odaklı branding</li>
+                            <li>Kurumsal güven hissi</li>
+                        </ul>
+                        <h4>Uygun Sektörler</h4>
+                        <div class="sector-tags">
+                            <span class="sector-tag">B2B</span>
+                            <span class="sector-tag">Hukuk</span>
+                            <span class="sector-tag">Finans</span>
+                            <span class="sector-tag">Sigorta</span>
+                            <span class="sector-tag">Endüstri</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. CREATIVE -->
+            <div class="theme-card">
+                <div class="theme-header">
+                    <span class="theme-name" style="color: #8b5cf6;">3. Yaratıcı</span>
+                </div>
+                <div class="theme-body">
+                    <div class="theme-preview preview-creative">
+                        <div class="creative-form">
+                            <div class="creative-emoji">👋</div>
+                            <div class="creative-title">Tekrar Hoş Geldin!</div>
+                            <div class="creative-subtitle">Hesabına giriş yap</div>
+                            <input type="text" class="creative-input" placeholder="E-posta">
+                            <input type="password" class="creative-input" placeholder="Şifre">
+                            <button class="creative-btn">Giriş Yap</button>
+                            <div class="creative-divider">veya</div>
+                            <div class="creative-social">
+                                <button class="creative-social-btn">G</button>
+                                <button class="creative-social-btn">f</button>
+                                <button class="creative-social-btn">🍎</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="theme-info">
+                        <h4>Tema Özellikleri</h4>
+                        <p class="theme-desc">
+                            Canlı renkler, gradyan arka planlar ve eğlenceli detaylar. Genç ve dinamik markalar için.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Göz alıcı gradyan arka plan</li>
+                            <li>Emoji ve ikon kullanımı</li>
+                            <li>Yuvarlatılmış köşeler</li>
+                            <li>Sosyal giriş butonları</li>
+                            <li>Enerjik ve samimi ton</li>
+                        </ul>
+                        <h4>Uygun Sektörler</h4>
+                        <div class="sector-tags">
+                            <span class="sector-tag">Ajans</span>
+                            <span class="sector-tag">Medya</span>
+                            <span class="sector-tag">Eğitim</span>
+                            <span class="sector-tag">Sosyal</span>
+                            <span class="sector-tag">Lifestyle</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. DARK PRO -->
+            <div class="theme-card">
+                <div class="theme-header">
+                    <span class="theme-name" style="color: #a78bfa;">4. Dark Pro</span>
+                    <span class="theme-badge badge-premium">Premium</span>
+                </div>
+                <div class="theme-body">
+                    <div class="theme-preview preview-dark">
+                        <div class="dark-form">
+                            <div class="dark-logo">
+                                <div class="dark-logo-icon">🎵</div>
+                            </div>
+                            <div class="dark-title">Welcome Back</div>
+                            <div class="dark-subtitle">Sign in to continue</div>
+                            <input type="text" class="dark-input" placeholder="Email address">
+                            <input type="password" class="dark-input" placeholder="Password">
+                            <button class="dark-btn">Sign In</button>
+                            <div class="dark-link">
+                                New here? <a href="#">Create account</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="theme-info">
+                        <h4>Tema Özellikleri</h4>
+                        <p class="theme-desc">
+                            Koyu tema, neon aksanlar ve modern glassmorphism efektleri. Gece kullanımı için ideal.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Göz yormayan koyu arka plan</li>
+                            <li>Neon renk aksanları</li>
+                            <li>Cam efekti (glassmorphism)</li>
+                            <li>Glow efektli butonlar</li>
+                            <li>Modern ve şık görünüm</li>
+                        </ul>
+                        <h4>Uygun Sektörler</h4>
+                        <div class="sector-tags">
+                            <span class="sector-tag">Müzik</span>
+                            <span class="sector-tag">Gaming</span>
+                            <span class="sector-tag">Kripto</span>
+                            <span class="sector-tag">Tech</span>
+                            <span class="sector-tag">Streaming</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. CLASSIC -->
+            <div class="theme-card">
+                <div class="theme-header">
+                    <span class="theme-name" style="color: #2563eb;">5. Klasik</span>
+                </div>
+                <div class="theme-body">
+                    <div class="theme-preview preview-classic">
+                        <div class="classic-form">
+                            <div class="classic-logo">
+                                <div class="classic-logo-img">LOGO</div>
+                            </div>
+                            <div class="classic-title">Giriş Yap</div>
+                            <label class="classic-label">E-posta Adresi</label>
+                            <input type="text" class="classic-input" placeholder="ornek@email.com">
+                            <label class="classic-label">Şifre</label>
+                            <input type="password" class="classic-input" placeholder="••••••••">
+                            <div class="classic-remember">
+                                <input type="checkbox"> Beni hatırla
+                            </div>
+                            <button class="classic-btn">Giriş Yap</button>
+                            <div class="classic-links">
+                                <a href="#">Şifremi unuttum</a>
+                                <a href="#">Kayıt ol</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="theme-info">
+                        <h4>Tema Özellikleri</h4>
+                        <p class="theme-desc">
+                            Tanıdık ve kullanımı kolay standart tasarım. Her yaş grubuna uygun.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Tanıdık form yapısı</li>
+                            <li>Açık label'lar</li>
+                            <li>Beni hatırla seçeneği</li>
+                            <li>Şifre sıfırlama linki</li>
+                            <li>Evrensel kullanılabilirlik</li>
+                        </ul>
+                        <h4>Uygun Sektörler</h4>
+                        <div class="sector-tags">
+                            <span class="sector-tag">E-ticaret</span>
+                            <span class="sector-tag">Perakende</span>
+                            <span class="sector-tag">Sağlık</span>
+                            <span class="sector-tag">Eğitim</span>
+                            <span class="sector-tag">Genel</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            Auth Tema Tasarımları - Login/Register Sayfaları | v16<br>
+            Onay sonrası kodlamaya geçilecek
+        </footer>
+    </div>
+</body>
+</html>

@@ -7,20 +7,13 @@
 (function() {
     'use strict';
 
-    console.log('🔥 AI-SEO-INTEGRATION.JS YÜKLENDI!');
-    console.log('🚀 AI SEO INTEGRATION SYSTEM LOADING...');
-    console.log('📍 File Path: assets/js/ai-seo-integration.js');
-    console.log('⏰ Load Time:', new Date().toISOString());
-
-    // Global debug check
+    // Global debug check (silent)
     window.aiSeoDebug = function() {
         console.log('🧪 AI SEO Integration System Status');
         console.log('✅ JavaScript file loaded successfully');
         console.log('🔍 Button count:', document.querySelectorAll('.ai-seo-comprehensive-btn, .ai-seo-recommendations-btn').length);
         return 'AI SEO Integration is active';
     };
-
-    console.log('🎯 Global debug function window.aiSeoDebug() ready!');
 
     // Livewire DOM error handling
     window.addEventListener('error', (event) => {
@@ -555,22 +548,12 @@
 
     function attachButtonListeners() {
         if (listenersAttached) {
-            console.log('🔒 attachButtonListeners SKIP - already attached');
             return;
         }
 
-        console.log('🔗 attachButtonListeners ÇAĞRILDI');
         const seoButtons = document.querySelectorAll('.ai-seo-comprehensive-btn, .ai-seo-recommendations-btn, .seo-generator-btn, .seo-suggestions-btn, [data-seo-feature], [data-action]');
-        console.log('🔍 Bulunan buton sayısı:', seoButtons.length);
 
         seoButtons.forEach((button) => {
-            // 🔍 DEBUG: Buton orijinal text'ini logla
-            console.log('🔍 Buton DEBUG:', {
-                classes: button.className,
-                originalHTML: button.innerHTML,
-                originalText: button.textContent.trim()
-            });
-
             // Remove existing listeners
             const newButton = button.cloneNode(true);
             button.parentNode.replaceChild(newButton, button);
@@ -606,7 +589,6 @@
 
         // Mark listeners as attached to prevent infinite loop
         listenersAttached = true;
-        console.log('✅ Button listeners attached successfully');
     }
 
     function attachRecommendationHandlers() {
@@ -3079,9 +3061,6 @@
 
     // Initialize the system
     function init() {
-        console.log('🚀 AI SEO Integration system başlatılıyor...');
-        console.log('🔍 DOM ready state:', document.readyState);
-
         // Immediate attachment
         attachButtonListeners();
 
@@ -3209,49 +3188,22 @@
             });
         });
 
-        console.log('✅ AI SEO Integration system hazır!');
-
-        // 🔥 DEBUG: Overlay sistem test fonksiyonu ekle
+        // Debug functions (silent - call manually when needed)
         window.testAIOverlay = function(type = 'ai-recommendations') {
-            console.log(`🧪 TEST: AI Overlay sistemi test ediliyor - Type: ${type}`);
             showInlineLoadingOverlay(type);
-
-            // 3 saniye sonra overlay'i kapat
             setTimeout(() => {
                 hideInlineLoading('seoUniversalResults');
-                console.log('✅ TEST: Overlay kapatıldı');
             }, 3000);
         };
-        console.log('🧪 DEBUG: window.testAIOverlay() fonksiyonu hazır!');
 
-        // DEBUG: Test Button Click Functionality
         window.testButtonClicks = function() {
-            console.log('🧪 TEST: AI Button Click Functionality');
             const buttons = document.querySelectorAll('.ai-seo-comprehensive-btn, .ai-seo-recommendations-btn');
-            console.log('🔍 Found buttons:', buttons.length);
-
-            buttons.forEach((btn, index) => {
-                console.log(`🔍 Button ${index + 1}:`, {
-                    classes: btn.className,
-                    text: btn.textContent.trim(),
-                    hasClickEvent: btn.onclick !== null,
-                    dataAttributes: {
-                        language: btn.getAttribute('data-language'),
-                        seoFeature: btn.getAttribute('data-seo-feature')
-                    }
-                });
-            });
-
             return { buttonCount: buttons.length, buttons: Array.from(buttons) };
         };
 
-        // DEBUG: Force re-attach button listeners
         window.forceReattachButtons = function() {
-            console.log('🔄 FORCE: Re-attaching button listeners');
             attachButtonListeners();
         };
-
-        console.log('🧪 DEBUG: window.testButtonClicks() ve window.forceReattachButtons() fonksiyonları hazır!');
     }
 
     // AI MODAL-STYLE INLINE OVERLAY SYSTEM

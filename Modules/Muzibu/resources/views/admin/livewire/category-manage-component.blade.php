@@ -55,11 +55,11 @@
                                                 placeholder="kategori-url-slug">
                                             <label>
                                                 {{ __('admin.muzibu_url_slug') }}
-                                                <small class="text-muted ms-2">-
+                                                <small class="ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
                                             </label>
                                             <div class="form-text">
-                                                <small class="text-muted">
+                                                <small class="">
                                                     {{ __('admin.slug_help') }}
                                                 </small>
                                             </div>

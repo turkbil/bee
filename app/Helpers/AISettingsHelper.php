@@ -450,6 +450,10 @@ class AISettingsHelper
         }
         if (!empty($contact['whatsapp'])) {
             $cleanWhatsapp = preg_replace('/[^0-9]/', '', $contact['whatsapp']);
+            // Türkiye için 0 ile başlıyorsa 90 ile değiştir
+            if (substr($cleanWhatsapp, 0, 1) === '0') {
+                $cleanWhatsapp = '90' . substr($cleanWhatsapp, 1);
+            }
             $prompt[] = "WhatsApp: [" . $contact['whatsapp'] . "](https://wa.me/{$cleanWhatsapp})";
         }
         if (!empty($contact['email'])) {

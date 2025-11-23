@@ -746,6 +746,34 @@ php artisan route:cache
 - **Icon**: SADECE FontAwesome (`fas`, `far`, `fab`)
 - **Renkler**: Framework renkleri (custom yok)
 
+### 📐 TASARIMSAL DEĞİŞİKLİKLERDE HTML TASLAK
+
+**🔴 KRİTİK KURAL: Tasarımsal değişikliklerde ÖNCE HTML taslak göster!**
+
+#### Ne Zaman Taslak Zorunlu:
+- Yeni UI component oluşturma
+- Mevcut sayfaya yeni bölüm/panel ekleme
+- Liste görünümü değişikliği
+- Form tasarımı değişikliği
+- Dashboard/widget ekleme
+- Toplu işlem panelleri (bulk upload, bulk edit vb.)
+
+#### Taslak Süreci:
+1. **HTML taslak oluştur** → `public/readme/[tarih]/[konu]/v1/index.html`
+2. **Kullanıcıya link ver** → Onay bekle
+3. **"UYGUNDUR" alınca** → Kodu yaz
+4. **Değişiklik isterse** → v2, v3... oluştur
+
+#### Örnek:
+```
+Kullanıcı: "Albüme toplu şarkı yükleme ekle"
+Claude: Taslağı hazırladım: https://ixtif.com/readme/2025/11/22/album-bulk-upload/
+        Onay verirseniz uygulamaya geçerim.
+Kullanıcı: "UYGUNDUR" veya "şunu değiştir..."
+```
+
+**UNUTMA:** Tasarımsal işlerde önce göster, sonra yap!
+
 ### 🎨 RENK KONTRAST (WCAG AA)
 
 **Minimum kontrast oranı: 4.5:1**

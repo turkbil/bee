@@ -45,6 +45,10 @@ class CartApiController extends Controller
                 ], 400);
             }
 
+            // Session bilgileri
+            $sessionId = session()->getId();
+            $customerId = auth()->check() ? auth()->id() : null;
+
             // Önce cart_id parametresine bak (localStorage'dan geliyorsa)
             $cart = null;
             if ($request->cart_id) {
@@ -53,13 +57,23 @@ class CartApiController extends Controller
                     'cart_id' => $request->cart_id,
                     'found' => $cart ? 'yes' : 'no',
                 ]);
+
+                // Cart bulunduysa, session_id'yi güncelle (CartWidget sync için)
+                if ($cart && $cart->session_id !== $sessionId) {
+                    $cart->session_id = $sessionId;
+                    if ($customerId) {
+                        $cart->customer_id = $customerId;
+                    }
+                    $cart->save();
+                    \Log::info('🛒 CartAPI: Cart session updated', [
+                        'cart_id' => $cart->cart_id,
+                        'new_session_id' => $sessionId,
+                    ]);
+                }
             }
 
             // Cart bulunamadıysa session/customer ile bul
             if (!$cart) {
-                $sessionId = session()->getId();
-                $customerId = auth()->check() ? auth()->id() : null;
-
                 \Log::info('🛒 CartAPI: Session info', [
                     'session_id' => $sessionId,
                     'customer_id' => $customerId,

@@ -178,8 +178,9 @@
     class="sticky top-0 left-0 right-0 z-50 transition-all duration-300"
     :class="{ 'header-scrolled': scrolled }"
     @search-toggle.window="searchOpen = $event.detail; if (!searchOpen) { activeMegaMenu = null; }"
-    @keydown.escape.window="searchOpen = false; activeMegaMenu = null"
-    @close-megamenu.window="activeMegaMenu = null">
+    @keydown.escape.window="searchOpen = false; activeMegaMenu = null; mobileMenuOpen = false"
+    @close-megamenu.window="activeMegaMenu = null"
+    @close-other-menus.window="searchOpen = false; mobileMenuOpen = false; activeMegaMenu = null"
 
         {{-- Top Info Bar - CSS ile yukarı kayacak --}}
         <div id="top-bar"
@@ -624,7 +625,7 @@
 
                         {{-- Search Button with Tooltip --}}
                         <div x-data="{ showTooltip: false }" class="relative">
-                            <button @click="searchOpen = !searchOpen; activeMegaMenu = null; $nextTick(() => { if (searchOpen) { setTimeout(() => { const input = document.getElementById('header-search-input'); if (input) input.focus(); }, 250); } })"
+                            <button @click="searchOpen = !searchOpen; activeMegaMenu = null; mobileMenuOpen = false; $dispatch('close-user-menu'); $nextTick(() => { if (searchOpen) { setTimeout(() => { const input = document.getElementById('header-search-input'); if (input) input.focus(); }, 250); } })"
                                     @mouseenter="showTooltip = true"
                                     @mouseleave="showTooltip = false"
                                     aria-label="Arama menüsünü aç/kapat"
@@ -687,7 +688,7 @@
 
                         {{-- Mobile Menu Button --}}
                         <div x-data="{ showTooltip: false }" class="relative lg:hidden">
-                            <button @click="mobileMenuOpen = !mobileMenuOpen"
+                            <button @click="mobileMenuOpen = !mobileMenuOpen; searchOpen = false; activeMegaMenu = null; $dispatch('close-user-menu')"
                                     @mouseenter="showTooltip = true"
                                     @mouseleave="showTooltip = false"
                                     aria-label="Mobil menüyü aç/kapat"
@@ -1019,32 +1020,32 @@
                 {{-- Mega Menu'ler (Container Seviyesinde, Navbar'a Hizalı) --}}
                 {{-- Ürünler Mega Menu --}}
                 <div x-show="activeMegaMenu === 'products'"
-                     @mouseenter="activeMegaMenu = 'products'"
+                     @mouseleave="activeMegaMenu = null"
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 -translate-y-3"
                      x-transition:enter-end="opacity-100 translate-y-0"
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="absolute left-0 right-0 top-full z-50 -mt-2"
+                     class="absolute left-0 right-0 top-full z-50"
                      x-cloak>
-                    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-2 -mt-4 pt-4">
                         @include('themes.ixtif.partials.mega-menu-products')
                     </div>
                 </div>
 
                 {{-- Hakkımızda Hibrit Mega Menu --}}
                 <div x-show="activeMegaMenu === 'hakkimizda'"
-                     @mouseenter="activeMegaMenu = 'hakkimizda'"
+                     @mouseleave="activeMegaMenu = null"
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 -translate-y-3"
                      x-transition:enter-end="opacity-100 translate-y-0"
                      x-transition:leave="transition ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-3"
-                     class="absolute left-0 right-0 top-full z-50 -mt-2"
+                     class="absolute left-0 right-0 top-full z-50"
                      x-cloak>
-                    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-2 -mt-4 pt-4">
                         @include('themes.ixtif.partials.mega-menu-hakkimizda')
                     </div>
                 </div>
@@ -1055,9 +1056,9 @@
         {{-- Mobile Navigation Menu --}}
         <div x-show="mobileMenuOpen"
              x-transition
-             class="lg:hidden bg-slate-50/95 dark:bg-slate-900 backdrop-blur-lg border-t border-gray-300 dark:border-white/20 mobile-nav-container"
+             class="lg:hidden bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-gray-800"
              x-cloak>
-            <div class="px-4 py-3 max-w-full overflow-x-hidden">
+            <div class="py-2 max-h-[70vh] overflow-y-auto">
                 @php
                     // Sistemden kategorileri çek
                     $allCategories = \Modules\Shop\app\Models\ShopCategory::where('is_active', 1)
@@ -1065,10 +1066,6 @@
                         ->whereNull('parent_id')
                         ->orderBy('sort_order', 'asc')
                         ->get();
-
-                    // 2 kolona böl (sol 4, sağ 3)
-                    $leftCategories = $allCategories->take(4);
-                    $rightCategories = $allCategories->skip(4);
 
                     // İkonlar (fallback)
                     $categoryIcons = [
@@ -1082,257 +1079,148 @@
                     ];
                 @endphp
 
-                {{-- 2 Kolonlu Kategori Grid --}}
-                <div class="grid grid-cols-2 gap-2 mb-3">
-                    {{-- Sol Kolon --}}
-                    <div class="space-y-2">
-                        @foreach($leftCategories as $cat)
-                            @php
-                                $title = is_array($cat->title) ? $cat->title['tr'] : $cat->title;
-                                $slug = is_array($cat->slug) ? $cat->slug['tr'] : $cat->slug;
-                                $icon = $categoryIcons[$slug] ?? 'fa-solid fa-box';
-                            @endphp
-                            <a href="/shop/kategori/{{ $slug }}"
-                               @click="mobileMenuOpen = false"
-                               class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-200 dark:border-gray-700">
-                                <i class="{{ $icon }} text-sm"></i>
-                                <span class="truncate">{{ $title }}</span>
-                            </a>
-                        @endforeach
-                    </div>
+                {{-- Ürünler Accordion --}}
+                <div class="border-b border-gray-100 dark:border-gray-800">
+                    <button @click="expandedCategory = expandedCategory === 'urunler' ? null : 'urunler'"
+                            class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                        <span class="flex items-center gap-3">
+                            <i class="fa-solid fa-box-open text-blue-600 dark:text-blue-400 w-5"></i>
+                            <span>Ürünler</span>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"
+                           :class="{ 'rotate-180': expandedCategory === 'urunler' }"></i>
+                    </button>
 
-                    {{-- Sağ Kolon --}}
-                    <div class="space-y-2">
-                        @foreach($rightCategories as $cat)
-                            @php
-                                $title = is_array($cat->title) ? $cat->title['tr'] : $cat->title;
-                                $slug = is_array($cat->slug) ? $cat->slug['tr'] : $cat->slug;
-                                $icon = $categoryIcons[$slug] ?? 'fa-solid fa-box';
-                            @endphp
-                            <a href="/shop/kategori/{{ $slug }}"
+                    <div x-show="expandedCategory === 'urunler'"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         class="pb-2 px-4">
+                        <div class="space-y-1 pl-8">
+                            @foreach($allCategories as $cat)
+                                @php
+                                    $title = is_array($cat->title) ? $cat->title['tr'] : $cat->title;
+                                    $slug = is_array($cat->slug) ? $cat->slug['tr'] : $cat->slug;
+                                @endphp
+                                <a href="/shop/kategori/{{ $slug }}"
+                                   @click="mobileMenuOpen = false"
+                                   class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                                    {{ $title }}
+                                </a>
+                            @endforeach
+                            <a href="{{ route('shop.index') }}"
                                @click="mobileMenuOpen = false"
-                               class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-200 dark:border-gray-700">
-                                <i class="{{ $icon }} text-sm"></i>
-                                <span class="truncate">{{ $title }}</span>
+                               class="block py-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition">
+                                Tüm Ürünler →
                             </a>
-                        @endforeach
-
-                        {{-- Tüm Ürünler (Sağ Kolonun Son Sırası) --}}
-                        <a href="{{ route('shop.index') }}"
-                           @click="mobileMenuOpen = false"
-                           class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold text-blue-700 dark:text-blue-300 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/30 border border-blue-300 dark:border-blue-600 transition hover:from-blue-100 hover:to-blue-200 dark:hover:from-blue-900/40 dark:hover:to-blue-800/40">
-                            <i class="fa-solid fa-grid-2 text-sm"></i>
-                            <span class="truncate">Tüm Ürünler</span>
-                        </a>
+                        </div>
                     </div>
                 </div>
 
-                {{-- Ayırıcı --}}
-                <div class="border-t-2 border-gray-300 dark:border-gray-700 my-3"></div>
-
                 {{-- Hizmetler Accordion --}}
-                <div class="mb-2">
-                    <div class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition border border-gray-200 dark:border-gray-700">
-                        <a href="/hizmetler"
-                           @click="mobileMenuOpen = false"
-                           class="flex items-center gap-2 flex-1">
-                            <i class="fa-solid fa-screwdriver-wrench text-sm"></i>
+                <div class="border-b border-gray-100 dark:border-gray-800">
+                    <button @click="expandedCategory = expandedCategory === 'hizmetler' ? null : 'hizmetler'"
+                            class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                        <span class="flex items-center gap-3">
+                            <i class="fa-solid fa-screwdriver-wrench text-orange-600 dark:text-orange-400 w-5"></i>
                             <span>Hizmetler</span>
-                        </a>
-                        <button @click.stop="expandedCategory = expandedCategory === 'hizmetler' ? null : 'hizmetler'"
-                                class="p-2 -mr-2">
-                            <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"
-                               :class="{ 'rotate-180': expandedCategory === 'hizmetler' }"></i>
-                        </button>
-                    </div>
+                        </span>
+                        <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"
+                           :class="{ 'rotate-180': expandedCategory === 'hizmetler' }"></i>
+                    </button>
 
-                    {{-- Hizmetler İçerik (2 Kolon) --}}
                     <div x-show="expandedCategory === 'hizmetler'"
                          x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 -translate-y-2"
-                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
                          x-transition:leave="transition ease-in duration-150"
-                         x-transition:leave-start="opacity-100 translate-y-0"
-                         x-transition:leave-end="opacity-0 -translate-y-2"
-                         class="mt-2 bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-
-                        <div class="grid grid-cols-2 gap-2">
-                            {{-- Sol Kolon --}}
-                            <div class="space-y-2">
-                                <a href="/satin-alma"
-                                   @click="mobileMenuOpen = false"
-                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-cart-shopping text-sm"></i>
-                                    <span>Satın Alma</span>
-                                </a>
-                                <a href="/kiralama"
-                                   @click="mobileMenuOpen = false"
-                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-clock text-sm"></i>
-                                    <span>Kiralama</span>
-                                </a>
-                                <a href="/teknik-servis"
-                                   @click="mobileMenuOpen = false"
-                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-wrench text-sm"></i>
-                                    <span>Teknik Servis</span>
-                                </a>
-                            </div>
-
-                            {{-- Sağ Kolon --}}
-                            <div class="space-y-2">
-                                <a href="/yedek-parca"
-                                   @click="mobileMenuOpen = false"
-                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-gears text-sm"></i>
-                                    <span>Yedek Parça</span>
-                                </a>
-                                <a href="/bakim-anlasmalari"
-                                   @click="mobileMenuOpen = false"
-                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-file-contract text-sm"></i>
-                                    <span>Bakım Anlaşmaları</span>
-                                </a>
-                                <a href="/ikinci-el"
-                                   @click="mobileMenuOpen = false"
-                                   class="flex items-center gap-2 px-2 py-2 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                    <i class="fa-solid fa-recycle text-sm"></i>
-                                    <span>İkinci El</span>
-                                </a>
-                            </div>
-                        </div>
-
-                        {{-- Tüm Hizmetler Butonu --}}
-                        <div class="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700">
-                            <a href="/hizmetler"
-                               @click="mobileMenuOpen = false"
-                               class="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold rounded-lg transition text-sm">
-                                <span>Tüm Hizmetler</span>
-                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                         class="pb-2 px-4">
+                        <div class="space-y-1 pl-8">
+                            <a href="/satin-alma" @click="mobileMenuOpen = false"
+                               class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                                Satın Alma
+                            </a>
+                            <a href="/kiralama" @click="mobileMenuOpen = false"
+                               class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                                Kiralama
+                            </a>
+                            <a href="/teknik-servis" @click="mobileMenuOpen = false"
+                               class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                                Teknik Servis
+                            </a>
+                            <a href="/yedek-parca" @click="mobileMenuOpen = false"
+                               class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                                Yedek Parça
+                            </a>
+                            <a href="/bakim-anlasmalari" @click="mobileMenuOpen = false"
+                               class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                                Bakım Anlaşmaları
+                            </a>
+                            <a href="/ikinci-el" @click="mobileMenuOpen = false"
+                               class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition">
+                                İkinci El
                             </a>
                         </div>
                     </div>
                 </div>
 
                 {{-- Kurumsal Accordion --}}
-                <div class="mb-2">
+                <div class="border-b border-gray-100 dark:border-gray-800">
                     <button @click="expandedCategory = expandedCategory === 'kurumsal' ? null : 'kurumsal'"
-                            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition border border-gray-200 dark:border-gray-700">
-                        <span class="flex items-center gap-2">
-                            <i class="fa-solid fa-building text-sm"></i>
+                            class="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
+                        <span class="flex items-center gap-3">
+                            <i class="fa-solid fa-building text-purple-600 dark:text-purple-400 w-5"></i>
                             <span>Kurumsal</span>
                         </span>
-                        <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300"
+                        <i class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"
                            :class="{ 'rotate-180': expandedCategory === 'kurumsal' }"></i>
                     </button>
 
-                    {{-- Kurumsal İçerik (2 Kolon) --}}
                     <div x-show="expandedCategory === 'kurumsal'"
                          x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="opacity-0 -translate-y-2"
-                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
                          x-transition:leave="transition ease-in duration-150"
-                         x-transition:leave-start="opacity-100 translate-y-0"
-                         x-transition:leave-end="opacity-0 -translate-y-2"
-                         class="mt-2 bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-
-                        <div class="grid grid-cols-2 gap-3">
-                            {{-- Sol Kolon: Hakkımızda & Alışveriş --}}
-                            <div class="space-y-2">
-                                {{-- Hakkımızda --}}
-                                <div class="space-y-1">
-                                    <div class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1.5 flex items-center gap-1">
-                                        <i class="fa-solid fa-building text-xs"></i>
-                                        <span>Hakkımızda</span>
-                                    </div>
-                                    <a href="{{ href('Page', 'show', 'hakkimizda') }}"
-                                       @click="mobileMenuOpen = false"
-                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                        Biz Kimiz
-                                    </a>
-                                    <a href="#"
-                                       @click="mobileMenuOpen = false"
-                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition">
-                                        Kariyer
-                                    </a>
-                                </div>
-
-                                {{-- Alışveriş --}}
-                                <div class="space-y-1 pt-2 border-t border-gray-200 dark:border-gray-700">
-                                    <div class="text-xs font-bold text-green-600 dark:text-green-400 mb-1.5 flex items-center gap-1">
-                                        <i class="fa-solid fa-shopping-cart text-xs"></i>
-                                        <span>Alışveriş</span>
-                                    </div>
-                                    <a href="#"
-                                       @click="mobileMenuOpen = false"
-                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition">
-                                        Ödeme
-                                    </a>
-                                    <a href="#"
-                                       @click="mobileMenuOpen = false"
-                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition">
-                                        Kargo
-                                    </a>
-                                    <a href="#"
-                                       @click="mobileMenuOpen = false"
-                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition">
-                                        İade
-                                    </a>
-                                </div>
-                            </div>
-
-                            {{-- Sağ Kolon: Yasal & İletişim --}}
-                            <div class="space-y-2">
-                                {{-- Yasal --}}
-                                <div class="space-y-1">
-                                    <div class="text-xs font-bold text-red-600 dark:text-red-400 mb-1.5 flex items-center gap-1">
-                                        <i class="fa-solid fa-scale-balanced text-xs"></i>
-                                        <span>Yasal</span>
-                                    </div>
-                                    <a href="#"
-                                       @click="mobileMenuOpen = false"
-                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition">
-                                        Gizlilik
-                                    </a>
-                                    <a href="#"
-                                       @click="mobileMenuOpen = false"
-                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition">
-                                        KVKK
-                                    </a>
-                                    <a href="#"
-                                       @click="mobileMenuOpen = false"
-                                       class="block px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition">
-                                        Çerez
-                                    </a>
-                                </div>
-
-                                {{-- İletişim Bilgileri --}}
-                                <div class="space-y-1 pt-2 border-t border-gray-200 dark:border-gray-700">
-                                    <div class="text-xs font-bold text-purple-600 dark:text-purple-400 mb-1.5 flex items-center gap-1">
-                                        <i class="fa-solid fa-headset text-xs"></i>
-                                        <span>Bilgiler</span>
-                                    </div>
-                                    <div class="px-2 py-1 text-xs text-gray-700 dark:text-gray-300">
-                                        <i class="fa-solid fa-phone text-purple-600 dark:text-purple-400 mr-1"></i>
-                                        <span class="text-xs">0216 755 3 555</span>
-                                    </div>
-                                    <div class="px-2 py-1 text-xs text-gray-700 dark:text-gray-300">
-                                        <i class="fa-brands fa-whatsapp text-purple-600 dark:text-purple-400 mr-1"></i>
-                                        <span class="text-xs">0501 005 67 58</span>
-                                    </div>
-                                </div>
-                            </div>
+                         class="pb-2 px-4">
+                        <div class="space-y-1 pl-8">
+                            <a href="{{ href('Page', 'show', 'hakkimizda') }}" @click="mobileMenuOpen = false"
+                               class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition">
+                                Hakkımızda
+                            </a>
+                            <a href="{{ href('Page', 'show', 'kariyer') }}" @click="mobileMenuOpen = false"
+                               class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition">
+                                Kariyer
+                            </a>
+                            <a href="/blog" @click="mobileMenuOpen = false"
+                               class="block py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition">
+                                Blog
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                {{-- İletişim Özel Buton --}}
+                {{-- İletişim (Direkt Link) --}}
                 <a href="{{ href('Page', 'show', 'iletisim') }}"
                    @click="mobileMenuOpen = false"
-                   class="block px-3 py-2.5 rounded-lg text-sm font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center justify-start gap-2 shadow-lg transition">
-                    <i class="fa-solid fa-envelope text-sm"></i>
+                   class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                    <i class="fa-solid fa-envelope text-green-600 dark:text-green-400 w-5"></i>
                     <span>İletişim</span>
                 </a>
+
+                {{-- Alt Bilgi --}}
+                <div class="mt-2 px-4 py-3 border-t border-gray-100 dark:border-gray-800">
+                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                        <a href="tel:{{ str_replace(' ', '', setting('contact_phone_1')) }}" class="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400">
+                            <i class="fa-solid fa-phone"></i>
+                            <span>{{ setting('contact_phone_1') }}</span>
+                        </a>
+                        <a href="{{ whatsapp_link() }}" target="_blank" class="flex items-center gap-2 hover:text-green-600 dark:hover:text-green-400">
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </header>

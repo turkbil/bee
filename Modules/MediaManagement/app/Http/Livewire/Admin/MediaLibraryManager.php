@@ -32,7 +32,7 @@ class MediaLibraryManager extends Component
     public ?string $moduleFilter = null;
     public ?string $diskFilter = null;
     public ?string $dateFilter = 'all';
-    public int $perPage = 24;
+    public int $perPage = 48;
     public string $sortField = 'created_at';
     public string $sortDirection = 'desc';
 
@@ -77,7 +77,7 @@ class MediaLibraryManager extends Component
         'moduleFilter' => ['except' => null],
         'diskFilter' => ['except' => null],
         'dateFilter' => ['except' => 'all'],
-        'perPage' => ['except' => 24],
+        'perPage' => ['except' => 48],
         'sortField' => ['except' => 'created_at'],
         'sortDirection' => ['except' => 'desc'],
     ];
@@ -429,6 +429,9 @@ class MediaLibraryManager extends Component
                 'message' => __('mediamanagement::admin.delete_success'),
                 'type' => 'success',
             ]);
+
+            // Dispatch event for Alpine to sync lightbox state
+            $this->dispatch('media-deleted', ['mediaId' => $mediaId]);
 
             $this->resetPage();
         } catch (Throwable $e) {

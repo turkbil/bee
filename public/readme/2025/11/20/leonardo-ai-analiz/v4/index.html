@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI - Fiyat Analizi ve Örnek Görseller</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #f59e0b;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+
+        /* Price Table */
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        .price-table th,
+        .price-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .price-table th {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .price-table tr:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .price-highlight {
+            background: rgba(16, 185, 129, 0.1) !important;
+        }
+
+        .price-highlight td {
+            color: #34d399;
+            font-weight: 600;
+        }
+
+        /* Cost Box */
+        .cost-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .cost-title {
+            color: #fbbf24;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        /* Stat Grid */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #334155;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f59e0b;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .image-item {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-info {
+            padding: 25px;
+        }
+
+        .image-title {
+            color: #f59e0b;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .image-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .image-meta-item {
+            background: rgba(245, 158, 11, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #fbbf24;
+        }
+
+        .prompt-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .prompt-label {
+            color: #f59e0b;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+        }
+
+        /* Chain Explanation */
+        .chain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .chain-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .chain-item strong {
+            color: #fbbf24;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .chain-item span {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        /* Calculation Box */
+        .calc-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .calc-title {
+            color: #34d399;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .calc-row:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: #34d399;
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-title {
+            color: #f87171;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .chain-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Leonardo AI - Fiyat Analizi ve Örnek Görseller</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-20 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                👤 Konu: Maliyet analizi ve gerçek görsel örnekleri
+            </div>
+        </header>
+
+        <!-- MEVCUT PLAN -->
+        <section>
+            <h2>💵 Mevcut Planınız: API Basic</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$9</div>
+                    <div class="stat-label">Aylık Ücret</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3,500</div>
+                    <div class="stat-label">Kredi/Ay</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$0.0026</div>
+                    <div class="stat-label">Kredi Başına</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">~$0.018</div>
+                    <div class="stat-label">Görsel Başına</div>
+                </div>
+            </div>
+
+            <div class="cost-box">
+                <div class="cost-title">📋 Plan Detayları</div>
+                <ul style="margin-left: 20px; color: #fef3c7;">
+                    <li><strong>Aylık kredi:</strong> 3,500 (~500 görsel)</li>
+                    <li><strong>Görsel başına:</strong> ~7 kredi (1920x1080, Lucid Origin)</li>
+                    <li><strong>Ek kredi fiyatı:</strong> $15 / 5,000 kredi ($0.003/kredi)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- MEVCUT DURUM -->
+        <section>
+            <h2>📊 Mevcut Hesap Durumu</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">3,392</div>
+                    <div class="stat-label">Mevcut Kredi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">~484</div>
+                    <div class="stat-label">Max Görsel</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$9</div>
+                    <div class="stat-label">Aylık Plan</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">20 Aralık</div>
+                    <div class="stat-label">Yenileme</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MALİYET HESABI -->
+        <section>
+            <h2>🧮 60 Blog İçin Maliyet Hesabı</h2>
+
+            <div class="calc-box">
+                <div class="calc-title">Mevcut Kredilerle (Ek Ödeme Yok)</div>
+                <div class="calc-row">
+                    <span>Görselsiz blog sayısı</span>
+                    <span>60 adet</span>
+                </div>
+                <div class="calc-row">
+                    <span>Görsel başına kredi</span>
+                    <span>~7 kredi</span>
+                </div>
+                <div class="calc-row">
+                    <span>Toplam kredi ihtiyacı</span>
+                    <span>420 kredi</span>
+                </div>
+                <div class="calc-row">
+                    <span>Mevcut kredi</span>
+                    <span>3,392 kredi</span>
+                </div>
+                <div class="calc-row">
+                    <span>Kalan kredi (sonra)</span>
+                    <span>2,972 kredi</span>
+                </div>
+                <div class="calc-row">
+                    <span><strong>Ek maliyet</strong></span>
+                    <span><strong>$0 (Yeterli)</strong></span>
+                </div>
+            </div>
+
+            <div class="cost-box">
+                <div class="cost-title">📈 Aylık Kullanım Projeksiyonu</div>
+                <ul style="margin-left: 20px; color: #fef3c7;">
+                    <li><strong>İlk ay (60 eski blog):</strong> 420 kredi → Mevcut kredilerle karşılanır</li>
+                    <li><strong>Sonraki aylar (günlük 3-5 blog):</strong> 90-150 görsel × 7 = 630-1050 kredi/ay</li>
+                    <li><strong>Aylık kredi:</strong> 3,500 → Rahat yeterli</li>
+                    <li><strong>Aylık maliyet:</strong> $9 (plan ücreti)</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <div class="warning-title">⚠️ Dikkat Edilmesi Gerekenler</div>
+                <ul style="margin-left: 20px; color: #fca5a5;">
+                    <li>Alchemy ve Ultra özellikleri açılırsa kredi tüketimi 2-3 kat artar</li>
+                    <li>4K çözünürlük (3840x2160) daha fazla kredi harcar</li>
+                    <li>Başarısız üretimler de kredi harcar</li>
+                    <li>API rate limiting: Saniyede max 5 istek</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- PROMPT ZİNCİRİ AÇIKLAMASI -->
+        <section>
+            <h2>🔗 Prompt Zinciri Nasıl Çalışıyor?</h2>
+
+            <p style="color: #cbd5e1; margin-bottom: 20px;">
+                Her görsel için 9 kategoriden rastgele seçimler yapılarak benzersiz bir prompt oluşturuluyor.
+                Aşağıdaki örneklerde her kategori farklı renkte gösterilmiştir:
+            </p>
+
+            <div class="chain-grid">
+                <div class="chain-item">
+                    <strong>1. Subject</strong>
+                    <span>Ekipmanın durumu: operatör kullanırken, bakımda, şarjda, eğitimde...</span>
+                </div>
+                <div class="chain-item">
+                    <strong>2. Context</strong>
+                    <span>Zaman/durum: sabah vardiyası, sevkiyat, güvenlik kontrolü...</span>
+                </div>
+                <div class="chain-item">
+                    <strong>3. Texture</strong>
+                    <span>Doku detayları: yağ lekeleri, toz, çizikler, solmuş işaretler...</span>
+                </div>
+                <div class="chain-item">
+                    <strong>4. Angle</strong>
+                    <span>Kamera açısı: alçak açı, yukarıdan, rafların arasından...</span>
+                </div>
+                <div class="chain-item">
+                    <strong>5. Background</strong>
+                    <span>Arka plan: raf sıraları, yükleme rampası, ofis pencereleri...</span>
+                </div>
+                <div class="chain-item">
+                    <strong>6. Lighting</strong>
+                    <span>Aydınlatma: doğal gün ışığı, golden hour, LED, floresan...</span>
+                </div>
+                <div class="chain-item">
+                    <strong>7. Camera</strong>
+                    <span>Kamera: Canon R5, Sony A7R, Hasselblad, RED, ARRI...</span>
+                </div>
+                <div class="chain-item">
+                    <strong>8. Lens</strong>
+                    <span>Lens: 24mm geniş açı, 50mm standart, 85mm portre...</span>
+                </div>
+                <div class="chain-item">
+                    <strong>9. Atmosphere</strong>
+                    <span>Mood: verimlilik, güvenlik, takım çalışması, enerji...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- GERÇEK ÖRNEK GÖRSELLER -->
+        <section>
+            <h2>🖼️ Gerçek Örnek Görseller</h2>
+
+            <p style="color: #cbd5e1; margin-bottom: 30px;">
+                Aşağıdaki görseller az önce Leonardo AI API ile üretildi. Her biri için kullanılan prompt ve meta bilgiler gösterilmektedir.
+            </p>
+
+            <div class="image-gallery">
+                <!-- Görsel 1 -->
+                <div class="image-item">
+                    <img src="sample-1.jpg" alt="Forklift Bakım Rehberi">
+                    <div class="image-info">
+                        <div class="image-title">Blog: "Forklift Bakım Rehberi"</div>
+                        <div class="image-meta">
+                            <span class="image-meta-item">Style: neutral</span>
+                            <span class="image-meta-item">Contrast: 3.5</span>
+                            <span class="image-meta-item">1920x1080</span>
+                            <span class="image-meta-item">~1.1 MB</span>
+                        </div>
+                        <div class="prompt-label">Kullanılan Prompt:</div>
+                        <div class="prompt-box">
+                            Photograph of a turret truck being operated by a worker, during routine safety inspection. Details include condensation on cold metal surfaces. captured looking down an aisle. Background shows safety equipment storage lockers. warm evening light through high windows. taken with Sony FX6 with 28mm street photography lens. The image highlighting the complexity of logistics.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görsel 2 -->
+                <div class="image-item">
+                    <img src="sample-2.jpg" alt="En İyi Transpalet Modelleri">
+                    <div class="image-info">
+                        <div class="image-title">Blog: "En İyi Transpalet Modelleri"</div>
+                        <div class="image-meta">
+                            <span class="image-meta-item">Style: film</span>
+                            <span class="image-meta-item">Contrast: 3</span>
+                            <span class="image-meta-item">1920x1080</span>
+                            <span class="image-meta-item">~1.3 MB</span>
+                        </div>
+                        <div class="prompt-label">Kullanılan Prompt:</div>
+                        <div class="prompt-box">
+                            Photograph of a powered pallet jack parked in the corner of a facility, while inventory is being reorganized. Details include oil stains on concrete floor. photographed from behind the operator. Background shows cold storage doors with frost. backlit scene with equipment silhouettes. photographed using Canon 5D Mark IV using 35mm prime for natural view. The image conveying industrial efficiency and precision.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görsel 3 -->
+                <div class="image-item">
+                    <img src="sample-3.jpg" alt="İstif Makinesi Seçim Kriterleri">
+                    <div class="image-info">
+                        <div class="image-title">Blog: "İstif Makinesi Seçim Kriterleri"</div>
+                        <div class="image-meta">
+                            <span class="image-meta-item">Style: stock_photo</span>
+                            <span class="image-meta-item">Contrast: 3.5</span>
+                            <span class="image-meta-item">1920x1080</span>
+                            <span class="image-meta-item">~973 KB</span>
+                        </div>
+                        <div class="prompt-label">Kullanılan Prompt:</div>
+                        <div class="prompt-box">
+                            Photograph of a material handling equipment with safety lights flashing, during routine safety inspection. Details include fingerprints on control panels. captured looking down an aisle. Background shows shipping labels and scanners on tables. golden hour light streaming through windows. shot on Fujifilm GFX 100S using 24-70mm versatile zoom. The image showing the passage of time through wear.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖZET -->
+        <section>
+            <h2>📋 Özet ve Sonuç</h2>
+
+            <div class="calc-box">
+                <div class="calc-title">✅ Sonuç</div>
+                <ul style="margin-left: 20px; color: #a7f3d0;">
+                    <li><strong>Mevcut plan yeterli:</strong> $9/ay ile 60 blog + aylık üretim karşılanır</li>
+                    <li><strong>Ek maliyet yok:</strong> 3,392 kredi mevcut, 420 kredi gerekli</li>
+                    <li><strong>Görsel başına:</strong> ~$0.018 (7 kredi × $0.0026)</li>
+                    <li><strong>60 blog toplam:</strong> ~$1.08 değerinde kredi (zaten mevcut)</li>
+                    <li><strong>Kalite:</strong> 1920x1080 Full HD, Lucid Origin modeli</li>
+                    <li><strong>Çeşitlilik:</strong> Her görsel benzersiz prompt ile üretilir</li>
+                </ul>
+            </div>
+
+            <div class="cost-box">
+                <div class="cost-title">🚀 Sonraki Adım</div>
+                <div style="background: #0f172a; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin-top: 10px;">
+                    php artisan blog:generate-images --tenant-id=2 --limit=60
+                </div>
+                <p style="margin-top: 15px; color: #fef3c7;">
+                    Bu komut ~35 dakikada 60 blog için görsel üretecek. Rate limiting otomatik uygulanır.
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | Leonardo AI Fiyat Analizi ve Örnek Görseller - v4
+        </footer>
+    </div>
+</body>
+</html>

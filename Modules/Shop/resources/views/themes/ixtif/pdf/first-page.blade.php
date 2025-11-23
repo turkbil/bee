@@ -21,7 +21,7 @@
 
             <div class="space-y-6">
                 <h2 class="text-3xl font-bold">
-                    {{ get_setting('site_tagline') ?? $siteTitle }}
+                    {{ setting('site_tagline') ?? $siteTitle }}
                 </h2>
                 <div class="h-1 w-20 bg-white/50"></div>
                 <p class="text-xl font-mono text-orange-100">

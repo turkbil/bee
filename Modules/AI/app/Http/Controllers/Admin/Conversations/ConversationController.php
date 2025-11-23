@@ -23,11 +23,18 @@ class ConversationController extends Controller
 
     public function index(Request $request)
     {
-        // Root admin ise tüm konuşmaları görebilir
-        $query = Conversation::with(['user', 'tenant']);
-        
+        // Root admin ise tüm konuşmaları görebilir, tenant'lar sadece kendi verilerini
+        $query = Conversation::with(['user', 'tenant'])->withCount('messages');
+
         if (!auth()->user()->hasRole('root')) {
-            $query->where('user_id', Auth::id());
+            // Tenant kullanıcıları sadece kendi tenant'larının verilerini görebilir
+            $currentTenantId = tenant('id');
+            if ($currentTenantId) {
+                $query->where('tenant_id', $currentTenantId);
+            } else {
+                // Central'da ama root değilse sadece kendi konuşmalarını görsün
+                $query->where('user_id', Auth::id());
+            }
         }
 
         // Filtreler
@@ -56,6 +63,16 @@ class ConversationController extends Controller
         }
         // 'all' seçilirse hiç filtre uygulanmaz
 
+        // Test konuşmalarını gizle (varsayılan: gizli)
+        if (!$request->boolean('show_tests')) {
+            $query->where('type', '!=', 'feature_test');
+        }
+
+        // Kısa konuşmaları gizle (<=2 mesaj, varsayılan: gizli)
+        if (!$request->boolean('show_short')) {
+            $query->has('messages', '>', 2);
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -66,8 +83,9 @@ class ConversationController extends Controller
             });
         }
 
+        $perPage = $request->get('per_page', 15);
         $conversations = $query->orderBy('created_at', 'desc')
-            ->paginate(30);
+            ->paginate($perPage);
 
         // Filtre seçenekleri
         $filterOptions = [
@@ -78,25 +96,36 @@ class ConversationController extends Controller
                 collect()
         ];
 
-        // İstatistikler
+        // İstatistikler - tenant'a göre filtrelenmiş
+        $statsQuery = Conversation::active();
+        if (!auth()->user()->hasRole('root')) {
+            $currentTenantId = tenant('id');
+            if ($currentTenantId) {
+                $statsQuery->where('tenant_id', $currentTenantId);
+            } else {
+                $statsQuery->where('user_id', Auth::id());
+            }
+        }
+
+        // Base query'yi klonla
         $stats = [
-            'total' => Conversation::active()->count(),
-            'feature_tests' => Conversation::active()->featureTests()->count(),
-            'demo_tests' => Conversation::active()->demoTests()->count(),
-            'real_tests' => Conversation::active()->realTests()->count(),
-            'chat_conversations' => Conversation::active()->byType('chat')->count(),
+            'total' => (clone $statsQuery)->count(),
+            'feature_tests' => (clone $statsQuery)->featureTests()->count(),
+            'demo_tests' => (clone $statsQuery)->demoTests()->count(),
+            'real_tests' => (clone $statsQuery)->realTests()->count(),
+            'chat_conversations' => (clone $statsQuery)->byType('chat')->count(),
         ];
 
-        // Credit istatistikleri - sadece aktif konuşmaları
-        $activeConversationIds = Conversation::active()->pluck('id');
+        // Credit istatistikleri - sadece aktif konuşmaları (tenant filtrelenmiş)
+        $activeConversationIds = (clone $statsQuery)->pluck('id');
         $creditStats = [
             'total_credits_used' => AICreditUsage::whereIn('conversation_id', $activeConversationIds)->sum('credits_used') ?? 0,
-            'avg_credits_per_conversation' => $activeConversationIds->count() > 0 ? 
+            'avg_credits_per_conversation' => $activeConversationIds->count() > 0 ?
                 (AICreditUsage::whereIn('conversation_id', $activeConversationIds)->sum('credits_used') / $activeConversationIds->count()) : 0,
-            'demo_credits_used' => AICreditUsage::whereIn('conversation_id', 
-                Conversation::active()->demoTests()->pluck('id'))->sum('credits_used') ?? 0,
-            'real_credits_used' => AICreditUsage::whereIn('conversation_id', 
-                Conversation::active()->realTests()->pluck('id'))->sum('credits_used') ?? 0,
+            'demo_credits_used' => AICreditUsage::whereIn('conversation_id',
+                (clone $statsQuery)->demoTests()->pluck('id'))->sum('credits_used') ?? 0,
+            'real_credits_used' => AICreditUsage::whereIn('conversation_id',
+                (clone $statsQuery)->realTests()->pluck('id'))->sum('credits_used') ?? 0,
         ];
             
         return view('ai::admin.conversations.index', compact('conversations', 'filterOptions', 'stats', 'creditStats'));
@@ -104,11 +133,16 @@ class ConversationController extends Controller
 
     public function archived(Request $request)
     {
-        // Root admin ise tüm arşivlenmiş konuşmaları görebilir
+        // Root admin ise tüm arşivlenmiş konuşmaları görebilir, tenant'lar sadece kendi verilerini
         $query = Conversation::with(['user', 'tenant'])->where('status', 'archived');
-        
+
         if (!auth()->user()->hasRole('root')) {
-            $query->where('user_id', Auth::id());
+            $currentTenantId = tenant('id');
+            if ($currentTenantId) {
+                $query->where('tenant_id', $currentTenantId);
+            } else {
+                $query->where('user_id', Auth::id());
+            }
         }
 
         // Filtreler (durum hariç)
@@ -165,12 +199,17 @@ class ConversationController extends Controller
     public function show($id)
     {
         $query = Conversation::with(['user', 'tenant', 'messages']);
-        
-        // Root admin değilse sadece kendi konuşmalarını görebilir
+
+        // Root admin değilse sadece kendi tenant'ının konuşmalarını görebilir
         if (!auth()->user()->hasRole('root')) {
-            $query->where('user_id', Auth::id());
+            $currentTenantId = tenant('id');
+            if ($currentTenantId) {
+                $query->where('tenant_id', $currentTenantId);
+            } else {
+                $query->where('user_id', Auth::id());
+            }
         }
-        
+
         $conversation = $query->findOrFail($id);
             
         $messages = $conversation->messages()
@@ -245,12 +284,17 @@ class ConversationController extends Controller
     public function delete($id)
     {
         $query = Conversation::query();
-        
-        // Root admin değilse sadece kendi konuşmalarını silebilir
+
+        // Root admin değilse sadece kendi tenant'ının konuşmalarını silebilir
         if (!auth()->user()->hasRole('root')) {
-            $query->where('user_id', Auth::id());
+            $currentTenantId = tenant('id');
+            if ($currentTenantId) {
+                $query->where('tenant_id', $currentTenantId);
+            } else {
+                $query->where('user_id', Auth::id());
+            }
         }
-        
+
         $conversation = $query->findOrFail($id);
             
         // İlişkili mesajları sil
@@ -269,11 +313,16 @@ class ConversationController extends Controller
     public function archive($id)
     {
         $query = Conversation::query();
-        
+
         if (!auth()->user()->hasRole('root')) {
-            $query->where('user_id', Auth::id());
+            $currentTenantId = tenant('id');
+            if ($currentTenantId) {
+                $query->where('tenant_id', $currentTenantId);
+            } else {
+                $query->where('user_id', Auth::id());
+            }
         }
-        
+
         $conversation = $query->findOrFail($id);
         $conversation->update(['status' => 'archived']);
         
@@ -287,11 +336,16 @@ class ConversationController extends Controller
     public function unarchive($id)
     {
         $query = Conversation::query();
-        
+
         if (!auth()->user()->hasRole('root')) {
-            $query->where('user_id', Auth::id());
+            $currentTenantId = tenant('id');
+            if ($currentTenantId) {
+                $query->where('tenant_id', $currentTenantId);
+            } else {
+                $query->where('user_id', Auth::id());
+            }
         }
-        
+
         $conversation = $query->findOrFail($id);
         $conversation->update(['status' => 'active']);
         
@@ -308,9 +362,14 @@ class ConversationController extends Controller
             $q->orderBy('created_at', 'asc');
         }]);
 
-        // Root admin değilse sadece kendi konuşmalarını görebilir
+        // Root admin değilse sadece kendi tenant'ının konuşmalarını görebilir
         if (!auth()->user()->hasRole('root')) {
-            $query->where('user_id', Auth::id());
+            $currentTenantId = tenant('id');
+            if ($currentTenantId) {
+                $query->where('tenant_id', $currentTenantId);
+            } else {
+                $query->where('user_id', Auth::id());
+            }
         }
 
         $conversation = $query->findOrFail($id);
@@ -349,9 +408,14 @@ class ConversationController extends Controller
         ]);
 
         $query = Conversation::whereIn('id', $request->conversations);
-        
+
         if (!auth()->user()->hasRole('root')) {
-            $query->where('user_id', Auth::id());
+            $currentTenantId = tenant('id');
+            if ($currentTenantId) {
+                $query->where('tenant_id', $currentTenantId);
+            } else {
+                $query->where('user_id', Auth::id());
+            }
         }
 
         $conversations = $query->get();

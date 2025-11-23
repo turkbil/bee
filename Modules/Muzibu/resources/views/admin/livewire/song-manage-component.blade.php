@@ -58,11 +58,11 @@
                                                 placeholder="sayfa-url-slug">
                                             <label for="slug_{{ $lang }}">
                                                 {{ __('admin.song_url_slug') }}
-                                                <small class="text-muted ms-2">-
+                                                <small class="ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
                                             </label>
                                             <div class="form-text">
-                                                <small class="text-muted">
+                                                <small class="">
                                                     {{ __('admin.slug_help') }}
                                                 </small>
                                             </div>
@@ -175,7 +175,7 @@
                                                     style="cursor: pointer; transition: all 0.2s; min-height: 200px;">
 
                                                     <div class="mb-3">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted mx-auto">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto">
                                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                                             <polyline points="17 8 12 3 7 8"></polyline>
                                                             <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -183,9 +183,9 @@
                                                     </div>
 
                                                     <h4 class="mb-1">{{ __('muzibu::admin.song.drag_drop_audio') }}</h4>
-                                                    <p class="text-muted mb-2">{{ __('muzibu::admin.song.or_click_browse') }}</p>
+                                                    <p class="mb-2">{{ __('muzibu::admin.song.or_click_browse') }}</p>
 
-                                                    <small class="text-muted d-block">
+                                                    <small class="d-block">
                                                         {{ __('muzibu::admin.song.supported_formats') }}: MP3, WAV, FLAC, M4A, OGG
                                                         <span class="mx-1">•</span>
                                                         {{ __('muzibu::admin.song.max_size') }}: 100MB
@@ -215,7 +215,7 @@
                                                                     <div class="fw-bold text-truncate" style="max-width: 180px;">
                                                                         {{ $inputs['file_path'] }}
                                                                     </div>
-                                                                    <small class="text-muted">
+                                                                    <small class="">
                                                                         {{ isset($inputs['duration']) && $inputs['duration'] > 0 ? gmdate('i:s', $inputs['duration']) : '00:00' }}
                                                                     </small>
                                                                 </div>
@@ -228,31 +228,16 @@
                                                                 </audio>
                                                             </div>
 
-                                                            {{-- HLS Conversion Status + Preview Player --}}
+                                                            {{-- HLS Status Badge --}}
                                                             @if(isset($inputs['hls_path']) && $inputs['hls_path'])
-                                                                <div class="mt-3">
-                                                                    <div class="alert alert-success mb-2 py-2 px-3">
-                                                                        <div class="d-flex align-items-center justify-content-between">
-                                                                            <div>
-                                                                                <i class="fa fa-shield-alt me-1"></i>
-                                                                                <strong>HLS Streaming Hazır</strong>
-                                                                                @if(isset($inputs['is_encrypted']) && $inputs['is_encrypted'])
-                                                                                    <span class="ms-2 badge bg-green">🔐 Şifreli</span>
-                                                                                @endif
-                                                                            </div>
-                                                                            <small class="text-muted">Cache'li, hızlı yükleme</small>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    {{-- HLS Preview Player (CDN'den HLS.js yükle) --}}
-                                                                    <div class="card bg-light">
-                                                                        <div class="card-body p-2">
-                                                                            <small class="text-muted d-block mb-1">
-                                                                                <i class="fa fa-headphones"></i> Güvenli Streaming Önizleme:
-                                                                            </small>
-                                                                            <audio id="hlsPreview" controls class="w-100" style="height: 35px;"></audio>
-                                                                        </div>
-                                                                    </div>
+                                                                <div class="mt-2">
+                                                                    <span class="badge bg-green-lt">
+                                                                        <i class="fa fa-shield-alt me-1"></i>
+                                                                        HLS Hazır
+                                                                        @if(isset($inputs['is_encrypted']) && $inputs['is_encrypted'])
+                                                                            - Şifreli
+                                                                        @endif
+                                                                    </span>
                                                                 </div>
                                                             @endif
                                                         </div>

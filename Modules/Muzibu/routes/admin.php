@@ -10,8 +10,8 @@ Route::middleware(['admin', 'tenant'])
         Route::prefix('muzibu')
             ->name('muzibu.')
             ->group(function () {
-                // Muzibu Dashboard - Songs Index (direkt)
-                Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\SongController::class, 'index'])
+                // Muzibu Dashboard
+                Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\DashboardController::class, 'index'])
                     ->middleware('module.permission:muzibu,view')
                     ->name('index');
 
@@ -65,6 +65,11 @@ Route::middleware(['admin', 'tenant'])
                         Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\AlbumController::class, 'manage'])
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
+
+                        // Bulk Upload
+                        Route::get('/bulk-upload/{id}', \Modules\Muzibu\App\Http\Livewire\Admin\AlbumBulkUploadComponent::class)
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('bulk-upload');
                     });
 
                 // Playlists - Livewire
@@ -135,5 +140,12 @@ Route::middleware(['admin', 'tenant'])
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
                     });
+
+                // HLS Streaming Dokümantasyonu
+                Route::get('/docs/hls-streaming', function () {
+                    return view('muzibu::admin.docs.hls-streaming');
+                })
+                    ->middleware('module.permission:muzibu,view')
+                    ->name('docs.hls-streaming');
             });
     });

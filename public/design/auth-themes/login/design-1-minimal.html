@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth" x-data="{ darkMode: false }" :class="{ 'dark': darkMode }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Minimal Tema - Auth Tasarim Kutuphanesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Katalog</span>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        1 / 5
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Minimal Tema</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="px-4 py-2 bg-white/10 rounded-lg opacity-50 cursor-not-allowed flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Onceki</span>
+                    </span>
+                    <a href="design-2-corporate.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20 min-h-screen">
+
+        <!-- Design Preview Section -->
+        <section class="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 py-20 transition-colors duration-300">
+            <div class="w-full max-w-md mx-auto px-6">
+
+                <!-- Dark Mode Toggle -->
+                <div class="flex justify-end mb-6">
+                    <button @click="darkMode = !darkMode"
+                            class="p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all">
+                        <i class="fa-solid" :class="darkMode ? 'fa-sun' : 'fa-moon'"></i>
+                    </button>
+                </div>
+
+                <!-- Logo -->
+                <div class="text-center mb-10">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl shadow-lg shadow-primary-500/30 mb-6">
+                        <i class="fa-solid fa-cube text-white text-2xl"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Hos Geldiniz</h1>
+                    <p class="text-gray-500 dark:text-gray-400">Hesabiniza giris yapin</p>
+                </div>
+
+                <!-- Login Form -->
+                <form class="space-y-5">
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            E-posta Adresi
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-envelope text-gray-400"></i>
+                            </div>
+                            <input type="email"
+                                   class="w-full pl-11 pr-4 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                   placeholder="ornek@email.com">
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Sifre
+                            </label>
+                            <a href="#" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
+                                Sifremi Unuttum
+                            </a>
+                        </div>
+                        <div class="relative" x-data="{ show: false }">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-lock text-gray-400"></i>
+                            </div>
+                            <input :type="show ? 'text' : 'password'"
+                                   class="w-full pl-11 pr-12 py-3.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                   placeholder="********">
+                            <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                                <i class="fa-solid text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember" class="w-4 h-4 text-primary-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500">
+                        <label for="remember" class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                            Beni hatirla
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                            class="w-full py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/30 transition-all duration-200 flex items-center justify-center gap-2">
+                        <span>Giris Yap</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <!-- Register Link -->
+                <p class="text-center text-gray-600 dark:text-gray-400 mt-8">
+                    Hesabiniz yok mu?
+                    <a href="#" class="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold">
+                        Kayit Olun
+                    </a>
+                </p>
+
+                <!-- Design Badge -->
+                <div class="mt-12 text-center">
+                    <span class="inline-block bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-4 py-2 rounded-full text-xs font-medium">
+                        <i class="fa-solid fa-hashtag mr-1"></i>LOGIN-MINIMAL-001
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Info -->
+        <section class="py-16 bg-slate-900">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold text-white mb-8 text-center">Minimal Tema Ozellikleri</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-moon text-blue-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Dark/Light Mode</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Kullanici tercihine gore karanlik veya aydinlik tema secenegi. Goz yormayan deneyim.</p>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-mobile-screen text-green-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Mobil Uyumlu</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Tum ekran boyutlarinda mukemmel gorunum. Touch-friendly butonlar ve inputlar.</p>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-code text-purple-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Bagimsiz Calisma</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Sistem temasina bagli olmadan kendi basina calisabilir. Self-contained CSS/JS.</p>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-bolt text-orange-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Hizli Yukleme</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Minimum gorsel oge, maksimum performans. Optimize edilmis yapida.</p>
+                        </div>
+                    </div>
+
+                    <!-- Uygun Sektorler -->
+                    <div class="mt-8 text-center">
+                        <h3 class="text-sm font-medium text-gray-400 mb-4">Uygun Sektorler</h3>
+                        <div class="flex flex-wrap justify-center gap-2">
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">SaaS</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">Tech Startup</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">E-ticaret</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">Fintech</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">Dashboard</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

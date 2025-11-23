@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel TODO</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: system-ui, sans-serif;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 1.8rem; margin-bottom: 30px; color: #60a5fa; }
+        h2 { font-size: 1.2rem; margin: 25px 0 15px; color: #fbbf24; }
+        .box {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .green { border-left: 4px solid #22c55e; }
+        .blue { border-left: 4px solid #3b82f6; }
+        .purple { border-left: 4px solid #a855f7; }
+        .orange { border-left: 4px solid #f97316; }
+        .title { font-weight: bold; color: #fff; margin-bottom: 10px; }
+        ul { margin-left: 20px; }
+        li { margin: 5px 0; color: #94a3b8; font-size: 0.9rem; }
+        .file { font-family: monospace; font-size: 0.8rem; }
+        .onay {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .onay p { color: #fbbf24; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel TODO</h1>
+
+        <h2>1. SUBSCRIPTION MODULU</h2>
+        <div class="box green">
+            <div class="title">Modules/Subscription</div>
+            <ul>
+                <li>Modul olustur: <span class="file">php artisan module:make Subscription</span></li>
+                <li>Models: SubscriptionPlan, Subscription</li>
+                <li>Services: SubscriptionService</li>
+                <li>Livewire: PlanComponent, PlanManageComponent, SubscriptionComponent</li>
+                <li>Views + Routes + Lang</li>
+            </ul>
+        </div>
+
+        <h2>2. COUPON MODULU</h2>
+        <div class="box green">
+            <div class="title">Modules/Coupon</div>
+            <ul>
+                <li>Modul olustur: <span class="file">php artisan module:make Coupon</span></li>
+                <li>Models: Coupon, CouponUsage</li>
+                <li>Services: CouponService</li>
+                <li>Livewire: CouponComponent, CouponManageComponent</li>
+                <li>Views + Routes + Lang</li>
+            </ul>
+        </div>
+
+        <h2>3. USERMANAGEMENT GUNCELLEME</h2>
+        <div class="box blue">
+            <div class="title">Mevcut modulu guncelle</div>
+            <ul>
+                <li>UserComponent: Yeni kolonlar (abonelik, cihaz)</li>
+                <li>UserManageComponent: Yeni sekmeler (Cihazlar, Abonelik, Loglar)</li>
+                <li>Yeni alanlar: device_limit, is_approved, is_corporate</li>
+            </ul>
+        </div>
+
+        <h2>4. DASHBOARD + MENU</h2>
+        <div class="box purple">
+            <div class="title">Ek ozellikler</div>
+            <ul>
+                <li>SubscriptionStatsWidget (istatistikler)</li>
+                <li>Menu gruplari: Abonelik, Pazarlama</li>
+            </ul>
+        </div>
+
+        <h2>5. TEMIZLIK</h2>
+        <div class="box orange">
+            <div class="title">Eski dosyalari sil</div>
+            <ul>
+                <li>app/Models/SubscriptionPlan.php (modulde)</li>
+                <li>app/Models/Subscription.php (modulde)</li>
+                <li>app/Models/Coupon.php (modulde)</li>
+                <li>app/Services/Auth/*Service.php (modullerde)</li>
+            </ul>
+        </div>
+
+        <div class="onay">
+            <p>"UYGUNDUR" de, baslarim.</p>
+        </div>
+    </div>
+</body>
+</html>

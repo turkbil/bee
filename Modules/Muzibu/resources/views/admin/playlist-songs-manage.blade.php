@@ -101,6 +101,9 @@
                 </div>
             </div>
         </div>
+
+    {{-- Mini Player --}}
+    @include('muzibu::admin.partials.mini-player')
 @endsection
 
 @push('scripts')
@@ -255,24 +258,20 @@ $(document).ready(function() {
 
             filtered.forEach(song => {
                 if (!existingIds.has(song.id)) {
+                    const playBtn = (song.hls_url || song.file_url)
+                        ? `<button class="btn-mini btn-mini-primary play-song-btn" data-song-id="${song.id}" data-title="${song.title}" data-artist="${song.artist || ''}" data-hls-url="${song.hls_url || ''}" data-file-url="${song.file_url || ''}" title="Dinle"><i class="fas fa-play"></i></button>`
+                        : `<button class="btn-mini btn-mini-muted" disabled title="Dosya yok"><i class="fas fa-play"></i></button>`;
+
                     html += `
                         <div class="list-group-item list-group-item-action" data-song-id="${song.id}">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
-                                        <div>
-                                            <strong class="d-block">${song.title}</strong>
-                                            <small class="text-muted">${song.artist || '{{ __("admin.unknown") }}'} ${song.duration ? '· ' + song.duration : ''}</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <button class="btn btn-sm btn-success add-song-btn" data-song-id="${song.id}">
-                                        <i class="fas fa-plus me-1"></i>
-                                        {{ __('admin.add') }}
-                                    </button>
-                                </div>
+                            <div class="song-row song-row-available">
+                                ${playBtn}
+                                <span class="song-title">${song.title}</span>
+                                <span class="song-artist">${song.artist || ''}</span>
+                                <span class="song-duration">${song.duration || ''}</span>
+                                <button class="btn-mini btn-mini-success add-song-btn" data-song-id="${song.id}" title="Ekle">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
                         </div>
                     `;
@@ -284,24 +283,20 @@ $(document).ready(function() {
             // Full render
             html = '<div class="list-group list-group-flush">';
             filtered.forEach(song => {
+                const playBtn = (song.hls_url || song.file_url)
+                    ? `<button class="btn-mini btn-mini-primary play-song-btn" data-song-id="${song.id}" data-title="${song.title}" data-artist="${song.artist || ''}" data-hls-url="${song.hls_url || ''}" data-file-url="${song.file_url || ''}" title="Dinle"><i class="fas fa-play"></i></button>`
+                    : `<button class="btn-mini btn-mini-muted" disabled title="Dosya yok"><i class="fas fa-play"></i></button>`;
+
                 html += `
                     <div class="list-group-item list-group-item-action" data-song-id="${song.id}">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar avatar-sm me-2 bg-secondary-lt"><i class="fas fa-music"></i></div>
-                                    <div>
-                                        <strong class="d-block">${song.title}</strong>
-                                        <small class="text-muted">${song.artist || '{{ __("admin.unknown") }}'} ${song.duration ? '· ' + song.duration : ''}</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <button class="btn btn-sm btn-success add-song-btn" data-song-id="${song.id}">
-                                    <i class="fas fa-plus me-1"></i>
-                                    {{ __('admin.add') }}
-                                </button>
-                            </div>
+                        <div class="song-row song-row-available">
+                            ${playBtn}
+                            <span class="song-title">${song.title}</span>
+                            <span class="song-artist">${song.artist || ''}</span>
+                            <span class="song-duration">${song.duration || ''}</span>
+                            <button class="btn-mini btn-mini-success add-song-btn" data-song-id="${song.id}" title="Ekle">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         </div>
                     </div>
                 `;
@@ -331,29 +326,22 @@ $(document).ready(function() {
 
         let html = '<div id="sortable-playlist" class="list-group list-group-flush">';
         playlistSongs.forEach((song, index) => {
+            const playBtn = (song.hls_url || song.file_url)
+                ? `<button class="btn-mini btn-mini-primary play-song-btn" data-song-id="${song.id}" data-title="${song.title}" data-artist="${song.artist || ''}" data-hls-url="${song.hls_url || ''}" data-file-url="${song.file_url || ''}" title="Dinle"><i class="fas fa-play"></i></button>`
+                : `<button class="btn-mini btn-mini-muted" disabled title="Dosya yok"><i class="fas fa-play"></i></button>`;
+
             html += `
                 <div class="list-group-item sortable-item" data-song-id="${song.id}" data-position="${index}">
-                    <div class="row align-items-center">
-                        <div class="col-auto">
-                            <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
-                        </div>
-                        <div class="col-auto">
-                            <span class="badge bg-secondary">${index + 1}</span>
-                        </div>
-                        <div class="col">
-                            <div class="d-flex align-items-center">
-                                <div class="avatar avatar-sm me-2 bg-primary-lt"><i class="fas fa-music"></i></div>
-                                <div>
-                                    <strong class="d-block">${song.title}</strong>
-                                    <small class="text-muted">${song.artist || '{{ __("admin.unknown") }}'} ${song.duration ? '· ' + song.duration : ''}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-sm btn-outline-danger remove-song-btn" data-song-id="${song.id}">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
+                    <div class="song-row song-row-playlist">
+                        <i class="fas fa-grip-vertical sortable-handle"></i>
+                        <span class="song-index">${index + 1}</span>
+                        ${playBtn}
+                        <span class="song-title">${song.title}</span>
+                        <span class="song-artist">${song.artist || ''}</span>
+                        <span class="song-duration">${song.duration || ''}</span>
+                        <button class="btn-mini btn-mini-danger remove-song-btn" data-song-id="${song.id}" title="Çıkar">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
                 </div>
             `;
@@ -397,61 +385,22 @@ $(document).ready(function() {
         });
     }
 
-    // Şarkı ekleme - ANINDA transfer (UI first, AJAX after)
+    // Şarkı ekleme - Temiz re-render yaklaşımı
     $(document).on('click', '.add-song-btn', function(e) {
         e.preventDefault();
         const btn = $(this);
         const songId = btn.data('song-id');
-        const songItem = btn.closest('.list-group-item');
 
         // Memory güncelle
         const song = availableSongs.find(s => s.id === songId);
+        if (!song) return;
+
         playlistSongs.push(song);
         availableSongs = availableSongs.filter(s => s.id !== songId);
 
-        // ANINDA TRANSFER: Sol → Sağ (UI ÖNCELİKLİ!)
-        const newIndex = playlistSongs.length - 1;
-        const row = songItem.find('.row');
-
-        // 1. Sortable handle + position badge ekle (row başına)
-        row.find('.col').before(`
-            <div class="col-auto">
-                <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab; font-size: 1.2rem;"></i>
-            </div>
-            <div class="col-auto">
-                <span class="badge bg-secondary">${newIndex + 1}</span>
-            </div>
-        `);
-
-        // 2. Butonu değiştir (+ → ×)
-        songItem.find('.add-song-btn')
-            .removeClass('btn-success add-song-btn')
-            .addClass('btn-outline-danger remove-song-btn')
-            .html('<i class="fas fa-times"></i>');
-
-        // 3. Class değiştir (available → playlist)
-        songItem.removeClass('list-group-item-action')
-            .addClass('sortable-item')
-            .attr('data-position', newIndex);
-
-        // 4. Avatar color değiştir (secondary → primary)
-        songItem.find('.bg-secondary-lt').removeClass('bg-secondary-lt').addClass('bg-primary-lt');
-
-        // 5. Sağ listeye APPEND et
-        const playlistContainer = $('#sortable-playlist');
-        if (playlistContainer.length) {
-            songItem.detach().appendTo(playlistContainer);
-            initSortable();
-        } else {
-            // Liste boşsa, container oluştur
-            $('#playlist-songs-container').html('<div id="sortable-playlist" class="list-group list-group-flush"></div>');
-            songItem.detach().appendTo('#sortable-playlist');
-            initSortable();
-        }
-
-        // Counter'ları güncelle
-        $('#available-count').text(availableSongs.length);
-        $('#playlist-count').text(playlistSongs.length);
+        // Temiz re-render (tutarlı tasarım!)
+        renderAvailableSongs(false);
+        renderPlaylistSongs();
         updateTotalDurationFromMemory();
 
         // AJAX kayıt (ARKA PLANDA - UI bloklama yok!)
@@ -468,69 +417,23 @@ $(document).ready(function() {
         });
     });
 
-    // Şarkı çıkarma - ANINDA transfer (UI first, AJAX after)
+    // Şarkı çıkarma - Temiz re-render yaklaşımı
     $(document).on('click', '.remove-song-btn', function(e) {
         e.preventDefault();
         const btn = $(this);
         const songId = btn.data('song-id');
-        const songItem = btn.closest('.list-group-item');
 
         // Memory güncelle
         const song = playlistSongs.find(s => s.id === songId);
+        if (!song) return;
+
         availableSongs.push(song);
         playlistSongs = playlistSongs.filter(s => s.id !== songId);
 
-        // ANINDA TRANSFER: Sağ → Sol (UI ÖNCELİKLİ!)
-        // 1. Sortable handle + position badge sil
-        songItem.find('.sortable-handle').closest('.col-auto').remove();
-        songItem.find('.badge').closest('.col-auto').remove();
-
-        // 2. Butonu değiştir (× → +)
-        songItem.find('.remove-song-btn')
-            .removeClass('btn-outline-danger remove-song-btn')
-            .addClass('btn-success add-song-btn')
-            .html('<i class="fas fa-plus me-1"></i> {{ __("admin.add") }}');
-
-        // 3. Class değiştir (playlist → available)
-        songItem.removeClass('sortable-item')
-            .addClass('list-group-item-action')
-            .removeAttr('data-position');
-
-        // 4. Avatar color değiştir (primary → secondary)
-        songItem.find('.bg-primary-lt').removeClass('bg-primary-lt').addClass('bg-secondary-lt');
-
-        // 5. Sol listeye APPEND et
-        const availableContainer = $('#available-songs-container .list-group');
-        if (availableContainer.length) {
-            songItem.detach().appendTo(availableContainer);
-        } else {
-            // Liste boşsa yeniden oluştur
-            renderAvailableSongs();
-        }
-
-        // Sağ listedeki position badge'leri düzelt
-        $('#sortable-playlist .sortable-item').each(function(index) {
-            $(this).find('.badge').text(index + 1);
-            $(this).attr('data-position', index);
-        });
-
-        // Counter'ları güncelle
-        $('#available-count').text(availableSongs.length);
-        $('#playlist-count').text(playlistSongs.length);
+        // Temiz re-render (tutarlı tasarım!)
+        renderAvailableSongs(false);
+        renderPlaylistSongs();
         updateTotalDurationFromMemory();
-
-        // Playlist boşaldıysa empty state göster
-        if (playlistSongs.length === 0) {
-            $('#playlist-songs-container').html(`
-                <div class="empty py-5">
-                    <div class="empty-icon">
-                        <i class="fas fa-music-slash fa-3x text-muted"></i>
-                    </div>
-                    <p class="empty-title">{{ __('muzibu::admin.playlist.no_songs_in_playlist') }}</p>
-                    <p class="empty-subtitle text-muted">{{ __('muzibu::admin.playlist.add_songs_from_left') }}</p>
-                </div>
-            `);
-        }
 
         // AJAX kayıt (ARKA PLANDA - UI bloklama yok!)
         $.ajax({
@@ -539,9 +442,10 @@ $(document).ready(function() {
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             data: { song_id: songId },
             error: function(xhr) {
-                // Hata varsa geri al
+                // Hata varsa geri yükle
                 showError(xhr.responseJSON?.message || '{{ __("admin.error_occurred") }}');
-                // TODO: Rollback UI changes
+                loadAvailableSongs();
+                loadPlaylistSongs();
             }
         });
     });
@@ -744,74 +648,169 @@ $(document).ready(function() {
             alert(message);
         }
     }
+
+    // Play butonu tıklama
+    $(document).on('click', '.play-song-btn', function(e) {
+        e.preventDefault();
+        const btn = $(this);
+        const songId = btn.data('song-id');
+        const title = btn.data('title');
+        const artist = btn.data('artist');
+        const hlsUrl = btn.attr('data-hls-url');
+        const fileUrl = btn.attr('data-file-url');
+
+        if (typeof playAdminSong === 'function') {
+            playAdminSong({
+                id: songId,
+                title: title,
+                artist: artist,
+                hls_url: hlsUrl,
+                file_url: fileUrl,
+                is_hls: !!hlsUrl
+            });
+        } else {
+            console.error('playAdminSong function not found');
+        }
+    });
 });
 </script>
 @endpush
 
 @push('styles')
 <style>
-/* Kompakt Liste - Daha fazla şarkı */
+/* Ultra Minimal Liste */
 .list-group-item {
-    padding: 0.5rem 0.75rem !important;
+    padding: 0.4rem 0.75rem !important;
+    border-color: rgba(98, 105, 118, 0.1);
 }
 
-.list-group-item .avatar {
-    width: 32px !important;
-    height: 32px !important;
+/* CSS Grid ile Simetrik Yapı */
+.song-row {
+    display: grid;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.list-group-item .avatar i {
-    font-size: 0.875rem;
+/* Sol Panel: Play | Title | Artist | Duration | Add */
+.song-row-available {
+    grid-template-columns: 1.25rem 1fr 5rem 2.5rem 1.25rem;
 }
 
-.list-group-item strong {
-    font-size: 0.875rem;
+/* Sağ Panel: Handle | # | Play | Title | Artist | Duration | Remove */
+.song-row-playlist {
+    grid-template-columns: 0.75rem 1rem 1.25rem 1fr 5rem 2.5rem 1.25rem;
 }
 
-.list-group-item small {
-    font-size: 0.75rem;
+/* Şarkı bilgileri */
+.song-title {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.list-group-item .btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-}
-
-.list-group-item .badge {
+.song-artist {
     font-size: 0.7rem;
-    padding: 0.25rem 0.4rem;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Sortable styles */
-.sortable-ghost {
+.song-duration {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    text-align: right;
+}
+
+.song-index {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    text-align: center;
+}
+
+/* Mini Butonlar */
+.btn-mini {
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+    border: none;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-mini-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-mini-primary:hover {
+    background: #2563eb;
+}
+
+.btn-mini-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-mini-success:hover {
+    background: #059669;
+}
+
+.btn-mini-danger {
+    background: transparent;
+    color: #ef4444;
     opacity: 0.4;
-    background-color: #f8f9fa;
 }
 
-.sortable-chosen {
-    background-color: #e7f3ff;
+.btn-mini-danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+    opacity: 1;
 }
 
+.btn-mini-muted {
+    background: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* Sortable */
 .sortable-handle {
-    font-size: 1rem !important;
+    font-size: 0.7rem;
+    cursor: grab;
+    opacity: 0.3;
+    transition: opacity 0.15s;
+    text-align: center;
 }
 
 .sortable-handle:hover {
-    color: #206bc4 !important;
+    opacity: 1;
+    color: #3b82f6;
 }
 
-.sortable-handle:active {
-    cursor: grabbing !important;
+.sortable-ghost {
+    opacity: 0.4;
+    background: #f1f5f9;
 }
 
-/* Loading animation */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.sortable-chosen {
+    background: #eff6ff;
 }
 
-.list-group-item {
-    animation: fadeIn 0.3s;
+/* Dark mode support */
+[data-bs-theme="dark"] .song-title {
+    color: #e2e8f0;
+}
+
+[data-bs-theme="dark"] .list-group-item {
+    border-color: rgba(255, 255, 255, 0.1);
 }
 </style>
 @endpush

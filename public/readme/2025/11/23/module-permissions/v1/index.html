@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modül Yönetimi - Yetki Ayrımı Planı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        h2 {
+            font-size: 1.8rem;
+            margin: 40px 0 25px;
+            color: #60a5fa;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        .comparison-table tr:last-child td { border-bottom: none; }
+        .comparison-table tr:hover { background: rgba(59, 130, 246, 0.1); }
+        .yes { color: #10b981; font-weight: 600; }
+        .no { color: #ef4444; font-weight: 600; }
+        .limited { color: #f59e0b; font-weight: 600; }
+        .feature-name { color: #e2e8f0; }
+        .note {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .note strong { color: #f59e0b; }
+        .section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .section h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .section li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        .section li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+        }
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .badge-central { background: #3b82f6; color: white; }
+        .badge-tenant { background: #8b5cf6; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Modül Yönetimi - Yetki Ayrımı</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-23 |
+                🎯 Konu: Central vs Tenant Yetkileri
+            </div>
+        </header>
+
+        <h2>📊 Yetki Karşılaştırma Tablosu</h2>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Özellik / İşlem</th>
+                    <th><span class="badge badge-central">Central (tuufi.com)</span></th>
+                    <th><span class="badge badge-tenant">Tenant (ixtif.com vb.)</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="feature-name">Modül Listesi Görüntüleme</td>
+                    <td class="yes">✓ Tüm modüller</td>
+                    <td class="limited">⚡ Sadece kendine atanan modüller</td>
+                </tr>
+                <tr>
+                    <td class="feature-name">Yeni Modül Oluşturma</td>
+                    <td class="yes">✓ Evet</td>
+                    <td class="no">✗ Hayır</td>
+                </tr>
+                <tr>
+                    <td class="feature-name">Modül Düzenleme</td>
+                    <td class="yes">✓ Evet</td>
+                    <td class="no">✗ Hayır</td>
+                </tr>
+                <tr>
+                    <td class="feature-name">Modül Silme</td>
+                    <td class="yes">✓ Evet</td>
+                    <td class="no">✗ Hayır</td>
+                </tr>
+                <tr>
+                    <td class="feature-name">Domain Atama (Switch'ler)</td>
+                    <td class="yes">✓ Tüm domain'lere atama</td>
+                    <td class="no">✗ Hayır (görünmez)</td>
+                </tr>
+                <tr>
+                    <td class="feature-name">URL Ayarları</td>
+                    <td class="yes">✓ Evet</td>
+                    <td class="yes">✓ Evet (sadece kendi modülleri)</td>
+                </tr>
+                <tr>
+                    <td class="feature-name">Modül Aktif/Pasif Toggle</td>
+                    <td class="yes">✓ Evet</td>
+                    <td class="no">✗ Hayır</td>
+                </tr>
+                <tr>
+                    <td class="feature-name">Ayarlar (Settings) Linki</td>
+                    <td class="yes">✓ Evet</td>
+                    <td class="yes">✓ Evet (sadece kendi modülleri)</td>
+                </tr>
+                <tr>
+                    <td class="feature-name">"Domainleri Göster" Butonu</td>
+                    <td class="yes">✓ Görünür</td>
+                    <td class="no">✗ Gizli</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>🎯 Central Admin Görünümü</h2>
+        <div class="section">
+            <h3>Tam Yetki - Her Şeyi Görebilir ve Yönetebilir</h3>
+            <ul>
+                <li>Tüm modülleri listeler</li>
+                <li>"Domainleri Göster" butonu aktif</li>
+                <li>Her modül için domain atama switch'leri</li>
+                <li>Düzenle, Sil, URL Ayarları, Settings butonları</li>
+                <li>Modül Aktif/Pasif toggle'ı</li>
+                <li>Yeni modül oluşturma butonu</li>
+            </ul>
+        </div>
+
+        <h2>🏢 Tenant Görünümü</h2>
+        <div class="section">
+            <h3>Kısıtlı Yetki - Sadece Kendi Modüllerini Görür</h3>
+            <ul>
+                <li>Sadece kendine atanmış ve aktif modülleri listeler</li>
+                <li>"Domainleri Göster" butonu <strong>GİZLİ</strong></li>
+                <li>Domain atama switch'leri <strong>YOK</strong></li>
+                <li>Dropdown menüde sadece: <strong>URL Ayarları</strong> ve <strong>Ayarlar</strong></li>
+                <li>Düzenle butonu <strong>GİZLİ</strong></li>
+                <li>Sil butonu <strong>GİZLİ</strong></li>
+                <li>Aktif/Pasif toggle <strong>GİZLİ</strong> (veya disabled)</li>
+                <li>Yeni modül oluşturma butonu <strong>GİZLİ</strong></li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <strong>⚠️ Teknik Not:</strong> Central tespiti için <code>tenant()</code> fonksiyonu kullanılacak.
+            <code>tenant() === null</code> ise Central, değilse Tenant context'indeyiz.
+        </div>
+
+        <h2>🔧 Yapılacak Değişiklikler</h2>
+        <div class="section">
+            <h3>1. ModuleComponent.php (Livewire)</h3>
+            <ul>
+                <li>Central için: Tüm modülleri çek</li>
+                <li>Tenant için: Sadece kendine atanmış aktif modülleri çek</li>
+                <li><code>$isCentral</code> değişkeni ekle ve view'a gönder</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>2. module-component.blade.php (View)</h3>
+            <ul>
+                <li><code>@if($isCentral)</code> ile conditional rendering</li>
+                <li>"Domainleri Göster" butonu sadece Central'da</li>
+                <li>Domain switch'leri sadece Central'da</li>
+                <li>Düzenle/Sil butonları sadece Central'da</li>
+                <li>Aktif/Pasif toggle sadece Central'da</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>3. helper.blade.php</h3>
+            <ul>
+                <li>"Yeni Modül" butonu sadece Central'da görünsün</li>
+            </ul>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu
+        </footer>
+    </div>
+</body>
+</html>

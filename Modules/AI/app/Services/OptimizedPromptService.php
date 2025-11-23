@@ -73,60 +73,86 @@ class OptimizedPromptService
 
     /**
      * Build optimized system prompt (50 satır)
+     *
+     * 🎯 TENANT-AWARE: Tenant 2/3 için detaylı kurallar, diğerleri için genel kurallar
      */
     public static function buildSystemPrompt(): string
     {
         $prompts = [];
+        $tenantId = function_exists('tenant') ? tenant('id') : null;
 
-        $prompts[] = "# 🚨 ZORUNLU GÜVENLİK KURALLARI (EN ÖNEMLİ!)";
-        $prompts[] = "";
-        $prompts[] = "## 🔴 0. ÜRÜN TİPİ FİLTRELEME (1 NUMARALI KURAL - EN KRİTİK!)";
-        $prompts[] = "";
-        $prompts[] = "⚠️⚠️⚠️ BU EN ÖNEMLİ KURAL! ASLA İHLAL ETME! ⚠️⚠️⚠️";
-        $prompts[] = "";
-        $prompts[] = "**KULLANICI SPESİFİK TİP İSTEDİYSE, SADECE O TİPİ GÖSTER!**";
-        $prompts[] = "";
-        $prompts[] = "**🔍 KULLANICININ MESAJINI KONTROL ET:**";
-        $prompts[] = "";
-        $prompts[] = "1️⃣ **'FORKLIFT' kelimesi VAR MI?**";
-        $prompts[] = "   → VARSA: ❌ Transpalet YASAK! ❌ İstif YASAK! ❌ Reach truck YASAK!";
-        $prompts[] = "   → SADECE ürün title/slug'ında 'forklift' olan ürünleri göster!";
-        $prompts[] = "   → Transpalet gösterirsen BÜYÜK HATA! Kullanıcı yanlış ürün alır!";
-        $prompts[] = "";
-        $prompts[] = "2️⃣ **'TRANSPALET' kelimesi VAR MI?**";
-        $prompts[] = "   → VARSA: ❌ Forklift YASAK! ❌ İstif YASAK! ❌ Reach truck YASAK!";
-        $prompts[] = "   → SADECE ürün title/slug'ında 'transpalet' olan ürünleri göster!";
-        $prompts[] = "   → Forklift gösterirsen BÜYÜK HATA! Kullanıcı yanlış ürün alır!";
-        $prompts[] = "";
-        $prompts[] = "3️⃣ **'İSTİF' veya 'STACKER' kelimesi VAR MI?**";
-        $prompts[] = "   → VARSA: ❌ Forklift YASAK! ❌ Transpalet YASAK!";
-        $prompts[] = "   → SADECE ürün title/slug'ında 'istif' veya 'stacker' olan ürünleri göster!";
-        $prompts[] = "";
-        $prompts[] = "4️⃣ **'REACH TRUCK' kelimesi VAR MI?**";
-        $prompts[] = "   → VARSA: ❌ Forklift YASAK! ❌ Transpalet YASAK!";
-        $prompts[] = "   → SADECE ürün title/slug'ında 'reach' olan ürünleri göster!";
-        $prompts[] = "";
-        $prompts[] = "5️⃣ **Hiçbir tip belirtilmedi mi?** (örn: 'akülü 2 ton')";
-        $prompts[] = "   → O zaman tüm uygun ürünleri gösterebilirsin (karışık tip OK)";
-        $prompts[] = "";
-        $prompts[] = "**❌ ASLA YAPMA (BÜYÜK HATA!):**";
-        $prompts[] = "- Kullanıcı 'forklift' dedi → Sen transpalet gösterme!";
-        $prompts[] = "- Kullanıcı 'transpalet' dedi → Sen forklift gösterme!";
-        $prompts[] = "- Karışık tip gösterme (forklift + transpalet birlikte YASAK!)";
-        $prompts[] = "";
-        $prompts[] = "**✅ DOĞRU YAKLAŞIM:**";
-        $prompts[] = "```";
-        $prompts[] = "Kullanıcı: 'forklift almak istiyorum'";
-        $prompts[] = "Meilisearch'ten gelen ürünler: [transpalet-2ton, forklift-2ton, istif-2ton]";
-        $prompts[] = "Sen SADECE göster: forklift-2ton";
-        $prompts[] = "Transpalet ve istifi GÖSTERME! (BÜYÜK HATA!)";
-        $prompts[] = "```";
-        $prompts[] = "";
-        $prompts[] = "**🔁 CONVERSATION HISTORY'Yİ KONTROL ET:**";
-        $prompts[] = "- Kullanıcı önceki mesajda 'forklift' dediyse → Sonraki tüm yanıtlarda SADECE forklift!";
-        $prompts[] = "- Kullanıcı '2 ton akülü' dedi ama daha önce 'forklift' demişse → SADECE forklift!";
-        $prompts[] = "- Tip unutma! Her yanıtta aynı tipi göster!";
-        $prompts[] = "";
+        // 🎯 TENANT-SPECIFIC: Factory pattern ile sektör kontrolü
+        $tenantService = \Modules\AI\App\Services\TenantServiceFactory::getPromptService($tenantId);
+        $sector = $tenantService->getSector();
+
+        // Endüstriyel sektör için detaylı kategori kuralları
+        if ($sector === 'industrial') {
+            $prompts[] = "# 🚨 ZORUNLU GÜVENLİK KURALLARI (EN ÖNEMLİ!)";
+            $prompts[] = "";
+            $prompts[] = "## 🔴 0. ÜRÜN TİPİ FİLTRELEME (1 NUMARALI KURAL - EN KRİTİK!)";
+            $prompts[] = "";
+            $prompts[] = "⚠️⚠️⚠️ BU EN ÖNEMLİ KURAL! ASLA İHLAL ETME! ⚠️⚠️⚠️";
+            $prompts[] = "";
+            $prompts[] = "**KULLANICI SPESİFİK TİP İSTEDİYSE, SADECE O TİPİ GÖSTER!**";
+            $prompts[] = "";
+            $prompts[] = "**🔍 KULLANICININ MESAJINI KONTROL ET:**";
+            $prompts[] = "";
+            $prompts[] = "1️⃣ **'FORKLIFT' kelimesi VAR MI?**";
+            $prompts[] = "   → VARSA: ❌ Transpalet YASAK! ❌ İstif YASAK! ❌ Reach truck YASAK!";
+            $prompts[] = "   → SADECE ürün title/slug'ında 'forklift' olan ürünleri göster!";
+            $prompts[] = "   → Transpalet gösterirsen BÜYÜK HATA! Kullanıcı yanlış ürün alır!";
+            $prompts[] = "";
+            $prompts[] = "2️⃣ **'TRANSPALET' kelimesi VAR MI?**";
+            $prompts[] = "   → VARSA: ❌ Forklift YASAK! ❌ İstif YASAK! ❌ Reach truck YASAK!";
+            $prompts[] = "   → SADECE ürün title/slug'ında 'transpalet' olan ürünleri göster!";
+            $prompts[] = "   → Forklift gösterirsen BÜYÜK HATA! Kullanıcı yanlış ürün alır!";
+            $prompts[] = "";
+        } else {
+            // 🌍 GLOBAL: Diğer tenant'lar için genel kurallar
+            $prompts[] = "# 🚨 ZORUNLU GÜVENLİK KURALLARI";
+            $prompts[] = "";
+            $prompts[] = "## 🔴 0. ÜRÜN KATEGORİ FİLTRELEME (KRİTİK!)";
+            $prompts[] = "";
+            $prompts[] = "**KULLANICI SPESİFİK KATEGORİ İSTEDİYSE, SADECE O KATEGORİYİ GÖSTER!**";
+            $prompts[] = "";
+            $prompts[] = "- Kullanıcı hangi kategoriyi/ürün tipini istiyorsa SADECE onu göster";
+            $prompts[] = "- Farklı kategorilerdeki ürünleri karıştırma";
+            $prompts[] = "- Kullanıcının talebini doğru anla ve ilgili ürünleri sun";
+            $prompts[] = "";
+        }
+
+        // 🎯 TENANT-SPECIFIC: Devam eden endüstriyel kurallar
+        if ($sector === 'industrial') {
+            $prompts[] = "3️⃣ **'İSTİF' veya 'STACKER' kelimesi VAR MI?**";
+            $prompts[] = "   → VARSA: ❌ Forklift YASAK! ❌ Transpalet YASAK!";
+            $prompts[] = "   → SADECE ürün title/slug'ında 'istif' veya 'stacker' olan ürünleri göster!";
+            $prompts[] = "";
+            $prompts[] = "4️⃣ **'REACH TRUCK' kelimesi VAR MI?**";
+            $prompts[] = "   → VARSA: ❌ Forklift YASAK! ❌ Transpalet YASAK!";
+            $prompts[] = "   → SADECE ürün title/slug'ında 'reach' olan ürünleri göster!";
+            $prompts[] = "";
+            $prompts[] = "5️⃣ **Hiçbir tip belirtilmedi mi?** (örn: 'akülü 2 ton')";
+            $prompts[] = "   → O zaman tüm uygun ürünleri gösterebilirsin (karışık tip OK)";
+            $prompts[] = "";
+            $prompts[] = "**❌ ASLA YAPMA (BÜYÜK HATA!):**";
+            $prompts[] = "- Kullanıcı 'forklift' dedi → Sen transpalet gösterme!";
+            $prompts[] = "- Kullanıcı 'transpalet' dedi → Sen forklift gösterme!";
+            $prompts[] = "- Karışık tip gösterme (forklift + transpalet birlikte YASAK!)";
+            $prompts[] = "";
+            $prompts[] = "**✅ DOĞRU YAKLAŞIM:**";
+            $prompts[] = "```";
+            $prompts[] = "Kullanıcı: 'forklift almak istiyorum'";
+            $prompts[] = "Meilisearch'ten gelen ürünler: [transpalet-2ton, forklift-2ton, istif-2ton]";
+            $prompts[] = "Sen SADECE göster: forklift-2ton";
+            $prompts[] = "Transpalet ve istifi GÖSTERME! (BÜYÜK HATA!)";
+            $prompts[] = "```";
+            $prompts[] = "";
+            $prompts[] = "**🔁 CONVERSATION HISTORY'Yİ KONTROL ET:**";
+            $prompts[] = "- Kullanıcı önceki mesajda 'forklift' dediyse → Sonraki tüm yanıtlarda SADECE forklift!";
+            $prompts[] = "- Kullanıcı '2 ton akülü' dedi ama daha önce 'forklift' demişse → SADECE forklift!";
+            $prompts[] = "- Tip unutma! Her yanıtta aynı tipi göster!";
+            $prompts[] = "";
+        }
         $prompts[] = "## ❌ 1. ÜRÜN UYDURMA YASAĞI";
         $prompts[] = "1. ASLA ürün/bilgi uydurma yasak!";
         $prompts[] = "2. SADECE Meilisearch'ten gelen ürünleri göster!";
@@ -1476,10 +1502,10 @@ class OptimizedPromptService
         $prompts[] = self::buildSystemPrompt();
         $prompts[] = "";
 
-        // 2. Tenant-specific prompts (ixtif.com için özel kurallar)
-        if (function_exists('tenant') && in_array(tenant('id'), [2, 3])) {
-            $tenant2Service = new \Modules\AI\App\Services\Tenant\Tenant2PromptService();
-            $prompts[] = $tenant2Service->getPromptAsString();
+        // 2. Tenant-specific prompts (Factory Pattern - Dinamik)
+        if (function_exists('tenant')) {
+            $tenantService = \Modules\AI\App\Services\TenantServiceFactory::getPromptService();
+            $prompts[] = implode("\n", $tenantService->buildPrompt());
             $prompts[] = "";
         }
 

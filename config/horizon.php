@@ -201,7 +201,7 @@ return [
         // Tenant Isolated Queue
         'tenant-supervisor' => [
             'connection' => 'redis',
-            'queue' => ['tenant_isolated', 'default'],
+            'queue' => ['tenant_isolated', 'default', 'hls'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 4, // 🚀 Development için artırıldı
@@ -209,7 +209,7 @@ return [
             'maxJobs' => 200,
             'memory' => 256,
             'tries' => 3,
-            'timeout' => 180,
+            'timeout' => 300, // HLS conversion için 5 dakika
             'nice' => 0,
         ],
         

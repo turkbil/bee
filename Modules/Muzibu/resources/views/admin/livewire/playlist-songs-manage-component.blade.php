@@ -38,7 +38,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="fas fa-music me-2 text-muted"></i>
+                                <i class="fas fa-music me-2"></i>
                                 {{ __('muzibu::admin.playlist.all_songs') }}
                             </h3>
                         </div>
@@ -87,7 +87,7 @@
                                                         <strong class="d-block">
                                                             {{ $song->getTranslated('title', app()->getLocale()) ?? $song->getTranslated('title', 'tr') }}
                                                         </strong>
-                                                        <small class="text-muted">
+                                                        <small class="">
                                                             {{ $song->album?->artist?->getTranslated('title') ?? __('admin.unknown') }}
                                                             @if($song->duration)
                                                                 · {{ $song->getFormattedDuration() }}
@@ -95,6 +95,38 @@
                                                         </small>
                                                     </div>
                                                 </div>
+                                            </div>
+
+                                            <!-- Play Butonu -->
+                                            <div class="col-auto">
+                                                @if($song->hls_path || $song->file_path)
+                                                    <button type="button"
+                                                        onclick="playAdminSong({
+                                                            id: {{ $song->song_id }},
+                                                            title: '{{ addslashes($song->getTranslated('title', app()->getLocale()) ?? $song->getTranslated('title', 'tr')) }}',
+                                                            artist: '{{ addslashes($song->album?->artist?->getTranslated('title', app()->getLocale()) ?? '') }}',
+                                                            @if($song->hls_path)
+                                                            url: '{{ asset('storage/' . $song->hls_path) }}',
+                                                            is_hls: true
+                                                            @else
+                                                            url: '{{ asset('storage/muzibu/songs/' . $song->file_path) }}',
+                                                            is_hls: false
+                                                            @endif
+                                                        })"
+                                                        class="btn btn-primary btn-icon"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
+                                                        title="Dinle">
+                                                        <i class="fas fa-play"></i>
+                                                    </button>
+                                                @else
+                                                    <button type="button" class="btn btn-secondary btn-icon" disabled
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
+                                                        title="Dosya yok">
+                                                        <i class="fas fa-play"></i>
+                                                    </button>
+                                                @endif
                                             </div>
 
                                             <!-- Ekle Butonu -->
@@ -126,10 +158,10 @@
                                     <div class="list-group-item">
                                         <div class="empty py-4">
                                             <div class="empty-icon">
-                                                <i class="fas fa-search fa-3x text-muted"></i>
+                                                <i class="fas fa-search fa-3x"></i>
                                             </div>
                                             <p class="empty-title">{{ __('muzibu::admin.playlist.no_songs_found') }}</p>
-                                            <p class="empty-subtitle text-muted">
+                                            <p class="empty-subtitle">
                                                 {{ __('muzibu::admin.playlist.try_different_search') }}
                                             </p>
                                         </div>
@@ -139,7 +171,7 @@
                         </div>
 
                         <!-- Footer: Toplam şarkı sayısı -->
-                        <div class="card-footer text-muted">
+                        <div class="card-footer">
                             <small>
                                 {{ __('muzibu::admin.playlist.showing_songs', ['count' => count($this->availableSongs)]) }}
                             </small>
@@ -169,7 +201,7 @@
                                         <div class="row align-items-center">
                                             <!-- Drag Handle -->
                                             <div class="col-auto">
-                                                <i class="fas fa-grip-vertical text-muted sortable-handle"
+                                                <i class="fas fa-grip-vertical sortable-handle"
                                                    style="cursor: grab; font-size: 1.2rem;"></i>
                                             </div>
 
@@ -198,7 +230,7 @@
                                                         <strong class="d-block">
                                                             {{ $song->getTranslated('title', app()->getLocale()) ?? $song->getTranslated('title', 'tr') }}
                                                         </strong>
-                                                        <small class="text-muted">
+                                                        <small class="">
                                                             {{ $song->album?->artist?->getTranslated('title') ?? __('admin.unknown') }}
                                                             @if($song->duration)
                                                                 · {{ $song->getFormattedDuration() }}
@@ -206,6 +238,38 @@
                                                         </small>
                                                     </div>
                                                 </div>
+                                            </div>
+
+                                            <!-- Play Butonu -->
+                                            <div class="col-auto">
+                                                @if($song->hls_path || $song->file_path)
+                                                    <button type="button"
+                                                        onclick="playAdminSong({
+                                                            id: {{ $song->song_id }},
+                                                            title: '{{ addslashes($song->getTranslated('title', app()->getLocale()) ?? $song->getTranslated('title', 'tr')) }}',
+                                                            artist: '{{ addslashes($song->album?->artist?->getTranslated('title', app()->getLocale()) ?? '') }}',
+                                                            @if($song->hls_path)
+                                                            url: '{{ asset('storage/' . $song->hls_path) }}',
+                                                            is_hls: true
+                                                            @else
+                                                            url: '{{ asset('storage/muzibu/songs/' . $song->file_path) }}',
+                                                            is_hls: false
+                                                            @endif
+                                                        })"
+                                                        class="btn btn-primary btn-icon"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
+                                                        title="Dinle">
+                                                        <i class="fas fa-play"></i>
+                                                    </button>
+                                                @else
+                                                    <button type="button" class="btn btn-secondary btn-icon" disabled
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
+                                                        title="Dosya yok">
+                                                        <i class="fas fa-play"></i>
+                                                    </button>
+                                                @endif
                                             </div>
 
                                             <!-- Çıkar Butonu -->
@@ -231,10 +295,10 @@
                                     <div class="list-group-item">
                                         <div class="empty py-5">
                                             <div class="empty-icon">
-                                                <i class="fas fa-music-slash fa-3x text-muted"></i>
+                                                <i class="fas fa-music-slash fa-3x"></i>
                                             </div>
                                             <p class="empty-title">{{ __('muzibu::admin.playlist.no_songs_in_playlist') }}</p>
-                                            <p class="empty-subtitle text-muted">
+                                            <p class="empty-subtitle">
                                                 {{ __('muzibu::admin.playlist.add_songs_from_left') }}
                                             </p>
                                         </div>
@@ -245,7 +309,7 @@
 
                         <!-- Footer: Toplam süre -->
                         @if(count($this->playlistSongs) > 0)
-                            <div class="card-footer text-muted">
+                            <div class="card-footer">
                                 <small>
                                     <i class="fas fa-clock me-1"></i>
                                     {{ __('muzibu::admin.playlist.total_duration') }}:
@@ -258,6 +322,9 @@
             </div>
         </div>
     </div>
+
+    {{-- Mini Player --}}
+    @include('muzibu::admin.partials.mini-player')
 </div>
 
 @push('scripts')

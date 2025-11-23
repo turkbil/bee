@@ -57,11 +57,11 @@
                                                 placeholder="sayfa-url-slug">
                                             <label for="slug_{{ $lang }}">
                                                 {{ __('admin.muzibu_url_slug') }}
-                                                <small class="text-muted ms-2">-
+                                                <small class="ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
                                             </label>
                                             <div class="form-text">
-                                                <small class="text-muted">
+                                                <small class="">
                                                     {{ __('admin.slug_help') }}
                                                 </small>
                                             </div>
@@ -188,7 +188,5 @@
         @include('seomanagement::admin.components.universal-seo-scripts', [
             'availableLanguages' => $availableLanguages,
         ])
-
-        @include('ai::admin.components.universal-ai-content-scripts')
     @endpush
 </div>

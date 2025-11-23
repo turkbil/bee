@@ -57,6 +57,7 @@ class MuzibuServiceProvider extends ServiceProvider
         // Album Components
         Livewire::component('muzibu::admin.album-component', \Modules\Muzibu\App\Http\Livewire\Admin\AlbumComponent::class);
         Livewire::component('muzibu::admin.album-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\AlbumManageComponent::class);
+        Livewire::component('muzibu::admin.album-bulk-upload-component', \Modules\Muzibu\App\Http\Livewire\Admin\AlbumBulkUploadComponent::class);
 
         // Song Components
         Livewire::component('muzibu::admin.song-component', \Modules\Muzibu\App\Http\Livewire\Admin\SongComponent::class);

@@ -403,6 +403,9 @@
                         }
 
                         $parsedBody = $productInjector->injectProducts($parsedBody, $item);
+
+                        // 🔒 SANITIZE: Tehlikeli Blade direktiflerini temizle (AI içerik güvenliği)
+                        $parsedBody = sanitize_blade_content($parsedBody);
                     @endphp
                     {!! Blade::render($parsedBody, [], true) !!}
                 </div>
@@ -424,7 +427,7 @@
                         }
                     @endphp
                     @if($hasValidFaq)
-                        <section id="sik-sorulan-sorular" class="mt-16 md:mt-20 md:bg-gradient-to-br md:from-blue-50 md:to-indigo-50 md:dark:from-gray-800 md:dark:to-gray-700 md:rounded-2xl md:p-8 md:shadow-xl md:border md:border-blue-100 md:dark:border-gray-600" itemscope itemtype="https://schema.org/FAQPage">
+                        <section id="sik-sorulan-sorular" class="mt-16 md:mt-20 md:bg-gradient-to-br md:from-blue-50 md:to-indigo-50 md:dark:from-gray-800 md:dark:to-gray-700 md:rounded-2xl md:p-8 md:shadow-xl md:border md:border-blue-100 md:dark:border-gray-600">
                             <header class="mb-8">
                                 <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
                                     <i class="fas fa-question-circle text-blue-600 dark:text-blue-400 mr-3"></i>
@@ -440,8 +443,7 @@
                                         $faqIcon = $faq['icon'] ?? 'fas fa-question-circle';
                                     @endphp
                                     @if(!empty($question) && !empty($answer))
-                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl"
-                                             itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-xl">
                                             <details class="group">
                                                 <summary class="flex items-center justify-between w-full px-4 md:px-8 py-4 md:py-6 cursor-pointer list-none select-none hover:bg-blue-50 dark:hover:bg-gray-700/50 transition-all duration-300">
                                                     <div class="flex items-center gap-4 flex-1">
@@ -452,7 +454,7 @@
                                                         <div class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:shadow-2xl">
                                                             <i class="fa-light {{ $iconClass }} group-hover:fa-solid text-white text-xl md:text-2xl transition-all duration-300 group-hover:scale-110"></i>
                                                         </div>
-                                                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white pr-4 transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400" itemprop="name">
+                                                        <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white pr-4 transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
                                                             {{ $question }}
                                                         </h3>
                                                     </div>
@@ -460,9 +462,8 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                                     </svg>
                                                 </summary>
-                                                <div class="px-4 md:px-8 pb-4 md:pb-8 pt-2 text-gray-700 dark:text-gray-300 prose prose-base md:prose-lg dark:prose-invert max-w-none pl-16 md:pl-24"
-                                                     itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                                                    <div itemprop="text">
+                                                <div class="px-4 md:px-8 pb-4 md:pb-8 pt-2 text-gray-700 dark:text-gray-300 prose prose-base md:prose-lg dark:prose-invert max-w-none pl-16 md:pl-24">
+                                                    <div>
                                                         {!! nl2br(e($answer)) !!}
                                                     </div>
                                                 </div>

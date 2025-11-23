@@ -42,16 +42,18 @@ require __DIR__.'/admin/web.php';
 // 🧹 Test route'ları arşivlendi
 
 // 🎵 MUZIBU STREAMING ROUTES - EN ÖNCE TANIMLANMALI (high priority)
-Route::middleware([InitializeTenancy::class])->group(function () {
-    // Encryption key endpoint (GET + OPTIONS for CORS)
-    Route::match(['get', 'options'], '/stream/key/{songHash}', [\App\Http\Controllers\Streaming\MuzikStreamController::class, 'getEncryptionKey'])
-        ->name('stream.key');
+// Sadece tenant middleware - session/web middleware yok (stateless streaming)
+Route::middleware([InitializeTenancy::class])
+    ->group(function () {
+        // Encryption key endpoint (GET + OPTIONS for CORS)
+        Route::match(['get', 'options'], '/stream/key/{songHash}', [\App\Http\Controllers\Streaming\MuzikStreamController::class, 'getEncryptionKey'])
+            ->name('stream.key');
 
-    // HLS playlist ve chunk'lar (GET + OPTIONS for CORS)
-    Route::match(['get', 'options'], '/stream/play/{songHash}/{filename}', [\App\Http\Controllers\Streaming\MuzikStreamController::class, 'streamFile'])
-        ->where('filename', '.*')
-        ->name('stream.play');
-});
+        // HLS playlist ve chunk'lar (GET + OPTIONS for CORS)
+        Route::match(['get', 'options'], '/stream/play/{songHash}/{filename}', [\App\Http\Controllers\Streaming\MuzikStreamController::class, 'streamFile'])
+            ->where('filename', '.*')
+            ->name('stream.play');
+    });
 
 // STORAGE ROUTES - EN ÖNCE TANIMLANMALI (high priority)
 // Tenant medya dosyalarına erişim

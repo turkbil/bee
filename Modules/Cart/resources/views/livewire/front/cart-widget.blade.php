@@ -1,6 +1,6 @@
-<div x-data="{ open: false }" class="relative" wire:key="cart-widget-{{ $cart?->cart_id ?? 'empty' }}">
+<div x-data="{ open: false }" class="relative" wire:key="cart-widget-{{ $cart?->cart_id ?? 'empty' }}" @close-user-menu.window="open = false" @cart-updated.window="$wire.refreshCart(); console.log('🔄 CartWidget: Refreshing via window event')">
     {{-- Cart Button --}}
-    <button @click="open = !open" type="button"
+    <button @click="open = !open; $dispatch('close-other-menus')" type="button"
             class="relative flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
         <i class="fas fa-shopping-cart text-xl"></i>
         @if($itemCount > 0)
@@ -19,7 +19,7 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-95"
-         class="absolute right-0 z-50 mt-2 w-80 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700"
+         class="absolute right-0 top-full mt-2 w-80 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 origin-top-right"
          style="display: none;">
 
         <div class="p-4">

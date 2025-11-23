@@ -1,15 +1,15 @@
 @php
-    View::share('pretitle', 'Sayfa Listesi');
+    View::share('pretitle', __('muzibu::admin.artist_list'));
 @endphp
 
 <div class="artist-component-wrapper">
     <div class="card">
         <div class="card-body p-0">
-            <!-- Header Bölümü -->
+            <!-- Filtre Bölümü -->
             <div class="row mx-2 my-3">
-                <!-- Arama Kutusu -->
-                <div class="col">
-                    <div class="input-icon">
+                <!-- Sol Taraf - Arama -->
+                <div class="col-auto">
+                    <div class="input-icon" style="width: 250px;">
                         <span class="input-icon-addon">
                             <i class="fas fa-search"></i>
                         </span>
@@ -17,6 +17,7 @@
                             placeholder="{{ __('muzibu::admin.artist.search_placeholder') }}">
                     </div>
                 </div>
+
                 <!-- Ortadaki Loading -->
                 <div class="col position-relative">
                     <div wire:loading
@@ -29,30 +30,38 @@
                         </div>
                     </div>
                 </div>
-                <!-- Sağ Taraf (Switch ve Select) -->
-                <div class="col">
-                    <div class="d-flex align-items-center justify-content-end gap-3">
-                        <!-- Sayfa Adeti Seçimi -->
-                        <div style="width: 80px; min-width: 80px">
-                            <select wire:model.live="perPage" class="form-control listing-filter-select" data-choices
-                                data-choices-search="false" data-choices-filter="true">
-                                <option value="10">
-                                    <nobr>10</nobr>
-                                </option>
-                                <option value="50">
-                                    <nobr>50</nobr>
-                                </option>
-                                <option value="100">
-                                    <nobr>100</nobr>
-                                </option>
-                                <option value="500">
-                                    <nobr>500</nobr>
-                                </option>
-                                <option value="1000">
-                                    <nobr>1000</nobr>
-                                </option>
-                            </select>
+
+                <!-- Sağ Taraf -->
+                <div class="col-auto">
+                    <div class="d-flex align-items-center justify-content-end gap-2">
+                        <!-- Görünüm Toggle -->
+                        <div class="btn-group" role="group">
+                            <button type="button"
+                                wire:click="$set('detailedView', false)"
+                                class="btn btn-icon {{ !$detailedView ? 'btn-primary' : 'btn-ghost-secondary' }}"
+                                title="Minimal">
+                                <i class="fas fa-th-list"></i>
+                            </button>
+                            <button type="button"
+                                wire:click="$set('detailedView', true)"
+                                class="btn btn-icon {{ $detailedView ? 'btn-primary' : 'btn-ghost-secondary' }}"
+                                title="Detaylı">
+                                <i class="fas fa-table"></i>
+                            </button>
                         </div>
+
+                        <select wire:model.live="perPage" class="form-select" style="width: 75px;">
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+
+                        <!-- Yeni Sanatçı Ekle -->
+                        @hasmoduleaccess('muzibu', 'create')
+                        <a href="{{ route('admin.muzibu.artist.manage') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>{{ __('muzibu::admin.add_artist') }}
+                        </a>
+                        @endhasmoduleaccess
                     </div>
                 </div>
             </div>
@@ -79,22 +88,21 @@
                                     </button>
                                 </div>
                             </th>
-                            <th>
+                            <th style="min-width: 200px">
                                 <button
                                     class="table-sort {{ ($sortField ?? '') === 'title' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
                                     wire:click="sortBy('title')">
                                     {{ __('muzibu::admin.artist.title_field') }}
                                 </button>
                             </th>
-                            <th class="text-center" style="width: 80px" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="{{ __('muzibu::admin.artist.status') }}">
-                                <button
-                                    class="table-sort {{ ($sortField ?? '') === 'is_active' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
-                                    wire:click="sortBy('is_active')">
-                                    {{ __('muzibu::admin.artist.status') }}
-                                </button>
+                            @if($detailedView)
+                                <th class="text-center" style="width: 80px">{{ __('muzibu::admin.albums') }}</th>
+                                <th class="text-center" style="width: 80px">{{ __('muzibu::admin.songs') }}</th>
+                            @endif
+                            <th class="text-center" style="width: 70px">
+                                {{ __('muzibu::admin.artist.status') }}
                             </th>
-                            <th class="text-center" style="width: 160px">{{ __('admin.actions') }}</th>
+                            <th class="text-center" style="width: 110px">{{ __('admin.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="table-tbody">
@@ -152,9 +160,31 @@
                                         </div>
                                     @endif
                                 </td>
+                                @if($detailedView)
+                                    <td class="text-center">
+                                        @if(($artist->albums_count ?? 0) > 0)
+                                            <a href="{{ route('admin.muzibu.album.index') }}?filterArtist={{ $artist->artist_id }}"
+                                               class="badge bg-green-lt text-decoration-none">
+                                                {{ $artist->albums_count }}
+                                            </a>
+                                        @else
+                                            <span class="badge bg-secondary-lt">0</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        @if(($artist->songs_count ?? 0) > 0)
+                                            <a href="{{ route('admin.muzibu.song.index') }}?filterArtist={{ $artist->artist_id }}"
+                                               class="badge bg-blue-lt text-decoration-none">
+                                                {{ $artist->songs_count }}
+                                            </a>
+                                        @else
+                                            <span class="badge bg-secondary-lt">0</span>
+                                        @endif
+                                    </td>
+                                @endif
                                 <td class="text-center align-middle">
                                     <button wire:click="toggleActive({{ $artist->artist_id }})"
-                                        class="btn btn-icon btn-sm {{ $artist->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
+                                        class="btn btn-icon btn-sm ps-1 pe-2 {{ $artist->is_active ? 'bg-transparent' : 'text-red bg-transparent' }}">
                                         <!-- Loading Durumu -->
                                         <div wire:loading wire:target="toggleActive({{ $artist->artist_id }})"
                                             class="spinner-border spinner-border-sm">
@@ -178,14 +208,12 @@
                                             style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
-                                        <x-ai-translation :entity-type="'artist'" :entity-id="$artist->artist_id"
-                                            tooltip="{{ __('admin.ai_translate') }}" />
                                         @hasmoduleaccess('muzibu', 'delete')
                                         <div class="dropdown">
-                                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                            <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false"
                                                 style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
-                                                <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                                                <i class="fa-solid fa-bars-sort fa-flip-horizontal link-secondary fa-lg"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a href="javascript:void(0);"
@@ -205,10 +233,10 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 6 : 4 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.artist.no_artists_found') }}</p>
-                                        <p class="empty-subtitle text-muted">
+                                        <p class="empty-subtitle">
                                             {{ __('muzibu::admin.artist.no_results') }}
                                         </p>
                                     </div>
@@ -226,7 +254,7 @@
                 {{ $artists->links() }}
             @else
                 <div class="d-flex justify-content-between align-items-center mb-0">
-                    <p class="small text-muted mb-0">
+                    <p class="small mb-0">
                         Toplam <span class="fw-semibold">{{ $artists->total() }}</span> sonuç
                     </p>
                 </div>

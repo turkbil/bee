@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu UI Taslaklari</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #1a1f2e; }
+        .mockup-section {
+            margin-bottom: 60px;
+            padding: 30px;
+            background: #182433;
+            border-radius: 12px;
+        }
+        .mockup-title {
+            color: #60a5fa;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mockup-subtitle {
+            color: #94a3b8;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+        .current-link {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3b82f6;
+        }
+        .current-link strong {
+            color: #60a5fa;
+        }
+        .current-link a {
+            color: #fbbf24;
+        }
+        .page-header-custom {
+            color: #f8fafc;
+        }
+        .nav-pills-custom .nav-link {
+            color: #94a3b8;
+        }
+        .nav-pills-custom .nav-link.active {
+            background: #3b82f6;
+            color: white;
+        }
+        .hls-badge {
+            font-size: 0.7rem;
+        }
+        .filter-section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body class="theme-dark">
+    <div class="page-wrapper">
+        <div class="container-xl py-4">
+
+            <div class="text-center mb-5">
+                <h1 class="text-white mb-2">Muzibu UI Taslaklari</h1>
+                <p class="text-muted">Onayladigin tasarimlari kodlayacagim</p>
+            </div>
+
+            <!-- TASLAK 1: DASHBOARD -->
+            <div class="mockup-section">
+                <h2 class="mockup-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    1. Dashboard Sayfasi
+                </h2>
+                <p class="mockup-subtitle">Ana sayfa artik direkt sarki listesine degil, bu dashboard'a yonlenecek</p>
+
+                <div class="current-link">
+                    <strong>Mevcut:</strong> <a href="https://ixtif.com/admin/muzibu" target="_blank">https://ixtif.com/admin/muzibu</a><br>
+                    <small class="text-muted">Simdi direkt sarki listesine gidiyor, bunun yerine asagidaki dashboard gelecek</small>
+                </div>
+
+                <!-- Dashboard Mockup -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-music me-2"></i>
+                            Muzibu Dashboard
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Stats Row -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="bg-primary text-white avatar">
+                                                    <i class="fas fa-music"></i>
+                                                </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">247</div>
+                                                <div class="text-muted">Toplam Sarki</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="bg-green text-white avatar">
+                                                    <i class="fas fa-compact-disc"></i>
+                                                </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">34</div>
+                                                <div class="text-muted">Album</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="bg-yellow text-white avatar">
+                                                    <i class="fas fa-user-music"></i>
+                                                </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">18</div>
+                                                <div class="text-muted">Sanatci</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="card card-sm">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="bg-cyan text-white avatar">
+                                                    <i class="fas fa-list-music"></i>
+                                                </span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="font-weight-medium">12</div>
+                                                <div class="text-muted">Playlist</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <!-- Son Eklenen Sarkilar -->
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Son Eklenen Sarkilar</h3>
+                                    </div>
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar bg-primary-lt"><i class="fas fa-music"></i></span>
+                                                </div>
+                                                <div class="col text-truncate">
+                                                    <strong>Yeni Baslangiclar</strong>
+                                                    <div class="text-muted small">Ahmet Kaya • 3:42</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="badge bg-green">HLS</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar bg-primary-lt"><i class="fas fa-music"></i></span>
+                                                </div>
+                                                <div class="col text-truncate">
+                                                    <strong>Gecenin Sesi</strong>
+                                                    <div class="text-muted small">Sezen Aksu • 4:15</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="badge bg-yellow">Bekliyor</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="avatar bg-primary-lt"><i class="fas fa-music"></i></span>
+                                                </div>
+                                                <div class="col text-truncate">
+                                                    <strong>Ruzgar</strong>
+                                                    <div class="text-muted small">Tarkan • 3:58</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="badge bg-green">HLS</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- En Cok Dinlenenler -->
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">En Cok Dinlenenler</h3>
+                                    </div>
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="badge bg-primary">1</span>
+                                                </div>
+                                                <div class="col text-truncate">
+                                                    <strong>Firuze</strong>
+                                                    <div class="text-muted small">Sezen Aksu</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="text-muted">12,456 <i class="fas fa-play"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="badge bg-secondary">2</span>
+                                                </div>
+                                                <div class="col text-truncate">
+                                                    <strong>Dudu</strong>
+                                                    <div class="text-muted small">Tarkan</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="text-muted">9,823 <i class="fas fa-play"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="row align-items-center">
+                                                <div class="col-auto">
+                                                    <span class="badge bg-secondary">3</span>
+                                                </div>
+                                                <div class="col text-truncate">
+                                                    <strong>Yorgun Demokrat</strong>
+                                                    <div class="text-muted small">Ahmet Kaya</div>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="text-muted">7,541 <i class="fas fa-play"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HLS Queue Status -->
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h3 class="card-title">HLS Donusum Durumu</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col">
+                                        <div class="h1 text-green">189</div>
+                                        <div class="text-muted">Tamamlandi</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="h1 text-yellow">12</div>
+                                        <div class="text-muted">Bekliyor</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="h1 text-red">3</div>
+                                        <div class="text-muted">Basarisiz</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="row g-2 mt-3">
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Yeni Sarki
+                                </a>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fas fa-compact-disc me-2"></i>Yeni Album
+                                </a>
+                            </div>
+                            <div class="col-auto">
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fas fa-list-music me-2"></i>Yeni Playlist
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASLAK 2: SARKI LISTESI -->
+            <div class="mockup-section">
+                <h2 class="mockup-title">
+                    <i class="fas fa-list"></i>
+                    2. Zenginlestirilmis Sarki Listesi
+                </h2>
+                <p class="mockup-subtitle">Mevcut tabloya Artist, Album, Genre, Duration, HLS durumu kolonlari ekleniyor</p>
+
+                <div class="current-link">
+                    <strong>Mevcut:</strong> <a href="https://ixtif.com/admin/muzibu/song" target="_blank">https://ixtif.com/admin/muzibu/song</a><br>
+                    <small class="text-muted">Simdi sadece Title ve Status var, asagidaki gibi zenginlesecek</small>
+                </div>
+
+                <!-- Song List Mockup -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <!-- Filter Section -->
+                        <div class="filter-section mx-3 mt-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-md-3">
+                                    <div class="input-icon">
+                                        <span class="input-icon-addon"><i class="fas fa-search"></i></span>
+                                        <input type="text" class="form-control" placeholder="Sarki ara...">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select">
+                                        <option>Tum Sanatcilar</option>
+                                        <option>Ahmet Kaya</option>
+                                        <option>Sezen Aksu</option>
+                                        <option>Tarkan</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select">
+                                        <option>Tum Turler</option>
+                                        <option>Pop</option>
+                                        <option>Rock</option>
+                                        <option>Arabesk</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select">
+                                        <option>HLS Durumu</option>
+                                        <option>Tamamlandi</option>
+                                        <option>Bekliyor</option>
+                                        <option>Basarisiz</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select">
+                                        <option>10</option>
+                                        <option>50</option>
+                                        <option>100</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-outline-secondary w-100" title="Filtreleri Temizle">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="table table-vcenter card-table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px">
+                                            <input type="checkbox" class="form-check-input">
+                                        </th>
+                                        <th>Sarki</th>
+                                        <th>Sanatci</th>
+                                        <th>Album</th>
+                                        <th>Tur</th>
+                                        <th class="text-center">Sure</th>
+                                        <th class="text-center">HLS</th>
+                                        <th class="text-center">Durum</th>
+                                        <th class="text-center">Islemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm me-2 bg-primary-lt">
+                                                    <i class="fas fa-music"></i>
+                                                </span>
+                                                <strong>Firuze</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">Sezen Aksu</span></td>
+                                        <td><span class="text-muted">Bahane</span></td>
+                                        <td><span class="badge bg-blue-lt">Pop</span></td>
+                                        <td class="text-center">4:32</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-green hls-badge" title="HLS Hazir">
+                                                <i class="fas fa-shield-alt"></i>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-success">Aktif</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <a href="#" class="text-muted" title="Duzenle"><i class="fas fa-pen"></i></a>
+                                                <a href="#" class="text-muted" title="Cevir"><i class="fas fa-language"></i></a>
+                                                <a href="#" class="text-danger" title="Sil"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm me-2 bg-primary-lt">
+                                                    <i class="fas fa-music"></i>
+                                                </span>
+                                                <strong>Yorgun Demokrat</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">Ahmet Kaya</span></td>
+                                        <td><span class="text-muted">Safak Turkusu</span></td>
+                                        <td><span class="badge bg-red-lt">Rock</span></td>
+                                        <td class="text-center">5:18</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-yellow hls-badge" title="Donusum Bekliyor">
+                                                <i class="fas fa-clock"></i>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-success">Aktif</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <a href="#" class="text-muted" title="Duzenle"><i class="fas fa-pen"></i></a>
+                                                <a href="#" class="text-muted" title="Cevir"><i class="fas fa-language"></i></a>
+                                                <a href="#" class="text-danger" title="Sil"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm me-2 bg-primary-lt">
+                                                    <i class="fas fa-music"></i>
+                                                </span>
+                                                <strong>Dudu</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">Tarkan</span></td>
+                                        <td><span class="text-muted">Karma</span></td>
+                                        <td><span class="badge bg-blue-lt">Pop</span></td>
+                                        <td class="text-center">3:45</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-green hls-badge" title="HLS Hazir">
+                                                <i class="fas fa-shield-alt"></i>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary">Pasif</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <a href="#" class="text-muted" title="Duzenle"><i class="fas fa-pen"></i></a>
+                                                <a href="#" class="text-muted" title="Cevir"><i class="fas fa-language"></i></a>
+                                                <a href="#" class="text-danger" title="Sil"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm me-2 bg-primary-lt">
+                                                    <i class="fas fa-music"></i>
+                                                </span>
+                                                <strong>Gitti Gideli</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">Sezen Aksu</span></td>
+                                        <td><span class="text-muted">-</span></td>
+                                        <td><span class="badge bg-purple-lt">Arabesk</span></td>
+                                        <td class="text-center">4:02</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-red hls-badge" title="Donusum Basarisiz">
+                                                <i class="fas fa-exclamation"></i>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-success">Aktif</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <a href="#" class="text-muted" title="Duzenle"><i class="fas fa-pen"></i></a>
+                                                <a href="#" class="text-muted" title="Cevir"><i class="fas fa-language"></i></a>
+                                                <a href="#" class="text-danger" title="Sil"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Toplam 247 sarki</span>
+                            <nav>
+                                <ul class="pagination mb-0">
+                                    <li class="page-item disabled"><a class="page-link" href="#">Onceki</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">Sonraki</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div class="card mt-3 bg-primary-lt">
+                    <div class="card-body py-2">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span><strong>3</strong> oge secildi</span>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-success">
+                                    <i class="fas fa-shield-alt me-1"></i>HLS Donustur
+                                </button>
+                                <button class="btn btn-sm btn-warning">
+                                    <i class="fas fa-toggle-on me-1"></i>Aktif/Pasif
+                                </button>
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash me-1"></i>Sil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASLAK 3: ALBUM LISTESI -->
+            <div class="mockup-section">
+                <h2 class="mockup-title">
+                    <i class="fas fa-compact-disc"></i>
+                    3. Zenginlestirilmis Album Listesi
+                </h2>
+                <p class="mockup-subtitle">Album listesine Sanatci, Sarki Sayisi, Yil bilgileri ekleniyor</p>
+
+                <div class="current-link">
+                    <strong>Mevcut:</strong> <a href="https://ixtif.com/admin/muzibu/album" target="_blank">https://ixtif.com/admin/muzibu/album</a>
+                </div>
+
+                <!-- Album List Mockup -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-vcenter card-table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px">
+                                            <input type="checkbox" class="form-check-input">
+                                        </th>
+                                        <th>Album</th>
+                                        <th>Sanatci</th>
+                                        <th class="text-center">Sarki</th>
+                                        <th class="text-center">Yil</th>
+                                        <th class="text-center">Durum</th>
+                                        <th class="text-center">Islemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm me-2 bg-green-lt">
+                                                    <i class="fas fa-compact-disc"></i>
+                                                </span>
+                                                <strong>Bahane</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">Sezen Aksu</span></td>
+                                        <td class="text-center"><span class="badge bg-blue-lt">12</span></td>
+                                        <td class="text-center">1992</td>
+                                        <td class="text-center"><span class="badge bg-success">Aktif</span></td>
+                                        <td class="text-center">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <a href="#" class="text-muted"><i class="fas fa-pen"></i></a>
+                                                <a href="#" class="text-danger"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input"></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm me-2 bg-green-lt">
+                                                    <i class="fas fa-compact-disc"></i>
+                                                </span>
+                                                <strong>Karma</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">Tarkan</span></td>
+                                        <td class="text-center"><span class="badge bg-blue-lt">14</span></td>
+                                        <td class="text-center">2001</td>
+                                        <td class="text-center"><span class="badge bg-success">Aktif</span></td>
+                                        <td class="text-center">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <a href="#" class="text-muted"><i class="fas fa-pen"></i></a>
+                                                <a href="#" class="text-danger"><i class="fas fa-trash"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ONAY BOLUMU -->
+            <div class="card bg-dark border-primary">
+                <div class="card-body text-center py-4">
+                    <h3 class="text-white mb-3">Taslaklari Inceldin mi?</h3>
+                    <p class="text-muted mb-4">Onayladigin tasarimlari kodlamaya baslayayim. Degisiklik istersen belirt.</p>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="check1">
+                            <label class="form-check-label text-white" for="check1">Dashboard</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="check2">
+                            <label class="form-check-label text-white" for="check2">Sarki Listesi</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="check3">
+                            <label class="form-check-label text-white" for="check3">Album Listesi</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

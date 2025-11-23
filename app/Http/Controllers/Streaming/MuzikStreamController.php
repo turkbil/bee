@@ -7,6 +7,8 @@ use App\Services\Muzibu\HLSService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Modules\Muzibu\App\Models\Song;
+use Modules\Muzibu\App\Jobs\ProcessBulkSongHLSJob;
 
 /**
  * Muzik Streaming Controller
@@ -47,22 +49,28 @@ class MuzikStreamController extends Controller
             // TODO: Token validation + rate limiting ekle
             // TODO: User authentication kontrol et
 
+            // Debug: Tenant bilgisi
+            $tenantId = tenant() ? tenant()->id : 'NO_TENANT';
+            Log::info('🔒 Key request', ['hash' => $songHash, 'tenant' => $tenantId]);
+
             $keyData = $this->hlsService->getEncryptionKey($songHash);
 
             if (!$keyData) {
-                Log::warning('🔒 Encryption key bulunamadı', ['hash' => $songHash]);
+                Log::warning('🔒 Encryption key bulunamadı', ['hash' => $songHash, 'tenant' => $tenantId]);
                 return response('Not Found', 404);
             }
 
-            Log::info('🔑 Encryption key served', ['hash' => $songHash]);
+            Log::info('🔑 Encryption key served', ['hash' => $songHash, 'size' => strlen($keyData)]);
 
             return response($keyData, 200, [
                 'Content-Type' => 'application/octet-stream',
+                'Content-Length' => strlen($keyData),
                 'Cache-Control' => 'no-store, no-cache, must-revalidate',
                 'Pragma' => 'no-cache',
                 'Access-Control-Allow-Origin' => '*',
                 'Access-Control-Allow-Methods' => 'GET, OPTIONS',
-                'Access-Control-Allow-Headers' => 'Content-Type',
+                'Access-Control-Allow-Headers' => 'Content-Type, Range',
+                'Access-Control-Expose-Headers' => 'Content-Length',
             ]);
 
         } catch (\Exception $e) {
@@ -100,6 +108,30 @@ class MuzikStreamController extends Controller
 
             // Dosya var mı kontrol
             if (!file_exists($filePath)) {
+                // LAZY CONVERSION: HLS yoksa ve playlist isteniyorsa, background job tetikle
+                if ($filename === 'playlist.m3u8' && is_numeric($songHash)) {
+                    $songId = (int) $songHash;
+                    $song = Song::find($songId);
+
+                    if ($song && $song->file_path && !$song->hls_converted) {
+                        // Response döndükten sonra HLS conversion başlat
+                        // Bu sayede kullanıcı hemen MP3 dinleyebilir
+                        ProcessBulkSongHLSJob::dispatchAfterResponse($songId);
+
+                        Log::info('🔄 Lazy HLS conversion tetiklendi', [
+                            'song_id' => $songId,
+                            'file' => $song->file_path
+                        ]);
+
+                        // 404 döndür - client MP3'e fallback yapacak
+                        // Bir sonraki dinlemede HLS hazır olacak
+                        return response()->json([
+                            'status' => 'processing',
+                            'message' => 'HLS conversion in progress'
+                        ], 404);
+                    }
+                }
+
                 Log::warning('📂 HLS dosya bulunamadı', [
                     'hash' => $songHash,
                     'file' => $filename

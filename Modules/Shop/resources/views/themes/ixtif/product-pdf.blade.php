@@ -279,6 +279,62 @@
         .no-break {
             page-break-inside: avoid;
         }
+
+        /* Body HTML content styling */
+        .description h2 {
+            font-size: 12px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 15px 0 8px 0;
+        }
+
+        .description h3 {
+            font-size: 11px;
+            font-weight: bold;
+            color: #1e293b;
+            margin: 12px 0 6px 0;
+        }
+
+        .description p {
+            margin: 8px 0;
+            color: #475569;
+        }
+
+        .description ul, .description ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .description li {
+            margin: 4px 0;
+            color: #475569;
+        }
+
+        .description section {
+            margin: 15px 0;
+        }
+
+        .description strong {
+            color: #1e293b;
+        }
+
+        .description table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .description th, .description td {
+            border: 1px solid #e2e8f0;
+            padding: 6px 8px;
+            font-size: 9px;
+            text-align: left;
+        }
+
+        .description th {
+            background: #f1f5f9;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -293,6 +349,13 @@
         {{ $title }}
     </div>
 
+    {{-- PRODUCT IMAGE --}}
+    @if(!empty($productImageBase64))
+    <div style="text-align: center; margin: 20px 0 25px 0;">
+        <img src="{{ $productImageBase64 }}" alt="{{ $title }}" style="max-width: 100%; max-height: 300px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    </div>
+    @endif
+
     {{-- SHORT DESCRIPTION --}}
     @if($shortDescription)
     <div class="description">
@@ -301,7 +364,7 @@
     @endif
 
     {{-- GALLERY NOTE --}}
-    @if($galleryImages && $galleryImages->count() > 0)
+    @if($galleryImages && $galleryImages->count() > 1)
     <div class="gallery-note">
         📷 Bu ürüne ait {{ $galleryImages->count() }} adet görsel web sitemizde mevcuttur.
     </div>
@@ -311,8 +374,8 @@
     @if($longDescription)
     <div class="section no-break">
         <div class="section-title">Ürün Açıklaması</div>
-        <div class="description">
-            {!! nl2br(strip_tags($longDescription)) !!}
+        <div class="description" style="font-size: 10px; line-height: 1.6;">
+            {!! $longDescription !!}
         </div>
     </div>
     @endif

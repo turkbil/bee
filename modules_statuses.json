@@ -21,5 +21,8 @@
     "Payment": true,
     "Favorite": true,
     "ReviewSystem": true,
-    "Cart": true
+    "Cart": true,
+    "Mail": true,
+    "Subscription": true,
+    "Coupon": true
 }

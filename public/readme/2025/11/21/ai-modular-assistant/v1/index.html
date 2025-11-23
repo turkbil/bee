@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular AI Assistant - Tasarim Plani</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        section { margin-bottom: 50px; }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+        }
+        h3 {
+            font-size: 1.3rem;
+            margin: 20px 0 15px 0;
+            color: #f8fafc;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        .card-purple { border-left-color: #8b5cf6; }
+        .card-green { border-left-color: #10b981; }
+        .card-orange { border-left-color: #f59e0b; }
+        .card h3 { color: #60a5fa; margin-top: 0; }
+        .card p { color: #cbd5e1; margin-bottom: 10px; }
+        ul { margin-left: 20px; margin-bottom: 15px; }
+        li { margin-bottom: 8px; color: #cbd5e1; }
+        .highlight { color: #fbbf24; font-weight: 600; }
+        .code-block {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 15px 0;
+            white-space: pre;
+        }
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th { background: rgba(51, 65, 85, 0.5); color: #60a5fa; }
+        td { color: #cbd5e1; }
+        .flow-diagram {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 25px;
+            border-radius: 12px;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+            line-height: 1.5;
+            font-size: 0.85rem;
+        }
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Modular AI Assistant - Tasarim Plani</h1>
+            <div class="meta">
+                Tarih: 2025-11-21 |
+                Amac: AI Chat'i modul-bagimsiz ve tenant-aware yapmak
+            </div>
+        </header>
+
+        <!-- PROBLEM -->
+        <section>
+            <h2>Mevcut Sorun</h2>
+            <div class="card card-orange">
+                <h3>Simdi: Shop'a Bagimli</h3>
+                <ul>
+                    <li>Endpoint: <code>/shop-assistant/chat</code> - Shop'a ozgu isim</li>
+                    <li>ProductSearchService - Sadece Shop urun aramasi</li>
+                    <li>Prompt'lar: "urun", "fiyat", "stok" - Shop terminolojisi</li>
+                    <li>Context: Sadece Shop modulu verisi</li>
+                </ul>
+                <p><strong>Problem:</strong> Diger modul/tenant'lar icin kullanilemiyor!</p>
+            </div>
+        </section>
+
+        <!-- SOLUTION ARCHITECTURE -->
+        <section>
+            <h2>Cozum: Modular Assistant Yapisi</h2>
+
+            <div class="flow-diagram">
+Tenant Konfigurasyonu (AI Directive)
+            |
+            v
+    +---------------+
+    | Assistant Type |
+    +---------------+
+            |
+    +-------+-------+-------+-------+
+    |       |       |       |       |
+    v       v       v       v       v
+  Shop   Content  Booking  Info   Custom
+   |       |        |       |       |
+   v       v        v       v       v
+Product  Blog    Calendar  FAQ   Custom
+Search   Search   Search  Search  Search
+   |       |        |       |       |
+   +-------+--------+-------+-------+
+                    |
+                    v
+            ContextBuilder
+                    |
+                    v
+              AIResponseNode
+            </div>
+        </section>
+
+        <!-- ASSISTANT TYPES -->
+        <section>
+            <h2>Assistant Tipleri</h2>
+
+            <table>
+                <tr>
+                    <th>Tip</th>
+                    <th>Kullanim Alani</th>
+                    <th>Arama Servisi</th>
+                    <th>Ornek Tenant</th>
+                </tr>
+                <tr>
+                    <td><strong>shop</strong></td>
+                    <td>E-ticaret, urun satisi</td>
+                    <td>ProductSearchService</td>
+                    <td>iXtif (Tenant 2)</td>
+                </tr>
+                <tr>
+                    <td><strong>content</strong></td>
+                    <td>Blog, haber, icerik</td>
+                    <td>BlogSearchService</td>
+                    <td>Haber siteleri</td>
+                </tr>
+                <tr>
+                    <td><strong>booking</strong></td>
+                    <td>Randevu, rezervasyon</td>
+                    <td>BookingSearchService</td>
+                    <td>Klinik, otel</td>
+                </tr>
+                <tr>
+                    <td><strong>info</strong></td>
+                    <td>Bilgi, SSS, destek</td>
+                    <td>KnowledgeBaseService</td>
+                    <td>Destek portali</td>
+                </tr>
+                <tr>
+                    <td><strong>music</strong></td>
+                    <td>Muzik platformu</td>
+                    <td>MusicSearchService</td>
+                    <td>Muzibu (Tenant 1001)</td>
+                </tr>
+                <tr>
+                    <td><strong>custom</strong></td>
+                    <td>Ozel/hibrit</td>
+                    <td>CustomSearchService</td>
+                    <td>Ozel projeler</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- IMPLEMENTATION PLAN -->
+        <section>
+            <h2>Uygulama Plani</h2>
+
+            <div class="card">
+                <h3>1. AI Tenant Directive: assistant_type <span class="priority priority-high">Yuksek</span></h3>
+                <p>Her tenant icin hangi assistant tipinin kullanilacagini belirle:</p>
+                <div class="code-block">
+// AI Tenant Directive
+{
+    "tenant_id": 2,
+    "directive_key": "ai_assistant_type",
+    "directive_value": "shop",
+    "description": "iXtif - Shop Assistant"
+}
+
+// Muzibu icin
+{
+    "tenant_id": 1001,
+    "directive_key": "ai_assistant_type",
+    "directive_value": "music",
+    "description": "Muzibu - Music Assistant"
+}
+
+// Bilgi portali icin
+{
+    "tenant_id": 500,
+    "directive_key": "ai_assistant_type",
+    "directive_value": "info",
+    "description": "Sadece SSS ve bilgi"
+}</div>
+            </div>
+
+            <div class="card">
+                <h3>2. ModuleSearchService Interface <span class="priority priority-high">Yuksek</span></h3>
+                <p>Tum arama servisleri icin ortak interface:</p>
+                <div class="code-block">
+// App/Contracts/ModuleSearchInterface.php
+interface ModuleSearchInterface
+{
+    public function search(string $query, ?int $categoryId = null): array;
+    public function getContextForAI(array $results): string;
+    public function getQuickActions(): array;
+}
+
+// Implementasyonlar:
+- ProductSearchService implements ModuleSearchInterface
+- BlogSearchService implements ModuleSearchInterface
+- BookingSearchService implements ModuleSearchInterface
+- KnowledgeBaseSearchService implements ModuleSearchInterface
+- MusicSearchService implements ModuleSearchInterface</div>
+            </div>
+
+            <div class="card">
+                <h3>3. AssistantTypeResolver Service <span class="priority priority-high">Yuksek</span></h3>
+                <p>Tenant'a gore dogru servisleri cozumle:</p>
+                <div class="code-block">
+// App/Services/AI/AssistantTypeResolver.php
+class AssistantTypeResolver
+{
+    public function resolve(int $tenantId): array
+    {
+        $type = $this->getAssistantType($tenantId);
+
+        return [
+            'type' => $type,
+            'search_service' => $this->getSearchService($type),
+            'context_builder' => $this->getContextBuilder($type),
+            'prompt_service' => $this->getPromptService($type),
+            'quick_actions' => $this->getQuickActions($tenantId, $type),
+        ];
+    }
+
+    protected function getSearchService(string $type): ModuleSearchInterface
+    {
+        return match($type) {
+            'shop' => app(ProductSearchService::class),
+            'content' => app(BlogSearchService::class),
+            'booking' => app(BookingSearchService::class),
+            'info' => app(KnowledgeBaseSearchService::class),
+            'music' => app(MusicSearchService::class),
+            default => app(GenericSearchService::class),
+        };
+    }
+}</div>
+            </div>
+
+            <div class="card">
+                <h3>4. Endpoint Yeniden Adlandirma <span class="priority priority-medium">Orta</span></h3>
+                <p>Shop-specific endpoint'leri generic yap:</p>
+                <div class="code-block">
+// ESKI (Shop'a ozgu):
+POST /api/ai/v1/shop-assistant/chat
+POST /api/ai/v1/shop-assistant/chat-stream
+
+// YENI (Generic):
+POST /api/ai/v1/assistant/chat
+POST /api/ai/v1/assistant/chat-stream
+GET  /api/ai/v1/assistant/quick-actions
+
+// Geriye donuk uyumluluk:
+// Eski endpoint'ler yeni endpoint'lere redirect</div>
+            </div>
+
+            <div class="card">
+                <h3>5. Dinamik Prompt Sistemi <span class="priority priority-medium">Orta</span></h3>
+                <p>Her assistant tipi icin farkli prompt kurallari:</p>
+                <div class="code-block">
+// Shop Assistant Prompt
+"Sen bir satis danismanisin. Urun oner, fiyat bilgisi ver..."
+
+// Content Assistant Prompt
+"Sen bir icerik asistanisin. Blog yazilari oner, bilgi ver..."
+
+// Booking Assistant Prompt
+"Sen bir randevu asistanisin. Musait zamanlari goster..."
+
+// Info Assistant Prompt
+"Sen bir bilgi asistanisin. SSS'leri yanitla, yonlendir..."
+
+// Music Assistant Prompt
+"Sen bir muzik asistanisin. Sarki oner, playlist olustur..."</div>
+            </div>
+
+            <div class="card">
+                <h3>6. Dinamik Quick Actions <span class="priority priority-medium">Orta</span></h3>
+                <p>Her assistant tipi icin farkli hizli butonlar:</p>
+                <div class="code-block">
+// Shop: Transpalet, Forklift, Yedek Parca...
+// Content: Son Yazilar, Kategoriler, Arama...
+// Booking: Randevu Al, Musait Saatler, Iptal...
+// Info: SSS, Iletisim, Destek Talebi...
+// Music: Sarki Ara, Playlist, Sanatci...</div>
+            </div>
+        </section>
+
+        <!-- FILE STRUCTURE -->
+        <section>
+            <h2>Dosya Yapisi</h2>
+
+            <div class="code-block">
+App/
+├── Contracts/
+│   └── ModuleSearchInterface.php        # Arama interface
+│
+├── Services/AI/
+│   ├── AssistantTypeResolver.php        # Tip cozumleyici
+│   ├── Search/
+│   │   ├── ProductSearchService.php     # Shop aramasi
+│   │   ├── BlogSearchService.php        # Blog aramasi
+│   │   ├── BookingSearchService.php     # Randevu aramasi
+│   │   ├── KnowledgeBaseSearchService.php  # SSS aramasi
+│   │   ├── MusicSearchService.php       # Muzik aramasi
+│   │   └── GenericSearchService.php     # Fallback
+│   │
+│   └── Prompt/
+│       ├── ShopPromptService.php        # Shop prompt'lari
+│       ├── ContentPromptService.php     # Content prompt'lari
+│       ├── BookingPromptService.php     # Booking prompt'lari
+│       ├── InfoPromptService.php        # Info prompt'lari
+│       └── MusicPromptService.php       # Music prompt'lari
+
+Modules/AI/
+├── app/Services/Workflow/Nodes/
+│   ├── ModuleSearchNode.php             # Generic arama node
+│   └── ModuleContextBuilderNode.php     # Generic context builder</div>
+        </section>
+
+        <!-- WORKFLOW -->
+        <section>
+            <h2>Guncellenmis Workflow</h2>
+
+            <div class="flow-diagram">
+PublicAIController::assistantChat()
+            |
+            v
+AssistantTypeResolver::resolve($tenantId)
+            |
+            v
+    [type, search_service, prompt_service]
+            |
+            v
+ConversationFlowEngine::processMessage()
+            |
+    +-------+-------+
+    |               |
+    v               v
+ModuleSearchNode   CategoryDetectionNode
+(generic)          (type-specific)
+    |               |
+    +-------+-------+
+            |
+            v
+    ContextBuilderNode
+    (type-specific context)
+            |
+            v
+    AIResponseNode
+    (type-specific prompt)
+            |
+            v
+    MessageSaverNode
+            </div>
+        </section>
+
+        <!-- MIGRATION PLAN -->
+        <section>
+            <h2>Gecis Plani</h2>
+
+            <div class="card card-green">
+                <h3>Faz 1: Altyapi (1-2 gun)</h3>
+                <ul>
+                    <li>ModuleSearchInterface olustur</li>
+                    <li>AssistantTypeResolver olustur</li>
+                    <li>ai_assistant_type directive'i ekle</li>
+                    <li>Tenant 2 icin "shop" tipi tanimla</li>
+                </ul>
+            </div>
+
+            <div class="card card-green">
+                <h3>Faz 2: Shop Refactor (1 gun)</h3>
+                <ul>
+                    <li>ProductSearchService'i interface'e uyumlu yap</li>
+                    <li>ShopPromptService olustur</li>
+                    <li>Mevcut kodlari yeni yapiya tasi</li>
+                    <li>Geriye donuk uyumluluk sagla</li>
+                </ul>
+            </div>
+
+            <div class="card card-green">
+                <h3>Faz 3: Diger Tipler (Gerektiginde)</h3>
+                <ul>
+                    <li>Yeni tenant geldiginde ilgili servisi yaz</li>
+                    <li>BlogSearchService (content tipi icin)</li>
+                    <li>BookingSearchService (booking tipi icin)</li>
+                    <li>vb.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- BENEFITS -->
+        <section>
+            <h2>Faydalar</h2>
+
+            <div class="card card-purple">
+                <h3>Elde Edilecekler</h3>
+                <ul>
+                    <li><strong>Modul Bagimsizligi:</strong> AI Chat herhangi bir modüle baglanabilir</li>
+                    <li><strong>Tenant Izolasyonu:</strong> Her tenant kendi assistant tipini kullanir</li>
+                    <li><strong>Kolay Genisletme:</strong> Yeni tip eklemek icin sadece servis yaz</li>
+                    <li><strong>Kod Tekrari Yok:</strong> Ortak logic interface'de</li>
+                    <li><strong>Test Edilebilirlik:</strong> Her servis bagimsiz test edilebilir</li>
+                    <li><strong>Performans:</strong> Gereksiz modul yuklemesi yok</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            Claude AI tarafindan olusturuldu | 2025-11-21
+        </footer>
+    </div>
+</body>
+</html>

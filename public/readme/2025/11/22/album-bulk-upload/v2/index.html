@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albüme Toplu Şarkı Yükleme v2 - Düzenlenebilir</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .update-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+        }
+
+        /* Mockup Container */
+        .mockup-container {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            border: 1px solid #334155;
+        }
+
+        .mockup-header {
+            background: #334155;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mockup-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mockup-header h3 {
+            color: #f1f5f9;
+            font-size: 1.1rem;
+        }
+
+        .mockup-body {
+            padding: 25px;
+        }
+
+        /* Steps Indicator */
+        .steps-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+        }
+
+        .step.active {
+            color: #3b82f6;
+        }
+
+        .step.completed {
+            color: #10b981;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #334155;
+        }
+
+        .step.active .step-number {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #10b981;
+            color: white;
+        }
+
+        /* Album Info Bar */
+        .album-info-bar {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .album-cover {
+            width: 60px;
+            height: 60px;
+            background: #334155;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+        }
+
+        .album-details h4 {
+            color: #f1f5f9;
+            font-size: 1rem;
+        }
+
+        .album-details span {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        /* Bulk Settings */
+        .bulk-settings {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .bulk-settings h4 {
+            color: #a78bfa;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .bulk-settings-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-item label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .setting-item select,
+        .setting-item input[type="checkbox"] {
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: #f1f5f9;
+            font-size: 0.85rem;
+        }
+
+        /* Editable File List */
+        .file-list-header {
+            display: grid;
+            grid-template-columns: 40px 1fr 200px 150px 100px 80px;
+            gap: 10px;
+            padding: 10px 15px;
+            background: #0f172a;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .file-list {
+            background: #0f172a;
+            border-radius: 0 0 8px 8px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: grid;
+            grid-template-columns: 40px 1fr 200px 150px 100px 80px;
+            gap: 10px;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-checkbox input {
+            width: 16px;
+            height: 16px;
+        }
+
+        .file-main {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .file-original {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .editable-input {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: #f1f5f9;
+            font-size: 0.9rem;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+
+        .editable-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .editable-input.edited {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .genre-select {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: #f1f5f9;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        .duration-display {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .btn-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .btn-icon-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .btn-icon-danger:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-icon-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        /* Status Column */
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-ready {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .status-edited {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #475569;
+            color: #94a3b8;
+        }
+
+        .btn-outline:hover {
+            border-color: #64748b;
+            color: #f1f5f9;
+        }
+
+        /* Workflow Explanation */
+        .workflow-section {
+            margin-top: 40px;
+        }
+
+        .workflow-section h2 {
+            font-size: 1.5rem;
+            color: #60a5fa;
+            margin-bottom: 20px;
+        }
+
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .workflow-step {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .workflow-step-number {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 auto 15px;
+        }
+
+        .workflow-step h4 {
+            color: #f1f5f9;
+            margin-bottom: 10px;
+        }
+
+        .workflow-step p {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        /* Edit Features */
+        .edit-features {
+            margin-top: 30px;
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        .edit-features h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .feature-icon {
+            color: #10b981;
+            font-size: 1rem;
+        }
+
+        .feature-text {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .feature-text strong {
+            color: #f1f5f9;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 1200px) {
+            .file-list-header,
+            .file-item {
+                grid-template-columns: 40px 1fr 150px 100px 80px;
+            }
+            .file-list-header > *:nth-child(4),
+            .file-item > *:nth-child(4) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Albüme Toplu Şarkı Yükleme <span class="update-badge">v2</span></h1>
+            <div class="meta">
+                Tarih: 2025-11-22 | Düzenlenebilir Metadata & İsim Değiştirme
+            </div>
+        </header>
+
+        <!-- Panel Mockup -->
+        <div class="mockup-container">
+            <div class="mockup-header">
+                <div class="mockup-header-left">
+                    <span>🎵</span>
+                    <h3>Toplu Şarkı Yükleme - İncele & Düzenle</h3>
+                </div>
+            </div>
+            <div class="mockup-body">
+                <!-- Steps -->
+                <div class="steps-indicator">
+                    <div class="step completed">
+                        <span class="step-number">✓</span>
+                        <span>Dosya Seç</span>
+                    </div>
+                    <div class="step active">
+                        <span class="step-number">2</span>
+                        <span>İncele & Düzenle</span>
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <span>Yükle & İşle</span>
+                    </div>
+                </div>
+
+                <!-- Album Info -->
+                <div class="album-info-bar">
+                    <div class="album-cover">📀</div>
+                    <div class="album-details">
+                        <h4>Hedef Albüm: "Yaz Hitleri 2025"</h4>
+                        <span>Sanatçı: Various Artists • Eklenecek: 5 şarkı</span>
+                    </div>
+                </div>
+
+                <!-- Bulk Settings -->
+                <div class="bulk-settings">
+                    <h4>Toplu Ayarlar (Tüm seçililer için)</h4>
+                    <div class="bulk-settings-row">
+                        <div class="setting-item">
+                            <label>Tür:</label>
+                            <select>
+                                <option value="">— Ayrı ayrı seç —</option>
+                                <option value="1">Pop</option>
+                                <option value="2">Rock</option>
+                                <option value="3">Electronic</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <input type="checkbox" id="bulkActive" checked>
+                            <label for="bulkActive">Aktif</label>
+                        </div>
+                        <div class="setting-item">
+                            <input type="checkbox" id="bulkFeatured">
+                            <label for="bulkFeatured">Öne Çıkan</label>
+                        </div>
+                        <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem;">
+                            Seçililere Uygula
+                        </button>
+                    </div>
+                </div>
+
+                <!-- File List Header -->
+                <div class="file-list-header">
+                    <div><input type="checkbox" checked></div>
+                    <div>Şarkı Adı</div>
+                    <div>Tür</div>
+                    <div>Süre</div>
+                    <div>Durum</div>
+                    <div>İşlem</div>
+                </div>
+
+                <!-- Editable File List -->
+                <div class="file-list">
+                    <!-- Song 1 - ID3 title used -->
+                    <div class="file-item">
+                        <div class="file-checkbox">
+                            <input type="checkbox" checked>
+                        </div>
+                        <div class="file-main">
+                            <input type="text" class="editable-input" value="Summer Vibes">
+                            <span class="file-original">📁 summer_vibes.mp3 (4.2 MB)</span>
+                        </div>
+                        <div>
+                            <select class="genre-select">
+                                <option value="1" selected>Pop</option>
+                                <option value="2">Rock</option>
+                                <option value="3">Electronic</option>
+                            </select>
+                        </div>
+                        <div class="duration-display">3:24</div>
+                        <div><span class="status-badge status-ready">Hazır</span></div>
+                        <div class="file-actions">
+                            <button class="btn-icon btn-icon-danger" title="Kaldır">🗑️</button>
+                        </div>
+                    </div>
+
+                    <!-- Song 2 - Edited -->
+                    <div class="file-item">
+                        <div class="file-checkbox">
+                            <input type="checkbox" checked>
+                        </div>
+                        <div class="file-main">
+                            <input type="text" class="editable-input edited" value="Sahil Partisi">
+                            <span class="file-original">📁 beach_party.mp3 (5.8 MB) • ID3: Beach Party</span>
+                        </div>
+                        <div>
+                            <select class="genre-select">
+                                <option value="1">Pop</option>
+                                <option value="2">Rock</option>
+                                <option value="3" selected>Electronic</option>
+                            </select>
+                        </div>
+                        <div class="duration-display">4:12</div>
+                        <div><span class="status-badge status-edited">Düzenlendi</span></div>
+                        <div class="file-actions">
+                            <button class="btn-icon btn-icon-danger" title="Kaldır">🗑️</button>
+                        </div>
+                    </div>
+
+                    <!-- Song 3 - No ID3, filename used -->
+                    <div class="file-item">
+                        <div class="file-checkbox">
+                            <input type="checkbox" checked>
+                        </div>
+                        <div class="file-main">
+                            <input type="text" class="editable-input" value="sunset_dreams" placeholder="Şarkı adı girin...">
+                            <span class="file-original">📁 sunset_dreams.wav (28.4 MB) • ID3 yok</span>
+                        </div>
+                        <div>
+                            <select class="genre-select">
+                                <option value="">Seçin...</option>
+                                <option value="1">Pop</option>
+                                <option value="2">Rock</option>
+                                <option value="3">Electronic</option>
+                            </select>
+                        </div>
+                        <div class="duration-display">5:48</div>
+                        <div><span class="status-badge status-ready">Hazır</span></div>
+                        <div class="file-actions">
+                            <button class="btn-icon btn-icon-danger" title="Kaldır">🗑️</button>
+                        </div>
+                    </div>
+
+                    <!-- Song 4 -->
+                    <div class="file-item">
+                        <div class="file-checkbox">
+                            <input type="checkbox" checked>
+                        </div>
+                        <div class="file-main">
+                            <input type="text" class="editable-input" value="Tropical Night">
+                            <span class="file-original">📁 tropical_night.mp3 (3.9 MB)</span>
+                        </div>
+                        <div>
+                            <select class="genre-select">
+                                <option value="1" selected>Pop</option>
+                                <option value="2">Rock</option>
+                                <option value="3">Electronic</option>
+                            </select>
+                        </div>
+                        <div class="duration-display">3:15</div>
+                        <div><span class="status-badge status-ready">Hazır</span></div>
+                        <div class="file-actions">
+                            <button class="btn-icon btn-icon-danger" title="Kaldır">🗑️</button>
+                        </div>
+                    </div>
+
+                    <!-- Song 5 - Error -->
+                    <div class="file-item" style="opacity: 0.6;">
+                        <div class="file-checkbox">
+                            <input type="checkbox">
+                        </div>
+                        <div class="file-main">
+                            <input type="text" class="editable-input" value="" placeholder="Geçersiz dosya" disabled>
+                            <span class="file-original" style="color: #ef4444;">📁 corrupted_file.mp3 • Ses verisi okunamadı</span>
+                        </div>
+                        <div>
+                            <select class="genre-select" disabled>
+                                <option>—</option>
+                            </select>
+                        </div>
+                        <div class="duration-display">—</div>
+                        <div><span class="status-badge status-error">Hata</span></div>
+                        <div class="file-actions">
+                            <button class="btn-icon btn-icon-danger" title="Kaldır">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <div>
+                        <button class="btn btn-outline">← Geri: Dosya Ekle</button>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-outline">Hataları Kaldır</button>
+                        <button class="btn btn-success">
+                            Yükle & İşle (4 şarkı) →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow -->
+        <div class="workflow-section">
+            <h2>İş Akışı</h2>
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="workflow-step-number">1</div>
+                    <h4>Dosya Seç</h4>
+                    <p>Drag & drop veya gözat ile birden fazla ses dosyası seçin. Otomatik metadata çıkarılır.</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="workflow-step-number">2</div>
+                    <h4>İncele & Düzenle</h4>
+                    <p>Her şarkının adını düzenleyin, tür seçin, toplu ayarlar uygulayın. Hatalı dosyaları kaldırın.</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="workflow-step-number">3</div>
+                    <h4>Yükle & İşle</h4>
+                    <p>Dosyalar yüklenir, HLS'e dönüştürülür ve albüme eklenir. İlerleme gerçek zamanlı gösterilir.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Features -->
+        <div class="edit-features">
+            <h3>Düzenleme Özellikleri</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span class="feature-text"><strong>Inline İsim Düzenleme:</strong> Her şarkının adını doğrudan listede değiştirin</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span class="feature-text"><strong>ID3 Tag Okuma:</strong> MP3'ten otomatik şarkı adı, süre çıkarılır</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span class="feature-text"><strong>Tür Seçimi:</strong> Her şarkı için ayrı veya toplu tür atama</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span class="feature-text"><strong>Toplu Ayarlar:</strong> Seçili şarkılara aynı tür/durum uygula</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span class="feature-text"><strong>Dosya Kaldırma:</strong> İstemediğiniz veya hatalı dosyaları listeden çıkarın</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span class="feature-text"><strong>Düzenleme Göstergesi:</strong> Değiştirilen alanlar sarı kenarlıkla işaretlenir</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span class="feature-text"><strong>Orijinal Dosya Bilgisi:</strong> Dosya adı ve boyutu her zaman görünür</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">✓</span>
+                    <span class="feature-text"><strong>Hata Yönetimi:</strong> Geçersiz dosyalar otomatik işaretlenir, toplu kaldırılabilir</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu
+        </footer>
+    </div>
+</body>
+</html>

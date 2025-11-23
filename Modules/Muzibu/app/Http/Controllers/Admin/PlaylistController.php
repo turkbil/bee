@@ -97,12 +97,21 @@ class PlaylistController extends Controller
             // Thumbnail URL - şimdilik devre dışı (Media model yükleme sorunu)
             $coverUrl = null;
 
+            // Ayrı URL'ler hesapla (fallback için)
+            $hlsUrl = $song->hls_path ? asset('storage/' . $song->hls_path) : null;
+            $fileUrl = $song->file_path ? asset('storage/muzibu/songs/' . $song->file_path) : null;
+
             return [
                 'id' => $song->song_id,
                 'title' => is_string($title) ? $title : (is_array($title) ? ($title[app()->getLocale()] ?? $title['tr'] ?? reset($title)) : 'Unknown'),
                 'artist' => is_string($artistTitle) ? $artistTitle : (is_array($artistTitle) ? ($artistTitle[app()->getLocale()] ?? $artistTitle['tr'] ?? reset($artistTitle)) : 'Unknown'),
                 'duration' => $song->duration ? gmdate('i:s', $song->duration) : null,
-                'cover_url' => $coverUrl
+                'cover_url' => $coverUrl,
+                'hls_path' => $song->hls_path,
+                'file_path' => $song->file_path,
+                'hls_url' => $hlsUrl,
+                'file_url' => $fileUrl,
+                'audio_url' => $hlsUrl ?? $fileUrl // Backward compatibility
             ];
         });
 
@@ -127,12 +136,21 @@ class PlaylistController extends Controller
                 // Thumbnail URL - şimdilik devre dışı (Media model yükleme sorunu)
                 $coverUrl = null;
 
+                // Ayrı URL'ler hesapla (fallback için)
+                $hlsUrl = $song->hls_path ? asset('storage/' . $song->hls_path) : null;
+                $fileUrl = $song->file_path ? asset('storage/muzibu/songs/' . $song->file_path) : null;
+
                 return [
                     'id' => $song->song_id,
                     'title' => is_string($title) ? $title : (is_array($title) ? ($title[app()->getLocale()] ?? $title['tr'] ?? reset($title)) : 'Unknown'),
                     'artist' => is_string($artistTitle) ? $artistTitle : (is_array($artistTitle) ? ($artistTitle[app()->getLocale()] ?? $artistTitle['tr'] ?? reset($artistTitle)) : 'Unknown'),
                     'duration' => $song->duration ? gmdate('i:s', $song->duration) : null,
-                    'cover_url' => $coverUrl
+                    'cover_url' => $coverUrl,
+                    'hls_path' => $song->hls_path,
+                    'file_path' => $song->file_path,
+                    'hls_url' => $hlsUrl,
+                    'file_url' => $fileUrl,
+                    'audio_url' => $hlsUrl ?? $fileUrl // Backward compatibility
                 ];
             });
 

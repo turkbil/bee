@@ -82,12 +82,13 @@
             <button type="submit"
                 class="relative w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-[1.02] active:scale-[0.98] text-lg"
                 wire:loading.attr="disabled"
-                wire:loading.class="opacity-75 cursor-not-allowed">
-                <span wire:loading.remove class="flex items-center justify-center gap-2">
+                wire:loading.class="opacity-75 cursor-not-allowed"
+                wire:target="submit">
+                <span wire:loading.remove wire:target="submit" class="flex items-center justify-center gap-2">
                     <i class="fa-solid fa-paper-plane"></i>
                     Bilgileri Gönder
                 </span>
-                <span wire:loading class="flex items-center justify-center gap-2">
+                <span wire:loading wire:target="submit" class="flex items-center justify-center gap-2">
                     <i class="fa-solid fa-spinner fa-spin"></i>
                     Gönderiliyor...
                 </span>

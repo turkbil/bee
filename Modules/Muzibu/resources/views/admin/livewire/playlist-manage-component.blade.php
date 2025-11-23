@@ -58,11 +58,11 @@
                                                 placeholder="sayfa-url-slug">
                                             <label for="slug_{{ $lang }}">
                                                 {{ __('admin.playlist_url_slug') }}
-                                                <small class="text-muted ms-2">-
+                                                <small class="ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
                                             </label>
                                             <div class="form-text">
-                                                <small class="text-muted">
+                                                <small class="">
                                                     {{ __('admin.slug_help') }}
                                                 </small>
                                             </div>
@@ -107,7 +107,7 @@
 
                                     <div class="row g-2">
                                         <div class="col-5">
-                                            <label class="form-label text-muted small">Tüm Sektörler</label>
+                                            <label class="form-label small">Tüm Sektörler</label>
                                             <div class="listbox" id="available-sectors">
                                                 @if(isset($this->activeSectors))
                                                     @foreach($this->activeSectors as $sector)
@@ -135,7 +135,7 @@
                                         </div>
 
                                         <div class="col-5">
-                                            <label class="form-label text-muted small">Seçilen Sektörler</label>
+                                            <label class="form-label small">Seçilen Sektörler</label>
                                             <div class="listbox" id="selected-sectors">
                                                 @if(isset($this->activeSectors))
                                                     @foreach($this->activeSectors as $sector)
@@ -152,7 +152,7 @@
                                         </div>
                                     </div>
                                     <div class="form-text mt-2">
-                                        <small class="text-muted">
+                                        <small class="">
                                             <i class="fa-solid fa-circle-info me-1"></i>
                                             {{ __('muzibu::admin.playlist.sectors_help') }}
                                         </small>
@@ -327,7 +327,5 @@
         @include('seomanagement::admin.components.universal-seo-scripts', [
             'availableLanguages' => $availableLanguages,
         ])
-
-        @include('ai::admin.components.universal-ai-content-scripts')
     @endpush
 </div>

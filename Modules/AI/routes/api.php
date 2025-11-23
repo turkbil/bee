@@ -47,6 +47,11 @@ Route::prefix('ai/v1')
     Route::get('/shop-assistant/history', [PublicAIController::class, 'getConversationHistory'])
         ->name('shop-assistant.history');
 
+    // 🤖 MODULAR ASSISTANT (Tenant-aware, supports multiple module types)
+    // Automatically routes to correct module based on tenant configuration
+    Route::post('/assistant/chat', [PublicAIController::class, 'assistantChat'])
+        ->name('assistant.chat');
+
     // 🎨 Product Placeholder Endpoint (Cached AI-generated conversations)
     Route::get('/product-placeholder/{productId}', [PublicAIController::class, 'getProductPlaceholder'])
         ->name('product-placeholder');

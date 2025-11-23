@@ -347,7 +347,7 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             @foreach($latestBlogs as $blog)
                 @php
                     $blogTitle = is_array($blog->title) ? ($blog->title['tr'] ?? '') : $blog->title;
@@ -368,7 +368,7 @@
                     {{-- Card Container --}}
                     <div class="relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:border-blue-300 dark:hover:border-blue-500/50 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
                         {{-- Image with Layered Glass Effect --}}
-                        <div class="relative h-56 overflow-hidden flex-shrink-0">
+                        <div class="relative h-52 sm:h-56 lg:h-64 overflow-hidden flex-shrink-0">
                             @if($blogImage)
                                 <img src="{{ $blogImage }}" alt="{{ $blogTitle }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
                             @else
@@ -381,14 +381,14 @@
                             <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white dark:from-gray-900 via-white/40 dark:via-gray-900/40 to-transparent backdrop-blur-[1px]"></div>
 
                             {{-- Floating Glass Stats --}}
-                            <div class="absolute top-4 left-4 right-4 flex justify-between items-start">
-                                <div class="flex items-center gap-2">
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-lg text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg">
-                                        <i class="fa-regular fa-calendar text-blue-500 dark:text-blue-400"></i>
+                            <div class="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 flex justify-between items-start">
+                                <div class="flex items-center gap-1 sm:gap-2">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg">
+                                        <i class="fa-regular fa-calendar text-blue-500 dark:text-blue-400 hidden sm:inline"></i>
                                         {{ $blogDate }}
                                     </span>
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-lg text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg">
-                                        <i class="fa-regular fa-clock text-blue-500 dark:text-blue-400"></i>
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg">
+                                        <i class="fa-regular fa-clock text-blue-500 dark:text-blue-400 hidden sm:inline"></i>
                                         {{ $readTime }} dk
                                     </span>
                                 </div>
@@ -432,30 +432,29 @@
                                         }
                                     }"
                                      @click.prevent.stop="toggleFavorite()"
-                                     class="group/fav w-8 h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200 cursor-pointer"
+                                     class="group/fav w-6 h-6 sm:w-8 sm:h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200 cursor-pointer"
                                      title="Favorilere Ekle">
-                                    <i :class="favorited ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400'" class="text-sm transition-all duration-200"></i>
+                                    <i :class="favorited ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400'" class="text-[10px] sm:text-sm transition-all duration-200"></i>
                                 </div>
                                 @else
-                                <a href="{{ route('login') }}"
-                                   @click.stop
-                                   class="group/fav w-8 h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200"
+                                <span onclick="event.preventDefault(); event.stopPropagation(); window.location.href='{{ route('login') }}'"
+                                   class="group/fav w-6 h-6 sm:w-8 sm:h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200 cursor-pointer"
                                    title="Favorilere eklemek için giriş yapın">
-                                    <i class="fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400 text-sm transition-all duration-200"></i>
-                                </a>
+                                    <i class="fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400 text-[10px] sm:text-sm transition-all duration-200"></i>
+                                </span>
                                 @endauth
                             </div>
 
                         </div>
 
                         {{-- Content --}}
-                        <div class="p-6 pt-4 flex-1 flex flex-col">
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <div class="p-3 pt-2 sm:p-6 sm:pt-4 flex-1 flex flex-col relative z-10 bg-white/70 dark:bg-white/5">
+                            <h3 class="text-sm sm:text-lg font-bold text-gray-900 dark:text-white mb-2 sm:mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                 {{ $blogTitle }}
                             </h3>
 
                             {{-- Excerpt - Sabit yükseklik --}}
-                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 flex-1">
+                            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 sm:line-clamp-3 flex-1">
                                 {{ $blogExcerpt ?: Str::limit(strip_tags($blogContent), 120) }}
                             </p>
                         </div>

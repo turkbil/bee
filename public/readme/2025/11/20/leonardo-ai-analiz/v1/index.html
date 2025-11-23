@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI Görsel Üretim Analizi - Blog Sistemi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f472b6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #f472b6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #a78bfa;
+        }
+
+        .flow-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #f472b6;
+            backdrop-filter: blur(10px);
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .flow-step:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #f472b6, #ec4899);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            color: #f0abfc;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .code-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Monaco', monospace;
+            font-size: 0.85rem;
+        }
+
+        .code-comment {
+            color: #6b7280;
+        }
+
+        .code-keyword {
+            color: #f472b6;
+        }
+
+        .code-string {
+            color: #a5f3fc;
+        }
+
+        .code-var {
+            color: #fbbf24;
+        }
+
+        .prompt-example {
+            background: rgba(167, 139, 250, 0.1);
+            border: 1px solid #7c3aed;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .prompt-label {
+            color: #a78bfa;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .prompt-text {
+            color: #e2e8f0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f472b6;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .warning-box {
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid #eab308;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-title {
+            color: #fbbf24;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .plan-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .plan-item h3 {
+            color: #34d399;
+            margin-bottom: 12px;
+        }
+
+        .plan-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.8);
+            color: #f472b6;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+            .flow-step { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Leonardo AI Görsel Üretim Analizi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-20 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                👤 Konu: Blog görsel üretim sistemi entegrasyonu
+            </div>
+        </header>
+
+        <!-- MEVCUT DURUM -->
+        <section>
+            <h2>📊 Mevcut Durum</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">88</div>
+                    <div class="stat-label">Toplam Blog</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Görseli Var</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">85</div>
+                    <div class="stat-label">Görseli Yok</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Leonardo AI</div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <div class="warning-title">⚠️ Kritik Durum</div>
+                <p>85 blog görselsiz durumda! Leonardo AI entegrasyonu tamamlandı ancak henüz hiçbir görsel üretilmedi. Eski bloglara görsel üretme komutu oluşturulacak.</p>
+            </div>
+        </section>
+
+        <!-- GÖRSEL ÜRETIM AKIŞI -->
+        <section>
+            <h2>🔄 Görsel Üretim Akışı</h2>
+
+            <div class="flow-box">
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">Cron Tetikleme</div>
+                        <div class="step-desc">
+                            <code>php artisan generate:tenant-blogs</code> komutu her 5 dakikada çalışır (test modu).
+                            Tenant ayarlarını kontrol eder, aktif draft'ı seçer.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">Job Queue'ya Gönderim</div>
+                        <div class="step-desc">
+                            <code>GenerateBlogFromDraftJob</code> dispatch edilir. Queue: <code>blog-ai</code>.
+                            Horizon bu job'u işler, tenant context'i restore eder.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">BlogAIContentWriter İşlemi</div>
+                        <div class="step-desc">
+                            <code>generateBlogFromDraft()</code> metodu çağrılır. AI ile blog içeriği üretilir (Body, FAQ, HowTo).
+                            Validation yapılır (min 1000 karakter, 5 FAQ, 3 HowTo step).
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">Leonardo AI Görsel Üretimi</div>
+                        <div class="step-desc">
+                            <code>LeonardoAIService::generateForBlog()</code> çağrılır. Blog başlığından sektörel prompt oluşturulur.
+                            Leonardo Phoenix modeli ile 1024x768 görsel üretilir. Polling ile sonuç beklenir (~30-60 saniye).
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <div class="step-title">Media Kayıt</div>
+                        <div class="step-desc">
+                            Görsel indirilir, Spatie MediaLibrary ile <code>featured_image</code> collection'a eklenir.
+                            SEO metadata (alt_text, title, description) + custom properties (provider=leonardo, generation_id, prompt) kaydedilir.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROMPT ÜRETİM MEKANİZMASI -->
+        <section>
+            <h2>🎯 Prompt Üretim Mekanizması</h2>
+
+            <h3>Tenant-Aware Prompt Seçimi</h3>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">
+                LeonardoAIService, tenant ID'ye göre farklı prompt builder kullanır. Her sektör için özelleştirilmiş profesyonel sahne tanımları üretir.
+            </p>
+
+            <div class="code-box">
+                <span class="code-comment">// Tenant kontrolü (buildPromptForBlog metodu)</span><br>
+                <span class="code-keyword">if</span> (<span class="code-var">$tenantId</span> == <span class="code-string">2</span>) {<br>
+                &nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-var">$this</span>-><span class="code-keyword">buildIndustrialPrompt</span>(<span class="code-var">$title</span>);<br>
+                }<br><br>
+                <span class="code-keyword">if</span> (<span class="code-var">$tenantId</span> == <span class="code-string">1001</span>) {<br>
+                &nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-var">$this</span>-><span class="code-keyword">buildMusicPrompt</span>(<span class="code-var">$title</span>);<br>
+                }<br><br>
+                <span class="code-comment">// Default: Generic prompt</span><br>
+                <span class="code-keyword">return</span> <span class="code-var">$this</span>-><span class="code-keyword">buildGenericPrompt</span>(<span class="code-var">$title</span>);
+            </div>
+
+            <h3>Ekipman Tespiti (Tenant 2 - ixtif.com)</h3>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">
+                Blog başlığından anahtar kelimeler tespit edilir ve ilgili ekipman tipi belirlenir:
+            </p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Anahtar Kelime</th>
+                            <th>Tespit Edilen Ekipman</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>forklift, istif makine</td>
+                            <td>electric forklift, counterbalance forklift, reach truck forklift</td>
+                        </tr>
+                        <tr>
+                            <td>transpalet, palet jak</td>
+                            <td>electric pallet jack, manual pallet truck, powered pallet jack</td>
+                        </tr>
+                        <tr>
+                            <td>istif, stacker</td>
+                            <td>warehouse stacker machine</td>
+                        </tr>
+                        <tr>
+                            <td>depo, lojistik, warehouse</td>
+                            <td>warehouse material handling equipment</td>
+                        </tr>
+                        <tr>
+                            <td>(varsayılan)</td>
+                            <td>industrial warehouse equipment</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Örnek Prompt Çıktıları</h3>
+
+            <div class="prompt-example">
+                <div class="prompt-label">📝 Örnek 1: "Forklift Bakımı Nasıl Yapılır?"</div>
+                <div class="prompt-text">
+                    Professional photograph of a modern warehouse interior with <strong>electric forklift</strong> in action, natural lighting through skylights, workers in safety gear, clean organized environment, industrial architecture, photorealistic, high resolution, professional commercial photography, no text, no watermarks
+                </div>
+            </div>
+
+            <div class="prompt-example">
+                <div class="prompt-label">📝 Örnek 2: "Transpalet Seçim Rehberi 2025"</div>
+                <div class="prompt-text">
+                    High-quality commercial photo of <strong>powered pallet jack</strong> operating in a busy logistics center, professional lighting, safety markings visible, realistic industrial setting, photorealistic, high resolution, professional commercial photography, no text, no watermarks
+                </div>
+            </div>
+
+            <div class="prompt-example">
+                <div class="prompt-label">📝 Örnek 3: "Depo Yönetimi ve İstif Sistemleri"</div>
+                <div class="prompt-text">
+                    Corporate style photograph of <strong>warehouse stacker machine</strong> in a state-of-the-art distribution facility, clean concrete floors, LED lighting, organized pallet racks in background, photorealistic, high resolution, professional commercial photography, no text, no watermarks
+                </div>
+            </div>
+
+            <h3>Prompt Yapısı</h3>
+            <div class="code-box">
+                <span class="code-comment">// 4 farklı sahne şablonu random seçilir</span><br>
+                <span class="code-var">$scenes</span> = [<br>
+                &nbsp;&nbsp;<span class="code-string">"Professional photograph of modern warehouse interior with {equipment}..."</span>,<br>
+                &nbsp;&nbsp;<span class="code-string">"High-quality commercial photo of {equipment} in logistics center..."</span>,<br>
+                &nbsp;&nbsp;<span class="code-string">"Corporate style photograph of {equipment} in distribution facility..."</span>,<br>
+                &nbsp;&nbsp;<span class="code-string">"Editorial quality image of warehouse operations with {equipment}..."</span>,<br>
+                ];<br><br>
+                <span class="code-comment">// Sabit suffix eklenir</span><br>
+                <span class="code-keyword">return</span> <span class="code-var">$scene</span> . <span class="code-string">", photorealistic, high resolution, professional commercial photography, no text, no watermarks"</span>;
+            </div>
+        </section>
+
+        <!-- YAPILACAKLAR -->
+        <section>
+            <h2>🎯 Yapılacaklar</h2>
+
+            <div class="plan-item">
+                <h3>1. Eski Bloglara Görsel Üretme Komutu <span class="priority priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    85 görselsiz blog için artisan komutu oluşturulacak. <code>php artisan blog:generate-images</code> komutu,
+                    görseli olmayan blogları bulacak ve Leonardo AI ile görsel üretecek. Rate limiting (API limit),
+                    hata yönetimi ve progress bar içerecek.
+                </p>
+                <p><strong>Komut özellikleri:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px; color: #cbd5e1;">
+                    <li>--limit=N: Kaç blog işlenecek (varsayılan: 10)</li>
+                    <li>--tenant-id=N: Belirli tenant için</li>
+                    <li>--dry-run: Test modu (API çağrısı yapmaz)</li>
+                    <li>Rate limit: Her görsel arası 5 saniye bekleme</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h3>2. Leonardo AI Maliyet Takibi <span class="priority priority-medium">Orta Öncelik</span></h3>
+                <p>
+                    Her görsel üretimi için kredi kullanımı loglanacak. Aylık kullanım raporu ve limit uyarısı eklenecek.
+                    Leonardo AI'da aylık 3500 kredi var (~500 görsel). 85 blog için yeterli.
+                </p>
+            </div>
+
+            <div class="plan-item">
+                <h3>3. Fallback Mekanizma <span class="priority priority-medium">Orta Öncelik</span></h3>
+                <p>
+                    Leonardo AI başarısız olursa stock photo'ya geri dönecek fallback eklenecek. Böylece blog üretimi
+                    hiçbir zaman görselsiz kalmayacak. Öncelik sırası: Leonardo AI → Pexels → Unsplash → Pixabay
+                </p>
+            </div>
+        </section>
+
+        <!-- ÖNERİLEN KOMUT YAPISI -->
+        <section>
+            <h2>📋 Önerilen Artisan Komutu</h2>
+
+            <div class="code-box">
+                <span class="code-comment">// Kullanım örnekleri</span><br><br>
+                <span class="code-comment"># İlk 10 görselsiz blogu işle</span><br>
+                php artisan blog:generate-images<br><br>
+                <span class="code-comment"># 50 blogu işle</span><br>
+                php artisan blog:generate-images --limit=50<br><br>
+                <span class="code-comment"># Belirli tenant için</span><br>
+                php artisan blog:generate-images --tenant-id=2 --limit=20<br><br>
+                <span class="code-comment"># Test modu (API çağrısı yapmaz)</span><br>
+                php artisan blog:generate-images --dry-run
+            </div>
+
+            <p style="color: #94a3b8; margin-top: 20px;">
+                Bu komut ile 85 görselsiz blog için sırayla Leonardo AI görsel üretimi yapılabilir.
+                Rate limiting sayesinde API limit aşımı olmaz.
+            </p>
+        </section>
+
+        <!-- MALİYET ANALİZİ -->
+        <section>
+            <h2>💰 Maliyet Analizi</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$9</div>
+                    <div class="stat-label">Aylık Plan</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3500</div>
+                    <div class="stat-label">Kredi/Ay</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">~7</div>
+                    <div class="stat-label">Kredi/Görsel</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">~500</div>
+                    <div class="stat-label">Görsel/Ay</div>
+                </div>
+            </div>
+
+            <p style="color: #cbd5e1; margin-top: 20px;">
+                85 eski blog için: 85 × 7 = ~595 kredi. İlk ay için yeterli.<br>
+                Sonraki aylar: Günlük 3-5 blog × 30 gün = 90-150 görsel/ay → Rahat yeterli.
+            </p>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | Leonardo AI Görsel Üretim Sistemi Analizi
+        </footer>
+    </div>
+</body>
+</html>

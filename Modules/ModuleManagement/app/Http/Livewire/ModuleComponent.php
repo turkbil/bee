@@ -67,11 +67,21 @@ class ModuleComponent extends Component
 
     public function toggleActive($id)
     {
+        // Sadece Central yapabilir
+        if (tenant() !== null) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Bu işlem için yetkiniz yok.',
+                'type' => 'error',
+            ]);
+            return;
+        }
+
         $module = Module::find($id);
         if ($module) {
             $module->is_active = !$module->is_active;
             $module->save();
-            
+
             log_activity(
                 $module,
                 $module->is_active ? 'aktif edildi' : 'pasif edildi'
@@ -87,6 +97,16 @@ class ModuleComponent extends Component
 
     public function toggleDomainStatus($moduleId, $domain)
     {
+        // Sadece Central yapabilir
+        if (tenant() !== null) {
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Bu işlem için yetkiniz yok.',
+                'type' => 'error',
+            ]);
+            return;
+        }
+
         $module = Module::find($moduleId);
         if ($module) {
             $tenant = $module->tenants()->where('id', $domain)->first();
@@ -134,6 +154,10 @@ class ModuleComponent extends Component
 
     public function render()
     {
+        // Central mi Tenant mi kontrol et
+        $isCentral = tenant() === null;
+        $currentTenantId = tenant()?->id;
+
         $query = Module::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
@@ -144,25 +168,37 @@ class ModuleComponent extends Component
             })
             ->when($this->typeFilter, function ($query) {
                 $query->where('type', $this->typeFilter);
-            })
-            ->orderBy($this->sortField, $this->sortDirection);
-    
-        $modules = $query->paginate($this->perPage);
-        
-        // Domain listesini almak için
-        $domains = [];
-        try {
-            $domains = DB::table('tenants')->get();
-        } catch (\Exception $e) {
-            // tenant tablosu olmayabilir, bu durumda sessiz geçiyoruz
+            });
+
+        // Tenant ise sadece kendine atanmış aktif modülleri göster
+        if (!$isCentral && $currentTenantId) {
+            $query->whereHas('tenants', function ($q) use ($currentTenantId) {
+                $q->where('tenants.id', $currentTenantId)
+                  ->where('module_tenants.is_active', true);
+            });
         }
-        
+
+        $query->orderBy($this->sortField, $this->sortDirection);
+
+        $modules = $query->paginate($this->perPage);
+
+        // Domain listesini almak için (central database'den) - sadece central için
+        $domains = collect();
+        if ($isCentral) {
+            try {
+                $domains = DB::connection('mysql')->table('tenants')->get();
+            } catch (\Exception $e) {
+                // tenant tablosu olmayabilir, bu durumda sessiz geçiyoruz
+            }
+        }
+
         $types = Module::select('type')->distinct()->whereNotNull('type')->pluck('type');
-    
+
         return view('modulemanagement::livewire.module-component', [
             'modules' => $modules,
             'domains' => $domains,
-            'types' => $types
+            'types' => $types,
+            'isCentral' => $isCentral
         ]);
     }
 }

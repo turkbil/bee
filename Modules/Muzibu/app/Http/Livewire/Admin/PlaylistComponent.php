@@ -11,6 +11,7 @@ use Modules\Muzibu\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActions};
 use Modules\Muzibu\App\Services\PlaylistService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\Muzibu\App\Models\Playlist;
+use Modules\Muzibu\App\Models\Sector;
 use App\Traits\HasUniversalTranslation;
 use Illuminate\Support\Facades\Log;
 
@@ -29,6 +30,16 @@ class PlaylistComponent extends Component
 
     #[Url]
     public $sortDirection = 'desc';
+
+    #[Url]
+    public $filterSector = '';
+
+    // View mode: minimal (default) or detailed
+    public bool $detailedView = false;
+
+    // Playlist type: system (default) or custom
+    #[Url]
+    public $showSystemPlaylists = '1';
 
     private ?array $availableSiteLanguages = null;
 
@@ -124,6 +135,26 @@ class PlaylistComponent extends Component
         $this->resetPage();
     }
 
+    public function updatedFilterSector()
+    {
+        $this->resetPage();
+    }
+
+    public function clearFilters()
+    {
+        $this->search = '';
+        $this->filterSector = '';
+        $this->resetPage();
+    }
+
+    #[Computed]
+    public function sectors()
+    {
+        return Sector::where('is_active', true)
+            ->orderBy('sector_id', 'desc')
+            ->get();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -167,7 +198,9 @@ class PlaylistComponent extends Component
             'locales' => $this->availableSiteLanguages,
             'sortField' => $this->sortField,
             'sortDirection' => $this->sortDirection,
-            'currentLocale' => $this->siteLocale
+            'currentLocale' => $this->siteLocale,
+            'sector_id' => $this->filterSector ?: null,
+            'is_system' => $this->showSystemPlaylists === '1' || $this->showSystemPlaylists === true
         ];
 
         $playlists = $this->playlistService->getPaginatedPlaylists($filters, (int) $this->perPage);

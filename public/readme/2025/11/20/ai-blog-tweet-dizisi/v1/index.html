@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Blog Sistemi - Tweet Dizileri & İnce Tüyolar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+
+        .tweet-box {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            border-left: 4px solid #1da1f2;
+            position: relative;
+        }
+
+        .tweet-box::before {
+            content: "𝕏";
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            color: #64748b;
+        }
+
+        .tweet-number {
+            display: inline-block;
+            background: #1da1f2;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+
+        .tweet-content {
+            color: #f1f5f9;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .tweet-char {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .tip-box {
+            background: rgba(34, 197, 94, 0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #22c55e;
+        }
+
+        .tip-box h4 {
+            color: #22c55e;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .tip-box p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .secret-box {
+            background: rgba(168, 85, 247, 0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #a855f7;
+        }
+
+        .secret-box h4 {
+            color: #a855f7;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .flow-diagram {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #334155;
+        }
+
+        .flow-step:last-child {
+            border-bottom: none;
+        }
+
+        .flow-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .flow-content h4 {
+            color: #f1f5f9;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .flow-content p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .arrow {
+            text-align: center;
+            color: #60a5fa;
+            font-size: 1.5rem;
+            padding: 5px 0;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #fbbf24;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .badge-beginner { background: #22c55e; color: white; }
+        .badge-pro { background: #f59e0b; color: white; }
+        .badge-expert { background: #ef4444; color: white; }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .comparison-table th {
+            background: rgba(30, 41, 59, 0.7);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            color: #cbd5e1;
+        }
+
+        .emoji-list {
+            list-style: none;
+        }
+
+        .emoji-list li {
+            padding: 8px 0;
+            color: #cbd5e1;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .cta-box h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .cta-box p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #334155, transparent);
+            margin: 40px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Blog Sistemi - Tweet Dizileri</h1>
+            <div class="meta">
+                Tarih: 2025-11-20 | Konu: AI ile Otomatik Blog & Görsel Üretimi | Tenant: ixtif.com
+            </div>
+        </header>
+
+        <!-- SİSTEM AKIŞI -->
+        <section>
+            <h2>Sistem Nasıl Çalışıyor?</h2>
+
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-icon">📊</div>
+                    <div class="flow-content">
+                        <h4>1. Kategori & Ürün Analizi</h4>
+                        <p>Sistem shop kategorilerini ve ürünleri analiz eder, sektörel anahtar kelimeler çıkarır</p>
+                    </div>
+                </div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">
+                    <div class="flow-icon">🎯</div>
+                    <div class="flow-content">
+                        <h4>2. SEO-Driven Başlık Üretimi</h4>
+                        <p>Arama yoğunluğu yüksek, click-bait olmayan profesyonel başlıklar üretir</p>
+                    </div>
+                </div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">
+                    <div class="flow-icon">📅</div>
+                    <div class="flow-content">
+                        <h4>3. Zamanlama & Kuyruk</h4>
+                        <p>Taslaklar kuyruğa alınır, belirli periyotlarla otomatik seçilir</p>
+                    </div>
+                </div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">
+                    <div class="flow-icon">🎨</div>
+                    <div class="flow-content">
+                        <h4>4. Leonardo AI Görsel</h4>
+                        <p>Her blog için benzersiz, sektöre özel profesyonel görsel üretir (60+ sahne varyasyonu)</p>
+                    </div>
+                </div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">
+                    <div class="flow-icon">✍️</div>
+                    <div class="flow-content">
+                        <h4>5. İçerik Üretimi</h4>
+                        <p>2000+ kelime, FAQ, HowTo schema, firma bilgisi entegrasyonu, ürün bahsi</p>
+                    </div>
+                </div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">
+                    <div class="flow-icon">🚀</div>
+                    <div class="flow-content">
+                        <h4>6. Otomatik Yayınlama</h4>
+                        <p>SEO meta tags, kategori ataması, görsel optimize - hazır blog!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- TWEET DİZİSİ 1: BASİT ANLATIM -->
+        <section>
+            <h2>Tweet Dizisi #1 - Herkes İçin Basit Anlatım</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;"><span class="badge badge-beginner">Başlangıç</span> Teknik bilgi gerektirmeyen, herkesin anlayacağı dil</p>
+
+            <div class="tweet-box">
+                <span class="tweet-number">1</span>
+                <div class="tweet-content">Web sitemize her gün yeni blog yazıyorum.
+
+Ama ben yazmıyorum. 🤖
+
+AI sistemi:
+• Ürünlerimi analiz ediyor
+• Arama yapılan konuları buluyor
+• Görselleri kendisi çiziyor
+• Yazıyı kendisi yazıyor
+
+Ben sadece izliyorum.
+
+Thread ⬇️</div>
+                <div class="tweet-char">203 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">2</span>
+                <div class="tweet-content">Nasıl çalışıyor?
+
+1️⃣ Sistem ürün kategorilerimi tarar
+2️⃣ "En çok aranan" konuları bulur
+3️⃣ Her konu için SEO başlık üretir
+4️⃣ Başlıkları kuyruğa atar
+
+Örnek:
+"Forklift" kategorisi → "Forklift Bakımı Nasıl Yapılır?" başlığı
+
+Bu kadar basit.</div>
+                <div class="tweet-char">268 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">3</span>
+                <div class="tweet-content">Görsel nasıl?
+
+"Stock fotoğraf kullanmıyorum"
+
+Leonardo AI her blog için özel görsel çiziyor:
+• Depo sahneleri
+• Forklift operatörleri
+• Profesyonel ışıklandırma
+
+60'tan fazla farklı sahne var.
+
+Her görsel benzersiz ve markama özel. 🎨</div>
+                <div class="tweet-char">254 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">4</span>
+                <div class="tweet-content">Yazı kalitesi?
+
+• 2000+ kelime (Google seviyor)
+• FAQ bölümü (10 soru-cevap)
+• Nasıl yapılır? (7 adım)
+• Firma bilgisi otomatik
+• Ürünlerden bahsediyor
+
+Hepsi SEO uyumlu.
+Hepsi Google'a hazır.
+
+El değmeden.</div>
+                <div class="tweet-char">236 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">5</span>
+                <div class="tweet-content">Sonuç?
+
+Günde 1 blog = Ayda 30 blog
+Ayda 30 blog = Yılda 360 blog
+
+360 SEO optimizeli sayfa.
+360 benzersiz görsel.
+360 potansiyel müşteri kapısı.
+
+Ben hiçbir şey yapmadan.
+
+Bu içerik üretiminin geleceği. 🚀</div>
+                <div class="tweet-char">235 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">6</span>
+                <div class="tweet-content">Merak edenler için:
+
+Kullandığım teknolojiler:
+• GPT-4o-mini (içerik)
+• Leonardo AI (görsel)
+• Laravel (altyapı)
+
+Toplam geliştirme: 3 ay
+
+Ama artık 7/24 çalışıyor.
+Ben uyurken bile blog üretiyor. 😴</div>
+                <div class="tweet-char">224 karakter</div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- TWEET DİZİSİ 2: YARI PROFESYONELLİK -->
+        <section>
+            <h2>Tweet Dizisi #2 - Yarı Profesyonel</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;"><span class="badge badge-pro">Orta Seviye</span> Biraz teknik detay, ama hala anlaşılır</p>
+
+            <div class="tweet-box">
+                <span class="tweet-number">1</span>
+                <div class="tweet-content">E-ticaret siteme AI ile otomatik blog sistemi kurdum.
+
+Her gün:
+• Ürün datası → SEO başlık
+• Başlık → 2000+ kelime içerik
+• İçerik → AI görsel
+
+Tam otomasyon.
+
+İşte ince detaylar ⬇️</div>
+                <div class="tweet-char">192 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">2</span>
+                <div class="tweet-content">Başlık üretimi neden önemli?
+
+Sistem şunu yapıyor:
+1. Shop kategorilerini çekiyor
+2. Ürün sayısına göre sıralıyor
+3. Her kategori için 5 draft üretiyor
+
+"Elektrikli Transpalet" kategorisi:
+→ 5 farklı blog başlığı
+→ Her biri farklı arama intent'i
+
+Keyword stuffing yok.</div>
+                <div class="tweet-char">281 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">3</span>
+                <div class="tweet-content">İçerik kalite kontrolü:
+
+AI yazdı diye bitmiyor. Sistem şunları kontrol ediyor:
+
+✅ Minimum 1500 kelime
+✅ Firma adı 3+ kez
+✅ FAQ 5+ soru
+✅ HowTo 3+ adım
+✅ H2/H3 başlık hiyerarşisi
+
+Geçmezse? Retry mekanizması devreye giriyor.</div>
+                <div class="tweet-char">257 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">4</span>
+                <div class="tweet-content">Görsel üretiminin sırrı:
+
+Leonardo AI'a sadece "forklift çiz" demiyorum.
+
+Dinamik prompt zinciri:
+Subject → Context → Texture → Angle → Background → Lighting → Camera → Lens
+
+Sonuç: Editorial-quality fotoğraf.
+
+Her biri stock photo kalitesinde.</div>
+                <div class="tweet-char">268 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">5</span>
+                <div class="tweet-content">Yazım stili random seçimi:
+
+Her blog farklı tonda yazılıyor:
+• Profesyonel (kurumsal)
+• Samimi (konuşma dili)
+• Uzman (teknik detay)
+
+Neden? Google "AI content" pattern'ı tespit etmesin.
+
+Variety = Doğallık</div>
+                <div class="tweet-char">233 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">6</span>
+                <div class="tweet-content">Schema markup otomatik:
+
+Her blogda:
+• FAQPage schema → 10 soru
+• HowTo schema → 7 adım
+
+Google'da zengin sonuç = Daha fazla tıklama
+
+El ile yapmam gerekse saatler sürer.
+AI saniyeler içinde hazırlıyor.</div>
+                <div class="tweet-char">224 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">7</span>
+                <div class="tweet-content">Maliyet hesabı:
+
+• GPT-4o-mini: Blog başına ~$0.03
+• Leonardo AI: Görsel başına ~$0.05
+
+Toplam: $0.08 / blog
+
+İnsan yazarsa? Minimum 500₺
+
+10x ucuz. 100x hızlı. 7/24 aktif.
+
+Karar sizin. 🤷‍♂️</div>
+                <div class="tweet-char">212 karakter</div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- TWEET DİZİSİ 3: TAM PROFESYONEL -->
+        <section>
+            <h2>Tweet Dizisi #3 - Tam Profesyonel</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;"><span class="badge badge-expert">İleri Seviye</span> Developer'lar ve SEO uzmanları için teknik detaylar</p>
+
+            <div class="tweet-box">
+                <span class="tweet-number">1</span>
+                <div class="tweet-content">Multi-tenant e-ticaret sistemime programmatic SEO blog pipeline'ı kurdum.
+
+Stack:
+• Laravel + Livewire
+• OpenAI GPT-4o-mini
+• Leonardo AI (Lucid Origin model)
+
+Tenant-aware content generation.
+
+Teknik detaylar ⬇️</div>
+                <div class="tweet-char">225 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">2</span>
+                <div class="tweet-content">Draft Generation Architecture:
+
+CategoryBasedDraftGenerator:
+1. Shop kategorilerini ürün count'a göre sırala
+2. Her kategori için context oluştur
+3. Basit prompt (~500 byte, 9KB değil)
+4. Batch'le 5'erli grupla
+
+Duplicate check: Mevcut başlıklara LIKE query.</div>
+                <div class="tweet-char">269 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">3</span>
+                <div class="tweet-content">Content Generation Pipeline:
+
+Iterative approach:
+1. Outline üret (4-5 H2)
+2. Her H2'yi ayrı expand et (500+ kelime/section)
+3. FAQ generate (10 item, JSON)
+4. HowTo generate (7 step, JSON)
+5. Merge & validate
+
+Banned headings: "Giriş", "Sonuç" filtreleniyor.</div>
+                <div class="tweet-char">274 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">4</span>
+                <div class="tweet-content">Image Generation (Leonardo AI):
+
+Dynamic prompt chain:
+Subject (20) × Context (20) × Texture (20) × Angle (20) × Background (20) × Lighting (28)
+
+= 2.5M+ kombinasyon
+
+Her görsel unique.
+
+styleUUID + contrast parametreleri random seçim.</div>
+                <div class="tweet-char">248 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">5</span>
+                <div class="tweet-content">Quality Validation Layer:
+
+Pre-save checks:
+• Content length ≥ 1000 chars
+• Word count ≥ 1500
+• FAQ count ≥ 5
+• HowTo steps ≥ 3
+• Company name mentions ≥ 1
+
+Fail? Exception → Job retry mechanism.</div>
+                <div class="tweet-char">232 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">6</span>
+                <div class="tweet-content">Tenant-Specific Enhancement:
+
+Her tenant için ayrı prompt class:
+• Tenant2Prompts.php (ixtif.com)
+• TenantBlogPromptEnhancer
+
+Company context override:
+company_info.name → Short title kullan
+
+"İxtif İç ve Dış Ticaret A.Ş." → "iXtif"</div>
+                <div class="tweet-char">250 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">7</span>
+                <div class="tweet-content">SEO Implementation:
+
+Auto-generated:
+• Meta description (≤155 chars)
+• FAQ schema (JSON-LD)
+• HowTo schema (JSON-LD)
+• Alt tags for images
+• Canonical URLs
+
+Category assignment: AI selects best match via GPT.</div>
+                <div class="tweet-char">234 karakter</div>
+            </div>
+
+            <div class="tweet-box">
+                <span class="tweet-number">8</span>
+                <div class="tweet-content">Anti-Pattern Detection:
+
+Randomized elements:
+• Writing style (professional/friendly/expert)
+• Outline structure
+• Image composition
+• Prompt phrasing
+
+Goal: Avoid AI content fingerprinting.
+
+Organic content signals maintained.</div>
+                <div class="tweet-char">247 karakter</div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- İNCE TÜYOLAR -->
+        <section>
+            <h2>İnce Tüyolar & Gizli Detaylar</h2>
+
+            <div class="tip-box">
+                <h4>Taslak Üretimi Sırrı</h4>
+                <p>Büyük, karmaşık promptlar yerine <strong>basit, odaklı promptlar</strong> kullanılıyor (~500 byte). Neden? AI daha az "hallucinate" ediyor ve başarı oranı %95'in üzerine çıkıyor.</p>
+            </div>
+
+            <div class="tip-box">
+                <h4>Kategori Bazlı Gruplama</h4>
+                <p>25 draft = 5 grup × 5 draft. Her grup farklı bir shop kategorisinden. Bu sayede içerik çeşitliliği sağlanıyor ve aynı konuda tekrar önleniyor.</p>
+            </div>
+
+            <div class="secret-box">
+                <h4>Görsel Üretiminde Gerçekçilik Kısıtlaması</h4>
+                <p>Leonardo AI'a gönderilen her prompt'a <strong>"CRITICAL REQUIREMENTS: Use only realistic, standard industrial equipment designs"</strong> ekleniyor. Futuristik, sci-fi görünümlü görseller engelleniyor.</p>
+            </div>
+
+            <div class="secret-box">
+                <h4>Yazı İçinde Metin Yasağı</h4>
+                <p>Görsel promptlarına <strong>"ABSOLUTELY NO text, NO labels"</strong> ekleniyor. AI'lar görsellere yazı ekleme eğilimindedir, bu kurallar yasaklıyor.</p>
+            </div>
+
+            <div class="tip-box">
+                <h4>Outline Temizleme</h4>
+                <p>"Giriş", "Sonuç", "Hakkımızda" gibi <strong>generic başlıklar otomatik filtreleniyor</strong>. Bunlar AI içeriğini belli eden kalıplar. Spesifik, bilgilendirici başlıklar kullanılıyor.</p>
+            </div>
+
+            <div class="tip-box">
+                <h4>Firma Adı Kontrolü</h4>
+                <p>Her blogda firma adı <strong>minimum 3 kez</strong> geçmeli. Geçmiyorsa content retry ediliyor. Bu hem branding hem SEO için kritik.</p>
+            </div>
+
+            <div class="secret-box">
+                <h4>Yazım Stili Rotasyonu</h4>
+                <p>3 farklı yazım stili random seçiliyor: <strong>Profesyonel, Samimi, Uzman</strong>. Google'ın AI pattern detection'ından kaçınmak için kritik.</p>
+            </div>
+
+            <div class="tip-box">
+                <h4>Duplicate Blog Kontrolü</h4>
+                <p>Yeni blog oluşturmadan önce <strong>başlık ve slug kontrolü</strong> yapılıyor. Benzer ilk 3 kelime bile eşleşirse uyarı veriyor.</p>
+            </div>
+
+            <div class="secret-box">
+                <h4>60+ Sahne Varyasyonu</h4>
+                <p>Görsel promptlarında <strong>60'tan fazla farklı iş yeri sahnesi</strong> var: Sabah vardiyası, gece operasyonu, e-ticaret deposu, food industry, otomotiv... Her görsel farklı hikaye anlatıyor.</p>
+            </div>
+
+            <div class="tip-box">
+                <h4>Section Bazlı Genişletme</h4>
+                <p>Tek seferde 2000 kelime yazdırmak yerine, <strong>her H2 başlık için ayrı API call</strong> yapılıyor. Sonuç: Daha detaylı, daha tutarlı içerik.</p>
+            </div>
+
+            <div class="tip-box">
+                <h4>JSON Response Temizleme</h4>
+                <p>AI bazen ```json wrapper ekliyor, bazen HTML entity kullanıyor. <strong>Ultra robust JSON extraction</strong> ile tüm formatlar parse ediliyor.</p>
+            </div>
+
+            <div class="secret-box">
+                <h4>Credit Kontrolü</h4>
+                <p>Her işlem öncesi AI credit kontrolü var. <strong>1 blog = 1.0 kredi</strong>. Yetersizse işlem başlamadan uyarı veriyor.</p>
+            </div>
+
+            <div class="tip-box">
+                <h4>Retry Mekanizması</h4>
+                <p>Content validation başarısız olursa <strong>otomatik 3 deneme</strong>. Her denemede 2 saniye bekleme. %99 başarı oranı.</p>
+            </div>
+
+            <div class="secret-box">
+                <h4>Kamera & Lens Detayları</h4>
+                <p>Görsel promptlarına <strong>gerçek kamera modelleri</strong> ekleniyor: "Canon EOS R5 with 24-70mm f/2.8 lens". Bu editorial kalite hissi veriyor.</p>
+            </div>
+
+            <div class="tip-box">
+                <h4>Meta Description Limiti</h4>
+                <p>SEO için <strong>155 karakter limit</strong> uygulanıyor. Daha uzunsa otomatik kesiliyor. Google snippet'lerinde düzgün görünüm.</p>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- MALİYET & VERİMLİLİK -->
+        <section>
+            <h2>Maliyet & Verimlilik Analizi</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Metrik</th>
+                        <th>Manuel Yazar</th>
+                        <th>AI Sistemi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Blog başına süre</td>
+                        <td>3-4 saat</td>
+                        <td>2-3 dakika</td>
+                    </tr>
+                    <tr>
+                        <td>Blog başına maliyet</td>
+                        <td>500-1000₺</td>
+                        <td>~3₺</td>
+                    </tr>
+                    <tr>
+                        <td>Görsel maliyeti</td>
+                        <td>100-300₺ (stock)</td>
+                        <td>~1₺ (AI)</td>
+                    </tr>
+                    <tr>
+                        <td>Günlük kapasite</td>
+                        <td>1-2 blog</td>
+                        <td>Sınırsız</td>
+                    </tr>
+                    <tr>
+                        <td>7/24 çalışma</td>
+                        <td>Hayır</td>
+                        <td>Evet</td>
+                    </tr>
+                    <tr>
+                        <td>Tutarlılık</td>
+                        <td>Değişken</td>
+                        <td>%99 tutarlı</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="cta-box">
+            <h3>Bu sistem hakkında soru mu var?</h3>
+            <p>Tweet dizilerinden birini kullanabilir, ya da kendi versiyonunuzu oluşturabilirsiniz.</p>
+        </div>
+
+        <footer>
+            Claude AI tarafından oluşturuldu | 2025-11-20
+        </footer>
+    </div>
+</body>
+</html>

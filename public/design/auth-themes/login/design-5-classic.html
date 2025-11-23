@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Klasik Tema - Auth Tasarim Kutuphanesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Katalog</span>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-orange-400">
+                        5 / 5
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Klasik Tema</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="design-4-dark-pro.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Onceki</span>
+                    </a>
+                    <span class="px-4 py-2 bg-white/10 rounded-lg opacity-50 cursor-not-allowed flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20 min-h-screen">
+
+        <!-- Design Preview Section -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-b from-stone-100 to-stone-200 py-20">
+            <div class="w-full max-w-6xl mx-auto px-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white rounded-none shadow-2xl overflow-hidden">
+
+                    <!-- Left Side - Image -->
+                    <div class="hidden lg:block relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-700 to-amber-900">
+                            <div class="absolute inset-0 bg-black/30"></div>
+                            <!-- Decorative Pattern -->
+                            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'84\' height=\'48\' viewBox=\'0 0 84 48\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0h12v6H0V0zm28 8h12v6H28V8zm14-8h12v6H42V0zm14 0h12v6H56V0zm0 8h12v6H56V8zM42 8h12v6H42V8zm0 16h12v6H42v-6zm14-8h12v6H56v-6zm14 0h12v6H70v-6zm0-16h12v6H70V0zM28 32h12v6H28v-6zM14 16h12v6H14v-6zM0 24h12v6H0v-6zm0 8h12v6H0v-6zm14 0h12v6H14v-6zm14 8h12v6H28v-6zm-14 0h12v6H14v-6zm28 0h12v6H42v-6zm14-8h12v6H56v-6zm0-8h12v6H56v-6zm14 8h12v6H70v-6zm0 8h12v6H70v-6zM14 24h12v6H14v-6zm14-8h12v6H28v-6zM14 8h12v6H14V8zM0 8h12v6H0V8z\' fill=\'%23ffffff\' fill-opacity=\'1\' fill-rule=\'evenodd\'/%3E%3C/svg%3E');"></div>
+                        </div>
+
+                        <div class="relative z-10 p-12 lg:p-16 h-full flex flex-col justify-between text-white">
+                            <div>
+                                <!-- Logo -->
+                                <div class="mb-12">
+                                    <div class="text-3xl font-bold italic">Elegance</div>
+                                    <div class="text-sm text-white/60 mt-1">Est. 1985</div>
+                                </div>
+
+                                <!-- Quote -->
+                                <div class="mb-8">
+                                    <i class="fa-solid fa-quote-left text-3xl text-amber-300/50 mb-4"></i>
+                                    <p class="text-xl font-light leading-relaxed italic">
+                                        "Kalite asla tesaduf degildir; daima akilli caba, samimi niyet ve ustaca uygulamanin sonucudur."
+                                    </p>
+                                    <p class="mt-4 text-sm text-white/60">- John Ruskin</p>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Info -->
+                            <div class="border-t border-white/20 pt-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex -space-x-2">
+                                        <div class="w-8 h-8 rounded-full bg-amber-300 flex items-center justify-center text-amber-900 text-xs font-bold">A</div>
+                                        <div class="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-amber-900 text-xs font-bold">B</div>
+                                        <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-amber-900 text-xs font-bold">C</div>
+                                    </div>
+                                    <div class="text-sm text-white/70">
+                                        <span class="font-semibold text-white">10,000+</span> memnun musteri
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side - Form -->
+                    <div class="p-12 lg:p-16">
+                        <div class="mb-10">
+                            <h1 class="text-3xl font-bold text-gray-900 mb-2">Hos Geldiniz</h1>
+                            <p class="text-gray-500">Hesabiniza giris yapin</p>
+                        </div>
+
+                        <form class="space-y-6">
+                            <!-- Email -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    E-posta Adresi
+                                </label>
+                                <input type="email"
+                                       class="w-full px-4 py-3 bg-stone-50 border border-stone-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                                       placeholder="ornek@email.com">
+                            </div>
+
+                            <!-- Password -->
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <label class="block text-sm font-medium text-gray-700">
+                                        Sifre
+                                    </label>
+                                    <a href="#" class="text-sm text-amber-700 hover:text-amber-800 font-medium">
+                                        Sifremi Unuttum
+                                    </a>
+                                </div>
+                                <div class="relative" x-data="{ show: false }">
+                                    <input :type="show ? 'text' : 'password'"
+                                           class="w-full px-4 py-3 bg-stone-50 border border-stone-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                                           placeholder="********">
+                                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                                        <i class="fa-solid text-gray-400 hover:text-amber-600 transition-colors" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Remember Me -->
+                            <div class="flex items-center">
+                                <input type="checkbox" id="remember" class="w-4 h-4 text-amber-600 bg-stone-100 border-stone-300 focus:ring-amber-500">
+                                <label for="remember" class="ml-2 text-sm text-gray-600">
+                                    Oturumu acik tut
+                                </label>
+                            </div>
+
+                            <!-- Submit -->
+                            <button type="submit"
+                                    class="w-full py-3.5 bg-amber-700 hover:bg-amber-800 text-white font-medium transition-colors uppercase tracking-wider text-sm">
+                                Giris Yap
+                            </button>
+                        </form>
+
+                        <!-- Divider -->
+                        <div class="relative my-8">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-stone-200"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-4 bg-white text-gray-500">veya</span>
+                            </div>
+                        </div>
+
+                        <!-- Social Login -->
+                        <div class="space-y-3">
+                            <button class="w-full flex items-center justify-center gap-3 py-3 border border-stone-300 hover:bg-stone-50 transition-colors">
+                                <i class="fa-brands fa-google text-gray-600"></i>
+                                <span class="text-sm text-gray-700">Google ile devam et</span>
+                            </button>
+                            <button class="w-full flex items-center justify-center gap-3 py-3 border border-stone-300 hover:bg-stone-50 transition-colors">
+                                <i class="fa-brands fa-facebook text-blue-600"></i>
+                                <span class="text-sm text-gray-700">Facebook ile devam et</span>
+                            </button>
+                        </div>
+
+                        <!-- Register Link -->
+                        <p class="text-center text-gray-600 mt-8">
+                            Hesabiniz yok mu?
+                            <a href="#" class="text-amber-700 hover:text-amber-800 font-semibold">
+                                Kayit Olun
+                            </a>
+                        </p>
+
+                        <!-- Design Badge -->
+                        <div class="mt-8 text-center">
+                            <span class="inline-block bg-stone-100 text-stone-500 px-4 py-2 text-xs font-medium">
+                                <i class="fa-solid fa-hashtag mr-1"></i>LOGIN-CLASSIC-005
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Info -->
+        <section class="py-16 bg-slate-900">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold text-white mb-8 text-center">Klasik Tema Ozellikleri</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-crown text-amber-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Premium His</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Serif font ve altin tonlari ile luks ve kaliteli gorunum. Zaman otesi elegans.</p>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-quote-right text-orange-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Hikaye Anlatimi</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Ilham verici alinti ve marka hikayesi ile duygusal baglanti. Sosyal kanit elementleri.</p>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-gem text-yellow-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Klasik Estetik</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Keskin koseler ve belirgin formlar. Geleneksel tasarim prensipleri.</p>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-stone-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-palette text-stone-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Toprak Tonlari</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Sicak ve davetkar renk paleti. Stone ve amber tonlari ile dogal his.</p>
+                        </div>
+                    </div>
+
+                    <!-- Uygun Sektorler -->
+                    <div class="mt-8 text-center">
+                        <h3 class="text-sm font-medium text-gray-400 mb-4">Uygun Sektorler</h3>
+                        <div class="flex flex-wrap justify-center gap-2">
+                            <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-sm">Lüks Markalar</span>
+                            <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-sm">Otelcilik</span>
+                            <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-sm">Moda</span>
+                            <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-sm">Kuyumculuk</span>
+                            <span class="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-sm">Restoran</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

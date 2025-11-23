@@ -89,11 +89,78 @@ class SongRepository
             $query->where('album_id', $filters['album_id']);
         }
 
-        if (isset($filters['search'])) {
+        // Artist filter (through album relation)
+        if (!empty($filters['filterArtist'])) {
+            $query->whereHas('album', function ($q) use ($filters) {
+                $q->where('artist_id', $filters['filterArtist']);
+            });
+        }
+
+        // Genre filter
+        if (!empty($filters['filterGenre'])) {
+            $query->where('genre_id', $filters['filterGenre']);
+        }
+
+        // Album filter
+        if (!empty($filters['filterAlbum'])) {
+            $query->where('album_id', $filters['filterAlbum']);
+        }
+
+        // HLS status filter
+        if (!empty($filters['filterHls'])) {
+            if ($filters['filterHls'] === 'completed') {
+                $query->where('hls_converted', true);
+            } elseif ($filters['filterHls'] === 'pending') {
+                $query->whereNotNull('file_path')
+                    ->where(function($q) {
+                        $q->whereNull('hls_converted')
+                          ->orWhere('hls_converted', false);
+                    });
+            }
+        }
+
+        if (isset($filters['search']) && !empty($filters['search'])) {
             $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->whereRaw("JSON_SEARCH(title, 'one', ?) IS NOT NULL", ["%{$search}%"])
-                  ->orWhereRaw("JSON_SEARCH(lyrics, 'one', ?) IS NOT NULL", ["%{$search}%"]);
+            $locales = $filters['locales'] ?? ['tr'];
+            $searchLower = '%' . mb_strtolower($search) . '%';
+
+            $query->where(function ($q) use ($searchLower, $locales) {
+                // Title search (JSON field - all active languages)
+                foreach ($locales as $locale) {
+                    $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}'))) LIKE ?", [$searchLower]);
+                }
+
+                // Lyrics search
+                foreach ($locales as $locale) {
+                    $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(lyrics, '$.{$locale}'))) LIKE ?", [$searchLower]);
+                }
+
+                // Artist search (through album relation)
+                $q->orWhereHas('album.artist', function ($artistQuery) use ($searchLower, $locales) {
+                    $artistQuery->where(function ($aq) use ($searchLower, $locales) {
+                        foreach ($locales as $locale) {
+                            $aq->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}'))) LIKE ?", [$searchLower]);
+                        }
+                    });
+                });
+
+                // Album search
+                $q->orWhereHas('album', function ($albumQuery) use ($searchLower, $locales) {
+                    $albumQuery->where(function ($alq) use ($searchLower, $locales) {
+                        foreach ($locales as $locale) {
+                            $alq->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}'))) LIKE ?", [$searchLower]);
+                        }
+                    });
+                });
+
+                // Genre search
+                $q->orWhereHas('genre', function ($genreQuery) use ($searchLower, $locales) {
+                    $genreQuery->where(function ($gq) use ($searchLower, $locales) {
+                        foreach ($locales as $locale) {
+                            $gq->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}'))) LIKE ?", [$searchLower]);
+                        }
+                    });
+                });
             });
         }
 

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog'a Ürün Ekleme - Basit Anlatım</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #764ba2;
+            margin: 40px 0 20px 0;
+            border-left: 5px solid #667eea;
+            padding-left: 15px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .big-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .big-box h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .example {
+            background: #fff3cd;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .example strong {
+            color: #d97706;
+        }
+
+        .step {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .option-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 3px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .option-card h4 {
+            color: #667eea;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .good {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .bad {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .winner {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border: 3px solid #10b981;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .winner h3 {
+            color: #059669;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            margin-left: 30px;
+            margin-top: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Blog'a Ürün Ekleme</h1>
+        <p class="subtitle">Basit Türkçe Anlatım</p>
+
+        <div class="big-box">
+            <h3>Ne İstiyoruz?</h3>
+            <p style="font-size: 1.2rem;">
+                Blog yazılarının içine, <strong>o yazıyla alakalı ürünlerin kartlarını</strong> otomatik olarak koymak istiyoruz.
+            </p>
+        </div>
+
+        <div class="example">
+            <strong>📝 Örnek:</strong><br><br>
+            <strong>Blog Başlığı:</strong> "Transpalet Nasıl Seçilir?"<br>
+            <strong>İçinde Gösterilecek:</strong> Transpalet ürünlerinin kartları (resimli, fiyatlı)<br>
+            <strong>Nerede:</strong> Yazının ortasında, başlıkların arasında
+        </div>
+
+        <h2>🤔 Nasıl Yapacağız?</h2>
+
+        <p>3 farklı yöntem var. En iyisini seçelim:</p>
+
+        <div class="options">
+            <div class="option-card">
+                <div class="emoji">🎯</div>
+                <h4>Yöntem 1: Akıllı Eşleştirme</h4>
+                <p>Blog başlığına bak, hangi kelimeler var onu anla, o kelimelerle ürünleri bul ve göster.</p>
+                <p class="good">✅ Otomatik çalışır, sen hiçbir şey yapmana gerek yok</p>
+                <p class="good">✅ Çok hızlı (MeiliSearch denen sistem var, onu kullanır)</p>
+                <p class="bad">❌ Bazen yanlış ürün gösterebilir</p>
+            </div>
+
+            <div class="option-card">
+                <div class="emoji">🏷️</div>
+                <h4>Yöntem 2: Etiket Eşleştirme</h4>
+                <p>Blog'a "transpalet" etiketi koy, ürüne de "transpalet" etiketi koy. Aynı etiketlileri göster.</p>
+                <p class="good">✅ Kesin kontrol, sen ne istersen onu gösterir</p>
+                <p class="bad">❌ Her blog için etiket eklemelisin (zahmetli)</p>
+            </div>
+
+            <div class="option-card">
+                <div class="emoji">📋</div>
+                <h4>Yöntem 3: Manuel Seçim</h4>
+                <p>Her blog yazarken, hangi ürünlerin gösterileceğini sen tek tek seç.</p>
+                <p class="good">✅ %100 kontrol</p>
+                <p class="bad">❌ Çok uğraştırır, her blog için ayrı ayrı seçim yapacaksın</p>
+            </div>
+        </div>
+
+        <div class="winner">
+            <h3>🏆 En İyisi: Yöntem 1 + Yöntem 2 Karışımı</h3>
+            <p style="font-size: 1.15rem;">
+                Önce <span class="highlight">Akıllı Eşleştirme</span> yapsın. Eğer ürün bulamazsa <span class="highlight">Etiket Eşleştirme</span> kullansın.
+            </p>
+            <p style="margin-top: 15px;">
+                <strong>Yani:</strong> Genelde otomatik çalışır, ama gerekirse sen etiket ekleyerek düzeltebilirsin.
+            </p>
+        </div>
+
+        <h2>🔧 Nasıl Çalışacak?</h2>
+
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong style="font-size: 1.2rem;">Blog başlığından kelime çıkar</strong>
+            <p style="margin-top: 10px; margin-left: 55px;">
+                Örnek: "Transpalet Seçerken Dikkat Edilmesi Gerekenler"<br>
+                → Sistem anlar: "Ah, bu <strong>transpalet</strong> hakkında bir yazı!"
+            </p>
+        </div>
+
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong style="font-size: 1.2rem;">Ürünleri bul</strong>
+            <p style="margin-top: 10px; margin-left: 55px;">
+                "transpalet" kelimesi geçen, anasayfada gösterilebilecek ürünleri bul.<br>
+                → Mesela 6 tane transpalet ürünü bulundu.
+            </p>
+        </div>
+
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong style="font-size: 1.2rem;">Blog yazısına yerleştir</strong>
+            <p style="margin-top: 10px; margin-left: 55px;">
+                • 2. başlıktan önce → İlk 3 ürün<br>
+                • Son başlıktan önce → Son 3 ürün
+            </p>
+        </div>
+
+        <div class="example">
+            <strong>📺 Sonuç:</strong><br><br>
+            Kullanıcı blog okurken, yazının ortasında ilgili ürünlerin kartlarını görüyor!<br>
+            Beğenirse tıklayıp ürün sayfasına gidiyor.
+        </div>
+
+        <h2>✅ Sen Ne Yapacaksın?</h2>
+
+        <div class="big-box">
+            <h3>Hiçbir Şey! 😄</h3>
+            <p style="font-size: 1.1rem;">
+                Ben kodu yazacağım, sen sadece:
+            </p>
+            <ul>
+                <li>✅ Blog yazılarını normal yaz</li>
+                <li>✅ Ürünlerde "Anasayfada Göster" seçeneğini işaretle</li>
+                <li>✅ Sistem otomatik eşleştirsin, sen rahat ol</li>
+            </ul>
+        </div>
+
+        <h2>❓ Tek Soru</h2>
+
+        <p style="font-size: 1.1rem;">
+            <strong>Eğer sistem blog'a uygun ürün bulamazsa ne yapsın?</strong>
+        </p>
+
+        <div class="options">
+            <div class="option-card">
+                <h4>Seçenek A</h4>
+                <p>Hiçbir ürün gösterme (boş geç)</p>
+            </div>
+
+            <div class="option-card">
+                <h4>Seçenek B</h4>
+                <p>Rastgele anasayfa ürünlerinden göster</p>
+            </div>
+
+            <div class="option-card">
+                <h4>Seçenek C</h4>
+                <p>Blog'un etiketlerine uyan ürünleri göster</p>
+            </div>
+        </div>
+
+        <p style="text-align: center; margin-top: 50px; color: #999; font-size: 0.95rem;">
+            🤖 Claude AI • 2025-11-19
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author Accordion Tasarım</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-900 p-8">
+    <div class="max-w-4xl mx-auto space-y-8">
+
+        <!-- 🎨 TASARIM 1: Minimal Accordion (Önerilen) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden"
+             x-data="{ open: false }"
+             itemscope
+             itemtype="https://schema.org/Person">
+
+            <!-- Header (Her zaman görünür) -->
+            <button @click="open = !open"
+                    class="w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div class="flex items-center gap-3">
+                    <!-- Avatar -->
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md flex-shrink-0">
+                        N
+                    </div>
+
+                    <!-- İsim + Ünvan -->
+                    <div class="text-left">
+                        <h3 class="text-base font-bold text-gray-900 dark:text-white" itemprop="name">
+                            Nurullah Okatan
+                        </h3>
+                        <p class="text-xs text-gray-600 dark:text-gray-400" itemprop="jobTitle">
+                            Genel Müdür
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chevron Icon -->
+                <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"
+                   :class="{'rotate-180': open}"></i>
+            </button>
+
+            <!-- Expanded Content (Accordion) -->
+            <div x-show="open"
+                 x-collapse
+                 class="border-t border-gray-200 dark:border-gray-700">
+                <div class="p-4 space-y-4">
+
+                    <!-- Bio -->
+                    <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed" itemprop="description">
+                        iXtif, Türk Bilişim ve Tuufi firmalarının genel müdürlüğünü yapmakta olup, kurumsal firmalara danışmanlık yapmaktadır.
+                    </p>
+
+                    <!-- Website -->
+                    <a href="https://www.linkedin.com/in/nurullahokatan/"
+                       target="_blank"
+                       rel="noopener noreferrer author"
+                       itemprop="url"
+                       class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                        <i class="fas fa-globe"></i>
+                        <span>Web Sitesi</span>
+                    </a>
+
+                    <!-- Sosyal Medya -->
+                    <div class="flex items-center gap-2 pt-2">
+                        <span class="text-xs text-gray-600 dark:text-gray-400">Takip:</span>
+                        <a href="#" itemprop="sameAs" class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-all hover:scale-110">
+                            <i class="fab fa-facebook-f text-xs"></i>
+                        </a>
+                        <a href="#" itemprop="sameAs" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-900 hover:bg-black text-white transition-all hover:scale-110">
+                            <i class="fab fa-x-twitter text-xs"></i>
+                        </a>
+                        <a href="#" itemprop="sameAs" class="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-pink-500 text-white transition-all hover:scale-110">
+                            <i class="fab fa-instagram text-xs"></i>
+                        </a>
+                        <a href="#" itemprop="sameAs" class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-700 hover:bg-blue-800 text-white transition-all hover:scale-110">
+                            <i class="fab fa-linkedin-in text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-white text-center text-sm opacity-50">
+            ↑ Tasarım 1: Minimal Accordion (Önerilen) ↑
+        </div>
+
+        <!-- 🎨 TASARIM 2: Avatar Büyük + Accordion -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden"
+             x-data="{ open: false }"
+             itemscope
+             itemtype="https://schema.org/Person">
+
+            <!-- Header -->
+            <button @click="open = !open"
+                    class="w-full flex items-center justify-between p-5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div class="flex items-center gap-4">
+                    <!-- Avatar (Daha büyük) -->
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-lg flex-shrink-0">
+                        N
+                    </div>
+
+                    <!-- İsim + Ünvan + Mini Bio -->
+                    <div class="text-left">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white" itemprop="name">
+                            Nurullah Okatan
+                        </h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 font-medium" itemprop="jobTitle">
+                            Genel Müdür
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                            <span x-show="!open">Detaylar için tıklayın...</span>
+                            <span x-show="open">Detayları gizle</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chevron -->
+                <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300 text-lg"
+                   :class="{'rotate-180': open}"></i>
+            </button>
+
+            <!-- Expanded Content -->
+            <div x-show="open"
+                 x-collapse
+                 class="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                <div class="p-5 space-y-4">
+
+                    <!-- Bio -->
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                        <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed" itemprop="description">
+                            iXtif, Türk Bilişim ve Tuufi firmalarının genel müdürlüğünü yapmakta olup, kurumsal firmalara danışmanlık yapmaktadır.
+                        </p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <a href="https://www.linkedin.com/in/nurullahokatan/"
+                           target="_blank"
+                           rel="noopener noreferrer author"
+                           itemprop="url"
+                           class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-md">
+                            <i class="fas fa-globe"></i>
+                            <span>Web Sitesi</span>
+                        </a>
+
+                        <!-- Sosyal Medya -->
+                        <div class="flex items-center gap-2">
+                            <a href="#" itemprop="sameAs" class="w-9 h-9 flex items-center justify-center rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-all hover:scale-110 shadow-md">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" itemprop="sameAs" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-900 hover:bg-black text-white transition-all hover:scale-110 shadow-md">
+                                <i class="fab fa-x-twitter"></i>
+                            </a>
+                            <a href="#" itemprop="sameAs" class="w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-pink-500 text-white transition-all hover:scale-110 shadow-md">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" itemprop="sameAs" class="w-9 h-9 flex items-center justify-center rounded-full bg-blue-700 hover:bg-blue-800 text-white transition-all hover:scale-110 shadow-md">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-white text-center text-sm opacity-50">
+            ↑ Tasarım 2: Büyük Avatar + Accordion ↑
+        </div>
+
+        <!-- 🎨 TASARIM 3: Inline Expand (Tek Satır) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden"
+             x-data="{ open: false }"
+             itemscope
+             itemtype="https://schema.org/Person">
+
+            <!-- Header (Tek satır) -->
+            <button @click="open = !open"
+                    class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <!-- Avatar (Küçük) -->
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md flex-shrink-0">
+                    N
+                </div>
+
+                <!-- İsim + Ünvan (Inline) -->
+                <div class="flex-1 text-left min-w-0">
+                    <span class="text-sm font-bold text-gray-900 dark:text-white" itemprop="name">Nurullah Okatan</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-2">•</span>
+                    <span class="text-xs text-gray-600 dark:text-gray-400 ml-2" itemprop="jobTitle">Genel Müdür</span>
+                </div>
+
+                <!-- Expand Button -->
+                <div class="text-xs text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1 flex-shrink-0">
+                    <span x-show="!open">Detay</span>
+                    <span x-show="open">Gizle</span>
+                    <i class="fas fa-chevron-down transition-transform duration-300 text-xs"
+                       :class="{'rotate-180': open}"></i>
+                </div>
+            </button>
+
+            <!-- Expanded Content -->
+            <div x-show="open"
+                 x-collapse
+                 class="border-t border-gray-200 dark:border-gray-700">
+                <div class="p-4 space-y-3">
+                    <p class="text-sm text-gray-700 dark:text-gray-300" itemprop="description">
+                        iXtif, Türk Bilişim ve Tuufi firmalarının genel müdürlüğünü yapmakta olup, kurumsal firmalara danışmanlık yapmaktadır.
+                    </p>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="#" itemprop="url" class="text-xs px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">
+                            <i class="fas fa-globe mr-1"></i> Web
+                        </a>
+                        <a href="#" itemprop="sameAs" class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-600 text-white text-xs hover:scale-110 transition-transform">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" itemprop="sameAs" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-900 text-white text-xs hover:scale-110 transition-transform">
+                            <i class="fab fa-x-twitter"></i>
+                        </a>
+                        <a href="#" itemprop="sameAs" class="w-7 h-7 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-pink-500 text-white text-xs hover:scale-110 transition-transform">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" itemprop="sameAs" class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-700 text-white text-xs hover:scale-110 transition-transform">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-white text-center text-sm opacity-50">
+            ↑ Tasarım 3: Inline Expand (En Minimal) ↑
+        </div>
+
+        <!-- Info -->
+        <div class="bg-blue-900 text-white p-6 rounded-xl">
+            <h2 class="text-xl font-bold mb-3">📌 Tasarım Özellikleri:</h2>
+            <ul class="space-y-2 text-sm">
+                <li><strong>✅ Tek Tasarım:</strong> Hem mobil hem PC'de aynı (duplicate yok!)</li>
+                <li><strong>✅ Minimal:</strong> Başta sadece isim + ünvan</li>
+                <li><strong>✅ Accordion:</strong> Tıklanınca bio + sosyal medya açılır</li>
+                <li><strong>✅ Schema.org:</strong> SEO için Person markup var</li>
+                <li><strong>✅ Alpine.js:</strong> x-data ile state yönetimi (hafif)</li>
+                <li><strong>✅ Smooth:</strong> x-collapse ile animasyonlu açılma</li>
+            </ul>
+
+            <h3 class="text-lg font-bold mt-6 mb-2">🎯 Hangisi?</h3>
+            <ul class="text-sm space-y-1">
+                <li><strong>Tasarım 1:</strong> Dengeli (önerilen) ⭐</li>
+                <li><strong>Tasarım 2:</strong> Daha büyük avatar</li>
+                <li><strong>Tasarım 3:</strong> En minimal (tek satır)</li>
+            </ul>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -273,6 +273,96 @@ if (!function_exists('getBlogDailyCount')) {
     }
 }
 
+if (!function_exists('sanitize_blade_content')) {
+    /**
+     * Blog İçeriğinden Tehlikeli Blade Direktiflerini Temizle
+     *
+     * AI tarafından üretilen blog içeriklerinde yanlışlıkla
+     * Blade layout direktifleri olabilir. Bu direktifler
+     * Blade::render() ile işlenirken hata oluşturur.
+     *
+     * Temizlenen direktifler:
+     * - @section, @endsection, @show
+     * - @yield, @parent
+     * - @extends, @include, @component, @slot
+     * - @push, @endpush, @prepend, @endprepend
+     * - @stack, @once, @endonce
+     * - @verbatim, @endverbatim
+     * - @inject, @env, @production
+     *
+     * @param  string  $content  Blog body içeriği
+     * @return string  Sanitize edilmiş içerik
+     *
+     * Örnek Kullanım:
+     * $safeContent = sanitize_blade_content($parsedBody);
+     * Blade::render($safeContent);
+     */
+    function sanitize_blade_content(string $content): string
+    {
+        if (empty($content)) {
+            return $content;
+        }
+
+        // Tehlikeli Blade layout direktifleri (parametre ile)
+        $dangerousDirectives = [
+            // Section & Layout
+            '/@section\s*\([^)]*\)/s',
+            '/@endsection/',
+            '/@show/',
+            '/@yield\s*\([^)]*\)/s',
+            '/@parent/',
+            '/@extends\s*\([^)]*\)/s',
+
+            // Include & Component
+            '/@include\s*\([^)]*\)/s',
+            '/@includeIf\s*\([^)]*\)/s',
+            '/@includeWhen\s*\([^)]*\)/s',
+            '/@includeUnless\s*\([^)]*\)/s',
+            '/@includeFirst\s*\([^)]*\)/s',
+            '/@component\s*\([^)]*\)/s',
+            '/@endcomponent/',
+            '/@slot\s*\([^)]*\)/s',
+            '/@endslot/',
+
+            // Stack & Push
+            '/@push\s*\([^)]*\)/s',
+            '/@endpush/',
+            '/@prepend\s*\([^)]*\)/s',
+            '/@endprepend/',
+            '/@stack\s*\([^)]*\)/s',
+
+            // Once
+            '/@once/',
+            '/@endonce/',
+
+            // Verbatim (bu da tehlikeli olabilir)
+            '/@verbatim/',
+            '/@endverbatim/',
+
+            // Inject & Environment
+            '/@inject\s*\([^)]*\)/s',
+            '/@env\s*\([^)]*\)/s',
+            '/@endenv/',
+            '/@production/',
+            '/@endproduction/',
+
+            // Fragment
+            '/@fragment\s*\([^)]*\)/s',
+            '/@endfragment/',
+        ];
+
+        // Tüm tehlikeli direktifleri kaldır
+        foreach ($dangerousDirectives as $pattern) {
+            $content = preg_replace($pattern, '', $content);
+        }
+
+        // Boş satırları temizle (opsiyonel)
+        $content = preg_replace('/\n\s*\n\s*\n/', "\n\n", $content);
+
+        return $content;
+    }
+}
+
 if (!function_exists('calculateActiveHours')) {
     /**
      * Calculate active hours for blog AI cron based on daily count

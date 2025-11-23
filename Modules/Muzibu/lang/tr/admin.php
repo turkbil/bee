@@ -7,7 +7,50 @@ return [
 'music_platform_management' => 'Müzik Platformu Yönetimi',
 'muzibu_management' => 'Müzik Yönetimi',
 'new_muzibu' => 'Yeni Müzik',
+
+// Dashboard
+'dashboard' => [
+    'recent_songs' => 'Son Eklenen Şarkılar',
+    'popular_songs' => 'En Çok Dinlenenler',
+    'hls_status' => 'HLS Dönüşüm Durumu',
+    'completed' => 'Tamamlandı',
+    'pending' => 'Bekliyor',
+    'failed' => 'Başarısız',
+    'no_plays_yet' => 'Henüz dinleme yok',
+],
+
+// Quick Navigation
+'quick_navigation' => 'Hızlı Erişim',
+'content_management' => 'İçerik Yönetimi',
+'organization' => 'Organizasyon',
+'distribution' => 'Dağıtım',
 'media_management' => 'Medya Yönetimi',
+
+// Bulk Upload
+'bulk_upload' => [
+    'pretitle' => 'Toplu Şarkı Yükleme',
+    'title' => 'Albüme Şarkı Ekle',
+    'subtitle' => 'Birden fazla şarkıyı aynı anda yükleyin',
+    'drag_drop' => 'Şarkıları Sürükle ve Bırak',
+    'or_click' => 'veya tıklayarak dosya seçin',
+    'max_size' => 'Maksimum Boyut',
+    'files_added' => 'dosya eklendi',
+    'files_ready' => 'dosya hazır',
+    'total_duration' => 'Toplam Süre',
+    'add_more' => 'Dosya Ekle',
+    'clear_all' => 'Tümünü Temizle',
+    'bulk_genre' => 'Toplu Tür Seçimi',
+    'enable_individual' => 'Ayrı ayrı tür seç',
+    'use_bulk' => 'Toplu seçimi kullan',
+    'start_upload' => 'Yüklemeyi Başlat',
+    'analyzing' => 'Dosyalar analiz ediliyor',
+    'no_files' => 'Yüklenecek dosya yok',
+    'select_genre' => 'Lütfen bir tür seçin',
+    'genre_required' => 'Tür seçimi zorunludur',
+    'songs_created' => 'şarkı başarıyla oluşturuldu',
+    'songs_failed' => 'şarkı yüklenemedi',
+    'button' => 'Toplu Yükle',
+],
 
 // Menu
 'menu' => 'Menü',
@@ -58,6 +101,7 @@ return [
 'album' => [
     'search_placeholder' => 'Albüm ara...',
     'title_field' => 'Albüm Adı',
+    'all_artists' => 'Tüm Sanatçılar',
     'status' => 'Durum',
     'no_results' => 'Arama kriterlerinize uygun albüm bulunamadı',
     'no_albums_found' => 'Albüm bulunamadı',
@@ -68,6 +112,8 @@ return [
     'select_artist' => 'Sanatçı Seçin',
     'artist' => 'Sanatçı',
     'release_date' => 'Yayın Tarihi',
+    'song_count' => 'Şarkı',
+    'year' => 'Yıl',
     'active' => 'Aktif',
     'inactive' => 'Pasif',
 ],
@@ -101,6 +147,7 @@ return [
     'select_genre' => 'Tür Seçin',
     'genre' => 'Tür',
     'duration' => 'Süre',
+    'play_count' => 'Dinleme',
     'duration_help' => 'Örnek: 03:45 (3 dakika 45 saniye)',
     'duration_manual_help' => 'Şarkı yüklendiğinde otomatik hesaplanır, manuel de düzenleyebilirsiniz',
     'auto_calculated' => 'Otomatik Hesaplanacak',
@@ -124,6 +171,13 @@ return [
     'not_featured' => 'Normal',
     'active' => 'Aktif',
     'inactive' => 'Pasif',
+    'all_artists' => 'Tüm Sanatçılar',
+    'all_genres' => 'Tüm Türler',
+    'all_albums' => 'Tüm Albümler',
+    'hls_status' => 'HLS Durumu',
+    'hls_completed' => 'Tamamlandı',
+    'hls_pending' => 'Bekliyor',
+    'hls_ready' => 'HLS Hazır',
 ],
 
 // Genres (Türler)
@@ -171,6 +225,7 @@ return [
 'playlist' => [
     'search_placeholder' => 'Çalma listesi ara...',
     'title_field' => 'Liste Adı',
+    'all_sectors' => 'Tüm Sektörler',
     'status' => 'Durum',
     'no_results' => 'Arama kriterlerinize uygun çalma listesi bulunamadı',
     'no_playlists_found' => 'Çalma listesi bulunamadı',
@@ -312,6 +367,17 @@ return [
 'search_placeholder' => 'Ara...',
 'enter_new_title' => 'Yeni başlık giriniz',
 'items_selected' => 'öğe seçildi',
+'bulk_hls_convert' => 'HLS Dönüştür',
+'hls_conversion_queued' => ':count şarkı HLS dönüşüm kuyruğuna eklendi',
+'no_songs_need_conversion' => 'Seçilen şarkıların tümü zaten dönüştürülmüş veya dosya yok',
+
+// Playlist Additional
+'duration' => 'Süre',
+'sectors' => 'Sektörler',
+'type' => 'Tür',
+'system' => 'Sistem',
+'public' => 'Herkese Açık',
+'private' => 'Özel',
 'no_muzibus_found' => 'Müzik bulunamadı',
 'no_results' => 'Sonuç bulunamadı',
 

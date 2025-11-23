@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Kurumsal Tema - Auth Tasarım Kütüphanesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Navigation Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-lg border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Katalog</span>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400">
+                        2 / 5
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Kurumsal Tema</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="design-1-minimal.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Önceki</span>
+                    </a>
+                    <a href="design-3-creative.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <span class="hidden sm:inline">Sonraki</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="pt-20 min-h-screen">
+
+        <!-- Design Preview Section -->
+        <section class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900">
+            <div class="w-full max-w-6xl mx-auto px-6 py-20">
+                <div class="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-lg shadow-2xl overflow-hidden">
+
+                    <!-- Left Side - Branding -->
+                    <div class="bg-gradient-to-br from-[#1e3a5f] to-[#0f2847] p-12 lg:p-16 text-white relative hidden lg:flex flex-col justify-between">
+                        <!-- Background Pattern -->
+                        <div class="absolute inset-0 opacity-5">
+                            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+                        </div>
+
+                        <div class="relative z-10">
+                            <!-- Logo -->
+                            <div class="mb-12">
+                                <div class="text-3xl font-black tracking-tight">ACME</div>
+                                <div class="text-sm text-white/60 mt-1">Enterprise Solutions</div>
+                            </div>
+
+                            <!-- Tagline -->
+                            <div>
+                                <h2 class="text-4xl font-bold leading-tight mb-6">
+                                    Kurumsal Çözümler<br>
+                                    <span class="text-blue-300">Profesyonel Hizmet</span>
+                                </h2>
+                                <p class="text-white/70 text-lg leading-relaxed">
+                                    20 yılı aşkın deneyimimizle işletmenizin dijital dönüşümüne liderlik ediyoruz.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="relative z-10 grid grid-cols-3 gap-4 pt-8 border-t border-white/20">
+                            <div>
+                                <div class="text-2xl font-bold">500+</div>
+                                <div class="text-xs text-white/60">Kurumsal Müşteri</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold">99.9%</div>
+                                <div class="text-xs text-white/60">Uptime</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold">24/7</div>
+                                <div class="text-xs text-white/60">Destek</div>
+                            </div>
+                        </div>
+
+                        <!-- Trust Badges -->
+                        <div class="relative z-10 flex items-center gap-4 pt-8">
+                            <div class="flex items-center gap-2 text-xs text-white/50">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>ISO 27001</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs text-white/50">
+                                <i class="fa-solid fa-lock"></i>
+                                <span>KVKK Uyumlu</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side - Form -->
+                    <div class="p-12 lg:p-16">
+                        <div class="mb-10">
+                            <h1 class="text-2xl font-bold text-gray-900 mb-2">Kullanıcı Girişi</h1>
+                            <p class="text-gray-500">Kurumsal hesabınızla giriş yapın</p>
+                        </div>
+
+                        <form class="space-y-6">
+                            <!-- Email -->
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">
+                                    Kurumsal E-posta
+                                </label>
+                                <input type="email"
+                                       class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent"
+                                       placeholder="ad.soyad@sirket.com">
+                            </div>
+
+                            <!-- Password -->
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">
+                                    Şifre
+                                </label>
+                                <div class="relative" x-data="{ show: false }">
+                                    <input :type="show ? 'text' : 'password'"
+                                           class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent"
+                                           placeholder="••••••••">
+                                    <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                                        <i class="fa-solid text-gray-400" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Options Row -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="remember" class="w-4 h-4 text-[#1e3a5f] border-gray-300 rounded focus:ring-[#1e3a5f]">
+                                    <label for="remember" class="ml-2 text-sm text-gray-600">
+                                        Oturumu açık tut
+                                    </label>
+                                </div>
+                                <a href="#" class="text-sm text-[#1e3a5f] hover:underline font-medium">
+                                    Şifremi Unuttum
+                                </a>
+                            </div>
+
+                            <!-- Submit -->
+                            <button type="submit"
+                                    class="w-full py-3.5 bg-[#1e3a5f] hover:bg-[#2a4a73] text-white font-semibold rounded uppercase tracking-wider text-sm transition-colors">
+                                Oturum Aç
+                            </button>
+
+                            <!-- SSO Options -->
+                            <div class="relative my-6">
+                                <div class="absolute inset-0 flex items-center">
+                                    <div class="w-full border-t border-gray-200"></div>
+                                </div>
+                                <div class="relative flex justify-center text-xs">
+                                    <span class="px-3 bg-white text-gray-500 uppercase tracking-wide">Kurumsal SSO</span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" class="flex items-center justify-center gap-2 py-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+                                    <i class="fa-brands fa-microsoft text-[#00a4ef]"></i>
+                                    <span class="text-sm text-gray-700">Microsoft</span>
+                                </button>
+                                <button type="button" class="flex items-center justify-center gap-2 py-3 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+                                    <i class="fa-brands fa-google text-gray-600"></i>
+                                    <span class="text-sm text-gray-700">Google</span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Footer -->
+                        <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+                            <p class="text-xs text-gray-500">
+                                © 2025 ACME Ltd. Şti. Tüm hakları saklıdır.
+                            </p>
+                        </div>
+
+                        <!-- Design Badge -->
+                        <div class="mt-6 text-center">
+                            <span class="inline-block bg-gray-100 text-gray-500 px-4 py-2 rounded-full text-xs font-medium">
+                                <i class="fa-solid fa-hashtag mr-1"></i>LOGIN-CORPORATE-002
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Info -->
+        <section class="py-16 bg-slate-900">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold text-white mb-8 text-center">Kurumsal Tema Özellikleri</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-building text-blue-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Profesyonel Görünüm</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Ciddi ve güvenilir kurumsal kimlik. Koyu mavi renk paleti ile profesyonel izlenim.</p>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-key text-green-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">SSO Entegrasyonu</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Microsoft ve Google kurumsal SSO desteği. Active Directory uyumlu.</p>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-chart-line text-purple-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Güven Metrikleri</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">Müşteri sayısı, uptime ve destek bilgileri ile güven oluşturma.</p>
+                        </div>
+
+                        <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                                    <i class="fa-solid fa-certificate text-orange-400"></i>
+                                </div>
+                                <h3 class="font-semibold text-white">Sertifikalar</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm">ISO 27001 ve KVKK uyumluluk rozetleri ile güvenlik vurgusu.</p>
+                        </div>
+                    </div>
+
+                    <!-- Uygun Sektörler -->
+                    <div class="mt-8 text-center">
+                        <h3 class="text-sm font-medium text-gray-400 mb-4">Uygun Sektörler</h3>
+                        <div class="flex flex-wrap justify-center gap-2">
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">B2B</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">Hukuk</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">Finans</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">Sigorta</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">Sağlık</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm">Endüstri</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>

@@ -39,25 +39,20 @@ class AIContentGenerationSystem {
             ...this.config,
             ...newConfig
         };
-        console.log('🔧 AI Content System config güncellendi:', this.config);
     }
 
     /**
      * Sistemi başlat
      */
     async init() {
-        console.log('🚀 AI Content Generation System başlatılıyor...');
-
         // Modal'ı bul
         this.modal = document.getElementById('aiContentModal');
 
         if (!this.modal) {
-            console.warn('⚠️ AI Content Modal bulunamadı');
             return;
         }
 
         this.setupEventListeners();
-        console.log('✅ AI Content Generation System hazır!');
     }
 
     /**
@@ -145,8 +140,6 @@ class AIContentGenerationSystem {
                 console.log('📖 PDF analizi korundu');
             });
         }
-
-        console.log('📡 Event listeners kuruldu');
     }
 
     /**
@@ -1660,16 +1653,11 @@ RESULT: PDF'deki HER bilgiyi kullanarak, sektörüne uygun renklerle, modern des
 
 // Auto-initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 AI Content Generation System DOM hazır');
-
     // Global instance oluştur
     if (document.getElementById('aiContentModal')) {
         window.aiContentSystem = new AIContentGenerationSystem();
-        console.log('✅ Global AI Content System instance oluşturuldu');
     }
 });
-
-console.log('📦 AI Content Generation System yüklendi');
 
 // 🆕 FILE UPLOAD METHODS - ASYNC VERSION
 AIContentGenerationSystem.prototype.handleFileUpload = async function(files) {

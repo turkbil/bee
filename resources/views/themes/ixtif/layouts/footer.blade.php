@@ -218,7 +218,7 @@
                 'Müşteri Hizmetleri' => [
                     'icon' => 'fa-solid fa-headset',
                     'links' => [
-                        ['name' => 'SSS', 'url' => href('Page', 'show', 'sss')],
+                        ['name' => 'SSS', 'url' => href('Page', 'show', 'sikca-sorulan-sorular')],
                         ['name' => 'İptal & İade', 'url' => href('Page', 'show', 'iptal-iade')],
                         ['name' => 'Cayma Hakkı', 'url' => href('Page', 'show', 'cayma-hakki')],
                         ['name' => 'Mesafeli Satış Sözleşmesi', 'url' => href('Page', 'show', 'mesafeli-satis')],

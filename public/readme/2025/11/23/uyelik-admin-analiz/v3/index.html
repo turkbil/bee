@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Karari - Final</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: system-ui, sans-serif;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container { max-width: 700px; margin: 0 auto; }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #60a5fa;
+        }
+        .module {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #22c55e;
+        }
+        .module-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #22c55e;
+            margin-bottom: 10px;
+        }
+        .module-reason {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        .user-update {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+        .user-update .module-name {
+            color: #3b82f6;
+        }
+        .onay {
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #fbbf24;
+            margin-top: 30px;
+        }
+        .onay p {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Modul Karari</h1>
+
+        <div class="module">
+            <div class="module-name">Modules/Subscription</div>
+            <div class="module-reason">
+                Abonelik Planlari + Abonelikler<br>
+                Kendi is alani, Payment ile entegre
+            </div>
+        </div>
+
+        <div class="module">
+            <div class="module-name">Modules/Coupon</div>
+            <div class="module-reason">
+                Kuponlar + Kullanim kayitlari<br>
+                Universal sistem (Shop + Subscription kullanir)
+            </div>
+        </div>
+
+        <div class="user-update">
+            <div class="module-name">UserManagement (guncelleme)</div>
+            <div class="module-reason">
+                Kullanici listesi yeni kolonlar<br>
+                Kullanici detay yeni sekmeler (Cihazlar, Abonelik, Loglar)
+            </div>
+        </div>
+
+        <div class="onay">
+            <p>"UYGUNDUR" de, TODO'lari buna gore duzelteyim.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,7 +1,7 @@
-<div class="relative z-50" x-data="{ open: false, showTooltip: false }">
+<div class="relative z-50" x-data="{ open: false, showTooltip: false }" @close-user-menu.window="open = false">
     <button type="button"
             class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-            @click="open = !open"
+            @click="open = !open; $dispatch('close-other-menus')"
             @click.away="open = false"
             @mouseenter="showTooltip = true"
             @mouseleave="showTooltip = false"

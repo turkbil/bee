@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI Dinamik Prompt Sistemi - v3</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .new-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #34d399;
+        }
+
+        /* Success Box */
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .success-title {
+            color: #34d399;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .success-box p {
+            color: #a7f3d0;
+        }
+
+        /* Comparison Box */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-box {
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .old-system {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+        }
+
+        .new-system {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+        }
+
+        .comparison-box h4 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .old-system h4 { color: #f87171; }
+        .new-system h4 { color: #34d399; }
+
+        .comparison-box ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+
+        .comparison-box li {
+            margin-bottom: 8px;
+        }
+
+        /* Chain Box */
+        .chain-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+        }
+
+        .chain-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .chain-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .chain-number {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+        }
+
+        .chain-content {
+            flex: 1;
+        }
+
+        .chain-title {
+            color: #34d399;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .chain-desc {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .chain-count {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        /* Code Box */
+        .code-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+            font-size: 0.85rem;
+        }
+
+        .code-comment { color: #6b7280; }
+        .code-keyword { color: #10b981; }
+        .code-string { color: #a5f3fc; }
+        .code-var { color: #fbbf24; }
+
+        /* Prompt Example */
+        .prompt-example {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .prompt-label {
+            color: #34d399;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .prompt-text {
+            color: #e2e8f0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        /* Stat Grid */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #334155;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        /* Table */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.8);
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        /* Style Grid */
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .style-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #334155;
+            font-size: 0.85rem;
+        }
+
+        .style-item strong {
+            color: #34d399;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .highlight-title {
+            color: #fbbf24;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Leonardo AI Dinamik Prompt Sistemi <span class="version-badge new-badge">v3 YENİ</span></h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-20 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                👤 Konu: Tamamen dinamik, benzersiz görsel üretim sistemi
+            </div>
+        </header>
+
+        <!-- ÖZET -->
+        <section>
+            <h2>✅ Sistem Güncellendi</h2>
+
+            <div class="success-box">
+                <div class="success-title">🚀 Tamamen Dinamik Prompt Sistemi Hazır!</div>
+                <p>
+                    Artık her görsel için <strong>benzersiz bir prompt</strong> üretiliyor. 9 farklı kategori, her birinde 15-20 seçenek ile
+                    <strong>milyonlarca farklı kombinasyon</strong> mümkün. Hiçbir statik öğe yok - her şey dinamik!
+                </p>
+            </div>
+        </section>
+
+        <!-- ESKİ vs YENİ -->
+        <section>
+            <h2>📊 Eski vs Yeni Sistem</h2>
+
+            <div class="comparison-grid">
+                <div class="comparison-box old-system">
+                    <h4>❌ Eski Sistem</h4>
+                    <ul>
+                        <li>4 sabit sahne şablonu</li>
+                        <li>Statik suffix her promptta aynı</li>
+                        <li>Sadece ekipman adı değişiyor</li>
+                        <li>Tek model (Phoenix)</li>
+                        <li>1024x768 çözünürlük</li>
+                        <li>Style desteği yok</li>
+                        <li>Tüm görseller benzer görünüyor</li>
+                    </ul>
+                </div>
+                <div class="comparison-box new-system">
+                    <h4>✅ Yeni Sistem</h4>
+                    <ul>
+                        <li>9 kategori × 15-20 seçenek = milyonlarca kombinasyon</li>
+                        <li>Hiçbir statik öğe yok</li>
+                        <li>Subject, Context, Texture, Angle, Background, Lighting, Camera, Lens, Atmosphere</li>
+                        <li>Lucid Origin modeli (daha kaliteli)</li>
+                        <li>1920x1080 Full HD çözünürlük</li>
+                        <li>8 farklı style UUID</li>
+                        <li>Her görsel benzersiz ve çekici</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROMPT ZİNCİRİ -->
+        <section>
+            <h2>🔗 Prompt Zinciri</h2>
+
+            <p style="color: #cbd5e1; margin-bottom: 20px;">
+                Her görsel için bu 9 kategoriden rastgele seçimler yapılarak benzersiz bir prompt oluşturuluyor:
+            </p>
+
+            <div class="chain-box">
+                <div class="chain-item">
+                    <div class="chain-number">1</div>
+                    <div class="chain-content">
+                        <div class="chain-title">Subject (Ana Konu) <span class="chain-count">20 seçenek</span></div>
+                        <div class="chain-desc">Ekipmanın durumu/aksiyonu: operatör kullanırken, bakımda, şarjda, eğitimde, park halinde, tamir ediliyor vs.</div>
+                    </div>
+                </div>
+
+                <div class="chain-item">
+                    <div class="chain-number">2</div>
+                    <div class="chain-content">
+                        <div class="chain-title">Context (Bağlam) <span class="chain-count">20 seçenek</span></div>
+                        <div class="chain-desc">Zaman ve durum: sabah vardiyası, sevkiyat varışı, güvenlik kontrolü, yoğun sezon, vardiya değişimi vs.</div>
+                    </div>
+                </div>
+
+                <div class="chain-item">
+                    <div class="chain-number">3</div>
+                    <div class="chain-content">
+                        <div class="chain-title">Factory Texture (Doku) <span class="chain-count">20 seçenek</span></div>
+                        <div class="chain-desc">Endüstriyel detaylar: çizik metal, yağ lekeleri, toz parçacıkları, lastik izleri, solmuş işaretler vs.</div>
+                    </div>
+                </div>
+
+                <div class="chain-item">
+                    <div class="chain-number">4</div>
+                    <div class="chain-content">
+                        <div class="chain-title">Camera Angle (Açı) <span class="chain-count">20 seçenek</span></div>
+                        <div class="chain-desc">Kamera açısı: alçak açı, göz hizası, yukarıdan, üç çeyrek, rafların arasından, Dutch angle vs.</div>
+                    </div>
+                </div>
+
+                <div class="chain-item">
+                    <div class="chain-number">5</div>
+                    <div class="chain-content">
+                        <div class="chain-title">Background (Arka Plan) <span class="chain-count">20 seçenek</span></div>
+                        <div class="chain-desc">Arka plan: raf sıraları, yükleme rampası, konveyör sistemi, ofis pencereleri, paketleme istasyonu vs.</div>
+                    </div>
+                </div>
+
+                <div class="chain-item">
+                    <div class="chain-number">6</div>
+                    <div class="chain-content">
+                        <div class="chain-title">Lighting (Aydınlatma) <span class="chain-count">20 seçenek</span></div>
+                        <div class="chain-desc">Işık: floresan, doğal gün ışığı, golden hour, LED panel, spotlar, karışık kaynaklar vs.</div>
+                    </div>
+                </div>
+
+                <div class="chain-item">
+                    <div class="chain-number">7</div>
+                    <div class="chain-content">
+                        <div class="chain-title">Camera (Kamera) <span class="chain-count">15 seçenek</span></div>
+                        <div class="chain-desc">Kamera: Canon EOS R5, Sony A7R IV, Nikon Z9, Hasselblad, RED, ARRI Alexa vs.</div>
+                    </div>
+                </div>
+
+                <div class="chain-item">
+                    <div class="chain-number">8</div>
+                    <div class="chain-content">
+                        <div class="chain-title">Lens <span class="chain-count">15 seçenek</span></div>
+                        <div class="chain-desc">Lens: 24mm geniş açı, 35mm prime, 50mm standart, 85mm portre, tilt-shift, anamorfik vs.</div>
+                    </div>
+                </div>
+
+                <div class="chain-item">
+                    <div class="chain-number">9</div>
+                    <div class="chain-content">
+                        <div class="chain-title">Atmosphere (Atmosfer) <span class="chain-count">20 seçenek</span></div>
+                        <div class="chain-desc">Mood: endüstriyel verimlilik, insan unsuru, güvenlik vurgusu, takım çalışması, enerji vs.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <div class="highlight-title">📊 Kombinasyon Hesabı</div>
+                <p style="color: #fef3c7;">
+                    20 × 20 × 20 × 20 × 20 × 20 × 15 × 15 × 20 = <strong>~2.88 trilyon</strong> farklı prompt kombinasyonu!
+                    <br>Her görsel gerçekten benzersiz olacak.
+                </p>
+            </div>
+        </section>
+
+        <!-- ÖRNEK PROMPTLAR -->
+        <section>
+            <h2>📝 Örnek Prompt Çıktıları</h2>
+
+            <p style="color: #cbd5e1; margin-bottom: 20px;">
+                Aynı "Forklift Bakım Rehberi" başlığı için üretilecek 3 farklı prompt örneği:
+            </p>
+
+            <div class="prompt-example">
+                <div class="prompt-label">🎯 Örnek 1</div>
+                <div class="prompt-text">
+                    Photograph of a technician repairing a yellow forklift, during a scheduled maintenance window. Details include oil stains on concrete floor. close-up focusing on operational details. Background shows maintenance tool cabinets. warm evening light through high windows. shot on Canon EOS R5 with 50mm lens for standard perspective. The image emphasizes safety and professionalism.
+                </div>
+            </div>
+
+            <div class="prompt-example">
+                <div class="prompt-label">🎯 Örnek 2</div>
+                <div class="prompt-text">
+                    Photograph of a propane forklift parked in the corner of a facility, at the end of a productive day. Details include dust particles visible in light beams. photographed from above showing the workspace. Background shows break room visible through windows. dim lighting in less-used sections. captured with Sony A7R IV using 35mm prime for natural view. The image showing quiet moments between rushes.
+                </div>
+            </div>
+
+            <div class="prompt-example">
+                <div class="prompt-label">🎯 Örnek 3</div>
+                <div class="prompt-text">
+                    Photograph of workers inspecting a reach truck, during routine safety inspection. Details include fingerprints on control panels. shot from a low angle emphasizing scale. Background shows fire extinguisher stations along walls. bright LED panels creating even illumination. taken with Hasselblad medium format with 24mm wide angle lens. The image highlighting attention to detail.
+                </div>
+            </div>
+        </section>
+
+        <!-- TEKNİK DETAYLAR -->
+        <section>
+            <h2>⚙️ Teknik Detaylar</h2>
+
+            <h3>API Parametreleri</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parametre</th>
+                            <th>Değer</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Model</td>
+                            <td><strong>Lucid Origin</strong></td>
+                            <td>ID: 7b592283-e8a7-4c5a-9ba6-d18c31f258b9</td>
+                        </tr>
+                        <tr>
+                            <td>Çözünürlük</td>
+                            <td><strong>1920x1080</strong></td>
+                            <td>Full HD (eskiden 1024x768)</td>
+                        </tr>
+                        <tr>
+                            <td>Contrast</td>
+                            <td>3 / 3.5 / 4</td>
+                            <td>Rastgele seçilir</td>
+                        </tr>
+                        <tr>
+                            <td>Style UUID</td>
+                            <td>8 farklı stil</td>
+                            <td>Rastgele seçilir</td>
+                        </tr>
+                        <tr>
+                            <td>Alchemy</td>
+                            <td>false</td>
+                            <td>Kredi tasarrufu</td>
+                        </tr>
+                        <tr>
+                            <td>Ultra</td>
+                            <td>false</td>
+                            <td>Kredi tasarrufu</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Style UUID'leri</h3>
+            <div class="style-grid">
+                <div class="style-item"><strong>Cinematic</strong></div>
+                <div class="style-item"><strong>Dynamic</strong></div>
+                <div class="style-item"><strong>Film</strong></div>
+                <div class="style-item"><strong>HDR</strong></div>
+                <div class="style-item"><strong>Moody</strong></div>
+                <div class="style-item"><strong>Stock Photo</strong></div>
+                <div class="style-item"><strong>Vibrant</strong></div>
+                <div class="style-item"><strong>Neutral</strong></div>
+            </div>
+
+            <h3>Ekipman Tespiti</h3>
+            <p style="color: #cbd5e1; margin-bottom: 15px;">
+                Blog başlığından regex ile ekipman tipi tespit edilir. Her ekipman için 8-10 farklı varyasyon:
+            </p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Anahtar Kelime</th>
+                            <th>Ekipman Varyasyonları</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>/forklift/</code></td>
+                            <td>yellow forklift, electric forklift, propane forklift, reach truck, counterbalance, side loader, turret truck...</td>
+                        </tr>
+                        <tr>
+                            <td><code>/transpalet|palet jak/</code></td>
+                            <td>electric pallet jack, manual pallet truck, walkie pallet jack, rider pallet jack, scale pallet jack...</td>
+                        </tr>
+                        <tr>
+                            <td><code>/istif|stacker/</code></td>
+                            <td>electric stacker, manual stacker, walkie stacker, reach stacker, semi-electric stacker...</td>
+                        </tr>
+                        <tr>
+                            <td><code>/order picker/</code></td>
+                            <td>order picker, stock picker, cherry picker, man-up order picker...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- KULLANIM -->
+        <section>
+            <h2>🚀 Kullanım</h2>
+
+            <div class="code-box">
+                <span class="code-comment"># 60 görselsiz blog için görsel üret</span><br>
+                php artisan blog:generate-images --tenant-id=2 --limit=60<br><br>
+
+                <span class="code-comment"># Test modu (API çağrısı yapmaz)</span><br>
+                php artisan blog:generate-images --tenant-id=2 --dry-run<br><br>
+
+                <span class="code-comment"># İlk 5 blog için test et</span><br>
+                php artisan blog:generate-images --tenant-id=2 --limit=5
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">60</div>
+                    <div class="stat-label">Görselsiz Blog</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">~35dk</div>
+                    <div class="stat-label">Tahmini Süre</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">420</div>
+                    <div class="stat-label">Tahmini Kredi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">1920×1080</div>
+                    <div class="stat-label">Çözünürlük</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOSYA KONUMU -->
+        <section>
+            <h2>📁 Dosya Konumu</h2>
+
+            <div class="code-box">
+                <span class="code-var">app/Services/Media/LeonardoAIService.php</span>
+            </div>
+
+            <p style="color: #94a3b8;">
+                Tüm prompt havuzları ve dinamik üretim mantığı bu dosyada. Yeni seçenekler eklemek için ilgili array'lere ekleme yapılabilir.
+            </p>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | Leonardo AI Dinamik Prompt Sistemi - v3
+        </footer>
+    </div>
+</body>
+</html>

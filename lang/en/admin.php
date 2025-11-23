@@ -242,6 +242,7 @@ return [
     // Information
     'name' => 'Name',
     'title' => 'Title',
+    'slug' => 'URL Slug',
     'description' => 'Description',
     'content' => 'Content',
     'status' => 'Status',

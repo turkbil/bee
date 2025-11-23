@@ -54,6 +54,16 @@
                         <span class="text-muted small">
                             {{ count($selectedItems) }} {{ __('muzibu::admin.items_selected') }}
                         </span>
+                        @if(isset($moduleType) && $moduleType === 'song')
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary px-3 py-1 hover-btn"
+                                wire:click="bulkConvertToHls"
+                                wire:loading.attr="disabled">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            <span wire:loading.remove wire:target="bulkConvertToHls">{{ __('muzibu::admin.bulk_hls_convert') }}</span>
+                            <span wire:loading wire:target="bulkConvertToHls">{{ __('admin.processing') }}...</span>
+                        </button>
+                        @endif
                         <button type="button"
                                 class="btn btn-sm btn-outline-success px-3 py-1 hover-btn"
                                 wire:click="bulkToggleActive(true)">

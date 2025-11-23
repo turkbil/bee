@@ -30,6 +30,22 @@ class SongComponent extends Component
     #[Url]
     public $sortDirection = 'desc';
 
+    // Filters
+    #[Url]
+    public $filterArtist = '';
+
+    #[Url]
+    public $filterGenre = '';
+
+    #[Url]
+    public $filterAlbum = '';
+
+    #[Url]
+    public $filterHls = '';
+
+    // View mode: minimal (default) or detailed
+    public bool $detailedView = false;
+
     private ?array $availableSiteLanguages = null;
 
     protected $listeners = [
@@ -89,6 +105,63 @@ class SongComponent extends Component
     public function adminLocale(): string
     {
         return session('admin_locale', \App\Services\TenantLanguageProvider::getDefaultLanguageCode());
+    }
+
+    #[Computed]
+    public function artists()
+    {
+        return \Modules\Muzibu\App\Models\Artist::query()
+            ->active()
+            ->orderBy('title->tr', 'asc')
+            ->get();
+    }
+
+    #[Computed]
+    public function genres()
+    {
+        return \Modules\Muzibu\App\Models\Genre::query()
+            ->active()
+            ->orderBy('title->tr', 'asc')
+            ->get();
+    }
+
+    #[Computed]
+    public function albums()
+    {
+        return \Modules\Muzibu\App\Models\Album::query()
+            ->active()
+            ->orderBy('title->tr', 'asc')
+            ->get();
+    }
+
+    public function clearFilters()
+    {
+        $this->filterArtist = '';
+        $this->filterGenre = '';
+        $this->filterAlbum = '';
+        $this->filterHls = '';
+        $this->search = '';
+        $this->resetPage();
+    }
+
+    public function updatedFilterArtist()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterGenre()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterHls()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterAlbum()
+    {
+        $this->resetPage();
     }
 
     #[Computed]
@@ -160,6 +233,62 @@ class SongComponent extends Component
         }
     }
 
+    public function bulkConvertToHls(): void
+    {
+        if (empty($this->selectedItems)) {
+            return;
+        }
+
+        try {
+            $songs = Song::whereIn('song_id', $this->selectedItems)
+                ->whereNotNull('file_path')
+                ->where(function($q) {
+                    $q->whereNull('hls_converted')
+                      ->orWhere('hls_converted', false);
+                })
+                ->get();
+
+            if ($songs->isEmpty()) {
+                $this->dispatch('toast', [
+                    'title' => __('admin.info'),
+                    'message' => __('muzibu::admin.no_songs_need_conversion'),
+                    'type' => 'info',
+                ]);
+                return;
+            }
+
+            $count = 0;
+            foreach ($songs as $song) {
+                \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
+                $count++;
+            }
+
+            $this->dispatch('toast', [
+                'title' => __('admin.success'),
+                'message' => __('muzibu::admin.hls_conversion_queued', ['count' => $count]),
+                'type' => 'success',
+            ]);
+
+            // Clear selection
+            $this->selectedItems = [];
+            $this->selectAll = false;
+
+            Log::info('Bulk HLS conversion started', [
+                'count' => $count,
+                'song_ids' => $songs->pluck('song_id')->toArray()
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Bulk HLS conversion failed', ['error' => $e->getMessage()]);
+
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => __('admin.operation_failed'),
+                'type' => 'error',
+            ]);
+        }
+    }
+
     public function render(): \Illuminate\Contracts\View\View
     {
         $filters = [
@@ -167,7 +296,11 @@ class SongComponent extends Component
             'locales' => $this->availableSiteLanguages,
             'sortField' => $this->sortField,
             'sortDirection' => $this->sortDirection,
-            'currentLocale' => $this->siteLocale
+            'currentLocale' => $this->siteLocale,
+            'filterArtist' => $this->filterArtist,
+            'filterGenre' => $this->filterGenre,
+            'filterAlbum' => $this->filterAlbum,
+            'filterHls' => $this->filterHls,
         ];
 
         $songs = $this->songService->getPaginatedSongs($filters, (int) $this->perPage);

@@ -58,11 +58,11 @@
                                                 placeholder="sayfa-url-slug">
                                             <label for="slug_{{ $lang }}">
                                                 {{ __('admin.radio_url_slug') }}
-                                                <small class="text-muted ms-2">-
+                                                <small class="ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
                                             </label>
                                             <div class="form-text">
-                                                <small class="text-muted">
+                                                <small class="">
                                                     {{ __('admin.slug_help') }}
                                                 </small>
                                             </div>
@@ -107,7 +107,7 @@
 
                                     <div class="row g-2">
                                         <div class="col-5">
-                                            <label class="form-label text-muted small">Tüm Çalma Listeleri</label>
+                                            <label class="form-label small">Tüm Çalma Listeleri</label>
                                             <div class="listbox" id="available-playlists">
                                                 @if(isset($this->activePlaylists))
                                                     @foreach($this->activePlaylists as $playlist)
@@ -135,7 +135,7 @@
                                         </div>
 
                                         <div class="col-5">
-                                            <label class="form-label text-muted small">Seçilen Çalma Listeleri</label>
+                                            <label class="form-label small">Seçilen Çalma Listeleri</label>
                                             <div class="listbox" id="selected-playlists">
                                                 @if(isset($this->activePlaylists))
                                                     @foreach($this->activePlaylists as $playlist)
@@ -152,7 +152,7 @@
                                         </div>
                                     </div>
                                     <div class="form-text mt-2">
-                                        <small class="text-muted">
+                                        <small class="">
                                             <i class="fa-solid fa-circle-info me-1"></i>
                                             Listeye tıklayıp seç, ok tuşları ile taşı
                                         </small>

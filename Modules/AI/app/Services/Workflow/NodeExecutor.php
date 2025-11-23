@@ -136,14 +136,14 @@ class NodeExecutor
 
             // ✅ Cache'lenecek node'lar
             'product_search' => [
-                'enabled' => true,
+                'enabled' => false,  // DISABLED: Cache was causing wrong products
                 'ttl' => 300,
-                'key_params' => ['query', 'category']
+                'key_params' => ['user_message', 'detected_category']
             ],
             'category_detection' => [
                 'enabled' => true,
                 'ttl' => 600,
-                'key_params' => ['message']
+                'key_params' => ['user_message']  // Fixed: use correct context key
             ],
             'history_loader' => [
                 'enabled' => true,

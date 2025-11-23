@@ -107,6 +107,48 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Toplam süreyi hesapla (tüm playlist'lerdeki şarkıların toplamı)
+     */
+    public function getTotalDuration(): int
+    {
+        $totalSeconds = 0;
+        foreach ($this->playlists as $playlist) {
+            $totalSeconds += $playlist->getTotalDuration();
+        }
+        return $totalSeconds;
+    }
+
+    /**
+     * Formatlanmış toplam süre (HH:MM:SS veya MM:SS)
+     */
+    public function getFormattedTotalDuration(): string
+    {
+        $totalSeconds = $this->getTotalDuration();
+
+        $hours = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+        $seconds = $totalSeconds % 60;
+
+        if ($hours > 0) {
+            return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+        }
+
+        return sprintf('%02d:%02d', $minutes, $seconds);
+    }
+
+    /**
+     * Toplam şarkı sayısını hesapla (tüm playlist'lerdeki şarkıların toplamı)
+     */
+    public function getTotalSongsCount(): int
+    {
+        $totalSongs = 0;
+        foreach ($this->playlists as $playlist) {
+            $totalSongs += $playlist->songs->count();
+        }
+        return $totalSongs;
+    }
+
+    /**
      * Thumbmaker media ilişkisi (Radio logo)
      * Not: Spatie'nin media() methodu ile çakışmamak için logoMedia() kullanıyoruz
      */

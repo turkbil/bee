@@ -1,26 +1,80 @@
 @php
-    View::share('pretitle', 'Sayfa Listesi');
+    // Dinamik başlık oluştur
+    $pretitle = __('muzibu::admin.album_list');
+    $subtitle = '';
+
+    if ($filterArtist) {
+        $artistModel = $this->artists->firstWhere('artist_id', $filterArtist);
+        if ($artistModel) {
+            $subtitle = $artistModel->getTranslated('title', app()->getLocale()) ?? $artistModel->getTranslated('title', 'tr');
+        }
+    }
+
+    View::share('pretitle', $pretitle);
+    View::share('subtitle', $subtitle);
 @endphp
 
 <div class="album-component-wrapper">
     <div class="card">
         <div class="card-body p-0">
-            <!-- Header Bölümü -->
-            <div class="row mx-2 my-3">
-                <!-- Arama Kutusu -->
-                <div class="col">
-                    <div class="input-icon">
-                        <span class="input-icon-addon">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" wire:model.live="search" class="form-control"
-                            placeholder="{{ __('muzibu::admin.album.search_placeholder') }}">
+            <!-- Aktif Filtre Bağlamı -->
+            @if($filterArtist)
+                <div class="card-header bg-azure-lt">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-filter"></i>
+                            <span class="fw-medium">Gösterilen:</span>
+                        </div>
+                        @php $artistModel = $this->artists->firstWhere('artist_id', $filterArtist); @endphp
+                        @if($artistModel)
+                            <span class="badge bg-purple-lt fs-6">
+                                {{ $artistModel->getTranslated('title', app()->getLocale()) ?? $artistModel->getTranslated('title', 'tr') }}
+                            </span>
+                        @endif
+                        <a href="{{ route('admin.muzibu.album.index') }}" class="btn btn-outline-secondary ms-auto">
+                            <i class="fas fa-times me-1"></i>Tümünü Göster
+                        </a>
                     </div>
                 </div>
+            @endif
+
+            <!-- Filtre Bölümü -->
+            <div class="row mx-2 my-3">
+                <!-- Sol Taraf - Arama ve Filtreler -->
+                <div class="col-auto">
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Arama -->
+                        <div class="input-icon" style="width: 200px;">
+                            <span class="input-icon-addon">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" wire:model.live="search" class="form-control"
+                                placeholder="{{ __('muzibu::admin.album.search_placeholder') }}">
+                        </div>
+
+                        <!-- Sanatçı Filtresi -->
+                        <select wire:model.live="filterArtist" class="form-select" style="width: 150px;">
+                            <option value="">{{ __('muzibu::admin.album.all_artists') }}</option>
+                            @foreach($this->artists as $artist)
+                                <option value="{{ $artist->artist_id }}">
+                                    {{ $artist->getTranslated('title', app()->getLocale()) ?? $artist->getTranslated('title', 'tr') }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <!-- Temizle -->
+                        @if($search || $filterArtist)
+                            <button wire:click="clearFilters" class="btn btn-icon btn-ghost-secondary" title="{{ __('admin.clear_filters') }}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        @endif
+                    </div>
+                </div>
+
                 <!-- Ortadaki Loading -->
                 <div class="col position-relative">
                     <div wire:loading
-                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
+                        wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, filterArtist"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px;">
                         <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
@@ -29,30 +83,31 @@
                         </div>
                     </div>
                 </div>
-                <!-- Sağ Taraf (Switch ve Select) -->
-                <div class="col">
-                    <div class="d-flex align-items-center justify-content-end gap-3">
-                        <!-- Sayfa Adeti Seçimi -->
-                        <div style="width: 80px; min-width: 80px">
-                            <select wire:model.live="perPage" class="form-control listing-filter-select" data-choices
-                                data-choices-search="false" data-choices-filter="true">
-                                <option value="10">
-                                    <nobr>10</nobr>
-                                </option>
-                                <option value="50">
-                                    <nobr>50</nobr>
-                                </option>
-                                <option value="100">
-                                    <nobr>100</nobr>
-                                </option>
-                                <option value="500">
-                                    <nobr>500</nobr>
-                                </option>
-                                <option value="1000">
-                                    <nobr>1000</nobr>
-                                </option>
-                            </select>
+
+                <!-- Sağ Taraf -->
+                <div class="col-auto">
+                    <div class="d-flex align-items-center justify-content-end gap-2">
+                        <!-- Görünüm Toggle -->
+                        <div class="btn-group" role="group">
+                            <button type="button"
+                                wire:click="$set('detailedView', false)"
+                                class="btn btn-icon {{ !$detailedView ? 'btn-primary' : 'btn-ghost-secondary' }}"
+                                title="Minimal">
+                                <i class="fas fa-th-list"></i>
+                            </button>
+                            <button type="button"
+                                wire:click="$set('detailedView', true)"
+                                class="btn btn-icon {{ $detailedView ? 'btn-primary' : 'btn-ghost-secondary' }}"
+                                title="Detaylı">
+                                <i class="fas fa-table"></i>
+                            </button>
                         </div>
+
+                        <select wire:model.live="perPage" class="form-select" style="width: 75px;">
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -79,22 +134,23 @@
                                     </button>
                                 </div>
                             </th>
-                            <th>
+                            <th style="min-width: 200px">
                                 <button
                                     class="table-sort {{ ($sortField ?? '') === 'title' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
                                     wire:click="sortBy('title')">
                                     {{ __('muzibu::admin.album.title_field') }}
                                 </button>
                             </th>
-                            <th class="text-center" style="width: 80px" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="{{ __('muzibu::admin.album.status') }}">
-                                <button
-                                    class="table-sort {{ ($sortField ?? '') === 'is_active' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
-                                    wire:click="sortBy('is_active')">
-                                    {{ __('muzibu::admin.album.status') }}
-                                </button>
+                            <th class="text-center" style="width: 80px">{{ __('muzibu::admin.songs') }}</th>
+                            <th class="text-center" style="width: 80px">{{ __('muzibu::admin.duration') }}</th>
+                            @if($detailedView)
+                                <th style="min-width: 120px">{{ __('muzibu::admin.artists') }}</th>
+                                <th class="text-center" style="width: 80px">{{ __('muzibu::admin.album.year') }}</th>
+                            @endif
+                            <th class="text-center" style="width: 70px">
+                                {{ __('muzibu::admin.album.status') }}
                             </th>
-                            <th class="text-center" style="width: 160px">{{ __('admin.actions') }}</th>
+                            <th class="text-center" style="width: 120px">{{ __('admin.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="table-tbody">
@@ -143,23 +199,56 @@
                                         </div>
                                     @else
                                         <div class="d-flex align-items-center">
-                                            <span
-                                                class="editable-title pr-4">{{ $album->getTranslated('title', $currentSiteLocale) ?? $album->getTranslated('title', 'tr') }}</span>
-                                            <button class="btn btn-sm px-2 py-1 edit-icon ms-4"
+                                            <span class="avatar avatar-sm me-2 bg-green-lt">
+                                                <i class="fas fa-compact-disc"></i>
+                                            </span>
+                                            <span class="editable-title pr-4">{{ $album->getTranslated('title', $currentSiteLocale) ?? $album->getTranslated('title', 'tr') }}</span>
+                                            <button class="btn btn-sm px-2 py-1 edit-icon ms-2"
                                                 wire:click="startEditingTitle({{ $album->album_id }}, '{{ addslashes($album->getTranslated('title', $currentSiteLocale) ?? $album->getTranslated('title', 'tr')) }}')">
                                                 <i class="fas fa-pen"></i>
                                             </button>
                                         </div>
                                     @endif
                                 </td>
+                                <td class="text-center">
+                                    @php
+                                        $songCount = $album->songs_count ?? $album->songs->count() ?? 0;
+                                    @endphp
+                                    @if($songCount > 0)
+                                        <a href="{{ route('admin.muzibu.song.index') }}?filterAlbum={{ $album->album_id }}"
+                                           class="badge bg-blue-lt text-decoration-none">
+                                            {{ $songCount }}
+                                        </a>
+                                    @else
+                                        <span class="badge bg-secondary-lt">0</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <span class="small text-muted">{{ $album->getFormattedTotalDuration() }}</span>
+                                </td>
+                                @if($detailedView)
+                                    <td>
+                                        @if($album->artist)
+                                            <a href="{{ route('admin.muzibu.album.index') }}?filterArtist={{ $album->artist->artist_id }}"
+                                               class="small text-decoration-none">
+                                                {{ $album->artist->getTranslated('title', $currentSiteLocale) ?? '-' }}
+                                            </a>
+                                        @else
+                                            <span class="small">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="small">
+                                            {{ $album->release_year ?? '-' }}
+                                        </span>
+                                    </td>
+                                @endif
                                 <td class="text-center align-middle">
                                     <button wire:click="toggleActive({{ $album->album_id }})"
-                                        class="btn btn-icon btn-sm {{ $album->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
-                                        <!-- Loading Durumu -->
+                                        class="btn btn-icon btn-sm ps-1 pe-2 {{ $album->is_active ? 'bg-transparent' : 'text-red bg-transparent' }}">
                                         <div wire:loading wire:target="toggleActive({{ $album->album_id }})"
                                             class="spinner-border spinner-border-sm">
                                         </div>
-                                        <!-- Normal Durum: Aktif/Pasif İkonları -->
                                         <div wire:loading.remove
                                             wire:target="toggleActive({{ $album->album_id }})">
                                             @if ($album->is_active)
@@ -172,20 +261,24 @@
                                 </td>
                                 <td class="text-center align-middle">
                                     <div class="d-flex align-items-center gap-3 justify-content-center">
+                                        <a href="{{ route('admin.muzibu.album.bulk-upload', $album->album_id) }}"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="{{ __('muzibu::admin.bulk_upload.button') }}"
+                                            style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                            <i class="fa-solid fa-cloud-arrow-up link-secondary fa-lg"></i>
+                                        </a>
                                         <a href="{{ route('admin.muzibu.album.manage', $album->album_id) }}"
                                             data-bs-toggle="tooltip" data-bs-placement="top"
                                             title="{{ __('admin.edit') }}"
                                             style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                             <i class="fa-solid fa-pen-to-square link-secondary fa-lg"></i>
                                         </a>
-                                        <x-ai-translation :entity-type="'album'" :entity-id="$album->album_id"
-                                            tooltip="{{ __('admin.ai_translate') }}" />
                                         @hasmoduleaccess('muzibu', 'delete')
                                         <div class="dropdown">
-                                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                            <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false"
                                                 style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
-                                                <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
+                                                <i class="fa-solid fa-bars-sort fa-flip-horizontal link-secondary fa-lg"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a href="javascript:void(0);"
@@ -205,10 +298,10 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 8 : 6 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.album.no_albums_found') }}</p>
-                                        <p class="empty-subtitle text-muted">
+                                        <p class="empty-subtitle">
                                             {{ __('muzibu::admin.album.no_results') }}
                                         </p>
                                     </div>
@@ -226,8 +319,8 @@
                 {{ $albums->links() }}
             @else
                 <div class="d-flex justify-content-between align-items-center mb-0">
-                    <p class="small text-muted mb-0">
-                        Toplam <span class="fw-semibold">{{ $albums->total() }}</span> sonuç
+                    <p class="small mb-0">
+                        {{ __('admin.total') }} <span class="fw-semibold">{{ $albums->total() }}</span> {{ __('admin.results') }}
                     </p>
                 </div>
             @endif
@@ -241,10 +334,6 @@
 
     </div>
 </div>
-
-@push('styles')
-    {{-- Preload removed to prevent warning --}}
-@endpush
 
 @push('scripts')
     <script src="{{ asset('assets/js/simple-translation-modal.js') }}?v={{ time() }}"></script>

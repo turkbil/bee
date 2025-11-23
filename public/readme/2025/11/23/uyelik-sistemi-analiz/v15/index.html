@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Sonraki Geliştirmeler</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        .phase {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3b82f6;
+        }
+        .phase h2 {
+            color: #60a5fa;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .phase-number {
+            background: #3b82f6;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .task-group {
+            margin-bottom: 25px;
+        }
+        .task-group h3 {
+            color: #fbbf24;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+        .task-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .task-list li {
+            padding: 10px 15px;
+            background: rgba(15, 23, 42, 0.5);
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .task-list li::before {
+            content: "○";
+            color: #10b981;
+            font-weight: bold;
+        }
+        .task-desc {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        .file-path {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .priority-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: auto;
+        }
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+        .priority-low { background: #10b981; color: white; }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .tech-tag {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        .workflow-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .workflow-box h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+        .workflow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .workflow-step {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .workflow-step::after {
+            content: "→";
+            color: #10b981;
+        }
+        .workflow-step:last-child::after {
+            content: "";
+        }
+        .api-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid #f59e0b;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .api-box h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+        .endpoint {
+            font-family: monospace;
+            font-size: 0.85rem;
+            padding: 8px 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .endpoint-method {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .summary-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .summary-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #f59e0b;
+        }
+        .summary-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .summary-grid { grid-template-columns: 1fr; }
+            .workflow-steps { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Üyelik Sistemi - Sonraki Geliştirmeler</h1>
+            <div class="meta">
+                2025-11-23 | v15 - Geliştirme Yol Haritası | ixtif.com
+            </div>
+        </header>
+
+        <div class="summary-grid">
+            <div class="summary-item">
+                <div class="summary-number">3</div>
+                <div class="summary-label">Ana Faz</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-number">25+</div>
+                <div class="summary-label">Component</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-number">15+</div>
+                <div class="summary-label">Sayfa</div>
+            </div>
+        </div>
+
+        <!-- FAZ 1: UI & CONTROLLERS -->
+        <div class="phase">
+            <h2><span class="phase-number">1</span> UI & Controllers Geliştirme</h2>
+
+            <div class="task-group">
+                <h3>Frontend Sayfalar (Kullanıcı)</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>Login & Register Sayfaları</strong>
+                            <div class="task-desc">Cihaz limit kontrolü, 2FA desteği, kurumsal giriş</div>
+                            <div class="file-path">resources/views/auth/login.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Profil Sayfası</strong>
+                            <div class="task-desc">Kullanıcı bilgileri, şifre değiştirme, 2FA yönetimi</div>
+                            <div class="file-path">resources/views/livewire/auth/profile.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Abonelik Planları Sayfası</strong>
+                            <div class="task-desc">Plan karşılaştırma, fiyatlandırma tablosu, özellikler</div>
+                            <div class="file-path">resources/views/subscription/plans.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Ödeme Sayfası</strong>
+                            <div class="task-desc">PayTR iframe entegrasyonu, kupon kodu girişi</div>
+                            <div class="file-path">resources/views/subscription/checkout.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Abonelik Yönetim Sayfası</strong>
+                            <div class="task-desc">Mevcut plan, yenileme tarihi, ödeme geçmişi</div>
+                            <div class="file-path">resources/views/subscription/manage.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-medium">Orta</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Cihaz Yönetimi Sayfası</strong>
+                            <div class="task-desc">Aktif oturumlar, cihaz çıkışı, güvenlik logları</div>
+                            <div class="file-path">resources/views/livewire/auth/devices.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-medium">Orta</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Fatura Adresleri Sayfası</strong>
+                            <div class="task-desc">Adres ekleme/düzenleme, varsayılan adres seçimi</div>
+                            <div class="file-path">resources/views/livewire/auth/addresses.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-low">Düşük</span>
+                    </li>
+                </ul>
+                <div class="tech-stack">
+                    <span class="tech-tag">Livewire 3</span>
+                    <span class="tech-tag">Alpine.js</span>
+                    <span class="tech-tag">Tailwind CSS</span>
+                </div>
+            </div>
+
+            <div class="task-group">
+                <h3>Livewire Componentler</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>LoginComponent</strong>
+                            <div class="task-desc">Login formu, 2FA modal, cihaz limit uyarısı</div>
+                            <div class="file-path">app/Livewire/Auth/LoginComponent.php</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>RegisterComponent</strong>
+                            <div class="task-desc">Kayıt formu, email doğrulama, trial başlatma</div>
+                            <div class="file-path">app/Livewire/Auth/RegisterComponent.php</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>ProfileComponent</strong>
+                            <div class="task-desc">Profil güncelleme, avatar, şifre değiştirme</div>
+                            <div class="file-path">app/Livewire/Auth/ProfileComponent.php</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>TwoFactorComponent</strong>
+                            <div class="task-desc">2FA etkinleştirme/devre dışı, telefon doğrulama</div>
+                            <div class="file-path">app/Livewire/Auth/TwoFactorComponent.php</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>DeviceManagerComponent</strong>
+                            <div class="task-desc">Aktif oturumlar listesi, cihaz çıkış işlemi</div>
+                            <div class="file-path">app/Livewire/Auth/DeviceManagerComponent.php</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>SubscriptionPlansComponent</strong>
+                            <div class="task-desc">Plan listesi, karşılaştırma, seçim</div>
+                            <div class="file-path">app/Livewire/Subscription/PlansComponent.php</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>CheckoutComponent</strong>
+                            <div class="task-desc">Ödeme formu, kupon uygulama, PayTR entegrasyonu</div>
+                            <div class="file-path">app/Livewire/Subscription/CheckoutComponent.php</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>SubscriptionStatusComponent</strong>
+                            <div class="task-desc">Mevcut abonelik durumu, yenileme bilgisi</div>
+                            <div class="file-path">app/Livewire/Subscription/StatusComponent.php</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="workflow-box">
+                <h4>Kullanıcı Akışı</h4>
+                <div class="workflow-steps">
+                    <span class="workflow-step">Kayıt</span>
+                    <span class="workflow-step">Email Doğrulama</span>
+                    <span class="workflow-step">Trial Başlangıç</span>
+                    <span class="workflow-step">Plan Seçimi</span>
+                    <span class="workflow-step">Ödeme</span>
+                    <span class="workflow-step">Aktif Üyelik</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAZ 2: PAYMENT ENTEGRASYONU -->
+        <div class="phase">
+            <h2><span class="phase-number">2</span> Payment Entegrasyonu (PayTR)</h2>
+
+            <div class="task-group">
+                <h3>PayTR API Entegrasyonu</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>PayTRService</strong>
+                            <div class="task-desc">API wrapper, hash oluşturma, iframe token alma</div>
+                            <div class="file-path">app/Services/Payment/PayTRService.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>PaymentController</strong>
+                            <div class="task-desc">Ödeme başlatma, iframe gösterme, sonuç işleme</div>
+                            <div class="file-path">app/Http/Controllers/PaymentController.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>WebhookController</strong>
+                            <div class="task-desc">PayTR callback işleme, hash doğrulama</div>
+                            <div class="file-path">app/Http/Controllers/Payment/WebhookController.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>ProcessPaymentJob</strong>
+                            <div class="task-desc">Asenkron ödeme işleme, subscription aktivasyonu</div>
+                            <div class="file-path">app/Jobs/ProcessPaymentJob.php</div>
+                        </div>
+                        <span class="priority-badge priority-medium">Orta</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>RefundService</strong>
+                            <div class="task-desc">İade işlemleri, kısmi iade hesaplama</div>
+                            <div class="file-path">app/Services/Payment/RefundService.php</div>
+                        </div>
+                        <span class="priority-badge priority-low">Düşük</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="api-box">
+                <h4>PayTR API Endpoints</h4>
+                <div class="endpoint">
+                    <span class="endpoint-method">POST</span> /payment/create - Ödeme başlat
+                </div>
+                <div class="endpoint">
+                    <span class="endpoint-method">POST</span> /payment/callback - PayTR webhook
+                </div>
+                <div class="endpoint">
+                    <span class="endpoint-method">GET</span> /payment/success - Başarılı ödeme
+                </div>
+                <div class="endpoint">
+                    <span class="endpoint-method">GET</span> /payment/fail - Başarısız ödeme
+                </div>
+                <div class="endpoint">
+                    <span class="endpoint-method">POST</span> /payment/refund - İade işlemi
+                </div>
+            </div>
+
+            <div class="task-group" style="margin-top: 25px;">
+                <h3>Ödeme Güvenliği</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>Hash Doğrulama</strong>
+                            <div class="task-desc">PayTR callback hash kontrolü, IP whitelist</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Double Payment Koruması</strong>
+                            <div class="task-desc">Aynı ödemenin tekrar işlenmesini engelle</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Transaction Logging</strong>
+                            <div class="task-desc">Tüm ödeme işlemlerini kaydet</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="workflow-box">
+                <h4>Ödeme Akışı</h4>
+                <div class="workflow-steps">
+                    <span class="workflow-step">Plan Seç</span>
+                    <span class="workflow-step">Kupon Uygula</span>
+                    <span class="workflow-step">PayTR Token Al</span>
+                    <span class="workflow-step">iframe Göster</span>
+                    <span class="workflow-step">Kart Bilgisi</span>
+                    <span class="workflow-step">3D Secure</span>
+                    <span class="workflow-step">Webhook</span>
+                    <span class="workflow-step">Aktivasyon</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAZ 3: ADMIN PANEL -->
+        <div class="phase">
+            <h2><span class="phase-number">3</span> Admin Panel Geliştirme</h2>
+
+            <div class="task-group">
+                <h3>Abonelik Yönetimi</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>SubscriptionPlanComponent</strong>
+                            <div class="task-desc">Plan CRUD, fiyatlandırma, özellik yönetimi</div>
+                            <div class="file-path">Modules/UserManagement/app/Http/Livewire/Admin/SubscriptionPlanComponent.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>SubscriptionListComponent</strong>
+                            <div class="task-desc">Tüm abonelikler listesi, filtreleme, arama</div>
+                            <div class="file-path">Modules/UserManagement/app/Http/Livewire/Admin/SubscriptionListComponent.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>SubscriptionDetailComponent</strong>
+                            <div class="task-desc">Abonelik detayı, manuel uzatma, iptal</div>
+                            <div class="file-path">Modules/UserManagement/app/Http/Livewire/Admin/SubscriptionDetailComponent.php</div>
+                        </div>
+                        <span class="priority-badge priority-medium">Orta</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="task-group">
+                <h3>Kupon Yönetimi</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>CouponComponent</strong>
+                            <div class="task-desc">Kupon CRUD, kod üretme, kullanım limiti</div>
+                            <div class="file-path">Modules/UserManagement/app/Http/Livewire/Admin/CouponComponent.php</div>
+                        </div>
+                        <span class="priority-badge priority-medium">Orta</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>CouponUsageReport</strong>
+                            <div class="task-desc">Kupon kullanım raporları, istatistikler</div>
+                            <div class="file-path">Modules/UserManagement/app/Http/Livewire/Admin/CouponUsageReport.php</div>
+                        </div>
+                        <span class="priority-badge priority-low">Düşük</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="task-group">
+                <h3>Kullanıcı Yönetimi Genişletme</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>UserSubscriptionTab</strong>
+                            <div class="task-desc">Kullanıcı detayında abonelik sekmesi</div>
+                            <div class="file-path">Modules/UserManagement/resources/views/admin/partials/subscription-tab.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>UserDevicesTab</strong>
+                            <div class="task-desc">Kullanıcı cihazları, oturum yönetimi</div>
+                            <div class="file-path">Modules/UserManagement/resources/views/admin/partials/devices-tab.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-medium">Orta</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>UserPaymentsTab</strong>
+                            <div class="task-desc">Ödeme geçmişi, faturalar</div>
+                            <div class="file-path">Modules/UserManagement/resources/views/admin/partials/payments-tab.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-medium">Orta</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>CorporateUsersTab</strong>
+                            <div class="task-desc">Kurumsal hesap alt kullanıcıları</div>
+                            <div class="file-path">Modules/UserManagement/resources/views/admin/partials/corporate-tab.blade.php</div>
+                        </div>
+                        <span class="priority-badge priority-low">Düşük</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="task-group">
+                <h3>Dashboard & Raporlar</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>Subscription Dashboard Widget</strong>
+                            <div class="task-desc">Aktif üye sayısı, MRR, churn rate</div>
+                        </div>
+                        <span class="priority-badge priority-high">Yüksek</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Revenue Reports</strong>
+                            <div class="task-desc">Gelir raporları, plan bazlı analiz</div>
+                        </div>
+                        <span class="priority-badge priority-medium">Orta</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Trial Conversion Report</strong>
+                            <div class="task-desc">Trial → Paid dönüşüm oranları</div>
+                        </div>
+                        <span class="priority-badge priority-low">Düşük</span>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Churn Analysis</strong>
+                            <div class="task-desc">İptal nedenleri, kayıp analizi</div>
+                        </div>
+                        <span class="priority-badge priority-low">Düşük</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tech-stack">
+                <span class="tech-tag">Livewire 3</span>
+                <span class="tech-tag">Tabler.io</span>
+                <span class="tech-tag">Bootstrap 5</span>
+                <span class="tech-tag">ApexCharts</span>
+            </div>
+        </div>
+
+        <!-- ÖNERİLEN BAŞLANGIÇ SIRASI -->
+        <div class="phase" style="border-left-color: #10b981;">
+            <h2 style="color: #10b981;"><span class="phase-number" style="background: #10b981;">!</span> Önerilen Başlangıç Sırası</h2>
+
+            <div class="task-group">
+                <h3>1. Hafta - Temel Akış</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>Login/Register Componentleri</strong>
+                            <div class="task-desc">Cihaz limit ve 2FA entegrasyonu ile</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Profil Sayfası</strong>
+                            <div class="task-desc">Temel bilgi güncelleme</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Admin Plan Yönetimi</strong>
+                            <div class="task-desc">Plan CRUD işlemleri</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="task-group">
+                <h3>2. Hafta - Ödeme Sistemi</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>PayTR Entegrasyonu</strong>
+                            <div class="task-desc">API bağlantısı, test ödemeleri</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Checkout Sayfası</strong>
+                            <div class="task-desc">iframe entegrasyonu, kupon desteği</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Webhook Handler</strong>
+                            <div class="task-desc">Ödeme sonucu işleme</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="task-group">
+                <h3>3. Hafta - Admin & Raporlar</h3>
+                <ul class="task-list">
+                    <li>
+                        <div>
+                            <strong>Subscription List</strong>
+                            <div class="task-desc">Abonelik listesi ve detay</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Kupon Yönetimi</strong>
+                            <div class="task-desc">Kupon CRUD</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Dashboard Widgets</strong>
+                            <div class="task-desc">MRR, aktif üye sayısı</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            Üyelik Sistemi - Sonraki Geliştirmeler Yol Haritası | v15<br>
+            2025-11-23 | Claude AI
+        </footer>
+    </div>
+</body>
+</html>

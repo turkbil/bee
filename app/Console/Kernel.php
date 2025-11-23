@@ -126,6 +126,32 @@ class Kernel extends ConsoleKernel
                  ->onFailure(function () {
                      \Log::channel('daily')->error('❌ Tenant Blog Cron: Failed to complete');
                  });
+
+        // 🔐 SUBSCRIPTION MANAGEMENT CRONS
+
+        // Trial Expiry Check - Günlük 09:00
+        $schedule->command('subscription:check-trial')
+                 ->dailyAt('09:00')
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/subscription-trial.log'));
+
+        // Renewal Reminders - Günlük 10:00
+        $schedule->command('subscription:send-reminders')
+                 ->dailyAt('10:00')
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/subscription-reminders.log'));
+
+        // Process Recurring Payments - Günlük 06:00
+        $schedule->command('subscription:process-recurring')
+                 ->dailyAt('06:00')
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/subscription-payments.log'));
+
+        // Session Cleanup - Haftalık Pazar 03:00
+        $schedule->command('auth:cleanup-sessions')
+                 ->weeklyOn(0, '03:00')
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/session-cleanup.log'));
     }
 
     /**

@@ -10,7 +10,7 @@
  * @date 2025-10-29
  */
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.0.1';
 const CACHE_NAME = `pwa-cache-${CACHE_VERSION}`;
 
 // Assets to cache (minimal - only critical)
@@ -78,6 +78,12 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request)
             .then((response) => {
+                // Skip caching for partial responses (206) - video/audio range requests
+                // Skip caching for non-ok responses
+                if (!response.ok || response.status === 206) {
+                    return response;
+                }
+
                 // Clone response (can only be consumed once)
                 const responseToCache = response.clone();
 

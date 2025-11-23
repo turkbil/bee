@@ -249,6 +249,7 @@ return [
     // Bilgiler
     'name' => 'Ad',
     'title' => 'Başlık',
+    'slug' => 'URL Adı',
     'description' => 'Açıklama',
     'status' => 'Durum',
     'type' => 'Tip',
@@ -286,7 +287,7 @@ return [
     'pagination_navigation' => 'Sayfalama navigasyonu',
     'pagination_showing' => 'Gösteriliyor',
     'pagination_to' => '-',
-    'pagination_of' => '/',
+    'pagination_of' => 'toplam',
     'pagination_between' => 'arası',
     'pagination_results' => 'sonuç',
     'pagination_previous' => 'Önceki',

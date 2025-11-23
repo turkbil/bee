@@ -1,55 +1,224 @@
-<section class="py-8 border-b border-gray-200 dark:border-white/10">
-            <div class="container mx-auto px-4 sm:px-4 md:px-2">
-                <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                    
-                    <button @click="$refs.categoryModal.classList.remove('hidden')" class="flex-shrink-0 px-6 py-3 rounded-xl font-semibold transition-all bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg">
-                        <i class="fa-light fa-grid-2 mr-2"></i>
-                        Tüm Kategoriler
-                    </button>
-
-                    
-                                            
+<div class="col-lg-8">
                         
-                        <a href="/shop/kategori/forklift" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
-                                                            <i class="fa-solid fa-forklift mr-2"></i>
-                                                        Forklift
-                        </a>
-                                            
-                        
-                        <a href="/shop/kategori/transpalet" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
-                                                            <i class="fa-solid fa-dolly mr-2"></i>
-                                                        Transpalet
-                        </a>
-                                            
-                        
-                        <a href="/shop/kategori/istif-makinesi" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
-                                                            <i class="fa-solid fa-layer-group mr-2"></i>
-                                                        İstif Makinesi
-                        </a>
-                                            
-                        
-                        <a href="/shop/kategori/siparis-toplama-makinesi" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
-                                                            <i class="fa-solid fa-boxes-stacked mr-2"></i>
-                                                        Order Picker
-                        </a>
-                                            
-                        
-                        <a href="/shop/kategori/otonom-sistemler" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
-                                                            <i class="fa-solid fa-robot mr-2"></i>
-                                                        Otonom Sistemler
-                        </a>
-                                            
-                        
-                        <a href="/shop/kategori/reach-truck" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
-                                                            <i class="fa-solid fa-truck mr-2"></i>
-                                                        Reach Truck
-                        </a>
-                                            
-                        
-                        <a href="/shop/kategori/yedek-parca" class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400">
-                                                            <i class="fa-solid fa-wrench mr-2"></i>
-                                                        Yedek Parça
-                        </a>
+                        <div class="card mb-3" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                            <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                                <h3 class="card-title">
+                                    <span class="badge bg-primary me-2" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">1</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+                                    kupon::admin.adım_kodu
+                                </font></font></h3>
+                            </div>
+                            <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                                <div class="mb-3" x-data="{
+                                    generateCode() {
+                                        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                                        let code = '';
+                                        for (let i = 0; i &lt; 8; i++) {
+                                            code += chars.charAt(Math.floor(Math.random() * chars.length));
+                                        }
+                                        $wire.set('code', code);
+                                    }
+                                }">
+                                    <label class="form-label fw-bold">Kupon Kodu</label>
+                                    <div class="input-group input-group-lg" style="border-radius: 0.25rem !important;">
+                                        <input type="text" class="form-control" wire:model="code" style="text-transform: uppercase; letter-spacing: 2px; font-weight: bold; border-radius: 0.25rem !important;" placeholder="PAZAR20">
+                                        <button type="button" class="btn btn-primary" @click="generateCode()" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                                            <i class="fas fa-magic me-1"></i>Oluştur
+                                        </button>
                                     </div>
-            </div>
-        </section>
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="fas fa-info-circle me-1"></i><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+                                        kupon::admin.code_hint
+                                    </font></font></small>
+                                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="card mb-3" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                            <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                                <h3 class="card-title">
+                                    <span class="badge bg-primary me-2" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">2</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+                                    kupon::admin.step_discount
+                                </font></font></h3>
+                            </div>
+                            <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">İndirim Tipi</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-selectgroup-item">
+                                                <input type="radio" name="coupon_type" value="percentage" class="form-selectgroup-input" wire:model.live="coupon_type">
+                                                <span class="form-selectgroup-label d-flex flex-column align-items-center p-3">
+                                                    <i class="fas fa-percent fa-2x mb-2 text-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;"></i>
+                                                    <span class="fw-bold">Yüzde</span>
+                                                    <small class="text-muted"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">kupon::admin.ipucu_yüzdesi</font></font></small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-selectgroup-item">
+                                                <input type="radio" name="coupon_type" value="fixed_amount" class="form-selectgroup-input" wire:model.live="coupon_type">
+                                                <span class="form-selectgroup-label d-flex flex-column align-items-center p-3">
+                                                    <i class="fas fa-lira-sign fa-2x mb-2 text-success"></i>
+                                                    <span class="fw-bold">Sabit Tutar</span>
+                                                    <small class="text-muted"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">kupon::admin.ipucu_düzeltildi</font></font></small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-selectgroup-item">
+                                                <input type="radio" name="coupon_type" value="free_shipping" class="form-selectgroup-input" wire:model.live="coupon_type">
+                                                <span class="form-selectgroup-label d-flex flex-column align-items-center p-3">
+                                                    <i class="fas fa-truck fa-2x mb-2 text-info"></i>
+                                                    <span class="fw-bold">Ücretsiz Kargo</span>
+                                                    <small class="text-muted"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">kupon::admin.hint_shipping</font></font></small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-6 col-lg-3">
+                                            <label class="form-selectgroup-item">
+                                                <input type="radio" name="coupon_type" value="buy_x_get_y" class="form-selectgroup-input" wire:model.live="coupon_type">
+                                                <span class="form-selectgroup-label d-flex flex-column align-items-center p-3">
+                                                    <i class="fas fa-gift fa-2x mb-2 text-warning"></i>
+                                                    <span class="fw-bold"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">X Öde Y'ye</font></font></span>
+                                                    <small class="text-muted"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">kupon::admin.hint_bogo</font></font></small>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--[if BLOCK]><![endif]-->                                <div class="alert alert-light border mb-3" style="border-radius: 0.25rem !important;">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold mb-1">İndirim Değeri</label>
+                                            <div class="input-group" style="border-radius: 0.25rem !important;">
+                                                <input type="number" class="form-control form-control-lg" step="1" min="1" max="100" wire:model="discount_percentage" placeholder="20" style="border-radius: 0.25rem !important;">
+                                                <span class="input-group-text fw-bold" style="border-radius: 0.25rem !important;"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">%</font></font></span>
+                                            </div>
+                                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="text-muted">
+                                                <i class="fas fa-calculator me-1"></i>
+                                                <strong>coupon::admin.example:</strong> %20 indirim = 100₺'lik üründe 20₺ indirim
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+
+                        
+                        <div class="card mb-3" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                            <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                                <h3 class="card-title">
+                                    <span class="badge bg-primary me-2" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">3</font></font></span><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+                                    kupon::admin.step_scope
+                                </font></font></h3>
+                            </div>
+                            <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                                <label class="form-label fw-bold">Uygulama Alanı</label>
+                                <div class="row g-2">
+                                    <div class="col-md-4">
+                                        <label class="form-selectgroup-item">
+                                            <input type="radio" name="applies_to" value="all" class="form-selectgroup-input" wire:model="applies_to">
+                                            <span class="form-selectgroup-label d-flex align-items-center p-3">
+                                                <i class="fas fa-globe fa-lg me-2 text-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important;"></i>
+                                                <span>
+                                                    <span class="fw-bold d-block">Tümü</span>
+                                                    <small class="text-muted"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">kupon::admin.hint_scope_all</font></font></small>
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-selectgroup-item">
+                                            <input type="radio" name="applies_to" value="shop" class="form-selectgroup-input" wire:model="applies_to">
+                                            <span class="form-selectgroup-label d-flex align-items-center p-3">
+                                                <i class="fas fa-shopping-cart fa-lg me-2 text-success"></i>
+                                                <span>
+                                                    <span class="fw-bold d-block">Mağaza (E-ticaret)</span>
+                                                    <small class="text-muted"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">kupon::admin.hint_scope_shop</font></font></small>
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-selectgroup-item">
+                                            <input type="radio" name="applies_to" value="subscription" class="form-selectgroup-input" wire:model="applies_to">
+                                            <span class="form-selectgroup-label d-flex align-items-center p-3">
+                                                <i class="fas fa-sync-alt fa-lg me-2 text-info"></i>
+                                                <span>
+                                                    <span class="fw-bold d-block">Abonelik</span>
+                                                    <small class="text-muted"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">kupon::admin.hint_scope_sub</font></font></small>
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="card mb-3" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                            <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                                <h3 class="card-title">Limitler</h3>
+                            </div>
+                            <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Min. Tutar</label>
+                                            <input type="number" class="form-control" step="0.01" wire:model="min_order_amount" placeholder="Opsiyonel" style="border-radius: 0.25rem !important;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Max. İndirim</label>
+                                            <input type="number" class="form-control" step="0.01" wire:model="max_discount_amount" placeholder="Opsiyonel" style="border-radius: 0.25rem !important;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Kullanım Limiti</label>
+                                            <input type="number" class="form-control" wire:model="usage_limit_total" placeholder="Sınırsız" style="border-radius: 0.25rem !important;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Kullanıcı Başı Limit</label>
+                                            <input type="number" class="form-control" wire:model="usage_limit_per_user" min="1" style="border-radius: 0.25rem !important;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div class="card mb-3" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                            <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                                <ul class="nav nav-tabs card-header-tabs" style="border-radius: 0.25rem 0.25rem 0px 0px !important; overflow: hidden !important;">
+                                    <!--[if BLOCK]><![endif]-->                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#" wire:click.prevent="switchLanguage('tr')" style="border-radius: 0.25rem 0.25rem 0px 0px !important;"><font dir="auto" style="vertical-align: inherit;"><font dir="auto" style="vertical-align: inherit;">
+                                            TR
+                                        </font></font></a>
+                                    </li>
+                                    <!--[if ENDBLOCK]><![endif]-->
+                                </ul>
+                            </div>
+                            <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]-->                                <div class="">
+                                    <div class="mb-3">
+                                        <label class="form-label">Açıklama (TR)</label>
+                                        <textarea class="form-control" rows="3" wire:model="multiLangInputs.tr.description" style="border-radius: 0.25rem !important;"></textarea>
+                                    </div>
+                                </div>
+                                <!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>

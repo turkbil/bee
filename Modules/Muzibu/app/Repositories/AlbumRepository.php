@@ -50,7 +50,7 @@ class AlbumRepository
 
     public function paginate(int $perPage = 15, array $filters = []): LengthAwarePaginator
     {
-        $query = $this->model->query()->with('artist');
+        $query = $this->model->query()->with(['artist', 'songs'])->withCount('songs');
 
         if (isset($filters['is_active'])) {
             $query->where('is_active', $filters['is_active']);
@@ -60,10 +60,24 @@ class AlbumRepository
             $query->where('artist_id', $filters['artist_id']);
         }
 
-        if (isset($filters['search'])) {
+        if (isset($filters['search']) && !empty($filters['search'])) {
             $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->whereRaw("JSON_SEARCH(title, 'one', ?) IS NOT NULL", ["%{$search}%"]);
+            $locales = $filters['locales'] ?? ['tr'];
+            $searchLower = '%' . mb_strtolower($search) . '%';
+
+            $query->where(function ($q) use ($searchLower, $locales) {
+                // Title search
+                foreach ($locales as $locale) {
+                    $q->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}'))) LIKE ?", [$searchLower]);
+                }
+                // Artist search
+                $q->orWhereHas('artist', function ($artistQuery) use ($searchLower, $locales) {
+                    $artistQuery->where(function ($aq) use ($searchLower, $locales) {
+                        foreach ($locales as $locale) {
+                            $aq->orWhereRaw("LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, '$.{$locale}'))) LIKE ?", [$searchLower]);
+                        }
+                    });
+                });
             });
         }
 

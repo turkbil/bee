@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Muzibu v4 - Calling on You (Single Encrypted)</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 min-h-screen p-6">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="bg-gray-800 rounded-t-xl p-8 text-center border-b border-amber-500">
+            <h1 class="text-3xl font-bold text-amber-400 mb-2">🎵 Calling on You - v4</h1>
+            <p class="text-gray-400">256kbps AAC Stereo (Single Encrypted Stream)</p>
+            <p class="text-gray-500 text-sm mt-2">Şifreli HLS | Parçalanmamış | Tek Segment</p>
+            <p class="text-amber-500 text-xs mt-1">🔒 Tüm şarkı tek şifreli dosyada!</p>
+        </div>
+
+        <!-- Player -->
+        <div class="bg-gray-800 p-8 border-b border-amber-500">
+            <audio id="audioPlayer" controls class="w-full mb-6 rounded"></audio>
+
+            <button id="playBtn"
+                    class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg mb-6">
+                ▶️ Demo Şarkıyı Çal
+            </button>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-gray-900 p-4 rounded text-center">
+                    <div class="text-gray-400 text-sm mb-1">Segment</div>
+                    <div id="chunkCount" class="text-2xl font-bold text-amber-400">1</div>
+                </div>
+                <div class="bg-gray-900 p-4 rounded text-center">
+                    <div class="text-gray-400 text-sm mb-1">Durum</div>
+                    <div id="streamStatus" class="text-2xl font-bold text-amber-400">Hazır</div>
+                </div>
+                <div class="bg-gray-900 p-4 rounded text-center">
+                    <div class="text-gray-400 text-sm mb-1">Şifreleme</div>
+                    <div class="text-2xl font-bold text-amber-400">AES-128</div>
+                </div>
+                <div class="bg-gray-900 p-4 rounded text-center">
+                    <div class="text-gray-400 text-sm mb-1">Boyut</div>
+                    <div class="text-2xl font-bold text-amber-400">7.2MB</div>
+                </div>
+            </div>
+
+            <!-- Console -->
+            <div class="bg-black rounded border border-amber-500">
+                <div class="bg-gray-900 px-4 py-2 flex justify-between items-center border-b border-amber-500">
+                    <span class="text-amber-400 font-mono text-sm">SİSTEM KAYITLARI</span>
+                    <button id="clearBtn" class="text-red-400 hover:text-red-300 text-xs">TEMİZLE</button>
+                </div>
+                <div id="console" class="p-4 h-64 overflow-y-auto font-mono text-xs text-amber-400"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="bg-gray-800 rounded-b-xl p-4 text-center">
+            <p class="text-gray-400 text-sm">© 2025 Muzibu - Güvenli Müzik Akışı</p>
+        </div>
+    </div>
+
+    <script>
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const consoleEl = document.getElementById('console');
+        const chunkCountEl = document.getElementById('chunkCount');
+        const streamStatusEl = document.getElementById('streamStatus');
+        const clearBtn = document.getElementById('clearBtn');
+
+        let hls = null;
+        let isPlaying = false;
+        let progressInterval = null;
+
+        function log(message, color = 'text-amber-400') {
+            const time = new Date().toLocaleTimeString('tr-TR');
+            const div = document.createElement('div');
+            div.className = `mb-1 ${color}`;
+            div.textContent = `[${time}] ${message}`;
+            consoleEl.appendChild(div);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+
+            if (consoleEl.children.length > 100) {
+                consoleEl.removeChild(consoleEl.firstChild);
+            }
+        }
+
+        function startProgressMonitor() {
+            if (progressInterval) clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if (isPlaying && !audioPlayer.paused) {
+                    const current = audioPlayer.currentTime.toFixed(1);
+                    const duration = audioPlayer.duration.toFixed(1);
+                    const percent = ((audioPlayer.currentTime / audioPlayer.duration) * 100).toFixed(1);
+                    log(`⏱ ${current}s / ${duration}s (${percent}%)`, 'text-blue-400');
+                }
+            }, 1000);
+        }
+
+        function stopMonitors() {
+            if (progressInterval) clearInterval(progressInterval);
+        }
+
+        clearBtn.addEventListener('click', () => {
+            consoleEl.innerHTML = '';
+            log('Konsol temizlendi');
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                audioPlayer.pause();
+                isPlaying = false;
+                streamStatusEl.textContent = 'Duraklatıldı';
+                playBtn.textContent = '▶️ Demo Şarkıyı Çal';
+                log('⏸ Duraklatıldı', 'text-yellow-400');
+                stopMonitors();
+                return;
+            }
+
+            if (Hls.isSupported()) {
+                log('⏳ Şifreli dosya yükleniyor...', 'text-cyan-400');
+                const startTime = Date.now();
+
+                if (!hls) {
+                    hls = new Hls();
+                    // Calling on You v4 - Single Encrypted Stream
+                    hls.loadSource('https://ixtif.com/stream/play/FxCs8uOh8va9hq6P/playlist.m3u8?v=256');
+                    hls.attachMedia(audioPlayer);
+
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        const loadTime = Date.now() - startTime;
+                        log(`✅ Playlist yüklendi (${loadTime}ms)`, 'text-green-400');
+                    });
+
+                    hls.on(Hls.Events.KEY_LOADED, () => {
+                        log('🔑 Şifreleme anahtarı alındı', 'text-green-400');
+                    });
+
+                    hls.on(Hls.Events.FRAG_LOADING, () => {
+                        log(`[YÜKLEME] >>> audio_0.ts (7.2MB tek dosya)`, 'text-cyan-400');
+                    });
+
+                    hls.on(Hls.Events.FRAG_LOADED, (event, data) => {
+                        const size = (data.frag.stats.total / 1024 / 1024).toFixed(2);
+                        const time = data.frag.stats.loading.end - data.frag.stats.loading.start;
+                        const speed = ((data.frag.stats.total / 1024) / (time / 1000)).toFixed(1);
+                        log(`[ŞİFRE ÇÖZÜLDÜ] <<< audio_0.ts | ${size}MB | ${time}ms | ${speed}KB/s`, 'text-pink-400');
+
+                        streamStatusEl.textContent = 'Çalıyor';
+                        playBtn.textContent = '⏸ Duraklat';
+                        audioPlayer.play();
+                        isPlaying = true;
+                        startProgressMonitor();
+                    });
+
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        if (data.fatal) {
+                            streamStatusEl.textContent = 'Hata';
+                            log('❌ Akış hatası - Lütfen tekrar deneyin', 'text-red-400');
+                        }
+                    });
+                } else {
+                    audioPlayer.play();
+                    isPlaying = true;
+                    streamStatusEl.textContent = 'Çalıyor';
+                    playBtn.textContent = '⏸ Duraklat';
+                    log('▶️ Devam ediyor', 'text-green-400');
+                    startProgressMonitor();
+                }
+            } else {
+                log('❌ HLS desteklenmiyor - Chrome/Firefox kullanın', 'text-red-400');
+            }
+        });
+
+        audioPlayer.addEventListener('pause', () => {
+            if (isPlaying) {
+                stopMonitors();
+            }
+        });
+
+        audioPlayer.addEventListener('play', () => {
+            if (isPlaying) {
+                startProgressMonitor();
+            }
+        });
+
+        audioPlayer.addEventListener('ended', () => {
+            isPlaying = false;
+            stopMonitors();
+            streamStatusEl.textContent = 'Tamamlandı';
+            playBtn.textContent = '▶️ Demo Şarkıyı Çal';
+            log('✅ Şarkı tamamlandı', 'text-green-400');
+            log('🔒 Tek şifreli segment başarıyla çalındı', 'text-green-400');
+        });
+
+        // Initial log
+        log('✅ Sistem hazır - v4 Single Encrypted');
+        log('🔐 AES-128 şifreleme aktif');
+        log('📦 Tüm şarkı tek dosyada (parçalanmamış)');
+    </script>
+</body>
+</html>

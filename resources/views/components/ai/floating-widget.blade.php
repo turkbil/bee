@@ -37,6 +37,80 @@ $positionClasses = [
 
 $selectedTheme = $themeClasses[$theme] ?? $themeClasses['blue'];
 $selectedPosition = $positionClasses[$position] ?? $positionClasses['bottom-right'];
+
+// 🎯 TENANT-AWARE: Quick actions'ları dinamik çek
+$quickActions = [];
+
+try {
+    // 1. Önce AI Tenant Directive'den dene
+    $directive = \App\Models\AITenantDirective::where('tenant_id', tenant('id'))
+        ->where('directive_key', 'chatbot_quick_actions')
+        ->where('is_active', true)
+        ->first();
+
+    if ($directive && $directive->directive_value) {
+        $quickActions = json_decode($directive->directive_value, true) ?? [];
+    }
+
+    // 2. Directive yoksa Shop kategorilerinden çek
+    if (empty($quickActions)) {
+        $categories = \Modules\Shop\App\Models\ShopCategory::where('is_active', true)
+            ->where('parent_id', null) // Sadece ana kategoriler
+            ->orderBy('sort_order')
+            ->limit(6)
+            ->get();
+
+        $iconMap = [
+            'default' => 'fas fa-box',
+        ];
+
+        $colorMap = [
+            0 => 'blue',
+            1 => 'orange',
+            2 => 'green',
+            3 => 'purple',
+            4 => 'red',
+            5 => 'yellow',
+        ];
+
+        foreach ($categories as $index => $category) {
+            $title = $category->getTranslated('title', app()->getLocale());
+            $quickActions[] = [
+                'label' => $title,
+                'message' => $title . ' modelleri hakkında bilgi almak istiyorum',
+                'icon' => $iconMap['default'],
+                'color' => $colorMap[$index % 6] ?? 'blue',
+            ];
+        }
+    }
+
+    // 3. Hala boşsa ve default actions varsa (global fallback)
+    if (empty($quickActions)) {
+        $globalDirective = \App\Models\AITenantDirective::where('tenant_id', null)
+            ->where('directive_key', 'chatbot_quick_actions')
+            ->where('is_active', true)
+            ->first();
+
+        if ($globalDirective && $globalDirective->directive_value) {
+            $quickActions = json_decode($globalDirective->directive_value, true) ?? [];
+        }
+    }
+
+    // 4. İletişim butonu her zaman ekle (tenant-neutral)
+    $hasContact = collect($quickActions)->contains(fn($a) => stripos($a['label'] ?? '', 'letişim') !== false);
+    if (!$hasContact) {
+        $quickActions[] = [
+            'label' => 'İletişim',
+            'message' => 'İletişim bilgilerinizi ve çalışma saatlerinizi öğrenebilir miyim?',
+            'icon' => 'fas fa-phone',
+            'color' => 'gradient', // Özel stil
+        ];
+    }
+} catch (\Exception $e) {
+    \Log::warning('Could not load chatbot quick actions', ['error' => $e->getMessage()]);
+    // Fallback - boş bırak, butonlar gösterilmez
+    $quickActions = [];
+}
 @endphp
 
 <div x-data="{
@@ -342,82 +416,48 @@ class="fixed {{ $selectedPosition }} z-50">
                     Aradığınız bunlardan birisi mi?
                 </p>
 
-                {{-- Category Selector - Horizontal Layout --}}
+                {{-- Category Selector - Horizontal Layout (TENANT-AWARE) --}}
+                @if(!empty($quickActions))
                 <div class="w-full">
                     <div class="grid grid-cols-2 gap-2">
-                        {{-- Transpalet --}}
-                        <button
-                            @click="message = 'Transpalet modelleri hakkında bilgi almak istiyorum'; submitMessage();"
-                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
-                        >
-                            <i class="fas fa-dolly text-lg text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300"></i>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Transpalet</span>
-                        </button>
+                        @foreach($quickActions as $action)
+                            @php
+                                $colorClasses = [
+                                    'blue' => 'text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300',
+                                    'orange' => 'text-orange-600 dark:text-orange-400 group-hover:text-orange-700 dark:group-hover:text-orange-300',
+                                    'green' => 'text-green-600 dark:text-green-400 group-hover:text-green-700 dark:group-hover:text-green-300',
+                                    'purple' => 'text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300',
+                                    'red' => 'text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300',
+                                    'yellow' => 'text-yellow-600 dark:text-yellow-400 group-hover:text-yellow-700 dark:group-hover:text-yellow-300',
+                                    'teal' => 'text-teal-600 dark:text-teal-400 group-hover:text-teal-700 dark:group-hover:text-teal-300',
+                                ];
+                                $iconColor = $colorClasses[$action['color'] ?? 'blue'] ?? $colorClasses['blue'];
+                                $isGradient = ($action['color'] ?? '') === 'gradient';
+                            @endphp
 
-                        {{-- Forklift --}}
-                        <button
-                            @click="message = 'Forklift modelleri ve özellikleri hakkında bilgi almak istiyorum'; submitMessage();"
-                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
-                        >
-                            <i class="fas fa-forklift text-lg text-orange-600 dark:text-orange-400 group-hover:text-orange-700 dark:group-hover:text-orange-300"></i>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Forklift</span>
-                        </button>
-
-                        {{-- İstif Makinesi --}}
-                        <button
-                            @click="message = 'İstif makinesi seçenekleri ve özellikleri nelerdir?'; submitMessage();"
-                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
-                        >
-                            <i class="fas fa-boxes-stacked text-lg text-green-600 dark:text-green-400 group-hover:text-green-700 dark:group-hover:text-green-300"></i>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">İstif Makinesi</span>
-                        </button>
-
-                        {{-- Reach Truck --}}
-                        <button
-                            @click="message = 'Reach truck modelleri hakkında bilgi alabilir miyim?'; submitMessage();"
-                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
-                        >
-                            <i class="fas fa-warehouse text-lg text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300"></i>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Reach Truck</span>
-                        </button>
-
-                        {{-- Yedek Parça --}}
-                        <button
-                            @click="message = 'Yedek parça hizmetleriniz hakkında bilgi alabilir miyim?'; submitMessage();"
-                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
-                        >
-                            <i class="fas fa-screwdriver-wrench text-lg text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300"></i>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Yedek Parça</span>
-                        </button>
-
-                        {{-- Teknik Servis --}}
-                        <button
-                            @click="message = 'Teknik servis hizmetleriniz hakkında bilgi almak istiyorum'; submitMessage();"
-                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
-                        >
-                            <i class="fas fa-wrench text-lg text-yellow-600 dark:text-yellow-400 group-hover:text-yellow-700 dark:group-hover:text-yellow-300"></i>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Teknik Servis</span>
-                        </button>
-
-                        {{-- Kiralama --}}
-                        <button
-                            @click="message = 'Kiralama seçenekleri ve şartları hakkında bilgi alabilir miyim?'; submitMessage();"
-                            class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
-                        >
-                            <i class="fas fa-calendar-check text-lg text-teal-600 dark:text-teal-400 group-hover:text-teal-700 dark:group-hover:text-teal-300"></i>
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">Kiralama</span>
-                        </button>
-
-                        {{-- İletişim --}}
-                        <button
-                            @click="message = 'İletişim bilgilerinizi ve çalışma saatlerinizi öğrenebilir miyim?'; submitMessage();"
-                            class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-lg transition-all duration-200 hover:shadow-md"
-                        >
-                            <i class="fas fa-phone text-lg"></i>
-                            <span class="text-sm font-medium">İletişim</span>
-                        </button>
+                            @if($isGradient)
+                                {{-- Gradient button (İletişim vb.) --}}
+                                <button
+                                    @click="message = '{{ addslashes($action['message'] ?? '') }}'; submitMessage();"
+                                    class="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-lg transition-all duration-200 hover:shadow-md"
+                                >
+                                    <i class="{{ $action['icon'] ?? 'fas fa-box' }} text-lg"></i>
+                                    <span class="text-sm font-medium">{{ $action['label'] ?? 'Buton' }}</span>
+                                </button>
+                            @else
+                                {{-- Normal button --}}
+                                <button
+                                    @click="message = '{{ addslashes($action['message'] ?? '') }}'; submitMessage();"
+                                    class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 border border-gray-200 dark:border-gray-600 rounded-lg transition-all duration-200 hover:shadow-md group"
+                                >
+                                    <i class="{{ $action['icon'] ?? 'fas fa-box' }} text-lg {{ $iconColor }}"></i>
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">{{ $action['label'] ?? 'Buton' }}</span>
+                                </button>
+                            @endif
+                        @endforeach
                     </div>
                 </div>
+                @endif
             </div>
         </div>
 

@@ -34,7 +34,7 @@ class PlaylistSongsManageComponent extends Component
     public function availableSongs()
     {
         $query = Song::active()
-            ->with(['album.artist', 'genre'])
+            ->with(['album.artist', 'genre', 'coverMedia'])
             ->orderBy('title');
 
         // Arama filtresi
@@ -62,7 +62,7 @@ class PlaylistSongsManageComponent extends Component
     {
         return $this->playlist
             ->songs()
-            ->with(['album.artist', 'genre'])
+            ->with(['album.artist', 'genre', 'coverMedia'])
             ->orderBy('muzibu_playlist_song.position')
             ->get();
     }

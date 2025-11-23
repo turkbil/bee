@@ -2,7 +2,7 @@
 
 namespace Modules\Muzibu\App\DataTransferObjects;
 
-use Modules\Muzibu\App\Models\Muzibu;
+use Illuminate\Database\Eloquent\Model;
 
 readonly class MuzibuOperationResult
 {
@@ -10,11 +10,11 @@ readonly class MuzibuOperationResult
         public bool $success,
         public string $message,
         public string $type = 'success',
-        public ?Muzibu $data = null,
+        public ?Model $data = null,
         public ?array $meta = null
     ) {}
 
-    public static function success(string $message, ?Muzibu $data = null, ?array $meta = null): self
+    public static function success(string $message, ?Model $data = null, ?array $meta = null): self
     {
         return new self(
             success: true,

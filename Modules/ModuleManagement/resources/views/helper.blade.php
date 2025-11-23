@@ -20,11 +20,14 @@
             </a>
             @endhasmoduleaccess
 
+            @if(tenant() === null)
+            {{-- Yeni Modül - Sadece Central --}}
             @hasmoduleaccess('modulemanagement', 'create')
             <a href="{{ route('admin.modulemanagement.manage') }}" class="dropdown-module-item btn btn-primary">
                 {{ __('modulemanagement::admin.new_module') }}
             </a>
             @endhasmoduleaccess
+            @endif
         </div>
     </div>
 </div>

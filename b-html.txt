@@ -1,399 +1,1107 @@
-<section class="mt-12">
-                    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8 mb-8">
-    
-    <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            <i class="fas fa-comments text-blue-500"></i>
-            Yorumlar ve Değerlendirmeler
-        </h2>
-        <div class="text-sm text-gray-500 dark:text-gray-400">
-            1 yorum
-        </div>
-    </div>
-
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-        
-        <div>
-            <div class="flex flex-col items-start gap-4">
-                <div class="flex-shrink-0">
-                    <div class="text-6xl font-bold text-gray-900 dark:text-white mb-3">
-                        5.0
+<div wire:snapshot="{&quot;data&quot;:{&quot;search&quot;:&quot;&quot;,&quot;perPage&quot;:100,&quot;sortField&quot;:&quot;module_id&quot;,&quot;sortDirection&quot;:&quot;desc&quot;,&quot;typeFilter&quot;:&quot;&quot;,&quot;showDomains&quot;:false,&quot;paginators&quot;:[{&quot;page&quot;:1},{&quot;s&quot;:&quot;arr&quot;}]},&quot;memo&quot;:{&quot;id&quot;:&quot;5VXXpodlQwctCkZhHUuw&quot;,&quot;name&quot;:&quot;module-component&quot;,&quot;path&quot;:&quot;admin\/modulemanagement&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:{&quot;lw-84003935-0&quot;:[&quot;div&quot;,&quot;MA0qlxOywiCTpClLPdm0&quot;]},&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;df577a709e2edce82a004ee1a5b195385f5df40001ceca46a118fc515453fcf2&quot;}" wire:effects="{&quot;url&quot;:{&quot;search&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;perPage&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;sortField&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;sortDirection&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;typeFilter&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;paginators.page&quot;:{&quot;as&quot;:&quot;page&quot;,&quot;use&quot;:&quot;push&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null}},&quot;listeners&quot;:[&quot;moduleDeleted&quot;,&quot;refresh&quot;,&quot;itemDeleted&quot;]}" wire:id="5VXXpodlQwctCkZhHUuw" class="card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+    <div class="card-body" style="border-radius: 0.25rem !important;">
+        <!-- Header Bölümü -->
+        <div class="row mb-3">
+            <!-- Arama Kutusu -->
+            <div class="col">
+                <div class="input-icon">
+                    <span class="input-icon-addon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" wire:model.live="search" class="form-control" placeholder="Modül ara..." style="border-radius: 0.25rem !important;">
+                </div>
+            </div>
+            <!-- Ortadaki Loading -->
+            <div class="col position-relative">
+                <div wire:loading="" wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, typeFilter, toggleDomains" class="position-absolute top-50 start-50 translate-middle text-center" style="width: 100%; max-width: 250px;">
+                    <div class="small text-muted mb-2">Güncelleniyor...</div>
+                    <div class="progress mb-1" style="border-radius: 0.25rem !important;">
+                        <div class="progress-bar progress-bar-indeterminate" style="border-radius: 0.25rem !important;"></div>
                     </div>
-
-                    
-                    <div id="rating-691cc72dcec63" class="rating-stars-wrapper">
-    <div x-data="{
-        modelClass: 'Modules\\Blog\\App\\Models\\Blog',
-        modelId: 2,
-        currentRating: 5,
-        averageRating: 5,
-        ratingsCount: 2,
-        readonly: false,
-        isAuthenticated: true,
-        hoverRating: 0,
-        showMessage: false,
-        message: '',
-        messageType: 'info',
-
-        handleClick(value) {
-            if (this.readonly) return;
-
-            if (!this.isAuthenticated) {
-                // Direkt login popup aç
-                this.openLoginModal();
-                return;
-            }
-
-            // Authenticated ise puan gönder
-            this.rate(value);
-        },
-
-        openLoginModal() {
-            // Global login modal varsa aç
-            if (window.openLoginModal) {
-                window.openLoginModal();
-            } else if (typeof Alpine !== 'undefined' &amp;&amp; Alpine.store('auth')) {
-                Alpine.store('auth').showLoginModal = true;
-            } else {
-                // Fallback: Login sayfasına yönlendir
-                window.location.href = 'https://ixtif.com/login';
-            }
-        },
-
-        rate(value) {
-            if (this.readonly) return;
-
-            // API'ye puan gönder
-            fetch('/api/reviews/rating', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=" csrf-token"]').content,="" 'accept':="" 'application="" json'="" },="" body:="" json.stringify({="" model_class:="" this.modelclass,="" model_id:="" this.modelid,="" rating_value:="" value="" })="" .then(response=""> response.json())
-            .then(data =&gt; {
-                console.log('Rating API Response:', data);
-                if (data.success) {
-                    this.currentRating = value;
-                    this.averageRating = parseFloat(data.data.average_rating);
-                    this.ratingsCount = parseInt(data.data.ratings_count);
-                    console.log('Updated - Average:', this.averageRating, 'Count:', this.ratingsCount);
-                    this.displayMessage('Puanınız kaydedildi! ⭐', 'success');
-
-                    // Force Alpine reactivity
-                    this.$nextTick(() =&gt; {
-                        console.log('Alpine updated - Average:', this.averageRating, 'Count:', this.ratingsCount);
-                    });
-                } else {
-                    this.displayMessage(data.message || 'Bir hata oluştu', 'error');
-                }
-            })
-            .catch(error =&gt; {
-                console.error('Rating error:', error);
-                this.displayMessage('Bir hata oluştu', 'error');
-            });
-        },
-
-        displayMessage(msg, type = 'info') {
-            this.message = msg;
-            this.messageType = type;
-            this.showMessage = true;
-
-            setTimeout(() =&gt; {
-                this.showMessage = false;
-            }, 3000);
-        }
-    }"&gt;
-        <div class="flex items-center gap-2 relative">
-            <!-- Yıldızlar -->
-            <div class="flex items-center gap-0.5 relative" @mouseleave="hoverRating = 0">
-                                
-                <template x-for="star in 5" :key="star">
-                    <button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
-                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'"></i>
-                    </button>
-                </template><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
-                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
-                    </button><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
-                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
-                    </button><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
-                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
-                    </button><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
-                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
-                    </button><button type="button" @click="handleClick(star)" @mouseenter="hoverRating = star" class="text-3xl cursor-pointer hover:scale-110 transition-all duration-150">
-                        <i :class="(hoverRating &gt; 0 &amp;&amp; star &lt;= hoverRating) || (hoverRating === 0 &amp;&amp; star &lt;= (currentRating || averageRating)) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600'" class=""></i>
-                    </button>
-                            </div>
-
-            <!-- Ortalama puan ve sayı -->
+                </div>
+            </div>
+            <!-- Sağ Taraf (Switch ve Select) -->
+            <div class="col">
+                <div class="d-flex align-items-center justify-content-end gap-3">
+                    <!-- Tip Filtresi -->
+                    <div style="width: 150px">
+                        <select wire:model.live="typeFilter" class="form-select listing-filter-select" style="border-radius: 0.25rem !important;">
+                            <option value="">Tüm Tipler</option>
+                            <!--[if BLOCK]><![endif]-->                                <option value="content">Content</option>
+                                                            <option value="management">Management</option>
+                                                            <option value="system">System</option>
+                                                            <option value="widget">Widget</option>
+                                                            <option value="ai">Ai</option>
+                            <!--[if ENDBLOCK]><![endif]-->
+                        </select>
                     </div>
-
-        <!-- Kullanıcı feedback mesajı -->
-        <div x-show="showMessage" x-transition="" class="mt-2 text-sm font-medium" :class="{
-                 'text-green-600 dark:text-green-400': messageType === 'success',
-                 'text-red-600 dark:text-red-400': messageType === 'error',
-                 'text-blue-600 dark:text-blue-400': messageType === 'info'
-             }" style="display: none;">
-            <span x-text="message"></span>
-        </div>
-    </div>
-</div>
-
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
-                        2 değerlendirme
-                    </p>
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                    <!-- Sayfa Adeti Seçimi -->
+                    <div style="min-width: 60px">
+                        <select wire:model.live="perPage" class="form-select listing-filter-select" style="border-radius: 0.25rem !important;">
+                            <option value="100">100</option>
+                            <option value="500">500</option>
+                            <option value="1000">1000</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- Modül Listesi -->
+        <div class="row row-cards">
+            
+            <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
+                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
+                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-file-alt me-2 text-muted"></i>
+                    <h3 class="mb-0 h4">İçerik Modülleri</h3>
+                    <!--[if ENDBLOCK]><![endif]-->
+                    <div class="ms-auto">
+                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
+                            6 Modül Sayısı
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-        
-        <div class="space-y-2">
-                            <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
-                        5 <i class="fas fa-star text-yellow-400 text-xs"></i>
-                    </span>
-                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
-                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 100%"></div>
+            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Muzibu</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]-->                                
+                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/muzibu" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
+                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
+                                </a>
+                                <!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
                     </div>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
-                        2
-                    </span>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Content
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
                 </div>
-                            <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
-                        4 <i class="fas fa-star text-yellow-400 text-xs"></i>
-                    </span>
-                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
-                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 0%"></div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">E-Ticaret</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]-->                                
+                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/shop" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
+                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
+                                </a>
+                                <!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
                     </div>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
-                        0
-                    </span>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Content
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
                 </div>
-                            <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
-                        3 <i class="fas fa-star text-yellow-400 text-xs"></i>
-                    </span>
-                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
-                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 0%"></div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Blog</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]-->                                
+                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/blog" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
+                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
+                                </a>
+                                <!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
                     </div>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
-                        0
-                    </span>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Content
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
                 </div>
-                            <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
-                        2 <i class="fas fa-star text-yellow-400 text-xs"></i>
-                    </span>
-                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
-                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 0%"></div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Portfolyo</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]-->                                
+                                <!--[if BLOCK]><![endif]-->                                <a href="https://ixtif.com/admin/settingmanagement/values/10" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
+                                    <i class="fas fa-cog me-2" style="width: 14px;"></i>Ayarlar
+                                </a>
+                                <!--[if ENDBLOCK]><![endif]-->
+                                <!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]-->                                
+                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/portfolio" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
+                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
+                                </a>
+                                <!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
                     </div>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
-                        0
-                    </span>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Content
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
                 </div>
-                            <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 w-12">
-                        1 <i class="fas fa-star text-yellow-400 text-xs"></i>
-                    </span>
-                    <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden" style="height: 12px;">
-                        <div class="bg-amber-400 dark:bg-amber-400 transition-all duration-300 rounded-full" style="height: 12px; width: 0%"></div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Sayfalar</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]-->                                
+                                <!--[if BLOCK]><![endif]-->                                <a href="https://ixtif.com/admin/settingmanagement/values/9" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
+                                    <i class="fas fa-cog me-2" style="width: 14px;"></i>Ayarlar
+                                </a>
+                                <!--[if ENDBLOCK]><![endif]-->
+                                <!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]-->                                
+                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/page" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
+                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
+                                </a>
+                                <!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
                     </div>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 w-12 text-right">
-                        0
-                    </span>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Content
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
                 </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Duyurular</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]-->                                
+                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/announcement" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
+                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
+                                </a>
+                                <!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
                     </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Content
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--[if ENDBLOCK]><![endif]-->
+            <!--[if ENDBLOCK]><![endif]-->
+                        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
+                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
+                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-stars me-2 text-muted"></i>
+                    <h3 class="mb-0 h4">Yapay Zeka Modülleri</h3>
+                    <!--[if ENDBLOCK]><![endif]-->
+                    <div class="ms-auto">
+                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
+                            1 Modül Sayısı
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Yapay Zeka</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Ai
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--[if ENDBLOCK]><![endif]-->
+            <!--[if ENDBLOCK]><![endif]-->
+                        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
+                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
+                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-puzzle-piece me-2 text-muted"></i>
+                    <h3 class="mb-0 h4">Bileşen Modülleri</h3>
+                    <!--[if ENDBLOCK]><![endif]-->
+                    <div class="ms-auto">
+                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
+                            1 Modül Sayısı
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Bileşenler</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Widget
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--[if ENDBLOCK]><![endif]-->
+            <!--[if ENDBLOCK]><![endif]-->
+                        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
+                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
+                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-cogs me-2 text-muted"></i>
+                    <h3 class="mb-0 h4">Yönetim Modülleri</h3>
+                    <!--[if ENDBLOCK]><![endif]-->
+                    <div class="ms-auto">
+                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
+                            10 Modül Sayısı
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Kupon Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Abonelik Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Alışveriş Sepeti</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Yorum ve Puan</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Favoriler</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Ödeme Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Arama Sistemi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Medya Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Menü Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Kullanıcılar</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    Management
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--[if ENDBLOCK]><![endif]-->
+            <!--[if ENDBLOCK]><![endif]-->
+                        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
+                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
+                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-shield-alt me-2 text-muted"></i>
+                    <h3 class="mb-0 h4">Sistem Modülleri</h3>
+                    <!--[if ENDBLOCK]><![endif]-->
+                    <div class="ms-auto">
+                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
+                            7 Modül Sayısı
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">SEO Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    System
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Dil Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    System
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Studio Editör</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    System
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Tema Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    System
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Ayarlar Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    System
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Alan Adı Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    System
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+                    <!-- Kart Header -->
+                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+                        <div class="me-auto">
+                            <h3 class="card-title mb-0">Modüller Yönetimi</h3>
+                        </div>
+                        <div class="dropdown">
+                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            
+                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+
+                    <!-- Kart Footer -->
+                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-2">
+                                <span class="text-muted small">
+                                    System
+                                </span>
+                            </div>
+                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--[if ENDBLOCK]><![endif]-->
+            <!--[if ENDBLOCK]><![endif]-->
+            <!--[if ENDBLOCK]><![endif]-->
+        </div>
     </div>
 
-    
-            <div class="space-y-6">
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-                <i class="fas fa-comments text-blue-500"></i>
-                Kullanıcı Yorumları
-            </h3>
+    <!-- Pagination -->
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
 
-                            <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6 transition-all duration-300 hover:shadow-md" x-data="{
-                    showReplyForm: false,
-                    replyBody: '',
-                    helpfulCount: 3,
-                    unhelpfulCount: 0,
-                    hasVoted: false,
+    <div wire:snapshot="{&quot;data&quot;:{&quot;showModal&quot;:false,&quot;module&quot;:null,&quot;itemId&quot;:null,&quot;title&quot;:null},&quot;memo&quot;:{&quot;id&quot;:&quot;MA0qlxOywiCTpClLPdm0&quot;,&quot;name&quot;:&quot;modals.delete-modal&quot;,&quot;path&quot;:&quot;admin\/modulemanagement&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;032a52167dc652250806ee09cd591bcf512836a9ad3c9dc5ec3df5a7e205e18a&quot;}" wire:effects="{&quot;listeners&quot;:[&quot;showDeleteModal&quot;]}" wire:id="MA0qlxOywiCTpClLPdm0">
+    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
 
-                    markHelpful(isHelpful) {
-                        if (this.hasVoted) return;
-
-                        fetch('/api/reviews/helpful/1', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name=" csrf-token"]').content,="" 'accept':="" 'application="" json'="" },="" body:="" json.stringify({="" is_helpful:="" ishelpful="" })="" .then(response=""> response.json())
-                        .then(data =&gt; {
-                            if (data.success) {
-                                this.helpfulCount = data.data.helpful_count;
-                                this.unhelpfulCount = data.data.unhelpful_count;
-                                this.hasVoted = true;
-                            }
-                        });
-                    },
-
-                    submitReply() {
-                        if (!this.replyBody.trim()) return;
-
-                                                fetch('/api/reviews/add', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                model_class: 'Modules\\Blog\\App\\Models\\Blog',
-                                model_id: 2,
-                                review_body: this.replyBody,
-                                parent_id: 1
-                            })
-                        })
-                        .then(response =&gt; response.json())
-                        .then(data =&gt; {
-                            if (data.success) {
-                                this.replyBody = '';
-                                this.showReplyForm = false;
-                                alert('Yanıtınız onay bekliyor');
-                            }
-                        });
-                                            }
-                }"&gt;
-                    
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                                N
-                            </div>
-                            <div>
-                                <p class="font-semibold text-gray-900 dark:text-white">
-                                    Nurullah Okatan
-                                </p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                    2 saat önce
-                                </p>
-                            </div>
-                        </div>
-
-                        
-                                            </div>
-
-                    
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        Teşekkür ederim
-                    </p>
-
-                    
-                    
-                    
-                    <div class="flex items-center gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <button type="button" @click="markHelpful(true)" :disabled="hasVoted" :class="hasVoted ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-50 dark:hover:bg-green-900/20'" class="text-sm transition-all flex items-center gap-2 px-3 py-1.5 rounded-lg">
-                            <i class="far fa-thumbs-up text-gray-500 dark:text-gray-400"></i>
-                            <span x-text="helpfulCount" class="font-semibold text-green-600 dark:text-green-400"></span>
-                        </button>
-                        <button type="button" @click="markHelpful(false)" :disabled="hasVoted" :class="hasVoted ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-50 dark:hover:bg-red-900/20'" class="text-sm transition-all flex items-center gap-2 px-3 py-1.5 rounded-lg">
-                            <i class="far fa-thumbs-down text-gray-500 dark:text-gray-400"></i>
-                            <span x-text="unhelpfulCount" class="font-semibold text-red-600 dark:text-red-400"></span>
-                        </button>
-                        <button type="button" @click="showReplyForm = !showReplyForm" class="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2">
-                            <i class="far fa-reply"></i>
-                            Yanıtla
-                        </button>
-                    </div>
-
-                    
-                    <div x-show="showReplyForm" x-transition="" class="mt-4 ml-8" style="display: none;">
-                        <textarea x-model="replyBody" rows="3" placeholder="Yanıtınızı yazın..." class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white text-sm resize-none"></textarea>
-                        <div class="flex items-center gap-2 mt-2">
-                            <button type="button" @click="submitReply" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
-                                Gönder
-                            </button>
-                            <button type="button" @click="showReplyForm = false; replyBody = ''" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-white text-sm font-medium rounded-lg transition-colors">
-                                İptal
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                    </div>
-    
-    
-            <div class="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700" x-data="{
-            reviewBody: '',
-            loading: false,
-            message: '',
-            messageType: '',
-            showMessage: false,
-
-            submitReview() {
-                if (!this.reviewBody.trim()) {
-                    this.displayMessage('Lütfen yorumunuzu yazın', 'error');
-                    return;
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            $(document).on('keydown', function(e) {
+                if (e.keyCode === 32 && $('#delete-modal').is(':visible')) {
+                    e.preventDefault();
+                    $('#delete-modal .btn-danger').click();
                 }
-
-                this.loading = true;
-
-                fetch('/api/reviews/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name=" csrf-token"]').content,="" 'accept':="" 'application="" json'="" },="" body:="" json.stringify({="" model_class:="" 'modules\\blog\\app\\models\\blog',="" model_id:="" 2,="" review_body:="" this.reviewbody="" })="" .then(response=""> response.json())
-                .then(data =&gt; {
-                    if (data.success) {
-                        this.displayMessage('Yorumunuz onay bekliyor. Teşekkürler!', 'success');
-                        this.reviewBody = '';
-                    } else {
-                        this.displayMessage(data.message || 'Bir hata oluştu', 'error');
-                    }
-                })
-                .catch(error =&gt; {
-                    console.error('Review submit error:', error);
-                    this.displayMessage('Bir hata oluştu', 'error');
-                })
-                .finally(() =&gt; {
-                    this.loading = false;
-                });
-            },
-
-            displayMessage(msg, type) {
-                this.message = msg;
-                this.messageType = type;
-                this.showMessage = true;
-
-                setTimeout(() =&gt; {
-                    this.showMessage = false;
-                }, 5000);
-            }
-        }"&gt;
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                Yorum Yapın
-            </h3>
-            <form @submit.prevent="submitReview" class="space-y-4">
-                <div>
-                    <textarea x-model="reviewBody" rows="4" placeholder="Düşüncelerinizi paylaşın..." class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:text-white resize-none" required=""></textarea>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                            Yorumunuz yayınlanmadan önce onaylanacaktır
-                        </p>
-                        <div x-show="showMessage" x-transition="" class="mt-2 text-sm font-medium" :class="{
-                            'text-green-600 dark:text-green-400': messageType === 'success',
-                            'text-red-600 dark:text-red-400': messageType === 'error'
-                        }" style="display: none;">
-                            <span x-text="message"></span>
-                        </div>
-                    </div>
-                    <button type="submit" :disabled="loading" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors flex items-center gap-2">
-                        <i class="fas" :class="loading ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
-                        <span x-text="loading ? 'Gönderiliyor...' : 'Gönder'"></span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </section>
-                </section>
+            });
+        });
+    </script>
+</div></div>

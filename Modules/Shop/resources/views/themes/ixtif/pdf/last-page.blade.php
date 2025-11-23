@@ -19,7 +19,7 @@
                     <h1 class="text-5xl font-black">{{ $siteTitle }}</h1>
                 </div>
             @endif
-            <p class="text-xl text-blue-300 font-semibold">{{ get_setting('site_tagline') ?? $siteTitle }}</p>
+            <p class="text-xl text-blue-300 font-semibold">{{ setting('site_tagline') ?? $siteTitle }}</p>
             <div class="h-1 w-48 bg-gradient-to-r from-transparent via-blue-400 to-transparent mx-auto"></div>
         </div>
 

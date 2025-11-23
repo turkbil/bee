@@ -4,8 +4,8 @@
         @livewire('header-user-dropdown')
     @else
         {{-- GUEST MENU - MODERN DROPDOWN --}}
-        <div class="relative z-50" x-data="{ open: false, showTooltip: false }">
-            <button @click="open = !open"
+        <div class="relative z-50" x-data="{ open: false, showTooltip: false }" @close-user-menu.window="open = false">
+            <button @click="open = !open; $dispatch('close-other-menus')"
                     @mouseenter="showTooltip = true"
                     @mouseleave="showTooltip = false"
                     aria-label="Kullanıcı menüsünü aç"

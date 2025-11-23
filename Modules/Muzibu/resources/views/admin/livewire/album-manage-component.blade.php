@@ -6,6 +6,16 @@
         );
     @endphp
 
+    {{-- Bulk Upload Button (Only for existing albums) --}}
+    @if($albumId)
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ route('admin.muzibu.album.bulk-upload', ['id' => $albumId]) }}" class="btn btn-primary">
+                <i class="fas fa-cloud-upload-alt me-1"></i>
+                {{ __('muzibu::admin.bulk_upload.button') }}
+            </a>
+        </div>
+    @endif
+
     <form method="post" wire:submit.prevent="save">
         @include('admin.partials.error_message')
         <div class="card">
@@ -57,11 +67,11 @@
                                                 placeholder="sayfa-url-slug">
                                             <label for="slug_{{ $lang }}">
                                                 {{ __('admin.album_url_slug') }}
-                                                <small class="text-muted ms-2">-
+                                                <small class="ms-2">-
                                                     {{ __('admin.slug_auto_generated') }}</small>
                                             </label>
                                             <div class="form-text">
-                                                <small class="text-muted">
+                                                <small class="">
                                                     {{ __('admin.slug_help') }}
                                                 </small>
                                             </div>
@@ -214,7 +224,5 @@
         @include('seomanagement::admin.components.universal-seo-scripts', [
             'availableLanguages' => $availableLanguages,
         ])
-
-        @include('ai::admin.components.universal-ai-content-scripts')
     @endpush
 </div>

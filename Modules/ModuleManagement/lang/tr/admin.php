@@ -77,6 +77,7 @@ return [
     'version' => 'Versiyon',
     'version_placeholder' => 'Versiyon girin...',
     'view_detail' => 'Detayı Görüntüle',
+    'view_list' => 'Listeye Git',
     'widget_modules' => 'Bileşen Modülleri',
     'module_name' => 'Modül Adı',
     'module_name_info' => 'Bu dilde modülün görünen adı. Menülerde ve başlıklarda kullanılır.',

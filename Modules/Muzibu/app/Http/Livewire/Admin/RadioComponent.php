@@ -30,6 +30,9 @@ class RadioComponent extends Component
     #[Url]
     public $sortDirection = 'desc';
 
+    // View mode: minimal (default) or detailed
+    public bool $detailedView = false;
+
     private ?array $availableSiteLanguages = null;
 
     protected $listeners = [

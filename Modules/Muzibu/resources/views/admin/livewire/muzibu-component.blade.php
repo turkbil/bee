@@ -1,5 +1,5 @@
 @php
-    View::share('pretitle', 'Sayfa Listesi');
+    View::share('pretitle', __('muzibu::admin.music_platform'));
 @endphp
 
 <div class="muzibu-component-wrapper">
@@ -24,7 +24,7 @@
                         wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive"
                         class="position-absolute top-50 start-50 translate-middle text-center"
                         style="width: 100%; max-width: 250px;">
-                        <div class="small text-muted mb-2">{{ __('admin.updating') }}</div>
+                        <div class="small mb-2">{{ __('admin.updating') }}</div>
                         <div class="progress mb-1">
                             <div class="progress-bar progress-bar-indeterminate"></div>
                         </div>
@@ -155,7 +155,7 @@
                                 </td>
                                 <td class="text-center align-middle">
                                     <button wire:click="toggleActive({{ $muzibu->muzibu_id }})"
-                                        class="btn btn-icon btn-sm {{ $muzibu->is_active ? 'text-muted bg-transparent' : 'text-red bg-transparent' }}">
+                                        class="btn btn-icon btn-sm {{ $muzibu->is_active ? 'bg-transparent' : 'text-red bg-transparent' }}">
                                         <!-- Loading Durumu -->
                                         <div wire:loading wire:target="toggleActive({{ $muzibu->muzibu_id }})"
                                             class="spinner-border spinner-border-sm">
@@ -183,7 +183,7 @@
                                             tooltip="{{ __('admin.ai_translate') }}" />
                                         @hasmoduleaccess('muzibu', 'delete')
                                         <div class="dropdown">
-                                            <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown"
+                                            <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false"
                                                 style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
                                                 <i class="fa-solid fa-bars-sort fa-flip-horizontal fa-lg"></i>
@@ -209,7 +209,7 @@
                                 <td colspan="4" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.no_muzibus_found') }}</p>
-                                        <p class="empty-subtitle text-muted">
+                                        <p class="empty-subtitle">
                                             {{ __('muzibu::admin.no_results') }}
                                         </p>
                                     </div>
@@ -227,7 +227,7 @@
                 {{ $muzibus->links() }}
             @else
                 <div class="d-flex justify-content-between align-items-center mb-0">
-                    <p class="small text-muted mb-0">
+                    <p class="small mb-0">
                         Toplam <span class="fw-semibold">{{ $muzibus->total() }}</span> sonuç
                     </p>
                 </div>

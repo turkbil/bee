@@ -102,6 +102,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'auto.queue.health' => \App\Http\Middleware\AutoQueueHealthCheck::class, // 🚀 OTOMATIK QUEUE HEALTH CHECK
             'root.debugbar' => \App\Http\Middleware\RootOnlyDebugbar::class, // 🛠️ ROOT-ONLY DEBUGBAR
             'frontend.auto.seo' => \App\Http\Middleware\FrontendAutoSeoFillMiddleware::class, // 🎯 FRONTEND AUTO SEO FILL
+            // Membership middleware
+            'device.limit' => \App\Http\Middleware\CheckDeviceLimit::class,
+            'subscription' => \App\Http\Middleware\CheckSubscription::class,
+            'approved' => \App\Http\Middleware\CheckApproval::class,
         ]);
                 
         // Admin middleware grubu

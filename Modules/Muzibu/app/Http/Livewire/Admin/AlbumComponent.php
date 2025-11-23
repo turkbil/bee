@@ -11,6 +11,7 @@ use Modules\Muzibu\App\Http\Livewire\Traits\{InlineEditTitle, WithBulkActions};
 use Modules\Muzibu\App\Services\AlbumService;
 use Modules\LanguageManagement\App\Models\TenantLanguage;
 use Modules\Muzibu\App\Models\Album;
+use Modules\Muzibu\App\Models\Artist;
 use App\Traits\HasUniversalTranslation;
 use Illuminate\Support\Facades\Log;
 
@@ -29,6 +30,12 @@ class AlbumComponent extends Component
 
     #[Url]
     public $sortDirection = 'desc';
+
+    #[Url]
+    public $filterArtist = '';
+
+    // View mode: minimal (default) or detailed
+    public bool $detailedView = false;
 
     private ?array $availableSiteLanguages = null;
 
@@ -124,6 +131,26 @@ class AlbumComponent extends Component
         $this->resetPage();
     }
 
+    public function updatedFilterArtist()
+    {
+        $this->resetPage();
+    }
+
+    public function clearFilters()
+    {
+        $this->search = '';
+        $this->filterArtist = '';
+        $this->resetPage();
+    }
+
+    #[Computed]
+    public function artists()
+    {
+        return Artist::where('is_active', true)
+            ->orderBy('artist_id', 'desc')
+            ->get();
+    }
+
     public function sortBy($field)
     {
         if ($this->sortField === $field) {
@@ -167,7 +194,8 @@ class AlbumComponent extends Component
             'locales' => $this->availableSiteLanguages,
             'sortField' => $this->sortField,
             'sortDirection' => $this->sortDirection,
-            'currentLocale' => $this->siteLocale
+            'currentLocale' => $this->siteLocale,
+            'artist_id' => $this->filterArtist ?: null
         ];
 
         $albums = $this->albumService->getPaginatedAlbums($filters, (int) $this->perPage);

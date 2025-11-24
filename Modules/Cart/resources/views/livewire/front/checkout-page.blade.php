@@ -212,10 +212,14 @@
                                 @error('contact_email') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Telefon <span class="text-red-500">*</span></label>
-                                <input type="tel" x-model="contactPhone" placeholder="05XX XXX XX XX"
-                                       class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
-                                @error('contact_phone') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                @include('themes.muzibu.components.phone-input', [
+                                    'name' => 'contact_phone',
+                                    'label' => 'Telefon',
+                                    'required' => true,
+                                    'alpineModel' => 'contactPhone',
+                                    'value' => $contact_phone,
+                                    'error' => $errors->first('contact_phone')
+                                ])
                             </div>
                         </div>
                     </div>
@@ -439,74 +443,80 @@
                                 </div>
                             @endif
 
-                            {{-- Yeni Adres Ekle Butonu / Formu --}}
-                            <div>
-                                <button x-show="!showNewShippingForm" @click="showNewShippingForm = true" type="button"
-                                        class="w-full p-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-400 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-all">
-                                    <i class="fa-solid fa-plus mr-1"></i>Yeni Adres Ekle
-                                </button>
+                            {{-- Yeni Adres Ekle --}}
+                            <button x-show="!showNewShippingForm" @click="showNewShippingForm = true" type="button"
+                                    class="w-full p-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-400 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-all">
+                                <i class="fa-solid fa-plus mr-1"></i>Yeni Adres Ekle
+                            </button>
 
-                                {{-- Yeni Adres Formu --}}
-                                <div x-show="showNewShippingForm" x-transition class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 space-y-3">
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <div>
-                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres Adı <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model="new_address_title" placeholder="Örn: Evim"
-                                                   class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Telefon</label>
-                                            <input type="tel" wire:model="new_address_phone" placeholder="05XX XXX XX XX"
-                                                   class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all">
-                                        </div>
+                            {{-- Yeni Adres Formu --}}
+                            <div x-show="showNewShippingForm" x-cloak class="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Yeni Adres</span>
+                                    <button type="button" @click="showNewShippingForm = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                        <i class="fa-solid fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres Adı <span class="text-red-500">*</span></label>
+                                        <input type="text" wire:model="new_address_title" placeholder="Örn: Evim"
+                                               class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
                                     </div>
                                     <div>
-                                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres <span class="text-red-500">*</span></label>
-                                        <textarea wire:model="new_address_line" rows="2" placeholder="Mahalle, sokak, bina no, daire no"
-                                                  class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all resize-none"></textarea>
+                                        @include('themes.muzibu.components.phone-input', [
+                                            'name' => 'new_address_phone',
+                                            'label' => 'Telefon',
+                                            'required' => false,
+                                            'wire' => true,
+                                            'value' => $new_address_phone ?? ''
+                                        ])
                                     </div>
-                                    <div class="grid grid-cols-3 gap-3">
-                                        <div>
-                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
-                                            <select wire:model.live="new_address_city"
-                                                    class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
-                                                <option value="">Seçin</option>
-                                                @foreach($cities ?? [] as $city)
-                                                    <option value="{{ $city }}">{{ $city }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                            <select wire:model="new_address_district"
-                                                    class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
-                                                <option value="">{{ empty($new_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
-                                                @foreach($districts ?? [] as $district)
-                                                    <option value="{{ $district }}">{{ $district }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Posta Kodu</label>
-                                            <input type="text" wire:model="new_address_postal" placeholder="34000"
-                                                   class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
-                                        </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres <span class="text-red-500">*</span></label>
+                                    <textarea wire:model="new_address_line" rows="2" placeholder="Mahalle, sokak, bina no, daire no"
+                                              class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all resize-none"></textarea>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div>
+                                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
+                                        <select wire:model.live="new_address_city"
+                                                class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                            <option value="">Seçin</option>
+                                            @foreach($cities ?? [] as $city)
+                                                <option value="{{ $city }}">{{ $city }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="flex justify-end gap-2 pt-2">
-                                        <button type="button" @click="showNewShippingForm = false"
-                                                class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">İptal</button>
-                                        <button type="button" wire:click="saveNewAddress('shipping')"
-                                                class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded-lg transition-all">
-                                            <i class="fa-solid fa-check mr-1"></i>Kaydet
-                                        </button>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
+                                        <select wire:model="new_address_district"
+                                                class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                            <option value="">{{ empty($new_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
+                                            @foreach($districts ?? [] as $district)
+                                                <option value="{{ $district }}">{{ $district }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Posta Kodu</label>
+                                        <input type="text" wire:model="new_address_postal" placeholder="34000"
+                                               class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                    </div>
+                                </div>
+                                <div class="flex justify-end pt-2">
+                                    <button type="button" wire:click="saveNewAddress('shipping')"
+                                            class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded-lg transition-all">
+                                        <i class="fa-solid fa-check mr-1"></i>Kaydet
+                                    </button>
                                 </div>
                             </div>
 
-                            {{-- Seçimi Uygula (Sadece adres varsa ve form açık değilse) --}}
+                            {{-- Seçimi Uygula --}}
                             @if($hasAddresses)
-                            <div x-show="!showNewShippingForm" class="flex justify-end pt-2">
-                                <button type="button" @click="showShippingForm = false; showNewShippingForm = false"
+                            <div x-show="!showNewShippingForm" class="flex justify-end pt-3">
+                                <button type="button" @click="showShippingForm = false"
                                         class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded-lg transition-all">
                                     <i class="fa-solid fa-check mr-1"></i>Tamam
                                 </button>
@@ -594,9 +604,13 @@
                                                        class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
                                             </div>
                                             <div>
-                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Telefon</label>
-                                                <input type="tel" wire:model="new_billing_address_phone" placeholder="05XX XXX XX XX"
-                                                       class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                                @include('themes.muzibu.components.phone-input', [
+                                                    'name' => 'new_billing_address_phone',
+                                                    'label' => 'Telefon',
+                                                    'required' => false,
+                                                    'wire' => true,
+                                                    'value' => $new_billing_address_phone ?? ''
+                                                ])
                                             </div>
                                         </div>
                                         <div>

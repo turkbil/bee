@@ -13,11 +13,14 @@
      style="display: none;">
 
     <!-- Modal Content -->
-    <div class="relative bg-spotify-dark rounded-2xl shadow-2xl max-w-md w-full p-8 border border-white/10">
+    <div class="relative bg-spotify-dark rounded-2xl shadow-2xl w-full border border-white/10 max-h-[90vh] flex flex-col" :class="showAuthModal === 'register' ? 'max-w-2xl' : 'max-w-md'">
         <!-- Close Button -->
-        <button @click="showAuthModal = null" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-all">
+        <button @click="showAuthModal = null" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-all z-10">
             <i class="fas fa-times text-xl"></i>
         </button>
+
+        <!-- Scrollable Content -->
+        <div class="overflow-y-auto p-8">
 
         <!-- Logo -->
         <div class="text-center mb-6">
@@ -107,39 +110,46 @@
 
         <!-- Register Form -->
         <form x-show="showAuthModal === 'register'" @submit.prevent="handleRegister()" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Ad Soyad</label>
-                <input type="text" x-model="registerForm.name" @input="validateName()" required class="w-full px-4 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.name.valid ? 'ring-green-500' : (registerForm.name.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="Adınız Soyadınız">
-                <div class="h-5 mt-1">
-                    <div x-show="!registerValidation.name.valid && registerForm.name.length > 0" class="text-xs text-red-400 flex items-center gap-1">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span x-text="registerValidation.name.message"></span>
+            <!-- 2 Kolon Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Sol Kolon: Ad + Email -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Ad Soyad</label>
+                        <input type="text" x-model="registerForm.name" @input="validateName()" required class="w-full px-4 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.name.valid ? 'ring-green-500' : (registerForm.name.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="Adınız Soyadınız">
+                        <div class="h-5 mt-1">
+                            <div x-show="!registerValidation.name.valid && registerForm.name.length > 0" class="text-xs text-red-400 flex items-center gap-1">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span x-text="registerValidation.name.message"></span>
+                            </div>
+                            <div x-show="registerValidation.name.valid" class="text-xs text-green-400 flex items-center gap-1">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Geçerli</span>
+                            </div>
+                        </div>
                     </div>
-                    <div x-show="registerValidation.name.valid" class="text-xs text-green-400 flex items-center gap-1">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Geçerli ad soyad</span>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">E-posta</label>
+                        <input type="email" x-model="registerForm.email" @input="validateEmail()" required class="w-full px-4 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.email.valid ? 'ring-green-500' : (registerForm.email.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="ornek@email.com">
+                        <div class="h-5 mt-1">
+                            <div x-show="!registerValidation.email.valid && registerForm.email.length > 0" class="text-xs text-red-400 flex items-center gap-1">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span x-text="registerValidation.email.message"></span>
+                            </div>
+                            <div x-show="registerValidation.email.valid" class="text-xs text-green-400 flex items-center gap-1">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Geçerli</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Email -->
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">E-posta</label>
-                <input type="email" x-model="registerForm.email" @input="validateEmail()" required class="w-full px-4 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.email.valid ? 'ring-green-500' : (registerForm.email.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="ornek@email.com">
-                <div class="h-5 mt-1">
-                    <div x-show="!registerValidation.email.valid && registerForm.email.length > 0" class="text-xs text-red-400 flex items-center gap-1">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span x-text="registerValidation.email.message"></span>
-                    </div>
-                    <div x-show="registerValidation.email.valid" class="text-xs text-green-400 flex items-center gap-1">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Geçerli e-posta adresi</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Telefon (Tenant 1001 için zorunlu) -->
-            <div x-show="tenantId === 1001">
+                <!-- Sağ Kolon: Telefon + Şifre -->
+                <div class="space-y-4">
+                    <!-- Telefon (Tenant 1001 için zorunlu) -->
+                    <div x-show="tenantId === 1001">
                 <label class="block text-sm font-medium text-gray-300 mb-2">
                     Telefon
                     <span class="text-red-400">*</span>
@@ -181,47 +191,38 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Şifre -->
-            <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Şifre</label>
-                <div class="relative">
-                    <input :type="showPassword ? 'text' : 'password'" x-model="registerForm.password" @input="validatePassword()" required class="w-full px-4 py-3 pr-12 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.password.valid ? 'ring-green-500' : (registerForm.password.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="En az 8 karakter">
-                    <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-all">
-                        <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                    </button>
-                </div>
-
-                <!-- Şifre Güvenlik Göstergesi -->
-                <div x-show="registerForm.password.length > 0" class="mt-2">
-                    <div class="flex gap-1 mb-1">
-                        <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 1 ? 'bg-red-500' : 'bg-gray-600'"></div>
-                        <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 2 ? 'bg-orange-500' : 'bg-gray-600'"></div>
-                        <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 3 ? 'bg-yellow-500' : 'bg-gray-600'"></div>
-                        <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 4 ? 'bg-green-500' : 'bg-gray-600'"></div>
                     </div>
-                    <div class="text-xs flex items-center gap-2">
-                        <span :class="registerValidation.password.strength === 1 ? 'text-red-400' : registerValidation.password.strength === 2 ? 'text-orange-400' : registerValidation.password.strength === 3 ? 'text-yellow-400' : 'text-green-400'" x-text="registerValidation.password.strengthText"></span>
+
+                    <!-- Şifre -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Şifre</label>
+                        <div class="relative">
+                            <input :type="showPassword ? 'text' : 'password'" x-model="registerForm.password" @input="validatePassword()" required class="w-full px-4 py-3 pr-12 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.password.valid ? 'ring-green-500' : (registerForm.password.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="En az 8 karakter">
+                            <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-all">
+                                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
+                        </div>
+
+                        <!-- Şifre Güvenlik Göstergesi (Kompakt) -->
+                        <div x-show="registerForm.password.length > 0" class="mt-2">
+                            <div class="flex gap-1 mb-1">
+                                <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 1 ? 'bg-red-500' : 'bg-gray-600'"></div>
+                                <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 2 ? 'bg-orange-500' : 'bg-gray-600'"></div>
+                                <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 3 ? 'bg-yellow-500' : 'bg-gray-600'"></div>
+                                <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 4 ? 'bg-green-500' : 'bg-gray-600'"></div>
+                            </div>
+                            <div class="text-[10px] flex items-center justify-between">
+                                <span :class="registerValidation.password.strength === 1 ? 'text-red-400' : registerValidation.password.strength === 2 ? 'text-orange-400' : registerValidation.password.strength === 3 ? 'text-yellow-400' : 'text-green-400'" x-text="registerValidation.password.strengthText"></span>
+                                <!-- Kompakt Checkler -->
+                                <div class="flex items-center gap-1">
+                                    <i :class="registerValidation.password.checks.length ? 'fas fa-check-circle text-green-400' : 'far fa-circle text-gray-500'" class="text-[10px]" title="8+ karakter"></i>
+                                    <i :class="registerValidation.password.checks.uppercase ? 'fas fa-check-circle text-green-400' : 'far fa-circle text-gray-500'" class="text-[10px]" title="Büyük harf"></i>
+                                    <i :class="registerValidation.password.checks.lowercase ? 'fas fa-check-circle text-green-400' : 'far fa-circle text-gray-500'" class="text-[10px]" title="Küçük harf"></i>
+                                    <i :class="registerValidation.password.checks.number ? 'fas fa-check-circle text-green-400' : 'far fa-circle text-gray-500'" class="text-[10px]" title="Rakam"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <ul class="mt-2 space-y-1 text-xs">
-                        <li :class="registerValidation.password.checks.length ? 'text-green-400' : 'text-gray-500'" class="flex items-center gap-1">
-                            <i :class="registerValidation.password.checks.length ? 'fas fa-check-circle' : 'far fa-circle'"></i>
-                            En az 8 karakter
-                        </li>
-                        <li :class="registerValidation.password.checks.uppercase ? 'text-green-400' : 'text-gray-500'" class="flex items-center gap-1">
-                            <i :class="registerValidation.password.checks.uppercase ? 'fas fa-check-circle' : 'far fa-circle'"></i>
-                            Büyük harf (A-Z)
-                        </li>
-                        <li :class="registerValidation.password.checks.lowercase ? 'text-green-400' : 'text-gray-500'" class="flex items-center gap-1">
-                            <i :class="registerValidation.password.checks.lowercase ? 'fas fa-check-circle' : 'far fa-circle'"></i>
-                            Küçük harf (a-z)
-                        </li>
-                        <li :class="registerValidation.password.checks.number ? 'text-green-400' : 'text-gray-500'" class="flex items-center gap-1">
-                            <i :class="registerValidation.password.checks.number ? 'fas fa-check-circle' : 'far fa-circle'"></i>
-                            Rakam (0-9)
-                        </li>
-                    </ul>
                 </div>
             </div>
 

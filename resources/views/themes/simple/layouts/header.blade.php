@@ -36,8 +36,8 @@
     <link rel="apple-touch-icon" href="{{ cdn($appleTouchIcon) }}">
     @endif
 
-    {{-- Tailwind CSS - Compiled & Minified --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}" media="all">
+    {{-- Tailwind CSS - Tenant-Aware --}}
+    <link rel="stylesheet" href="{{ tenant_css() }}" media="all">
 
     {{-- Font Awesome Pro --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">

@@ -8,7 +8,13 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
-        "build": "npm run production"
+        "build": "npm run production",
+
+        "css:all": "node scripts/build-tenant-css.js",
+        "css:default": "node scripts/build-tenant-css.js default",
+        "css:ixtif": "node scripts/build-tenant-css.js 2",
+        "css:muzibu": "node scripts/build-tenant-css.js 1001",
+        "build:all": "npm run css:all && npm run production"
     },
     "devDependencies": {
         "@react-native-community/cli": "^20.0.1",

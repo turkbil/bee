@@ -6,8 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }}</title>
 
-    {{-- Tailwind CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    {{-- Tailwind CSS - Tenant-Aware --}}
+    <link rel="stylesheet" href="{{ tenant_css() }}">
 
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}">

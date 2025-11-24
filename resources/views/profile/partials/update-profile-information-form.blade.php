@@ -49,20 +49,13 @@
 
             <!-- Phone Field -->
             <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    <i class="fa-solid fa-phone text-gray-400 mr-1"></i>
-                    Telefon
-                </label>
-                <input type="tel"
-                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100 transition-colors @error('phone') border-red-500 focus:ring-red-500 focus:border-red-500 @enderror"
-                       id="phone"
-                       name="phone"
-                       value="{{ old('phone', $user->phone) }}"
-                       autocomplete="tel"
-                       placeholder="05XX XXX XX XX">
-                @error('phone')
-                    <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                @enderror
+                @include('themes.muzibu.components.phone-input', [
+                    'name' => 'phone',
+                    'label' => 'Telefon',
+                    'required' => false,
+                    'value' => old('phone', $user->phone),
+                    'error' => $errors->first('phone')
+                ])
             </div>
 
             <!-- Email Field -->

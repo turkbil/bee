@@ -55,8 +55,8 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
     {{-- Performance: Preload Critical CSS --}}
-    {{-- Tailwind CSS - Compiled & Minified (Direct load, no preload needed) --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ now()->timestamp }}" media="all">
+    {{-- Tailwind CSS - Tenant-Aware (tenant-2.css veya fallback app.css) --}}
+    <link rel="stylesheet" href="{{ tenant_css() }}" media="all">
 
     {{-- Font Awesome Pro --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">

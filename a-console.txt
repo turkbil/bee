@@ -1,28 +1,63 @@
 (index):64 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
 (anonymous) @ (index):64
-(anonymous) @ (index):64
-playlists:519 Muzibu initialized
-playlists:519 Muzibu initialized
-playlists:560 Featured playlists loaded: 10
-playlists:560 Featured playlists loaded: 10
-playlists:866 Toast [success]: Hafta Sonu çalınıyor
-playlists:866 Toast [success]: Gece Vakti çalınıyor
-playlists:866 Toast [success]: Sabah Kahvesi çalınıyor
-playlists:866 Toast [success]: Odaklanma çalınıyor
-playlists:779 Playback error: AbortError: The play() request was interrupted by a new load request. https://goo.gl/LdLk22
-loadAndPlaySong @ playlists:779
-await in loadAndPlaySong
-playSongFromQueue @ playlists:761
-await in playSongFromQueue
-playPlaylist @ playlists:715
-await in playPlaylist
-[Alpine] playPlaylist(8) @ VM606:3
+(index):1329 Muzibu initialized
+(index):1324 Muzibu already initialized, skipping...
+gbkrp8myqcajbmug0wlralulrvgikrsgni2ets0n.png:1  Failed to load resource: the server responded with a status of 403 ()
+aed1xtuqxqg4v5bko8tu4j1gpp7sc9wmpdexv5rg.png:1  Failed to load resource: the server responded with a status of 403 ()
+(index):1374 Featured playlists loaded: 10
+/api/auth/login:1  Failed to load resource: the server responded with a status of 500 ()
+(index):1761 Toast [error]: Session store not set on request.
+/api/auth/login:1  Failed to load resource: the server responded with a status of 500 ()
+(index):1761 Toast [error]: Session store not set on request.
+/api/auth/register:1  Failed to load resource: the server responded with a status of 422 ()
+(index):1761 Toast [error]: E-posta Adresi zaten kullanılmış.
+(index):1787  POST https://muzibu.com.tr/api/auth/login 500 (Internal Server Error)
+handleLogin @ (index):1787
+[Alpine] handleLogin() @ VM356:3
 (anonymous) @ livewire.js?id=df3a17f2:1196
 tryCatch @ livewire.js?id=df3a17f2:1116
 (anonymous) @ livewire.js?id=df3a17f2:3881
 handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3211
 (anonymous) @ livewire.js?id=df3a17f2:3185
-playlists:866 Toast [error]: Çalma hatası
-playlists:866 Toast [success]: Enerjik çalınıyor
-playlists:866 Toast [success]: Dinlendirici çalınıyor
+(index):1761 Toast [error]: Session store not set on request.
+(index):1787  POST https://muzibu.com.tr/api/auth/login 500 (Internal Server Error)
+handleLogin @ (index):1787
+[Alpine] handleLogin() @ VM356:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3211
+(anonymous) @ livewire.js?id=df3a17f2:3185
+(index):1761 Toast [error]: Session store not set on request.
+(index):1787  POST https://muzibu.com.tr/api/auth/login 500 (Internal Server Error)
+handleLogin @ (index):1787
+[Alpine] handleLogin() @ VM356:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3211
+(anonymous) @ livewire.js?id=df3a17f2:3185
+(index):1761 Toast [error]: Session store not set on request.
+(index):1787  POST https://muzibu.com.tr/api/auth/login 500 (Internal Server Error)
+handleLogin @ (index):1787
+[Alpine] handleLogin() @ VM356:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3211
+(anonymous) @ livewire.js?id=df3a17f2:3185
+(index):1761 Toast [error]: Session store not set on request.
+(index):1787  POST https://muzibu.com.tr/api/auth/login 500 (Internal Server Error)
+handleLogin @ (index):1787
+[Alpine] handleLogin() @ VM356:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3211
+(anonymous) @ livewire.js?id=df3a17f2:3185
+(index):1761 Toast [error]: Session store not set on request.

@@ -23,8 +23,8 @@
     {{-- PWA Manifest --}}
     <link rel="manifest" href="{{ route('manifest') }}">
 
-    {{-- Tailwind CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    {{-- Tailwind CSS - Tenant-Aware --}}
+    <link rel="stylesheet" href="{{ tenant_css() }}">
 
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}">

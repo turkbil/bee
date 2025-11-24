@@ -24,8 +24,8 @@
     {{-- Favicon --}}
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
-    {{-- Tailwind CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ now()->timestamp }}" media="all">
+    {{-- Tailwind CSS - Tenant-Aware --}}
+    <link rel="stylesheet" href="{{ tenant_css() }}" media="all">
 
     {{-- Font Awesome Pro --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">

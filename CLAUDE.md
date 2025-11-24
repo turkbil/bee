@@ -33,6 +33,18 @@ Bu sistem yüzlerce farklı sektörden tenant barındırır!
 2. ❓ Tüm tenant'lar için mi yoksa sadece biri için mi?
 3. ❓ Global kod yazıyorsam, tenant-aware mı?
 
+#### 🎨 TENANT-AWARE TAİLWİND CSS
+
+```bash
+npm run css:all      # Tüm tenant CSS'lerini build et
+npm run css:ixtif    # Sadece tenant-2
+npm run css:muzibu   # Sadece tenant-1001
+```
+
+- Config: `tailwind/tenants/tenant-X.config.js`
+- Output: `public/css/tenant-X.css`
+- Layout: `{{ tenant_css() }}` helper kullan
+
 ---
 
 ### 🚨 2. VERİTABANI KORUMA

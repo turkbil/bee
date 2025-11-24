@@ -496,3 +496,61 @@ if (!function_exists('clear_all_caches')) {
         }
     }
 }
+
+/**
+ * ======================================================================
+ * Tenant CSS Helper
+ * ======================================================================
+ */
+
+if (!function_exists('tenant_css')) {
+    /**
+     * Tenant'a ozel CSS dosyasinin URL'ini dondur
+     *
+     * Tenant ID'ye gore ilgili CSS dosyasini yukler.
+     * Dosya yoksa fallback olarak app.css kullanilir.
+     *
+     * @param  string|null  $fallback  Fallback CSS dosyasi (varsayilan: app.css)
+     * @return string  CSS dosyasi URL'i
+     *
+     * Ornek Kullanim:
+     * <link rel="stylesheet" href="{{ tenant_css() }}">
+     */
+    function tenant_css(?string $fallback = 'css/app.css'): string
+    {
+        // Tenant varsa tenant-specific CSS kontrol et
+        if (function_exists('tenant') && $t = tenant()) {
+            $tenantCss = "css/tenant-{$t->id}.css";
+            $tenantCssPath = public_path($tenantCss);
+
+            // Tenant CSS dosyasi varsa onu kullan
+            if (file_exists($tenantCssPath)) {
+                // Cache busting icin timestamp ekle
+                $timestamp = filemtime($tenantCssPath);
+                return asset($tenantCss) . '?v=' . $timestamp;
+            }
+        }
+
+        // Fallback CSS
+        $fallbackPath = public_path($fallback);
+        $timestamp = file_exists($fallbackPath) ? filemtime($fallbackPath) : time();
+
+        return asset($fallback) . '?v=' . $timestamp;
+    }
+}
+
+if (!function_exists('tenant_css_exists')) {
+    /**
+     * Tenant'a ozel CSS dosyasinin var olup olmadigini kontrol et
+     *
+     * @return bool
+     */
+    function tenant_css_exists(): bool
+    {
+        if (function_exists('tenant') && $t = tenant()) {
+            return file_exists(public_path("css/tenant-{$t->id}.css"));
+        }
+
+        return false;
+    }
+}

@@ -169,14 +169,13 @@ class GenerateTenantBlogs extends Command
         $activeHours = calculateActiveHours($dailyCount);
 
         // 4️⃣ Bu saatte blog üretilmeli mi?
-        // 🧪 TEST MODE: Aktif saat kontrolü geçici olarak devre dışı (25 Kasım 2025)
-        // if (!in_array($currentHour, $activeHours)) {
-        //     $this->line("   ⏭️  Skipped - Not active hour (Active: " . implode(', ', $activeHours) . ")");
-        //     tenancy()->end();
-        //     return 'skipped';
-        // }
+        if (!in_array($currentHour, $activeHours)) {
+            $this->line("   ⏭️  Skipped - Not active hour (Active: " . implode(', ', $activeHours) . ")");
+            tenancy()->end();
+            return 'skipped';
+        }
 
-        $this->info("   🧪 TEST MODE: Active hour check disabled - running always");
+        $this->info("   ⏰ Active hour confirmed (Schedule: " . implode(', ', $activeHours) . ")");
 
         // 5️⃣ Draft count kontrol
         $availableDrafts = BlogAIDraft::where('is_generated', false)->count();

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_prompt_cache')) {
+            return;
+        }
+
         Schema::create('ai_prompt_cache', function (Blueprint $table) {
             $table->id();
             $table->string('cache_key', 255)->unique();

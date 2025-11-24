@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('reviews')) {
+            return;
+        }
+
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
 
@@ -41,8 +45,8 @@ return new class extends Migration
 
             // Indexes
             $table->index('user_id');
-            $table->index(['reviewable_type', 'reviewable_id']);
-            $table->index('is_approved');
+            // NOT: morphs() zaten reviewable_type + reviewable_id için index oluşturur
+            // NOT: is_approved zaten satır 31'de ->index() ile tanımlı
             $table->index('parent_id');
             $table->index('created_at');
             $table->index(['is_approved', 'created_at']);

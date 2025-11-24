@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Kapsamlı Settings & Implementasyon Planı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        header { margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid #334155; }
+        h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 15px; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        h2 { font-size: 1.6rem; margin-bottom: 20px; color: #60a5fa; }
+        h3 { font-size: 1.2rem; margin: 20px 0 15px; color: #f1f5f9; }
+        section { margin-bottom: 50px; }
+
+        /* Summary Cards */
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .summary-card { background: rgba(30, 41, 59, 0.7); padding: 20px; border-radius: 12px; text-align: center; }
+        .summary-card .number { font-size: 2rem; font-weight: 700; margin-bottom: 5px; }
+        .summary-card.settings .number { color: #60a5fa; }
+        .summary-card.pages .number { color: #10b981; }
+        .summary-card.updates .number { color: #f59e0b; }
+        .summary-card.services .number { color: #a78bfa; }
+
+        /* Decision Box */
+        .decision-box { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1)); border: 2px solid #10b981; border-radius: 16px; padding: 25px; margin-bottom: 30px; }
+        .decision-box h3 { color: #6ee7b7; margin-bottom: 10px; }
+
+        /* Tables */
+        .settings-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 0.9rem; }
+        .settings-table th { background: rgba(59, 130, 246, 0.2); padding: 10px; text-align: left; font-weight: 600; color: #93c5fd; }
+        .settings-table td { padding: 10px; border-bottom: 1px solid #334155; }
+        .settings-table tr:hover { background: rgba(30, 41, 59, 0.5); }
+        .key-code { font-family: monospace; background: rgba(0, 0, 0, 0.3); padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; color: #fcd34d; }
+
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+        .badge-exists { background: #10b981; color: white; }
+        .badge-new { background: #f59e0b; color: white; }
+        .badge-missing { background: #dc2626; color: white; }
+
+        /* Group Section */
+        .group-section { background: rgba(30, 41, 59, 0.5); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .group-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .group-title { font-size: 1.1rem; color: #f1f5f9; }
+        .group-prefix { font-family: monospace; background: rgba(59, 130, 246, 0.2); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; color: #93c5fd; }
+
+        /* Info Box */
+        .info-box { background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .info-box.warning { background: rgba(245, 158, 11, 0.1); border-color: #f59e0b; }
+        .info-box.success { background: rgba(16, 185, 129, 0.1); border-color: #10b981; }
+        .info-box h4 { margin-bottom: 8px; }
+        .info-box.warning h4 { color: #fcd34d; }
+        .info-box.success h4 { color: #6ee7b7; }
+
+        /* Todo List */
+        .todo-list { list-style: none; padding: 0; }
+        .todo-item { padding: 12px; margin-bottom: 8px; background: rgba(30, 41, 59, 0.5); border-radius: 8px; border-left: 3px solid #3b82f6; display: flex; justify-content: space-between; align-items: center; }
+        .todo-item.high { border-color: #dc2626; }
+        .todo-item.medium { border-color: #f59e0b; }
+        .todo-item.low { border-color: #6b7280; }
+        .todo-text { flex: 1; }
+        .todo-priority { font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; }
+        .priority-high { background: #dc2626; }
+        .priority-medium { background: #f59e0b; }
+        .priority-low { background: #6b7280; }
+
+        /* Phase Section */
+        .phase-section { background: rgba(30, 41, 59, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155; }
+        .phase-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .phase-number { width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .phase-title { font-size: 1.2rem; color: #f1f5f9; }
+
+        footer { margin-top: 50px; padding-top: 30px; border-top: 1px solid #334155; color: #64748b; font-size: 0.9rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Üyelik Sistemi - Kapsamlı Plan</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-23 | 🎯 Tenant-Aware Sistem | 📊 v2 - Detaylı Analiz
+            </div>
+        </header>
+
+        <!-- Summary -->
+        <div class="summary-grid">
+            <div class="summary-card settings">
+                <div class="number">27</div>
+                <div>Toplam Settings</div>
+            </div>
+            <div class="summary-card pages">
+                <div class="number">12</div>
+                <div>UI Sayfası</div>
+            </div>
+            <div class="summary-card updates">
+                <div class="number">10</div>
+                <div>Yeni Setting</div>
+            </div>
+            <div class="summary-card services">
+                <div class="number">6</div>
+                <div>Servis</div>
+            </div>
+        </div>
+
+        <!-- 2FA Decision -->
+        <section>
+            <h2>🔐 2FA Kararı</h2>
+            <div class="decision-box">
+                <h3>✅ Seçilen: Hybrid (Tenant + Kullanıcı)</h3>
+                <p>Tenant güvenlik politikasını belirler (zorunlu/opsiyonel/kapalı), kullanıcı izin verildiğinde kendi tercihini yapar.</p>
+                <ul style="margin-top: 10px; padding-left: 20px; color: #cbd5e1;">
+                    <li><strong>auth_security_2fa_mode = required:</strong> Herkes kullanmak zorunda</li>
+                    <li><strong>auth_security_2fa_mode = optional:</strong> Kullanıcı profilinden açar/kapar</li>
+                    <li><strong>auth_security_2fa_mode = disabled:</strong> Hiç kimse kullanamaz</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Mevcut Settings -->
+        <section>
+            <h2>📋 Mevcut Auth Settings (17 adet)</h2>
+
+            <!-- Kayıt Ayarları -->
+            <div class="group-section">
+                <div class="group-header">
+                    <span class="group-title">📝 Kayıt Ayarları (ID: 20)</span>
+                    <span class="group-prefix">auth_registration</span>
+                </div>
+                <table class="settings-table">
+                    <tr><th>Key</th><th>Label</th><th>Type</th><th>Default</th><th>Durum</th></tr>
+                    <tr><td><span class="key-code">auth_registration_enabled</span></td><td>Kayıt Aktif</td><td>select</td><td>1</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_registration_email_verify</span></td><td>Email Doğrulama</td><td>select</td><td>1</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_registration_approval</span></td><td>Admin Onayı</td><td>select</td><td>0</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_registration_trial_days</span></td><td>Deneme Süresi</td><td>text</td><td>7</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_theme</span></td><td>Login/Kayıt Teması</td><td>select</td><td>minimal</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_registration_phone_required</span></td><td>Telefon Zorunlu</td><td>select</td><td>0</td><td><span class="badge badge-new">EKLE</span></td></tr>
+                    <tr><td><span class="key-code">auth_registration_terms_required</span></td><td>Şartlar Zorunlu</td><td>select</td><td>1</td><td><span class="badge badge-new">EKLE</span></td></tr>
+                </table>
+            </div>
+
+            <!-- Oturum Ayarları -->
+            <div class="group-section">
+                <div class="group-header">
+                    <span class="group-title">🔄 Oturum Ayarları (ID: 21)</span>
+                    <span class="group-prefix">auth_session</span>
+                </div>
+                <table class="settings-table">
+                    <tr><th>Key</th><th>Label</th><th>Type</th><th>Default</th><th>Durum</th></tr>
+                    <tr><td><span class="key-code">auth_session_lifetime</span></td><td>Oturum Süresi (dk)</td><td>text</td><td>525600</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_session_device_limit</span></td><td>Cihaz Limiti</td><td>text</td><td>1</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                </table>
+            </div>
+
+            <!-- Güvenlik Ayarları -->
+            <div class="group-section">
+                <div class="group-header">
+                    <span class="group-title">🔒 Güvenlik Ayarları (ID: 22)</span>
+                    <span class="group-prefix">auth_security</span>
+                </div>
+                <table class="settings-table">
+                    <tr><th>Key</th><th>Label</th><th>Type</th><th>Default</th><th>Durum</th></tr>
+                    <tr><td><span class="key-code">auth_security_max_attempts</span></td><td>Max Giriş Denemesi</td><td>text</td><td>5</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_security_lockout</span></td><td>Kilitleme Süresi</td><td>text</td><td>30</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_security_2fa_enabled</span></td><td>2FA Aktif (Legacy)</td><td>select</td><td>1</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_security_2fa_expiry</span></td><td>Kod Süresi (dk)</td><td>text</td><td>5</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_security_2fa_mode</span></td><td>2FA Modu</td><td>select</td><td>optional</td><td><span class="badge badge-new">EKLE</span></td></tr>
+                    <tr><td><span class="key-code">auth_security_2fa_method</span></td><td>2FA Yöntemi</td><td>select</td><td>sms</td><td><span class="badge badge-new">EKLE</span></td></tr>
+                    <tr><td><span class="key-code">auth_security_remember_device</span></td><td>Cihaz Hatırla</td><td>select</td><td>1</td><td><span class="badge badge-new">EKLE</span></td></tr>
+                    <tr><td><span class="key-code">auth_security_remember_days</span></td><td>Hatırla Süresi</td><td>text</td><td>30</td><td><span class="badge badge-new">EKLE</span></td></tr>
+                </table>
+            </div>
+
+            <!-- Abonelik Ayarları -->
+            <div class="group-section">
+                <div class="group-header">
+                    <span class="group-title">💳 Abonelik Ayarları (ID: 23)</span>
+                    <span class="group-prefix">auth_subscription</span>
+                </div>
+                <table class="settings-table">
+                    <tr><th>Key</th><th>Label</th><th>Type</th><th>Default</th><th>Durum</th></tr>
+                    <tr><td><span class="key-code">auth_subscription_paid_enabled</span></td><td>Ücretli Üyelik</td><td>select</td><td>0</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_subscription_auto_renewal</span></td><td>Otomatik Yenileme</td><td>select</td><td>1</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_subscription_reminder_days</span></td><td>Hatırlatma</td><td>text</td><td>7</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">auth_subscription_grace_days</span></td><td>Tolerans Süresi</td><td>text</td><td>3</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                </table>
+            </div>
+
+            <!-- Kurumsal Ayarlar -->
+            <div class="group-section">
+                <div class="group-header">
+                    <span class="group-title">🏢 Kurumsal Ayarlar (ID: 24)</span>
+                    <span class="group-prefix">corporate</span>
+                </div>
+                <table class="settings-table">
+                    <tr><th>Key</th><th>Label</th><th>Type</th><th>Default</th><th>Durum</th></tr>
+                    <tr><td><span class="key-code">corporate_enabled</span></td><td>Kurumsal Üyelik</td><td>select</td><td>0</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                    <tr><td><span class="key-code">corporate_max_users</span></td><td>Max Alt Kullanıcı</td><td>text</td><td>0</td><td><span class="badge badge-exists">VAR</span></td></tr>
+                </table>
+            </div>
+
+            <!-- SMS Ayarları (Yeni Grup) -->
+            <div class="group-section">
+                <div class="group-header">
+                    <span class="group-title">📱 SMS Ayarları (Yeni Grup)</span>
+                    <span class="group-prefix">sms</span>
+                </div>
+                <table class="settings-table">
+                    <tr><th>Key</th><th>Label</th><th>Type</th><th>Default</th><th>Durum</th></tr>
+                    <tr><td><span class="key-code">sms_provider</span></td><td>SMS Sağlayıcı</td><td>select</td><td>netgsm</td><td><span class="badge badge-new">EKLE</span></td></tr>
+                    <tr><td><span class="key-code">sms_api_key</span></td><td>API Key</td><td>password</td><td></td><td><span class="badge badge-new">EKLE</span></td></tr>
+                    <tr><td><span class="key-code">sms_api_secret</span></td><td>API Secret</td><td>password</td><td></td><td><span class="badge badge-new">EKLE</span></td></tr>
+                    <tr><td><span class="key-code">sms_sender_id</span></td><td>Gönderici Adı</td><td>text</td><td></td><td><span class="badge badge-new">EKLE</span></td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- Implementation Plan -->
+        <section>
+            <h2>🚀 Implementasyon Planı</h2>
+
+            <!-- Phase 1 -->
+            <div class="phase-section">
+                <div class="phase-header">
+                    <div class="phase-number">1</div>
+                    <div class="phase-title">Settings & Seeder</div>
+                </div>
+                <ul class="todo-list">
+                    <li class="todo-item high"><span class="todo-text">SMS Ayarları grubu oluştur (sms prefix)</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item high"><span class="todo-text">10 yeni setting ekle (seeder)</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item medium"><span class="todo-text">Layout JSON'larını düzenle (form builder)</span><span class="todo-priority priority-medium">Orta</span></li>
+                </ul>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="phase-section">
+                <div class="phase-header">
+                    <div class="phase-number">2</div>
+                    <div class="phase-title">2FA Sistemi</div>
+                </div>
+                <ul class="todo-list">
+                    <li class="todo-item high"><span class="todo-text">TwoFactorService mode logic ekle</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item high"><span class="todo-text">SMS Provider entegrasyonu (NetGSM)</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item high"><span class="todo-text">2FA Code Input sayfası oluştur</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item medium"><span class="todo-text">Remember device cookie sistemi</span><span class="todo-priority priority-medium">Orta</span></li>
+                    <li class="todo-item medium"><span class="todo-text">Email fallback 2FA</span><span class="todo-priority priority-medium">Orta</span></li>
+                </ul>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="phase-section">
+                <div class="phase-header">
+                    <div class="phase-number">3</div>
+                    <div class="phase-title">Auth Sayfa Güncellemeleri</div>
+                </div>
+                <ul class="todo-list">
+                    <li class="todo-item high"><span class="todo-text">Login: 2FA yönlendirme + device hatırla</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item high"><span class="todo-text">Register: Telefon + Kurumsal kod + Şartlar</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item medium"><span class="todo-text">Header Dropdown: Abonelik badge + yeni linkler</span><span class="todo-priority priority-medium">Orta</span></li>
+                    <li class="todo-item low"><span class="todo-text">Email Verification: Tailwind modernize</span><span class="todo-priority priority-low">Düşük</span></li>
+                </ul>
+            </div>
+
+            <!-- Phase 4 -->
+            <div class="phase-section">
+                <div class="phase-header">
+                    <div class="phase-number">4</div>
+                    <div class="phase-title">Kullanıcı Panel Sayfaları</div>
+                </div>
+                <ul class="todo-list">
+                    <li class="todo-item high"><span class="todo-text">Profil Düzenleme sayfası</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item high"><span class="todo-text">Cihaz Yönetimi sayfası</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item medium"><span class="todo-text">Abonelik Yönetimi (user panel)</span><span class="todo-priority priority-medium">Orta</span></li>
+                    <li class="todo-item medium"><span class="todo-text">Ödeme Geçmişi sayfası</span><span class="todo-priority priority-medium">Orta</span></li>
+                </ul>
+            </div>
+
+            <!-- Phase 5 -->
+            <div class="phase-section">
+                <div class="phase-header">
+                    <div class="phase-number">5</div>
+                    <div class="phase-title">Public Sayfalar & Ödeme</div>
+                </div>
+                <ul class="todo-list">
+                    <li class="todo-item medium"><span class="todo-text">Fiyatlandırma/Pricing sayfası</span><span class="todo-priority priority-medium">Orta</span></li>
+                    <li class="todo-item medium"><span class="todo-text">Checkout/Ödeme sayfası</span><span class="todo-priority priority-medium">Orta</span></li>
+                    <li class="todo-item low"><span class="todo-text">Admin Abonelik Detay sayfası</span><span class="todo-priority priority-low">Düşük</span></li>
+                </ul>
+            </div>
+
+            <!-- Phase 6 -->
+            <div class="phase-section">
+                <div class="phase-header">
+                    <div class="phase-number">6</div>
+                    <div class="phase-title">Conditional Render & Test</div>
+                </div>
+                <ul class="todo-list">
+                    <li class="todo-item high"><span class="todo-text">Tüm sayfalarda setting() kontrolü</span><span class="todo-priority priority-high">Yüksek</span></li>
+                    <li class="todo-item medium"><span class="todo-text">Tenant bazlı test (Muzibu vs İxtif)</span><span class="todo-priority priority-medium">Orta</span></li>
+                    <li class="todo-item medium"><span class="todo-text">Edge case handling</span><span class="todo-priority priority-medium">Orta</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Tenant Examples -->
+        <section>
+            <h2>🏢 Tenant Konfigürasyon Örnekleri</h2>
+            <div class="info-box success">
+                <h4>🎵 Muzibu (Müzik Platformu)</h4>
+                <ul style="padding-left: 20px; margin-top: 10px;">
+                    <li>auth_subscription_paid_enabled = 1</li>
+                    <li>auth_security_2fa_mode = required</li>
+                    <li>auth_security_2fa_method = sms</li>
+                    <li>auth_registration_phone_required = 1</li>
+                    <li>corporate_enabled = 1</li>
+                    <li>auth_session_device_limit = 3</li>
+                </ul>
+            </div>
+            <div class="info-box warning">
+                <h4>🏭 İxtif (B2B Endüstriyel)</h4>
+                <ul style="padding-left: 20px; margin-top: 10px;">
+                    <li>auth_subscription_paid_enabled = 0</li>
+                    <li>auth_security_2fa_mode = disabled</li>
+                    <li>auth_registration_phone_required = 0</li>
+                    <li>auth_registration_approval = 1</li>
+                    <li>corporate_enabled = 0</li>
+                    <li>auth_session_device_limit = 1</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI | Üyelik Sistemi Kapsamlı Plan v2<br>
+            📅 2025-11-23 | 🔧 SettingManagement + Auth + Subscription
+        </footer>
+    </div>
+</body>
+</html>

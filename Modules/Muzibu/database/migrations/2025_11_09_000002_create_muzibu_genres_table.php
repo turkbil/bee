@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('muzibu_genres')) {
+            return;
+        }
+
         Schema::create('muzibu_genres', function (Blueprint $table) {
             $table->id('genre_id');
             $table->json('title')->comment('Çoklu dil tür adı: {"tr": "Pop", "en": "Pop"}');

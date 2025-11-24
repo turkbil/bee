@@ -8,10 +8,10 @@
 
 <!-- Main Content -->
 <main class="py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="container mx-auto px-4 sm:px-4 md:px-2">
         <!-- Dashboard Header -->
         @isset($header)
-        <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 mb-6 transition-colors duration-300">
+        <div class="profile-header-glass bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 mb-6 transition-colors duration-300">
             {{ $header }}
         </div>
         @endisset

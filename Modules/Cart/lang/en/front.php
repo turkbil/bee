@@ -20,6 +20,7 @@ return [
     'cart_totals' => 'Cart Totals',
     'tax' => 'Tax',
     'grand_total' => 'Grand Total',
+    'tax_included_note' => 'Prices include tax',
 
     // Messages
     'item_added' => 'Item added to cart',

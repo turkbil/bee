@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('reviewsystems')) {
+            return;
+        }
+
         Schema::create('reviewsystems', function (Blueprint $table) {
             $table->id('reviewsystem_id');
             $table->json('title')->comment('Çoklu dil başlık: {"tr": "Başlık", "en": "Title"}');

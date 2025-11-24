@@ -1,0 +1,263 @@
+<?php
+
+namespace Modules\Cart\App\Http\Livewire\Front;
+
+use Livewire\Component;
+use Modules\Cart\App\Models\Address;
+use Illuminate\Support\Facades\Auth;
+
+class AddressManager extends Component
+{
+    public $userId;
+    public $addressType; // 'billing' veya 'shipping'
+    public $addresses = [];
+    public $selectedAddressId;
+
+    // Modal states
+    public $showSelectModal = false;
+    public $showEditModal = false;
+    public $editingAddressId = null;
+
+    // Form fields (SADECE KONUM BİLGİSİ)
+    public $title; // ZORUNLU - "Ev Adresim", "İş Adresi"
+    public $phone; // OPSİYONEL - Teslimat için farklı telefon
+    public $address_line_1; // ZORUNLU - Bina, site, sokak
+    public $city; // ZORUNLU - İl
+    public $district; // ZORUNLU - İlçe
+    public $postal_code; // OPSİYONEL
+    public $delivery_notes; // OPSİYONEL - Teslimat notları
+    public $is_default = false;
+
+    // İl/İlçe listesi
+    public $cities = [];
+    public $districts = [];
+
+    protected $listeners = ['addressUpdated' => 'loadAddresses'];
+
+    public function mount($userId, $addressType = 'shipping', $selectedAddressId = null)
+    {
+        $this->userId = $userId;
+        $this->addressType = $addressType;
+        $this->selectedAddressId = $selectedAddressId;
+
+        $this->loadCities();
+        $this->loadAddresses();
+    }
+
+    public function loadCities()
+    {
+        // Geozone cities central database'den çekiliyor
+        $this->cities = \DB::connection('mysql')
+            ->table('geozone_cities')
+            ->where('country_id', 1) // Türkiye
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
+    public function updatedCity($cityName)
+    {
+        // İl seçilince ilçeleri yükle (geozone_counties)
+        // Önce city name'den city ID bul
+        $cityId = \DB::connection('mysql')
+            ->table('geozone_cities')
+            ->where('name', $cityName)
+            ->value('id');
+
+        if (!$cityId) {
+            $this->districts = [];
+            return;
+        }
+
+        $this->districts = \DB::connection('mysql')
+            ->table('geozone_counties')
+            ->where('city_id', $cityId)
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
+    public function loadAddresses()
+    {
+        if (!$this->userId) {
+            return;
+        }
+
+        $query = Address::where('user_id', $this->userId);
+
+        if ($this->addressType === 'billing') {
+            $query->billing();
+        } elseif ($this->addressType === 'shipping') {
+            $query->shipping();
+        }
+
+        $this->addresses = $query->orderBy('is_default_' . $this->addressType, 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Varsayılan adresi otomatik seç
+        if (!$this->selectedAddressId && $this->addresses->count() > 0) {
+            $defaultKey = 'is_default_' . $this->addressType;
+            $default = $this->addresses->firstWhere($defaultKey, true);
+
+            if ($default) {
+                $this->selectedAddressId = $default->address_id;
+            } else {
+                $this->selectedAddressId = $this->addresses->first()->address_id;
+            }
+        }
+    }
+
+    public function openSelectModal()
+    {
+        $this->loadAddresses();
+        $this->showSelectModal = true;
+    }
+
+    public function openEditModal($addressId = null)
+    {
+        $this->resetForm();
+
+        if ($addressId) {
+            $address = Address::find($addressId);
+            if ($address && $address->user_id == $this->userId) {
+                $this->editingAddressId = $addressId;
+                $this->fillForm($address);
+            }
+        }
+
+        $this->showEditModal = true;
+    }
+
+    public function selectAddress($addressId)
+    {
+        $this->selectedAddressId = $addressId;
+        $this->showSelectModal = false;
+
+        // Parent component'e bildir
+        $this->dispatch('addressSelected', addressId: $addressId, addressType: $this->addressType);
+    }
+
+    public function saveAddress()
+    {
+        $this->validate([
+            'title' => 'required|string|max:255',
+            'address_line_1' => 'required|string|max:500',
+            'city' => 'required|string|max:100',
+            'district' => 'required|string|max:100',
+            'phone' => 'nullable|string|max:20',
+            'postal_code' => 'nullable|string|max:10',
+        ], [
+            'title.required' => 'Adres adı zorunludur (Örn: Ev, İş)',
+            'address_line_1.required' => 'Adres zorunludur',
+            'city.required' => 'Şehir zorunludur',
+            'district.required' => 'İlçe zorunludur',
+        ]);
+
+        $data = [
+            'user_id' => $this->userId,
+            'address_type' => $this->addressType,
+            'title' => $this->title,
+            'phone' => $this->phone,
+            'address_line_1' => $this->address_line_1,
+            'city' => $this->city,
+            'district' => $this->district,
+            'postal_code' => $this->postal_code,
+            'delivery_notes' => $this->delivery_notes,
+        ];
+
+        if ($this->editingAddressId) {
+            // Güncelle
+            $address = Address::find($this->editingAddressId);
+            $address->update($data);
+        } else {
+            // Yeni oluştur
+            $address = Address::create($data);
+        }
+
+        // Varsayılan olarak işaretle
+        if ($this->is_default) {
+            if ($this->addressType === 'billing') {
+                $address->setAsDefaultBilling();
+            } else {
+                $address->setAsDefaultShipping();
+            }
+        }
+
+        $this->showEditModal = false;
+        $this->loadAddresses();
+
+        session()->flash('address_success', 'Adres başarıyla kaydedildi');
+
+        // Otomatik seç
+        $this->selectAddress($address->address_id);
+    }
+
+    public function deleteAddress($addressId)
+    {
+        $address = Address::find($addressId);
+
+        if ($address && $address->user_id == $this->userId) {
+            $address->delete();
+            $this->loadAddresses();
+
+            session()->flash('address_success', 'Adres silindi');
+        }
+    }
+
+    public function setAsDefault($addressId)
+    {
+        $address = Address::find($addressId);
+
+        if ($address && $address->user_id == $this->userId) {
+            if ($this->addressType === 'billing') {
+                $address->setAsDefaultBilling();
+            } else {
+                $address->setAsDefaultShipping();
+            }
+
+            $this->loadAddresses();
+            session()->flash('address_success', 'Varsayılan adres güncellendi');
+        }
+    }
+
+    private function fillForm($address)
+    {
+        $this->title = $address->title;
+        $this->phone = $address->phone;
+        $this->address_line_1 = $address->address_line_1;
+        $this->city = $address->city;
+        $this->district = $address->district;
+        $this->postal_code = $address->postal_code;
+        $this->delivery_notes = $address->delivery_notes;
+        $this->is_default = $this->addressType === 'billing'
+            ? $address->is_default_billing
+            : $address->is_default_shipping;
+
+        // İl varsa ilçeleri yükle
+        if ($this->city) {
+            $this->updatedCity($this->city);
+        }
+    }
+
+    private function resetForm()
+    {
+        $this->editingAddressId = null;
+        $this->title = '';
+        $this->phone = '';
+        $this->address_line_1 = '';
+        $this->city = '';
+        $this->district = '';
+        $this->postal_code = '';
+        $this->delivery_notes = '';
+        $this->is_default = false;
+
+        // İlçe listesini sıfırla
+        $this->districts = [];
+    }
+
+    public function render()
+    {
+        return view('cart::livewire.front.address-manager');
+    }
+}

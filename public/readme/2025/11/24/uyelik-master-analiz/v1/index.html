@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Master Analiz Raporu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .nav-tab {
+            padding: 10px 20px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .nav-tab:hover { background: rgba(30, 41, 59, 0.8); }
+        .nav-tab.active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.2); }
+
+        /* Sections */
+        h2 {
+            font-size: 1.6rem;
+            margin: 40px 0 20px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h3 {
+            font-size: 1.2rem;
+            color: #f59e0b;
+            margin: 20px 0 15px;
+        }
+        h4 {
+            font-size: 1.1rem;
+            color: #10b981;
+            margin: 15px 0 10px;
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+        .card.done { border-color: #10b981; }
+        .card.pending { border-color: #f59e0b; }
+        .card.critical { border-color: #ef4444; }
+        .card.info { border-color: #3b82f6; }
+        .card h4 { margin-top: 0; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        td { color: #cbd5e1; }
+
+        /* File Tree */
+        .file-tree {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+        .file-tree .folder { color: #60a5fa; }
+        .file-tree .file { color: #cbd5e1; }
+        .file-tree .done { color: #10b981; }
+        .file-tree .pending { color: #f59e0b; }
+
+        /* Progress */
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .progress-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        .progress-fill.green { background: #10b981; }
+        .progress-fill.yellow { background: #f59e0b; }
+        .progress-fill.blue { background: #3b82f6; }
+        .progress-fill.red { background: #ef4444; }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-done { background: #10b981; color: white; }
+        .badge-pending { background: #f59e0b; color: white; }
+        .badge-critical { background: #ef4444; color: white; }
+        .badge-tenant { background: #8b5cf6; color: white; }
+
+        /* Checklist */
+        .checklist { list-style: none; padding: 0; }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checklist li:last-child { border-bottom: none; }
+        .check-done { color: #10b981; }
+        .check-pending { color: #f59e0b; }
+
+        /* Alert Box */
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .alert-warning {
+            background: rgba(251, 191, 36, 0.1);
+            border: 2px solid #f59e0b;
+        }
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+        }
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+        }
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+        .code-block .comment { color: #64748b; }
+        .code-block .keyword { color: #f472b6; }
+        .code-block .string { color: #a5f3fc; }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Üyelik Sistemi - Master Analiz Raporu</h1>
+            <div class="meta">
+                Tarih: 2025-11-24 | Platform: Muzibu (Tenant 1001) | Kapsamli Analiz
+            </div>
+        </header>
+
+        <!-- ========================== -->
+        <!-- EXECUTIVE SUMMARY -->
+        <!-- ========================== -->
+        <section id="summary">
+            <h2>Ozet - Proje Durumu</h2>
+
+            <div class="progress-grid">
+                <div class="progress-box">
+                    <div class="progress-label">
+                        <span>Backend</span>
+                        <span style="color: #10b981;">%100</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 100%;"></div>
+                    </div>
+                </div>
+                <div class="progress-box">
+                    <div class="progress-label">
+                        <span>Admin UI</span>
+                        <span style="color: #f59e0b;">%50</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill yellow" style="width: 50%;"></div>
+                    </div>
+                </div>
+                <div class="progress-box">
+                    <div class="progress-label">
+                        <span>Frontend</span>
+                        <span style="color: #ef4444;">%20</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill red" style="width: 20%;"></div>
+                    </div>
+                </div>
+                <div class="progress-box">
+                    <div class="progress-label">
+                        <span>Migrations</span>
+                        <span style="color: #10b981;">%100</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>Ne Yapilmaya Calisildi?</strong><br>
+                Muzibu.com icin kapsamli bir uyelik/abonelik sistemi. Coklu cihaz yonetimi, kurumsal hesaplar,
+                2FA guvenlik, abonelik planlari, kupon sistemi ve admin panel entegrasyonu.
+            </div>
+        </section>
+
+        <!-- ========================== -->
+        <!-- HEDEF VE KAPSAM -->
+        <!-- ========================== -->
+        <section id="scope">
+            <h2>Hedef ve Kapsam</h2>
+
+            <h3>Temel Hedefler</h3>
+            <ul class="checklist">
+                <li><span class="check-done">&#10003;</span> Kullanici kayit/giris sistemi (onay mekanizmali)</li>
+                <li><span class="check-done">&#10003;</span> Cihaz limiti kontrolu (Netflix tarzI)</li>
+                <li><span class="check-done">&#10003;</span> 2FA (SMS tabanli)</li>
+                <li><span class="check-done">&#10003;</span> Abonelik planlari (aylik/yillik)</li>
+                <li><span class="check-done">&#10003;</span> Kupon/indirim sistemi</li>
+                <li><span class="check-done">&#10003;</span> Kurumsal hesap yonetimi (davet kodlu)</li>
+                <li><span class="check-pending">&#9675;</span> Odeme entegrasyonu (PayTR)</li>
+                <li><span class="check-pending">&#9675;</span> Frontend sayfalari (Livewire)</li>
+            </ul>
+
+            <h3>Tenant-Aware Yapi</h3>
+            <div class="alert alert-warning">
+                <strong>KRITIK:</strong> Bu sistem SADECE Muzibu (Tenant 1001) icindir!<br>
+                - Kurumsal hesap tablosu: <code>muzibu_corporate_accounts</code><br>
+                - Diger tenant'lar bu ozellikleri kullanmaz<br>
+                - Global kod yazarken tenant kontrolu zorunlu
+            </div>
+        </section>
+
+        <!-- ========================== -->
+        <!-- TAMAMLANAN ISLER -->
+        <!-- ========================== -->
+        <section id="completed">
+            <h2>Tamamlanan Isler</h2>
+
+            <div class="card-grid">
+                <div class="card done">
+                    <h4><span class="badge badge-done">Tamamlandi</span> Subscription Modulu</h4>
+                    <ul class="checklist">
+                        <li><span class="check-done">&#10003;</span> SubscriptionPlan Model</li>
+                        <li><span class="check-done">&#10003;</span> Subscription Model</li>
+                        <li><span class="check-done">&#10003;</span> SubscriptionService</li>
+                        <li><span class="check-done">&#10003;</span> SubscriptionPlanComponent (Livewire)</li>
+                        <li><span class="check-done">&#10003;</span> SubscriptionPlanManageComponent</li>
+                        <li><span class="check-done">&#10003;</span> SubscriptionComponent</li>
+                        <li><span class="check-done">&#10003;</span> Lang dosyalari (tr/en)</li>
+                        <li><span class="check-done">&#10003;</span> Migration (tenant)</li>
+                    </ul>
+                </div>
+
+                <div class="card done">
+                    <h4><span class="badge badge-done">Tamamlandi</span> Coupon Modulu</h4>
+                    <ul class="checklist">
+                        <li><span class="check-done">&#10003;</span> Coupon Model</li>
+                        <li><span class="check-done">&#10003;</span> CouponUsage Model</li>
+                        <li><span class="check-done">&#10003;</span> CouponService</li>
+                        <li><span class="check-done">&#10003;</span> CouponComponent (Livewire)</li>
+                        <li><span class="check-done">&#10003;</span> CouponManageComponent</li>
+                        <li><span class="check-done">&#10003;</span> Lang dosyalari (tr/en)</li>
+                        <li><span class="check-done">&#10003;</span> Migration (tenant)</li>
+                    </ul>
+                </div>
+
+                <div class="card done">
+                    <h4><span class="badge badge-done">Tamamlandi</span> Auth Servisleri</h4>
+                    <ul class="checklist">
+                        <li><span class="check-done">&#10003;</span> SubscriptionService</li>
+                        <li><span class="check-done">&#10003;</span> DeviceService</li>
+                        <li><span class="check-done">&#10003;</span> TwoFactorService</li>
+                        <li><span class="check-done">&#10003;</span> CouponService</li>
+                        <li><span class="check-done">&#10003;</span> LoginLogService</li>
+                        <li><span class="check-done">&#10003;</span> CorporateService (eski yapi)</li>
+                    </ul>
+                </div>
+
+                <div class="card done">
+                    <h4><span class="badge badge-done">Tamamlandi</span> Middleware'ler</h4>
+                    <ul class="checklist">
+                        <li><span class="check-done">&#10003;</span> CheckDeviceLimit</li>
+                        <li><span class="check-done">&#10003;</span> CheckSubscription</li>
+                        <li><span class="check-done">&#10003;</span> CheckApproval</li>
+                    </ul>
+                </div>
+
+                <div class="card done">
+                    <h4><span class="badge badge-done">Tamamlandi</span> Kurumsal Yapi (Yeni)</h4>
+                    <ul class="checklist">
+                        <li><span class="check-done">&#10003;</span> MuzibuCorporateAccount Model</li>
+                        <li><span class="check-done">&#10003;</span> MuzibuCorporateService</li>
+                        <li><span class="check-done">&#10003;</span> Migration (tenant)</li>
+                        <li><span class="check-done">&#10003;</span> User Model iliskileri</li>
+                    </ul>
+                </div>
+
+                <div class="card done">
+                    <h4><span class="badge badge-done">Tamamlandi</span> Cron Jobs</h4>
+                    <ul class="checklist">
+                        <li><span class="check-done">&#10003;</span> CheckTrialExpiryCommand</li>
+                        <li><span class="check-pending">&#9675;</span> SendRenewalRemindersCommand</li>
+                        <li><span class="check-pending">&#9675;</span> ProcessRecurringPaymentsCommand</li>
+                        <li><span class="check-pending">&#9675;</span> CleanupExpiredSessionsCommand</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================== -->
+        <!-- VERITABANI YAPISI -->
+        <!-- ========================== -->
+        <section id="database">
+            <h2>Veritabani Yapisi</h2>
+
+            <h3>Yeni Tablolar (Tenant)</h3>
+            <table>
+                <tr>
+                    <th>Tablo Adi</th>
+                    <th>Migration</th>
+                    <th>Durum</th>
+                    <th>Aciklama</th>
+                </tr>
+                <tr>
+                    <td>subscription_plans</td>
+                    <td>2025_11_23_000001</td>
+                    <td><span class="badge badge-done">Hazir</span></td>
+                    <td>Abonelik plan tanimlari</td>
+                </tr>
+                <tr>
+                    <td>subscriptions</td>
+                    <td>2025_11_23_000002</td>
+                    <td><span class="badge badge-done">Hazir</span></td>
+                    <td>Kullanici abonelikleri</td>
+                </tr>
+                <tr>
+                    <td>coupons</td>
+                    <td>2025_11_23_000001</td>
+                    <td><span class="badge badge-done">Hazir</span></td>
+                    <td>Kupon tanimlari</td>
+                </tr>
+                <tr>
+                    <td>coupon_usages</td>
+                    <td>2025_11_23_000002</td>
+                    <td><span class="badge badge-done">Hazir</span></td>
+                    <td>Kupon kullanim kayitlari</td>
+                </tr>
+                <tr>
+                    <td>muzibu_corporate_accounts</td>
+                    <td>2025_11_24_000001</td>
+                    <td><span class="badge badge-done">Hazir</span></td>
+                    <td>Kurumsal hesaplar (Muzibu ozel)</td>
+                </tr>
+            </table>
+
+            <h3>Users Tablosu - Eklenen Kolonlar</h3>
+            <table>
+                <tr>
+                    <th>Kolon</th>
+                    <th>Tip</th>
+                    <th>Aciklama</th>
+                </tr>
+                <tr>
+                    <td>device_limit</td>
+                    <td>integer nullable</td>
+                    <td>Kullaniciya ozel cihaz limiti</td>
+                </tr>
+                <tr>
+                    <td>is_approved</td>
+                    <td>boolean</td>
+                    <td>Admin onay durumu</td>
+                </tr>
+                <tr>
+                    <td>failed_login_attempts</td>
+                    <td>integer</td>
+                    <td>Basarisiz giris sayaci</td>
+                </tr>
+                <tr>
+                    <td>locked_until</td>
+                    <td>timestamp</td>
+                    <td>Hesap kilit bitis zamani</td>
+                </tr>
+                <tr>
+                    <td>two_factor_enabled</td>
+                    <td>boolean</td>
+                    <td>2FA aktif mi?</td>
+                </tr>
+                <tr>
+                    <td>two_factor_phone</td>
+                    <td>string</td>
+                    <td>2FA telefon numarasi</td>
+                </tr>
+                <tr>
+                    <td>corporate_account_id</td>
+                    <td>foreignId</td>
+                    <td>Bagli kurumsal hesap</td>
+                </tr>
+            </table>
+
+            <h3>Settings Gruplari (DB'de mevcut)</h3>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Grup</th>
+                    <th>Prefix</th>
+                    <th>Ayar Sayisi</th>
+                </tr>
+                <tr>
+                    <td>20</td>
+                    <td>Kayit Ayarlari</td>
+                    <td>auth_registration</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>21</td>
+                    <td>Oturum Ayarlari</td>
+                    <td>auth_session</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>22</td>
+                    <td>Guvenlik Ayarlari</td>
+                    <td>auth_security</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>23</td>
+                    <td>Abonelik Ayarlari</td>
+                    <td>auth_subscription</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>24</td>
+                    <td>Kurumsal Ayarlar</td>
+                    <td>corporate</td>
+                    <td>2</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- ========================== -->
+        <!-- DOSYA YAPISI -->
+        <!-- ========================== -->
+        <section id="files">
+            <h2>Dosya Yapisi</h2>
+
+            <h3>Subscription Modulu</h3>
+            <div class="file-tree">
+<span class="folder">Modules/Subscription/</span>
+├── <span class="folder">app/</span>
+│   ├── <span class="folder">Http/Livewire/Admin/</span>
+│   │   ├── <span class="done">SubscriptionPlanComponent.php</span> &#10003;
+│   │   ├── <span class="done">SubscriptionPlanManageComponent.php</span> &#10003;
+│   │   └── <span class="done">SubscriptionComponent.php</span> &#10003;
+│   ├── <span class="folder">Models/</span>
+│   │   ├── <span class="done">SubscriptionPlan.php</span> &#10003;
+│   │   └── <span class="done">Subscription.php</span> &#10003;
+│   ├── <span class="folder">Services/</span>
+│   │   └── <span class="done">SubscriptionService.php</span> &#10003;
+│   └── <span class="folder">Providers/</span>
+├── <span class="folder">database/migrations/tenant/</span>
+│   ├── <span class="done">2025_11_23_000001_create_subscription_plans_table.php</span> &#10003;
+│   └── <span class="done">2025_11_23_000002_create_subscriptions_table.php</span> &#10003;
+├── <span class="folder">resources/views/admin/livewire/</span>
+│   ├── <span class="done">subscription-plan-component.blade.php</span> &#10003;
+│   ├── <span class="done">subscription-plan-manage-component.blade.php</span> &#10003;
+│   └── <span class="done">subscription-component.blade.php</span> &#10003;
+├── <span class="folder">lang/</span>
+│   ├── <span class="done">tr/admin.php</span> &#10003;
+│   └── <span class="done">en/admin.php</span> &#10003;
+└── <span class="folder">routes/</span>
+    └── <span class="done">admin.php</span> &#10003;
+            </div>
+
+            <h3>Coupon Modulu</h3>
+            <div class="file-tree">
+<span class="folder">Modules/Coupon/</span>
+├── <span class="folder">app/</span>
+│   ├── <span class="folder">Http/Livewire/Admin/</span>
+│   │   ├── <span class="done">CouponComponent.php</span> &#10003;
+│   │   └── <span class="done">CouponManageComponent.php</span> &#10003;
+│   ├── <span class="folder">Models/</span>
+│   │   ├── <span class="done">Coupon.php</span> &#10003;
+│   │   └── <span class="done">CouponUsage.php</span> &#10003;
+│   └── <span class="folder">Services/</span>
+│       └── <span class="done">CouponService.php</span> &#10003;
+├── <span class="folder">database/migrations/tenant/</span>
+│   ├── <span class="done">2025_11_23_000001_create_coupons_table.php</span> &#10003;
+│   └── <span class="done">2025_11_23_000002_create_coupon_usages_table.php</span> &#10003;
+└── <span class="folder">lang/</span>
+    ├── <span class="done">tr/admin.php</span> &#10003;
+    └── <span class="done">en/admin.php</span> &#10003;
+            </div>
+
+            <h3>Auth Servisleri</h3>
+            <div class="file-tree">
+<span class="folder">app/Services/Auth/</span>
+├── <span class="done">SubscriptionService.php</span> &#10003;
+├── <span class="done">DeviceService.php</span> &#10003;
+├── <span class="done">TwoFactorService.php</span> &#10003;
+├── <span class="done">CouponService.php</span> &#10003;
+├── <span class="done">LoginLogService.php</span> &#10003;
+└── <span class="pending">CorporateService.php</span> (eski yapi - guncellenmeli)
+            </div>
+
+            <h3>Kurumsal Yapi (Yeni)</h3>
+            <div class="file-tree">
+<span class="folder">Modules/Muzibu/app/</span>
+├── <span class="folder">Models/</span>
+│   └── <span class="done">MuzibuCorporateAccount.php</span> &#10003;
+└── <span class="folder">Services/</span>
+    └── <span class="done">MuzibuCorporateService.php</span> &#10003;
+
+<span class="folder">database/migrations/tenant/</span>
+├── <span class="done">2025_11_24_000001_create_muzibu_corporate_accounts_table.php</span> &#10003;
+└── <span class="done">2025_11_24_000002_refactor_users_corporate_fields.php</span> &#10003;
+            </div>
+
+            <h3>Middleware'ler</h3>
+            <div class="file-tree">
+<span class="folder">app/Http/Middleware/</span>
+├── <span class="done">CheckDeviceLimit.php</span> &#10003;
+├── <span class="done">CheckSubscription.php</span> &#10003;
+└── <span class="done">CheckApproval.php</span> &#10003;
+            </div>
+        </section>
+
+        <!-- ========================== -->
+        <!-- EKSIK ISLER -->
+        <!-- ========================== -->
+        <section id="pending">
+            <h2>Eksik Isler - Yapilacaklar</h2>
+
+            <div class="alert alert-danger">
+                <strong>SIRADA NE VAR?</strong><br>
+                12. CorporateService Guncelleme - Yeni MuzibuCorporateAccount yapisiyla uyumlu hale getir
+            </div>
+
+            <h3>Backend (Kalan)</h3>
+            <div class="card pending">
+                <h4>CorporateService Uyumsuzlugu</h4>
+                <p>Eski CorporateService (app/Services/Auth/) sunu kullaniyor:</p>
+                <ul>
+                    <li><code>parent_user_id</code> - kaldirild</li>
+                    <li><code>is_corporate</code> - kaldirild</li>
+                    <li><code>corporate_code</code> users tablosunda - kaldirild</li>
+                </ul>
+                <p style="color: #f59e0b; margin-top: 10px;">
+                    <strong>Cozum:</strong> MuzibuCorporateService'i kullan veya CorporateService'i guncelle
+                </p>
+            </div>
+
+            <h3>Admin Panel UI/UX</h3>
+            <ul class="checklist">
+                <li><span class="check-pending">&#9675;</span> Admin menu entegrasyonu (Subscription, Coupon, Corporate)</li>
+                <li><span class="check-pending">&#9675;</span> Kullanici listesi guncelleme (yeni kolonlar + filtreler)</li>
+                <li><span class="check-pending">&#9675;</span> Kullanici detay sekmeleri (cihazlar, abonelik, loglar)</li>
+                <li><span class="check-pending">&#9675;</span> Kurumsal hesap yonetimi admin UI</li>
+                <li><span class="check-pending">&#9675;</span> Dashboard widget'lari (istatistikler)</li>
+            </ul>
+
+            <h3>Frontend Sayfalari (Livewire)</h3>
+            <ul class="checklist">
+                <li><span class="check-pending">&#9675;</span> Login sayfasi Livewire entegrasyonu</li>
+                <li><span class="check-pending">&#9675;</span> Register sayfasi Livewire entegrasyonu</li>
+                <li><span class="check-pending">&#9675;</span> Profil sayfasi Livewire entegrasyonu</li>
+                <li><span class="check-pending">&#9675;</span> Cihaz yonetimi sayfasi</li>
+                <li><span class="check-pending">&#9675;</span> Abonelik durumu sayfasi</li>
+                <li><span class="check-pending">&#9675;</span> Pricing / Paket secim sayfasi</li>
+                <li><span class="check-pending">&#9675;</span> Checkout / Odeme sayfasi</li>
+                <li><span class="check-pending">&#9675;</span> 2FA kurulum sayfasi</li>
+            </ul>
+
+            <h3>Diger</h3>
+            <ul class="checklist">
+                <li><span class="check-pending">&#9675;</span> PayTR entegrasyonu</li>
+                <li><span class="check-pending">&#9675;</span> Mail template'leri (8 adet planlanmis)</li>
+                <li><span class="check-pending">&#9675;</span> SMS entegrasyonu (2FA icin)</li>
+                <li><span class="check-pending">&#9675;</span> E2E testleri</li>
+            </ul>
+        </section>
+
+        <!-- ========================== -->
+        <!-- ILISKILER VE FLOW -->
+        <!-- ========================== -->
+        <section id="relations">
+            <h2>Model Iliskileri</h2>
+
+            <div class="code-block">
+<span class="comment">// User Model</span>
+<span class="keyword">public function</span> subscription()
+{
+    <span class="keyword">return</span> $this->hasOne(Subscription::class)->active();
+}
+
+<span class="keyword">public function</span> corporateAccount()
+{
+    <span class="keyword">return</span> $this->belongsTo(MuzibuCorporateAccount::class);
+}
+
+<span class="keyword">public function</span> ownedCorporateAccount()
+{
+    <span class="keyword">return</span> $this->hasOne(MuzibuCorporateAccount::class, <span class="string">'user_id'</span>);
+}
+
+<span class="comment">// MuzibuCorporateAccount Model</span>
+<span class="keyword">public function</span> owner()
+{
+    <span class="keyword">return</span> $this->belongsTo(User::class, <span class="string">'user_id'</span>);
+}
+
+<span class="keyword">public function</span> members()
+{
+    <span class="keyword">return</span> $this->hasMany(User::class, <span class="string">'corporate_account_id'</span>);
+}
+            </div>
+
+            <h3>Kurumsal Abonelik Mantigi</h3>
+            <div class="alert alert-info">
+                <strong>Nasil Calisiyor?</strong><br>
+                1. Kurum sahibi abonelik satin alir<br>
+                2. Sahip, davet kodu ile uye davet eder<br>
+                3. Uyeler kurum kodunu girerek katilir<br>
+                4. Tum uyelerin aboneligi sahibin aboneligine baglidir<br>
+                5. MuzibuCorporateService.getEffectiveSubscription() bunu yonetir
+            </div>
+        </section>
+
+        <!-- ========================== -->
+        <!-- ONCELIK SIRASI -->
+        <!-- ========================== -->
+        <section id="priority">
+            <h2>Oncelik Sirasi (Onerilen)</h2>
+
+            <ol style="color: #cbd5e1; line-height: 2.5;">
+                <li><strong style="color: #f59e0b;">CorporateService Guncelleme</strong> - Eski kodu yeni yapiya uyarla</li>
+                <li><strong>Admin Menu Entegrasyonu</strong> - Subscription, Coupon menuleri</li>
+                <li><strong>Kullanici Listesi</strong> - Yeni kolonlar, filtreler</li>
+                <li><strong>Kullanici Detay</strong> - Sekmeli yapi (cihazlar, abonelik, loglar)</li>
+                <li><strong>Login/Register</strong> - Livewire entegrasyonu</li>
+                <li><strong>Profil Sayfasi</strong> - 2FA, cihaz yonetimi</li>
+                <li><strong>Pricing Sayfasi</strong> - Plan secimi</li>
+                <li><strong>Checkout</strong> - PayTR entegrasyonu</li>
+                <li><strong>Kurumsal Panel</strong> - Uye davet, yonetim</li>
+                <li><strong>Test & QA</strong></li>
+            </ol>
+        </section>
+
+        <!-- ========================== -->
+        <!-- MEVCUT RAPORLAR -->
+        <!-- ========================== -->
+        <section id="reports">
+            <h2>Mevcut HTML Raporlari</h2>
+
+            <h3>24 Kasim 2025</h3>
+            <table>
+                <tr>
+                    <th>Rapor</th>
+                    <th>URL</th>
+                    <th>Icerik</th>
+                </tr>
+                <tr>
+                    <td>Final Analiz (v7)</td>
+                    <td><a href="https://ixtif.com/readme/2025/11/24/uyelik-sistemi-final/" style="color: #60a5fa;">uyelik-sistemi-final</a></td>
+                    <td>Guncel durum, siradaki isler</td>
+                </tr>
+            </table>
+
+            <h3>23 Kasim 2025</h3>
+            <table>
+                <tr>
+                    <th>Rapor</th>
+                    <th>Versiyon</th>
+                    <th>Icerik</th>
+                </tr>
+                <tr>
+                    <td>uyelik-sistemi-analiz</td>
+                    <td>v1-v20</td>
+                    <td>Ana analiz sureci</td>
+                </tr>
+                <tr>
+                    <td>uyelik-admin-analiz</td>
+                    <td>v1-v5</td>
+                    <td>Admin panel analizi</td>
+                </tr>
+                <tr>
+                    <td>uyelik-settings-analiz</td>
+                    <td>v1-v4</td>
+                    <td>Settings entegrasyonu</td>
+                </tr>
+                <tr>
+                    <td>uyelik-sistemi-ui-analiz</td>
+                    <td>v1</td>
+                    <td>UI/UX analizi</td>
+                </tr>
+                <tr>
+                    <td>uyelik-tum-sayfalar</td>
+                    <td>v1</td>
+                    <td>Tum sayfa listesi</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- ========================== -->
+        <!-- KRITIK NOTLAR -->
+        <!-- ========================== -->
+        <section id="notes">
+            <h2>Kritik Notlar</h2>
+
+            <div class="alert alert-danger">
+                <strong>Tenant-Aware Dikkat!</strong><br>
+                - muzibu_corporate_accounts SADECE Muzibu icin<br>
+                - Diger tenant'lara bu mantik uygulanmamali<br>
+                - Global servislerde tenant kontrolu zorunlu
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>Migration Uyarisi</strong><br>
+                - Migration'lar henuz calistirilmadi<br>
+                - Canli sistemde dikkatli olunmali<br>
+                - Backup almadan migrate etme!
+            </div>
+
+            <div class="alert alert-info">
+                <strong>CorporateService Cakismasi</strong><br>
+                Iki farkli service var:<br>
+                1. <code>app/Services/Auth/CorporateService.php</code> - ESKi, users tablosundaki kolonlari kullaniyor<br>
+                2. <code>Modules/Muzibu/app/Services/MuzibuCorporateService.php</code> - YENi, ayri tablo kullaniyor<br>
+                <br>
+                Eski service'i kaldirmali veya guncellemelisin!
+            </div>
+        </section>
+
+        <footer>
+            Claude AI | Uyelik Sistemi Master Analiz Raporu | 2025-11-24
+        </footer>
+    </div>
+</body>
+</html>

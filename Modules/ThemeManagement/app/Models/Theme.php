@@ -22,12 +22,62 @@ class Theme extends BaseModel implements HasMedia
         'description',
         'is_active',
         'is_default',
+        'available_for_tenants',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'is_default' => 'boolean',
+        'available_for_tenants' => 'array',
     ];
+
+    /**
+     * Temanın belirli bir tenant için erişilebilir olup olmadığını kontrol et
+     */
+    public function isAvailableForTenant($tenantId): bool
+    {
+        $available = $this->available_for_tenants;
+
+        // null veya boş = herkese açık
+        if (empty($available)) {
+            return true;
+        }
+
+        // ["all"] = herkese açık
+        if (in_array('all', $available)) {
+            return true;
+        }
+
+        // Tenant ID listesinde var mı?
+        return in_array($tenantId, $available) || in_array((string)$tenantId, $available);
+    }
+
+    /**
+     * Tenant için erişilebilir temaları getir
+     */
+    public static function availableForTenant($tenantId)
+    {
+        return static::where('is_active', true)
+            ->get()
+            ->filter(function ($theme) use ($tenantId) {
+                return $theme->isAvailableForTenant($tenantId);
+            });
+    }
+
+    /**
+     * Erişim durumu özeti (badge için)
+     */
+    public function getAccessSummaryAttribute(): string
+    {
+        $available = $this->available_for_tenants;
+
+        if (empty($available) || in_array('all', $available)) {
+            return 'Herkese Açık';
+        }
+
+        $count = count($available);
+        return $count . ' Tenant';
+    }
 
     public function sluggable(): array
     {

@@ -55,13 +55,24 @@ class TenancyServiceProvider extends ServiceProvider
             Events\CreatingDomain::class => [],
             Events\DomainCreated::class => [
                 \App\Listeners\CreateTenantDomains::class, // ✅ Otomatik www.domain ekleme
+                \App\Listeners\RegisterDomainAliasInPlesk::class, // ✅ Otomatik Plesk domain alias
             ],
             Events\SavingDomain::class => [],
             Events\DomainSaved::class => [],
             Events\UpdatingDomain::class => [],
             Events\DomainUpdated::class => [],
-            Events\DeletingDomain::class => [],
-            Events\DomainDeleted::class => [],
+            Events\DeletingDomain::class => [
+                function (Events\DeletingDomain $event) {
+                    // Domain silinmeden önce Plesk alias'ı sil (senkron çalıştır)
+                    \App\Jobs\UnregisterDomainAliasFromPlesk::dispatchSync(
+                        $event->domain->domain,
+                        $event->domain->tenant_id
+                    );
+                },
+            ],
+            Events\DomainDeleted::class => [
+                // Domain alias silme işlemi DeletingDomain'de yapılır (domain silinmeden önce)
+            ],
 
             // Database events
             Events\DatabaseCreated::class => [],

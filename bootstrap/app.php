@@ -81,6 +81,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // 9. LIVEWIRE JSON SANITIZER - Livewire JSON responses için UTF-8 sanitization
         $middleware->appendToGroup('web', \App\Http\Middleware\LivewireJsonSanitizer::class);
 
+        // 10. UNDER CONSTRUCTION PROTECTION - Password protection for sites under construction
+        $middleware->appendToGroup('web', \App\Http\Middleware\UnderConstructionProtection::class);
+
         // Middleware alias tanımları
         $middleware->alias([
             'tenant' => \App\Http\Middleware\InitializeTenancy::class,
@@ -106,6 +109,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'device.limit' => \App\Http\Middleware\CheckDeviceLimit::class,
             'subscription' => \App\Http\Middleware\CheckSubscription::class,
             'approved' => \App\Http\Middleware\CheckApproval::class,
+            // Under construction protection
+            'construction' => \App\Http\Middleware\UnderConstructionProtection::class,
         ]);
                 
         // Admin middleware grubu

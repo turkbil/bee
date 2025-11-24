@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('muzibu_playlist_song')) {
+            return;
+        }
+
         Schema::create('muzibu_playlist_song', function (Blueprint $table) {
             $table->foreignId('playlist_id')->constrained('muzibu_playlists', 'playlist_id')->cascadeOnDelete();
             $table->foreignId('song_id')->constrained('muzibu_songs', 'song_id')->cascadeOnDelete();

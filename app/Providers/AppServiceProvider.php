@@ -321,6 +321,11 @@ class AppServiceProvider extends ServiceProvider
 
         // Register SEO Meta Component
         Blade::component('seo-meta', \App\View\Components\SeoMeta::class);
+
+        // Register Subheader Directive - Dinamik tema-aware subheader
+        Blade::directive('subheader', function ($expression) {
+            return "<?php echo view(app(\App\Services\ThemeService::class)->getSubheader(), {$expression})->render(); ?>";
+        });
     }
 
     /**

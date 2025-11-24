@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Hesap Yapısı - Yaklaşım Analizi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid #334155; }
+        h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 15px; background: linear-gradient(135deg, #8b5cf6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta { color: #94a3b8; font-size: 0.9rem; }
+        h2 { font-size: 1.5rem; margin: 30px 0 20px; color: #60a5fa; }
+        h3 { font-size: 1.2rem; color: #f59e0b; margin: 20px 0 15px; }
+
+        .approach-box {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #334155;
+        }
+        .approach-box.recommended {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        .approach-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-recommended { background: #10b981; color: white; }
+        .badge-not { background: #ef4444; color: white; }
+
+        .schema-box {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: Monaco, Menlo, monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+        .schema-box .table-name { color: #f472b6; font-weight: 600; }
+        .schema-box .column { color: #a5f3fc; }
+        .schema-box .comment { color: #64748b; }
+        .schema-box .highlight { color: #fbbf24; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        @media (max-width: 768px) {
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+
+        .pros-cons {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .pros-cons h4 {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pros-cons.pros h4 { color: #10b981; }
+        .pros-cons.cons h4 { color: #ef4444; }
+        .pros-cons ul {
+            list-style: none;
+            padding: 0;
+        }
+        .pros-cons li {
+            padding: 6px 0;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .pros-cons li::before {
+            content: "•";
+            color: inherit;
+        }
+
+        .feature-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .feature-table th, .feature-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        .feature-table th {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        .feature-table td { color: #cbd5e1; }
+        .feature-table .yes { color: #10b981; }
+        .feature-table .no { color: #ef4444; }
+        .feature-table .partial { color: #f59e0b; }
+
+        .use-case {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid #8b5cf6;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .use-case h4 { color: #a78bfa; margin-bottom: 8px; }
+        .use-case p { color: #cbd5e1; font-size: 0.9rem; margin: 0; }
+        .use-case code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #fbbf24;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+            border: 2px solid #10b981;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        .summary-box h3 { color: #10b981; margin-top: 0; }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Kurumsal Hesap Yapısı - Yaklaşım Analizi</h1>
+            <div class="meta">Tarih: 2025-11-24 | Platform: Muzibu | Users tablosu universal kalmalı</div>
+        </header>
+
+        <!-- YAKLAŞIM 1: ÖNERİLEN -->
+        <div class="approach-box recommended">
+            <div class="approach-title">
+                <span class="badge badge-recommended">ÖNERİLEN</span>
+                Yaklaşım A: Self-Referencing Tablo (parent_id)
+            </div>
+
+            <div class="schema-box">
+<pre style="margin: 0; font-family: inherit;"><span class="table-name">muzibu_corporate_accounts</span>
+├── <span class="column">id</span> (PK)
+├── <span class="column">user_id</span> <span class="comment">-- Bu kaydın sahibi user</span>
+├── <span class="column highlight">parent_id</span> <span class="comment">-- NULL = kurum, değer = üst kuruma bağlı üye</span>
+├── <span class="column">corporate_code</span> <span class="comment">-- Davet kodu (sadece kurum)</span>
+├── <span class="column">company_name</span> <span class="comment">-- Şirket adı (sadece kurum)</span>
+├── <span class="column">max_members</span> <span class="comment">-- Üye limiti (sadece kurum)</span>
+├── <span class="column">billing_email</span> <span class="comment">-- Fatura e-posta (sadece kurum)</span>
+├── <span class="column">billing_address</span> <span class="comment">-- Fatura adresi (sadece kurum)</span>
+├── <span class="column">tax_number</span> <span class="comment">-- Vergi no (sadece kurum)</span>
+└── <span class="column">is_active</span>
+
+<span class="comment">-- users tablosu HİÇ DEĞİŞMEZ (universal)</span></pre>
+            </div>
+
+            <h4 style="color: #10b981; margin: 20px 0 10px;">Örnek Veri:</h4>
+            <table class="feature-table">
+                <tr>
+                    <th>id</th>
+                    <th>user_id</th>
+                    <th>parent_id</th>
+                    <th>corporate_code</th>
+                    <th>company_name</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>5</td>
+                    <td>NULL</td>
+                    <td>ABC123</td>
+                    <td>Acme Ltd</td>
+                    <td style="color: #10b981;">← Kurum sahibi</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>10</td>
+                    <td>1</td>
+                    <td>NULL</td>
+                    <td>NULL</td>
+                    <td style="color: #60a5fa;">← Üye (Acme)</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>12</td>
+                    <td>1</td>
+                    <td>NULL</td>
+                    <td>NULL</td>
+                    <td style="color: #60a5fa;">← Üye (Acme)</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>20</td>
+                    <td>NULL</td>
+                    <td>XYZ789</td>
+                    <td>Beta Corp</td>
+                    <td style="color: #10b981;">← Başka kurum</td>
+                </tr>
+            </table>
+
+            <div class="comparison-grid">
+                <div class="pros-cons pros">
+                    <h4>✓ Avantajlar</h4>
+                    <ul>
+                        <li>Users tablosu universal kalır</li>
+                        <li>Diğer tenant larda tablo gözükmez</li>
+                        <li>Tek tablo ile tüm ilişkiler</li>
+                        <li>Fatura bilgileri kurum kaydında</li>
+                        <li>Toplu fatura için tek sorgu</li>
+                        <li>Gelecekte genişletilebilir</li>
+                        <li>Temiz normalizasyon</li>
+                    </ul>
+                </div>
+                <div class="pros-cons cons">
+                    <h4>✗ Dezavantajlar</h4>
+                    <ul>
+                        <li>Self-join gerektirir</li>
+                        <li>NULL alanlar (üyelerde)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- YAKLAŞIM 2: ALTERNATİF -->
+        <div class="approach-box">
+            <div class="approach-title">
+                <span class="badge badge-not">ÖNERİLMEZ</span>
+                Yaklaşım B: Users Tablosuna Kolon Ekleme
+            </div>
+
+            <div class="schema-box">
+<pre style="margin: 0; font-family: inherit;"><span class="table-name">users</span> <span class="comment">-- Universal tablo BOZULUR!</span>
+├── ... (mevcut alanlar)
+├── <span class="column highlight">corporate_account_id</span> <span class="comment">-- Tüm tenant larda gözükür!</span>
+└── <span class="column highlight">parent_user_id</span> <span class="comment">-- Tüm tenant larda gözükür!</span>
+
+<span class="table-name">corporate_accounts</span>
+├── <span class="column">id</span>
+├── <span class="column">user_id</span> (sahip)
+└── ... (kurum bilgileri)</pre>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="pros-cons pros">
+                    <h4>✓ Avantajlar</h4>
+                    <ul>
+                        <li>Basit JOIN</li>
+                        <li>Direkt ilişki</li>
+                    </ul>
+                </div>
+                <div class="pros-cons cons">
+                    <h4>✗ Dezavantajlar</h4>
+                    <ul>
+                        <li>Users tablosu bozulur</li>
+                        <li>Tüm tenant larda gereksiz kolonlar</li>
+                        <li>Universal yapı kaybedilir</li>
+                        <li>Tenant-specific kod users a sızar</li>
+                        <li>Migration karmaşası</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- KULLANIM SENARYOLARI -->
+        <h2>Kullanım Senaryoları (Yaklaşım A)</h2>
+
+        <div class="use-case">
+            <h4>1. Kullanıcı Kurum Sahibi mi?</h4>
+            <p><code>WHERE user_id = ? AND parent_id IS NULL</code></p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. Kullanıcı Bir Kuruma Üye mi?</h4>
+            <p><code>WHERE user_id = ? AND parent_id IS NOT NULL</code></p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Kurumun Tüm Üyelerini Listele</h4>
+            <p><code>WHERE parent_id = ? (kurum_id)</code></p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Üyenin Kurum Bilgilerini Al</h4>
+            <p><code>SELECT * FROM accounts WHERE id = (SELECT parent_id FROM accounts WHERE user_id = ?)</code></p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Toplu Fatura Listesi (Tüm Kurumlar)</h4>
+            <p><code>WHERE parent_id IS NULL AND billing_email IS NOT NULL</code></p>
+        </div>
+
+        <div class="use-case">
+            <h4>6. Bir Kurumun Toplam Üye Sayısı</h4>
+            <p><code>SELECT COUNT(*) FROM accounts WHERE parent_id = ?</code></p>
+        </div>
+
+        <div class="use-case">
+            <h4>7. Davet Koduyla Katılma</h4>
+            <p>1. Kodu bul: <code>WHERE corporate_code = ? AND parent_id IS NULL</code><br>
+               2. Üye kaydı oluştur: <code>INSERT (user_id, parent_id)</code></p>
+        </div>
+
+        <!-- GELECEK ÖZELLİKLER -->
+        <h2>Gelecekte Eklenebilecek Özellikler</h2>
+
+        <table class="feature-table">
+            <tr>
+                <th>Özellik</th>
+                <th>Yaklaşım A</th>
+                <th>Yaklaşım B</th>
+            </tr>
+            <tr>
+                <td>Toplu Fatura Ödeme</td>
+                <td class="yes">✓ Kolay - tek tablo sorgusu</td>
+                <td class="partial">△ JOIN gerekir</td>
+            </tr>
+            <tr>
+                <td>Kurumsal Logo</td>
+                <td class="yes">✓ logo_path kolonu ekle</td>
+                <td class="yes">✓ Aynı</td>
+            </tr>
+            <tr>
+                <td>Alt Departmanlar</td>
+                <td class="yes">✓ parent_id ile hiyerarşi</td>
+                <td class="no">✗ Karmaşık</td>
+            </tr>
+            <tr>
+                <td>Üye Rolleri (Admin/User)</td>
+                <td class="yes">✓ role kolonu ekle</td>
+                <td class="partial">△ Ayrı tablo lazım</td>
+            </tr>
+            <tr>
+                <td>Kurumsal Plan/Abonelik</td>
+                <td class="yes">✓ subscription_id ekle</td>
+                <td class="yes">✓ Aynı</td>
+            </tr>
+            <tr>
+                <td>Fatura Geçmişi</td>
+                <td class="yes">✓ corporate_invoices tablosu</td>
+                <td class="yes">✓ Aynı</td>
+            </tr>
+            <tr>
+                <td>Üye Davet Geçmişi</td>
+                <td class="yes">✓ invited_at, invited_by ekle</td>
+                <td class="partial">△ Karmaşık</td>
+            </tr>
+            <tr>
+                <td>Users Universal Kalır</td>
+                <td class="yes">✓ Evet</td>
+                <td class="no">✗ Hayır</td>
+            </tr>
+        </table>
+
+        <!-- ÖZET -->
+        <div class="summary-box">
+            <h3>Sonuç ve Öneri</h3>
+            <p style="color: #cbd5e1; margin-bottom: 15px;">
+                <strong style="color: #10b981;">Yaklaşım A (Self-Referencing)</strong> tercih edilmeli çünkü:
+            </p>
+            <ul style="color: #cbd5e1; padding-left: 20px; line-height: 2;">
+                <li><strong>Users tablosu universal kalır</strong> - Diğer tenant lar etkilenmez</li>
+                <li><strong>Tek tablo</strong> - Kurum ve üye aynı tabloda, JOIN gerekmez</li>
+                <li><strong>Toplu fatura</strong> - Tüm kurumları tek sorguyla çek</li>
+                <li><strong>Genişletilebilir</strong> - Departman, rol, fatura geçmişi kolayca eklenir</li>
+                <li><strong>Tenant-isolated</strong> - Sadece Muzibu da kullanılır</li>
+            </ul>
+        </div>
+
+        <!-- SONRAKI ADIM -->
+        <h2>Sonraki Adım</h2>
+        <div style="background: rgba(59, 130, 246, 0.1); border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+            <p style="color: #cbd5e1; margin: 0;">
+                <strong style="color: #60a5fa;">Migration Güncelleme:</strong> 
+                Mevcut <code style="color: #fbbf24;">muzibu_corporate_accounts</code> tablosuna <code style="color: #fbbf24;">parent_id</code> kolonu ekle,
+                <code style="color: #fbbf24;">users.corporate_account_id</code> kolonunu kaldır.
+            </p>
+        </div>
+
+        <footer>Claude AI | Kurumsal Hesap Yapısı Analizi | 2025-11-24</footer>
+    </div>
+</body>
+</html>
+HTMLEOF'

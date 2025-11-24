@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('muzibu_radios')) {
+            return;
+        }
+
         Schema::create('muzibu_radios', function (Blueprint $table) {
             $table->id('radio_id');
             $table->json('title')->comment('Çoklu dil radyo adı: {"tr": "Radyo", "en": "Radio"}');

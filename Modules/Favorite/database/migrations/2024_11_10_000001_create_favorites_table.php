@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('favorites')) {
+            return;
+        }
+
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
 
@@ -22,7 +26,7 @@ return new class extends Migration
 
             // Indexes
             $table->index('user_id');
-            $table->index(['favoritable_type', 'favoritable_id']);
+            // NOT: morphs() zaten favoritable_type + favoritable_id için index oluşturur
             $table->index('created_at');
 
             // Unique constraint - Bir kullanıcı aynı içeriği birden fazla favorilere ekleyemez

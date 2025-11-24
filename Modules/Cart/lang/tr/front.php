@@ -20,6 +20,7 @@ return [
     'cart_totals' => 'Sepet Toplamları',
     'tax' => 'KDV',
     'grand_total' => 'Genel Toplam',
+    'tax_included_note' => 'Fiyatlara KDV dahildir',
 
     // Messages
     'item_added' => 'Ürün sepete eklendi',

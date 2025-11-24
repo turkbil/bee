@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Livewire\Livewire;
 
 class MailServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,12 @@ class MailServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, ''));
+
+        // Admin routes
+        $this->loadRoutesFrom(module_path('Mail', 'routes/admin.php'));
+
+        // Livewire components
+        Livewire::component('mail::admin.mail-component', \Modules\Mail\Http\Livewire\Admin\MailComponent::class);
     }
 
     /**

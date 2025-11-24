@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_model_credit_rates')) {
+            return;
+        }
+
         Schema::create('ai_model_credit_rates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('provider_id')->constrained('ai_providers')->onDelete('cascade');

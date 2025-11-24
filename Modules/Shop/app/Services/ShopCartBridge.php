@@ -82,7 +82,7 @@ class ShopCartBridge
     {
         return [
             'item_title' => $product->getTranslated('title', app()->getLocale()),
-            'item_image' => $product->getFirstMediaUrl('main'),
+            'item_image' => $product->getFirstMediaUrl('featured_image'),
             'item_sku' => $product->sku,
         ];
     }

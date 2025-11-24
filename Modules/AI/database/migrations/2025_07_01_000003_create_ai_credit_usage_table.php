@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_credit_usage')) {
+            return;
+        }
+
         Schema::create('ai_credit_usage', function (Blueprint $table) {
             $table->id();
             $table->string('tenant_id'); // String for tenant compatibility

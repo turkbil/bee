@@ -33,6 +33,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_feature_prompts')) {
+            return;
+        }
+
         Schema::create('ai_feature_prompts', function (Blueprint $table) {
                 $table->id();
                 

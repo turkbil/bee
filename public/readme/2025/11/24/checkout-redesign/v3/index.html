@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Minimal v3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; }
+
+        /* Toggle Switch */
+        .switch { position: relative; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #475569; border-radius: 24px; transition: 0.3s; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+        input:checked + .slider { background: #3b82f6; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Address card */
+        .addr-card { transition: all 0.2s ease; }
+        .addr-card:hover { transform: translateY(-1px); }
+    </style>
+</head>
+<body class="text-gray-100 p-4 md:p-6">
+
+    <div class="max-w-6xl mx-auto" x-data="{
+        // Fatura
+        billingType: 'individual',
+
+        // Adresler
+        billingSameAsShipping: true,
+
+        // Teslimat adresi
+        hasShippingAddress: true,
+        showShippingForm: false,
+        selectedShippingId: 1,
+
+        // Fatura adresi (farklı seçilirse)
+        showBillingForm: false,
+        selectedBillingId: 1,
+
+        // Ödeme
+        paymentMethod: 'card'
+    }">
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-white">Sipariş Tamamla</h1>
+        </div>
+
+        <!-- Main Grid: Sol Form + Sağ Özet -->
+        <div class="grid lg:grid-cols-5 gap-6">
+
+            <!-- ========================================== -->
+            <!-- SOL TARAF: TÜM BİLGİLER (3/5) -->
+            <!-- ========================================== -->
+            <div class="lg:col-span-3 space-y-4">
+
+                <!-- 1. İLETİŞİM BİLGİLERİ -->
+                <div class="bg-slate-800/50 backdrop-blur rounded-xl p-5 border border-slate-700/50">
+                    <h2 class="text-base font-semibold text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-user text-blue-400 w-5"></i>
+                        <span class="ml-2">İletişim Bilgileri</span>
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Ad <span class="text-red-400">*</span></label>
+                            <input type="text" value="Nurullah"
+                                   class="w-full px-3 py-2.5 bg-slate-900/50 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Soyad <span class="text-red-400">*</span></label>
+                            <input type="text" value="Çetin"
+                                   class="w-full px-3 py-2.5 bg-slate-900/50 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">E-posta <span class="text-red-400">*</span></label>
+                            <input type="email" value="nurullah@ixtif.com" readonly
+                                   class="w-full px-3 py-2.5 bg-slate-700/50 border border-slate-600 rounded-lg text-slate-400 text-sm cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Telefon <span class="text-red-400">*</span></label>
+                            <input type="tel" placeholder="05XX XXX XX XX"
+                                   class="w-full px-3 py-2.5 bg-slate-900/50 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. FATURA BİLGİLERİ -->
+                <div class="bg-slate-800/50 backdrop-blur rounded-xl p-5 border border-slate-700/50">
+                    <h2 class="text-base font-semibold text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-file-invoice text-blue-400 w-5"></i>
+                        <span class="ml-2">Fatura Bilgileri</span>
+                    </h2>
+
+                    <!-- Fatura Tipi Toggle -->
+                    <div class="flex gap-2 mb-4">
+                        <button @click="billingType = 'individual'"
+                                :class="billingType === 'individual' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'"
+                                class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-all">
+                            <i class="fa-solid fa-user mr-1.5"></i>Bireysel
+                        </button>
+                        <button @click="billingType = 'corporate'"
+                                :class="billingType === 'corporate' ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'"
+                                class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-all">
+                            <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
+                        </button>
+                    </div>
+
+                    <!-- Bireysel Form -->
+                    <div x-show="billingType === 'individual'" x-transition>
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">TC Kimlik No <span class="text-slate-500">(Opsiyonel)</span></label>
+                            <input type="text" placeholder="XXXXXXXXXXX" maxlength="11"
+                                   class="w-full px-3 py-2.5 bg-slate-900/50 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Kurumsal Form -->
+                    <div x-show="billingType === 'corporate'" x-transition class="space-y-3">
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-1">Şirket Ünvanı <span class="text-red-400">*</span></label>
+                            <input type="text" placeholder="ABC Ltd. Şti."
+                                   class="w-full px-3 py-2.5 bg-slate-900/50 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Vergi Kimlik No <span class="text-red-400">*</span></label>
+                                <input type="text" placeholder="XXXXXXXXXX" maxlength="10"
+                                       class="w-full px-3 py-2.5 bg-slate-900/50 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Vergi Dairesi <span class="text-red-400">*</span></label>
+                                <input type="text" placeholder="Kadıköy V.D."
+                                       class="w-full px-3 py-2.5 bg-slate-900/50 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. ADRES BİLGİLERİ (Tek Alan - Teslimat + Fatura) -->
+                <div class="bg-slate-800/50 backdrop-blur rounded-xl p-5 border border-slate-700/50">
+                    <h2 class="text-base font-semibold text-white mb-4 flex items-center">
+                        <i class="fa-solid fa-location-dot text-blue-400 w-5"></i>
+                        <span class="ml-2">Adres Bilgileri</span>
+                    </h2>
+
+                    <!-- ===== TESLİMAT ADRESİ ===== -->
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-medium text-slate-300">
+                                <i class="fa-solid fa-truck text-slate-500 mr-2"></i>Teslimat Adresi
+                            </h3>
+                            <button @click="showShippingForm = !showShippingForm"
+                                    class="text-xs text-blue-400 hover:text-blue-300 font-medium px-2 py-1 rounded hover:bg-blue-500/10 transition-all">
+                                <i class="fa-solid fa-pen mr-1"></i>Değiştir
+                            </button>
+                        </div>
+
+                        <!-- Seçili Adres Gösterimi -->
+                        <div x-show="!showShippingForm" class="addr-card bg-slate-900/40 rounded-lg p-4 border-2 border-blue-500/50">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-white font-medium">Ev Adresi</span>
+                                <span class="text-[10px] bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 rounded">Varsayılan</span>
+                            </div>
+                            <p class="text-sm text-slate-400">Atatürk Cad. No:123/5</p>
+                            <p class="text-sm text-slate-400">Kadıköy / İstanbul 34710</p>
+                            <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-phone mr-1"></i>0532 123 45 67</p>
+                        </div>
+
+                        <!-- Adres Seçim/Ekleme Formu -->
+                        <div x-show="showShippingForm" x-transition x-collapse class="space-y-3">
+                            <!-- Mevcut Adresler -->
+                            <div class="space-y-2">
+                                <label class="addr-card block cursor-pointer">
+                                    <input type="radio" name="shipping_addr" x-model="selectedShippingId" value="1" class="hidden peer">
+                                    <div class="p-3 rounded-lg border-2 border-slate-600 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 transition-all">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-sm font-medium text-white">Ev Adresi</span>
+                                                    <span class="text-[10px] bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 rounded">Varsayılan</span>
+                                                </div>
+                                                <p class="text-xs text-slate-400 mt-1">Atatürk Cad. No:123/5, Kadıköy / İstanbul</p>
+                                            </div>
+                                            <i class="fa-solid fa-circle-check text-blue-400"></i>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="addr-card block cursor-pointer">
+                                    <input type="radio" name="shipping_addr" x-model="selectedShippingId" value="2" class="hidden peer">
+                                    <div class="p-3 rounded-lg border-2 border-slate-600 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 transition-all">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <span class="text-sm font-medium text-white">İş Adresi</span>
+                                                <p class="text-xs text-slate-400 mt-1">İxtif Plaza Kat:5, Şişli / İstanbul</p>
+                                            </div>
+                                            <i class="fa-solid fa-circle-check text-blue-400 opacity-0 peer-checked:opacity-100"></i>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Yeni Adres Ekle Butonu / Formu -->
+                            <div x-data="{ showNewForm: false }">
+                                <button x-show="!showNewForm" @click="showNewForm = true"
+                                        class="w-full p-3 rounded-lg border-2 border-dashed border-slate-600 hover:border-blue-500 text-slate-400 hover:text-blue-400 text-sm transition-all">
+                                    <i class="fa-solid fa-plus mr-1"></i>Yeni Adres Ekle
+                                </button>
+
+                                <!-- Yeni Adres Formu -->
+                                <div x-show="showNewForm" x-transition class="p-4 bg-slate-900/50 rounded-lg border border-slate-600 space-y-3">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">Adres Adı <span class="text-red-400">*</span></label>
+                                            <input type="text" placeholder="Örn: Evim"
+                                                   class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">Telefon</label>
+                                            <input type="tel" placeholder="05XX XXX XX XX"
+                                                   class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-slate-400 mb-1">Adres <span class="text-red-400">*</span></label>
+                                        <textarea rows="2" placeholder="Mahalle, sokak, bina no, daire no"
+                                                  class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all resize-none"></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">İl <span class="text-red-400">*</span></label>
+                                            <select class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                                <option value="">Seçin</option>
+                                                <option>İstanbul</option>
+                                                <option>Ankara</option>
+                                                <option>İzmir</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">İlçe <span class="text-red-400">*</span></label>
+                                            <select class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                                <option value="">Seçin</option>
+                                                <option>Kadıköy</option>
+                                                <option>Beşiktaş</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">Posta Kodu</label>
+                                            <input type="text" placeholder="34000"
+                                                   class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end gap-2 pt-2">
+                                        <button @click="showNewForm = false"
+                                                class="px-4 py-2 text-sm text-slate-400 hover:text-white transition-all">İptal</button>
+                                        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all">
+                                            <i class="fa-solid fa-check mr-1"></i>Kaydet
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seçimi Uygula -->
+                            <div class="flex justify-end pt-2">
+                                <button @click="showShippingForm = false"
+                                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all">
+                                    <i class="fa-solid fa-check mr-1"></i>Tamam
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ayırıcı Çizgi -->
+                    <div class="border-t border-slate-700/50 my-4"></div>
+
+                    <!-- ===== FATURA ADRESİ ===== -->
+                    <div>
+                        <!-- Fatura Adresi Aynı mı? -->
+                        <div class="flex items-center justify-between p-3 bg-slate-900/30 rounded-lg mb-3">
+                            <span class="text-sm text-slate-300">
+                                <i class="fa-solid fa-file-invoice-dollar text-slate-500 mr-2"></i>
+                                Fatura adresi teslimat ile aynı
+                            </span>
+                            <label class="switch">
+                                <input type="checkbox" x-model="billingSameAsShipping">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- Aynı ise onay mesajı -->
+                        <div x-show="billingSameAsShipping" x-transition class="text-sm text-green-400 flex items-center ml-1">
+                            <i class="fa-solid fa-check-circle mr-2"></i>
+                            Fatura, teslimat adresine kesilecek
+                        </div>
+
+                        <!-- Farklı ise fatura adresi seçimi -->
+                        <div x-show="!billingSameAsShipping" x-transition x-collapse class="space-y-3">
+                            <h3 class="text-sm font-medium text-slate-300 mb-3">
+                                <i class="fa-solid fa-file-invoice-dollar text-slate-500 mr-2"></i>Fatura Adresi
+                            </h3>
+
+                            <!-- Mevcut Adresler (Teslimat ile birebir aynı yapı) -->
+                            <div class="space-y-2">
+                                <label class="addr-card block cursor-pointer">
+                                    <input type="radio" name="billing_addr" x-model="selectedBillingId" value="1" class="hidden peer">
+                                    <div class="p-3 rounded-lg border-2 border-slate-600 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 transition-all">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-sm font-medium text-white">Ev Adresi</span>
+                                                    <span class="text-[10px] bg-yellow-500/20 text-yellow-400 px-1.5 py-0.5 rounded">Varsayılan</span>
+                                                </div>
+                                                <p class="text-xs text-slate-400 mt-1">Atatürk Cad. No:123/5, Kadıköy / İstanbul</p>
+                                            </div>
+                                            <i class="fa-solid fa-circle-check text-blue-400"></i>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <label class="addr-card block cursor-pointer">
+                                    <input type="radio" name="billing_addr" x-model="selectedBillingId" value="2" class="hidden peer">
+                                    <div class="p-3 rounded-lg border-2 border-slate-600 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 transition-all">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <span class="text-sm font-medium text-white">İş Adresi</span>
+                                                <p class="text-xs text-slate-400 mt-1">İxtif Plaza Kat:5, Şişli / İstanbul</p>
+                                            </div>
+                                            <i class="fa-solid fa-circle-check text-blue-400 opacity-0 peer-checked:opacity-100"></i>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- Yeni Adres Ekle (Teslimat ile birebir aynı form) -->
+                            <div x-data="{ showNewBillingForm: false }">
+                                <button x-show="!showNewBillingForm" @click="showNewBillingForm = true"
+                                        class="w-full p-3 rounded-lg border-2 border-dashed border-slate-600 hover:border-blue-500 text-slate-400 hover:text-blue-400 text-sm transition-all">
+                                    <i class="fa-solid fa-plus mr-1"></i>Yeni Adres Ekle
+                                </button>
+
+                                <!-- Yeni Adres Formu (Birebir aynı) -->
+                                <div x-show="showNewBillingForm" x-transition class="p-4 bg-slate-900/50 rounded-lg border border-slate-600 space-y-3">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">Adres Adı <span class="text-red-400">*</span></label>
+                                            <input type="text" placeholder="Örn: Şirket"
+                                                   class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">Telefon</label>
+                                            <input type="tel" placeholder="05XX XXX XX XX"
+                                                   class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-slate-400 mb-1">Adres <span class="text-red-400">*</span></label>
+                                        <textarea rows="2" placeholder="Mahalle, sokak, bina no, daire no"
+                                                  class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all resize-none"></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">İl <span class="text-red-400">*</span></label>
+                                            <select class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                                <option value="">Seçin</option>
+                                                <option>İstanbul</option>
+                                                <option>Ankara</option>
+                                                <option>İzmir</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">İlçe <span class="text-red-400">*</span></label>
+                                            <select class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                                <option value="">Seçin</option>
+                                                <option>Kadıköy</option>
+                                                <option>Beşiktaş</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-slate-400 mb-1">Posta Kodu</label>
+                                            <input type="text" placeholder="34000"
+                                                   class="w-full px-3 py-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm focus:border-blue-500 transition-all">
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end gap-2 pt-2">
+                                        <button @click="showNewBillingForm = false"
+                                                class="px-4 py-2 text-sm text-slate-400 hover:text-white transition-all">İptal</button>
+                                        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-all">
+                                            <i class="fa-solid fa-check mr-1"></i>Kaydet
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SAĞ TARAF: SİPARİŞ ÖZETİ + ÖDEME (2/5) -->
+            <!-- ========================================== -->
+            <div class="lg:col-span-2">
+                <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700/50 sticky top-6">
+
+                    <!-- Sipariş Özeti Header -->
+                    <div class="p-5 border-b border-slate-700/50">
+                        <h2 class="text-base font-semibold text-white flex items-center">
+                            <i class="fa-solid fa-receipt text-blue-400 mr-2"></i>
+                            Sipariş Özeti
+                        </h2>
+                    </div>
+
+                    <!-- Ürünler -->
+                    <div class="p-5 border-b border-slate-700/50">
+                        <div class="flex gap-3 mb-3">
+                            <div class="w-14 h-14 bg-slate-700 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-box text-slate-500"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm text-white font-medium truncate">EP 20K Elektrikli Forklift</p>
+                                <p class="text-xs text-slate-500">Adet: 1</p>
+                            </div>
+                            <span class="text-sm text-white font-medium whitespace-nowrap">285.000 ₺</span>
+                        </div>
+                    </div>
+
+                    <!-- Fiyat Detayları -->
+                    <div class="p-5 border-b border-slate-700/50 space-y-2 text-sm">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Ara Toplam</span>
+                            <span>285.000 ₺</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>KDV (%20)</span>
+                            <span>57.000 ₺</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>Kargo</span>
+                            <span class="text-green-400">Ücretsiz</span>
+                        </div>
+                        <div class="flex justify-between text-white font-bold text-lg pt-2 border-t border-slate-700/50">
+                            <span>Toplam</span>
+                            <span class="text-blue-400">342.000 ₺</span>
+                        </div>
+                    </div>
+
+                    <!-- Ödeme Yöntemi -->
+                    <div class="p-5 border-b border-slate-700/50">
+                        <h3 class="text-sm font-medium text-white mb-3">
+                            <i class="fa-solid fa-wallet text-blue-400 mr-2"></i>Ödeme Yöntemi
+                        </h3>
+
+                        <div class="space-y-2">
+                            <!-- Kredi Kartı -->
+                            <label class="block cursor-pointer">
+                                <input type="radio" x-model="paymentMethod" value="card" class="hidden peer">
+                                <div class="p-3 rounded-lg border-2 border-slate-600 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 transition-all">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fa-solid fa-credit-card text-blue-400"></i>
+                                        <div class="flex-1">
+                                            <span class="text-sm font-medium text-white">Kredi Kartı</span>
+                                            <p class="text-[10px] text-slate-500">Visa, Mastercard, Troy</p>
+                                        </div>
+                                        <img src="https://www.paytr.com/wp-content/uploads/2020/09/paytr_logo.svg" alt="PayTR" class="h-4 opacity-50">
+                                    </div>
+                                </div>
+                            </label>
+
+                            <!-- Havale/EFT -->
+                            <label class="block cursor-pointer">
+                                <input type="radio" x-model="paymentMethod" value="bank" class="hidden peer">
+                                <div class="p-3 rounded-lg border-2 border-slate-600 peer-checked:border-green-500 peer-checked:bg-green-500/10 transition-all">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fa-solid fa-money-bill-transfer text-green-400"></i>
+                                        <div class="flex-1">
+                                            <span class="text-sm font-medium text-white">Havale / EFT</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Banka Bilgileri -->
+                                    <div x-show="paymentMethod === 'bank'" x-collapse class="mt-3 pt-3 border-t border-slate-600 text-xs text-slate-400">
+                                        <p><strong class="text-slate-300">Banka:</strong> Türkiye İş Bankası</p>
+                                        <p><strong class="text-slate-300">Hesap:</strong> İXTİF A.Ş.</p>
+                                        <p class="mt-1"><strong class="text-slate-300">IBAN:</strong></p>
+                                        <code class="block bg-slate-800 px-2 py-1 rounded mt-1 text-[11px]">TR51 0006 4000 0011 0372 5092 58</code>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sözleşmeler -->
+                    <div class="p-5 border-b border-slate-700/50">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 mt-0.5 rounded border-slate-600 text-blue-600 focus:ring-blue-500 bg-slate-900">
+                            <span class="text-xs text-slate-400 leading-relaxed">
+                                <a href="/on-bilgilendirme" target="_blank" class="text-blue-400 hover:underline">Ön Bilgilendirme Formu</a>'nu ve
+                                <a href="/mesafeli-satis" target="_blank" class="text-blue-400 hover:underline">Mesafeli Satış Sözleşmesi</a>'ni okudum, kabul ediyorum.
+                                <span class="text-red-400">*</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Ödeme Butonu -->
+                    <div class="p-5">
+                        <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 text-base">
+                            <i class="fa-solid fa-lock"></i>
+                            <span x-text="paymentMethod === 'card' ? 'Kredi Kartı ile Öde' : 'Siparişi Tamamla'"></span>
+                        </button>
+
+                        <p class="text-center text-[10px] text-slate-500 mt-3 flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-shield-halved text-green-500"></i>
+                            256-bit SSL ile güvenli ödeme
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Design Info -->
+        <div class="mt-8 p-4 bg-slate-800/30 rounded-xl border border-slate-700/30 text-center">
+            <p class="text-slate-500 text-xs">
+                <i class="fa-solid fa-info-circle mr-1"></i>
+                Checkout v3 - Kompakt Adres Yapısı | Teslimat + Fatura aynı alanda
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>

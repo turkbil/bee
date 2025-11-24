@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('module_tenant_settings')) {
+            return;
+        }
+
         Schema::create('module_tenant_settings', function (Blueprint $table) {
             $table->id();
             $table->string('module_name'); // portfolio, page, announcement etc.

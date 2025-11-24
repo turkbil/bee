@@ -37,7 +37,7 @@ class UnregisterDatabaseFromPlesk implements ShouldQueue
             $maxAttempts = 3;
 
             for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
-                $deleteResult = Process::timeout(10)->run("plesk db \"{$deleteSql}\"");
+                $deleteResult = Process::timeout(10)->run("sudo /usr/sbin/plesk db \"{$deleteSql}\"");
 
                 if ($deleteResult->successful()) {
                     if ($attempt > 1) {

@@ -40,13 +40,11 @@ class CartServiceProvider extends ServiceProvider
             }
         }
 
-        // Load routes directly
-        $this->loadRoutesFrom(module_path('Cart', 'routes/web.php'));
-        $this->loadRoutesFrom(module_path('Cart', 'routes/admin/web.php'));
-
         // Register Livewire components
         \Livewire\Livewire::component('cart::front.cart-widget', \Modules\Cart\App\Http\Livewire\Front\CartWidget::class);
         \Livewire\Livewire::component('cart::front.cart-page', \Modules\Cart\App\Http\Livewire\Front\CartPage::class);
+        \Livewire\Livewire::component('cart::front.checkout-page', \Modules\Cart\App\Http\Livewire\Front\CheckoutPage::class);
+        \Livewire\Livewire::component('cart::front.address-manager', \Modules\Cart\App\Http\Livewire\Front\AddressManager::class);
     }
 
     /**

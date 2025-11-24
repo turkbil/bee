@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_feature_inputs')) {
+            return;
+        }
+
         Schema::create('ai_feature_inputs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('feature_id')->constrained('ai_features')->onDelete('cascade');

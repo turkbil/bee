@@ -1587,19 +1587,8 @@ PROMPT;
                 return $existingBySlug;
             }
 
-            // 3. Benzer başlık kontrolü (LIKE ile) - sadece ilk birkaç kelime
-            $firstWords = implode(' ', array_slice(explode(' ', $topicKeyword), 0, 3));
-            if (strlen($firstWords) > 10) {
-                $existingBySimilar = Blog::where('title->tr', 'LIKE', $firstWords . '%')->first();
-                if ($existingBySimilar) {
-                    Log::info('⚠️ Similar title found', [
-                        'new_topic' => $topicKeyword,
-                        'existing_title' => $existingBySimilar->getTranslated('title', 'tr'),
-                        'existing_id' => $existingBySimilar->blog_id,
-                    ]);
-                    return $existingBySimilar;
-                }
-            }
+            // 3. Benzer başlık kontrolü KALDIRILDI - Çok agresifti ve yeni blogların oluşmasını engelliyordu
+            // Sadece tam başlık ve slug eşleşmesi yeterli, benzer başlıklar farklı içerik olabilir
 
             return null;
         } catch (\Exception $e) {

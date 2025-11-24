@@ -7,10 +7,11 @@ use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\NotifiesSearchEngines;
 
 class BaseModel extends Model
 {
-    use HasFactory, SoftDeletes, Sluggable, SluggableScopeHelpers;
+    use HasFactory, SoftDeletes, Sluggable, SluggableScopeHelpers, NotifiesSearchEngines;
 
     /**
      * Varsayılan $fillable Alanları

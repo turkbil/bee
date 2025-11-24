@@ -1,9 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="text-gray-500 dark:text-gray-400 text-sm">
-            Hesap Yönetimi
+            <i class="fa-solid fa-gear mr-1"></i> Hesap Yönetimi
         </div>
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
+            <i class="fa-solid fa-key text-yellow-600 dark:text-yellow-400 mr-2"></i>
             Şifre Değiştir
         </h1>
     </x-slot>
@@ -21,10 +22,8 @@
             <!-- Password Update -->
             <div class="profile-card bg-white dark:bg-gray-800 rounded-xl p-6">
                 <div class="flex items-center mb-6">
-                    <div class="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-lg mr-3">
-                        <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
+                    <div class="p-3 bg-yellow-100 dark:bg-yellow-900/50 rounded-xl mr-4">
+                        <i class="fa-solid fa-lock text-2xl text-yellow-600 dark:text-yellow-400"></i>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Şifre Değiştir</h3>

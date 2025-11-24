@@ -147,5 +147,18 @@ Route::middleware(['admin', 'tenant'])
                 })
                     ->middleware('module.permission:muzibu,view')
                     ->name('docs.hls-streaming');
+
+                // Corporate Accounts - Kurumsal Hesaplar
+                Route::prefix('corporate')
+                    ->name('corporate.')
+                    ->group(function () {
+                        Route::get('/', [\Modules\Muzibu\App\Http\Controllers\Admin\CorporateController::class, 'index'])
+                            ->middleware('module.permission:muzibu,view')
+                            ->name('index');
+
+                        Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\CorporateController::class, 'manage'])
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('manage');
+                    });
             });
     });

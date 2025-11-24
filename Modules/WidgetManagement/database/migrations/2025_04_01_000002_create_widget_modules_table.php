@@ -19,6 +19,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('widget_modules')) {
+            return;
+        }
+
         Schema::create('widget_modules', function (Blueprint $table) {
             $table->unsignedBigInteger('widget_id');
             $table->unsignedBigInteger('module_id');

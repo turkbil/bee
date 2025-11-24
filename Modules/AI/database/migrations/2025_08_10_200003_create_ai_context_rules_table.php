@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_context_rules')) {
+            return;
+        }
+
         Schema::create('ai_context_rules', function (Blueprint $table) {
             $table->id();
             $table->string('rule_key', 100)->unique();

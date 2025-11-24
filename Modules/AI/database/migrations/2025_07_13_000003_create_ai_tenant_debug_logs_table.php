@@ -21,6 +21,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_tenant_debug_logs')) {
+            return;
+        }
+
         Schema::create('ai_tenant_debug_logs', function (Blueprint $table) {
             $table->id();
             

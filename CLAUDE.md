@@ -1,5 +1,14 @@
 ## 🔴 EN KRİTİK KURALLAR - MUTLAKA OKU!
 
+> **⚠️ WRITE/EDIT TOOL KULLANDIKTAN SONRA MUTLAKA:**
+> ```bash
+> sudo chown tuufi.com_:psaserv /path/to/file
+> sudo chmod 644 /path/to/file
+> ```
+> **UNUTMA! Her dosya işleminden sonra permission düzelt!**
+
+---
+
 ### 🚨 1. TENANT AWARE SİSTEM
 
 **⚠️⚠️⚠️ BU SİSTEM MULTI-TENANT! HER TENANT FARKLI SEKTÖR! ⚠️⚠️⚠️**

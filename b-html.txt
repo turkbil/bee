@@ -1,1107 +1,142 @@
-<div wire:snapshot="{&quot;data&quot;:{&quot;search&quot;:&quot;&quot;,&quot;perPage&quot;:100,&quot;sortField&quot;:&quot;module_id&quot;,&quot;sortDirection&quot;:&quot;desc&quot;,&quot;typeFilter&quot;:&quot;&quot;,&quot;showDomains&quot;:false,&quot;paginators&quot;:[{&quot;page&quot;:1},{&quot;s&quot;:&quot;arr&quot;}]},&quot;memo&quot;:{&quot;id&quot;:&quot;5VXXpodlQwctCkZhHUuw&quot;,&quot;name&quot;:&quot;module-component&quot;,&quot;path&quot;:&quot;admin\/modulemanagement&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:{&quot;lw-84003935-0&quot;:[&quot;div&quot;,&quot;MA0qlxOywiCTpClLPdm0&quot;]},&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;df577a709e2edce82a004ee1a5b195385f5df40001ceca46a118fc515453fcf2&quot;}" wire:effects="{&quot;url&quot;:{&quot;search&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;perPage&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;sortField&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;sortDirection&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;typeFilter&quot;:{&quot;as&quot;:null,&quot;use&quot;:&quot;replace&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null},&quot;paginators.page&quot;:{&quot;as&quot;:&quot;page&quot;,&quot;use&quot;:&quot;push&quot;,&quot;alwaysShow&quot;:false,&quot;except&quot;:null}},&quot;listeners&quot;:[&quot;moduleDeleted&quot;,&quot;refresh&quot;,&quot;itemDeleted&quot;]}" wire:id="5VXXpodlQwctCkZhHUuw" class="card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-    <div class="card-body" style="border-radius: 0.25rem !important;">
-        <!-- Header Bölümü -->
-        <div class="row mb-3">
-            <!-- Arama Kutusu -->
-            <div class="col">
-                <div class="input-icon">
-                    <span class="input-icon-addon">
-                        <i class="fas fa-search"></i>
-                    </span>
-                    <input type="text" wire:model.live="search" class="form-control" placeholder="Modül ara..." style="border-radius: 0.25rem !important;">
-                </div>
-            </div>
-            <!-- Ortadaki Loading -->
-            <div class="col position-relative">
-                <div wire:loading="" wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, selectedItems, selectAll, bulkDelete, bulkToggleActive, typeFilter, toggleDomains" class="position-absolute top-50 start-50 translate-middle text-center" style="width: 100%; max-width: 250px;">
-                    <div class="small text-muted mb-2">Güncelleniyor...</div>
-                    <div class="progress mb-1" style="border-radius: 0.25rem !important;">
-                        <div class="progress-bar progress-bar-indeterminate" style="border-radius: 0.25rem !important;"></div>
-                    </div>
-                </div>
-            </div>
-            <!-- Sağ Taraf (Switch ve Select) -->
-            <div class="col">
-                <div class="d-flex align-items-center justify-content-end gap-3">
-                    <!-- Tip Filtresi -->
-                    <div style="width: 150px">
-                        <select wire:model.live="typeFilter" class="form-select listing-filter-select" style="border-radius: 0.25rem !important;">
-                            <option value="">Tüm Tipler</option>
-                            <!--[if BLOCK]><![endif]-->                                <option value="content">Content</option>
-                                                            <option value="management">Management</option>
-                                                            <option value="system">System</option>
-                                                            <option value="widget">Widget</option>
-                                                            <option value="ai">Ai</option>
-                            <!--[if ENDBLOCK]><![endif]-->
-                        </select>
-                    </div>
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                    <!-- Sayfa Adeti Seçimi -->
-                    <div style="min-width: 60px">
-                        <select wire:model.live="perPage" class="form-select listing-filter-select" style="border-radius: 0.25rem !important;">
-                            <option value="100">100</option>
-                            <option value="500">500</option>
-                            <option value="1000">1000</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modül Listesi -->
-        <div class="row row-cards">
-            
-            <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
-                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
-                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-file-alt me-2 text-muted"></i>
-                    <h3 class="mb-0 h4">İçerik Modülleri</h3>
-                    <!--[if ENDBLOCK]><![endif]-->
-                    <div class="ms-auto">
-                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
-                            6 Modül Sayısı
-                        </span>
-                    </div>
-                </div>
-            </div>
+# Livewire\Exceptions\PublicPropertyNotFoundException - Internal Server Error
+Unable to set component data. Public property [$billing_type] not found on component: [cart::front.checkout-page]
+
+PHP 8.3.27
+Laravel 12.32.5
+ixtif.com
+
+## Stack Trace
+
+0 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:318
+1 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:300
+2 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:98
+3 - vendor/livewire/livewire/src/LivewireManager.php:102
+4 - vendor/livewire/volt/src/LivewireManager.php:35
+5 - vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:94
+6 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
+7 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
+8 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
+9 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
+10 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+11 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+12 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+13 - app/Http/Middleware/UnderConstructionProtection.php:19
+14 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+15 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+16 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+17 - app/Http/Middleware/RootOnlyDebugbar.php:35
+18 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+19 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
+20 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+21 - app/Http/Middleware/DatabasePoolMiddleware.php:58
+22 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+23 - app/Http/Middleware/SecurityHeaders.php:18
+24 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+25 - app/Http/Middleware/CheckThemeStatus.php:40
+26 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+27 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
+28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+29 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+30 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+31 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+33 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+34 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+35 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+36 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+37 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+38 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+39 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+40 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+42 - app/Http/Middleware/InitializeTenancy.php:97
+43 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+44 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+45 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+46 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+47 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+48 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+49 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+50 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+51 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+52 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+53 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+54 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+55 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:27
+56 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+57 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:47
+58 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+59 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+60 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+61 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+62 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+63 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+64 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+65 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+67 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+68 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+69 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+71 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+72 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+73 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+74 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+75 - public/index.php:17
+
+## Request
+
+POST /livewire/update
+
+## Headers
+
+* **cookie**: _fbp=fb.1.1762734713275.30303022279729562; _ym_uid=1762734713828074405; _ym_d=1762734713; siteTextColor=#ffffff; dark=auto; viewMode=grid; _clck=1gd0f2w%5E2%5Eg1a%5E0%5E2140; _ym_isad=2; last_activity_read=1763988079; _ym_visorc=w; _gcl_au=1.1.93943206.1762734713.2023988039.1764017948.1764018062; _clsk=os7l1s%5E1764021559072%5E46%5E1%5Ey.clarity.ms%2Fcollect; XSRF-TOKEN=eyJpdiI6ImZjR2NJSE5TbEFiWFBneGhxYWgrU3c9PSIsInZhbHVlIjoiRTB3UllyZzNURzZhbFNrRWlTQk1mWWdzazhjL0t5ZzZ4a1dOWERQcXdnTXRydCttekNtR2lZTWlYZ2VNUHBNMjA3S2d0NkZBVFBGZFpnVkpPUE1UY0ptWVUvd09vRzVnZENzWVI1c0JJcFIzOStNQjllNVRuM2djOUEySU1xT2siLCJtYWMiOiI0MzAzOTNkZmUxMjdjNTViZjlmNmE0NDlmM2YwNDRlNzkyYjkzMGQ3NGIyMjRlMzg3M2Q4MWQ2N2E5NWE2Y2EyIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6IjloZkx3RTJweGtDWmNBb3lVRlliMEE9PSIsInZhbHVlIjoiVHZvV0krUHZFSlhqQktQNSsxNndVQmhqMTdpNDBCWmVqaUxyWXkweDRJZEhpdW9wdUZhWi9LNitaQzZ5K0pzRzBSbzR4OFNMZTQ4K2hmT3dPeC9qUGhwNzdLSjlBc0VnVEREOHBzQkVuTGZXKzBlZmpCY2VyVHU2SkZtN3Y3LzYiLCJtYWMiOiI2Yzc4ZDBkMGYzZTdjZGM4ZDY0ZmJjZWRlOTJlNGEwZDEyYmE4NzE4M2M1M2ZlMjgwNjJlM2E3NjVkZjE3MDRhIiwidGFnIjoiIn0%3D
+* **priority**: u=1, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **referer**: https://ixtif.com/cart/checkout
+* **sec-fetch-dest**: empty
+* **sec-fetch-mode**: cors
+* **sec-fetch-site**: same-origin
+* **origin**: https://ixtif.com
+* **accept**: */*
+* **sec-ch-ua-mobile**: ?0
+* **x-livewire**: 
+* **content-type**: application/json
+* **dnt**: 1
+* **sec-ch-ua**: "Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+* **sec-ch-ua-platform**: "macOS"
+* **content-length**: 4529
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 176.40.229.179
+* **host**: ixtif.com
+
+## Route Context
+
+controller: Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate
+route name: livewire.update
+middleware: web
+
+## Route Parameters
+
+No route parameter data available.
+
+## Database Queries
+
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (1.74 ms)
+* mysql - select * from `domains` where `domains`.`tenant_id` = 2 and `domains`.`tenant_id` is not null (0.56 ms)
+* mysql - select * from `sessions` where `id` = 'SrWgi7OUgvjs8jYtWSbiu7YF4U7M9RVXK4hNKuXW' limit 1 (0.49 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.44 ms)
+* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (1.21 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (0.6 ms)
+* tenant - select * from `carts` where `carts`.`cart_id` = 1 limit 1 (11.54 ms)
+* tenant - select * from `cart_items` where `cart_items`.`cart_item_id` in (7, 8) (8 ms)
+* tenant - select * from `users` where `users`.`id` = 1 limit 1 (2.85 ms)
+* tenant - select * from `payment_methods` where `payment_methods`.`payment_method_id` in (1, 3) (0.74 ms)
+
+
+Livewire\Exceptions\PublicPropertyNotFoundException
+Unable to set component data. Public property [$billing_type] not found on component: [cart::front.checkout-page]
 
-            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Muzibu</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]-->                                
-                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/muzibu" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
-                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
-                                </a>
-                                <!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Content
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">E-Ticaret</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]-->                                
-                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/shop" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
-                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
-                                </a>
-                                <!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Content
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Blog</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]-->                                
-                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/blog" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
-                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
-                                </a>
-                                <!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Content
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Portfolyo</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]-->                                
-                                <!--[if BLOCK]><![endif]-->                                <a href="https://ixtif.com/admin/settingmanagement/values/10" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
-                                    <i class="fas fa-cog me-2" style="width: 14px;"></i>Ayarlar
-                                </a>
-                                <!--[if ENDBLOCK]><![endif]-->
-                                <!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]-->                                
-                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/portfolio" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
-                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
-                                </a>
-                                <!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Content
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Sayfalar</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]-->                                
-                                <!--[if BLOCK]><![endif]-->                                <a href="https://ixtif.com/admin/settingmanagement/values/9" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
-                                    <i class="fas fa-cog me-2" style="width: 14px;"></i>Ayarlar
-                                </a>
-                                <!--[if ENDBLOCK]><![endif]-->
-                                <!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]-->                                
-                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/page" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
-                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
-                                </a>
-                                <!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Content
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Duyurular</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]-->                                
-                                <a href="https://ixtif.com/admin/modulemanagement/slug-manage/announcement" class="dropdown-item" style="border-radius: 0.25rem !important;" data-loading-attached="true">
-                                    <i class="fas fa-link me-2" style="width: 14px;"></i>URL Ayarları
-                                </a>
-                                <!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Content
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--[if ENDBLOCK]><![endif]-->
-            <!--[if ENDBLOCK]><![endif]-->
-                        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
-                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
-                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-stars me-2 text-muted"></i>
-                    <h3 class="mb-0 h4">Yapay Zeka Modülleri</h3>
-                    <!--[if ENDBLOCK]><![endif]-->
-                    <div class="ms-auto">
-                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
-                            1 Modül Sayısı
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Yapay Zeka</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Ai
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--[if ENDBLOCK]><![endif]-->
-            <!--[if ENDBLOCK]><![endif]-->
-                        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
-                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
-                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-puzzle-piece me-2 text-muted"></i>
-                    <h3 class="mb-0 h4">Bileşen Modülleri</h3>
-                    <!--[if ENDBLOCK]><![endif]-->
-                    <div class="ms-auto">
-                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
-                            1 Modül Sayısı
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Bileşenler</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Widget
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--[if ENDBLOCK]><![endif]-->
-            <!--[if ENDBLOCK]><![endif]-->
-                        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
-                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
-                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-cogs me-2 text-muted"></i>
-                    <h3 class="mb-0 h4">Yönetim Modülleri</h3>
-                    <!--[if ENDBLOCK]><![endif]-->
-                    <div class="ms-auto">
-                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
-                            10 Modül Sayısı
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Kupon Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Abonelik Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Alışveriş Sepeti</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Yorum ve Puan</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Favoriler</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Ödeme Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Arama Sistemi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Medya Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Menü Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Kullanıcılar</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    Management
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--[if ENDBLOCK]><![endif]-->
-            <!--[if ENDBLOCK]><![endif]-->
-                        <!--[if BLOCK]><![endif]-->            <div class="col-12 mb-2">
-                <div class="d-flex align-items-center p-2 bg-muted-lt rounded" style="border-radius: 0.25rem !important;">
-                    <!--[if BLOCK]><![endif]-->                    <i class="fas fa-shield-alt me-2 text-muted"></i>
-                    <h3 class="mb-0 h4">Sistem Modülleri</h3>
-                    <!--[if ENDBLOCK]><![endif]-->
-                    <div class="ms-auto">
-                        <span class="badge bg-primary" style="--tblr-primary: #066fd1 !important; --tblr-primary-rgb: 6, 111, 209 !important; border-radius: 0.25rem !important;">
-                            7 Modül Sayısı
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <!--[if BLOCK]><![endif]-->            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">SEO Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    System
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Dil Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    System
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Studio Editör</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    System
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Tema Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    System
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Ayarlar Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    System
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Alan Adı Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    System
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                <div class="card module-card" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
-                    <!-- Kart Header -->
-                    <div class="card-header d-flex align-items-center" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
-                        <div class="me-auto">
-                            <h3 class="card-title mb-0">Modüller Yönetimi</h3>
-                        </div>
-                        <div class="dropdown">
-                            <a href="#" class="btn-action" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            
-                            <div class="dropdown-menu dropdown-menu-end" style="border-radius: 0.25rem !important;">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    <!-- Kart Footer -->
-                    <div class="card-footer" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div class="d-flex gap-2">
-                                <span class="text-muted small">
-                                    System
-                                </span>
-                            </div>
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--[if ENDBLOCK]><![endif]-->
-            <!--[if ENDBLOCK]><![endif]-->
-            <!--[if ENDBLOCK]><![endif]-->
-        </div>
-    </div>
-
-    <!-- Pagination -->
-    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-    <div wire:snapshot="{&quot;data&quot;:{&quot;showModal&quot;:false,&quot;module&quot;:null,&quot;itemId&quot;:null,&quot;title&quot;:null},&quot;memo&quot;:{&quot;id&quot;:&quot;MA0qlxOywiCTpClLPdm0&quot;,&quot;name&quot;:&quot;modals.delete-modal&quot;,&quot;path&quot;:&quot;admin\/modulemanagement&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;children&quot;:[],&quot;scripts&quot;:[],&quot;assets&quot;:[],&quot;errors&quot;:[],&quot;locale&quot;:&quot;tr&quot;},&quot;checksum&quot;:&quot;032a52167dc652250806ee09cd591bcf512836a9ad3c9dc5ec3df5a7e205e18a&quot;}" wire:effects="{&quot;listeners&quot;:[&quot;showDeleteModal&quot;]}" wire:id="MA0qlxOywiCTpClLPdm0">
-    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-    <script>
-        document.addEventListener('livewire:initialized', () => {
-            $(document).on('keydown', function(e) {
-                if (e.keyCode === 32 && $('#delete-modal').is(':visible')) {
-                    e.preventDefault();
-                    $('#delete-modal .btn-danger').click();
-                }
-            });
-        });
-    </script>
-</div></div>

@@ -14,6 +14,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('payments')) {
+            return;
+        }
+
         Schema::create('payments', function (Blueprint $table) {
             $table->id('payment_id');
 
@@ -89,7 +93,7 @@ return new class extends Migration
             $table->softDeletes();
 
             // Indexes
-            $table->index(['payable_type', 'payable_id']); // ⭐ Polymorphic index
+            // NOT: morphs() zaten payable_type + payable_id için index oluşturur // ⭐ Polymorphic index
             $table->index('payment_number');
             $table->index('status');
             $table->index('gateway');

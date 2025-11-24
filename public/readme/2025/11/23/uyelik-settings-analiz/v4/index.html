@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üyelik Sistemi - Kararlar & Final Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        header { margin-bottom: 40px; padding-bottom: 30px; border-bottom: 2px solid #334155; }
+        h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 15px; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        h2 { font-size: 1.5rem; margin: 40px 0 20px; color: #60a5fa; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+
+        /* Decision Card */
+        .decision-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .decision-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fcd34d;
+            margin-bottom: 15px;
+        }
+
+        .decision-answer {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .decision-answer h4 {
+            color: #6ee7b7;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .decision-reason {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            padding-left: 15px;
+            border-left: 2px solid #334155;
+        }
+
+        /* Final Settings Table */
+        .settings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .settings-table th {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #93c5fd;
+        }
+
+        .settings-table td {
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .settings-table tr:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-keep { background: #10b981; color: white; }
+        .badge-new { background: #f59e0b; color: white; }
+        .badge-remove { background: #dc2626; color: white; }
+        .badge-change { background: #8b5cf6; color: white; }
+
+        /* Group Header */
+        .group-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.1));
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 30px 0 20px;
+        }
+
+        .group-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+            border: 2px solid #10b981;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .summary-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .removed {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✅ Üyelik Sistemi - Kararlar</h1>
+            <div class="meta">
+                Sorularına cevaplar ve final ayar listesi
+            </div>
+        </header>
+
+        <!-- Özet -->
+        <div class="summary-box">
+            <h3 style="color: #6ee7b7; margin-bottom: 10px;">📊 Final Özet</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-number" style="color: #10b981;">15</div>
+                    <div class="summary-label">Kalacak</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number" style="color: #f59e0b;">10</div>
+                    <div class="summary-label">Yeni</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number" style="color: #dc2626;">2</div>
+                    <div class="summary-label">Kaldırılacak</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number" style="color: #8b5cf6;">1</div>
+                    <div class="summary-label">Değişecek</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>❓ Kararlar</h2>
+
+        <!-- Karar 1: Deneme Süresi -->
+        <div class="decision-card">
+            <div class="decision-question">1. Deneme Süresi - Otomatik mi Manuel mi?</div>
+            <div class="decision-answer">
+                <h4>✅ Karar: İkisi de (Hybrid)</h4>
+                <ul style="padding-left: 20px; color: #cbd5e1;">
+                    <li><strong>Settings'ten:</strong> Varsayılan süre belirlenir (örn: 7 gün)</li>
+                    <li><strong>Admin panelden:</strong> İsterse bir kullanıcıya özel süre verebilir</li>
+                </ul>
+            </div>
+            <div class="decision-reason">
+                <strong>Neden?</strong> Çoğu kullanıcı otomatik alsın, ama VIP müşteriye 30 gün vermek istersen admin yapabilsin.
+            </div>
+        </div>
+
+        <!-- Karar 2: Tema Fallback -->
+        <div class="decision-card">
+            <div class="decision-question">2. Giriş/Kayıt Teması - Fallback olmalı mı?</div>
+            <div class="decision-answer">
+                <h4>✅ Karar: Evet, varsayılan tema 'minimal'</h4>
+                <p style="color: #cbd5e1;">Tenant tema seçmediyse otomatik olarak minimal tema kullanılır.</p>
+            </div>
+            <div class="decision-reason">
+                <strong>Kod:</strong> setting('auth_theme') ?? 'minimal'
+            </div>
+        </div>
+
+        <!-- Karar 3: Telefon -->
+        <div class="decision-card">
+            <div class="decision-question">3. Telefon numarası nerede tutulacak?</div>
+            <div class="decision-answer">
+                <h4>✅ Karar: Ayrı kolon (users.phone)</h4>
+                <p style="color: #cbd5e1;">JSON'da değil, veritabanında ayrı sütun olarak.</p>
+            </div>
+            <div class="decision-reason">
+                <strong>Neden?</strong>
+                <ul style="padding-left: 20px; margin-top: 5px;">
+                    <li>Sorgu yapmak kolay</li>
+                    <li>SMS servisi direkt erişebilir</li>
+                    <li>Validasyon basit</li>
+                </ul>
+                <strong>Not:</strong> users tablosunda zaten phone kolonu var, onu kullanacağız.
+            </div>
+        </div>
+
+        <!-- Karar 4: Kullanım Şartları -->
+        <div class="decision-card">
+            <div class="decision-question">4. Kullanım Şartları - Her site farklı yazı isterse?</div>
+            <div class="decision-answer">
+                <h4>✅ Karar: 2 yeni ayar eklenecek</h4>
+                <ul style="padding-left: 20px; color: #cbd5e1;">
+                    <li><strong>auth_terms_text:</strong> Checkbox yanındaki yazı</li>
+                    <li><strong>auth_terms_url:</strong> Tıklanınca açılacak sayfa linki</li>
+                </ul>
+            </div>
+            <div class="decision-reason">
+                <strong>Örnek:</strong><br>
+                • <strong>Muzibu:</strong> "Kullanım Şartlarını kabul ediyorum" → /kullanim-sartlari<br>
+                • <strong>İxtif:</strong> "KVKK Aydınlatma Metnini okudum" → /kvkk
+            </div>
+        </div>
+
+        <!-- Karar 5: Cihaz Hatırlama -->
+        <div class="decision-card">
+            <div class="decision-question">5. Cihaz hatırlama süresi ne kadar olsun?</div>
+            <div class="decision-answer">
+                <h4>✅ Karar: Varsayılan 90 gün</h4>
+                <p style="color: #cbd5e1;">30 gün çok kısa, kullanıcıları yormamak lazım.</p>
+            </div>
+            <div class="decision-reason">
+                <strong>Not:</strong> Banka uygulamaları bile 90 gün veriyor. İsteyen tenant 180 güne çıkarabilir.
+            </div>
+        </div>
+
+        <!-- Karar 6: Otomatik Yenileme -->
+        <div class="decision-card">
+            <div class="decision-question">6. Otomatik yenileme - PayTR'de kart saklama var mı?</div>
+            <div class="decision-answer">
+                <h4>✅ Karar: Hatırlatma + Manuel ödeme</h4>
+                <p style="color: #cbd5e1;">Kart saklamayacağız, kullanıcı kendisi ödeme yapacak.</p>
+            </div>
+            <div class="decision-reason">
+                <strong>Nasıl çalışacak:</strong>
+                <ol style="padding-left: 20px; margin-top: 5px;">
+                    <li>Abonelik bitmeden 7 gün önce email gönder</li>
+                    <li>Kullanıcı siteye girip ödeme yapar</li>
+                    <li>Abonelik uzar</li>
+                </ol>
+                <strong>Neden?</strong> Kart saklama = PCI-DSS uyumluluk = büyük sorumluluk. Şimdilik basit tutalım.
+            </div>
+        </div>
+
+        <!-- Karar 7: Kurumsal Ayarlar -->
+        <div class="decision-card">
+            <div class="decision-question">7. Kurumsal ayarlar gerekli mi?</div>
+            <div class="decision-answer">
+                <h4>✅ Karar: Kaldırılacak</h4>
+                <p style="color: #cbd5e1;">Bu ayarlar sadece Muzibu'ya özel, genel settings'te olması kafa karıştırır.</p>
+            </div>
+            <div class="decision-reason">
+                <strong>Kaldırılacak ayarlar:</strong>
+                <ul style="padding-left: 20px; margin-top: 5px;">
+                    <li><span class="removed">corporate_enabled</span></li>
+                    <li><span class="removed">corporate_max_users</span></li>
+                </ul>
+                <strong>Not:</strong> Muzibu'ya ihtiyaç olursa özel modül olarak ekleriz.
+            </div>
+        </div>
+
+        <h2>📋 Final Ayar Listesi</h2>
+
+        <!-- Kayıt Ayarları -->
+        <div class="group-header">
+            <span class="group-title">📝 Kayıt Ayarları</span>
+        </div>
+
+        <table class="settings-table">
+            <tr>
+                <th>Ayar</th>
+                <th>Açıklama</th>
+                <th>Varsayılan</th>
+                <th>Durum</th>
+            </tr>
+            <tr>
+                <td>auth_registration_enabled</td>
+                <td>Siteye kayıt açık mı?</td>
+                <td>Evet</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_registration_email_verify</td>
+                <td>Email doğrulama gerekli mi?</td>
+                <td>Evet</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_registration_approval</td>
+                <td>Admin onayı gerekli mi?</td>
+                <td>Hayır</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_registration_trial_days</td>
+                <td>Deneme süresi (gün)</td>
+                <td>7</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_theme</td>
+                <td>Login/Kayıt teması</td>
+                <td>minimal</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_registration_phone_required</td>
+                <td>Telefon zorunlu mu?</td>
+                <td>Hayır</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+            <tr>
+                <td>auth_terms_required</td>
+                <td>Şartlar onayı zorunlu mu?</td>
+                <td>Evet</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+            <tr>
+                <td>auth_terms_text</td>
+                <td>Şartlar checkbox yazısı</td>
+                <td>"Kullanım şartlarını kabul ediyorum"</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+            <tr>
+                <td>auth_terms_url</td>
+                <td>Şartlar sayfası linki</td>
+                <td>/kullanim-sartlari</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+        </table>
+
+        <!-- Oturum Ayarları -->
+        <div class="group-header">
+            <span class="group-title">🔄 Oturum Ayarları</span>
+        </div>
+
+        <table class="settings-table">
+            <tr>
+                <th>Ayar</th>
+                <th>Açıklama</th>
+                <th>Varsayılan</th>
+                <th>Durum</th>
+            </tr>
+            <tr>
+                <td>auth_session_lifetime</td>
+                <td>Oturum süresi (dakika)</td>
+                <td>525600 (1 yıl)</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_session_device_limit</td>
+                <td>Aynı anda kaç cihaz?</td>
+                <td>1</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+        </table>
+
+        <!-- Güvenlik Ayarları -->
+        <div class="group-header">
+            <span class="group-title">🔒 Güvenlik Ayarları</span>
+        </div>
+
+        <table class="settings-table">
+            <tr>
+                <th>Ayar</th>
+                <th>Açıklama</th>
+                <th>Varsayılan</th>
+                <th>Durum</th>
+            </tr>
+            <tr>
+                <td>auth_security_max_attempts</td>
+                <td>Max yanlış şifre denemesi</td>
+                <td>5</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_security_lockout</td>
+                <td>Kilitleme süresi (dakika)</td>
+                <td>30</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_security_2fa_expiry</td>
+                <td>SMS kod süresi (dakika)</td>
+                <td>5</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_security_2fa_mode</td>
+                <td>2FA modu (zorunlu/opsiyonel/kapalı)</td>
+                <td>optional</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+            <tr>
+                <td>auth_security_2fa_method</td>
+                <td>2FA yöntemi (SMS/Email)</td>
+                <td>sms</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+            <tr>
+                <td>auth_security_remember_device</td>
+                <td>"Bu cihazı hatırla" gösterilsin mi?</td>
+                <td>Evet</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+            <tr>
+                <td>auth_security_remember_days</td>
+                <td>Cihaz hatırlama süresi (gün)</td>
+                <td>90</td>
+                <td><span class="badge badge-change">DEĞİŞTİ</span></td>
+            </tr>
+        </table>
+
+        <!-- Abonelik Ayarları -->
+        <div class="group-header">
+            <span class="group-title">💳 Abonelik Ayarları</span>
+        </div>
+
+        <table class="settings-table">
+            <tr>
+                <th>Ayar</th>
+                <th>Açıklama</th>
+                <th>Varsayılan</th>
+                <th>Durum</th>
+            </tr>
+            <tr>
+                <td>auth_subscription_paid_enabled</td>
+                <td>Ücretli üyelik aktif mi?</td>
+                <td>Hayır</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_subscription_auto_renewal</td>
+                <td>Yenileme hatırlatması gönder</td>
+                <td>Evet</td>
+                <td><span class="badge badge-change">DEĞİŞTİ</span></td>
+            </tr>
+            <tr>
+                <td>auth_subscription_reminder_days</td>
+                <td>Kaç gün önce hatırlat?</td>
+                <td>7</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+            <tr>
+                <td>auth_subscription_grace_days</td>
+                <td>Tolerans süresi (gün)</td>
+                <td>3</td>
+                <td><span class="badge badge-keep">KALACAK</span></td>
+            </tr>
+        </table>
+
+        <!-- SMS Ayarları -->
+        <div class="group-header">
+            <span class="group-title">📱 SMS Ayarları (Yeni Grup)</span>
+        </div>
+
+        <table class="settings-table">
+            <tr>
+                <th>Ayar</th>
+                <th>Açıklama</th>
+                <th>Varsayılan</th>
+                <th>Durum</th>
+            </tr>
+            <tr>
+                <td>sms_provider</td>
+                <td>SMS firması</td>
+                <td>netgsm</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+            <tr>
+                <td>sms_api_key</td>
+                <td>API anahtarı</td>
+                <td>-</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+            <tr>
+                <td>sms_api_secret</td>
+                <td>API şifresi</td>
+                <td>-</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+            <tr>
+                <td>sms_sender_id</td>
+                <td>Gönderici adı</td>
+                <td>-</td>
+                <td><span class="badge badge-new">YENİ</span></td>
+            </tr>
+        </table>
+
+        <!-- Kaldırılanlar -->
+        <div class="group-header" style="background: rgba(220, 38, 38, 0.2);">
+            <span class="group-title">🗑️ Kaldırılacak Ayarlar</span>
+        </div>
+
+        <table class="settings-table">
+            <tr>
+                <th>Ayar</th>
+                <th>Neden?</th>
+                <th>Durum</th>
+            </tr>
+            <tr>
+                <td class="removed">corporate_enabled</td>
+                <td>Sadece Muzibu'ya özel, genel ayarlarda olmamalı</td>
+                <td><span class="badge badge-remove">KALDIRILACAK</span></td>
+            </tr>
+            <tr>
+                <td class="removed">corporate_max_users</td>
+                <td>Sadece Muzibu'ya özel, genel ayarlarda olmamalı</td>
+                <td><span class="badge badge-remove">KALDIRILACAK</span></td>
+            </tr>
+            <tr>
+                <td class="removed">auth_security_2fa_enabled</td>
+                <td>auth_security_2fa_mode ile değiştirildi</td>
+                <td><span class="badge badge-remove">KALDIRILACAK</span></td>
+            </tr>
+        </table>
+
+        <footer>
+            🤖 Claude AI | Üyelik Sistemi Kararlar v4<br>
+            📅 2025-11-23 | Onay bekliyor
+        </footer>
+    </div>
+</body>
+</html>

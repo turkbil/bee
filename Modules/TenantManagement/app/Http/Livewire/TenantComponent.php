@@ -33,6 +33,16 @@ class TenantComponent extends Component
     public $availableAiProviders = [];
     public $availableProviderModels = [];
 
+    // Theme Settings
+    public $subheader_style = 'glass';
+    public $availableSubheaderStyles = [
+        'glass' => 'Glass (Şeffaf)',
+        'minimal' => 'Minimal (Sade)',
+        'hero' => 'Hero (Büyük)',
+        'colored' => 'Colored (Renkli)'
+    ];
+    public $hasCustomSubheader = false;
+
     protected $listeners = ['modulesSaved' => '$refresh', 'itemDeleted' => '$refresh'];
 
     protected $rules = [
@@ -195,6 +205,14 @@ class TenantComponent extends Component
             // Tema listesi ve mevcut tenant teması
             $this->themes = Theme::where('is_active', true)->pluck('title','theme_id')->toArray();
             $this->theme_id = $tenantData->theme_id ?? (array_key_first($this->themes) ?? 1);
+
+            // Theme Settings (subheader_style vb.)
+            $themeSettings = $tenantData->theme_settings ? json_decode($tenantData->theme_settings, true) : [];
+            $this->subheader_style = $themeSettings['subheader_style'] ?? 'glass';
+
+            // Seçilen temanın custom subheader'ı var mı kontrol et
+            $this->checkCustomSubheader();
+
             // AI Provider listesi ve mevcut tenant AI provider'ı (YENİ SİSTEM)
             $this->loadAiProviders();
             $this->tenant_ai_provider_id = $tenantData->tenant_ai_provider_id;
@@ -243,6 +261,11 @@ class TenantComponent extends Component
                 $tenant = Tenant::find($this->tenantId);
                 
                 if ($tenant) {
+                    // Theme settings JSON oluştur
+                    $themeSettings = [
+                        'subheader_style' => $this->subheader_style,
+                    ];
+
                     // Direkt kolonlara kaydet (YENİ SİSTEM)
                     DB::table('tenants')
                         ->where('id', $tenant->id)
@@ -253,6 +276,7 @@ class TenantComponent extends Component
                             'phone'      => $this->phone,
                             'is_active'  => $this->is_active ? 1 : 0,
                             'theme_id'     => $this->theme_id,
+                            'theme_settings' => json_encode($themeSettings),
                             'tenant_ai_provider_id' => $this->tenant_ai_provider_id,
                             'tenant_ai_provider_model_id' => $this->tenant_ai_provider_model_id,
                             'updated_at' => now()
@@ -275,6 +299,11 @@ class TenantComponent extends Component
                 $randomSuffix = '_' . substr(md5(mt_rand()), 0, 6);
                 $dbName = $baseDbName . $randomSuffix;
                 
+                // Theme settings JSON oluştur
+                $themeSettings = [
+                    'subheader_style' => $this->subheader_style,
+                ];
+
                 // Tenant oluştur (YENİ SİSTEM - Direkt kolonlar)
                 $tenant = Tenant::create([
                     'title'           => $this->name,
@@ -284,6 +313,7 @@ class TenantComponent extends Component
                     'tenancy_db_name' => $dbName,
                     'is_active'       => $this->is_active ? 1 : 0,
                     'theme_id'        => $this->theme_id,
+                    'theme_settings'  => $themeSettings,
                     'tenant_ai_provider_id' => $this->tenant_ai_provider_id,
                     'tenant_ai_provider_model_id' => $this->tenant_ai_provider_model_id,
                 ]);
@@ -565,9 +595,30 @@ class TenantComponent extends Component
         $this->tenant_ai_provider_id = null;
         $this->tenant_ai_provider_model_id = null;
         $this->availableProviderModels = [];
-        
+        $this->subheader_style = 'glass';
+        $this->hasCustomSubheader = false;
+
         // AI Provider listesi yeniden yükle ve varsayılanı ayarla
         $this->loadAiProviders();
+    }
+
+    /**
+     * Tema değiştiğinde custom subheader kontrolü
+     */
+    public function updatedThemeId($themeId)
+    {
+        $this->checkCustomSubheader();
+    }
+
+    /**
+     * Seçilen temanın custom subheader'ı var mı kontrol et
+     */
+    protected function checkCustomSubheader()
+    {
+        $theme = Theme::find($this->theme_id);
+        $themeName = $theme ? $theme->name : 'simple';
+
+        $this->hasCustomSubheader = view()->exists("themes.{$themeName}.layouts.partials.subheader");
     }
 
     /**

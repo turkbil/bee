@@ -1,658 +1,1002 @@
-<div class="min-h-screen py-8">
-    <div class="container mx-auto px-4">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Sipariş Tamamla</h1>
+<div class="min-h-screen py-6 bg-gray-50 dark:bg-gray-900" x-data="{
+    // Form Data
+    contactFirstName: '{{ $contact_first_name }}',
+    contactLastName: '{{ $contact_last_name }}',
+    contactEmail: '{{ $contact_email }}',
+    contactPhone: '{{ $contact_phone }}',
 
-        {{-- Boş sepet kontrolü - JavaScript localStorage yüklendikten sonra --}}
+    // Fatura Profili
+    billingProfileId: {{ $billing_profile_id ?? 'null' }},
+    showNewBillingProfile: false,
+    newBillingProfileType: 'individual',
+
+    // Adres
+    shippingAddressId: {{ $shipping_address_id ?? 'null' }},
+    billingAddressId: {{ $billing_address_id ?? 'null' }},
+    billingSameAsShipping: {{ $billing_same_as_shipping ? 'true' : 'false' }},
+
+    // UI State
+    showShippingForm: false,
+    showNewShippingForm: false,
+    showNewBillingForm: false,
+    paymentMethod: 'card',
+    agreeAll: {{ $agree_all ? 'true' : 'false' }},
+
+    // Yeni Adres Form
+    newAddressTitle: '',
+    newAddressPhone: '',
+    newAddressLine: '',
+    newAddressCity: '',
+    newAddressDistrict: '',
+    newAddressPostal: '',
+
+    // Methods
+    selectBillingProfile(profileId) {
+        this.billingProfileId = profileId;
+        $wire.selectBillingProfile(profileId);
+    },
+
+    syncToLivewire() {
+        // Submit öncesi Livewire'a sync
+        $wire.set('contact_first_name', this.contactFirstName);
+        $wire.set('contact_last_name', this.contactLastName);
+        $wire.set('contact_phone', this.contactPhone);
+        $wire.set('billing_profile_id', this.billingProfileId);
+        $wire.set('shipping_address_id', this.shippingAddressId);
+        $wire.set('billing_address_id', this.billingSameAsShipping ? this.shippingAddressId : this.billingAddressId);
+        $wire.set('billing_same_as_shipping', this.billingSameAsShipping);
+        $wire.set('agree_all', this.agreeAll);
+    },
+
+    async submitOrder() {
+        this.syncToLivewire();
+        await $wire.proceedToPayment();
+    }
+}"
+@address-saved.window="
+    if ($event.detail.type === 'shipping') {
+        showNewShippingForm = false;
+        showShippingForm = false;
+        shippingAddressId = $event.detail.addressId;
+    } else {
+        showNewBillingForm = false;
+        billingAddressId = $event.detail.addressId;
+    }
+"
+@billing-profile-saved.window="showNewBillingProfile = false; billingProfileId = $event.detail.profileId"
+>
+    {{-- Glassmorphism Styles --}}
+    <style>
+        .checkout-card {
+            background: rgba(255, 255, 255, 0.7) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .checkout-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        .dark .checkout-card {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .dark .checkout-card:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        .checkout-card input,
+        .checkout-card select,
+        .checkout-card textarea {
+            background: rgba(255, 255, 255, 0.5) !important;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            transition: all 0.3s ease;
+        }
+        .checkout-card input:focus,
+        .checkout-card select:focus,
+        .checkout-card textarea:focus {
+            background: rgba(255, 255, 255, 0.8) !important;
+            border-color: rgba(75, 85, 99, 0.5) !important;
+            box-shadow: 0 0 0 3px rgba(75, 85, 99, 0.1);
+        }
+        .dark .checkout-card input,
+        .dark .checkout-card select,
+        .dark .checkout-card textarea {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        .dark .checkout-card input:focus,
+        .dark .checkout-card select:focus,
+        .dark .checkout-card textarea:focus {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(156, 163, 175, 0.5) !important;
+        }
+        .checkout-sidebar {
+            background: rgba(255, 255, 255, 0.7) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .dark .checkout-sidebar {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+
+    <div class="container mx-auto px-4 sm:px-4 md:px-2">
+
+        {{-- Header --}}
+        <div class="text-center mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Sipariş Tamamla</h1>
+        </div>
+
+        {{-- Boş sepet kontrolü --}}
         @if(!$items || $items->count() === 0)
             <div class="max-w-md mx-auto text-center py-16" id="empty-cart-message">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-200 dark:border-gray-700">
+                <div class="checkout-card bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-200 dark:border-gray-700">
                     <i class="fa-solid fa-shopping-cart text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Sepetiniz Boş</h2>
                     <p class="text-gray-600 dark:text-gray-400 mb-6">Checkout yapabilmek için sepetinize ürün eklemelisiniz.</p>
-                    <a href="/cart" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                    <a href="/cart" class="inline-flex items-center px-6 py-3 bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium rounded-lg transition-colors">
                         <i class="fa-solid fa-shopping-cart mr-2"></i>
                         Sepete Git
                     </a>
                 </div>
             </div>
         @else
-        {{-- 2 KOLONLU LAYOUT: SOL=Form, SAĞ=Fiyat Özeti --}}
-        <div class="grid lg:grid-cols-3 gap-6">
 
-            {{-- SOL TARAF: FORM BİLGİLERİ (2/3 Genişlik) --}}
-            <div class="lg:col-span-2 space-y-4">
+        {{-- Main Grid: Sol Form + Sağ Özet --}}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-                {{-- 1. İletişim Bilgileri (Her Zaman Açık) --}}
-                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                        <i class="fa-solid fa-user mr-2 text-blue-500 dark:text-blue-400"></i>
-                        İletişim Bilgileri
-                    </h2>
+            {{-- ========================================== --}}
+            {{-- SOL TARAF: TÜM BİLGİLER (8/12) --}}
+            {{-- ========================================== --}}
+            <div class="lg:col-span-8 space-y-4">
 
-                    <div class="space-y-4">
-                        {{-- Satır 1: Ad, Soyad --}}
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                    Ad <span class="text-red-500 dark:text-red-400">*</span>
-                                </label>
-                                <input type="text" wire:model="contact_first_name"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all">
-                                @error('contact_first_name') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div>
-                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                    Soyad <span class="text-red-500 dark:text-red-400">*</span>
-                                </label>
-                                <input type="text" wire:model="contact_last_name"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all">
-                                @error('contact_last_name') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-
-                        {{-- Satır 2: E-posta, Telefon --}}
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                    E-posta <span class="text-red-500 dark:text-red-400">*</span>
-                                </label>
-                                @auth
-                                    {{-- Üyeler için readonly --}}
-                                    <input type="email" wire:model="contact_email" readonly
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white cursor-not-allowed">
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                        <i class="fa-solid fa-info-circle mr-1"></i>
-                                        Hesabınıza kayıtlı e-posta adresi
-                                    </p>
-                                @else
-                                    {{-- Misafirler için editable --}}
-                                    <input type="email" wire:model="contact_email"
-                                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all"
-                                        placeholder="ornek@email.com">
-                                @endauth
-                                @error('contact_email') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div>
-                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                    Telefon <span class="text-red-500 dark:text-red-400">*</span>
-                                </label>
-                                <input type="tel" wire:model="contact_phone"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all"
-                                    placeholder="05XX XXX XX XX">
-                                @error('contact_phone') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- 2. Teslimat Adresi (ÖNCE GELMELI) --}}
-                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fa-solid fa-truck mr-2 text-blue-500 dark:text-blue-400"></i>
-                            Teslimat Adresi
-                        </h2>
-                        <button wire:click="openShippingModal"
-                            class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
-                            <i class="fa-solid fa-edit mr-1"></i> Düzenle
+                {{-- 1. İLETİŞİM BİLGİLERİ (Minimal) --}}
+                <div x-data="{ contactFormOpen: !(contactFirstName && contactLastName && contactEmail && contactPhone) }">
+                    {{-- Özet Görünüm (4 alan doluysa) --}}
+                    <div x-show="!contactFormOpen && contactFirstName && contactLastName && contactEmail && contactPhone" x-cloak
+                         class="flex items-center justify-between py-3 px-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <span class="text-gray-900 dark:text-white font-medium" x-text="contactFirstName + ' ' + contactLastName"></span>
+                            <span class="mx-2 text-gray-400">•</span>
+                            <span x-text="contactEmail"></span>
+                            <span class="mx-2 text-gray-400">•</span>
+                            <span x-text="contactPhone"></span>
+                        </p>
+                        <button type="button" @click="contactFormOpen = true" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1">
+                            <i class="fa-solid fa-pen text-xs"></i>
                         </button>
                     </div>
 
-                    {{-- Özet Gösterimi --}}
-                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                        @php
-                            $shippingAddr = $shipping_address_id ? \Modules\Shop\App\Models\ShopCustomerAddress::find($shipping_address_id) : null;
-                        @endphp
-
-                        @if($shippingAddr)
-                            <p class="font-medium text-gray-900 dark:text-white mb-1">
-                                <i class="fa-solid fa-map-marker-alt text-xs mr-2 text-red-500 dark:text-red-400"></i>
-                                {{ $shippingAddr->title ?? 'Teslimat Adresi' }}
-                            </p>
-                            <p class="text-xs ml-5">
-                                {{ $shippingAddr->address_line_1 }}@if($shippingAddr->address_line_2), {{ $shippingAddr->address_line_2 }}@endif
-                            </p>
-                            <p class="text-xs ml-5">{{ $shippingAddr->district }} / {{ $shippingAddr->city }} {{ $shippingAddr->postal_code }}</p>
-                            @if($shippingAddr->phone)
-                                <p class="text-xs ml-5 mt-1">
-                                    <i class="fa-solid fa-phone text-xs mr-1"></i> {{ $shippingAddr->phone }}
-                                </p>
-                            @endif
-                        @else
-                            <p class="text-xs text-orange-600 dark:text-orange-400">
-                                <i class="fa-solid fa-exclamation-triangle mr-1"></i>
-                                Teslimat adresi seçilmedi
-                            </p>
-                        @endif
-                    </div>
-
-                    {{-- Offcanvas: Teslimat Adresi (Slide-over) --}}
-                    @if($showShippingModal ?? false)
-                        <div class="fixed inset-0 z-[999999] overflow-hidden" @keydown.escape.window="$wire.closeShippingModal()">
-                            {{-- Backdrop (Non-clickable) --}}
-                            <div class="fixed inset-0 bg-black/60"></div>
-
-                            {{-- Offcanvas Panel --}}
-                            <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
-                                <div class="w-screen max-w-2xl">
-                                    <div class="flex h-full flex-col bg-white dark:bg-gray-800 shadow-2xl">
-                                        {{-- Header --}}
-                                        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
-                                                <i class="fa-solid fa-truck mr-2 text-blue-600 dark:text-blue-400"></i>
-                                                Teslimat Adresi
-                                            </h3>
-                                            <button wire:click="closeShippingModal"
-                                                    class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
-                                                <i class="fa-solid fa-times text-xl"></i>
-                                            </button>
-                                        </div>
-
-                                        {{-- Content --}}
-                                        <div class="flex-1 overflow-y-auto px-6 py-4">
-                                            <livewire:shop::front.address-manager
-                                                :customerId="$customerId"
-                                                addressType="shipping"
-                                                :selectedAddressId="$shipping_address_id"
-                                                :key="'shipping-'.$customerId" />
-                                        </div>
-
-                                        {{-- Footer --}}
-                                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                                            <button wire:click="closeShippingModal"
-                                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg">
-                                                <i class="fa-solid fa-check mr-2"></i>Kaydet
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                    {{-- Form (eksik alan varsa veya düzenleme modunda) --}}
+                    <div x-show="contactFormOpen || !contactFirstName || !contactLastName || !contactEmail || !contactPhone" x-cloak
+                         class="checkout-card bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">İletişim Bilgileri</span>
+                            <button x-show="contactFirstName && contactLastName && contactEmail && contactPhone"
+                                    type="button" @click="contactFormOpen = false"
+                                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Ad <span class="text-red-500">*</span></label>
+                                <input type="text" x-model="contactFirstName"
+                                       class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                @error('contact_first_name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Soyad <span class="text-red-500">*</span></label>
+                                <input type="text" x-model="contactLastName"
+                                       class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                @error('contact_last_name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">E-posta <span class="text-red-500">*</span></label>
+                                @auth
+                                    <input type="email" x-model="contactEmail" readonly
+                                           class="w-full px-3 py-2.5 bg-gray-100 dark:bg-gray-600 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-500 dark:text-gray-400 text-sm cursor-not-allowed">
+                                @else
+                                    <input type="email" x-model="contactEmail"
+                                           class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all"
+                                           placeholder="ornek@email.com">
+                                @endauth
+                                @error('contact_email') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Telefon <span class="text-red-500">*</span></label>
+                                <input type="tel" x-model="contactPhone" placeholder="05XX XXX XX XX"
+                                       class="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                @error('contact_phone') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                    @endif
+                    </div>
                 </div>
 
-                {{-- 3. Fatura Bilgileri (Vergi Bilgileri) --}}
-                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between mb-4">
+                {{-- 2. FATURA PROFİLİ (Yeni Sistem - Adres gibi seçimli) --}}
+                <div class="checkout-card bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <div class="flex items-center justify-between mb-5">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fa-solid fa-file-invoice mr-2 text-blue-500 dark:text-blue-400"></i>
+                            <i class="fa-solid fa-file-invoice text-gray-400 dark:text-gray-500 mr-3"></i>
                             Fatura Bilgileri
                         </h2>
-                        <button wire:click="openBillingModal"
-                            class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
-                            <i class="fa-solid fa-edit mr-1"></i> Düzenle
+                        <button type="button" @click="showNewBillingProfile = !showNewBillingProfile"
+                                class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                            <i class="fa-solid fa-plus mr-1"></i>Yeni Ekle
                         </button>
                     </div>
 
-                    {{-- Özet Gösterimi (Sadece Vergi Bilgileri) --}}
-                    <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                        @if($billing_type === 'corporate' && $billing_company_name)
-                            <p class="flex items-center">
-                                <i class="fa-solid fa-building text-xs mr-2 text-gray-500 dark:text-gray-500"></i>
-                                <span class="font-medium text-gray-900 dark:text-white">{{ $billing_company_name }}</span>
-                                <span class="ml-2 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded">Kurumsal</span>
-                            </p>
-                            @if($billing_tax_number)
-                                <p class="text-xs ml-5 text-gray-600 dark:text-gray-400">VKN: {{ $billing_tax_number }}</p>
-                            @endif
-                            @if($billing_tax_office)
-                                <p class="text-xs ml-5 text-gray-600 dark:text-gray-400">Vergi Dairesi: {{ $billing_tax_office }}</p>
-                            @endif
-                        @else
-                            <p class="flex items-center">
-                                <i class="fa-solid fa-user text-xs mr-2 text-gray-500 dark:text-gray-500"></i>
-                                <span class="font-medium text-gray-900 dark:text-white">{{ $contact_first_name }} {{ $contact_last_name }}</span>
-                                <span class="ml-2 text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded">Bireysel</span>
-                            </p>
-                            @if($billing_tax_number)
-                                <p class="text-xs ml-5 text-gray-600 dark:text-gray-400">TC: {{ $billing_tax_number }}</p>
-                            @endif
-                        @endif
-                    </div>
-
-                    {{-- Offcanvas: Fatura Bilgileri (Slide-over) --}}
-                    @if($showBillingModal ?? false)
-                        <div class="fixed inset-0 z-[999999] overflow-hidden" @keydown.escape.window="$wire.closeBillingModal()">
-                            {{-- Backdrop (Non-clickable) --}}
-                            <div class="fixed inset-0 bg-black/60"></div>
-
-                            {{-- Offcanvas Panel --}}
-                            <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
-                                <div class="w-screen max-w-xl">
-                                    <div class="flex h-full flex-col bg-white dark:bg-gray-800 shadow-2xl">
-                                        {{-- Header --}}
-                                        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
-                                                <i class="fa-solid fa-file-invoice mr-2 text-blue-600 dark:text-blue-400"></i>
-                                                Fatura Bilgileri
-                                            </h3>
-                                            <button wire:click="closeBillingModal"
-                                                    class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
-                                                <i class="fa-solid fa-times text-xl"></i>
-                                            </button>
-                                        </div>
-
-                                        {{-- Content --}}
-                                        <div class="flex-1 overflow-y-auto px-6 py-4">
-                                            <div class="space-y-6">
-
-                                                {{-- Bireysel / Kurumsal Seçimi --}}
-                                                <div class="mb-6">
-                                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Fatura Türü</label>
-                                                    <div class="grid grid-cols-2 gap-4">
-                                                        <label class="cursor-pointer">
-                                                            <input type="radio" wire:model.live="billing_type" value="individual" class="hidden peer">
-                                                            <div class="border-2 border-gray-300 dark:border-gray-600 peer-checked:border-blue-500 dark:peer-checked:border-blue-400 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 rounded-lg p-4 hover:border-gray-400 dark:hover:border-gray-500">
-                                                                <div class="flex items-center justify-center">
-                                                                    <i class="fa-solid fa-user text-2xl text-gray-600 dark:text-gray-400"></i>
-                                                                </div>
-                                                                <div class="text-center mt-2 text-sm font-medium text-gray-900 dark:text-white">Bireysel</div>
-                                                            </div>
-                                                        </label>
-
-                                                        <label class="cursor-pointer">
-                                                            <input type="radio" wire:model.live="billing_type" value="corporate" class="hidden peer">
-                                                            <div class="border-2 border-gray-300 dark:border-gray-600 peer-checked:border-blue-500 dark:peer-checked:border-blue-400 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/20 rounded-lg p-4 hover:border-gray-400 dark:hover:border-gray-500">
-                                                                <div class="flex items-center justify-center">
-                                                                    <i class="fa-solid fa-building text-2xl text-gray-600 dark:text-gray-400"></i>
-                                                                </div>
-                                                                <div class="text-center mt-2 text-sm font-medium text-gray-900 dark:text-white">Kurumsal</div>
-                                                            </div>
-                                                        </label>
-                                                    </div>
+                    {{-- Mevcut Fatura Profilleri --}}
+                    @if($billingProfiles && count($billingProfiles) > 0)
+                        <div class="space-y-2 mb-4">
+                            @foreach($billingProfiles as $profile)
+                                <label class="block cursor-pointer" @click="selectBillingProfile({{ $profile->billing_profile_id }})">
+                                    <div class="p-3 rounded-xl border-2 transition-all hover:border-gray-400 dark:hover:border-gray-500"
+                                         :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-gray-800 dark:border-gray-300 bg-gray-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-700'">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+                                                    <i class="fa-solid {{ $profile->isCorporate() ? 'fa-building' : 'fa-user' }} text-gray-500 dark:text-gray-400"></i>
                                                 </div>
-
-                                                {{-- Bireysel İçin TCKN --}}
-                                                @if($billing_type === 'individual')
-                                                    <div class="space-y-4">
-                                                        <div>
-                                                            <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                                                TC Kimlik No
-                                                                <span class="text-xs text-gray-500 dark:text-gray-400">(Opsiyonel - Fatura için)</span>
-                                                            </label>
-                                                            <input type="text" wire:model="billing_tax_number" maxlength="11" placeholder="XXXXXXXXXXX"
-                                                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
-                                                            @error('billing_tax_number') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                                        </div>
+                                                <div>
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $profile->title }}</span>
+                                                        <span class="text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded">
+                                                            {{ $profile->isCorporate() ? 'Kurumsal' : 'Bireysel' }}
+                                                        </span>
                                                     </div>
-                                                @endif
-
-                                                {{-- Kurumsal İçin Ek Alanlar --}}
-                                                @if($billing_type === 'corporate')
-                                                    <div class="space-y-4">
-                                                        <div>
-                                                            <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                                                Şirket Ünvanı <span class="text-red-500 dark:text-red-400">*</span>
-                                                            </label>
-                                                            <input type="text" wire:model="billing_company_name"
-                                                                class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
-                                                            @error('billing_company_name') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                                        </div>
-
-                                                        <div class="grid grid-cols-2 gap-4">
-                                                            <div>
-                                                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                                                    Vergi Kimlik No (VKN) <span class="text-red-500 dark:text-red-400">*</span>
-                                                                </label>
-                                                                <input type="text" wire:model="billing_tax_number" maxlength="10"
-                                                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
-                                                                @error('billing_tax_number') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                                            </div>
-
-                                                            <div>
-                                                                <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">
-                                                                    Vergi Dairesi <span class="text-red-500 dark:text-red-400">*</span>
-                                                                </label>
-                                                                <input type="text" wire:model="billing_tax_office"
-                                                                    class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent">
-                                                                @error('billing_tax_office') <span class="text-red-500 dark:text-red-400 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
-
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                                        @if($profile->isCorporate())
+                                                            {{ $profile->company_name }}
+                                                        @else
+                                                            {{ $profile->identity_number ? 'TC: ' . $profile->identity_number : '-' }}
+                                                        @endif
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
+                                                 :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-gray-800 dark:border-gray-300 bg-gray-800 dark:bg-gray-300' : 'border-gray-300 dark:border-gray-600'">
+                                                <i class="fa-solid fa-check text-[10px] text-white dark:text-gray-900 transition-opacity"
+                                                   :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'opacity-100' : 'opacity-0'"></i>
                                             </div>
                                         </div>
-
-                                        {{-- Footer --}}
-                                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                                            <button wire:click="closeBillingModal"
-                                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg">
-                                                <i class="fa-solid fa-check mr-2"></i>Kaydet
-                                            </button>
-                                        </div>
                                     </div>
+                                </label>
+                            @endforeach
+                        </div>
+                    @else
+                        {{-- Profil yoksa uyarı (tüm alan tıklanabilir) --}}
+                        <div x-show="!showNewBillingProfile"
+                             @click="showNewBillingProfile = true"
+                             class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 mb-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                <i class="fa-solid fa-info-circle mr-2"></i>
+                                Henüz fatura profili eklenmedi.
+                                <span class="underline font-semibold ml-1 text-gray-300">Profil Ekle</span>
+                            </p>
+                        </div>
+                    @endif
+
+                    {{-- Yeni Fatura Profili Formu --}}
+                    <div x-show="showNewBillingProfile" x-transition x-collapse class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700 space-y-4 mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                                Yeni Fatura Profili
+                            </h4>
+                            <button type="button" @click="showNewBillingProfile = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        </div>
+
+                        {{-- Profil Tipi Toggle --}}
+                        <div class="flex gap-2">
+                            <button type="button" @click="newBillingProfileType = 'individual'; $wire.set('new_billing_profile_type', 'individual')"
+                                    :class="newBillingProfileType === 'individual' ? 'bg-gray-700 text-gray-100' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-all">
+                                <i class="fa-solid fa-user mr-1.5"></i>Bireysel
+                            </button>
+                            <button type="button" @click="newBillingProfileType = 'corporate'; $wire.set('new_billing_profile_type', 'corporate')"
+                                    :class="newBillingProfileType === 'corporate' ? 'bg-gray-700 text-gray-100' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'"
+                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-all">
+                                <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
+                            </button>
+                        </div>
+
+                        {{-- Profil Adı --}}
+                        <div>
+                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Profil Adı <span class="text-red-500">*</span></label>
+                            <input type="text" wire:model="new_billing_profile_title" placeholder="Örn: Kişisel, ABC Şirketi"
+                                   class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all">
+                            @error('new_billing_profile_title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        {{-- Bireysel Form --}}
+                        <div x-show="newBillingProfileType === 'individual'" x-transition>
+                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">TC Kimlik No <span class="text-gray-400">(Opsiyonel)</span></label>
+                            <input type="text" wire:model="new_billing_profile_identity_number" placeholder="XXXXXXXXXXX" maxlength="11"
+                                   class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all">
+                            @error('new_billing_profile_identity_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        {{-- Kurumsal Form --}}
+                        <div x-show="newBillingProfileType === 'corporate'" x-transition class="space-y-3">
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Şirket Ünvanı <span class="text-red-500">*</span></label>
+                                <input type="text" wire:model="new_billing_profile_company_name" placeholder="ABC Ltd. Şti."
+                                       class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                @error('new_billing_profile_company_name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Vergi Kimlik No <span class="text-red-500">*</span></label>
+                                    <input type="text" wire:model="new_billing_profile_tax_number" placeholder="XXXXXXXXXX" maxlength="10"
+                                           class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                    @error('new_billing_profile_tax_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Vergi Dairesi <span class="text-red-500">*</span></label>
+                                    <input type="text" wire:model="new_billing_profile_tax_office" placeholder="Kadıköy V.D."
+                                           class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                    @error('new_billing_profile_tax_office') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                         </div>
-                    @endif
+
+                        {{-- Kaydet Butonu --}}
+                        <div class="flex justify-end gap-2 pt-2">
+                            <button type="button" @click="showNewBillingProfile = false"
+                                    class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">İptal</button>
+                            <button type="button" wire:click="saveNewBillingProfile"
+                                    class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded-lg transition-all">
+                                <i class="fa-solid fa-check mr-1"></i>Kaydet
+                            </button>
+                        </div>
+                    </div>
+
+                    @error('billing_profile_id') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
                 </div>
 
-                {{-- 4. Fatura Adresi --}}
-                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center justify-between mb-4">
+                {{-- 3. ADRES BİLGİLERİ --}}
+                <div class="checkout-card bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                    {{-- Header --}}
+                    <div class="flex items-center justify-between mb-5">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
-                            <i class="fa-solid fa-file-invoice-dollar mr-2 text-blue-500 dark:text-blue-400"></i>
-                            Fatura Adresi
+                            <i class="fa-solid fa-location-dot text-gray-400 dark:text-gray-500 mr-3"></i>
+                            Teslimat Adresi
                         </h2>
-                        @if(!$billing_same_as_shipping)
-                            <button wire:click="openBillingAddressModal"
-                                class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
-                                <i class="fa-solid fa-edit mr-1"></i> Düzenle
-                            </button>
+                        @php
+                            $shippingAddr = $shipping_address_id ? \Modules\Cart\App\Models\Address::find($shipping_address_id) : null;
+                            $userAddresses = auth()->check() ? \Modules\Cart\App\Models\Address::where('user_id', auth()->id())->get() : collect();
+                            $hasAddresses = $userAddresses->count() > 0;
+                        @endphp
+                        <button type="button" @click="showShippingForm = !showShippingForm; showNewShippingForm = {{ $hasAddresses ? 'false' : 'true' }}"
+                                class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
+                            <i class="fa-solid fa-{{ $shippingAddr ? 'pen' : 'plus' }} mr-1"></i>{{ $shippingAddr ? 'Değiştir' : 'Ekle' }}
+                        </button>
+                    </div>
+
+                    {{-- Seçili Adres Özeti (varsa ve form kapalıysa) --}}
+                    <div x-show="!showShippingForm" x-cloak>
+                        @if($shippingAddr)
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                <span class="text-gray-900 dark:text-white font-medium">{{ $shippingAddr->title }}</span>
+                                <span class="mx-2 text-gray-400">•</span>
+                                {{ $shippingAddr->address_line_1 }}, {{ $shippingAddr->district }}/{{ $shippingAddr->city }}
+                                @if($shippingAddr->phone)
+                                    <span class="mx-2 text-gray-400">•</span>
+                                    {{ $shippingAddr->phone }}
+                                @endif
+                            </p>
+                        @else
+                            {{-- Adres yoksa uyarı --}}
+                            <div @click="showShippingForm = true; showNewShippingForm = true"
+                                 class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    <i class="fa-solid fa-info-circle mr-2"></i>
+                                    Teslimat adresi seçilmedi.
+                                    <span class="underline font-semibold ml-1 text-gray-300">Adres Ekle</span>
+                                </p>
+                            </div>
                         @endif
                     </div>
 
-                    {{-- Checkbox: Teslimat ile aynı --}}
-                    <div class="mb-3">
-                        <label class="flex items-center cursor-pointer group">
-                            <input type="checkbox" wire:model.live="billing_same_as_shipping"
-                                class="w-4 h-4 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
-                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                                Teslimat adresi ile aynı
-                            </span>
-                        </label>
-                    </div>
+                    {{-- Adres Seçim/Ekleme Formu --}}
+                    <div x-show="showShippingForm" x-cloak class="space-y-3">
+                            {{-- Mevcut Adresler --}}
+                            @if($userAddresses->count() > 0)
+                                <div class="space-y-2">
+                                    @foreach($userAddresses as $addr)
+                                        <label class="block cursor-pointer" @click="shippingAddressId = {{ $addr->address_id }}">
+                                            <div class="p-3 rounded-xl border-2 transition-all hover:border-gray-400 dark:hover:border-gray-500"
+                                                 :class="shippingAddressId == {{ $addr->address_id }} ? 'border-gray-800 dark:border-gray-300 bg-gray-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-700'">
+                                                <div class="flex items-center justify-between">
+                                                    <div>
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $addr->title }}</span>
+                                                            @if($addr->is_default_shipping)
+                                                                <span class="text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded">Varsayılan</span>
+                                                            @endif
+                                                        </div>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $addr->address_line_1 }}, {{ $addr->district }} / {{ $addr->city }}</p>
+                                                    </div>
+                                                    <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
+                                                         :class="shippingAddressId == {{ $addr->address_id }} ? 'border-gray-800 dark:border-gray-300 bg-gray-800 dark:bg-gray-300' : 'border-gray-300 dark:border-gray-600'">
+                                                        <i class="fa-solid fa-check text-[10px] text-white dark:text-gray-900 transition-opacity"
+                                                           :class="shippingAddressId == {{ $addr->address_id }} ? 'opacity-100' : 'opacity-0'"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            @endif
 
-                    {{-- Özet Gösterimi --}}
-                    @if($billing_same_as_shipping)
-                        {{-- Teslimat adresi ile aynı --}}
-                        <div class="text-xs text-green-600 dark:text-green-400 ml-6">
-                            <i class="fa-solid fa-check-circle mr-1"></i>
-                            Fatura adresi, teslimat adresi ile aynı
-                        </div>
-                    @else
-                        {{-- Farklı fatura adresi --}}
-                        <div class="text-sm text-gray-600 dark:text-gray-400">
-                            @php
-                                $billingAddr = $billing_address_id ? \Modules\Shop\App\Models\ShopCustomerAddress::find($billing_address_id) : null;
-                            @endphp
+                            {{-- Yeni Adres Ekle Butonu / Formu --}}
+                            <div>
+                                <button x-show="!showNewShippingForm" @click="showNewShippingForm = true" type="button"
+                                        class="w-full p-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-400 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-all">
+                                    <i class="fa-solid fa-plus mr-1"></i>Yeni Adres Ekle
+                                </button>
 
-                            @if($billingAddr)
-                                <p class="font-medium text-gray-900 dark:text-white mb-1">
-                                    <i class="fa-solid fa-map-marker-alt text-xs mr-2 text-blue-500 dark:text-blue-400"></i>
-                                    {{ $billingAddr->title ?? 'Fatura Adresi' }}
-                                </p>
-                                <p class="text-xs ml-5">
-                                    {{ $billingAddr->address_line_1 }}@if($billingAddr->address_line_2), {{ $billingAddr->address_line_2 }}@endif
-                                </p>
-                                <p class="text-xs ml-5">{{ $billingAddr->district }} / {{ $billingAddr->city }} {{ $billingAddr->postal_code }}</p>
-                            @else
-                                <p class="text-xs text-orange-600 dark:text-orange-400">
-                                    <i class="fa-solid fa-exclamation-triangle mr-1"></i>
-                                    Fatura adresi seçilmedi
-                                </p>
+                                {{-- Yeni Adres Formu --}}
+                                <div x-show="showNewShippingForm" x-transition class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 space-y-3">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres Adı <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="new_address_title" placeholder="Örn: Evim"
+                                                   class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Telefon</label>
+                                            <input type="tel" wire:model="new_address_phone" placeholder="05XX XXX XX XX"
+                                                   class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres <span class="text-red-500">*</span></label>
+                                        <textarea wire:model="new_address_line" rows="2" placeholder="Mahalle, sokak, bina no, daire no"
+                                                  class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all resize-none"></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
+                                            <select wire:model.live="new_address_city"
+                                                    class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                                <option value="">Seçin</option>
+                                                @foreach($cities ?? [] as $city)
+                                                    <option value="{{ $city }}">{{ $city }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
+                                            <select wire:model="new_address_district"
+                                                    class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                                <option value="">{{ empty($new_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
+                                                @foreach($districts ?? [] as $district)
+                                                    <option value="{{ $district }}">{{ $district }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Posta Kodu</label>
+                                            <input type="text" wire:model="new_address_postal" placeholder="34000"
+                                                   class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end gap-2 pt-2">
+                                        <button type="button" @click="showNewShippingForm = false"
+                                                class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">İptal</button>
+                                        <button type="button" wire:click="saveNewAddress('shipping')"
+                                                class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded-lg transition-all">
+                                            <i class="fa-solid fa-check mr-1"></i>Kaydet
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Seçimi Uygula (Sadece adres varsa ve form açık değilse) --}}
+                            @if($hasAddresses)
+                            <div x-show="!showNewShippingForm" class="flex justify-end pt-2">
+                                <button type="button" @click="showShippingForm = false; showNewShippingForm = false"
+                                        class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded-lg transition-all">
+                                    <i class="fa-solid fa-check mr-1"></i>Tamam
+                                </button>
+                            </div>
                             @endif
                         </div>
-                    @endif
+                        @error('shipping_address_id') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    </div>
 
-                    {{-- Offcanvas: Fatura Adresi (Slide-over) --}}
-                    @if($showBillingAddressModal ?? false)
-                        <div class="fixed inset-0 z-[999999] overflow-hidden" @keydown.escape.window="$wire.closeBillingAddressModal()">
-                            {{-- Backdrop (Non-clickable) --}}
-                            <div class="fixed inset-0 bg-black/60"></div>
+                    {{-- Ayırıcı Çizgi --}}
+                    <div class="border-t border-gray-200 dark:border-gray-700 my-5"></div>
 
-                            {{-- Offcanvas Panel --}}
-                            <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
-                                <div class="w-screen max-w-2xl">
-                                    <div class="flex h-full flex-col bg-white dark:bg-gray-800 shadow-2xl">
-                                        {{-- Header --}}
-                                        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
-                                                <i class="fa-solid fa-file-invoice-dollar mr-2 text-blue-600 dark:text-blue-400"></i>
-                                                Fatura Adresi
-                                            </h3>
-                                            <button wire:click="closeBillingAddressModal"
-                                                    class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-lg">
-                                                <i class="fa-solid fa-times text-xl"></i>
-                                            </button>
+                    {{-- ===== FATURA ADRESİ ===== --}}
+                    <div>
+                        {{-- Fatura Adresi Toggle - Sade --}}
+                        <label @click="billingSameAsShipping = !billingSameAsShipping"
+                               class="inline-flex items-center gap-2 cursor-pointer mb-4 py-2">
+
+                            {{-- Switch --}}
+                            <div class="relative flex-shrink-0 w-9 h-5">
+                                <div class="absolute inset-0 rounded-full transition-colors duration-200"
+                                     :class="billingSameAsShipping ? 'bg-gray-500' : 'bg-gray-400 dark:bg-gray-600'">
+                                </div>
+                                <div class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-gray-200 dark:bg-gray-300 shadow-sm transition-transform duration-200"
+                                     :class="billingSameAsShipping ? 'translate-x-4' : 'translate-x-0'">
+                                </div>
+                            </div>
+
+                            {{-- Label --}}
+                            <span class="text-sm text-gray-500 dark:text-gray-400">
+                                Fatura adresi teslimat ile aynı
+                            </span>
+                        </label>
+
+                        {{-- Farklı ise fatura adresi seçimi --}}
+                        <div x-show="!billingSameAsShipping" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                            {{-- Farklı ise fatura adresi seçimi (Inline) --}}
+                            <div class="space-y-3">
+                                <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                                    <i class="fa-solid fa-file-invoice-dollar text-gray-500 dark:text-gray-400 mr-2"></i>Fatura Adresi
+                                </h3>
+
+                                {{-- Mevcut Adresler (Alpine) --}}
+                                @if($userAddresses->count() > 0)
+                                    <div class="space-y-2">
+                                        @foreach($userAddresses as $addr)
+                                            <label class="block cursor-pointer" @click="billingAddressId = {{ $addr->address_id }}">
+                                                <div class="p-3 rounded-xl border-2 transition-all hover:border-gray-400 dark:hover:border-gray-500"
+                                                     :class="billingAddressId == {{ $addr->address_id }} ? 'border-gray-800 dark:border-gray-300 bg-gray-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-700'">
+                                                    <div class="flex items-center justify-between">
+                                                        <div>
+                                                            <div class="flex items-center gap-2">
+                                                                <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $addr->title }}</span>
+                                                                @if($addr->is_default_billing)
+                                                                    <span class="text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-1.5 py-0.5 rounded">Varsayılan</span>
+                                                                @endif
+                                                            </div>
+                                                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $addr->address_line_1 }}, {{ $addr->district }} / {{ $addr->city }}</p>
+                                                        </div>
+                                                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
+                                                             :class="billingAddressId == {{ $addr->address_id }} ? 'border-gray-800 dark:border-gray-300 bg-gray-800 dark:bg-gray-300' : 'border-gray-300 dark:border-gray-600'">
+                                                            <i class="fa-solid fa-check text-[10px] text-white dark:text-gray-900 transition-opacity"
+                                                               :class="billingAddressId == {{ $addr->address_id }} ? 'opacity-100' : 'opacity-0'"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                {{-- Yeni Adres Ekle (Fatura) --}}
+                                <div>
+                                    <button x-show="!showNewBillingForm" @click="showNewBillingForm = true" type="button"
+                                            class="w-full p-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-500 dark:hover:border-gray-400 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-all">
+                                        <i class="fa-solid fa-plus mr-1"></i>Yeni Adres Ekle
+                                    </button>
+
+                                    {{-- Yeni Adres Formu (Birebir aynı) --}}
+                                    <div x-show="showNewBillingForm" x-transition class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 space-y-3">
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres Adı <span class="text-red-500">*</span></label>
+                                                <input type="text" wire:model="new_billing_address_title" placeholder="Örn: Şirket"
+                                                       class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Telefon</label>
+                                                <input type="tel" wire:model="new_billing_address_phone" placeholder="05XX XXX XX XX"
+                                                       class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                            </div>
                                         </div>
-
-                                        {{-- Content --}}
-                                        <div class="flex-1 overflow-y-auto px-6 py-4">
-                                            <livewire:shop::front.address-manager
-                                                :customerId="$customerId"
-                                                addressType="billing"
-                                                :selectedAddressId="$billing_address_id"
-                                                :key="'billing-addr-'.$customerId" />
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres <span class="text-red-500">*</span></label>
+                                            <textarea wire:model="new_billing_address_line" rows="2" placeholder="Mahalle, sokak, bina no, daire no"
+                                                      class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all resize-none"></textarea>
                                         </div>
-
-                                        {{-- Footer --}}
-                                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-                                            <button wire:click="closeBillingAddressModal"
-                                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg">
-                                                <i class="fa-solid fa-check mr-2"></i>Kaydet
+                                        <div class="grid grid-cols-3 gap-3">
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
+                                                <select wire:model.live="new_billing_address_city"
+                                                        class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                                    <option value="">Seçin</option>
+                                                    @foreach($cities ?? [] as $city)
+                                                        <option value="{{ $city }}">{{ $city }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
+                                                <select wire:model="new_billing_address_district"
+                                                        class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                                    <option value="">{{ empty($new_billing_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
+                                                    @foreach($billingDistricts ?? [] as $district)
+                                                        <option value="{{ $district }}">{{ $district }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Posta Kodu</label>
+                                                <input type="text" wire:model="new_billing_address_postal" placeholder="34000"
+                                                       class="w-full px-3 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm focus:border-gray-500 transition-all">
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-end gap-2 pt-2">
+                                            <button type="button" @click="showNewBillingForm = false"
+                                                    class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all">İptal</button>
+                                            <button type="button" wire:click="saveNewAddress('billing')"
+                                                    class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 text-sm font-medium rounded-lg transition-all">
+                                                <i class="fa-solid fa-check mr-1"></i>Kaydet
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    @endif
+                        @error('billing_address_id') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                    </div>
                 </div>
 
             </div>
 
-            {{-- SAĞ TARAF: FİYAT ÖZETİ (1/3 Genişlik) --}}
-            <div class="lg:col-span-1">
-                <div class="bg-white/20 dark:bg-gray-800/20 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 sticky top-6">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
-                        <i class="fa-solid fa-receipt mr-2 text-blue-500 dark:text-blue-400"></i>
-                        Sipariş Özeti
-                    </h2>
+            {{-- ========================================== --}}
+            {{-- SAĞ TARAF: SİPARİŞ ÖZETİ + ÖDEME (4/12) --}}
+            {{-- ========================================== --}}
+            <div class="lg:col-span-4">
+                <div class="checkout-sidebar bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm sticky top-6 overflow-hidden">
+
+                    {{-- Sipariş Özeti Header --}}
+                    <div class="p-5 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+                            <i class="fa-solid fa-receipt text-gray-500 dark:text-gray-400 mr-3"></i>
+                            Sipariş Özeti
+                        </h2>
+                    </div>
+
+                    {{-- Ürünler --}}
+                    <div class="p-5 border-b border-gray-200 dark:border-gray-700 max-h-52 overflow-y-auto">
+                        @foreach($items as $item)
+                            <div class="flex gap-3 mb-4 last:mb-0">
+                                <div class="w-14 h-14 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                    @if($item->product && $item->product->hasMedia('featured_image'))
+                                        <img src="{{ $item->product->getFirstMediaUrl('featured_image', 'thumb') }}" alt="" class="w-full h-full object-cover">
+                                    @elseif($item->product && $item->product->hasMedia('gallery'))
+                                        <img src="{{ $item->product->getFirstMediaUrl('gallery', 'thumb') }}" alt="" class="w-full h-full object-cover">
+                                    @else
+                                        <i class="fa-solid fa-box text-gray-400 dark:text-gray-500"></i>
+                                    @endif
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm text-gray-900 dark:text-white font-medium truncate">
+                                        {{ $item->product ? $item->product->getTranslated('title', app()->getLocale()) : 'Ürün' }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Adet: {{ $item->quantity }}</p>
+                                </div>
+                                <span class="text-sm text-gray-900 dark:text-white font-semibold whitespace-nowrap">
+                                    {{ number_format(round($item->subtotal), 0, ',', '.') }} ₺
+                                </span>
+                            </div>
+                        @endforeach
+                    </div>
 
                     {{-- Fiyat Detayları --}}
-                    <div class="space-y-3 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-                        {{-- Ürün Sayısı --}}
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600 dark:text-gray-400">
-                                <i class="fa-solid fa-box text-xs mr-1"></i>
-                                Ürün Sayısı
-                            </span>
-                            <span class="font-medium text-gray-900 dark:text-white">{{ $itemCount }} Adet</span>
+                    <div class="p-5 border-b border-gray-200 dark:border-gray-700 space-y-3">
+                        <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                            <span>Ara Toplam ({{ $itemCount }} Ürün)</span>
+                            <span class="font-medium text-gray-900 dark:text-white">{{ number_format(round($subtotal), 0, ',', '.') }} ₺</span>
                         </div>
-
-                        {{-- Ara Toplam --}}
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600 dark:text-gray-400">Ara Toplam</span>
-                            <span class="font-medium text-gray-900 dark:text-white">
-                                {{ number_format(round($subtotal), 0, ',', '.') }}
-                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
-                            </span>
+                        <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                            <span>KDV (%20)</span>
+                            <span class="font-medium text-gray-900 dark:text-white">{{ number_format(round($taxAmount), 0, ',', '.') }} ₺</span>
                         </div>
-
-                        {{-- KDV --}}
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-600 dark:text-gray-400">KDV (%20)</span>
-                            <span class="font-medium text-gray-900 dark:text-white">
-                                {{ number_format(round($taxAmount), 0, ',', '.') }}
-                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
-                            </span>
+                        <div class="flex justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
+                            <span class="text-lg font-bold text-gray-900 dark:text-white">Toplam</span>
+                            <span class="text-xl font-bold text-gray-900 dark:text-white">{{ number_format(round($grandTotal), 0, ',', '.') }} ₺</span>
                         </div>
-
-                        {{-- Ara Toplam (KDV Dahil) --}}
-                        <div class="flex justify-between items-center text-sm pt-2 border-t border-gray-200 dark:border-gray-700">
-                            <span class="text-gray-700 dark:text-gray-300 font-medium">Ara Toplam (KDV Dahil)</span>
-                            <span class="font-semibold text-gray-900 dark:text-white">
-                                {{ number_format(round($total), 0, ',', '.') }}
-                                <i class="fa-solid fa-turkish-lira text-xs ml-0.5"></i>
-                            </span>
-                        </div>
-
                     </div>
 
-                    {{-- GENEL TOPLAM --}}
-                    <div class="flex justify-between items-center mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-                        <span class="text-lg font-bold text-gray-900 dark:text-white">TOPLAM</span>
-                        <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                            {{ number_format(round($grandTotal), 0, ',', '.') }}
-                            <i class="fa-solid fa-turkish-lira text-lg ml-1"></i>
-                        </span>
-                    </div>
-
-                    {{-- Ödeme Yöntemi Seçimi --}}
-                    <div class="mb-6" x-data="{ paymentMethod: 'card' }">
-                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                            <i class="fa-solid fa-wallet mr-2 text-blue-500"></i>
-                            Ödeme Yöntemi
+                    {{-- Ödeme Yöntemi --}}
+                    <div class="p-5 border-b border-gray-200 dark:border-gray-700">
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">
+                            <i class="fa-solid fa-wallet text-gray-500 dark:text-gray-400 mr-2"></i>Ödeme Yöntemi
                         </h3>
 
                         <div class="space-y-3">
                             {{-- Kredi Kartı --}}
-                            <label class="flex items-start cursor-pointer group p-4 border-2 rounded-lg transition-all"
-                                :class="paymentMethod === 'card' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-gray-400'">
-                                <input type="radio" x-model="paymentMethod" value="card" class="mt-1 w-4 h-4 text-blue-600">
-                                <div class="ml-3 flex-1">
-                                    <div class="flex items-center justify-between">
-                                        <span class="font-semibold text-gray-900 dark:text-white">
-                                            <i class="fa-solid fa-credit-card mr-2 text-blue-600"></i>
-                                            Kredi Kartı
-                                        </span>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">PayTR Güvencesiyle</span>
+                            <label class="block cursor-pointer">
+                                <input type="radio" x-model="paymentMethod" value="card" class="hidden peer">
+                                <div class="p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 peer-checked:border-gray-800 dark:peer-checked:border-gray-300 peer-checked:bg-gray-50 dark:peer-checked:bg-gray-800 transition-all">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-credit-card text-gray-600 dark:text-gray-400"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">Kredi Kartı</span>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Visa, Mastercard, Troy</p>
+                                        </div>
+                                        <span class="text-xs text-gray-400 dark:text-gray-500 font-medium">PayTR</span>
                                     </div>
-                                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Visa, Mastercard, Troy kartlarınızla güvenli ödeme</p>
                                 </div>
                             </label>
 
                             {{-- Havale/EFT --}}
-                            <label class="flex items-start cursor-pointer group p-4 border-2 rounded-lg transition-all"
-                                :class="paymentMethod === 'bank_transfer' ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-gray-400'">
-                                <input type="radio" x-model="paymentMethod" value="bank_transfer" class="mt-1 w-4 h-4 text-green-600">
-                                <div class="ml-3 flex-1">
-                                    <div class="flex items-center justify-between">
-                                        <span class="font-semibold text-gray-900 dark:text-white">
-                                            <i class="fa-solid fa-money-bill-transfer mr-2 text-green-600"></i>
-                                            Havale / EFT
-                                        </span>
-                                    </div>
-                                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Banka hesabımıza havale yaparak ödeme yapabilirsiniz</p>
-
-                                    {{-- Banka Bilgileri (Havale seçildiğinde göster) --}}
-                                    <div x-show="paymentMethod === 'bank_transfer'" x-collapse class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
-                                        <h4 class="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Banka Bilgileri:</h4>
-                                        <div class="space-y-1.5 text-xs text-gray-600 dark:text-gray-400">
-                                            <p><strong>Banka:</strong> Türkiye İş Bankası</p>
-                                            <p><strong>Hesap Adı:</strong> İXTİF İÇ VE DIŞ TİCARET ANONİM ŞİRKETİ</p>
-                                            <p><strong>IBAN:</strong> <span class="font-mono bg-white dark:bg-gray-800 px-2 py-1 rounded">TR51 0006 4000 0011 0372 5092 58</span></p>
-                                            <p class="text-orange-600 dark:text-orange-400 mt-2">
-                                                <i class="fa-solid fa-info-circle mr-1"></i>
-                                                Havale açıklamasına sipariş numaranızı yazınız
-                                            </p>
+                            <label class="block cursor-pointer">
+                                <input type="radio" x-model="paymentMethod" value="bank" class="hidden peer">
+                                <div class="p-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 peer-checked:border-gray-800 dark:peer-checked:border-gray-300 peer-checked:bg-gray-50 dark:peer-checked:bg-gray-800 transition-all">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-money-bill-transfer text-gray-600 dark:text-gray-400"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">Havale / EFT</span>
                                         </div>
                                     </div>
+
+                                    {{-- Banka Bilgileri --}}
+                                    <template x-if="paymentMethod === 'bank'">
+                                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-400">
+                                            <p class="mb-1"><strong class="text-gray-800 dark:text-gray-200">Banka:</strong> Türkiye İş Bankası</p>
+                                            <p class="mb-1"><strong class="text-gray-800 dark:text-gray-200">Hesap:</strong> İXTİF A.Ş.</p>
+                                            <p class="mt-2"><strong class="text-gray-800 dark:text-gray-200">IBAN:</strong></p>
+                                            <code class="block bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg mt-1 text-xs font-mono">TR51 0006 4000 0011 0372 5092 58</code>
+                                        </div>
+                                    </template>
                                 </div>
                             </label>
                         </div>
                     </div>
 
-                    {{-- Tek Checkbox (Combined Agreement) --}}
-                    <div class="mb-4">
-                        <label class="flex items-start cursor-pointer group">
-                            <input type="checkbox" wire:model="agree_all"
-                                class="w-4 h-4 mt-0.5 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 border-gray-300 dark:border-gray-600 rounded transition-all">
-                            <span class="ml-2 text-xs text-gray-700 dark:text-gray-300">
-                                Ön Bilgilendirme <a href="/cayma-hakki" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Formu</a>'nu ve
-                                Mesafeli Satış <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Sözleşmesi</a>'ni onaylıyorum.
-                                <span class="text-red-500 dark:text-red-400 font-bold">*</span>
+                    {{-- Sözleşmeler (Alpine) --}}
+                    <div class="p-5 border-b border-gray-200 dark:border-gray-700">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" x-model="agreeAll"
+                                   class="w-5 h-5 mt-0.5 rounded border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 focus:ring-gray-500 bg-white dark:bg-gray-700">
+                            <span class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                <a href="/on-bilgilendirme" target="_blank" class="text-gray-900 dark:text-white hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
+                                <a href="/mesafeli-satis" target="_blank" class="text-gray-900 dark:text-white hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni okudum, kabul ediyorum.
+                                <span class="text-red-500">*</span>
                             </span>
                         </label>
-                        @error('agree_all')
-                            <span class="text-red-500 dark:text-red-400 text-xs block ml-6 mt-1">
-                                <i class="fa-solid fa-exclamation-circle mr-1"></i>{{ $message }}
-                            </span>
-                        @enderror
+                        @error('agree_all') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
                     </div>
 
-                    {{-- ⚠️ VALIDATION HATALARI (Buton üstünde) --}}
+                    {{-- Validation Hataları --}}
                     @if ($errors->any())
-                        <div class="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 dark:border-red-600 rounded-lg p-4 mb-4">
-                            <div class="flex items-start">
-                                <i class="fa-solid fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl mr-3 mt-0.5"></i>
-                                <div class="flex-1">
-                                    <h4 class="text-red-800 dark:text-red-300 font-bold text-sm mb-2">Lütfen eksiklikleri tamamlayın:</h4>
-                                    <ul class="space-y-1">
-                                        @foreach ($errors->all() as $error)
-                                            <li class="text-red-700 dark:text-red-400 text-xs flex items-start">
-                                                <i class="fa-solid fa-circle text-[4px] mr-2 mt-1.5"></i>
-                                                <span>{{ $error }}</span>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
+                        <div class="px-5 pt-4">
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-xl p-4">
+                                <p class="text-sm text-red-800 dark:text-red-300 font-semibold mb-2">
+                                    <i class="fa-solid fa-exclamation-triangle mr-2"></i>Lütfen eksikleri tamamlayın:
+                                </p>
+                                <ul class="text-sm text-red-700 dark:text-red-400 space-y-1">
+                                    @foreach ($errors->all() as $error)
+                                        <li>• {{ $error }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
                         </div>
                     @endif
 
-                    {{-- Ödemeye Geç Butonu --}}
-                    <div x-data="{ paymentMethod: 'card' }">
-                        <button type="button"
-                            wire:click="proceedToPayment"
-                            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
-                            <template x-if="paymentMethod === 'card'">
-                                <span><i class="fa-solid fa-credit-card mr-2"></i> Kredi Kartı ile Öde</span>
-                            </template>
-                            <template x-if="paymentMethod === 'bank_transfer'">
-                                <span><i class="fa-solid fa-money-bill-transfer mr-2"></i> Sipariş Tamamla (Havale)</span>
-                            </template>
+                    {{-- Ödeme Butonu (Alpine submitOrder) --}}
+                    <div class="p-5">
+                        <button type="button" @click="submitOrder()"
+                                :disabled="!agreeAll"
+                                :class="agreeAll ? 'bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/30 hover:shadow-green-600/40' : 'bg-gray-400 cursor-not-allowed'"
+                                class="w-full text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 text-lg">
+                            <i class="fa-solid fa-lock"></i>
+                            <span x-text="paymentMethod === 'card' ? 'Kredi Kartı ile Öde' : 'Siparişi Tamamla'"></span>
                         </button>
-                    </div>
 
-                    {{-- Güvenli Ödeme (Küçük) --}}
-                    <div class="mt-3 text-center">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center">
-                            <i class="fa-solid fa-lock text-green-600 dark:text-green-400 text-xs mr-1"></i>
-                            256-bit SSL Güvenli Ödeme
+                        <p class="text-center text-xs text-gray-500 dark:text-gray-400 mt-4 flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-shield-halved text-green-500"></i>
+                            256-bit SSL ile güvenli ödeme
                         </p>
                     </div>
+
                 </div>
             </div>
 
         </div>
+        @endif
     </div>
+
+    {{-- ========================================== --}}
+    {{-- MODALS: Adres Seçim/Ekleme --}}
+    {{-- ========================================== --}}
+
+    {{-- Teslimat Adresi Modal --}}
+    @if($showShippingModal ?? false)
+        <div class="fixed inset-0 z-[999999] overflow-hidden" @keydown.escape.window="$wire.closeShippingModal()">
+            <div class="fixed inset-0 bg-black/60" wire:click="closeShippingModal"></div>
+            <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
+                <div class="w-screen max-w-lg">
+                    <div class="flex h-full flex-col bg-white dark:bg-gray-800 shadow-2xl">
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                                <i class="fa-solid fa-truck mr-2 text-gray-500 dark:text-gray-400"></i>
+                                Teslimat Adresi
+                            </h3>
+                            <button type="button" wire:click="closeShippingModal"
+                                    class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                                <i class="fa-solid fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="flex-1 overflow-y-auto px-6 py-4">
+                            <livewire:cart::front.address-manager
+                                :userId="$customerId"
+                                addressType="shipping"
+                                :selectedAddressId="$shipping_address_id"
+                                :key="'shipping-'.$customerId" />
+                        </div>
+                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                            <button type="button" wire:click="closeShippingModal"
+                                    class="w-full bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-3 px-4 rounded-lg">
+                                <i class="fa-solid fa-check mr-2"></i>Tamam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Fatura Bilgileri Modal --}}
+    @if($showBillingModal ?? false)
+        <div class="fixed inset-0 z-[999999] overflow-hidden" @keydown.escape.window="$wire.closeBillingModal()">
+            <div class="fixed inset-0 bg-black/60" wire:click="closeBillingModal"></div>
+            <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
+                <div class="w-screen max-w-md">
+                    <div class="flex h-full flex-col bg-white dark:bg-gray-800 shadow-2xl">
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                                <i class="fa-solid fa-file-invoice mr-2 text-gray-500 dark:text-gray-400"></i>
+                                Fatura Bilgileri
+                            </h3>
+                            <button type="button" wire:click="closeBillingModal"
+                                    class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                                <i class="fa-solid fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="flex-1 overflow-y-auto px-6 py-4">
+                            {{-- Bireysel / Kurumsal Seçimi --}}
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Fatura Türü</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" wire:model.live="billing_type" value="individual" class="hidden peer">
+                                        <div class="border-2 border-gray-300 dark:border-gray-600 peer-checked:border-gray-800 dark:peer-checked:border-gray-300 peer-checked:bg-gray-50 dark:peer-checked:bg-gray-800 rounded-lg p-4 hover:border-gray-400">
+                                            <div class="flex items-center justify-center">
+                                                <i class="fa-solid fa-user text-2xl text-gray-600 dark:text-gray-400"></i>
+                                            </div>
+                                            <div class="text-center mt-2 text-sm font-medium text-gray-900 dark:text-white">Bireysel</div>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" wire:model.live="billing_type" value="corporate" class="hidden peer">
+                                        <div class="border-2 border-gray-300 dark:border-gray-600 peer-checked:border-gray-800 dark:peer-checked:border-gray-300 peer-checked:bg-gray-50 dark:peer-checked:bg-gray-800 rounded-lg p-4 hover:border-gray-400">
+                                            <div class="flex items-center justify-center">
+                                                <i class="fa-solid fa-building text-2xl text-gray-600 dark:text-gray-400"></i>
+                                            </div>
+                                            <div class="text-center mt-2 text-sm font-medium text-gray-900 dark:text-white">Kurumsal</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            @if($billing_type === 'individual')
+                                <div>
+                                    <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">TC Kimlik No <span class="text-xs text-gray-500">(Opsiyonel)</span></label>
+                                    <input type="text" wire:model="billing_tax_number" maxlength="11" placeholder="XXXXXXXXXXX"
+                                           class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                </div>
+                            @endif
+
+                            @if($billing_type === 'corporate')
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">Şirket Ünvanı <span class="text-red-500">*</span></label>
+                                        <input type="text" wire:model="billing_company_name"
+                                               class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">Vergi Kimlik No <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="billing_tax_number" maxlength="10"
+                                                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-gray-700 dark:text-gray-300 mb-1.5">Vergi Dairesi <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="billing_tax_office"
+                                                   class="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                            <button type="button" wire:click="closeBillingModal"
+                                    class="w-full bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-3 px-4 rounded-lg">
+                                <i class="fa-solid fa-check mr-2"></i>Kaydet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Fatura Adresi Modal --}}
+    @if($showBillingAddressModal ?? false)
+        <div class="fixed inset-0 z-[999999] overflow-hidden" @keydown.escape.window="$wire.closeBillingAddressModal()">
+            <div class="fixed inset-0 bg-black/60" wire:click="closeBillingAddressModal"></div>
+            <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
+                <div class="w-screen max-w-lg">
+                    <div class="flex h-full flex-col bg-white dark:bg-gray-800 shadow-2xl">
+                        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                                <i class="fa-solid fa-file-invoice-dollar mr-2 text-gray-500 dark:text-gray-400"></i>
+                                Fatura Adresi
+                            </h3>
+                            <button type="button" wire:click="closeBillingAddressModal"
+                                    class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                                <i class="fa-solid fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="flex-1 overflow-y-auto px-6 py-4">
+                            <livewire:cart::front.address-manager
+                                :userId="$customerId"
+                                addressType="billing"
+                                :selectedAddressId="$billing_address_id"
+                                :key="'billing-addr-'.$customerId" />
+                        </div>
+                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                            <button type="button" wire:click="closeBillingAddressModal"
+                                    class="w-full bg-gray-700 hover:bg-gray-600 text-gray-100 font-medium py-3 px-4 rounded-lg">
+                                <i class="fa-solid fa-check mr-2"></i>Tamam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     {{-- PayTR iframe Modal --}}
     @if($showPaymentModal ?? false)
         @teleport('body')
         <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
-            {{-- Backdrop (karartma) --}}
             <div class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
-
-            {{-- Modal Content --}}
             <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden z-[10000] my-8">
-                {{-- Header --}}
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-credit-card text-blue-600 dark:text-blue-400 text-xl"></i>
+                        <i class="fa-solid fa-credit-card text-gray-500 dark:text-gray-400 text-xl"></i>
                         <h3 class="text-xl font-bold text-gray-900 dark:text-white">Güvenli Ödeme</h3>
                     </div>
                     <button wire:click="closePaymentModal"
-                        class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+                            class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
                         <i class="fa-solid fa-times text-2xl"></i>
                     </button>
                 </div>
-
-                {{-- PayTR iframe --}}
                 <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 80px);">
                     @if($paymentIframeUrl)
-                        <iframe
-                            src="{{ $paymentIframeUrl }}"
-                            id="paytriframe"
-                            frameborder="0"
-                            scrolling="no"
-                            style="width: 100%; min-height: 600px;"
-                            class="rounded-lg">
-                        </iframe>
+                        <iframe src="{{ $paymentIframeUrl }}" id="paytriframe" frameborder="0" scrolling="no"
+                                style="width: 100%; min-height: 600px;" class="rounded-lg"></iframe>
                     @else
                         <div class="text-center py-12">
-                            <i class="fa-solid fa-spinner fa-spin text-4xl text-blue-600 dark:text-blue-400 mb-4"></i>
+                            <i class="fa-solid fa-spinner fa-spin text-4xl text-gray-500 dark:text-gray-400 mb-4"></i>
                             <p class="text-gray-600 dark:text-gray-400">Ödeme ekranı yükleniyor...</p>
                         </div>
                     @endif
                 </div>
-
-                {{-- Footer - Güvenlik Bilgisi --}}
                 <div class="px-6 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
                     <p class="text-xs text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-lock text-green-600 dark:text-green-400"></i>
@@ -661,56 +1005,38 @@
                 </div>
             </div>
         </div>
-        @endif {{-- End of: if items not empty --}}
 
-        {{-- PayTR iframeResizer Script --}}
         @push('scripts')
         <script src="https://www.paytr.com/js/iframeResizer.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // Iframe yüklendiğinde resize aktifleştir
                 const iframe = document.getElementById('paytriframe');
                 if (iframe) {
-                    iFrameResize({
-                        log: false,
-                        checkOrigin: false,
-                        heightCalculationMethod: 'bodyScroll'
-                    }, '#paytriframe');
+                    iFrameResize({ log: false, checkOrigin: false, heightCalculationMethod: 'bodyScroll' }, '#paytriframe');
                 }
             });
-
-            // Livewire component güncellendiğinde iframe'i yeniden başlat
             Livewire.hook('message.processed', (message, component) => {
                 const iframe = document.getElementById('paytriframe');
                 if (iframe) {
-                    iFrameResize({
-                        log: false,
-                        checkOrigin: false,
-                        heightCalculationMethod: 'bodyScroll'
-                    }, '#paytriframe');
+                    iFrameResize({ log: false, checkOrigin: false, heightCalculationMethod: 'bodyScroll' }, '#paytriframe');
                 }
             });
         </script>
         @endpush
         @endteleport
     @endif
+
 </div>
 
 {{-- localStorage'dan cart_id restore --}}
 @script
 <script>
     console.log('🛒 CheckoutPage: Initializing...');
-
-    // localStorage'dan cart_id oku
     const storedCartId = localStorage.getItem('cart_id');
     if (storedCartId) {
         console.log('📦 CheckoutPage: Found cart_id in localStorage:', storedCartId);
-
-        // Backend'e cart_id gönder
         $wire.loadCartById(parseInt(storedCartId)).then(() => {
             console.log('✅ CheckoutPage: Cart loaded from localStorage');
-
-            // Boş sepet mesajını gizle (eğer cart yüklendiyse sayfa yenilenecek)
             const emptyMsg = document.getElementById('empty-cart-message');
             if (emptyMsg && $wire.items && $wire.items.length > 0) {
                 emptyMsg.style.display = 'none';

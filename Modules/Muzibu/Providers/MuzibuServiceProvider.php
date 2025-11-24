@@ -79,6 +79,9 @@ class MuzibuServiceProvider extends ServiceProvider
         // Sector Components
         Livewire::component('muzibu::admin.sector-component', \Modules\Muzibu\App\Http\Livewire\Admin\SectorComponent::class);
         Livewire::component('muzibu::admin.sector-manage-component', \Modules\Muzibu\App\Http\Livewire\Admin\SectorManageComponent::class);
+
+        // Corporate Account Components
+        Livewire::component('muzibu::admin.corporate-account-component', \Modules\Muzibu\App\Http\Livewire\Admin\CorporateAccountComponent::class);
     }
 
     /**

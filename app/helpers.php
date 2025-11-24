@@ -400,3 +400,99 @@ if (!function_exists('calculateActiveHours')) {
         return $schedules[$dailyCount] ?? [0]; // Fallback: Günde 1 (gece yarısı)
     }
 }
+
+if (!function_exists('clear_all_caches')) {
+    /**
+     * Universal Tenant-Aware Cache Clear Function
+     *
+     * Sadece mevcut tenant'ın cache'lerini temizler (tenant-aware).
+     * Admin paneldeki "Cache Temizle" butonu ile aynı mantık.
+     *
+     * Kullanım:
+     * clear_all_caches(); // Mevcut tenant cache'lerini temizle
+     * clear_all_caches('theme_change'); // Context ile temizle (log için)
+     * clear_all_caches('manual', true); // Tüm sistemi temizle (dikkatli kullan!)
+     *
+     * @param string $context Log için açıklama (opsiyonel)
+     * @param bool $global Tüm sistemi mi temizle? (default: false = sadece tenant)
+     * @return bool İşlem başarılı mı
+     */
+    function clear_all_caches(string $context = 'manual', bool $global = false): bool
+    {
+        try {
+            $tenantId = function_exists('tenant') && tenant() ? tenant('id') : null;
+
+            // 1. View cache (tenant-specific views zaten ayrı)
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+
+            // 2. Response cache - Tenant-aware tag ile temizle
+            if (config('responsecache.enabled')) {
+                if ($tenantId && !$global) {
+                    // Sadece bu tenant'ın response cache'ini temizle
+                    $cacheTag = "tenant_{$tenantId}_response_cache";
+                    try {
+                        \Illuminate\Support\Facades\Cache::tags([$cacheTag])->flush();
+                    } catch (\Exception $e) {
+                        // Tag desteklenmiyorsa genel temizle
+                        \Illuminate\Support\Facades\Artisan::call('responsecache:clear');
+                    }
+                } else {
+                    // Global temizleme
+                    \Illuminate\Support\Facades\Artisan::call('responsecache:clear');
+                }
+            }
+
+            // 3. Application cache - Tenant-aware
+            if ($tenantId && !$global) {
+                // Tenant-specific cache key'lerini temizle
+                $tenantCachePrefix = "tenant_{$tenantId}_";
+
+                // Redis tag-based flush (eğer destekleniyorsa)
+                try {
+                    \Illuminate\Support\Facades\Cache::tags([$tenantCachePrefix])->flush();
+                } catch (\Exception $e) {
+                    // Tag desteklenmiyorsa forget ile temizle
+                    // Ana cache key'lerini temizle
+                    $cacheKeys = [
+                        "theme_{$tenantId}",
+                        "settings_{$tenantId}",
+                        "menu_{$tenantId}",
+                        "translations_{$tenantId}",
+                    ];
+                    foreach ($cacheKeys as $key) {
+                        \Illuminate\Support\Facades\Cache::forget($key);
+                    }
+                }
+            } else {
+                // Global flush (dikkatli!)
+                \Illuminate\Support\Facades\Cache::flush();
+            }
+
+            // 4. OPcache reset (HTTP üzerinden) - Her zaman gerekli
+            try {
+                $domain = $tenantId ? request()->getHost() : 'ixtif.com';
+                @file_get_contents("https://{$domain}/opcache-reset.php", false, stream_context_create([
+                    'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
+                    'http' => ['timeout' => 3]
+                ]));
+            } catch (\Exception $e) {
+                // Sessizce devam et
+            }
+
+            \Illuminate\Support\Facades\Log::info('✅ Cache Cleared', [
+                'context' => $context,
+                'tenant_id' => $tenantId ?? 'central',
+                'global' => $global,
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('❌ Cache Clear Failed', [
+                'context' => $context,
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+}

@@ -24,15 +24,20 @@ return new class extends Migration
     public function up(): void
     {
         // 1. shop_orders'dan payment ilişkili foreign key'leri kaldır
-        if (Schema::hasTable('shop_orders')) {
-            Schema::table('shop_orders', function (Blueprint $table) {
-                // Foreign key varsa kaldır
-                try {
+        if (Schema::hasTable('shop_orders') && Schema::hasColumn('shop_orders', 'payment_method_id')) {
+            // Foreign key kontrolü - DB query ile
+            $dbName = config('database.connections.mysql.database');
+            $fkExists = \DB::select("
+                SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS
+                WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'shop_orders'
+                AND CONSTRAINT_TYPE = 'FOREIGN KEY' AND CONSTRAINT_NAME = 'shop_orders_payment_method_id_foreign'
+            ", [$dbName]);
+
+            if (!empty($fkExists)) {
+                Schema::table('shop_orders', function (Blueprint $table) {
                     $table->dropForeign(['payment_method_id']);
-                } catch (\Exception $e) {
-                    // Foreign key yoksa devam et
-                }
-            });
+                });
+            }
         }
 
         // 2. shop_orders'dan payment kolonlarını kaldır
@@ -52,16 +57,28 @@ return new class extends Migration
 
         // 3. shop_payments tablosundan foreign key'leri kaldır
         if (Schema::hasTable('shop_payments')) {
-            Schema::table('shop_payments', function (Blueprint $table) {
-                try {
+            $dbName = config('database.connections.mysql.database');
+
+            // payment_method_id FK kontrolü
+            $fk1 = \DB::select("
+                SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS
+                WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'shop_payments'
+                AND CONSTRAINT_TYPE = 'FOREIGN KEY' AND CONSTRAINT_NAME = 'shop_payments_payment_method_id_foreign'
+            ", [$dbName]);
+
+            // order_id FK kontrolü
+            $fk2 = \DB::select("
+                SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS
+                WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'shop_payments'
+                AND CONSTRAINT_TYPE = 'FOREIGN KEY' AND CONSTRAINT_NAME = 'shop_payments_order_id_foreign'
+            ", [$dbName]);
+
+            Schema::table('shop_payments', function (Blueprint $table) use ($fk1, $fk2) {
+                if (!empty($fk1)) {
                     $table->dropForeign(['payment_method_id']);
-                } catch (\Exception $e) {
-                    // Foreign key yoksa devam et
                 }
-                try {
+                if (!empty($fk2)) {
                     $table->dropForeign(['order_id']);
-                } catch (\Exception $e) {
-                    // Foreign key yoksa devam et
                 }
             });
         }

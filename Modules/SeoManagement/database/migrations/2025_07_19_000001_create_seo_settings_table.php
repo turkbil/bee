@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('seo_settings')) {
+            return;
+        }
+
         Schema::create('seo_settings', function (Blueprint $table) {
             $table->id();
             

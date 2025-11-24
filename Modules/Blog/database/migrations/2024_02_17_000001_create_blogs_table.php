@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('blogs')) {
+            return;
+        }
+
         Schema::create('blogs', function (Blueprint $table) {
             $table->id('blog_id');
             $table->foreignId('blog_category_id')->nullable()->constrained('blog_categories', 'category_id')->nullOnDelete();

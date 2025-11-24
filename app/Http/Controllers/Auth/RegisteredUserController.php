@@ -19,7 +19,16 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        // Tema-aware register view
+        $theme = app(\App\Services\ThemeService::class)->getActiveTheme();
+        $viewPath = "themes.{$theme}.auth.register";
+
+        // Fallback: Tema yoksa veya view yoksa default auth.register kullan
+        if (!view()->exists($viewPath)) {
+            $viewPath = 'auth.register';
+        }
+
+        return view($viewPath);
     }
 
     /**

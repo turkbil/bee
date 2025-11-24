@@ -25,14 +25,20 @@ return new class extends Migration
     {
         // 1. shop_orders'dan payment ilişkili foreign key'leri kaldır
         if (Schema::hasTable('shop_orders')) {
-            Schema::table('shop_orders', function (Blueprint $table) {
-                // Foreign key varsa kaldır
-                try {
+            // Foreign key var mı kontrol et
+            $foreignKeys = \DB::select("
+                SELECT CONSTRAINT_NAME
+                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                WHERE TABLE_SCHEMA = DATABASE()
+                AND TABLE_NAME = 'shop_orders'
+                AND CONSTRAINT_NAME LIKE '%payment_method_id%'
+            ");
+
+            if (count($foreignKeys) > 0) {
+                Schema::table('shop_orders', function (Blueprint $table) {
                     $table->dropForeign(['payment_method_id']);
-                } catch (\Exception $e) {
-                    // Foreign key yoksa devam et
-                }
-            });
+                });
+            }
         }
 
         // 2. shop_orders'dan payment kolonlarını kaldır
@@ -50,11 +56,17 @@ return new class extends Migration
             });
         }
 
+        // Foreign key constraint'leri devre dışı bırak
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
         // 3. shop_payments tablosunu kaldır
         Schema::dropIfExists('shop_payments');
 
         // 4. shop_payment_methods tablosunu kaldır
         Schema::dropIfExists('shop_payment_methods');
+
+        // Foreign key constraint'leri tekrar aktif et
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1');
     }
 
     /**

@@ -1,133 +1,28 @@
-# Livewire\Exceptions\ComponentNotFoundException - Internal Server Error
-Unable to find component: [modules.coupon.app.http.livewire.admin.coupon-manage-component]
-
-PHP 8.3.27
-Laravel 12.32.5
-ixtif.com
-
-## Stack Trace
-
-0 - vendor/livewire/livewire/src/Mechanisms/ComponentRegistry.php:116
-1 - vendor/livewire/livewire/src/Mechanisms/ComponentRegistry.php:25
-2 - vendor/livewire/livewire/src/LivewireManager.php:58
-3 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:132
-4 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:92
-5 - vendor/livewire/livewire/src/LivewireManager.php:102
-6 - vendor/livewire/volt/src/LivewireManager.php:35
-7 - vendor/livewire/livewire/src/Mechanisms/HandleRequests/HandleRequests.php:94
-8 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
-9 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
-10 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
-11 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
-12 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-13 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
-14 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-15 - app/Http/Middleware/LivewireJsonSanitizer.php:43
-16 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-17 - app/Http/Middleware/RootOnlyDebugbar.php:35
-18 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-19 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
-20 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-21 - app/Http/Middleware/DatabasePoolMiddleware.php:58
-22 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-23 - app/Http/Middleware/SecurityHeaders.php:18
-24 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-25 - app/Http/Middleware/CheckThemeStatus.php:40
-26 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-27 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
-28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-29 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
-30 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-31 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
-32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-33 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
-34 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-35 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
-36 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
-37 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-38 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
-39 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-40 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
-41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-42 - app/Http/Middleware/InitializeTenancy.php:97
-43 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-44 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-45 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
-46 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
-47 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
-48 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
-49 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
-50 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
-51 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
-52 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-53 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
-54 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-55 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:27
-56 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-57 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:47
-58 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-59 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
-60 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-61 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
-62 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-63 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
-64 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-65 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
-66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-67 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
-68 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-69 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
-70 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
-71 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
-72 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
-73 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
-74 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
-75 - public/index.php:17
-
-## Request
-
-POST /livewire/update
-
-## Headers
-
-* **cookie**: _fbp=fb.1.1762734713275.30303022279729562; _ym_uid=1762734713828074405; _ym_d=1762734713; siteTextColor=#ffffff; dark=auto; last_activity_read=1763563571; viewMode=grid; _clck=1gd0f2w%5E2%5Eg19%5E0%5E2140; _ym_isad=2; _gcl_au=1.1.93943206.1762734713.2036875547.1763906907.1763906908; _ym_visorc=w; XSRF-TOKEN=eyJpdiI6IjVRMFN1Z0N2dDVRTXpwa0Z6VXJKY3c9PSIsInZhbHVlIjoiZVdBTUp1WGttTVJYYXpzRmhWQTdteHdJa3g2Vy90cnBtdGJ1K2tkNWVldnAxaGZZUUhyRy9WdXNnMTg2UlJ3VjlwUFZwalRIT0hsTXVKNGVtMnI3ZUhkaWRpT1dtZTdEdDlzVGJ3WVlESE5ReEo1TDAxRSs4Q29XS1lpY1puS3oiLCJtYWMiOiJiMTdiZjEzYjQ0NzllMjBjYmQ0MDA2NTIwOTNiYzE0ZTRhMWQ4MzJiNWZkNWMyZTVjZGNlMmEzNGRmZDQwNDkxIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6IkpXZ3ZNQjRRV1NYUWZDNGRVaFJKalE9PSIsInZhbHVlIjoiTFRodnFSMzlNR3VvLzQ2UUhqeWtSSkdyR2doVmdmYndRczFWdVRhVzVWaTZCM3BtOE9RL2F2SDhuaWQxcVU4bVV4ZE9wRzNzcDVGRVRLMjhGeEhXQUltQndSOGlpcnN0VkZOOTJ4Uyt0WXFwTzNmRTIwOXRhTzIxYU9DQ2JrbCsiLCJtYWMiOiI4NzgwYTFiNzkzMWZhMjUzMGVlZDNmZDNlOTViMzY2N2Q1YTg1NDYwZGQ4YWJkZWY0N2NlMjEzNWQ4MDJkYWFkIiwidGFnIjoiIn0%3D; _clsk=4pi9rf%5E1763916193466%5E97%5E1%5Ey.clarity.ms%2Fcollect
-* **priority**: u=1, i
-* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
-* **accept-encoding**: gzip, deflate, br, zstd
-* **referer**: https://ixtif.com/admin/coupon/manage
-* **sec-fetch-dest**: empty
-* **sec-fetch-mode**: cors
-* **sec-fetch-site**: same-origin
-* **origin**: https://ixtif.com
-* **accept**: */*
-* **sec-ch-ua-mobile**: ?0
-* **x-livewire**: 
-* **content-type**: application/json
-* **dnt**: 1
-* **sec-ch-ua**: "Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
-* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
-* **sec-ch-ua-platform**: "macOS"
-* **content-length**: 946
-* **connection**: close
-* **x-accel-internal**: /internal-nginx-static-location
-* **x-real-ip**: 176.40.229.179
-* **host**: ixtif.com
-
-## Route Context
-
-controller: Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate
-route name: livewire.update
-middleware: web
-
-## Route Parameters
-
-No route parameter data available.
-
-## Database Queries
-
-* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_ixtif' (4.32 ms)
-* mysql - select * from `domains` where `domains`.`tenant_id` = 2 and `domains`.`tenant_id` is not null (1.31 ms)
-* mysql - select * from `sessions` where `id` = 'nRduVEJNNxvB0FAL4R9LnEaj6CjhzNgF29q0uTUn' limit 1 (1.35 ms)
-* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (1.32 ms)
-* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (2.82 ms)
-* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (1.67 ms)
+(index):64 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
+(anonymous) @ (index):64
+(anonymous) @ (index):64
+playlists:519 Muzibu initialized
+playlists:519 Muzibu initialized
+playlists:560 Featured playlists loaded: 10
+playlists:560 Featured playlists loaded: 10
+playlists:866 Toast [success]: Hafta Sonu çalınıyor
+playlists:866 Toast [success]: Gece Vakti çalınıyor
+playlists:866 Toast [success]: Sabah Kahvesi çalınıyor
+playlists:866 Toast [success]: Odaklanma çalınıyor
+playlists:779 Playback error: AbortError: The play() request was interrupted by a new load request. https://goo.gl/LdLk22
+loadAndPlaySong @ playlists:779
+await in loadAndPlaySong
+playSongFromQueue @ playlists:761
+await in playSongFromQueue
+playPlaylist @ playlists:715
+await in playPlaylist
+[Alpine] playPlaylist(8) @ VM606:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+playlists:866 Toast [error]: Çalma hatası
+playlists:866 Toast [success]: Enerjik çalınıyor
+playlists:866 Toast [success]: Dinlendirici çalınıyor

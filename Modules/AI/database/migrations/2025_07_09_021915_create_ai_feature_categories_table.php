@@ -12,6 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_feature_categories')) {
+            return;
+        }
+
         Schema::create('ai_feature_categories', function (Blueprint $table) {
                 $table->id('ai_feature_category_id');
                 $table->string('title');

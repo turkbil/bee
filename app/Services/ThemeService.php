@@ -21,10 +21,23 @@ class ThemeService
      */
     public function getActiveTheme(): ?object
     {
+        // Theme preview modu kontrolü (admin panelden önizleme için)
+        if (request()->has('theme_preview')) {
+            $previewThemeName = request()->get('theme_preview');
+            $previewTheme = Theme::on('mysql')
+                ->where('name', $previewThemeName)
+                ->where('is_active', true)
+                ->first();
+
+            if ($previewTheme) {
+                return $previewTheme;
+            }
+        }
+
         if ($this->activeTheme === null) {
             $this->activeTheme = $this->loadActiveTheme();
         }
-        
+
         return $this->activeTheme;
     }
     
@@ -197,41 +210,116 @@ class ThemeService
     
     /**
      * Tema view path'ini getirir (modül desteği ile)
+     * 3 seviyeli fallback: aktif tema → simple → front
      */
     public function getThemeViewPath(string $view, string $module = null): string
     {
         $theme = $this->getActiveTheme();
-        
-        if (!$theme) {
-            // Theme yoksa modül view'ını kullan
-            return $module ? "{$module}::front.{$view}" : $view;
-        }
-        
-        $themeName = $theme->name;
-        
+        $themeName = $theme ? $theme->name : 'simple';
+
         if ($module) {
-            // Önce modül içindeki tema view'ını kontrol et
-            // Modules/{Module}/resources/views/themes/{theme}/{view}.blade.php
-            $moduleThemeViewPath = "{$module}::themes.{$themeName}.{$view}";
-            
-            if (view()->exists($moduleThemeViewPath)) {
-                return $moduleThemeViewPath;
+            // 1. Aktif tema view'ı
+            $activeThemeView = "{$module}::themes.{$themeName}.{$view}";
+            if (view()->exists($activeThemeView)) {
+                return $activeThemeView;
             }
-            
-            // Tema yoksa modül default view'ını kullan
-            // Modules/{Module}/resources/views/front/{view}.blade.php
-            return "{$module}::front.{$view}";
+
+            // 2. Simple tema fallback (aktif tema simple değilse)
+            if ($themeName !== 'simple') {
+                $simpleView = "{$module}::themes.simple.{$view}";
+                if (view()->exists($simpleView)) {
+                    Log::debug("Theme fallback: {$activeThemeView} → {$simpleView}");
+                    return $simpleView;
+                }
+            }
+
+            // 3. Front fallback (son çare)
+            $frontView = "{$module}::front.{$view}";
+            if (view()->exists($frontView)) {
+                Log::debug("Theme fallback: {$activeThemeView} → {$frontView}");
+                return $frontView;
+            }
+
+            // Hiçbiri bulunamadı - hata logla ve aktif tema dön (Laravel hata verecek)
+            Log::warning("Theme view not found: {$view} in module {$module}");
+            return $activeThemeView;
         }
-        
+
         // Genel tema view'ı (layout için)
+        // 1. Aktif tema
         $themeViewPath = "themes.{$themeName}.{$view}";
-        
         if (view()->exists($themeViewPath)) {
             return $themeViewPath;
         }
-        
-        // Fallback
-        return $view;
+
+        // 2. Simple fallback
+        if ($themeName !== 'simple') {
+            $simpleView = "themes.simple.{$view}";
+            if (view()->exists($simpleView)) {
+                Log::debug("Theme fallback: {$themeViewPath} → {$simpleView}");
+                return $simpleView;
+            }
+        }
+
+        // 3. Direct view fallback
+        if (view()->exists($view)) {
+            return $view;
+        }
+
+        Log::warning("Theme view not found: {$view}");
+        return $themeViewPath;
+    }
+
+    /**
+     * Subheader view path'ini getirir
+     * Öncelik: tema özel subheader → tenant ayarı → default
+     */
+    public function getSubheader(): string
+    {
+        $theme = $this->getActiveTheme();
+        $themeName = $theme ? $theme->name : 'simple';
+
+        // 1. Tema kendi subheader dosyası var mı?
+        $themeSubheader = "themes.{$themeName}.layouts.partials.subheader";
+        if (view()->exists($themeSubheader)) {
+            return $themeSubheader;
+        }
+
+        // 2. Tenant theme_settings'den stil al
+        $style = $this->getSubheaderStyle();
+
+        // 3. Seçilen stili döndür
+        $componentPath = "components.subheaders.{$style}";
+        if (view()->exists($componentPath)) {
+            return $componentPath;
+        }
+
+        // 4. Default fallback
+        return "components.subheaders.glass";
+    }
+
+    /**
+     * Tenant'ın subheader stilini getirir
+     */
+    public function getSubheaderStyle(): string
+    {
+        if (function_exists('tenant') && $tenant = tenant()) {
+            $settings = $tenant->theme_settings ?? [];
+            return $settings['subheader_style'] ?? 'glass';
+        }
+
+        return 'glass';
+    }
+
+    /**
+     * Tema kendi subheader'ına sahip mi?
+     */
+    public function hasCustomSubheader(): bool
+    {
+        $theme = $this->getActiveTheme();
+        $themeName = $theme ? $theme->name : 'simple';
+
+        return view()->exists("themes.{$themeName}.layouts.partials.subheader");
     }
     
     /**

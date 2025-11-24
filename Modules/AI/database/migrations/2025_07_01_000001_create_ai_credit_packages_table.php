@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_credit_packages')) {
+            return;
+        }
+
         Schema::create('ai_credit_packages', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // "Başlangıç Paketi", "Pro Paket" vs.

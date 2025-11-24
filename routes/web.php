@@ -41,6 +41,27 @@ require __DIR__.'/admin/web.php';
 
 // 🧹 Test route'ları arşivlendi
 
+// 🚧 UNDER CONSTRUCTION PROTECTION - Password verification endpoint (no middleware)
+Route::post('/verify-construction-password', [App\Http\Controllers\ConstructionAccessController::class, 'verify'])
+    ->withoutMiddleware([\App\Http\Middleware\UnderConstructionProtection::class])
+    ->name('construction.verify');
+
+// 🎵 MUZIBU ROUTES - Domain-specific routes (Tenant 1001)
+Route::middleware([InitializeTenancy::class])
+    ->domain('muzibu.com.tr')
+    ->group(function () {
+        Route::get('/', [\Modules\Muzibu\app\Http\Controllers\Front\HomeController::class, 'index'])->name('muzibu.home');
+        Route::get('/search', [\Modules\Muzibu\app\Http\Controllers\Front\SearchController::class, 'index'])->name('muzibu.search');
+        Route::get('/playlists', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'index'])->name('muzibu.playlists.index');
+        Route::get('/playlists/{id}', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'show'])->name('muzibu.playlists.show');
+        Route::get('/albums', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'index'])->name('muzibu.albums.index');
+        Route::get('/albums/{id}', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'show'])->name('muzibu.albums.show');
+        Route::get('/genres', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'index'])->name('muzibu.genres.index');
+        Route::get('/genres/{id}', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'show'])->name('muzibu.genres.show');
+        Route::get('/sectors', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'index'])->name('muzibu.sectors.index');
+        Route::get('/sectors/{id}', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'show'])->name('muzibu.sectors.show');
+    });
+
 // 🎵 MUZIBU STREAMING ROUTES - EN ÖNCE TANIMLANMALI (high priority)
 // Sadece tenant middleware - session/web middleware yok (stateless streaming)
 Route::middleware([InitializeTenancy::class])
@@ -608,11 +629,11 @@ Route::middleware([InitializeTenancy::class, 'site'])
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed)[^/]+$');
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart)[^/]+$');
 
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart)[^/]+$')
          ->where('slug2', '^(?!pdf|category|tag)[^/]+$');
 
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {

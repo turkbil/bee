@@ -58,7 +58,7 @@ class CartPage extends Component
             if ($item) {
                 $item->quantity = $quantity;
                 $item->recalculate();
-                $this->cart->recalculate();
+                $this->cart->recalculateTotals();
             }
 
             $this->loadCart();

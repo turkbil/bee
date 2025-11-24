@@ -27,6 +27,7 @@ return [
 'theme_title_hint' => 'Tema görünen adı',
 'uploaded_image' => 'Yüklenen Resim',
 'default_theme_cannot_be_deleted' => 'Varsayılan tema silinemez',
+'preview' => 'Önizleme',
 'themes' => 'Temalar',
 'menu' => 'Menü',
 'header_section' => 'Başlık Bölümü',

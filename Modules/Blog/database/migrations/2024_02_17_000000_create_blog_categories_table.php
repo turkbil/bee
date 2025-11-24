@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('blog_categories')) {
+            return;
+        }
+
         Schema::create('blog_categories', function (Blueprint $table) {
             $table->id('category_id');
             $table->unsignedBigInteger('parent_id')->nullable();

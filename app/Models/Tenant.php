@@ -12,12 +12,26 @@ use Spatie\Activitylog\LogOptions;
 class Tenant extends BaseTenant implements TenantWithDatabase
 {
     use HasDatabase, HasDomains, LogsActivity;
-    
+
     protected $guarded = [];
-    
+
     public $timestamps = true;
     protected $table = 'tenants';
     public $incrementing = true;
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($tenant) {
+            // tenancy_db_name otomatik oluştur (yoksa)
+            if (empty($tenant->tenancy_db_name)) {
+                $slug = \Illuminate\Support\Str::slug($tenant->title ?? 'tenant', '_');
+                $uniqueId = substr(md5(uniqid()), 0, 6);
+                $tenant->tenancy_db_name = "tenant_{$slug}_{$uniqueId}";
+            }
+        });
+    }
     
     protected $casts = [
         'is_active' => 'boolean',
@@ -25,6 +39,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'central' => 'boolean',
         'data' => 'array',
         'theme_id' => 'integer',
+        'theme_settings' => 'array',
         'ai_monthly_token_limit' => 'integer',
         'ai_last_used_at' => 'datetime',
         'tenant_ai_provider_id' => 'integer',

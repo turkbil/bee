@@ -24,7 +24,8 @@
             <!-- Current Password -->
             <div>
                 <label for="update_password_current_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Mevcut Şifre
+                    <i class="fa-solid fa-lock text-gray-400 mr-1"></i>
+                    Mevcut Şifre <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
                     <input type="password" 
@@ -48,7 +49,8 @@
             <!-- New Password -->
             <div>
                 <label for="update_password_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Yeni Şifre
+                    <i class="fa-solid fa-key text-gray-400 mr-1"></i>
+                    Yeni Şifre <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
                     <input type="password" 
@@ -86,7 +88,8 @@
             <!-- Confirm Password -->
             <div>
                 <label for="update_password_password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Yeni Şifre (Tekrar)
+                    <i class="fa-solid fa-check-double text-gray-400 mr-1"></i>
+                    Yeni Şifre (Tekrar) <span class="text-red-500">*</span>
                 </label>
                 <div class="relative">
                     <input type="password" 

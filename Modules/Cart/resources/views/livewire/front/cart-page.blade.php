@@ -95,9 +95,7 @@
                                                     {{ $item->quantity <= 1 ? 'disabled' : '' }}>
                                                 <i class="fa-solid fa-minus"></i>
                                             </button>
-                                            <span class="w-12 text-center font-semibold text-gray-900 dark:text-white"
-                                                  wire:loading.class="opacity-50"
-                                                  wire:target="updateQuantity({{ $item->cart_item_id }}, *)">
+                                            <span class="w-12 text-center font-semibold text-gray-900 dark:text-white">
                                                 {{ $item->quantity }}
                                             </span>
                                             <button wire:click="increaseQuantity({{ $item->cart_item_id }})"
@@ -111,10 +109,10 @@
                                     {{-- Price --}}
                                     <div class="text-right">
                                         <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                                            {{ __('cart::front.price') }}: {{ number_format($item->unit_price, 2) }} {{ $cart->currency_code ?? 'TRY' }}
+                                            {{ __('cart::front.price') }}: {{ number_format($item->unit_price, 0, ',', '.') }} TL
                                         </p>
                                         <p class="text-lg font-bold text-gray-900 dark:text-white">
-                                            {{ __('cart::front.subtotal') }}: {{ number_format($item->subtotal, 2) }} {{ $cart->currency_code ?? 'TRY' }}
+                                            {{ __('cart::front.subtotal') }}: {{ number_format($item->subtotal, 0, ',', '.') }} TL
                                         </p>
                                     </div>
                                 </div>
@@ -135,7 +133,7 @@
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600 dark:text-gray-400">{{ __('cart::front.subtotal') }}</span>
                             <span class="font-semibold text-gray-900 dark:text-white">
-                                {{ number_format($subtotal, 2) }} {{ $cart->currency_code ?? 'TRY' }}
+                                {{ number_format($subtotal, 0, ',', '.') }} TL
                             </span>
                         </div>
 
@@ -143,7 +141,7 @@
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-600 dark:text-gray-400">{{ __('cart::front.tax') }}</span>
                                 <span class="font-semibold text-gray-900 dark:text-white">
-                                    {{ number_format($cart->tax_amount, 2) }} {{ $cart->currency_code ?? 'TRY' }}
+                                    {{ number_format($cart->tax_amount, 0, ',', '.') }} TL
                                 </span>
                             </div>
                         @endif
@@ -152,12 +150,12 @@
                     <div class="flex justify-between items-center mb-6">
                         <span class="text-lg font-bold text-gray-900 dark:text-white">{{ __('cart::front.grand_total') }}</span>
                         <span class="text-2xl font-bold text-primary-600 dark:text-primary-400">
-                            {{ number_format($total, 2) }} {{ $cart->currency_code ?? 'TRY' }}
+                            {{ number_format($total, 0, ',', '.') }} TL
                         </span>
                     </div>
 
                     <div class="space-y-3">
-                        <a href="{{ route('shop.checkout') }}"
+                        <a href="{{ route('cart.checkout') }}"
                            class="block w-full bg-primary-600 hover:bg-primary-700 text-white text-center font-bold py-3 px-6 rounded-lg transition-colors">
                             {{ __('cart::front.checkout') }}
                         </a>

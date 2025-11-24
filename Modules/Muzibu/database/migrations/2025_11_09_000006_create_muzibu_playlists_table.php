@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('muzibu_playlists')) {
+            return;
+        }
+
         Schema::create('muzibu_playlists', function (Blueprint $table) {
             $table->id('playlist_id');
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_module_integrations')) {
+            return;
+        }
+
         Schema::create('ai_module_integrations', function (Blueprint $table) {
             $table->id();
             $table->string('module_name', 50);

@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('portfolios')) {
+            return;
+        }
+
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id('portfolio_id');
             $table->foreignId('portfolio_category_id')->nullable()->constrained('portfolio_categories', 'category_id')->nullOnDelete();

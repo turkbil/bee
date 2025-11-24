@@ -45,6 +45,9 @@ class TenantSitemapService
         // Portfolio kategorileri
         self::addPortfolioCategoryContent($sitemap, $languages, $defaultLanguage);
 
+        // Muzibu modülü - Artists, Albums, Songs, Playlists, Genres
+        self::addMuzibuContent($sitemap, $languages, $defaultLanguage);
+
         return $sitemap;
     }
     
@@ -898,6 +901,135 @@ class TenantSitemapService
         } catch (\Exception $e) {
             // Portfolio modülü yoksa veya hata varsa skip
             \Log::warning('Portfolio category sitemap generation failed', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Muzibu içeriklerini ekle (Artists, Albums, Songs, Playlists, Genres)
+     */
+    private static function addMuzibuContent(Sitemap $sitemap, array $languages, string $defaultLanguage): void
+    {
+        try {
+            // 1. Artists
+            $artists = \Modules\Muzibu\App\Models\Artist::where('is_active', true)->get();
+            foreach ($artists as $artist) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $artist->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/muzibu/artist/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($artist->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                            ->setPriority(0.8)
+                    );
+                }
+            }
+
+            // 2. Albums
+            $albums = \Modules\Muzibu\App\Models\Album::where('is_active', true)->get();
+            foreach ($albums as $album) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $album->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/muzibu/album/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($album->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                            ->setPriority(0.8)
+                    );
+                }
+            }
+
+            // 3. Songs
+            $songs = \Modules\Muzibu\App\Models\Song::where('is_active', true)->get();
+            foreach ($songs as $song) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $song->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/muzibu/song/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($song->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                            ->setPriority(0.7)
+                    );
+                }
+            }
+
+            // 4. Playlists (sadece public ve aktif olanlar)
+            $playlists = \Modules\Muzibu\App\Models\Playlist::where('is_active', true)
+                ->where('is_public', true)
+                ->get();
+            foreach ($playlists as $playlist) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $playlist->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/muzibu/playlist/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($playlist->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                            ->setPriority(0.7)
+                    );
+                }
+            }
+
+            // 5. Genres
+            $genres = \Modules\Muzibu\App\Models\Genre::where('is_active', true)->get();
+            foreach ($genres as $genre) {
+                foreach ($languages as $language) {
+                    $languageCode = is_object($language) ? $language->code : $language['code'];
+                    $slug = $genre->getTranslated('slug', $languageCode);
+
+                    if (empty($slug)) {
+                        continue;
+                    }
+
+                    $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
+                    $url = $baseUrl . '/muzibu/genre/' . $slug;
+
+                    $sitemap->add(
+                        Url::create($url)
+                            ->setLastModificationDate($genre->updated_at ?? now())
+                            ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
+                            ->setPriority(0.6)
+                    );
+                }
+            }
+
+        } catch (\Exception $e) {
+            // Muzibu modülü yoksa veya hata varsa skip
+            \Log::warning('Muzibu sitemap generation failed', ['error' => $e->getMessage()]);
         }
     }
 

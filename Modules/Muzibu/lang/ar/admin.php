@@ -21,6 +21,7 @@ return [
 'playlists' => 'قوائم التشغيل',
 'radios' => 'الراديو',
 'sectors' => 'القطاعات',
+'corporate_accounts' => 'الحسابات المؤسسية',
 
 // Quick Actions
 'quick_add' => 'إضافة سريعة',

@@ -22,6 +22,7 @@ class User extends Authenticatable implements HasMedia
      */
     protected $fillable = [
         'name',
+        'surname',
         'email',
         'password',
         'is_active',
@@ -37,9 +38,7 @@ class User extends Authenticatable implements HasMedia
         'locked_until',
         'two_factor_enabled',
         'two_factor_phone',
-        'is_corporate',
-        'corporate_code',
-        'parent_user_id',
+        'corporate_account_id',
     ];
 
     /**
@@ -68,7 +67,6 @@ class User extends Authenticatable implements HasMedia
             'is_approved' => 'boolean',
             'locked_until' => 'datetime',
             'two_factor_enabled' => 'boolean',
-            'is_corporate' => 'boolean',
         ];
     }
     
@@ -128,19 +126,40 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
-     * Get parent user (for corporate sub-accounts)
+     * Get corporate account user belongs to
+     * Only works for Muzibu tenant (1001)
      */
-    public function parentUser()
+    public function corporateAccount()
     {
-        return $this->belongsTo(User::class, 'parent_user_id');
+        // Tenant-aware: Only Muzibu uses corporate accounts
+        if (!$this->isMuzibuTenant()) {
+            return $this->belongsTo(self::class, 'id')->whereRaw('1=0'); // Empty relation
+        }
+
+        return $this->belongsTo(\Modules\Muzibu\App\Models\MuzibuCorporateAccount::class);
     }
 
     /**
-     * Get sub-users (for corporate accounts)
+     * Get corporate account owned by user
+     * Only works for Muzibu tenant (1001)
      */
-    public function subUsers()
+    public function ownedCorporateAccount()
     {
-        return $this->hasMany(User::class, 'parent_user_id');
+        // Tenant-aware: Only Muzibu uses corporate accounts
+        if (!$this->isMuzibuTenant()) {
+            return $this->hasOne(self::class, 'id')->whereRaw('1=0'); // Empty relation
+        }
+
+        return $this->hasOne(\Modules\Muzibu\App\Models\MuzibuCorporateAccount::class, 'user_id');
+    }
+
+    /**
+     * Check if current tenant is Muzibu
+     */
+    protected function isMuzibuTenant(): bool
+    {
+        $tenant = tenant();
+        return $tenant && $tenant->id == 1001;
     }
 
     // ==========================================
@@ -196,33 +215,6 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
-     * Check if this is a corporate account
-     */
-    public function isCorporate(): bool
-    {
-        return $this->is_corporate ?? false;
-    }
-
-    /**
-     * Check if this is a sub-account
-     */
-    public function isSubAccount(): bool
-    {
-        return $this->parent_user_id !== null;
-    }
-
-    /**
-     * Get corporate parent's subscription (for sub-accounts)
-     */
-    public function getCorporateSubscription()
-    {
-        if ($this->isSubAccount() && $this->parentUser) {
-            return $this->parentUser->subscription;
-        }
-        return $this->subscription;
-    }
-
-    /**
      * Increment failed login attempts
      */
     public function incrementFailedLogins(): void
@@ -257,5 +249,49 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->addresses()->billing()->default()->first()
             ?? $this->addresses()->billing()->first();
+    }
+
+    // ==========================================
+    // CORPORATE METHODS (Muzibu only)
+    // ==========================================
+
+    /**
+     * Check if user is corporate owner
+     * Only works for Muzibu tenant
+     */
+    public function isCorporateOwner(): bool
+    {
+        if (!$this->isMuzibuTenant()) {
+            return false;
+        }
+        return $this->ownedCorporateAccount()->exists();
+    }
+
+    /**
+     * Check if user is corporate member
+     * Only works for Muzibu tenant
+     */
+    public function isCorporateMember(): bool
+    {
+        if (!$this->isMuzibuTenant()) {
+            return false;
+        }
+        return $this->corporate_account_id !== null;
+    }
+
+    /**
+     * Get effective subscription (own or corporate owner's)
+     * Only works for Muzibu tenant
+     */
+    public function getEffectiveSubscription()
+    {
+        if (!$this->isMuzibuTenant()) {
+            return $this->subscription ?? null;
+        }
+
+        if ($this->isCorporateMember() && $this->corporateAccount) {
+            return $this->corporateAccount->owner->subscription ?? null;
+        }
+        return $this->subscription ?? null;
     }
 }

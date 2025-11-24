@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_prompt_templates')) {
+            return;
+        }
+
         Schema::create('ai_prompt_templates', function (Blueprint $table) {
             $table->id();
             $table->string('template_key', 100)->unique();

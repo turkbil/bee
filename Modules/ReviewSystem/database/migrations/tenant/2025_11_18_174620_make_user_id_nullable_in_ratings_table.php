@@ -8,16 +8,42 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('ratings', function (Blueprint $table) {
-            // Foreign key kaldır (gerçek adını kullan)
-            $table->dropForeign('ratings_ibfk_1');
+        // Foreign key var mı kontrol et
+        $foreignKeys = \DB::select("
+            SELECT CONSTRAINT_NAME
+            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+            WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = 'ratings'
+            AND REFERENCED_TABLE_NAME IS NOT NULL
+            AND COLUMN_NAME = 'user_id'
+        ");
 
+        if (count($foreignKeys) > 0) {
+            Schema::table('ratings', function (Blueprint $table) use ($foreignKeys) {
+                // Foreign key kaldır (gerçek adını kullan)
+                $table->dropForeign($foreignKeys[0]->CONSTRAINT_NAME);
+            });
+        }
+
+        Schema::table('ratings', function (Blueprint $table) {
             // user_id nullable yap
             $table->unsignedBigInteger('user_id')->nullable()->change();
-
-            // Unique constraint kaldır ve yeniden oluştur (nullable için)
-            $table->dropUnique('ratings_unique_user_item');
         });
+
+        // Unique constraint var mı kontrol et
+        $uniqueKeys = \DB::select("
+            SELECT CONSTRAINT_NAME
+            FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+            WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = 'ratings'
+            AND CONSTRAINT_NAME = 'ratings_unique_user_item'
+        ");
+
+        if (count($uniqueKeys) > 0) {
+            Schema::table('ratings', function (Blueprint $table) {
+                $table->dropUnique('ratings_unique_user_item');
+            });
+        }
 
         // Unique constraint yeniden oluştur (nullable user_id için çalışır)
         Schema::table('ratings', function (Blueprint $table) {

@@ -25,7 +25,7 @@ return new class extends Migration
 
             // Indexes
             $table->index('user_id');
-            $table->index(['ratable_type', 'ratable_id']);
+            // NOT: morphs() zaten ratable_type + ratable_id için index oluşturur
             $table->index('rating_value');
             $table->index('created_at');
 

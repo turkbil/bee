@@ -50,9 +50,18 @@ class AuthenticatedSessionController extends Controller
             app()->setLocale('tr');
         }
 
+        // Tema-aware login view
+        $theme = app(\App\Services\ThemeService::class)->getActiveTheme();
+        $viewPath = "themes.{$theme}.auth.login";
+
+        // Fallback: Tema yoksa veya view yoksa default auth.login kullan
+        if (!view()->exists($viewPath)) {
+            $viewPath = 'auth.login';
+        }
+
         // Login sayfası cache'lenmesin
         return response()
-            ->view('auth.login')
+            ->view($viewPath)
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');

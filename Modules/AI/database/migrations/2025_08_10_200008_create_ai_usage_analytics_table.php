@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_usage_analytics')) {
+            return;
+        }
+
         Schema::create('ai_usage_analytics', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('feature_id');

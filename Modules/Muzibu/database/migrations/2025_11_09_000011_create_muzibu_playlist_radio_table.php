@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('muzibu_playlist_radio')) {
+            return;
+        }
+
         Schema::create('muzibu_playlist_radio', function (Blueprint $table) {
             $table->foreignId('playlist_id')->constrained('muzibu_playlists', 'playlist_id')->cascadeOnDelete();
             $table->foreignId('radio_id')->constrained('muzibu_radios', 'radio_id')->cascadeOnDelete();

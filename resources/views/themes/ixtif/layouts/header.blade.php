@@ -184,7 +184,7 @@
 
         {{-- Top Info Bar - CSS ile yukarı kayacak --}}
         <div id="top-bar"
-             class="bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-gray-200/50 dark:border-white/10 overflow-hidden"
+             class="bg-slate-100 dark:bg-slate-950 border-b border-gray-200/50 dark:border-white/10 overflow-hidden"
              @mouseenter="activeMegaMenu = null">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div class="flex items-center justify-between text-sm py-3">

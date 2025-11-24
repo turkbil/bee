@@ -13,7 +13,11 @@ use Modules\Cart\App\Http\Controllers\Api\CartApiController;
  *
 */
 
-Route::middleware(['api', 'tenant'])->prefix('cart')->name('api.cart.')->group(function () {
+// Cart API - Session gerekli (CartWidget sync için)
+Route::middleware([
+    'web',  // Session için web middleware
+    'tenant',
+])->prefix('cart')->name('api.cart.')->group(function () {
     Route::post('/add', [CartApiController::class, 'addItem'])->name('add');
     Route::post('/update', [CartApiController::class, 'updateItem'])->name('update');
     Route::post('/remove', [CartApiController::class, 'removeItem'])->name('remove');

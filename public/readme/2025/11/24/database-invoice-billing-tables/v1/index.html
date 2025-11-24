@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatura & Ödeme Sistemi - Veritabanı Analizi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subsection {
+            margin-bottom: 30px;
+        }
+
+        .subsection h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #93c5fd;
+            border-left: 4px solid #3b82f6;
+            padding-left: 15px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #93c5fd;
+            border-bottom: 2px solid #334155;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #334155;
+            color: #cbd5e1;
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .column-type {
+            color: #fbbf24;
+            font-weight: 500;
+            font-family: 'Courier New', monospace;
+        }
+
+        .column-name {
+            color: #93c5fd;
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+
+        .fk {
+            color: #f87171;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .primary-key {
+            background: rgba(249, 115, 22, 0.1);
+            color: #fb923c;
+        }
+
+        .location {
+            background: rgba(34, 197, 94, 0.1);
+            color: #86efac;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .database-location {
+            color: #a78bfa;
+            font-weight: 500;
+        }
+
+        .note {
+            background: rgba(96, 165, 250, 0.1);
+            padding: 15px;
+            border-left: 4px solid #3b82f6;
+            margin: 15px 0;
+            border-radius: 6px;
+            color: #cbd5e1;
+        }
+
+        .highlight-row {
+            background: rgba(168, 85, 247, 0.15) !important;
+        }
+
+        .relationship-diagram {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #334155;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            overflow-x: auto;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-central {
+            background: #dc2626;
+            color: white;
+        }
+
+        .badge-tenant {
+            background: #2563eb;
+            color: white;
+        }
+
+        .badge-both {
+            background: #7c3aed;
+            color: white;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .box-container {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💰 Fatura & Ödeme Sistemi</h1>
+            <h1 style="font-size: 1.5rem; background: none; -webkit-text-fill-color: unset; color: #93c5fd; margin-top: 10px;">Veritabanı Tabloları Analizi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-24 10:30 |
+                🎯 Modüller: Payment, Cart, Shop |
+                👤 Talep: Fatura/Billing tabloları taraması
+            </div>
+        </header>
+
+        <section>
+            <h2>📊 Özet İstatistikler</h2>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">11</div>
+                    <div class="stat-label">Toplam Tablo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Modül</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Veritabanı Seviyesi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">92+</div>
+                    <div class="stat-label">Kolon</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🏗️ Sistem Mimarisi</h2>
+            <div class="box-container">
+                <p><strong>Ödeme Sistemi Mimarisi:</strong></p>
+                <p style="margin-top: 12px; color: #cbd5e1;">Sistem <span class="badge badge-both">Multi-Tenant</span> ve <span class="badge badge-both">Polymorphic</span> ilişkiler kullanır.</p>
+                <p style="margin-top: 12px; color: #cbd5e1;">Her tenant kendi ödeme verilerini saklar. Ödeme tablosu, herhangi bir modelden (ShopOrder, Subscription, vb.) ödeme alabilir.</p>
+            </div>
+        </section>
+
+        <!-- PAYMENT MODULE -->
+        <section>
+            <h2>💳 Modül 1: Payment (Ödeme)</h2>
+
+            <div class="subsection">
+                <h3>📍 Konum</h3>
+                <div class="location">
+                    /Modules/Payment/database/migrations/
+                    <br>/Modules/Payment/database/migrations/tenant/
+                </div>
+            </div>
+
+            <!-- payment_methods -->
+            <div class="subsection">
+                <h3>1️⃣ payment_methods (Ödeme Yöntemleri)</h3>
+                <span class="badge badge-both">Central + Tenant</span>
+                <div class="location">Central: database/migrations/<br>Tenant: database/migrations/tenant/</div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kolon Adı</th>
+                                <th>Tür</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="primary-key">
+                                <td class="column-name">payment_method_id</td>
+                                <td class="column-type">id (big int)</td>
+                                <td>Birincil anahtar</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">title</td>
+                                <td class="column-type">json</td>
+                                <td>{"tr":"Kredi Kartı","en":"Credit Card"}</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">slug</td>
+                                <td class="column-type">string unique</td>
+                                <td>paytr-credit-card</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">description</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Ödeme yöntemi açıklaması</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">gateway</td>
+                                <td class="column-type">enum</td>
+                                <td>paytr, stripe, iyzico, paypal, manual</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">gateway_mode</td>
+                                <td class="column-type">enum</td>
+                                <td>test | live</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">gateway_config</td>
+                                <td class="column-type">json nullable</td>
+                                <td>API keys, merchant IDs (JSON)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">supports_purchase</td>
+                                <td class="column-type">boolean</td>
+                                <td>Satış ödemeleri desteklenir</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">supports_subscription</td>
+                                <td class="column-type">boolean</td>
+                                <td>Abonelik ödemeleri desteklenir</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">supports_donation</td>
+                                <td class="column-type">boolean</td>
+                                <td>Bağış ödemeleri desteklenir</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">fixed_fee</td>
+                                <td class="column-type">decimal(10,2)</td>
+                                <td>Sabit ücret</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">percentage_fee</td>
+                                <td class="column-type">decimal(5,2)</td>
+                                <td>Yüzde ücret (%)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">min_amount</td>
+                                <td class="column-type">decimal(10,2) nullable</td>
+                                <td>Minimum ödeme tutarı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">max_amount</td>
+                                <td class="column-type">decimal(14,2) nullable</td>
+                                <td>Maksimum ödeme tutarı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">supports_installment</td>
+                                <td class="column-type">boolean</td>
+                                <td>Taksit desteği</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">max_installments</td>
+                                <td class="column-type">integer</td>
+                                <td>Maksimum taksit sayısı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">installment_options</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Taksit seçenekleri</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">supported_currencies</td>
+                                <td class="column-type">json</td>
+                                <td>["TRY","USD","EUR"]</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">icon</td>
+                                <td class="column-type">string nullable</td>
+                                <td>İkon (FontAwesome)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">logo_url</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Logo URL</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">sort_order</td>
+                                <td class="column-type">integer</td>
+                                <td>Sıralama önceliği</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">is_active</td>
+                                <td class="column-type">boolean</td>
+                                <td>Aktif/Pasif</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">requires_verification</td>
+                                <td class="column-type">boolean</td>
+                                <td>Doğrulama gerekli mi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">created_at, updated_at</td>
+                                <td class="column-type">timestamp</td>
+                                <td>Zaman damgaları</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">deleted_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Soft delete (silinme tarihi)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="note">
+                    <strong>Önemli:</strong> Bu tablo PayTR, Stripe, İyzico, PayPal gibi tüm ödeme gateway'lerinin yönetilmesine izin verir. Her tenant kendi ödeme yöntemlerini özelleştirebilir.
+                </div>
+            </div>
+
+            <!-- payments -->
+            <div class="subsection">
+                <h3>2️⃣ payments (Ödeme İşlemleri)</h3>
+                <span class="badge badge-both">Central + Tenant</span>
+                <div class="location">Central: database/migrations/<br>Tenant: database/migrations/tenant/</div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kolon Adı</th>
+                                <th>Tür</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="primary-key">
+                                <td class="column-name">payment_id</td>
+                                <td class="column-type">id (big int)</td>
+                                <td>Birincil anahtar</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">payable_id</td>
+                                <td class="column-type">unsigned big int</td>
+                                <td><span class="fk">Polymorphic: ShopOrder, Subscription, vb.</span></td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">payable_type</td>
+                                <td class="column-type">string</td>
+                                <td><span class="fk">Model sınıfı (Modules\Shop\App\Models\ShopOrder)</span></td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">payment_method_id</td>
+                                <td class="column-type">big int nullable</td>
+                                <td><span class="fk">FK → payment_methods</span></td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">payment_number</td>
+                                <td class="column-type">string unique</td>
+                                <td>PAY-2024-00001</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">payment_type</td>
+                                <td class="column-type">enum</td>
+                                <td>purchase, subscription, donation, refund, deposit</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">amount</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Ödeme tutarı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">currency</td>
+                                <td class="column-type">string(3)</td>
+                                <td>TRY, USD, EUR</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">exchange_rate</td>
+                                <td class="column-type">decimal(10,4)</td>
+                                <td>Döviz kuru</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">amount_in_base_currency</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Base para biriminde tutar (TRY)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">status</td>
+                                <td class="column-type">enum</td>
+                                <td>pending, processing, completed, failed, cancelled, refunded</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">gateway</td>
+                                <td class="column-type">enum</td>
+                                <td>paytr, stripe, iyzico, paypal, manual</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">gateway_transaction_id</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Gateway merchant_oid</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">gateway_payment_id</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Gateway token/payment ID</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">gateway_response</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Tüm gateway response (audit trail)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">card_brand</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Visa, Mastercard, Amex</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">card_last_four</td>
+                                <td class="column-type">string(4) nullable</td>
+                                <td>Son 4 hanesi (masked)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">card_holder_name</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Kart sahibi adı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">installment_count</td>
+                                <td class="column-type">integer</td>
+                                <td>Taksit sayısı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">installment_fee</td>
+                                <td class="column-type">decimal(8,2)</td>
+                                <td>Taksit ücreti</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">refund_for_payment_id</td>
+                                <td class="column-type">big int nullable</td>
+                                <td><span class="fk">Self-referencing FK (geri ödeme için)</span></td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">refund_reason</td>
+                                <td class="column-type">text nullable</td>
+                                <td>İade sebebi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">is_verified</td>
+                                <td class="column-type">boolean</td>
+                                <td>Doğrulama durumu</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">verified_by_user_id</td>
+                                <td class="column-type">big int nullable</td>
+                                <td>Doğrulayan admin kullanıcı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">verified_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Doğrulama tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">paid_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Ödeme tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">failed_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Başarısızlık tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">refunded_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>İade tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">notes</td>
+                                <td class="column-type">text nullable</td>
+                                <td>Notlar</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">metadata</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Ek veriler</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">ip_address</td>
+                                <td class="column-type">string(45) nullable</td>
+                                <td>Müşteri IP adresi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">user_agent</td>
+                                <td class="column-type">text nullable</td>
+                                <td>Tarayıcı bilgisi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">created_at, updated_at</td>
+                                <td class="column-type">timestamp</td>
+                                <td>Zaman damgaları</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">deleted_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Soft delete</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="note">
+                    <strong>Polymorphic Tasarım:</strong> ShopOrder, Subscription, Reservation gibi herhangi bir model için ödeme kaydı tutulabilir. payable_type ve payable_id kombinasyonu hangi modelden ödeme aldığını belirler.
+                </div>
+            </div>
+
+            <!-- bank_accounts -->
+            <div class="subsection">
+                <h3>3️⃣ bank_accounts (Banka Hesapları)</h3>
+                <span class="badge badge-tenant">Tenant Only</span>
+                <div class="location">Tenant: database/migrations/tenant/</div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kolon Adı</th>
+                                <th>Tür</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="primary-key">
+                                <td class="column-name">bank_account_id</td>
+                                <td class="column-type">id (big int)</td>
+                                <td>Birincil anahtar</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">bank_name</td>
+                                <td class="column-type">string(100)</td>
+                                <td>Ziraat Bankası, Garanti BBVA, vb.</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">branch_name</td>
+                                <td class="column-type">string(100) nullable</td>
+                                <td>Şube adı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">branch_code</td>
+                                <td class="column-type">string(20) nullable</td>
+                                <td>Şube kodu</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">account_holder_name</td>
+                                <td class="column-type">string(150)</td>
+                                <td>Hesap sahibi adı (firma adı)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">account_number</td>
+                                <td class="column-type">string(50) nullable</td>
+                                <td>Hesap numarası</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">iban</td>
+                                <td class="column-type">string(34)</td>
+                                <td>IBAN (TR için 26 haneli, max 34)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">swift_code</td>
+                                <td class="column-type">string(11) nullable</td>
+                                <td>BIC/SWIFT kodu (uluslararası transferler)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">currency</td>
+                                <td class="column-type">enum</td>
+                                <td>TRY, USD, EUR, GBP, RUB</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">is_active</td>
+                                <td class="column-type">boolean</td>
+                                <td>Aktif/Pasif</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">sort_order</td>
+                                <td class="column-type">unsigned int</td>
+                                <td>Gösterim sırası</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">description</td>
+                                <td class="column-type">text nullable</td>
+                                <td>Müşteriye gösterilecek açıklama</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">created_at, updated_at</td>
+                                <td class="column-type">timestamp</td>
+                                <td>Zaman damgaları</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">deleted_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Soft delete</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="note">
+                    <strong>Havale/EFT Ödemeleri İçin:</strong> Her tenant havale/EFT ile ödeme kabul edebilmek için kendi banka hesaplarını yönetir.
+                </div>
+            </div>
+        </section>
+
+        <!-- CART MODULE -->
+        <section>
+            <h2>🛒 Modül 2: Cart (Sepet & Siparişler)</h2>
+
+            <div class="subsection">
+                <h3>📍 Konum</h3>
+                <div class="location">
+                    Central: /Modules/Cart/database/migrations/
+                    <br>Tenant: /Modules/Cart/database/migrations/tenant/
+                </div>
+            </div>
+
+            <!-- cart_orders -->
+            <div class="subsection">
+                <h3>4️⃣ cart_orders (Siparişler)</h3>
+                <span class="badge badge-both">Central + Tenant</span>
+                <div class="location">Central: 2025_11_24_000001_create_orders_table.php<br>Tenant: tenant/2025_11_24_000001_create_orders_table.php</div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kolon Adı</th>
+                                <th>Tür</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="primary-key">
+                                <td class="column-name">order_id</td>
+                                <td class="column-type">id (big int)</td>
+                                <td>Birincil anahtar</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">order_number</td>
+                                <td class="column-type">string unique</td>
+                                <td>ORD-2024-00001</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">user_id</td>
+                                <td class="column-type">big int nullable</td>
+                                <td><span class="fk">FK → users</span></td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">order_type</td>
+                                <td class="column-type">enum</td>
+                                <td>sale, subscription, service, digital</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">order_source</td>
+                                <td class="column-type">enum</td>
+                                <td>web, admin, mobile, api</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">status</td>
+                                <td class="column-type">enum</td>
+                                <td>pending, confirmed, processing, ready, shipped, delivered, completed, cancelled, refunded</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">subtotal</td>
+                                <td class="column-type">decimal(14,2)</td>
+                                <td>Ara toplam (indirim hariç)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">discount_amount</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>İndirim tutarı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">tax_amount</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Vergi tutarı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">shipping_cost</td>
+                                <td class="column-type">decimal(10,2)</td>
+                                <td>Kargo ücreti</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">total_amount</td>
+                                <td class="column-type">decimal(14,2)</td>
+                                <td>Toplam tutar</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">currency</td>
+                                <td class="column-type">string(3)</td>
+                                <td>TRY (varsayılan)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">payment_status</td>
+                                <td class="column-type">enum</td>
+                                <td>pending, partially_paid, paid, refunded, failed</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">paid_amount</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Ödenen tutar</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">requires_shipping</td>
+                                <td class="column-type">boolean</td>
+                                <td>Kargo gerekli mi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">tracking_number</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Kargo takip numarası</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">shipped_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Kargoya verilme tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">delivered_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Teslim tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">coupon_code</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Kullanılan kupon</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">coupon_discount</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Kupon indirimi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">customer_name</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Müşteri adı (snapshot)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">customer_email</td>
+                                <td class="column-type">string</td>
+                                <td>Müşteri e-posta</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">customer_phone</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Müşteri telefon</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">customer_company</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Müşteri şirketi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">customer_tax_office</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Vergi dairesi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">customer_tax_number</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Vergi/TC Kimlik numarası</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">billing_address</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Fatura adresi (snapshot)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">shipping_address</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Teslimat adresi (snapshot)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">agreed_terms</td>
+                                <td class="column-type">boolean</td>
+                                <td>Şartları kabul etti</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">agreed_privacy</td>
+                                <td class="column-type">boolean</td>
+                                <td>Gizlilik politikasını kabul etti</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">agreed_marketing</td>
+                                <td class="column-type">boolean</td>
+                                <td>Pazarlama e-postalarını kabul etti</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">customer_notes</td>
+                                <td class="column-type">text nullable</td>
+                                <td>Müşteri notları</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">admin_notes</td>
+                                <td class="column-type">text nullable</td>
+                                <td>Admin notları</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">metadata</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Ek veriler</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">ip_address</td>
+                                <td class="column-type">string(45) nullable</td>
+                                <td>Müşteri IP adresi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">user_agent</td>
+                                <td class="column-type">text nullable</td>
+                                <td>Tarayıcı bilgisi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">confirmed_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Onaylanma tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">completed_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Tamamlanma tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">cancelled_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>İptal tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">created_at, updated_at</td>
+                                <td class="column-type">timestamp</td>
+                                <td>Zaman damgaları</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">deleted_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Soft delete</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- cart_order_items -->
+            <div class="subsection">
+                <h3>5️⃣ cart_order_items (Sipariş Ürünleri)</h3>
+                <span class="badge badge-both">Central + Tenant</span>
+                <div class="location">Central: 2025_11_24_000002_create_order_items_table.php<br>Tenant: tenant/2025_11_24_000002_create_order_items_table.php</div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kolon Adı</th>
+                                <th>Tür</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="primary-key">
+                                <td class="column-name">order_item_id</td>
+                                <td class="column-type">id (big int)</td>
+                                <td>Birincil anahtar</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">order_id</td>
+                                <td class="column-type">big int</td>
+                                <td><span class="fk">FK → cart_orders (cascade)</span></td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">orderable_id</td>
+                                <td class="column-type">unsigned big int</td>
+                                <td><span class="fk">Polymorphic: ShopProduct, vb.</span></td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">orderable_type</td>
+                                <td class="column-type">string</td>
+                                <td><span class="fk">Model sınıfı (Modules\Shop\App\Models\ShopProduct)</span></td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">item_title</td>
+                                <td class="column-type">string</td>
+                                <td>Ürün adı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">item_sku</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Ürün SKU</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">item_image</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Ürün görseli URL</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">item_description</td>
+                                <td class="column-type">text nullable</td>
+                                <td>Ürün açıklaması</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">quantity</td>
+                                <td class="column-type">integer</td>
+                                <td>Adet</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">unit_price</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Birim fiyat (indirim öncesi)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">discount_amount</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Birim başına indirim tutarı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">tax_rate</td>
+                                <td class="column-type">decimal(5,2)</td>
+                                <td>Vergi oranı (%)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">tax_amount</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Vergi tutarı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">subtotal</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Ara toplam (quantity × unit_price)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">total</td>
+                                <td class="column-type">decimal(12,2)</td>
+                                <td>Satır toplamı (subtotal + tax)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">original_currency</td>
+                                <td class="column-type">string(3) nullable</td>
+                                <td>Orijinal para birimi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">original_price</td>
+                                <td class="column-type">decimal(12,2) nullable</td>
+                                <td>Orijinal fiyat (döviz çevrilmeden)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">conversion_rate</td>
+                                <td class="column-type">decimal(10,4)</td>
+                                <td>Döviz çevrim oranı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">status</td>
+                                <td class="column-type">enum</td>
+                                <td>pending, confirmed, shipped, delivered, cancelled, refunded</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">is_digital</td>
+                                <td class="column-type">boolean</td>
+                                <td>Dijital ürün mü</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">download_url</td>
+                                <td class="column-type">string nullable</td>
+                                <td>İndirme URL'si (dijital ürünler)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">download_count</td>
+                                <td class="column-type">integer</td>
+                                <td>İndirme sayısı</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">download_expires_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>İndirme sona erme tarihi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">options</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Varyant seçenekleri (renk, beden, vb.)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">metadata</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Ek veriler</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">created_at, updated_at</td>
+                                <td class="column-type">timestamp</td>
+                                <td>Zaman damgaları</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">deleted_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Soft delete</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- cart_addresses -->
+            <div class="subsection">
+                <h3>6️⃣ cart_addresses (Müşteri Adresleri)</h3>
+                <span class="badge badge-both">Central + Tenant</span>
+                <div class="location">Central: 2025_11_24_000003_create_addresses_table.php<br>Tenant: tenant/2025_11_24_000003_create_addresses_table.php</div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kolon Adı</th>
+                                <th>Tür</th>
+                                <th>Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="primary-key">
+                                <td class="column-name">address_id</td>
+                                <td class="column-type">id (big int)</td>
+                                <td>Birincil anahtar</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">user_id</td>
+                                <td class="column-type">big int</td>
+                                <td><span class="fk">FK → users (cascade)</span></td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">address_type</td>
+                                <td class="column-type">enum</td>
+                                <td>billing, shipping, both</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">title</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Adres başlığı (Ev, İş, vb.)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">first_name</td>
+                                <td class="column-type">string</td>
+                                <td>Ad</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">last_name</td>
+                                <td class="column-type">string</td>
+                                <td>Soyad</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">company_name</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Şirket adı (B2B)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">tax_office</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Vergi dairesi (B2B faturalar için)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">tax_number</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Vergi numarası / TC Kimlik</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">phone</td>
+                                <td class="column-type">string</td>
+                                <td>Telefon numarası</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">email</td>
+                                <td class="column-type">string nullable</td>
+                                <td>E-posta adresi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">address_line_1</td>
+                                <td class="column-type">text</td>
+                                <td>Adres (sokak, bina no)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">address_line_2</td>
+                                <td class="column-type">text nullable</td>
+                                <td>Adres 2 (daire no, vb.)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">neighborhood</td>
+                                <td class="column-type">string nullable</td>
+                                <td>Mahalle</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">district</td>
+                                <td class="column-type">string</td>
+                                <td>İlçe</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">city</td>
+                                <td class="column-type">string</td>
+                                <td>Şehir/İl</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">postal_code</td>
+                                <td class="column-type">string(10) nullable</td>
+                                <td>Posta kodu</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">country_code</td>
+                                <td class="column-type">string(2)</td>
+                                <td>Ülke kodu (ISO 3166-1: TR, US, DE)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">is_default_billing</td>
+                                <td class="column-type">boolean</td>
+                                <td>Varsayılan fatura adresi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">is_default_shipping</td>
+                                <td class="column-type">boolean</td>
+                                <td>Varsayılan teslimat adresi</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">delivery_notes</td>
+                                <td class="column-type">text nullable</td>
+                                <td>Teslimat notları (kapıcıya söyleyin, vb.)</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">metadata</td>
+                                <td class="column-type">json nullable</td>
+                                <td>Ek veriler</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">created_at, updated_at</td>
+                                <td class="column-type">timestamp</td>
+                                <td>Zaman damgaları</td>
+                            </tr>
+                            <tr>
+                                <td class="column-name">deleted_at</td>
+                                <td class="column-type">timestamp nullable</td>
+                                <td>Soft delete</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="note">
+                    <strong>Açıklama:</strong> Kullanıcıların fatura ve teslimat adreslerini önceden kaydetmelerine ve siparişlerde seçmelerine izin verir.
+                </div>
+            </div>
+        </section>
+
+        <!-- SHOP MODULE -->
+        <section>
+            <h2>🏪 Modül 3: Shop (E-Ticaret)</h2>
+
+            <div class="subsection">
+                <h3>📍 Konum</h3>
+                <div class="location">
+                    Tenant: /Modules/Shop/database/migrations/tenant/
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>7️⃣ shop_orders (Siparişler)</h3>
+                <span class="badge badge-tenant">Tenant Only</span>
+                <div class="location">Tenant: 017_create_shop_orders_table.php</div>
+                <div class="note">
+                    <strong>Açıklama:</strong> Shop modülü, Cart modülüne benzer şekilde kendi orders tablosuna sahiptir. Yapı neredeyse aynı olsa da, Shop modülü daha eski tasarımı kullanır. Yeni projeler Cart modülünü tercih etmelidir.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>8️⃣ shop_order_items (Sipariş Ürünleri)</h3>
+                <span class="badge badge-tenant">Tenant Only</span>
+                <div class="location">Tenant: 018_create_shop_order_items_table.php</div>
+                <div class="note">
+                    <strong>Açıklama:</strong> Shop modülü siparişlerin ürünlerini saklar. Polymorphic ilişki yerine doğrudan product_id kullanır.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>9️⃣ shop_order_addresses (Sipariş Adresleri)</h3>
+                <span class="badge badge-tenant">Tenant Only</span>
+                <div class="location">Tenant: 019_create_shop_order_addresses_table.php</div>
+                <div class="note">
+                    <strong>Açıklama:</strong> Sipariş anında fatura ve teslimat adreslerinin snapshot'ı saklanır. Değişim durumunda tarihsel verileri korur.
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🔟 shop_customer_addresses (Müşteri Adresleri)</h3>
+                <span class="badge badge-tenant">Tenant Only</span>
+                <div class="location">Tenant: 013_create_shop_customer_addresses_table.php</div>
+                <div class="note">
+                    <strong>Açıklama:</strong> Shop müşterilerinin kayıtlı adreslerini yönetir. Cart modülü User bazlı adresler kullanırken, Shop modülü Customer bazlı adresler kullanır (ödev Shop müşteri sistemi).
+                </div>
+            </div>
+        </section>
+
+        <!-- RELATIONSHIPS -->
+        <section>
+            <h2>🔗 İlişkiler Diyagramı</h2>
+
+            <div class="subsection">
+                <h3>Ödeme Akışı</h3>
+                <div class="relationship-diagram">
+cart_orders (order_id)
+  ↓ (polymorphic: payable)
+payments (payable_id, payable_type)
+  ↓ (payment_method_id)
+payment_methods (payment_method_id)
+
+Örnek:
+- payment.payable_type = "Modules\Cart\App\Models\Order"
+- payment.payable_id = 123
+→ Order #123'ün ödemesini temsil eder
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>Sipariş Mimarisi</h3>
+                <div class="relationship-diagram">
+cart_orders (order_id)
+  ├─ cart_order_items (order_id)
+  │   ├─ orderable_type = "Modules\Shop\App\Models\ShopProduct"
+  │   └─ orderable_id = 789
+  │
+  └─ Müşteri Bilgileri (JSON)
+     ├─ billing_address (JSON snapshot)
+     └─ shipping_address (JSON snapshot)
+
+Alternativ (Shop):
+shop_orders (order_id)
+  ├─ shop_order_items (order_id)
+  │   └─ product_id (doğrudan FK)
+  │
+  ├─ shop_order_addresses
+  │   ├─ address_type = 'billing'
+  │   └─ address_type = 'shipping'
+  │
+  └─ shop_customer_addresses
+     └─ customer_id (müşteri seçimi)
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>Adres Yönetimi</h3>
+                <div class="relationship-diagram">
+users (user_id)
+  └─ cart_addresses (user_id)
+     └─ address_type: billing | shipping | both
+
+Alternativ (Shop):
+shop_customers (customer_id)
+  └─ shop_customer_addresses (customer_id)
+     └─ address_type: billing | shipping | both
+
+shop_orders (order_id)
+  └─ shop_order_addresses (order_id)
+     └─ address_type: billing | shipping
+     └─ snapshot (snapshot at order time)
+                </div>
+            </div>
+        </section>
+
+        <!-- DATABASE LOCATIONS -->
+        <section>
+            <h2>📂 Veritabanı Konumları</h2>
+
+            <div class="subsection">
+                <h3>Central Database (tuufi_db)</h3>
+                <div class="box-container">
+                    <strong>Tablolar:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>payment_methods (global ödeme yöntemleri)</li>
+                        <li>payments (global ödeme kaydı)</li>
+                        <li>cart_orders (global siparişler)</li>
+                        <li>cart_order_items (global sipariş ürünleri)</li>
+                        <li>cart_addresses (global adresler)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>Tenant Database (tenant_X_db)</h3>
+                <div class="box-container">
+                    <strong>Tablolar:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>payment_methods (tenant-specific)</li>
+                        <li>payments (tenant-specific)</li>
+                        <li>bank_accounts (havale/EFT hesapları)</li>
+                        <li>cart_orders (tenant siparişleri)</li>
+                        <li>cart_order_items (tenant sipariş ürünleri)</li>
+                        <li>cart_addresses (tenant adresler)</li>
+                        <li>shop_orders (eski Shop siparişleri)</li>
+                        <li>shop_order_items (eski Shop sipariş ürünleri)</li>
+                        <li>shop_order_addresses (eski Shop adresler)</li>
+                        <li>shop_customer_addresses (eski Shop müşteri adresleri)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- KEY INSIGHTS -->
+        <section>
+            <h2>💡 Önemli Bulgular</h2>
+
+            <div class="box-container">
+                <h3 style="color: #93c5fd;">1. Polymorphic Tasarım</h3>
+                <p style="margin-top: 10px;">Payments tablosu polymorphic morph kullanarak herhangi bir modelden (ShopOrder, Subscription, vb.) ödeme alabilir. Bu, ödeme sistemini genel ve esnek kılmaktadır.</p>
+            </div>
+
+            <div class="box-container">
+                <h3 style="color: #93c5fd;">2. Snapshot Mimarisi</h3>
+                <p style="margin-top: 10px;">Siparişin tarihsel verilerini korumak için JSON snapshot'lar kullanılır (billing_address, shipping_address, ürün snapshot'ları). Bu, sipariş alındıktan sonra ürün/fiyat değişirse bile orijinal verileri saklar.</p>
+            </div>
+
+            <div class="box-container">
+                <h3 style="color: #93c5fd;">3. Dual Modüller</h3>
+                <p style="margin-top: 10px;">Hem Shop hem de Cart modüllerinde benzer order/address tabloları vardır. Eski projeler Shop kullanırken, yeni projeler Cart modülünü tercih etmelidir. Uzun vadede Cart modülü standart olacaktır.</p>
+            </div>
+
+            <div class="box-container">
+                <h3 style="color: #93c5fd;">4. Multi-Tenant Yapı</h3>
+                <p style="margin-top: 10px;">Payment tabloları Central ve Tenant olmak üzere iki yerde tanımlanır. Her tenant kendi payment_methods ve payments verilerine sahiptir. Bank_accounts ve diğer tenant-specific veriler sadece Tenant database'inde bulunur.</p>
+            </div>
+
+            <div class="box-container">
+                <h3 style="color: #93c5fd;">5. Havale/EFT Sistemi</h3>
+                <p style="margin-top: 10px;">bank_accounts tablosu ile her tenant havale/EFT ödeme kabul edebilir. Müşteriler siparişlerinde banka hesapları seçerek manuel ödeme yapar (admin onayı sonrasında).</p>
+            </div>
+
+            <div class="box-container">
+                <h3 style="color: #93c5fd;">6. İndirim & Vergi Yönetimi</h3>
+                <p style="margin-top: 10px;">Her sipariş ve ürün satırında discount_amount, tax_amount, tax_rate tutulur. Bu, karmaşık vergi ve indirim hesaplamalarını destekler.</p>
+            </div>
+
+            <div class="box-container">
+                <h3 style="color: #93c5fd;">7. Soft Delete Kullanımı</h3>
+                <p style="margin-top: 10px;">Tüm ana tablolar soft delete (deleted_at) destekler. Veriler fiziksel olarak silinmez, sadece işaretlenir. Denetim ve veri kurtarma için yararlıdır.</p>
+            </div>
+
+            <div class="box-container">
+                <h3 style="color: #93c5fd;">8. Refund (İade) Sistemi</h3>
+                <p style="margin-top: 10px;">payments tablosundaki refund_for_payment_id kullanarak self-referencing ilişki ile geri ödeme zincirleri oluşturulabilir. Aynı sipariş için kısmi iadeler de mümkündür.</p>
+            </div>
+        </section>
+
+        <!-- QUERIES & EXAMPLES -->
+        <section>
+            <h2>📋 Faydalı Sorgular</h2>
+
+            <div class="subsection">
+                <h3>1. Beklemede Olan Ödemeler</h3>
+                <div class="relationship-diagram" style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid #dc2626;">
+SELECT *
+FROM payments
+WHERE status = 'pending'
+AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+ORDER BY created_at DESC;
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>2. Tamamlanmayan Siparişler</h3>
+                <div class="relationship-diagram" style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid #dc2626;">
+SELECT
+  co.*,
+  COUNT(coi.order_item_id) as item_count,
+  SUM(coi.total) as items_total
+FROM cart_orders co
+LEFT JOIN cart_order_items coi ON co.order_id = coi.order_id
+WHERE co.status IN ('pending', 'processing')
+AND co.payment_status != 'paid'
+GROUP BY co.order_id
+ORDER BY co.created_at DESC;
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>3. Müşteri Ödeme Geçmişi</h3>
+                <div class="relationship-diagram" style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid #dc2626;">
+SELECT
+  p.*,
+  pm.title,
+  co.order_number,
+  co.total_amount
+FROM payments p
+LEFT JOIN payment_methods pm ON p.payment_method_id = pm.payment_method_id
+LEFT JOIN cart_orders co ON p.payable_type = 'Modules\Cart\App\Models\Order'
+  AND p.payable_id = co.order_id
+WHERE p.payable_type = 'Modules\Cart\App\Models\Order'
+  AND co.user_id = ?
+ORDER BY p.created_at DESC;
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>4. Havale Bekleme Siparişleri</h3>
+                <div class="relationship-diagram" style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid #dc2626;">
+SELECT co.* FROM cart_orders co
+WHERE co.payment_status = 'pending'
+AND JSON_EXTRACT(co.billing_address, '$.payment_method') = 'bank_transfer'
+ORDER BY co.created_at DESC;
+                </div>
+            </div>
+        </section>
+
+        <!-- MIGRATION FILES -->
+        <section>
+            <h2>📁 Migration Dosyaları Özet</h2>
+
+            <div class="box-container">
+                <strong>Payment Module (Central):</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>/Modules/Payment/database/migrations/2025_11_09_001_create_payment_methods_table.php</li>
+                    <li>/Modules/Payment/database/migrations/2025_11_09_002_create_payments_table.php</li>
+                    <li>/Modules/Payment/database/migrations/2025_11_12_010000_create_payment_gateway_settings.php (Settings)</li>
+                </ul>
+            </div>
+
+            <div class="box-container">
+                <strong>Payment Module (Tenant):</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>/Modules/Payment/database/migrations/tenant/2025_11_09_001_create_payment_methods_table.php</li>
+                    <li>/Modules/Payment/database/migrations/tenant/2025_11_09_002_create_payments_table.php</li>
+                    <li>/Modules/Payment/database/migrations/tenant/2025_11_12_020000_create_bank_accounts_table.php</li>
+                </ul>
+            </div>
+
+            <div class="box-container">
+                <strong>Cart Module (Central):</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>/Modules/Cart/database/migrations/2025_11_24_000001_create_orders_table.php</li>
+                    <li>/Modules/Cart/database/migrations/2025_11_24_000002_create_order_items_table.php</li>
+                    <li>/Modules/Cart/database/migrations/2025_11_24_000003_create_addresses_table.php</li>
+                </ul>
+            </div>
+
+            <div class="box-container">
+                <strong>Cart Module (Tenant):</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>/Modules/Cart/database/migrations/tenant/2025_11_24_000001_create_orders_table.php</li>
+                    <li>/Modules/Cart/database/migrations/tenant/2025_11_24_000002_create_order_items_table.php</li>
+                    <li>/Modules/Cart/database/migrations/tenant/2025_11_24_000003_create_addresses_table.php</li>
+                </ul>
+            </div>
+
+            <div class="box-container">
+                <strong>Shop Module (Tenant Only):</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>/Modules/Shop/database/migrations/tenant/017_create_shop_orders_table.php</li>
+                    <li>/Modules/Shop/database/migrations/tenant/018_create_shop_order_items_table.php</li>
+                    <li>/Modules/Shop/database/migrations/tenant/019_create_shop_order_addresses_table.php</li>
+                    <li>/Modules/Shop/database/migrations/tenant/013_create_shop_customer_addresses_table.php</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından otomatik olarak oluşturuldu | 📊 Veritabanı Analizi Raporu
+        </footer>
+    </div>
+</body>
+</html>

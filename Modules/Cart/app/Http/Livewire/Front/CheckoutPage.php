@@ -4,16 +4,17 @@ namespace Modules\Cart\App\Http\Livewire\Front;
 
 use Livewire\Component;
 use Modules\Cart\App\Services\CartService;
-use Modules\Shop\App\Models\ShopCustomer;
-use Modules\Shop\App\Models\ShopCustomerAddress;
-use Modules\Shop\App\Models\ShopOrder;
-use Modules\Shop\App\Models\ShopOrderItem;
+use Modules\Cart\App\Models\Address;
+use Modules\Cart\App\Models\BillingProfile;
+use Modules\Cart\App\Models\Order;
+use Modules\Cart\App\Models\OrderItem;
 use Modules\Payment\App\Models\PaymentMethod;
 use Modules\Payment\App\Models\Payment;
 use Modules\Payment\App\Services\PayTRPaymentService;
 use Modules\Payment\App\Services\PayTRDirectService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class CheckoutPage extends Component
 {
@@ -30,15 +31,27 @@ class CheckoutPage extends Component
     public $contact_email = '';
     public $contact_phone = '';
 
-    // Fatura bilgileri
-    public $billing_type = 'individual'; // individual veya corporate
-    public $billing_tax_number = ''; // TC (11 haneli) veya VKN (10 haneli)
+    // Fatura Profili (Yeni Sistem)
+    public $billing_profile_id;
+    public $billingProfiles = []; // Kullanıcının fatura profilleri
+
+    // Yeni Fatura Profili Formu
+    public $new_billing_profile_title = '';
+    public $new_billing_profile_type = 'individual';
+    public $new_billing_profile_identity_number = '';
+    public $new_billing_profile_company_name = '';
+    public $new_billing_profile_tax_number = '';
+    public $new_billing_profile_tax_office = '';
+
+    // Eski property'ler (Livewire state uyumluluğu için - deprecated)
+    public $billing_type = 'individual';
+    public $billing_tax_number = '';
     public $billing_company_name = '';
     public $billing_tax_office = '';
 
     // Fatura adresi
     public $billing_address_id;
-    public $billing_same_as_shipping = true; // Varsayılan: Fatura adresi = Teslimat adresi
+    public $billing_same_as_shipping = true;
 
     // Teslimat adresi
     public $shipping_address_id;
@@ -50,6 +63,27 @@ class CheckoutPage extends Component
     public $shipping_district = '';
     public $shipping_postal_code = '';
     public $shipping_delivery_notes = '';
+
+    // Yeni Adres Formu (Shipping - inline)
+    public $new_address_title = '';
+    public $new_address_phone = '';
+    public $new_address_line = '';
+    public $new_address_city = '';
+    public $new_address_district = '';
+    public $new_address_postal = '';
+
+    // Yeni Adres Formu (Billing - inline)
+    public $new_billing_address_title = '';
+    public $new_billing_address_phone = '';
+    public $new_billing_address_line = '';
+    public $new_billing_address_city = '';
+    public $new_billing_address_district = '';
+    public $new_billing_address_postal = '';
+
+    // Şehir/İlçe listeleri
+    public $cities = [];
+    public $districts = [];
+    public $billingDistricts = [];
 
     // Agreements (Simplified - Single Checkbox)
     public $agree_all = false; // Combines KVKK, distance selling, preliminary info
@@ -177,43 +211,287 @@ class CheckoutPage extends Component
             return;
         }
 
-        // Customer bilgilerini güncelle
-        $this->customer->update([
-            'first_name' => $this->contact_first_name,
-            'last_name' => $this->contact_last_name,
-            'phone' => $this->contact_phone,
-        ]);
+        // User bilgilerini güncelle (sadece telefon - ad/soyad users tablosunda name olarak tutulur)
+        if (!empty($this->contact_phone) && $this->customer->phone !== $this->contact_phone) {
+            $this->customer->phone = $this->contact_phone;
+            $this->customer->save();
+        }
     }
 
     public function mount()
     {
         \Log::info('🔵 MOUNT CALLED', ['user_id' => Auth::id()]);
 
-        // BASİT TEST - Hata ayıklama için tüm işlemleri try-catch ile sarmala
         try {
-            // ✅ Checkbox'ı sıfırla
             $this->agree_all = false;
-
             $this->loadCart();
-
-            // ⚠️ Sepet kontrolü KALDIRILDI - JavaScript localStorage'dan yükleyecek
-            // JavaScript yükledikten sonra boş sepet kontrolü yapılacak
-
-            // Müşteri var mı kontrol et
             $this->loadOrCreateCustomer();
-
-            // Ödeme yöntemlerini yükle (OLD - deprecated)
+            $this->loadBillingProfiles(); // Fatura profillerini yükle
             $this->loadPaymentMethods();
-
-            // Yeni gateway sistemi yükle
             $this->loadAvailableGateways();
+            $this->loadCities();
 
             \Log::info('✅ MOUNT COMPLETED');
         } catch (\Exception $e) {
-            \Log::error('❌ MOUNT ERROR: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+            \Log::error('❌ MOUNT ERROR: ' . $e->getMessage());
+            session()->flash('error', 'Checkout yüklenirken hata: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Şehir listesini yükle
+     */
+    public function loadCities()
+    {
+        // Türkiye illeri
+        $this->cities = [
+            'Adana', 'Adıyaman', 'Afyonkarahisar', 'Ağrı', 'Aksaray', 'Amasya', 'Ankara', 'Antalya', 'Ardahan', 'Artvin',
+            'Aydın', 'Balıkesir', 'Bartın', 'Batman', 'Bayburt', 'Bilecik', 'Bingöl', 'Bitlis', 'Bolu', 'Burdur',
+            'Bursa', 'Çanakkale', 'Çankırı', 'Çorum', 'Denizli', 'Diyarbakır', 'Düzce', 'Edirne', 'Elazığ', 'Erzincan',
+            'Erzurum', 'Eskişehir', 'Gaziantep', 'Giresun', 'Gümüşhane', 'Hakkari', 'Hatay', 'Iğdır', 'Isparta', 'İstanbul',
+            'İzmir', 'Kahramanmaraş', 'Karabük', 'Karaman', 'Kars', 'Kastamonu', 'Kayseri', 'Kırıkkale', 'Kırklareli', 'Kırşehir',
+            'Kilis', 'Kocaeli', 'Konya', 'Kütahya', 'Malatya', 'Manisa', 'Mardin', 'Mersin', 'Muğla', 'Muş',
+            'Nevşehir', 'Niğde', 'Ordu', 'Osmaniye', 'Rize', 'Sakarya', 'Samsun', 'Siirt', 'Sinop', 'Sivas',
+            'Şanlıurfa', 'Şırnak', 'Tekirdağ', 'Tokat', 'Trabzon', 'Tunceli', 'Uşak', 'Van', 'Yalova', 'Yozgat', 'Zonguldak'
+        ];
+    }
+
+    /**
+     * Fatura profillerini yükle
+     */
+    public function loadBillingProfiles()
+    {
+        if (!$this->customerId) {
+            return;
+        }
+
+        $this->billingProfiles = BillingProfile::where('user_id', $this->customerId)
+            ->orderBy('is_default', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Varsayılan profili seç
+        $defaultProfile = $this->billingProfiles->where('is_default', true)->first();
+        if ($defaultProfile) {
+            $this->billing_profile_id = $defaultProfile->billing_profile_id;
+            $this->syncBillingProfileToLegacy($defaultProfile);
+        } elseif ($this->billingProfiles->count() > 0) {
+            // Varsayılan yoksa ilkini seç
+            $firstProfile = $this->billingProfiles->first();
+            $this->billing_profile_id = $firstProfile->billing_profile_id;
+            $this->syncBillingProfileToLegacy($firstProfile);
+        }
+
+        \Log::info('📋 Billing profiles loaded', [
+            'count' => $this->billingProfiles->count(),
+            'selected' => $this->billing_profile_id
+        ]);
+    }
+
+    /**
+     * Seçili fatura profilini al
+     */
+    public function getSelectedBillingProfile()
+    {
+        if (!$this->billing_profile_id) {
+            return null;
+        }
+        return BillingProfile::find($this->billing_profile_id);
+    }
+
+    /**
+     * Fatura profili seçildiğinde
+     */
+    public function selectBillingProfile($profileId)
+    {
+        $this->billing_profile_id = $profileId;
+    }
+
+    /**
+     * Yeni fatura profili kaydet
+     */
+    public function saveNewBillingProfile()
+    {
+        $rules = [
+            'new_billing_profile_title' => 'required|string|max:100',
+            'new_billing_profile_type' => 'required|in:individual,corporate',
+        ];
+
+        $messages = [
+            'new_billing_profile_title.required' => 'Profil adı zorunludur',
+        ];
+
+        if ($this->new_billing_profile_type === 'corporate') {
+            $rules['new_billing_profile_company_name'] = 'required|string|max:255';
+            $rules['new_billing_profile_tax_number'] = 'required|string|size:10';
+            $rules['new_billing_profile_tax_office'] = 'required|string|max:255';
+            $messages['new_billing_profile_company_name.required'] = 'Şirket ünvanı zorunludur';
+            $messages['new_billing_profile_tax_number.required'] = 'Vergi kimlik numarası zorunludur';
+            $messages['new_billing_profile_tax_number.size'] = 'VKN 10 haneli olmalıdır';
+            $messages['new_billing_profile_tax_office.required'] = 'Vergi dairesi zorunludur';
+        } else {
+            // Bireysel - TC opsiyonel ama girilirse 11 haneli
+            if (!empty($this->new_billing_profile_identity_number)) {
+                $rules['new_billing_profile_identity_number'] = 'string|size:11';
+                $messages['new_billing_profile_identity_number.size'] = 'TC Kimlik No 11 haneli olmalıdır';
+            }
+        }
+
+        $this->validate($rules, $messages);
+
+        // Profil oluştur
+        $isFirst = BillingProfile::where('user_id', $this->customerId)->count() === 0;
+
+        $profile = BillingProfile::create([
+            'user_id' => $this->customerId,
+            'title' => $this->new_billing_profile_title,
+            'type' => $this->new_billing_profile_type,
+            'identity_number' => $this->new_billing_profile_type === 'individual' ? $this->new_billing_profile_identity_number : null,
+            'company_name' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_company_name : null,
+            'tax_number' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_tax_number : null,
+            'tax_office' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_tax_office : null,
+            'is_default' => $isFirst, // İlk profil varsayılan olsun
+        ]);
+
+        // Yeni profili seç
+        $this->billing_profile_id = $profile->billing_profile_id;
+        $this->syncBillingProfileToLegacy($profile);
+
+        // Listeyi yenile
+        $this->loadBillingProfiles();
+
+        // Formu temizle
+        $this->reset([
+            'new_billing_profile_title',
+            'new_billing_profile_type',
+            'new_billing_profile_identity_number',
+            'new_billing_profile_company_name',
+            'new_billing_profile_tax_number',
+            'new_billing_profile_tax_office'
+        ]);
+        $this->new_billing_profile_type = 'individual'; // Reset to default
+
+        // Alpine'a formu kapat sinyali gönder
+        $this->dispatch('billing-profile-saved', profileId: $profile->billing_profile_id);
+
+        session()->flash('success', 'Fatura profili başarıyla kaydedildi!');
+
+        \Log::info('✅ New billing profile created', ['profile_id' => $profile->billing_profile_id]);
+    }
+
+    /**
+     * Şehir değiştiğinde ilçeleri yükle
+     */
+    public function updatedNewAddressCity($value)
+    {
+        $this->districts = $this->getDistrictsByCity($value);
+        $this->new_address_district = '';
+    }
+
+    public function updatedNewBillingAddressCity($value)
+    {
+        $this->billingDistricts = $this->getDistrictsByCity($value);
+        $this->new_billing_address_district = '';
+    }
+
+    /**
+     * Şehre göre ilçe listesi
+     */
+    private function getDistrictsByCity($city)
+    {
+        // Basit ilçe listesi (örnek olarak İstanbul ve Ankara)
+        $districtList = [
+            'İstanbul' => ['Adalar', 'Arnavutköy', 'Ataşehir', 'Avcılar', 'Bağcılar', 'Bahçelievler', 'Bakırköy', 'Başakşehir', 'Bayrampaşa', 'Beşiktaş', 'Beykoz', 'Beylikdüzü', 'Beyoğlu', 'Büyükçekmece', 'Çatalca', 'Çekmeköy', 'Esenler', 'Esenyurt', 'Eyüpsultan', 'Fatih', 'Gaziosmanpaşa', 'Güngören', 'Kadıköy', 'Kağıthane', 'Kartal', 'Küçükçekmece', 'Maltepe', 'Pendik', 'Sancaktepe', 'Sarıyer', 'Silivri', 'Sultanbeyli', 'Sultangazi', 'Şile', 'Şişli', 'Tuzla', 'Ümraniye', 'Üsküdar', 'Zeytinburnu'],
+            'Ankara' => ['Akyurt', 'Altındağ', 'Ayaş', 'Balâ', 'Beypazarı', 'Çamlıdere', 'Çankaya', 'Çubuk', 'Elmadağ', 'Etimesgut', 'Evren', 'Gölbaşı', 'Güdül', 'Haymana', 'Kalecik', 'Kahramankazan', 'Keçiören', 'Kızılcahamam', 'Mamak', 'Nallıhan', 'Polatlı', 'Pursaklar', 'Sincan', 'Şereflikoçhisar', 'Yenimahalle'],
+            'İzmir' => ['Aliağa', 'Balçova', 'Bayındır', 'Bayraklı', 'Bergama', 'Beydağ', 'Bornova', 'Buca', 'Çeşme', 'Çiğli', 'Dikili', 'Foça', 'Gaziemir', 'Güzelbahçe', 'Karabağlar', 'Karaburun', 'Karşıyaka', 'Kemalpaşa', 'Kınık', 'Kiraz', 'Konak', 'Menderes', 'Menemen', 'Narlıdere', 'Ödemiş', 'Seferihisar', 'Selçuk', 'Tire', 'Torbalı', 'Urla'],
+            'Bursa' => ['Büyükorhan', 'Gemlik', 'Gürsu', 'Harmancık', 'İnegöl', 'İznik', 'Karacabey', 'Keles', 'Kestel', 'Mudanya', 'Mustafakemalpaşa', 'Nilüfer', 'Orhaneli', 'Orhangazi', 'Osmangazi', 'Yenişehir', 'Yıldırım'],
+            'Antalya' => ['Akseki', 'Aksu', 'Alanya', 'Demre', 'Döşemealtı', 'Elmalı', 'Finike', 'Gazipaşa', 'Gündoğmuş', 'İbradı', 'Kaş', 'Kemer', 'Kepez', 'Konyaaltı', 'Korkuteli', 'Kumluca', 'Manavgat', 'Muratpaşa', 'Serik'],
+        ];
+
+        return $districtList[$city] ?? [];
+    }
+
+    /**
+     * Yeni adres kaydet (inline form)
+     */
+    public function saveNewAddress($type = 'shipping')
+    {
+        if ($type === 'shipping') {
+            $this->validate([
+                'new_address_title' => 'required|string|max:100',
+                'new_address_line' => 'required|string|max:500',
+                'new_address_city' => 'required|string|max:100',
+                'new_address_district' => 'required|string|max:100',
+            ], [
+                'new_address_title.required' => 'Adres adı zorunludur',
+                'new_address_line.required' => 'Adres zorunludur',
+                'new_address_city.required' => 'İl zorunludur',
+                'new_address_district.required' => 'İlçe zorunludur',
             ]);
-            session()->flash('error', 'Checkout yüklenirken hata oluştu: ' . $e->getMessage());
+
+            $address = Address::create([
+                'user_id' => auth()->id(),
+                'title' => $this->new_address_title,
+                'phone' => $this->new_address_phone,
+                'address_line_1' => $this->new_address_line,
+                'city' => $this->new_address_city,
+                'district' => $this->new_address_district,
+                'postal_code' => $this->new_address_postal,
+                'address_type' => 'both',
+                'is_default_shipping' => Address::where('user_id', auth()->id())->count() === 0,
+                'is_default_billing' => Address::where('user_id', auth()->id())->count() === 0,
+            ]);
+
+            $this->shipping_address_id = $address->address_id;
+
+            // Fatura adresi teslimat ile aynıysa
+            if ($this->billing_same_as_shipping) {
+                $this->billing_address_id = $address->address_id;
+            }
+
+            // Form temizle
+            $this->reset(['new_address_title', 'new_address_phone', 'new_address_line', 'new_address_city', 'new_address_district', 'new_address_postal']);
+
+            // Alpine'a formu kapat sinyali gönder
+            $this->dispatch('address-saved', type: 'shipping', addressId: $address->address_id);
+
+            session()->flash('success', 'Adres başarıyla kaydedildi!');
+
+        } else {
+            // Billing address
+            $this->validate([
+                'new_billing_address_title' => 'required|string|max:100',
+                'new_billing_address_line' => 'required|string|max:500',
+                'new_billing_address_city' => 'required|string|max:100',
+                'new_billing_address_district' => 'required|string|max:100',
+            ], [
+                'new_billing_address_title.required' => 'Adres adı zorunludur',
+                'new_billing_address_line.required' => 'Adres zorunludur',
+                'new_billing_address_city.required' => 'İl zorunludur',
+                'new_billing_address_district.required' => 'İlçe zorunludur',
+            ]);
+
+            $address = Address::create([
+                'user_id' => auth()->id(),
+                'title' => $this->new_billing_address_title,
+                'phone' => $this->new_billing_address_phone,
+                'address_line_1' => $this->new_billing_address_line,
+                'city' => $this->new_billing_address_city,
+                'district' => $this->new_billing_address_district,
+                'postal_code' => $this->new_billing_address_postal,
+                'address_type' => 'both',
+                'is_default_billing' => Address::where('user_id', auth()->id())->count() === 0,
+            ]);
+
+            $this->billing_address_id = $address->address_id;
+
+            // Form temizle
+            $this->reset(['new_billing_address_title', 'new_billing_address_phone', 'new_billing_address_line', 'new_billing_address_city', 'new_billing_address_district', 'new_billing_address_postal']);
+
+            // Alpine'a formu kapat sinyali gönder
+            $this->dispatch('address-saved', type: 'billing', addressId: $address->address_id);
+
+            session()->flash('success', 'Fatura adresi başarıyla kaydedildi!');
         }
     }
 
@@ -342,98 +620,46 @@ class CheckoutPage extends Component
             'auth_email' => Auth::check() ? Auth::user()->email : null,
         ]);
 
-        // Kayıtlı kullanıcı var mı?
-        if (Auth::check()) {
-            // User name'i ad/soyad olarak ayır
-            $fullName = Auth::user()->name ?? '';
-            $nameParts = explode(' ', trim($fullName), 2);
-            $firstName = $nameParts[0] ?? '';
-            $lastName = $nameParts[1] ?? '';
-
-            $this->customer = ShopCustomer::firstOrCreate(
-                ['user_id' => Auth::id()],
-                [
-                    'first_name' => $firstName,
-                    'last_name' => $lastName,
-                    'email' => Auth::user()->email,
-                    'phone' => '',
-                    'customer_type' => 'individual',
-                    'billing_type' => 'individual',
-                ]
-            );
-
-            \Log::info('✅ Customer loaded/created', [
-                'customer_id' => $this->customer->customer_id,
-                'email' => $this->customer->email,
-            ]);
-        } else {
-            // Misafir - session'da customer_id var mı?
-            $sessionCustomerId = session('guest_customer_id');
-
-            \Log::info('❌ Guest mode', ['session_customer_id' => $sessionCustomerId]);
-
-            if ($sessionCustomerId) {
-                $this->customer = ShopCustomer::find($sessionCustomerId);
-            }
+        // Auth middleware checkout'a giriş için login gerektirir
+        if (!Auth::check()) {
+            \Log::warning('❌ User not authenticated for checkout');
+            return;
         }
 
-        if ($this->customer) {
-            $this->customerId = $this->customer->customer_id;
+        // User bilgilerini al
+        $user = Auth::user();
+        $this->customer = $user;
+        $this->customerId = $user->id;
 
-            // Müşteri bilgilerini form'a doldur
-            $this->contact_first_name = $this->customer->first_name;
-            $this->contact_last_name = $this->customer->last_name;
-            $this->contact_email = $this->customer->email;
-            $this->contact_phone = $this->customer->phone;
+        // Form'a bilgileri doldur
+        $this->contact_first_name = $user->name ?? '';
+        $this->contact_last_name = $user->surname ?? '';
+        $this->contact_email = $user->email;
+        $this->contact_phone = $user->phone ?? '';
 
-            $this->billing_type = $this->customer->billing_type ?? 'individual';
-            $this->billing_tax_number = $this->customer->tax_number;
-            $this->billing_company_name = $this->customer->company_name;
-            $this->billing_tax_office = $this->customer->tax_office;
+        // Billing type varsayılan
+        $this->billing_type = 'individual';
 
-            \Log::info('🔄 Loading default addresses', ['customer_id' => $this->customerId]);
+        \Log::info('✅ User loaded for checkout', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+        ]);
 
-            // Varsayılan adresleri yükle
-            $this->loadDefaultAddresses();
-        } else if (Auth::check()) {
-            // Müşteri yok ama kullanıcı login - Customer oluştur
-            $fullName = Auth::user()->name ?? '';
-            $nameParts = explode(' ', trim($fullName), 2);
-            $firstName = $nameParts[0] ?? '';
-            $lastName = $nameParts[1] ?? '';
-
-            // Customer oluştur (telefon boş olabilir, ilk sipariş sırasında doldurulur)
-            $this->customer = ShopCustomer::create([
-                'user_id' => Auth::id(),
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'email' => Auth::user()->email,
-                'phone' => '', // Boş, kullanıcı girecek
-                'customer_type' => 'individual',
-                'billing_type' => 'individual',
-            ]);
-
-            $this->customerId = $this->customer->customer_id;
-
-            // Form'a bilgileri doldur
-            $this->contact_first_name = $firstName;
-            $this->contact_last_name = $lastName;
-            $this->contact_email = Auth::user()->email;
-            // Telefon boş kalacak, kullanıcı girecek
-        }
+        // Varsayılan adresleri yükle
+        $this->loadDefaultAddresses();
     }
 
     public function loadDefaultAddresses()
     {
         if (!$this->customerId) {
-            \Log::warning('⚠️ loadDefaultAddresses: No customerId!');
+            \Log::warning('⚠️ loadDefaultAddresses: No user_id!');
             return;
         }
 
-        \Log::info('📍 loadDefaultAddresses START', ['customer_id' => $this->customerId]);
+        \Log::info('📍 loadDefaultAddresses START', ['user_id' => $this->customerId]);
 
         // Varsayılan fatura adresi
-        $defaultBilling = ShopCustomerAddress::where('customer_id', $this->customerId)
+        $defaultBilling = Address::where('user_id', $this->customerId)
             ->billing()
             ->defaultBilling()
             ->first();
@@ -446,7 +672,7 @@ class CheckoutPage extends Component
         }
 
         // Varsayılan teslimat adresi
-        $defaultShipping = ShopCustomerAddress::where('customer_id', $this->customerId)
+        $defaultShipping = Address::where('user_id', $this->customerId)
             ->shipping()
             ->defaultShipping()
             ->first();
@@ -591,8 +817,8 @@ class CheckoutPage extends Component
 
             // Guest için adres oluştur (login user için atlanır)
             if (!$this->customerId || !$this->shipping_address_id) {
-                $shippingAddress = ShopCustomerAddress::create([
-                    'customer_id' => $customer->customer_id,
+                $shippingAddress = Address::create([
+                    'user_id' => $customer->id,
                     'address_type' => 'shipping',
                     'address_line_1' => $this->shipping_address_line_1,
                     'address_line_2' => $this->shipping_address_line_2,
@@ -607,8 +833,8 @@ class CheckoutPage extends Component
 
                 // Fatura adresi = Teslimat adresi (default)
                 if ($this->billing_same_as_shipping) {
-                    $billingAddress = ShopCustomerAddress::create([
-                        'customer_id' => $customer->customer_id,
+                    $billingAddress = Address::create([
+                        'user_id' => $customer->id,
                         'address_type' => 'billing',
                         'address_line_1' => $this->shipping_address_line_1,
                         'address_line_2' => $this->shipping_address_line_2,
@@ -623,69 +849,54 @@ class CheckoutPage extends Component
             }
 
             // Adresleri al (snapshot için)
-            $billingAddress = ShopCustomerAddress::find($this->billing_address_id);
-            $shippingAddress = ShopCustomerAddress::find($this->shipping_address_id);
+            $billingAddress = Address::find($this->billing_address_id);
+            $shippingAddress = Address::find($this->shipping_address_id);
 
             // Sipariş oluştur
-            $order = ShopOrder::create([
-                'tenant_id' => tenant('id'),
-                'customer_id' => $customer->customer_id,
-                'order_number' => 'ORD-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6)),
+            $order = Order::create([
+                'user_id' => $customer->id,
+                'order_number' => Order::generateOrderNumber(),
 
                 // İletişim snapshot
-                'customer_name' => $customer->full_name,
-                'customer_email' => $customer->email,
-                'customer_phone' => $customer->phone,
-                'customer_company' => $customer->company_name,
-                'customer_tax_office' => $customer->tax_office,
-                'customer_tax_number' => $customer->tax_number,
+                'customer_name' => $this->contact_first_name . ' ' . $this->contact_last_name,
+                'customer_email' => $this->contact_email,
+                'customer_phone' => $this->contact_phone,
+                'customer_company' => $this->billing_company_name,
+                'customer_tax_office' => $this->billing_tax_office,
+                'customer_tax_number' => $this->billing_tax_number,
 
-                // Teslimat snapshot
-                'shipping_address' => $shippingAddress->address_line_1 . ($shippingAddress->address_line_2 ? ' ' . $shippingAddress->address_line_2 : ''),
-                'shipping_city' => $shippingAddress->city,
-                'shipping_district' => $shippingAddress->district,
-                'shipping_postal_code' => $shippingAddress->postal_code,
+                // Adres snapshot (JSON)
+                'billing_address' => $billingAddress ? $billingAddress->toSnapshot() : null,
+                'shipping_address' => $shippingAddress ? $shippingAddress->toSnapshot() : null,
 
-                'notes' => $shippingAddress->delivery_notes,
+                'customer_notes' => $shippingAddress->delivery_notes ?? null,
                 'subtotal' => $this->subtotal,
                 'tax_amount' => $this->taxAmount,
-                'shipping_cost' => 0, // Kargo ücreti yok
-                'discount_amount' => 0, // İndirim yok
-                'total_amount' => $this->grandTotal, // Kredi kartı komisyonu dahil
+                'shipping_cost' => 0,
+                'discount_amount' => 0,
+                'total_amount' => $this->grandTotal,
+                'currency' => 'TRY',
                 'status' => 'pending',
                 'payment_status' => 'pending',
+                'requires_shipping' => true,
 
-                'agreed_kvkk' => $this->agree_all,
-                'agreed_distance_selling' => $this->agree_all,
-                'agreed_preliminary_info' => $this->agree_all,
-                'agreed_marketing' => false, // Marketing removed from combined checkbox
+                'agreed_terms' => $this->agree_all,
+                'agreed_privacy' => $this->agree_all,
+                'agreed_marketing' => false,
+
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
             ]);
 
             // Sipariş kalemlerini oluştur
             foreach ($this->items as $item) {
-                $price = $item->unit_price;
-
-                if ($item->currency && $item->currency->code !== 'TRY') {
-                    $exchangeRate = $item->currency->exchange_rate ?? 1;
-                    $price = $price * $exchangeRate;
-                }
-
-                ShopOrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'variant_id' => $item->variant_id,
-                    'quantity' => $item->quantity,
-                    'unit_price' => $price,
-                    'subtotal' => $price * $item->quantity,
-                    'product_title' => $item->product->getTranslated('title', app()->getLocale()),
-                    'product_sku' => $item->product->sku,
-                ]);
+                OrderItem::createFromCartItem($item, $order->order_id);
             }
 
             // Payment kaydı oluştur
             $payment = Payment::create([
                 'payment_method_id' => $this->selectedPaymentMethodId,
-                'payable_type' => ShopOrder::class,
+                'payable_type' => Order::class,
                 'payable_id' => $order->order_id,
                 'transaction_id' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
                 'amount' => $this->grandTotal,
@@ -743,30 +954,16 @@ class CheckoutPage extends Component
 
     private function createOrUpdateCustomer()
     {
-        $data = [
-            'first_name' => $this->contact_first_name,
-            'last_name' => $this->contact_last_name,
-            'email' => $this->contact_email,
-            'phone' => $this->contact_phone,
-            'billing_type' => $this->billing_type,
-            'tax_number' => $this->billing_tax_number,
-            'company_name' => $this->billing_company_name,
-            'tax_office' => $this->billing_tax_office,
-            'accepts_marketing' => false, // Marketing removed from simplified checkout
-        ];
+        // User bilgilerini güncelle (sadece telefon)
+        $user = Auth::user();
 
-        if ($this->customer) {
-            $this->customer->update($data);
-            return $this->customer;
+        // Telefon boşsa güncelle
+        if (empty($user->phone) && !empty($this->contact_phone)) {
+            $user->phone = $this->contact_phone;
+            $user->save();
         }
 
-        // Yeni müşteri oluştur
-        $customer = ShopCustomer::create(array_merge($data, [
-            'user_id' => Auth::id(), // ✅ Route'da auth middleware var, Auth::id() her zaman dolu
-            'customer_type' => $this->billing_type === 'corporate' ? 'corporate' : 'individual',
-        ]));
-
-        return $customer;
+        return $user;
     }
 
     /**
@@ -889,8 +1086,8 @@ class CheckoutPage extends Component
 
             // Guest için adres oluştur
             if (!$this->customerId || !$this->shipping_address_id) {
-                $shippingAddress = ShopCustomerAddress::create([
-                    'customer_id' => $customer->customer_id,
+                $shippingAddress = Address::create([
+                    'user_id' => $customer->id,
                     'address_type' => 'shipping',
                     'address_line_1' => $this->shipping_address_line_1,
                     'address_line_2' => $this->shipping_address_line_2,
@@ -904,8 +1101,8 @@ class CheckoutPage extends Component
                 $this->shipping_address_id = $shippingAddress->address_id;
 
                 if ($this->billing_same_as_shipping) {
-                    $billingAddress = ShopCustomerAddress::create([
-                        'customer_id' => $customer->customer_id,
+                    $billingAddress = Address::create([
+                        'user_id' => $customer->id,
                         'address_type' => 'billing',
                         'address_line_1' => $this->shipping_address_line_1,
                         'address_line_2' => $this->shipping_address_line_2,
@@ -920,63 +1117,52 @@ class CheckoutPage extends Component
             }
 
             // Adresleri al
-            $billingAddress = ShopCustomerAddress::find($this->billing_address_id);
-            $shippingAddress = ShopCustomerAddress::find($this->shipping_address_id);
+            $billingAddress = Address::find($this->billing_address_id);
+            $shippingAddress = Address::find($this->shipping_address_id);
 
             // Sipariş oluştur
-            $order = ShopOrder::create([
-                'tenant_id' => tenant('id'),
-                'customer_id' => $customer->customer_id,
-                'order_number' => 'ORD-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6)),
-                'customer_name' => $customer->full_name,
-                'customer_email' => $customer->email,
-                'customer_phone' => $customer->phone,
-                'customer_company' => $customer->company_name,
-                'customer_tax_office' => $customer->tax_office,
-                'customer_tax_number' => $customer->tax_number,
-                'shipping_address' => $shippingAddress->address_line_1 . ($shippingAddress->address_line_2 ? ' ' . $shippingAddress->address_line_2 : ''),
-                'shipping_city' => $shippingAddress->city,
-                'shipping_district' => $shippingAddress->district,
-                'shipping_postal_code' => $shippingAddress->postal_code,
-                'notes' => $shippingAddress->delivery_notes,
+            $order = Order::create([
+                'user_id' => $customer->id,
+                'order_number' => Order::generateOrderNumber(),
+
+                'customer_name' => $this->contact_first_name . ' ' . $this->contact_last_name,
+                'customer_email' => $this->contact_email,
+                'customer_phone' => $this->contact_phone,
+                'customer_company' => $this->billing_company_name,
+                'customer_tax_office' => $this->billing_tax_office,
+                'customer_tax_number' => $this->billing_tax_number,
+
+                'billing_address' => $billingAddress ? $billingAddress->toSnapshot() : null,
+                'shipping_address' => $shippingAddress ? $shippingAddress->toSnapshot() : null,
+
+                'customer_notes' => $shippingAddress->delivery_notes ?? null,
                 'subtotal' => $this->subtotal,
                 'tax_amount' => $this->taxAmount,
                 'shipping_cost' => 0,
                 'discount_amount' => 0,
                 'total_amount' => $this->grandTotal,
+                'currency' => 'TRY',
                 'status' => 'pending',
                 'payment_status' => 'pending',
-                'agreed_kvkk' => $this->agree_all,
-                'agreed_distance_selling' => $this->agree_all,
-                'agreed_preliminary_info' => $this->agree_all,
+                'requires_shipping' => true,
+
+                'agreed_terms' => $this->agree_all,
+                'agreed_privacy' => $this->agree_all,
                 'agreed_marketing' => false,
+
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
             ]);
 
             // Sipariş kalemleri
             foreach ($this->items as $item) {
-                $price = $item->unit_price;
-
-                if ($item->currency && $item->currency->code !== 'TRY') {
-                    $exchangeRate = $item->currency->exchange_rate ?? 1;
-                    $price = $price * $exchangeRate;
-                }
-
-                ShopOrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'variant_id' => $item->variant_id,
-                    'quantity' => $item->quantity,
-                    'unit_price' => $price,
-                    'subtotal' => $price * $item->quantity,
-                    'product_title' => $item->product->getTranslated('title', app()->getLocale()),
-                    'product_sku' => $item->product->sku,
-                ]);
+                OrderItem::createFromCartItem($item, $order->order_id);
             }
 
             // Payment kaydı
             $payment = Payment::create([
                 'payment_method_id' => $this->selectedPaymentMethodId,
-                'payable_type' => ShopOrder::class,
+                'payable_type' => Order::class,
                 'payable_id' => $order->order_id,
                 'transaction_id' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
                 'amount' => $this->grandTotal,

@@ -18,6 +18,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// 🔐 AUTH ROUTES - Muzibu Authentication
+Route::prefix('auth')->group(function () {
+    Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login'])->name('api.auth.login');
+    Route::post('/register', [\App\Http\Controllers\Api\Auth\AuthController::class, 'register'])->name('api.auth.register');
+    Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.auth.logout');
+    Route::get('/me', [\App\Http\Controllers\Api\Auth\AuthController::class, 'me'])->name('api.auth.me');
+    Route::post('/forgot-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'forgotPassword'])->name('api.auth.forgot');
+    Route::post('/reset-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'resetPassword'])->name('api.auth.reset');
+});
+
 // Mobile App Endpoints
 // Module Discovery for Dynamic Loading
 Route::get('/discover-modules', function (Request $request) {

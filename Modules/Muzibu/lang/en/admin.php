@@ -21,6 +21,7 @@ return [
     'playlists' => 'Playlists',
     'radios' => 'Radios',
     'sectors' => 'Sectors',
+    'corporate_accounts' => 'Corporate Accounts',
 
     // Quick Actions
     'quick_add' => 'Quick Add',

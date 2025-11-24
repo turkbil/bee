@@ -1,9 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="text-gray-500 dark:text-gray-400 text-sm">
-            Hesap Yönetimi
+            <i class="fa-solid fa-gear mr-1"></i> Hesap Yönetimi
         </div>
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
+            <i class="fa-solid fa-user-pen text-blue-600 dark:text-blue-400 mr-2"></i>
             Profil Bilgileri
         </h1>
     </x-slot>
@@ -21,10 +22,8 @@
             <!-- Profile Update -->
             <div class="profile-card bg-white dark:bg-gray-800 rounded-xl p-6">
                 <div class="flex items-center mb-6">
-                    <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg mr-3">
-                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
+                    <div class="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-xl mr-4">
+                        <i class="fa-solid fa-user-circle text-2xl text-blue-600 dark:text-blue-400"></i>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Profil Bilgileri</h3>

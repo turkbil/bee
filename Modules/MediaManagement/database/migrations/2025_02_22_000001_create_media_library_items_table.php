@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        if (Schema::hasTable('media_library_items')) {
+            return;
+        }
+
         Schema::create('media_library_items', function (Blueprint $table) {
             $table->id();
             $table->string('name');

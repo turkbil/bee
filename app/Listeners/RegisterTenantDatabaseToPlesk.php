@@ -21,11 +21,9 @@ class RegisterTenantDatabaseToPlesk
         // 1️⃣ Storage klasörlerini oluştur
         $this->createTenantStorage($tenant);
 
-        // Tenant'ın kendi domain'ini al (her tenant bağımsız site)
-        $tenantDomain = $tenant->domains()->first()?->domain;
-
-        // Tenant domain yoksa ana domain'i kullan
-        $domain = $tenantDomain ?? 'tuufi.com';
+        // Tüm tenant database'leri ana domain'e (tuufi.com) bağlanır
+        // Çünkü Plesk'te diğer domain'ler alias olarak tanımlı
+        $domain = 'tuufi.com';
 
         Log::channel('system')->info("📋 Plesk DB kaydı başlatılıyor: {$databaseName} → {$domain}", [
             'tenant_id' => $tenant->id,
@@ -37,7 +35,7 @@ class RegisterTenantDatabaseToPlesk
             $maxAttempts = 3;
 
             for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
-                $domainResult = Process::timeout(10)->run("plesk db \"SELECT id FROM domains WHERE name = '{$domain}' LIMIT 1\"");
+                $domainResult = Process::timeout(10)->run("sudo /usr/sbin/plesk db \"SELECT id FROM domains WHERE name = '{$domain}' LIMIT 1\"");
 
                 if ($domainResult->successful()) {
                     if ($attempt > 1) {
@@ -81,7 +79,7 @@ class RegisterTenantDatabaseToPlesk
             }
 
             // Database zaten kayıtlı mı kontrol et
-            $checkResult = Process::timeout(10)->run("plesk db \"SELECT COUNT(*) FROM data_bases WHERE name = '{$databaseName}'\"");
+            $checkResult = Process::timeout(10)->run("sudo /usr/sbin/plesk db \"SELECT COUNT(*) FROM data_bases WHERE name = '{$databaseName}'\"");
             if ($checkResult->successful()) {
                 $lines = array_filter(explode("\n", $checkResult->output()));
                 foreach ($lines as $line) {
@@ -98,7 +96,7 @@ class RegisterTenantDatabaseToPlesk
             }
 
             // DB server ID'sini al
-            $serverResult = Process::timeout(10)->run("plesk db \"SELECT id FROM DatabaseServers WHERE type = 'mysql' AND host = 'localhost' LIMIT 1\"");
+            $serverResult = Process::timeout(10)->run("sudo /usr/sbin/plesk db \"SELECT id FROM DatabaseServers WHERE type = 'mysql' AND host = 'localhost' LIMIT 1\"");
             $dbServerId = 1; // Default
             if ($serverResult->successful()) {
                 $lines = array_filter(explode("\n", $serverResult->output()));
@@ -113,7 +111,7 @@ class RegisterTenantDatabaseToPlesk
 
             // Plesk veritabanına kaydet
             $insertSql = "INSERT INTO data_bases (name, type, dom_id, db_server_id) VALUES ('{$databaseName}', 'mysql', {$domainId}, {$dbServerId})";
-            $insertResult = Process::timeout(10)->run("plesk db \"{$insertSql}\"");
+            $insertResult = Process::timeout(10)->run("sudo /usr/sbin/plesk db \"{$insertSql}\"");
 
             if ($insertResult->successful()) {
                 Log::channel('system')->info("✅ Plesk DB kaydı tamamlandı: {$databaseName} → {$domain}", [

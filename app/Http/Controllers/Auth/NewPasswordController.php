@@ -20,7 +20,16 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): View
     {
-        return view('auth.reset-password', ['request' => $request]);
+        // Tema-aware reset password view
+        $theme = app(\App\Services\ThemeService::class)->getActiveTheme();
+        $viewPath = "themes.{$theme}.auth.reset-password";
+
+        // Fallback: Tema yoksa veya view yoksa default kullan
+        if (!view()->exists($viewPath)) {
+            $viewPath = 'auth.reset-password';
+        }
+
+        return view($viewPath, ['request' => $request]);
     }
 
     /**

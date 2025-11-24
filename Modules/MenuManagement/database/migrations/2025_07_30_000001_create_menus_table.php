@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('menus')) {
+            return;
+        }
+
         Schema::create('menus', function (Blueprint $table) {
             $table->id('menu_id');
             $table->json('name')->comment('Çoklu dil menü adı: {"tr": "Ana Menü", "en": "Main Menu"}');

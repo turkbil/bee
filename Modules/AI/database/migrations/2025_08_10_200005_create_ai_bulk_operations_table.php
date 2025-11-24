@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_bulk_operations')) {
+            return;
+        }
+
         Schema::create('ai_bulk_operations', function (Blueprint $table) {
             $table->id();
             $table->uuid('operation_uuid')->unique();

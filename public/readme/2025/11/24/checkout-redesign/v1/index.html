@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Redesign - Modern Tasarım Alternatifleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; }
+        .glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .glass-light { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); }
+
+        /* Stepper animations */
+        .step-active { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } }
+
+        /* Accordion animations */
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .accordion-open .accordion-content { max-height: 1000px; }
+
+        /* Card hover effect */
+        .address-card:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+
+        /* Toggle switch */
+        .toggle-bg:after { content: ''; position: absolute; top: 2px; left: 2px; background: white; border-radius: 50%; height: 20px; width: 20px; transition: 0.3s; }
+        input:checked + .toggle-bg:after { transform: translateX(100%); }
+        input:checked + .toggle-bg { background: #3b82f6; }
+    </style>
+</head>
+<body class="text-gray-100 p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                Checkout Redesign
+            </h1>
+            <p class="text-gray-400 text-lg">Modern, Dinamik & Kullanıcı Dostu Tasarım Alternatifleri</p>
+            <div class="mt-4 text-sm text-gray-500">
+                <i class="fa-solid fa-calendar mr-2"></i>24.11.2025 |
+                <i class="fa-solid fa-link ml-4 mr-2"></i>https://ixtif.com/cart/checkout
+            </div>
+        </header>
+
+        <!-- ============================================ -->
+        <!-- TASARIM 1: STEP-BY-STEP WIZARD -->
+        <!-- ============================================ -->
+        <section class="mb-20">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold">1</span>
+                <h2 class="text-2xl font-bold text-white">Step-by-Step Wizard</h2>
+                <span class="bg-green-600/20 text-green-400 px-3 py-1 rounded-full text-xs font-medium">ÖNERİLEN</span>
+            </div>
+            <p class="text-gray-400 mb-6">Her adım ayrı ekranda. Kullanıcı sadece o anki göreve odaklanır. Karmaşıklık tamamen ortadan kalkar.</p>
+
+            <div class="glass rounded-2xl overflow-hidden" x-data="{ step: 1 }">
+
+                <!-- Stepper Header -->
+                <div class="bg-gray-900/50 px-6 py-4 border-b border-gray-700/50">
+                    <div class="flex items-center justify-between max-w-2xl mx-auto">
+                        <!-- Step 1 -->
+                        <div class="flex items-center">
+                            <div :class="step >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'"
+                                 class="w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all"
+                                 :class="{ 'step-active': step === 1 }">
+                                <template x-if="step > 1"><i class="fa-solid fa-check"></i></template>
+                                <template x-if="step <= 1"><span>1</span></template>
+                            </div>
+                            <span class="ml-3 font-medium hidden sm:block" :class="step >= 1 ? 'text-white' : 'text-gray-500'">İletişim</span>
+                        </div>
+
+                        <!-- Line -->
+                        <div class="flex-1 h-1 mx-4 rounded" :class="step > 1 ? 'bg-blue-600' : 'bg-gray-700'"></div>
+
+                        <!-- Step 2 -->
+                        <div class="flex items-center">
+                            <div :class="step >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'"
+                                 class="w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all"
+                                 :class="{ 'step-active': step === 2 }">
+                                <template x-if="step > 2"><i class="fa-solid fa-check"></i></template>
+                                <template x-if="step <= 2"><span>2</span></template>
+                            </div>
+                            <span class="ml-3 font-medium hidden sm:block" :class="step >= 2 ? 'text-white' : 'text-gray-500'">Teslimat</span>
+                        </div>
+
+                        <!-- Line -->
+                        <div class="flex-1 h-1 mx-4 rounded" :class="step > 2 ? 'bg-blue-600' : 'bg-gray-700'"></div>
+
+                        <!-- Step 3 -->
+                        <div class="flex items-center">
+                            <div :class="step >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'"
+                                 class="w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all"
+                                 :class="{ 'step-active': step === 3 }">
+                                <template x-if="step > 3"><i class="fa-solid fa-check"></i></template>
+                                <template x-if="step <= 3"><span>3</span></template>
+                            </div>
+                            <span class="ml-3 font-medium hidden sm:block" :class="step >= 3 ? 'text-white' : 'text-gray-500'">Fatura</span>
+                        </div>
+
+                        <!-- Line -->
+                        <div class="flex-1 h-1 mx-4 rounded" :class="step > 3 ? 'bg-blue-600' : 'bg-gray-700'"></div>
+
+                        <!-- Step 4 -->
+                        <div class="flex items-center">
+                            <div :class="step >= 4 ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400'"
+                                 class="w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all"
+                                 :class="{ 'step-active': step === 4 }">
+                                4
+                            </div>
+                            <span class="ml-3 font-medium hidden sm:block" :class="step >= 4 ? 'text-white' : 'text-gray-500'">Ödeme</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Content -->
+                <div class="p-6 md:p-8">
+                    <div class="grid lg:grid-cols-3 gap-8">
+
+                        <!-- Left: Form Area -->
+                        <div class="lg:col-span-2">
+
+                            <!-- Step 1: İletişim Bilgileri -->
+                            <div x-show="step === 1" x-transition>
+                                <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+                                    <i class="fa-solid fa-user text-blue-400 mr-3"></i>
+                                    İletişim Bilgileri
+                                </h3>
+
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">Ad <span class="text-red-400">*</span></label>
+                                        <input type="text" value="Nurullah" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">Soyad <span class="text-red-400">*</span></label>
+                                        <input type="text" value="Çetin" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">E-posta <span class="text-red-400">*</span></label>
+                                        <input type="email" value="nurullah@ixtif.com" readonly class="w-full px-4 py-3 rounded-xl bg-gray-700/50 border border-gray-600 text-gray-400 cursor-not-allowed">
+                                        <p class="text-xs text-gray-500 mt-1"><i class="fa-solid fa-lock mr-1"></i>Hesabınıza kayıtlı e-posta</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">Telefon <span class="text-red-400">*</span></label>
+                                        <input type="tel" placeholder="05XX XXX XX XX" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end mt-8">
+                                    <button @click="step = 2" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl transition-all flex items-center gap-2">
+                                        Devam Et
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Teslimat Adresi -->
+                            <div x-show="step === 2" x-transition>
+                                <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+                                    <i class="fa-solid fa-truck text-blue-400 mr-3"></i>
+                                    Teslimat Adresi
+                                </h3>
+
+                                <!-- Kayıtlı Adresler -->
+                                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                    <label class="address-card cursor-pointer block">
+                                        <input type="radio" name="shipping_addr" class="hidden peer" checked>
+                                        <div class="p-4 rounded-xl border-2 border-gray-700 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 transition-all">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <span class="font-semibold text-white">Ev Adresi</span>
+                                                <span class="text-xs bg-blue-600/20 text-blue-400 px-2 py-1 rounded">Varsayılan</span>
+                                            </div>
+                                            <p class="text-sm text-gray-400">Atatürk Cad. No:123/5</p>
+                                            <p class="text-sm text-gray-400">Kadıköy / İstanbul 34710</p>
+                                            <p class="text-sm text-gray-500 mt-2"><i class="fa-solid fa-phone mr-1"></i>0532 123 45 67</p>
+                                        </div>
+                                    </label>
+
+                                    <label class="address-card cursor-pointer block">
+                                        <input type="radio" name="shipping_addr" class="hidden peer">
+                                        <div class="p-4 rounded-xl border-2 border-gray-700 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 transition-all">
+                                            <div class="flex items-start justify-between mb-2">
+                                                <span class="font-semibold text-white">İş Adresi</span>
+                                            </div>
+                                            <p class="text-sm text-gray-400">İxtif Plaza, Kat:5</p>
+                                            <p class="text-sm text-gray-400">Şişli / İstanbul 34381</p>
+                                            <p class="text-sm text-gray-500 mt-2"><i class="fa-solid fa-phone mr-1"></i>0212 456 78 90</p>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Yeni Adres Ekle -->
+                                <button class="w-full p-4 rounded-xl border-2 border-dashed border-gray-600 hover:border-blue-500 text-gray-400 hover:text-blue-400 transition-all">
+                                    <i class="fa-solid fa-plus mr-2"></i>
+                                    Yeni Adres Ekle
+                                </button>
+
+                                <div class="flex justify-between mt-8">
+                                    <button @click="step = 1" class="text-gray-400 hover:text-white font-medium px-6 py-3 rounded-xl transition-all flex items-center gap-2">
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                        Geri
+                                    </button>
+                                    <button @click="step = 3" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl transition-all flex items-center gap-2">
+                                        Devam Et
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Fatura Bilgileri -->
+                            <div x-show="step === 3" x-transition x-data="{ billingSame: true, billingType: 'individual' }">
+                                <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+                                    <i class="fa-solid fa-file-invoice text-blue-400 mr-3"></i>
+                                    Fatura Bilgileri
+                                </h3>
+
+                                <!-- Teslimat ile Aynı Toggle -->
+                                <div class="flex items-center justify-between p-4 rounded-xl bg-gray-800/30 mb-6">
+                                    <span class="text-gray-300">Fatura adresi teslimat adresi ile aynı</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" x-model="billingSame" class="sr-only peer">
+                                        <div class="toggle-bg w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-blue-600 transition-all relative"></div>
+                                    </label>
+                                </div>
+
+                                <!-- Fatura Tipi Seçimi -->
+                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" x-model="billingType" value="individual" class="hidden peer">
+                                        <div class="p-4 rounded-xl border-2 border-gray-700 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 text-center transition-all">
+                                            <i class="fa-solid fa-user text-3xl text-gray-400 peer-checked:text-blue-400 mb-2"></i>
+                                            <p class="font-semibold text-white">Bireysel</p>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" x-model="billingType" value="corporate" class="hidden peer">
+                                        <div class="p-4 rounded-xl border-2 border-gray-700 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 text-center transition-all">
+                                            <i class="fa-solid fa-building text-3xl text-gray-400 peer-checked:text-blue-400 mb-2"></i>
+                                            <p class="font-semibold text-white">Kurumsal</p>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Bireysel Form -->
+                                <div x-show="billingType === 'individual'" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">TC Kimlik No <span class="text-gray-500">(Opsiyonel)</span></label>
+                                        <input type="text" placeholder="XXXXXXXXXXX" maxlength="11" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white focus:border-blue-500 transition-all">
+                                    </div>
+                                </div>
+
+                                <!-- Kurumsal Form -->
+                                <div x-show="billingType === 'corporate'" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-400 mb-2">Şirket Ünvanı <span class="text-red-400">*</span></label>
+                                        <input type="text" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white focus:border-blue-500 transition-all">
+                                    </div>
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm text-gray-400 mb-2">Vergi Kimlik No <span class="text-red-400">*</span></label>
+                                            <input type="text" maxlength="10" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white focus:border-blue-500 transition-all">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-gray-400 mb-2">Vergi Dairesi <span class="text-red-400">*</span></label>
+                                            <input type="text" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white focus:border-blue-500 transition-all">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between mt-8">
+                                    <button @click="step = 2" class="text-gray-400 hover:text-white font-medium px-6 py-3 rounded-xl transition-all flex items-center gap-2">
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                        Geri
+                                    </button>
+                                    <button @click="step = 4" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-xl transition-all flex items-center gap-2">
+                                        Devam Et
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Ödeme -->
+                            <div x-show="step === 4" x-transition x-data="{ payMethod: 'card' }">
+                                <h3 class="text-xl font-bold text-white mb-6 flex items-center">
+                                    <i class="fa-solid fa-credit-card text-blue-400 mr-3"></i>
+                                    Ödeme Yöntemi
+                                </h3>
+
+                                <!-- Ödeme Seçenekleri -->
+                                <div class="space-y-3 mb-6">
+                                    <label class="cursor-pointer block">
+                                        <input type="radio" x-model="payMethod" value="card" class="hidden peer">
+                                        <div class="p-4 rounded-xl border-2 border-gray-700 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 transition-all flex items-center justify-between">
+                                            <div class="flex items-center gap-4">
+                                                <i class="fa-solid fa-credit-card text-2xl text-blue-400"></i>
+                                                <div>
+                                                    <p class="font-semibold text-white">Kredi Kartı</p>
+                                                    <p class="text-xs text-gray-400">Visa, Mastercard, Troy</p>
+                                                </div>
+                                            </div>
+                                            <img src="https://www.paytr.com/wp-content/uploads/2020/09/paytr_logo.svg" alt="PayTR" class="h-6 opacity-60">
+                                        </div>
+                                    </label>
+
+                                    <label class="cursor-pointer block">
+                                        <input type="radio" x-model="payMethod" value="bank" class="hidden peer">
+                                        <div class="p-4 rounded-xl border-2 border-gray-700 peer-checked:border-green-500 peer-checked:bg-green-500/10 transition-all">
+                                            <div class="flex items-center gap-4">
+                                                <i class="fa-solid fa-money-bill-transfer text-2xl text-green-400"></i>
+                                                <div>
+                                                    <p class="font-semibold text-white">Havale / EFT</p>
+                                                    <p class="text-xs text-gray-400">Banka hesabına havale</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Banka Bilgileri -->
+                                            <div x-show="payMethod === 'bank'" class="mt-4 p-4 bg-gray-800/50 rounded-lg text-sm">
+                                                <p class="text-gray-300 mb-2"><strong>Banka:</strong> Türkiye İş Bankası</p>
+                                                <p class="text-gray-300 mb-2"><strong>Hesap:</strong> İXTİF A.Ş.</p>
+                                                <p class="text-gray-300"><strong>IBAN:</strong> <code class="bg-gray-700 px-2 py-1 rounded">TR51 0006 4000 0011 0372 5092 58</code></p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Sözleşme Onayı -->
+                                <div class="p-4 rounded-xl bg-gray-800/30 mb-6">
+                                    <label class="flex items-start gap-3 cursor-pointer">
+                                        <input type="checkbox" class="w-5 h-5 mt-0.5 rounded border-gray-600 text-blue-600 focus:ring-blue-500">
+                                        <span class="text-sm text-gray-300">
+                                            <a href="#" class="text-blue-400 hover:underline">Ön Bilgilendirme Formu</a>'nu ve
+                                            <a href="#" class="text-blue-400 hover:underline">Mesafeli Satış Sözleşmesi</a>'ni okudum, kabul ediyorum.
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="flex justify-between">
+                                    <button @click="step = 3" class="text-gray-400 hover:text-white font-medium px-6 py-3 rounded-xl transition-all flex items-center gap-2">
+                                        <i class="fa-solid fa-arrow-left"></i>
+                                        Geri
+                                    </button>
+                                    <button class="bg-green-600 hover:bg-green-700 text-white font-bold px-10 py-4 rounded-xl transition-all flex items-center gap-2 text-lg">
+                                        <i class="fa-solid fa-lock mr-1"></i>
+                                        Siparişi Tamamla
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Right: Order Summary (Always Visible) -->
+                        <div class="lg:col-span-1">
+                            <div class="glass-light rounded-2xl p-6 sticky top-8">
+                                <h4 class="font-bold text-white mb-4 flex items-center">
+                                    <i class="fa-solid fa-receipt text-blue-400 mr-2"></i>
+                                    Sipariş Özeti
+                                </h4>
+
+                                <!-- Mini Cart Items -->
+                                <div class="space-y-3 mb-4 pb-4 border-b border-gray-700/50">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center">
+                                            <i class="fa-solid fa-box text-gray-500"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <p class="text-sm text-white">EP 20K Forklift</p>
+                                            <p class="text-xs text-gray-400">x 1</p>
+                                        </div>
+                                        <span class="text-white font-medium">285.000 ₺</span>
+                                    </div>
+                                </div>
+
+                                <!-- Summary -->
+                                <div class="space-y-2 text-sm mb-4">
+                                    <div class="flex justify-between text-gray-400">
+                                        <span>Ara Toplam</span>
+                                        <span>285.000 ₺</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-400">
+                                        <span>KDV (%20)</span>
+                                        <span>57.000 ₺</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-400">
+                                        <span>Kargo</span>
+                                        <span class="text-green-400">Ücretsiz</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center pt-4 border-t border-gray-700/50">
+                                    <span class="font-bold text-white text-lg">Toplam</span>
+                                    <span class="font-bold text-2xl text-blue-400">342.000 ₺</span>
+                                </div>
+
+                                <div class="mt-4 text-center">
+                                    <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                                        <i class="fa-solid fa-lock text-green-400"></i>
+                                        256-bit SSL Güvenli Ödeme
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Design Notes -->
+            <div class="mt-6 p-4 rounded-xl bg-blue-900/20 border border-blue-500/30">
+                <h4 class="font-bold text-blue-400 mb-2"><i class="fa-solid fa-lightbulb mr-2"></i>Tasarım Özellikleri</h4>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>✅ Her adım ayrı ekran - kullanıcı karışmaz</li>
+                    <li>✅ İlerleme çubuğu ile hangi adımda olduğu net</li>
+                    <li>✅ Sipariş özeti her zaman sağda görünür</li>
+                    <li>✅ Geri-İleri ile kolay navigasyon</li>
+                    <li>✅ Mobilde de mükemmel çalışır</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- TASARIM 2: ACCORDION STYLE -->
+        <!-- ============================================ -->
+        <section class="mb-20">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">2</span>
+                <h2 class="text-2xl font-bold text-white">Accordion Style</h2>
+            </div>
+            <p class="text-gray-400 mb-6">Tüm bölümler tek sayfada ama sadece aktif olan açık. Tamamlanan bölümler özet gösterir.</p>
+
+            <div class="glass rounded-2xl overflow-hidden" x-data="{ activeSection: 'contact' }">
+                <div class="grid lg:grid-cols-3 gap-0">
+
+                    <!-- Left: Accordion Sections -->
+                    <div class="lg:col-span-2 divide-y divide-gray-700/50">
+
+                        <!-- Section 1: İletişim -->
+                        <div class="accordion-section" :class="{ 'accordion-open': activeSection === 'contact' }">
+                            <button @click="activeSection = activeSection === 'contact' ? '' : 'contact'"
+                                    class="w-full p-6 flex items-center justify-between text-left hover:bg-gray-800/30 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center"
+                                         :class="activeSection === 'contact' ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'">
+                                        <template x-if="activeSection !== 'contact'"><i class="fa-solid fa-check"></i></template>
+                                        <template x-if="activeSection === 'contact'"><span>1</span></template>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-white">İletişim Bilgileri</h3>
+                                        <p x-show="activeSection !== 'contact'" class="text-sm text-gray-400">Nurullah Çetin • nurullah@ixtif.com</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform"
+                                   :class="{ 'rotate-180': activeSection === 'contact' }"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="p-6 pt-0">
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm text-gray-400 mb-2">Ad</label>
+                                            <input type="text" value="Nurullah" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-gray-400 mb-2">Soyad</label>
+                                            <input type="text" value="Çetin" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-gray-400 mb-2">E-posta</label>
+                                            <input type="email" value="nurullah@ixtif.com" readonly class="w-full px-4 py-3 rounded-xl bg-gray-700/50 border border-gray-600 text-gray-400">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-gray-400 mb-2">Telefon</label>
+                                            <input type="tel" placeholder="05XX XXX XX XX" class="w-full px-4 py-3 rounded-xl bg-gray-800/50 border border-gray-700 text-white">
+                                        </div>
+                                    </div>
+                                    <button @click="activeSection = 'shipping'" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl">
+                                        Devam Et <i class="fa-solid fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Teslimat -->
+                        <div class="accordion-section" :class="{ 'accordion-open': activeSection === 'shipping' }">
+                            <button @click="activeSection = activeSection === 'shipping' ? '' : 'shipping'"
+                                    class="w-full p-6 flex items-center justify-between text-left hover:bg-gray-800/30 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-gray-700 text-gray-400 flex items-center justify-center"
+                                         :class="{ 'bg-blue-600 text-white': activeSection === 'shipping' }">
+                                        2
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-white">Teslimat Adresi</h3>
+                                        <p x-show="activeSection !== 'shipping'" class="text-sm text-gray-400">Henüz seçilmedi</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform"
+                                   :class="{ 'rotate-180': activeSection === 'shipping' }"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="p-6 pt-0">
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="acc_shipping" class="hidden peer" checked>
+                                            <div class="p-4 rounded-xl border-2 border-gray-700 peer-checked:border-blue-500 peer-checked:bg-blue-500/10">
+                                                <p class="font-semibold text-white">Ev Adresi</p>
+                                                <p class="text-sm text-gray-400">Atatürk Cad. No:123</p>
+                                                <p class="text-sm text-gray-400">Kadıköy / İstanbul</p>
+                                            </div>
+                                        </label>
+                                        <button class="p-4 rounded-xl border-2 border-dashed border-gray-600 hover:border-blue-500 text-gray-400 hover:text-blue-400">
+                                            <i class="fa-solid fa-plus mr-2"></i>Yeni Ekle
+                                        </button>
+                                    </div>
+                                    <button @click="activeSection = 'billing'" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl">
+                                        Devam Et <i class="fa-solid fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Fatura -->
+                        <div class="accordion-section" :class="{ 'accordion-open': activeSection === 'billing' }">
+                            <button @click="activeSection = activeSection === 'billing' ? '' : 'billing'"
+                                    class="w-full p-6 flex items-center justify-between text-left hover:bg-gray-800/30 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-gray-700 text-gray-400 flex items-center justify-center"
+                                         :class="{ 'bg-blue-600 text-white': activeSection === 'billing' }">
+                                        3
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-white">Fatura Bilgileri</h3>
+                                        <p x-show="activeSection !== 'billing'" class="text-sm text-gray-400">Bireysel - Teslimat adresi ile aynı</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform"
+                                   :class="{ 'rotate-180': activeSection === 'billing' }"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="p-6 pt-0">
+                                    <label class="flex items-center gap-3 p-4 rounded-xl bg-gray-800/30 mb-4 cursor-pointer">
+                                        <input type="checkbox" checked class="w-5 h-5 rounded text-blue-600">
+                                        <span class="text-gray-300">Fatura adresi teslimat adresi ile aynı</span>
+                                    </label>
+                                    <button @click="activeSection = 'payment'" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl">
+                                        Devam Et <i class="fa-solid fa-arrow-right ml-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Ödeme -->
+                        <div class="accordion-section" :class="{ 'accordion-open': activeSection === 'payment' }">
+                            <button @click="activeSection = activeSection === 'payment' ? '' : 'payment'"
+                                    class="w-full p-6 flex items-center justify-between text-left hover:bg-gray-800/30 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-gray-700 text-gray-400 flex items-center justify-center"
+                                         :class="{ 'bg-blue-600 text-white': activeSection === 'payment' }">
+                                        4
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-white">Ödeme</h3>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform"
+                                   :class="{ 'rotate-180': activeSection === 'payment' }"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="p-6 pt-0">
+                                    <div class="space-y-3 mb-6">
+                                        <label class="cursor-pointer block">
+                                            <input type="radio" name="acc_payment" class="hidden peer" checked>
+                                            <div class="p-4 rounded-xl border-2 border-gray-700 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 flex items-center gap-4">
+                                                <i class="fa-solid fa-credit-card text-xl text-blue-400"></i>
+                                                <span class="font-medium text-white">Kredi Kartı</span>
+                                            </div>
+                                        </label>
+                                        <label class="cursor-pointer block">
+                                            <input type="radio" name="acc_payment" class="hidden peer">
+                                            <div class="p-4 rounded-xl border-2 border-gray-700 peer-checked:border-green-500 peer-checked:bg-green-500/10 flex items-center gap-4">
+                                                <i class="fa-solid fa-money-bill-transfer text-xl text-green-400"></i>
+                                                <span class="font-medium text-white">Havale / EFT</span>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <label class="flex items-start gap-3 mb-6 cursor-pointer">
+                                        <input type="checkbox" class="w-5 h-5 mt-0.5 rounded text-blue-600">
+                                        <span class="text-sm text-gray-300">Sözleşmeleri okudum, kabul ediyorum.</span>
+                                    </label>
+
+                                    <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl text-lg">
+                                        <i class="fa-solid fa-lock mr-2"></i>Siparişi Tamamla
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right: Summary -->
+                    <div class="lg:col-span-1 bg-gray-900/30 p-6">
+                        <div class="sticky top-8">
+                            <h4 class="font-bold text-white mb-4">Sipariş Özeti</h4>
+                            <div class="space-y-3 mb-4 pb-4 border-b border-gray-700/50">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-400">1x EP 20K Forklift</span>
+                                    <span class="text-white">285.000 ₺</span>
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm mb-4">
+                                <div class="flex justify-between text-gray-400">
+                                    <span>Ara Toplam</span>
+                                    <span>285.000 ₺</span>
+                                </div>
+                                <div class="flex justify-between text-gray-400">
+                                    <span>KDV</span>
+                                    <span>57.000 ₺</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between pt-4 border-t border-gray-700/50">
+                                <span class="font-bold text-white">Toplam</span>
+                                <span class="font-bold text-xl text-blue-400">342.000 ₺</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Design Notes -->
+            <div class="mt-6 p-4 rounded-xl bg-purple-900/20 border border-purple-500/30">
+                <h4 class="font-bold text-purple-400 mb-2"><i class="fa-solid fa-lightbulb mr-2"></i>Tasarım Özellikleri</h4>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>✅ Tüm bölümler tek sayfada görünür</li>
+                    <li>✅ Tamamlanan bölümler özet gösterir</li>
+                    <li>✅ İstediğin bölüme tıklayıp düzenleyebilirsin</li>
+                    <li>✅ Sayfa yenileme yok, akıcı deneyim</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- TASARIM 3: SINGLE PAGE - CARD LAYOUT -->
+        <!-- ============================================ -->
+        <section class="mb-20">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-cyan-600 text-white px-3 py-1 rounded-full text-sm font-bold">3</span>
+                <h2 class="text-2xl font-bold text-white">Single Page - Modern Cards</h2>
+            </div>
+            <p class="text-gray-400 mb-6">Tek sayfa, tüm bilgiler görünür. Kompakt kartlarla düzenli görünüm. Hepsiburada benzeri pattern.</p>
+
+            <div class="glass rounded-2xl p-6 md:p-8">
+                <div class="grid lg:grid-cols-3 gap-6">
+
+                    <!-- Left: All Forms -->
+                    <div class="lg:col-span-2 space-y-4">
+
+                        <!-- İletişim Card -->
+                        <div class="bg-gray-800/30 rounded-xl p-5 border border-gray-700/50">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-white flex items-center">
+                                    <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-sm flex items-center justify-center mr-3">1</span>
+                                    İletişim Bilgileri
+                                </h3>
+                                <button class="text-sm text-blue-400 hover:text-blue-300">
+                                    <i class="fa-solid fa-pen mr-1"></i>Düzenle
+                                </button>
+                            </div>
+                            <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                                <span class="text-gray-400"><i class="fa-solid fa-user mr-2 text-gray-500"></i>Nurullah Çetin</span>
+                                <span class="text-gray-400"><i class="fa-solid fa-envelope mr-2 text-gray-500"></i>nurullah@ixtif.com</span>
+                                <span class="text-gray-400"><i class="fa-solid fa-phone mr-2 text-gray-500"></i>0532 123 45 67</span>
+                            </div>
+                        </div>
+
+                        <!-- Teslimat Card -->
+                        <div class="bg-gray-800/30 rounded-xl p-5 border border-gray-700/50">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-white flex items-center">
+                                    <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-sm flex items-center justify-center mr-3">2</span>
+                                    Teslimat Adresi
+                                </h3>
+                                <button class="text-sm text-blue-400 hover:text-blue-300">
+                                    <i class="fa-solid fa-pen mr-1"></i>Değiştir
+                                </button>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-map-marker-alt text-red-400 mt-1"></i>
+                                <div>
+                                    <p class="text-white font-medium">Ev Adresi</p>
+                                    <p class="text-sm text-gray-400">Atatürk Cad. No:123/5, Kadıköy / İstanbul 34710</p>
+                                    <p class="text-sm text-gray-500 mt-1"><i class="fa-solid fa-phone mr-1"></i>0532 123 45 67</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fatura Card -->
+                        <div class="bg-gray-800/30 rounded-xl p-5 border border-gray-700/50" x-data="{ sameAddr: true }">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-white flex items-center">
+                                    <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-sm flex items-center justify-center mr-3">3</span>
+                                    Fatura Bilgileri
+                                </h3>
+                                <button class="text-sm text-blue-400 hover:text-blue-300">
+                                    <i class="fa-solid fa-pen mr-1"></i>Düzenle
+                                </button>
+                            </div>
+
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-sm text-gray-300">Fatura adresi teslimat ile aynı</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" x-model="sameAddr" class="sr-only peer">
+                                    <div class="toggle-bg w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-blue-600 transition-all relative"></div>
+                                </label>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-600/20 text-green-400">Bireysel</span>
+                                <span class="text-sm text-gray-400">Nurullah Çetin</span>
+                            </div>
+                        </div>
+
+                        <!-- Ödeme Card -->
+                        <div class="bg-gray-800/30 rounded-xl p-5 border border-gray-700/50" x-data="{ method: 'card' }">
+                            <h3 class="font-bold text-white flex items-center mb-4">
+                                <span class="w-7 h-7 rounded-full bg-blue-600 text-white text-sm flex items-center justify-center mr-3">4</span>
+                                Ödeme Yöntemi
+                            </h3>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="cursor-pointer">
+                                    <input type="radio" x-model="method" value="card" class="hidden peer">
+                                    <div class="p-4 rounded-xl border-2 border-gray-600 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 text-center transition-all">
+                                        <i class="fa-solid fa-credit-card text-2xl mb-2" :class="method === 'card' ? 'text-blue-400' : 'text-gray-500'"></i>
+                                        <p class="text-sm font-medium text-white">Kredi Kartı</p>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" x-model="method" value="bank" class="hidden peer">
+                                    <div class="p-4 rounded-xl border-2 border-gray-600 peer-checked:border-green-500 peer-checked:bg-green-500/10 text-center transition-all">
+                                        <i class="fa-solid fa-money-bill-transfer text-2xl mb-2" :class="method === 'bank' ? 'text-green-400' : 'text-gray-500'"></i>
+                                        <p class="text-sm font-medium text-white">Havale/EFT</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right: Summary -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-gray-800/30 rounded-xl p-5 border border-gray-700/50 sticky top-8">
+                            <h4 class="font-bold text-white mb-4 flex items-center">
+                                <i class="fa-solid fa-receipt text-blue-400 mr-2"></i>
+                                Sipariş Özeti
+                            </h4>
+
+                            <!-- Items -->
+                            <div class="space-y-3 mb-4 pb-4 border-b border-gray-700/50">
+                                <div class="flex gap-3">
+                                    <div class="w-14 h-14 bg-gray-700 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-box text-gray-500"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-white truncate">EP 20K Elektrikli Forklift</p>
+                                        <p class="text-xs text-gray-500">Adet: 1</p>
+                                        <p class="text-sm text-blue-400 font-medium">285.000 ₺</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Totals -->
+                            <div class="space-y-2 text-sm mb-4">
+                                <div class="flex justify-between text-gray-400">
+                                    <span>Ara Toplam</span>
+                                    <span>285.000 ₺</span>
+                                </div>
+                                <div class="flex justify-between text-gray-400">
+                                    <span>KDV (%20)</span>
+                                    <span>57.000 ₺</span>
+                                </div>
+                                <div class="flex justify-between text-gray-400">
+                                    <span>Kargo</span>
+                                    <span class="text-green-400">Ücretsiz</span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-center py-4 border-t border-gray-700/50 mb-4">
+                                <span class="font-bold text-white">Toplam</span>
+                                <span class="font-bold text-2xl text-blue-400">342.000 ₺</span>
+                            </div>
+
+                            <!-- Agreement -->
+                            <label class="flex items-start gap-3 mb-4 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 mt-0.5 rounded text-blue-600">
+                                <span class="text-xs text-gray-400">
+                                    <a href="#" class="text-blue-400">Ön Bilgilendirme Formu</a>'nu ve
+                                    <a href="#" class="text-blue-400">Mesafeli Satış Sözleşmesi</a>'ni kabul ediyorum.
+                                </span>
+                            </label>
+
+                            <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all">
+                                <i class="fa-solid fa-lock mr-2"></i>
+                                Ödemeye Geç
+                            </button>
+
+                            <p class="text-xs text-center text-gray-500 mt-3">
+                                <i class="fa-solid fa-shield-halved text-green-400 mr-1"></i>
+                                256-bit SSL Güvenli Ödeme
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Design Notes -->
+            <div class="mt-6 p-4 rounded-xl bg-cyan-900/20 border border-cyan-500/30">
+                <h4 class="font-bold text-cyan-400 mb-2"><i class="fa-solid fa-lightbulb mr-2"></i>Tasarım Özellikleri</h4>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>✅ Tüm bilgiler tek bakışta görünür</li>
+                    <li>✅ Kompakt kartlar - minimum alan kullanımı</li>
+                    <li>✅ "Düzenle" butonlarıyla modal/slide-over açılır</li>
+                    <li>✅ Özet bilgiler hep görünür - karar vermek kolay</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- TASARIM 4: FLOATING SUMMARY -->
+        <!-- ============================================ -->
+        <section class="mb-20">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-orange-600 text-white px-3 py-1 rounded-full text-sm font-bold">4</span>
+                <h2 class="text-2xl font-bold text-white">Floating Summary - Mobile First</h2>
+            </div>
+            <p class="text-gray-400 mb-6">Mobilde sipariş özeti altta sabit kalır. Tek kolon form, temiz görünüm.</p>
+
+            <div class="glass rounded-2xl p-6 md:p-8 relative pb-32 lg:pb-8">
+
+                <!-- Form Container -->
+                <div class="max-w-2xl mx-auto space-y-6">
+
+                    <h2 class="text-2xl font-bold text-white text-center mb-8">Sipariş Tamamla</h2>
+
+                    <!-- İletişim -->
+                    <div class="bg-gray-800/40 rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                            <i class="fa-solid fa-user-circle text-blue-400 mr-3 text-xl"></i>
+                            İletişim Bilgileri
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <input type="text" placeholder="Ad" class="px-4 py-3 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-500 focus:border-blue-500 transition-all">
+                            <input type="text" placeholder="Soyad" class="px-4 py-3 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-500 focus:border-blue-500 transition-all">
+                            <input type="email" placeholder="E-posta" class="px-4 py-3 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-500 focus:border-blue-500 transition-all">
+                            <input type="tel" placeholder="Telefon" class="px-4 py-3 rounded-xl bg-gray-700/50 border border-gray-600 text-white placeholder-gray-500 focus:border-blue-500 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Adres -->
+                    <div class="bg-gray-800/40 rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-bold text-white flex items-center">
+                                <i class="fa-solid fa-location-dot text-blue-400 mr-3 text-xl"></i>
+                                Adres Bilgileri
+                            </h3>
+                        </div>
+
+                        <!-- Quick Select -->
+                        <div class="flex gap-3 mb-4 overflow-x-auto pb-2">
+                            <button class="px-4 py-2 rounded-full bg-blue-600 text-white text-sm font-medium whitespace-nowrap">
+                                <i class="fa-solid fa-home mr-1"></i> Ev
+                            </button>
+                            <button class="px-4 py-2 rounded-full bg-gray-700 text-gray-300 text-sm font-medium whitespace-nowrap hover:bg-gray-600">
+                                <i class="fa-solid fa-briefcase mr-1"></i> İş
+                            </button>
+                            <button class="px-4 py-2 rounded-full bg-gray-700 text-gray-300 text-sm font-medium whitespace-nowrap hover:bg-gray-600">
+                                <i class="fa-solid fa-plus mr-1"></i> Yeni
+                            </button>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-gray-700/30 border border-gray-600">
+                            <p class="text-white font-medium">Atatürk Cad. No:123/5</p>
+                            <p class="text-sm text-gray-400">Kadıköy / İstanbul 34710</p>
+                        </div>
+
+                        <!-- Fatura aynı mı? -->
+                        <label class="flex items-center gap-3 mt-4 cursor-pointer">
+                            <input type="checkbox" checked class="w-5 h-5 rounded text-blue-600 bg-gray-700 border-gray-600">
+                            <span class="text-sm text-gray-300">Fatura adresi aynı</span>
+                        </label>
+                    </div>
+
+                    <!-- Ödeme -->
+                    <div class="bg-gray-800/40 rounded-2xl p-6">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center">
+                            <i class="fa-solid fa-wallet text-blue-400 mr-3 text-xl"></i>
+                            Ödeme
+                        </h3>
+
+                        <div class="flex gap-3">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="float_pay" class="hidden peer" checked>
+                                <div class="p-4 rounded-xl border-2 border-gray-600 peer-checked:border-blue-500 peer-checked:bg-blue-500/10 text-center transition-all">
+                                    <i class="fa-solid fa-credit-card text-2xl text-blue-400 mb-1"></i>
+                                    <p class="text-xs text-white">Kredi Kartı</p>
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="float_pay" class="hidden peer">
+                                <div class="p-4 rounded-xl border-2 border-gray-600 peer-checked:border-green-500 peer-checked:bg-green-500/10 text-center transition-all">
+                                    <i class="fa-solid fa-money-bill-transfer text-2xl text-green-400 mb-1"></i>
+                                    <p class="text-xs text-white">Havale</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sözleşme -->
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" class="w-5 h-5 mt-0.5 rounded text-blue-600 bg-gray-700 border-gray-600">
+                        <span class="text-sm text-gray-400">
+                            <a href="#" class="text-blue-400 hover:underline">Ön Bilgilendirme Formu</a> ve
+                            <a href="#" class="text-blue-400 hover:underline">Mesafeli Satış Sözleşmesi</a>'ni kabul ediyorum.
+                        </span>
+                    </label>
+
+                    <!-- Desktop Button -->
+                    <button class="hidden lg:flex w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl items-center justify-center gap-2 transition-all">
+                        <i class="fa-solid fa-lock"></i>
+                        342.000 ₺ Öde
+                    </button>
+
+                </div>
+
+                <!-- Floating Bottom Bar (Mobile) -->
+                <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-lg border-t border-gray-700 p-4 z-50">
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
+                            <p class="text-xs text-gray-400">Toplam</p>
+                            <p class="text-xl font-bold text-white">342.000 ₺</p>
+                        </div>
+                        <button class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-lock"></i>
+                            Ödemeye Geç
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Design Notes -->
+            <div class="mt-6 p-4 rounded-xl bg-orange-900/20 border border-orange-500/30">
+                <h4 class="font-bold text-orange-400 mb-2"><i class="fa-solid fa-lightbulb mr-2"></i>Tasarım Özellikleri</h4>
+                <ul class="text-sm text-gray-300 space-y-1">
+                    <li>✅ Mobilde altta sabit ödeme butonu</li>
+                    <li>✅ Tek kolon form - mobil için ideal</li>
+                    <li>✅ Hızlı adres seçimi (pill butonlar)</li>
+                    <li>✅ Minimum scroll, maksimum verimlilik</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ============================================ -->
+        <!-- KARAR TABLOSU -->
+        <!-- ============================================ -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-6 text-center">
+                <i class="fa-solid fa-scale-balanced text-yellow-400 mr-3"></i>
+                Hangi Tasarım Senin İçin?
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-800/50">
+                            <th class="p-4 text-left text-gray-400 font-medium">Özellik</th>
+                            <th class="p-4 text-center text-blue-400 font-medium">1. Wizard</th>
+                            <th class="p-4 text-center text-purple-400 font-medium">2. Accordion</th>
+                            <th class="p-4 text-center text-cyan-400 font-medium">3. Cards</th>
+                            <th class="p-4 text-center text-orange-400 font-medium">4. Floating</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        <tr>
+                            <td class="p-4 text-gray-300">Kullanıcı karışıklığı</td>
+                            <td class="p-4 text-center"><span class="text-green-400">En Az</span></td>
+                            <td class="p-4 text-center"><span class="text-yellow-400">Az</span></td>
+                            <td class="p-4 text-center"><span class="text-yellow-400">Az</span></td>
+                            <td class="p-4 text-center"><span class="text-green-400">En Az</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 text-gray-300">Mobil deneyimi</td>
+                            <td class="p-4 text-center"><span class="text-green-400">★★★★★</span></td>
+                            <td class="p-4 text-center"><span class="text-yellow-400">★★★★</span></td>
+                            <td class="p-4 text-center"><span class="text-yellow-400">★★★★</span></td>
+                            <td class="p-4 text-center"><span class="text-green-400">★★★★★</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 text-gray-300">Tamamlama süresi</td>
+                            <td class="p-4 text-center"><span class="text-yellow-400">Orta</span></td>
+                            <td class="p-4 text-center"><span class="text-green-400">Hızlı</span></td>
+                            <td class="p-4 text-center"><span class="text-green-400">Hızlı</span></td>
+                            <td class="p-4 text-center"><span class="text-green-400">Hızlı</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 text-gray-300">Geliştirme zorluğu</td>
+                            <td class="p-4 text-center"><span class="text-yellow-400">Orta</span></td>
+                            <td class="p-4 text-center"><span class="text-green-400">Kolay</span></td>
+                            <td class="p-4 text-center"><span class="text-green-400">Kolay</span></td>
+                            <td class="p-4 text-center"><span class="text-green-400">Kolay</span></td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 text-gray-300">Önerilen kullanım</td>
+                            <td class="p-4 text-center text-xs text-gray-400">Çok aşamalı işlemler</td>
+                            <td class="p-4 text-center text-xs text-gray-400">Tek sayfa tercih</td>
+                            <td class="p-4 text-center text-xs text-gray-400">Hepsiburada tarzı</td>
+                            <td class="p-4 text-center text-xs text-gray-400">Mobil öncelikli</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center py-8 border-t border-gray-800">
+            <p class="text-gray-500 text-sm">
+                <i class="fa-solid fa-robot mr-2"></i>
+                Claude AI tarafından hazırlandı | 24.11.2025
+            </p>
+            <p class="text-gray-600 text-xs mt-2">
+                İstediğin tasarımı seç, hemen uygulamaya geçelim!
+            </p>
+        </footer>
+
+    </div>
+</body>
+</html>

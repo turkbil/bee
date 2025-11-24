@@ -22,7 +22,7 @@ return new class extends Migration
 
             // Indexes
             $table->index('user_id');
-            $table->index(['favoritable_type', 'favoritable_id']);
+            // NOT: morphs() zaten favoritable_type + favoritable_id için index oluşturur
             $table->index('created_at');
 
             // Unique constraint - Bir kullanıcı aynı içeriği birden fazla favorilere ekleyemez

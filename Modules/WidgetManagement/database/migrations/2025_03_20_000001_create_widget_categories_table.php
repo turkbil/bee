@@ -17,6 +17,10 @@ return new class extends Migration
     
     public function up(): void
     {
+        if (Schema::hasTable('widget_categories')) {
+            return;
+        }
+
         Schema::create('widget_categories', function (Blueprint $table) {
             $table->id('widget_category_id');
             $table->string('title', 255)->index();

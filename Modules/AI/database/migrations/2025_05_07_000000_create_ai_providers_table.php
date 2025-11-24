@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ai_providers')) {
+            return;
+        }
+
         Schema::create('ai_providers', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique(); // openai, claude, deepseek

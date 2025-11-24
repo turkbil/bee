@@ -334,7 +334,7 @@
                             </div>
                         </div>
                         <div class="form-floating mb-3">
-                            <select class="form-select" wire:model="theme_id" data-choices data-choices-search="{{ count($themes) > 6 ? 'true' : 'false' }}" data-choices-placeholder="Tema seçin">
+                            <select class="form-select" wire:model.live="theme_id" data-choices data-choices-search="{{ count($themes) > 6 ? 'true' : 'false' }}" data-choices-placeholder="Tema seçin">
                                 @foreach($themes as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
@@ -342,7 +342,24 @@
                             <label>{{ __('tenantmanagement::admin.theme') }}</label>
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        
+
+                        {{-- Subheader Style Seçimi --}}
+                        @if($hasCustomSubheader)
+                        <div class="alert alert-info p-2 mb-3" style="font-size: 0.9em;">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Bu tema kendi özel subheader tasarımını kullanıyor.
+                        </div>
+                        @else
+                        <div class="form-floating mb-3">
+                            <select class="form-select" wire:model="subheader_style">
+                                @foreach($availableSubheaderStyles as $key => $label)
+                                <option value="{{ $key }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                            <label><i class="fas fa-layer-group me-1"></i> Subheader Stili</label>
+                        </div>
+                        @endif
+
                         @if(count($availableAiProviders) > 0)
                         <div class="row">
                             <div class="col-md-6">
@@ -371,7 +388,7 @@
                             </div>
                         </div>
                         @endif
-                        
+
                         @if($tenantId && $editingTenant)
                         <div class="card bg-light">
                             <div class="card-body p-3">
@@ -469,7 +486,7 @@
                             </div>
                         </div>
                         <div class="form-floating mb-3">
-                            <select class="form-select" wire:model="theme_id" data-choices data-choices-search="{{ count($themes) > 6 ? 'true' : 'false' }}" data-choices-placeholder="Tema seçin">
+                            <select class="form-select" wire:model.live="theme_id" data-choices data-choices-search="{{ count($themes) > 6 ? 'true' : 'false' }}" data-choices-placeholder="Tema seçin">
                                 @foreach($themes as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
@@ -477,7 +494,24 @@
                             <label>{{ __('tenantmanagement::admin.theme') }}</label>
                             @error('theme_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
-                        
+
+                        {{-- Subheader Style Seçimi --}}
+                        @if($hasCustomSubheader)
+                        <div class="alert alert-info p-2 mb-3" style="font-size: 0.9em;">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Bu tema kendi özel subheader tasarımını kullanıyor.
+                        </div>
+                        @else
+                        <div class="form-floating mb-3">
+                            <select class="form-select" wire:model="subheader_style">
+                                @foreach($availableSubheaderStyles as $key => $label)
+                                <option value="{{ $key }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                            <label><i class="fas fa-layer-group me-1"></i> Subheader Stili</label>
+                        </div>
+                        @endif
+
                         @if(count($availableAiProviders) > 0)
                         <div class="row">
                             <div class="col-md-6">

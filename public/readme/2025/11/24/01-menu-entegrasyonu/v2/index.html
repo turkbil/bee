@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurumsal Hesaplar Liste - Taslak Tasarım</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 { font-size: 2rem; color: #f59e0b; margin-bottom: 10px; }
+        .meta { color: #64748b; font-size: 0.9rem; }
+
+        h2 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+            color: #60a5fa;
+        }
+
+        /* Card - Admin Panel benzeri */
+        .admin-card {
+            background: #1e293b;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            background: #334155;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 8px 12px;
+            width: 280px;
+        }
+        .search-box i { color: #64748b; margin-right: 8px; }
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #e2e8f0;
+            outline: none;
+            width: 100%;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-select {
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #e2e8f0;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #1e293b;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #334155;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #334155;
+            color: #cbd5e1;
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Badges */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .badge-info { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+
+        /* Company info */
+        .company-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .company-name {
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+        .company-code {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-family: monospace;
+        }
+
+        /* Owner info */
+        .owner-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        .action-btn {
+            padding: 6px 10px;
+            border-radius: 4px;
+            background: transparent;
+            border: 1px solid #475569;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+        .action-btn:hover {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        /* Footer */
+        .card-footer {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Info box */
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-box h3 { color: #3b82f6; margin-bottom: 10px; }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            color: #475569;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Kurumsal Hesaplar - Liste Tasarımı</h1>
+            <div class="meta">Muzibu Modülü | admin.muzibu.corporate.index</div>
+        </header>
+
+        <h2>Liste Sayfası Tasarımı</h2>
+
+        <!-- Admin Card Preview -->
+        <div class="admin-card">
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search-box">
+                    <i>🔍</i>
+                    <input type="text" placeholder="Firma adı, kod veya email ara...">
+                </div>
+                <div class="toolbar-right">
+                    <select class="filter-select">
+                        <option>Tümü</option>
+                        <option>Aktif</option>
+                        <option>Pasif</option>
+                    </select>
+                    <select class="filter-select" style="width: 75px;">
+                        <option>10</option>
+                        <option>50</option>
+                        <option>100</option>
+                    </select>
+                    <button class="btn btn-primary">
+                        <span>+</span> Yeni Kurumsal Hesap
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px">#</th>
+                            <th>Firma Bilgisi</th>
+                            <th>Hesap Sahibi</th>
+                            <th style="width: 100px">Üye Sayısı</th>
+                            <th style="width: 100px">Max Üye</th>
+                            <th style="width: 100px">Durum</th>
+                            <th style="width: 120px">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Row 1 - Ana Firma -->
+                        <tr>
+                            <td>1</td>
+                            <td>
+                                <div class="company-info">
+                                    <span class="company-name">🏢 ABC Müzik Ltd. Şti.</span>
+                                    <span class="company-code">MZB-ABC123</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="owner-info">
+                                    <div class="avatar">AY</div>
+                                    <div>
+                                        <div style="font-weight: 500;">Ahmet Yılmaz</div>
+                                        <div style="font-size: 0.8rem; color: #64748b;">ahmet@abc.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">3 şube</span>
+                            </td>
+                            <td>-</td>
+                            <td>
+                                <span class="badge badge-success">Aktif</span>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button class="action-btn" title="Düzenle">✏️</button>
+                                    <button class="action-btn" title="Şubeleri Gör">🏪</button>
+                                    <button class="action-btn" title="Sil">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 2 - Şube (ABC'nin şubesi) -->
+                        <tr style="background: rgba(59, 130, 246, 0.03);">
+                            <td>2</td>
+                            <td>
+                                <div class="company-info" style="padding-left: 20px;">
+                                    <span class="company-name">└ ABC İstanbul Şubesi</span>
+                                    <span class="company-code">MZB-ABC-IST</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="owner-info">
+                                    <div class="avatar">MK</div>
+                                    <div>
+                                        <div style="font-weight: 500;">Mehmet Kaya</div>
+                                        <div style="font-size: 0.8rem; color: #64748b;">mehmet@abc.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">5 / 10</span>
+                            </td>
+                            <td>10</td>
+                            <td>
+                                <span class="badge badge-success">Aktif</span>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button class="action-btn" title="Düzenle">✏️</button>
+                                    <button class="action-btn" title="Üyeleri Gör">👥</button>
+                                    <button class="action-btn" title="Sil">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 3 - Şube (ABC'nin şubesi) -->
+                        <tr style="background: rgba(59, 130, 246, 0.03);">
+                            <td>3</td>
+                            <td>
+                                <div class="company-info" style="padding-left: 20px;">
+                                    <span class="company-name">└ ABC Ankara Şubesi</span>
+                                    <span class="company-code">MZB-ABC-ANK</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="owner-info">
+                                    <div class="avatar">AD</div>
+                                    <div>
+                                        <div style="font-weight: 500;">Ali Demir</div>
+                                        <div style="font-size: 0.8rem; color: #64748b;">ali@abc.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">3 / 5</span>
+                            </td>
+                            <td>5</td>
+                            <td>
+                                <span class="badge badge-success">Aktif</span>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button class="action-btn" title="Düzenle">✏️</button>
+                                    <button class="action-btn" title="Üyeleri Gör">👥</button>
+                                    <button class="action-btn" title="Sil">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Row 4 - Başka Ana Firma -->
+                        <tr>
+                            <td>4</td>
+                            <td>
+                                <div class="company-info">
+                                    <span class="company-name">🏢 XYZ Prodüksiyon</span>
+                                    <span class="company-code">MZB-XYZ789</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="owner-info">
+                                    <div class="avatar">VT</div>
+                                    <div>
+                                        <div style="font-weight: 500;">Veli Tunç</div>
+                                        <div style="font-size: 0.8rem; color: #64748b;">veli@xyz.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-info">0 şube</span>
+                            </td>
+                            <td>-</td>
+                            <td>
+                                <span class="badge badge-success">Aktif</span>
+                            </td>
+                            <td>
+                                <div class="actions">
+                                    <button class="action-btn" title="Düzenle">✏️</button>
+                                    <button class="action-btn" title="Şube Ekle">➕</button>
+                                    <button class="action-btn" title="Sil">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="card-footer">
+                <span>Toplam 4 sonuç (2 ana firma, 2 şube)</span>
+                <div>Sayfa 1 / 1</div>
+            </div>
+        </div>
+
+        <!-- Hiyerarşi Açıklama -->
+        <div class="info-box" style="background: rgba(168, 85, 247, 0.1); border-color: #a855f7;">
+            <h3 style="color: #a855f7;">Hiyerarşi Yapısı</h3>
+            <ul style="padding-left: 20px; color: #cbd5e1;">
+                <li><strong>Ana Firma (🏢):</strong> <code>parent_id = null</code> - Şube sayısı gösterilir</li>
+                <li><strong>Şube (└):</strong> <code>parent_id = ana_firma_id</code> - Üye sayısı gösterilir</li>
+                <li>Ana firma: Şubeleri Gör / Şube Ekle butonları</li>
+                <li>Şube: Üyeleri Gör butonu</li>
+            </ul>
+        </div>
+
+        <!-- Veri Kaynağı -->
+        <div class="info-box" style="background: rgba(245, 158, 11, 0.1); border-color: #f59e0b;">
+            <h3 style="color: #f59e0b;">Veri Kaynağı</h3>
+            <p style="margin-bottom: 10px;">
+                <strong>Ana Tablo:</strong> <code>muzibu_corporate_accounts</code>
+            </p>
+            <p style="margin-bottom: 10px;">
+                <strong>İlişkiler:</strong>
+            </p>
+            <ul style="padding-left: 20px; color: #cbd5e1;">
+                <li><code>user_id</code> → <code>users</code> tablosu (Hesap sahibi)</li>
+                <li><code>users.corporate_account_id</code> → Üye sayısı count</li>
+            </ul>
+        </div>
+
+        <!-- Tablo Kolonları Açıklama -->
+        <div class="info-box">
+            <h3>Tablo Kolonları</h3>
+            <ul style="padding-left: 20px; color: #cbd5e1;">
+                <li><strong>Firma Bilgisi:</strong> <code>company_name</code> + <code>corporate_code</code></li>
+                <li><strong>Hesap Sahibi:</strong> <code>users.name</code>, <code>users.email</code> (user_id üzerinden)</li>
+                <li><strong>Üye Sayısı:</strong> <code>COUNT(users WHERE corporate_account_id = id)</code> / <code>max_members</code></li>
+                <li><strong>Max Üye:</strong> <code>max_members</code></li>
+                <li><strong>Durum:</strong> <code>is_active</code></li>
+                <li><strong>İşlemler:</strong> Düzenle, Üyeleri Gör, Sil</li>
+            </ul>
+        </div>
+
+        <!-- İşlevler -->
+        <div class="info-box" style="background: rgba(16, 185, 129, 0.1); border-color: #10b981;">
+            <h3 style="color: #10b981;">İşlevler</h3>
+            <ul style="padding-left: 20px; color: #cbd5e1;">
+                <li><strong>Arama:</strong> Firma adı, kurumsal kod, owner email</li>
+                <li><strong>Filtre:</strong> Aktif/Pasif durumuna göre</li>
+                <li><strong>Sıralama:</strong> ID, firma adı, üye sayısı</li>
+                <li><strong>Yeni Ekle:</strong> Yeni kurumsal hesap oluşturma</li>
+                <li><strong>Üyeleri Gör:</strong> O hesaba bağlı kullanıcıları listele</li>
+            </ul>
+        </div>
+
+        <footer>
+            Onay verirseniz Livewire view dosyası oluşturulacak.
+        </footer>
+    </div>
+</body>
+</html>

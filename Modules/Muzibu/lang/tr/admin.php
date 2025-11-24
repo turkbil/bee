@@ -330,6 +330,9 @@ return [
     'inactive' => 'Pasif',
 ],
 
+// Corporate Accounts (Kurumsal Hesaplar)
+'corporate_accounts' => 'Kurumsal Hesaplar',
+
 // Quick Actions
 'quick_add' => 'Hızlı Ekle',
 'new_muzibu_pretitle' => 'Yeni Müzik Ekle',

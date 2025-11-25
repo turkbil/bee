@@ -1,373 +1,344 @@
 <div>
-    {{-- Modern Welcome Header --}}
-    <div class="page-header d-print-none">
-        <div class="container-xl">
-            <div class="row g-2 align-items-center">
-                <div class="col">
-                    <div class="d-flex align-items-center">
-                        <div class="avatar avatar-lg me-3" style="background: linear-gradient(135deg, #206bc4 0%, #1d4ed8 100%);">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                                <path d="M12 1l3 6l6 3l-6 3l-3 6l-3 -6l-6 -3l6 -3z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 class="page-title mb-1">
-                                {{ __('admin.dashboard_welcome') }}
-                            </h2>
-                            <div>
-                                {{ __('admin.welcome') }}, <strong>{{ auth()->user()->name }}</strong>! {{ tenant('title') ?? config('app.name') }} {{ __('admin.dashboard_subtitle') }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-auto ms-auto d-print-none">
-                    <div class="btn-list">
-                        <a href="{{ route('admin.page.manage') }}" class="btn btn-outline-primary d-none d-sm-inline-block">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M12 5l0 14" />
-                                <path d="M5 12l14 0" />
-                            </svg>
-                            {{ __('admin.create_content') }}
-                        </a>
-                        <button class="btn btn-primary d-none d-sm-inline-block" onclick="refreshDashboard()">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />
-                            </svg>
-                            {{ __('admin.refresh') }}
-                        </button>
-                    </div>
+    {{-- Editör Hoşgeldin Mesajı --}}
+    @if($isEditor)
+    <div class="alert alert-info mb-4">
+        <div class="d-flex">
+            <div class="me-3">
+                <i class="fas fa-user-edit fa-2x"></i>
+            </div>
+            <div>
+                <h4 class="alert-title">Hoş geldin, {{ auth()->user()->name }}!</h4>
+                <div class="text-muted">
+                    Editör olarak <strong>{{ count($allowedModulesView) }}</strong> modüle erişim yetkin var.
+                    @if(count($allowedModulesCreate) > 0)
+                        <strong>{{ count($allowedModulesCreate) }}</strong> modülde içerik oluşturabilirsin.
+                    @endif
                 </div>
             </div>
         </div>
     </div>
+    @endif
 
-    {{-- Main Dashboard Content --}}
-    <div class="page-body">
-        <div class="container-xl">
-            
-            {{-- Modern Stats Cards Row --}}
-            <div class="row row-deck row-cards mb-4">
-                {{-- 🎯 EN ÖNEMLİ KART: KALAN KREDİ --}}
-                @if(function_exists('ai_get_credit_balance'))
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm border-warning">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="avatar" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                                        💰
-                                    </span>
-                                </div>
-                                <div class="col">
-                                    <div class="font-weight-medium text-warning">
-                                        {{ format_credit(ai_get_credit_balance()) }}
-                                    </div>
-                                    <div class="small">
-                                        💰 Mevcut Bakiye
-                                    </div>
-                                </div>
+    {{-- Modern Stats Cards Row --}}
+    <div class="row row-deck row-cards mb-4">
+        {{-- 🎯 AI KREDİ KARTI - Sadece Admin/Root veya AI yetkisi olan editör --}}
+        @if(($isAdminOrRoot || in_array('ai', $allowedModulesView)) && function_exists('ai_get_credit_balance'))
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-sm border-warning">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="avatar" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                                <i class="fas fa-coins text-white"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium text-warning">
+                                {{ format_credit(ai_get_credit_balance()) }}
                             </div>
+                            <div class="small text-muted">Mevcut Bakiye</div>
                         </div>
                     </div>
                 </div>
-                @endif
-                
-                {{-- System Status Card --}}
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="avatar" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                                            <path d="M9 12l2 2l4 -4" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="col">
-                                    <div class="font-weight-medium">
-                                        {{ __('admin.system_online') }}
-                                    </div>
-                                    <div class="small">
-                                        {{ __('admin.account_status') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- User Role Card --}}
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="avatar" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="col">
-                                    <div class="font-weight-medium">
-                                        {{ auth()->user()->roles->first()->name ?? __('admin.admin') }}
-                                    </div>
-                                    <div class="small">
-                                        {{ __('admin.user_role') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                @if(in_array('page', $activeModules))
-                {{-- Pages Count --}}
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="avatar" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="col">
-                                    <div class="font-weight-medium">
-                                        {{ $totalPages ?? 0 }}
-                                    </div>
-                                    <div class="small">
-                                        {{ __('admin.pages') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
-                @if(in_array('portfolio', $activeModules))
-                {{-- Portfolio Count --}}
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span class="avatar" style="background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon text-white" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
-                                            <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="col">
-                                    <div class="font-weight-medium">
-                                        {{ $totalPortfolios ?? 0 }}
-                                    </div>
-                                    <div class="small">
-                                        {{ __('admin.portfolio') }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endif
             </div>
+        </div>
+        @endif
 
-            {{-- Main Content Row --}}
-            <div class="row row-deck row-cards">
-                {{-- Quick Actions Card --}}
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">{{ __('admin.quick_actions') }}</h3>
+        {{-- System Status Card --}}
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="avatar" style="background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);">
+                                <i class="fas fa-check-circle text-white"></i>
+                            </span>
                         </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                {{-- Create New Page --}}
-                                @if(in_array('page', $activeModules))
-                                <div class="col-md-6">
-                                    <a href="{{ route('admin.page.manage') }}" class="card card-link">
-                                        <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <span class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                                                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                                                            <path d="M12 5l0 14" />
-                                                            <path d="M5 12l14 0" />
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium">{{ __('admin.create') }} {{ __('admin.pages') }}</div>
-                                                    <div>{{ __('admin.create') }} yeni sayfa</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                @endif
+                        <div class="col">
+                            <div class="font-weight-medium">{{ __('admin.system_online') }}</div>
+                            <div class="small text-muted">{{ __('admin.account_status') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                                {{-- Create Portfolio --}}
-                                @if(in_array('portfolio', $activeModules))
-                                <div class="col-md-6">
-                                    <a href="{{ route('admin.portfolio.manage') }}" class="card card-link">
-                                        <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <span class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                            <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
-                                                            <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
-                                                            <path d="M12 5l0 14" />
-                                                            <path d="M5 12l14 0" />
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium">{{ __('admin.create') }} Portfolio</div>
-                                                    <div>Yeni portfolio projesi</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                @endif
-
-                                {{-- Create Announcement --}}
-                                @if(in_array('announcement', $activeModules))
-                                <div class="col-md-6">
-                                    <a href="{{ route('admin.announcement.manage') }}" class="card card-link">
-                                        <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <span class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                            <path d="M18 8a3 3 0 0 1 0 6" />
-                                                            <path d="M10 8v11a1 1 0 0 1 -1 1h-1a1 1 0 0 1 -1 -1v-5" />
-                                                            <path d="M12 8h0l4.524 -3.77a.9 .9 0 0 1 1.476 .692v12.156a.9 .9 0 0 1 -1.476 .692l-4.524 -3.77h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h8" />
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium">{{ __('admin.create') }} Duyuru</div>
-                                                    <div>Yeni duyuru oluştur</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                @endif
-
-                                {{-- AI Features --}}
-                                @if(in_array('ai', $activeModules))
-                                <div class="col-md-6">
-                                    <a href="{{ route('admin.ai.index') }}" class="card card-link">
-                                        <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <span class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                            <path d="M8 9h8" />
-                                                            <path d="M8 13h6" />
-                                                            <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium">AI {{ __('admin.assistant') }}</div>
-                                                    <div>Yapay zeka yardımcısı</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                                @endif
-
-                                {{-- System Settings --}}
-                                <div class="col-md-6">
-                                    <a href="{{ route('admin.dashboard') }}" class="card card-link">
-                                        <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <span class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                            <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c.996 .608 2.296 .07 2.572 -1.065z" />
-                                                            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium">{{ __('admin.system_settings') }}</div>
-                                                    <div>Dil ve sistem ayarları</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-
-                                {{-- Cache Clear --}}
-                                <div class="col-md-6">
-                                    <a href="#" onclick="clearSystemCache()" class="card card-link">
-                                        <div class="card-body">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <span class="avatar">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                            <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />
-                                                        </svg>
-                                                    </span>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="font-weight-medium">{{ __('admin.clear_cache') }}</div>
-                                                    <div>Sistem önbelleğini temizle</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
+        {{-- User Role Card --}}
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="avatar" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);">
+                                <i class="fas fa-{{ $isEditor ? 'user-edit' : ($isAdminOrRoot ? 'user-shield' : 'user') }} text-white"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium">
+                                {{ auth()->user()->roles->first()->name ?? __('admin.admin') }}
                             </div>
+                            <div class="small text-muted">{{ __('admin.user_role') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                            {{-- AI Sohbet Widget --}}
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M8 9h8" />
-                                                    <path d="M8 13h6" />
-                                                    <path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
-                                                </svg>
-                                                AI Asistan
-                                            </h3>
-                                            <span class="badge">Hızlı Sohbet</span>
+        {{-- Aktif Modül Sayısı --}}
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="avatar" style="background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);">
+                                <i class="fas fa-puzzle-piece text-white"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium">{{ count($activeModules) }}</div>
+                            <div class="small text-muted">Aktif Modül</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Pages Count - Dinamik --}}
+        @if(in_array('page', $activeModules))
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="avatar" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+                                <i class="fas fa-file-alt text-white"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium">{{ $totalPages ?? 0 }}</div>
+                            <div class="small text-muted">{{ __('admin.pages') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Portfolio Count - Dinamik --}}
+        @if(in_array('portfolio', $activeModules))
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="avatar" style="background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);">
+                                <i class="fas fa-briefcase text-white"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium">{{ $totalPortfolios ?? 0 }}</div>
+                            <div class="small text-muted">{{ __('admin.portfolio') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Announcement Count - Dinamik --}}
+        @if(in_array('announcement', $activeModules))
+        <div class="col-sm-6 col-lg-3">
+            <div class="card card-sm">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="avatar" style="background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);">
+                                <i class="fas fa-bullhorn text-white"></i>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <div class="font-weight-medium">{{ $totalAnnouncements ?? 0 }}</div>
+                            <div class="small text-muted">Duyurular</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+    </div>
+
+    {{-- Main Content Row --}}
+    <div class="row row-deck row-cards">
+        {{-- Quick Actions Card --}}
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-bolt me-2"></i>{{ __('admin.quick_actions') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {{-- Create New Page - Create yetkisi kontrolü --}}
+                        @if(in_array('page', $activeModules) && ($isAdminOrRoot || in_array('page', $allowedModulesCreate)))
+                        <div class="col-md-6">
+                            <a href="{{ route('admin.page.manage') }}" class="card card-link card-link-pop">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar bg-red-lt">
+                                                <i class="fas fa-file-alt"></i>
+                                            </span>
                                         </div>
-                                        <div class="card-body">
+                                        <div class="col">
+                                            <div class="font-weight-medium">Yeni Sayfa</div>
+                                            <div class="text-muted small">Sayfa oluştur</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        @endif
+
+                        {{-- Create Portfolio - Create yetkisi kontrolü --}}
+                        @if(in_array('portfolio', $activeModules) && ($isAdminOrRoot || in_array('portfolio', $allowedModulesCreate)))
+                        <div class="col-md-6">
+                            <a href="{{ route('admin.portfolio.manage') }}" class="card card-link card-link-pop">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar bg-orange-lt">
+                                                <i class="fas fa-briefcase"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="font-weight-medium">Yeni Portfolio</div>
+                                            <div class="text-muted small">Proje ekle</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        @endif
+
+                        {{-- Create Announcement - Create yetkisi kontrolü --}}
+                        @if(in_array('announcement', $activeModules) && ($isAdminOrRoot || in_array('announcement', $allowedModulesCreate)))
+                        <div class="col-md-6">
+                            <a href="{{ route('admin.announcement.manage') }}" class="card card-link card-link-pop">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar bg-cyan-lt">
+                                                <i class="fas fa-bullhorn"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="font-weight-medium">Yeni Duyuru</div>
+                                            <div class="text-muted small">Duyuru oluştur</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        @endif
+
+                        {{-- Blog - Create yetkisi kontrolü --}}
+                        @if(in_array('blog', $activeModules) && ($isAdminOrRoot || in_array('blog', $allowedModulesCreate)))
+                        <div class="col-md-6">
+                            <a href="{{ route('admin.blog.manage') }}" class="card card-link card-link-pop">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar bg-green-lt">
+                                                <i class="fas fa-pen-fancy"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="font-weight-medium">Yeni Blog</div>
+                                            <div class="text-muted small">Blog yazısı</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        @endif
+
+                        {{-- AI Features - View yetkisi yeterli --}}
+                        @if(in_array('ai', $activeModules))
+                        <div class="col-md-6">
+                            <a href="{{ route('admin.ai.index') }}" class="card card-link card-link-pop">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar bg-purple-lt">
+                                                <i class="fas fa-robot"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="font-weight-medium">AI Asistan</div>
+                                            <div class="text-muted small">Yapay zeka</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        @endif
+
+                        {{-- Settings - Sadece Admin/Root --}}
+                        @if($isAdminOrRoot && in_array('settings', $activeModules))
+                        <div class="col-md-6">
+                            <a href="{{ route('admin.settings.index') }}" class="card card-link card-link-pop">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar bg-gray-lt">
+                                                <i class="fas fa-cog"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="font-weight-medium">Ayarlar</div>
+                                            <div class="text-muted small">Sistem ayarları</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        @endif
+
+                        {{-- Cache Clear - Sadece Admin/Root --}}
+                        @if($isAdminOrRoot)
+                        <div class="col-md-6">
+                            <a href="#" onclick="clearSystemCache(); return false;" class="card card-link card-link-pop">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar bg-blue-lt">
+                                                <i class="fas fa-sync"></i>
+                                            </span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="font-weight-medium">Cache Temizle</div>
+                                            <div class="text-muted small">Önbellek temizle</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+
+                    {{-- AI Sohbet Widget - Sadece Admin/Root veya AI yetkisi olan editör --}}
+                    @if($isAdminOrRoot || in_array('ai', $allowedModulesView))
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-robot me-2"></i>AI Asistan
+                                    </h3>
+                                    <span class="badge bg-purple-lt">Hızlı Sohbet</span>
+                                </div>
+                                <div class="card-body">
                                             {{-- Chat Messages --}}
                                             <div class="ai-chat-widget-messages border rounded" id="aiChatWidgetMessages" style="min-height: 300px; max-height: 400px; overflow-y: auto; padding: 20px; margin-bottom: 20px;">
                                                 <div class="ai-message-widget assistant mb-3">
@@ -417,9 +388,11 @@
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
+            </div>
 
-                {{-- Recent Activity & Info --}}
+            {{-- Recent Activity & Info --}}
                 <div class="col-lg-4">
                     <div class="row row-cards">
                         {{-- Account Info --}}
@@ -575,8 +548,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
     {{-- Create Modal --}}
     <div class="modal modal-blur fade" id="modal-create" tabindex="-1" role="dialog" aria-hidden="true">

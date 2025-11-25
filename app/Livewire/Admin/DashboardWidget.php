@@ -9,12 +9,18 @@ use Illuminate\Support\Facades\Auth;
 class DashboardWidget extends Component
 {
     public $activeModules = [];
-    
+
+    // Editör için izinli modüller (view & create ayrı)
+    public $allowedModulesView = [];
+    public $allowedModulesCreate = [];
+    public $isEditor = false;
+    public $isAdminOrRoot = false;
+
     // AI Module Data
     public $aiProfile = null;
     public $aiCompletionPercentage = 0;
     public $aiIsCompleted = false;
-    
+
     // Token Data
     public $remainingTokens = 0;
     public $totalTokens = 0;
@@ -23,31 +29,32 @@ class DashboardWidget extends Component
     public $usagePercentage = 0;
     public $statusColor = 'secondary';
     public $statusText = 'Bilinmiyor';
-    
+
     // Page Data
     public $totalPages = 0;
     public $recentPages = [];
-    
+
     // Portfolio Data
     public $totalPortfolios = 0;
     public $recentPortfolios = [];
-    
+
     // Announcement Data
     public $totalAnnouncements = 0;
     public $recentAnnouncements = [];
-    
+
     // User Data
     public $recentLogins = [];
     public $newUsers = [];
-    
+
     // Widget Order Management
     public $widgetOrder = [];
-    
+
     // AI Chat Message
     public $aiChatMessage = '';
-    
+
     public function mount()
     {
+        $this->checkUserRole();
         $this->loadActiveModules();
         $this->loadAIData();
         $this->loadTokenData();
@@ -57,29 +64,98 @@ class DashboardWidget extends Component
         $this->loadUserData();
         $this->applySavedLayout();
     }
+
+    private function checkUserRole()
+    {
+        $user = Auth::user();
+
+        if (!$user) return;
+
+        // Root veya Admin ise tüm yetkilere sahip
+        if ($user->isRoot() || $user->isAdmin()) {
+            $this->isAdminOrRoot = true;
+            $this->isEditor = false;
+            return;
+        }
+
+        // Editor ise izinlerini kontrol et
+        if ($user->isEditor()) {
+            $this->isEditor = true;
+            $this->isAdminOrRoot = false;
+            $this->loadEditorPermissions($user);
+        }
+    }
+
+    private function loadEditorPermissions($user)
+    {
+        try {
+            // UserModulePermission tablosundan editörün izinlerini çek
+            $permissions = \Modules\UserManagement\App\Models\UserModulePermission::where('user_id', $user->id)
+                ->where('is_active', true)
+                ->get();
+
+            foreach ($permissions as $perm) {
+                // View izni varsa
+                if ($perm->permission_type === 'view') {
+                    $this->allowedModulesView[] = $perm->module_name;
+                }
+                // Create izni varsa
+                if ($perm->permission_type === 'create') {
+                    $this->allowedModulesCreate[] = $perm->module_name;
+                }
+            }
+        } catch (\Exception $e) {
+            // Hata durumunda hiçbir modül izni yok
+            $this->allowedModulesView = [];
+            $this->allowedModulesCreate = [];
+        }
+    }
+
+    // Modül görüntüleme yetkisi kontrolü
+    public function canViewModule($moduleName)
+    {
+        if ($this->isAdminOrRoot) return true;
+        if (!$this->isEditor) return false;
+
+        return in_array($moduleName, $this->allowedModulesView);
+    }
+
+    // Modül oluşturma yetkisi kontrolü
+    public function canCreateModule($moduleName)
+    {
+        if ($this->isAdminOrRoot) return true;
+        if (!$this->isEditor) return false;
+
+        return in_array($moduleName, $this->allowedModulesCreate);
+    }
     
     private function loadActiveModules()
     {
+        $tenantModules = [];
+
         try {
             if (class_exists('\Modules\ModuleManagement\app\Models\Module')) {
-                $modules = \Modules\ModuleManagement\app\Models\Module::whereIn('name', ['ai', 'page', 'portfolio', 'announcement', 'usermanagement'])
-                    ->get();
-                
+                // TÜM modülleri çek (dinamik)
+                $modules = \Modules\ModuleManagement\app\Models\Module::all();
+
                 foreach ($modules as $module) {
                     $tenant = $module->tenants()->where('tenant_id', tenant('id'))->first();
                     if ($tenant && $tenant->pivot->is_active) {
-                        $this->activeModules[] = strtolower($module->name);
+                        $tenantModules[] = strtolower($module->name);
                     }
                 }
             }
         } catch (\Exception $e) {
-            // Module yoksa tüm modülleri varsayılan aktif yap - FALLBACK
-            $this->activeModules = ['ai', 'page', 'portfolio', 'announcement', 'usermanagement'];
+            // Module yoksa fallback
+            $tenantModules = [];
         }
-        
-        // DEBUG: Hangi modüller aktif görüyor kontrol et
-        if (empty($this->activeModules)) {
-            $this->activeModules = ['ai', 'page', 'portfolio', 'announcement', 'usermanagement']; // Geçici debug
+
+        // Editör ise sadece izinli modülleri göster
+        if ($this->isEditor) {
+            $this->activeModules = array_values(array_intersect($tenantModules, $this->allowedModulesView));
+        } else {
+            // Admin/Root tüm tenant modüllerini görür
+            $this->activeModules = $tenantModules;
         }
     }
     

@@ -617,11 +617,23 @@ Her adıma farklı ve konuya uygun icon seç.";
                 }
 
                 // 5. Birleştir
+                // 🔧 FIX: Excerpt - ilk paragraftan, kısa ve öz (80 karakter max)
+                preg_match('/<p[^>]*>(.*?)<\/p>/s', $fullContent, $pMatches);
+                $firstParagraph = isset($pMatches[1]) ? strip_tags($pMatches[1]) : strip_tags($fullContent);
+                $cleanBodyForExcerpt = preg_replace('/\s+/', ' ', trim($firstParagraph));
+                $autoExcerpt = mb_substr($cleanBodyForExcerpt, 0, 80, 'UTF-8');
+                // Son kelimeyi kesmemek için son boşluğa kadar al
+                $lastSpace = mb_strrpos($autoExcerpt, ' ', 0, 'UTF-8');
+                if ($lastSpace !== false && $lastSpace > 40) {
+                    $autoExcerpt = mb_substr($autoExcerpt, 0, $lastSpace, 'UTF-8');
+                }
+                $autoExcerpt = rtrim($autoExcerpt, '.,;:');
+
                 $blogData = [
                     'title' => $draftContext['topic_keyword'],
                     'content' => $fullContent,
                     'excerpt' => $this->cleanMetaDescription(
-                        $draftContext['meta_description'] ?? substr(strip_tags($fullContent), 0, 200)
+                        !empty($draftContext['meta_description']) ? $draftContext['meta_description'] : $autoExcerpt
                     ),
                     'faq_data' => $faqData,
                     'howto_data' => $howtoData,

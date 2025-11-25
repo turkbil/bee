@@ -92,7 +92,7 @@
 
 <!-- Featured Products Section -->
 <section class="w-full py-8 relative overflow-hidden" x-data="{
-    viewMode: null,
+    viewMode: (window.innerWidth < 1024 ? 'list' : 'grid'),
 
     // Cookie helper functions
     getCookie(name) {

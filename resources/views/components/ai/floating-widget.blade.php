@@ -114,7 +114,7 @@ try {
 @endphp
 
 <div x-data="{
-    chat: $store.aiChat,
+    get chat() { return $store.aiChat || { floatingOpen: false, isLoading: false, isTyping: false, error: null, messages: [], hasConversation: false, unreadCount: 0 }; },
     message: '',
     autoOpenTimer: null,
     expanded: false,

@@ -9,120 +9,135 @@
 <div x-show="showAuthModal !== null"
      x-transition
      @click.self="showAuthModal = null"
-     class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm"
-     style="display: none;">
+     style="position: fixed; top: 0; left: 0; right: 0; bottom: 120px; z-index: 50; display: none; align-items: center; justify-content: center; padding: 0 16px; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);">
 
     <!-- Modal Content -->
-    <div class="relative bg-spotify-dark rounded-2xl shadow-2xl w-full border border-white/10 max-h-[90vh] flex flex-col" :class="showAuthModal === 'register' ? 'max-w-2xl' : 'max-w-md'">
+    <div style="position: relative; background: #181818; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); width: 100%; border: 1px solid rgba(255,255,255,0.1); max-height: 90vh; display: flex; flex-direction: column;"
+         :style="showAuthModal === 'register' ? 'max-width: 42rem' : 'max-width: 28rem'">
         <!-- Close Button -->
-        <button @click="showAuthModal = null" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-all z-10">
+        <button @click="showAuthModal = null" style="position: absolute; top: 16px; right: 16px; color: #9ca3af; background: none; border: none; cursor: pointer; z-index: 10; transition: color 0.2s;">
             <i class="fas fa-times text-xl"></i>
         </button>
 
         <!-- Scrollable Content -->
-        <div class="overflow-y-auto p-8">
+        <div style="overflow-y: auto; padding: 32px;">
 
         <!-- Logo -->
-        <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-gradient-to-br from-spotify-green to-green-600 rounded-full flex items-center justify-center shadow-lg mx-auto mb-4">
-                <i class="fas fa-music text-white text-2xl"></i>
+        <div style="text-align: center; margin-bottom: 24px;">
+            <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #1DB954, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(29,185,84,0.3); margin: 0 auto 16px;">
+                <i class="fas fa-music" style="color: white; font-size: 24px;"></i>
             </div>
-            <h2 class="text-3xl font-bold text-white mb-2" x-text="showAuthModal === 'login' ? 'Giriş Yap' : 'Ücretsiz Başla'"></h2>
-            <p class="text-gray-400 text-sm" x-text="showAuthModal === 'login' ? 'Hesabınıza giriş yapın' : '7 gün ücretsiz deneme - Kredi kartı gerekmez'"></p>
+            <h2 style="font-size: 30px; font-weight: 700; color: white; margin-bottom: 8px;" x-text="showAuthModal === 'login' ? 'Giriş Yap' : 'Ücretsiz Başla'"></h2>
+            <p style="color: #9ca3af; font-size: 14px;" x-text="showAuthModal === 'login' ? 'Hesabınıza giriş yapın' : '7 gün ücretsiz deneme - Kredi kartı gerekmez'"></p>
         </div>
 
         <!-- Login Form -->
-        <form x-show="showAuthModal === 'login'" @submit.prevent="handleLogin()" class="space-y-4">
+        <form x-show="showAuthModal === 'login'" @submit.prevent="handleLogin()" style="display: flex; flex-direction: column; gap: 16px;">
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">E-posta</label>
-                <input type="email" x-model="loginForm.email" @input="validateLoginEmail()" required class="w-full px-4 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="loginValidation.email.valid ? 'ring-green-500' : (loginForm.email.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="ornek@email.com">
-                <div class="h-5 mt-1">
-                    <div x-show="!loginValidation.email.valid && loginForm.email.length > 0" class="text-xs text-red-400 flex items-center gap-1">
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">E-posta</label>
+                <input type="email" x-model="loginForm.email" @input="validateLoginEmail()" required
+                       style="width: 100%; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
+                       :style="loginValidation.email.valid ? 'border-color: #10b981' : (loginForm.email.length > 0 ? 'border-color: #ef4444' : '')"
+                       placeholder="ornek@email.com">
+                <div style="height: 20px; margin-top: 4px;">
+                    <div x-show="!loginValidation.email.valid && loginForm.email.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
                         <i class="fas fa-exclamation-circle"></i>
                         <span x-text="loginValidation.email.message"></span>
                     </div>
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Şifre</label>
-                <div class="relative">
-                    <input :type="showLoginPassword ? 'text' : 'password'" x-model="loginForm.password" @input="validateLoginPassword()" required class="w-full px-4 py-3 pr-12 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="loginValidation.password.valid ? 'ring-green-500' : (loginForm.password.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="••••••••">
-                    <button type="button" @click="showLoginPassword = !showLoginPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-all">
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Şifre</label>
+                <div style="position: relative;">
+                    <input :type="showLoginPassword ? 'text' : 'password'" x-model="loginForm.password" @input="validateLoginPassword()" required
+                           style="width: 100%; padding: 12px 16px; padding-right: 48px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
+                           :style="loginValidation.password.valid ? 'border-color: #10b981' : (loginForm.password.length > 0 ? 'border-color: #ef4444' : '')"
+                           placeholder="••••••••">
+                    <button type="button" @click="showLoginPassword = !showLoginPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
                         <i :class="showLoginPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                     </button>
                 </div>
-                <div class="h-5 mt-1">
-                    <div x-show="!loginValidation.password.valid && loginForm.password.length > 0" class="text-xs text-red-400 flex items-center gap-1">
+                <div style="height: 20px; margin-top: 4px;">
+                    <div x-show="!loginValidation.password.valid && loginForm.password.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
                         <i class="fas fa-exclamation-circle"></i>
                         <span x-text="loginValidation.password.message"></span>
                     </div>
                 </div>
             </div>
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <button type="button" @click="loginForm.remember = !loginForm.remember" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-spotify-green focus:ring-offset-2 focus:ring-offset-spotify-dark" :class="loginForm.remember ? 'bg-spotify-green' : 'bg-gray-600'">
-                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform" :class="loginForm.remember ? 'translate-x-6' : 'translate-x-1'"></span>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" @click="loginForm.remember = !loginForm.remember"
+                            style="position: relative; display: inline-flex; height: 24px; width: 44px; align-items: center; border-radius: 12px; transition: all 0.2s; outline: none; border: none; cursor: pointer;"
+                            :style="loginForm.remember ? 'background: #1DB954' : 'background: #4b5563'">
+                        <span style="display: inline-block; height: 16px; width: 16px; border-radius: 50%; background: white; transition: transform 0.2s;"
+                              :style="loginForm.remember ? 'transform: translateX(24px)' : 'transform: translateX(4px)'"></span>
                     </button>
-                    <label class="text-sm text-gray-300 cursor-pointer" @click="loginForm.remember = !loginForm.remember">Beni Hatırla</label>
+                    <label style="font-size: 14px; color: #d1d5db; cursor: pointer;" @click="loginForm.remember = !loginForm.remember">Beni Hatırla</label>
                 </div>
-                <button type="button" @click="showAuthModal = 'forgot'" class="text-sm text-gray-400 hover:text-spotify-green transition-all">
+                <button type="button" @click="showAuthModal = 'forgot'" style="font-size: 14px; color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
                     Şifremi Unuttum
                 </button>
             </div>
-            <button type="submit" class="w-full py-3 bg-gradient-to-r from-spotify-green to-green-600 hover:from-spotify-green-light hover:to-green-500 text-white font-bold rounded-full transition-all shadow-lg">
+            <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(90deg, #1DB954, #16a34a); color: white; font-weight: 700; border-radius: 9999px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(29,185,84,0.4);">
                 Giriş Yap
             </button>
-            <div class="text-center">
-                <button type="button" @click="showAuthModal = 'register'" class="text-sm text-gray-400 hover:text-white transition-all">
-                    Hesabınız yok mu? <span class="text-spotify-green font-semibold">Ücretsiz Başlayın</span>
+            <div style="text-align: center;">
+                <button type="button" @click="showAuthModal = 'register'" style="font-size: 14px; color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
+                    Hesabınız yok mu? <span style="color: #1DB954; font-weight: 600;">Ücretsiz Başlayın</span>
                 </button>
             </div>
         </form>
 
         <!-- Forgot Password Form -->
-        <form x-show="showAuthModal === 'forgot'" @submit.prevent="handleForgotPassword()" class="space-y-4">
-            <div class="text-center mb-4">
-                <p class="text-gray-400 text-sm">Şifre sıfırlama linki e-posta adresinize gönderilecektir.</p>
+        <form x-show="showAuthModal === 'forgot'" @submit.prevent="handleForgotPassword()" style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="text-align: center; margin-bottom: 16px;">
+                <p style="color: #9ca3af; font-size: 14px;">Şifre sıfırlama linki e-posta adresinize gönderilecektir.</p>
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">E-posta</label>
-                <input type="email" x-model="forgotForm.email" @input="validateForgotEmail()" required class="w-full px-4 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="forgotValidation.email.valid ? 'ring-green-500' : (forgotForm.email.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="ornek@email.com">
-                <div class="h-5 mt-1">
-                    <div x-show="!forgotValidation.email.valid && forgotForm.email.length > 0" class="text-xs text-red-400 flex items-center gap-1">
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">E-posta</label>
+                <input type="email" x-model="forgotForm.email" @input="validateForgotEmail()" required
+                       style="width: 100%; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
+                       :style="forgotValidation.email.valid ? 'border-color: #10b981' : (forgotForm.email.length > 0 ? 'border-color: #ef4444' : '')"
+                       placeholder="ornek@email.com">
+                <div style="height: 20px; margin-top: 4px;">
+                    <div x-show="!forgotValidation.email.valid && forgotForm.email.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
                         <i class="fas fa-exclamation-circle"></i>
                         <span x-text="forgotValidation.email.message"></span>
                     </div>
-                    <div x-show="forgotValidation.email.valid" class="text-xs text-green-400 flex items-center gap-1">
+                    <div x-show="forgotValidation.email.valid" style="font-size: 12px; color: #10b981; display: flex; align-items: center; gap: 4px;">
                         <i class="fas fa-check-circle"></i>
                         <span>Geçerli e-posta adresi</span>
                     </div>
                 </div>
             </div>
-            <button type="submit" class="w-full py-3 bg-gradient-to-r from-spotify-green to-green-600 hover:from-spotify-green-light hover:to-green-500 text-white font-bold rounded-full transition-all shadow-lg">
+            <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(90deg, #1DB954, #16a34a); color: white; font-weight: 700; border-radius: 9999px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(29,185,84,0.4);">
                 Sıfırlama Linki Gönder
             </button>
-            <div class="text-center">
-                <button type="button" @click="showAuthModal = 'login'" class="text-sm text-gray-400 hover:text-white transition-all">
-                    <i class="fas fa-arrow-left mr-1"></i> Giriş Sayfasına Dön
+            <div style="text-align: center;">
+                <button type="button" @click="showAuthModal = 'login'" style="font-size: 14px; color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
+                    <i class="fas fa-arrow-left" style="margin-right: 4px;"></i> Giriş Sayfasına Dön
                 </button>
             </div>
         </form>
 
         <!-- Register Form -->
-        <form x-show="showAuthModal === 'register'" @submit.prevent="handleRegister()" class="space-y-4">
+        <form x-show="showAuthModal === 'register'" @submit.prevent="handleRegister()" style="display: flex; flex-direction: column; gap: 16px;">
             <!-- 2 Kolon Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
                 <!-- Sol Kolon: Ad + Email -->
-                <div class="space-y-4">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Ad Soyad</label>
-                        <input type="text" x-model="registerForm.name" @input="validateName()" required class="w-full px-4 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.name.valid ? 'ring-green-500' : (registerForm.name.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="Adınız Soyadınız">
-                        <div class="h-5 mt-1">
-                            <div x-show="!registerValidation.name.valid && registerForm.name.length > 0" class="text-xs text-red-400 flex items-center gap-1">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Ad Soyad</label>
+                        <input type="text" x-model="registerForm.name" @input="validateName()" required
+                               style="width: 100%; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
+                               :style="registerValidation.name.valid ? 'border-color: #10b981' : (registerForm.name.length > 0 ? 'border-color: #ef4444' : '')"
+                               placeholder="Adınız Soyadınız">
+                        <div style="height: 20px; margin-top: 4px;">
+                            <div x-show="!registerValidation.name.valid && registerForm.name.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
                                 <i class="fas fa-exclamation-circle"></i>
                                 <span x-text="registerValidation.name.message"></span>
                             </div>
-                            <div x-show="registerValidation.name.valid" class="text-xs text-green-400 flex items-center gap-1">
+                            <div x-show="registerValidation.name.valid" style="font-size: 12px; color: #10b981; display: flex; align-items: center; gap: 4px;">
                                 <i class="fas fa-check-circle"></i>
                                 <span>Geçerli</span>
                             </div>
@@ -131,14 +146,17 @@
 
                     <!-- Email -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">E-posta</label>
-                        <input type="email" x-model="registerForm.email" @input="validateEmail()" required class="w-full px-4 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.email.valid ? 'ring-green-500' : (registerForm.email.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="ornek@email.com">
-                        <div class="h-5 mt-1">
-                            <div x-show="!registerValidation.email.valid && registerForm.email.length > 0" class="text-xs text-red-400 flex items-center gap-1">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">E-posta</label>
+                        <input type="email" x-model="registerForm.email" @input.debounce.500ms="validateEmail()" required
+                               style="width: 100%; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
+                               :style="registerValidation.email.valid ? 'border-color: #10b981' : (registerForm.email.length > 0 ? 'border-color: #ef4444' : '')"
+                               placeholder="ornek@email.com">
+                        <div style="height: 20px; margin-top: 4px;">
+                            <div x-show="!registerValidation.email.valid && registerForm.email.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
                                 <i class="fas fa-exclamation-circle"></i>
                                 <span x-text="registerValidation.email.message"></span>
                             </div>
-                            <div x-show="registerValidation.email.valid" class="text-xs text-green-400 flex items-center gap-1">
+                            <div x-show="registerValidation.email.valid" style="font-size: 12px; color: #10b981; display: flex; align-items: center; gap: 4px;">
                                 <i class="fas fa-check-circle"></i>
                                 <span>Geçerli</span>
                             </div>
@@ -147,29 +165,34 @@
                 </div>
 
                 <!-- Sağ Kolon: Telefon + Şifre -->
-                <div class="space-y-4">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
                     <!-- Telefon (Tenant 1001 için zorunlu) -->
                     <div x-show="tenantId === 1001">
-                <label class="block text-sm font-medium text-gray-300 mb-2">
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">
                     Telefon
-                    <span class="text-red-400">*</span>
+                    <span style="color: #f87171;">*</span>
                 </label>
-                <div class="relative">
-                    <div class="flex gap-2">
+                <div style="position: relative;">
+                    <div style="display: flex; gap: 8px;">
                         <!-- Country Code Selector -->
-                        <div class="relative" x-data="{ countryOpen: false }">
-                            <button type="button" @click="countryOpen = !countryOpen" class="px-3 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-spotify-green transition-all flex items-center gap-2 min-w-[100px]">
+                        <div style="position: relative;" x-data="{ countryOpen: false }">
+                            <button type="button" @click="countryOpen = !countryOpen"
+                                    style="padding: 12px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s; display: flex; align-items: center; gap: 8px; min-width: 100px; cursor: pointer;">
                                 <span x-text="phoneCountry.flag">🇹🇷</span>
-                                <span x-text="phoneCountry.code" class="text-sm">+90</span>
-                                <i class="fas fa-chevron-down text-xs"></i>
+                                <span x-text="phoneCountry.code" style="font-size: 14px;">+90</span>
+                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
                             </button>
-                            <div x-show="countryOpen" @click.away="countryOpen = false" x-transition class="absolute top-full left-0 mt-2 w-64 bg-spotify-gray rounded-lg shadow-2xl overflow-hidden z-50 max-h-64 overflow-y-auto">
+                            <div x-show="countryOpen" @click.away="countryOpen = false" x-transition
+                                 style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 256px; background: #282828; border-radius: 8px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); overflow: hidden; z-index: 50; max-height: 256px; overflow-y: auto;">
                                 <template x-for="country in phoneCountries" :key="country.code">
-                                    <button type="button" @click="selectCountry(country); countryOpen = false" class="w-full flex items-center gap-3 px-3 py-2 hover:bg-white/10 transition-all text-left">
-                                        <span x-text="country.flag" class="text-xl"></span>
-                                        <div class="flex-1">
-                                            <div class="text-white text-sm" x-text="country.name"></div>
-                                            <div class="text-gray-400 text-xs" x-text="country.code"></div>
+                                    <button type="button" @click="selectCountry(country); countryOpen = false"
+                                            style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px; background: none; border: none; cursor: pointer; transition: all 0.2s; text-align: left; color: white;"
+                                            onmouseover="this.style.background='rgba(255,255,255,0.1)'"
+                                            onmouseout="this.style.background='none'">
+                                        <span x-text="country.flag" style="font-size: 20px;"></span>
+                                        <div style="flex: 1;">
+                                            <div style="color: white; font-size: 14px;" x-text="country.name"></div>
+                                            <div style="color: #9ca3af; font-size: 12px;" x-text="country.code"></div>
                                         </div>
                                     </button>
                                 </template>
@@ -177,15 +200,18 @@
                         </div>
 
                         <!-- Phone Number Input -->
-                        <input type="tel" x-model="registerForm.phone" @input="formatPhoneNumber()" :required="tenantId === 1001" class="flex-1 px-4 py-3 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.phone.valid ? 'ring-green-500' : (registerForm.phone.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" :placeholder="phoneCountry.placeholder" maxlength="20">
+                        <input type="tel" x-model="registerForm.phone" @input="formatPhoneNumber()" :required="tenantId === 1001"
+                               style="flex: 1; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
+                               :style="registerValidation.phone.valid ? 'border-color: #10b981' : (registerForm.phone.length > 0 ? 'border-color: #ef4444' : '')"
+                               :placeholder="phoneCountry.placeholder" maxlength="20">
                     </div>
                     <!-- Validation message with fixed height -->
-                    <div class="h-5 mt-1">
-                        <div x-show="!registerValidation.phone.valid && registerForm.phone.length > 0" class="text-xs text-red-400 flex items-center gap-1">
+                    <div style="height: 20px; margin-top: 4px;">
+                        <div x-show="!registerValidation.phone.valid && registerForm.phone.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
                             <i class="fas fa-exclamation-circle"></i>
                             <span x-text="registerValidation.phone.message"></span>
                         </div>
-                        <div x-show="registerValidation.phone.valid" class="text-xs text-green-400 flex items-center gap-1">
+                        <div x-show="registerValidation.phone.valid" style="font-size: 12px; color: #10b981; display: flex; align-items: center; gap: 4px;">
                             <i class="fas fa-check-circle"></i>
                             <span>Geçerli telefon numarası</span>
                         </div>
@@ -195,30 +221,33 @@
 
                     <!-- Şifre -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-300 mb-2">Şifre</label>
-                        <div class="relative">
-                            <input :type="showPassword ? 'text' : 'password'" x-model="registerForm.password" @input="validatePassword()" required class="w-full px-4 py-3 pr-12 bg-spotify-gray text-white rounded-lg focus:outline-none focus:ring-2 transition-all" :class="registerValidation.password.valid ? 'ring-green-500' : (registerForm.password.length > 0 ? 'ring-red-500' : 'focus:ring-spotify-green')" placeholder="En az 8 karakter">
-                            <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-all">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Şifre</label>
+                        <div style="position: relative;">
+                            <input :type="showPassword ? 'text' : 'password'" x-model="registerForm.password" @input="validatePassword()" required
+                                   style="width: 100%; padding: 12px 16px; padding-right: 48px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
+                                   :style="registerValidation.password.valid ? 'border-color: #10b981' : (registerForm.password.length > 0 ? 'border-color: #ef4444' : '')"
+                                   placeholder="En az 8 karakter">
+                            <button type="button" @click="showPassword = !showPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
                                 <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                             </button>
                         </div>
 
                         <!-- Şifre Güvenlik Göstergesi (Kompakt) -->
-                        <div x-show="registerForm.password.length > 0" class="mt-2">
-                            <div class="flex gap-1 mb-1">
-                                <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 1 ? 'bg-red-500' : 'bg-gray-600'"></div>
-                                <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 2 ? 'bg-orange-500' : 'bg-gray-600'"></div>
-                                <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 3 ? 'bg-yellow-500' : 'bg-gray-600'"></div>
-                                <div class="h-1 flex-1 rounded-full transition-all" :class="registerValidation.password.strength >= 4 ? 'bg-green-500' : 'bg-gray-600'"></div>
+                        <div x-show="registerForm.password.length > 0" style="margin-top: 8px;">
+                            <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+                                <div style="height: 4px; flex: 1; border-radius: 2px; background: #4b5563; transition: all 0.2s;" :style="registerValidation.password.strength >= 1 ? 'background: #ef4444' : ''"></div>
+                                <div style="height: 4px; flex: 1; border-radius: 2px; background: #4b5563; transition: all 0.2s;" :style="registerValidation.password.strength >= 2 ? 'background: #f97316' : ''"></div>
+                                <div style="height: 4px; flex: 1; border-radius: 2px; background: #4b5563; transition: all 0.2s;" :style="registerValidation.password.strength >= 3 ? 'background: #facc15' : ''"></div>
+                                <div style="height: 4px; flex: 1; border-radius: 2px; background: #4b5563; transition: all 0.2s;" :style="registerValidation.password.strength >= 4 ? 'background: #10b981' : ''"></div>
                             </div>
-                            <div class="text-[10px] flex items-center justify-between">
-                                <span :class="registerValidation.password.strength === 1 ? 'text-red-400' : registerValidation.password.strength === 2 ? 'text-orange-400' : registerValidation.password.strength === 3 ? 'text-yellow-400' : 'text-green-400'" x-text="registerValidation.password.strengthText"></span>
+                            <div style="font-size: 10px; display: flex; align-items: center; justify-content: space-between;">
+                                <span :style="registerValidation.password.strength === 1 ? 'color: #f87171' : registerValidation.password.strength === 2 ? 'color: #fb923c' : registerValidation.password.strength === 3 ? 'color: #fde047' : 'color: #10b981'" x-text="registerValidation.password.strengthText"></span>
                                 <!-- Kompakt Checkler -->
-                                <div class="flex items-center gap-1">
-                                    <i :class="registerValidation.password.checks.length ? 'fas fa-check-circle text-green-400' : 'far fa-circle text-gray-500'" class="text-[10px]" title="8+ karakter"></i>
-                                    <i :class="registerValidation.password.checks.uppercase ? 'fas fa-check-circle text-green-400' : 'far fa-circle text-gray-500'" class="text-[10px]" title="Büyük harf"></i>
-                                    <i :class="registerValidation.password.checks.lowercase ? 'fas fa-check-circle text-green-400' : 'far fa-circle text-gray-500'" class="text-[10px]" title="Küçük harf"></i>
-                                    <i :class="registerValidation.password.checks.number ? 'fas fa-check-circle text-green-400' : 'far fa-circle text-gray-500'" class="text-[10px]" title="Rakam"></i>
+                                <div style="display: flex; align-items: center; gap: 4px;">
+                                    <i :class="registerValidation.password.checks.length ? 'fas fa-check-circle' : 'far fa-circle'" :style="registerValidation.password.checks.length ? 'color: #10b981' : 'color: #6b7280'" style="font-size: 10px;" title="8+ karakter"></i>
+                                    <i :class="registerValidation.password.checks.uppercase ? 'fas fa-check-circle' : 'far fa-circle'" :style="registerValidation.password.checks.uppercase ? 'color: #10b981' : 'color: #6b7280'" style="font-size: 10px;" title="Büyük harf"></i>
+                                    <i :class="registerValidation.password.checks.lowercase ? 'fas fa-check-circle' : 'far fa-circle'" :style="registerValidation.password.checks.lowercase ? 'color: #10b981' : 'color: #6b7280'" style="font-size: 10px;" title="Küçük harf"></i>
+                                    <i :class="registerValidation.password.checks.number ? 'fas fa-check-circle' : 'far fa-circle'" :style="registerValidation.password.checks.number ? 'color: #10b981' : 'color: #6b7280'" style="font-size: 10px;" title="Rakam"></i>
                                 </div>
                             </div>
                         </div>
@@ -226,73 +255,114 @@
                 </div>
             </div>
 
-            <button type="submit" :disabled="!isRegisterFormValid()" class="w-full py-3 bg-gradient-to-r from-spotify-green to-green-600 hover:from-spotify-green-light hover:to-green-500 text-white font-bold rounded-full transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="submit" :disabled="!isRegisterFormValid()"
+                    style="width: 100%; padding: 12px; background: linear-gradient(90deg, #1DB954, #16a34a); color: white; font-weight: 700; border-radius: 9999px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(29,185,84,0.4);"
+                    :style="!isRegisterFormValid() ? 'opacity: 0.5; cursor: not-allowed' : ''">
                 7 Gün Ücretsiz Başla
             </button>
-            <div class="text-center">
-                <button type="button" @click="showAuthModal = 'login'" class="text-sm text-gray-400 hover:text-white transition-all">
-                    Zaten hesabınız var mı? <span class="text-spotify-green font-semibold">Giriş Yapın</span>
+            <div style="text-align: center;">
+                <button type="button" @click="showAuthModal = 'login'" style="font-size: 14px; color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
+                    Zaten hesabınız var mı? <span style="color: #1DB954; font-weight: 600;">Giriş Yapın</span>
                 </button>
             </div>
         </form>
     </div>
 </div>
+</div>
 
-<div class="fixed bottom-0 left-64 right-0 bg-spotify-dark border-t border-white/10 px-6 py-4 z-40">
-    <div class="flex items-center justify-between">
+<!-- PLAYER BAR - Inline Styles (Spotify Inspired) -->
+<div style="position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            background: #181818 !important;
+            border-top: 1px solid rgba(255,255,255,0.1) !important;
+            padding: 16px 24px !important;
+            z-index: 99999 !important;">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
         <!-- Now Playing -->
-        <div class="flex items-center gap-3 w-1/4">
-            <img :src="currentSong?.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=56&h=56&fit=crop'" class="w-14 h-14 rounded shadow-md">
-            <div class="flex-1 min-w-0">
-                <div class="font-semibold text-white text-sm truncate" x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></div>
-                <div class="text-xs text-gray-400 truncate" x-text="currentSong?.artist_title?.tr || ''"></div>
+        <div style="display: flex; align-items: center; gap: 12px; width: 25%;">
+            <img :src="currentSong?.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=56&h=56&fit=crop'"
+                 style="width: 56px; height: 56px; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+            <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 600; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                     x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></div>
+                <div style="font-size: 12px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                     x-text="currentSong?.artist_title?.tr || ''"></div>
             </div>
-            <button @click="toggleLike()" class="text-gray-400 hover:text-spotify-green transition-all">
-                <i :class="isLiked ? 'fas fa-heart text-spotify-green' : 'far fa-heart'"></i>
+            <button @click="toggleLike()"
+                    title="Favorilere Ekle/Çıkar"
+                    style="background: none; border: none; color: #9ca3af; cursor: pointer; padding: 8px; transition: color 0.2s;">
+                <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'" :style="isLiked ? 'color: #1DB954' : ''"></i>
             </button>
         </div>
 
         <!-- Player Controls -->
-        <div class="flex-1 max-w-2xl px-8">
-            <div class="flex items-center justify-center gap-4 mb-2">
-                <button @click="shuffle = !shuffle" class="text-gray-400 hover:text-white transition-all" :class="{ 'text-spotify-green': shuffle }">
-                    <i class="fas fa-random text-sm"></i>
+        <div style="flex: 1; max-width: 720px; padding: 0 32px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
+                <button @click="shuffle = !shuffle"
+                        title="Karışık Çal"
+                        style="background: none; border: none; cursor: pointer; padding: 4px; transition: all 0.2s;"
+                        :style="shuffle ? 'color: #1DB954;' : 'color: #9ca3af;'">
+                    <i class="fas fa-random" style="font-size: 14px;"></i>
                 </button>
-                <button @click="previousTrack()" class="text-gray-400 hover:text-white transition-all">
+                <button @click="previousTrack()"
+                        title="Önceki Şarkı"
+                        style="background: none; border: none; color: #9ca3af; cursor: pointer; padding: 4px; transition: color 0.2s;">
                     <i class="fas fa-step-backward"></i>
                 </button>
-                <button @click="togglePlayPause()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-105 transition-all shadow-lg">
-                    <i :class="isPlaying ? 'fas fa-pause text-black' : 'fas fa-play text-black ml-0.5'"></i>
+                <button @click="togglePlayPause()"
+                        :title="isPlaying ? 'Duraklat' : 'Çal'"
+                        style="width: 40px; height: 40px; background: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
+                    <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'" style="color: black; margin-left: 2px;"></i>
                 </button>
-                <button @click="nextTrack()" class="text-gray-400 hover:text-white transition-all">
+                <button @click="nextTrack()"
+                        title="Sonraki Şarkı"
+                        style="background: none; border: none; color: #9ca3af; cursor: pointer; padding: 4px; transition: color 0.2s;">
                     <i class="fas fa-step-forward"></i>
                 </button>
-                <button @click="cycleRepeat()" class="text-gray-400 hover:text-white transition-all" :class="{ 'text-spotify-green': repeatMode !== 'off' }">
-                    <i :class="repeatMode === 'one' ? 'fas fa-repeat-1 text-sm' : 'fas fa-redo text-sm'"></i>
+                <button @click="cycleRepeat()"
+                        :title="repeatMode === 'off' ? 'Tekrar: Kapalı' : (repeatMode === 'one' ? 'Tekrar: Tek Şarkı' : 'Tekrar: Tümü')"
+                        style="background: none; border: none; cursor: pointer; padding: 4px; transition: all 0.2s;"
+                        :style="repeatMode !== 'off' ? 'color: #1DB954;' : 'color: #9ca3af;'">
+                    <i :class="repeatMode === 'one' ? 'fas fa-repeat-1' : 'fas fa-redo'" style="font-size: 14px;"></i>
                 </button>
             </div>
-            <div class="flex items-center gap-2">
-                <span class="text-xs text-gray-400" x-text="formatTime(currentTime)">0:00</span>
-                <div @click="seekTo($event)" class="flex-1 h-1 bg-gray-600 rounded-full overflow-hidden cursor-pointer relative group">
-                    <div class="h-full bg-white rounded-full transition-all" :style="`width: ${progressPercent}%`">
-                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 12px; color: #9ca3af;" x-text="formatTime(currentTime)">0:00</span>
+                <div @click="seekTo($event)"
+                     style="flex: 1; height: 4px; background: #4b5563; border-radius: 2px; overflow: hidden; cursor: pointer; position: relative;"
+                     onmouseover="this.style.height='6px'" onmouseout="this.style.height='4px'">
+                    <div :style="'width: ' + progressPercent + '%; height: 100%; background: #1DB954; border-radius: 2px; transition: width 0.1s;'">
+                        <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #1DB954; border-radius: 50%; box-shadow: 0 0 4px rgba(29,185,84,0.6); opacity: 0; transition: opacity 0.2s;"
+                             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'"></div>
                     </div>
                 </div>
-                <span class="text-xs text-gray-400" x-text="formatTime(duration)">0:00</span>
+                <span style="font-size: 12px; color: #9ca3af;" x-text="formatTime(duration)">0:00</span>
             </div>
         </div>
 
         <!-- Volume -->
-        <div class="flex items-center gap-3 w-1/4 justify-end">
-            <button @click="showQueue = !showQueue" class="text-gray-400 hover:text-white transition-all text-sm" :class="{'text-spotify-green': showQueue}">
+        <div style="display: flex; align-items: center; gap: 12px; width: 25%; justify-content: flex-end;">
+            <button @click="showQueue = !showQueue"
+                    title="Çalma Sırası"
+                    style="background: none; border: none; cursor: pointer; padding: 4px; font-size: 14px; transition: all 0.2s;"
+                    :style="showQueue ? 'color: #1DB954;' : 'color: #9ca3af;'">
                 <i class="fas fa-list"></i>
             </button>
-            <button @click="toggleMute()" class="text-gray-400 hover:text-white transition-all text-sm">
+            <button @click="toggleMute()"
+                    :title="isMuted ? 'Sesi Aç' : 'Sessiz'"
+                    style="background: none; border: none; cursor: pointer; padding: 4px; font-size: 14px; transition: all 0.2s;"
+                    :style="isMuted ? 'color: #ef4444;' : 'color: #9ca3af;'">
                 <i :class="isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up'"></i>
             </button>
-            <div @click="setVolume($event)" class="w-24 h-1 bg-gray-600 rounded-full overflow-hidden cursor-pointer relative group">
-                <div class="h-full bg-white rounded-full transition-all" :style="`width: ${volume}%`">
-                    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div @click="setVolume($event)"
+                 title="Ses Seviyesi"
+                 style="width: 96px; height: 4px; background: #4b5563; border-radius: 2px; overflow: hidden; cursor: pointer; position: relative;"
+                 onmouseover="this.style.height='6px'" onmouseout="this.style.height='4px'">
+                <div :style="'width: ' + volume + '%; height: 100%; background: #1DB954; border-radius: 2px; transition: width 0.1s;'">
+                    <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #1DB954; border-radius: 50%; box-shadow: 0 0 4px rgba(29,185,84,0.6); opacity: 0; transition: opacity 0.2s;"
+                         onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'"></div>
                 </div>
             </div>
         </div>
@@ -302,44 +372,46 @@
 <!-- Queue Panel (Sağ Tarafta) -->
 <div x-show="showQueue"
      x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="translate-x-full"
-     x-transition:enter-end="translate-x-0"
+     x-transition:enter-start="transform translate-x-full"
+     x-transition:enter-end="transform translate-x-0"
      x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="translate-x-0"
-     x-transition:leave-end="translate-x-full"
-     class="fixed right-0 bottom-28 top-0 w-96 bg-spotify-dark border-l border-white/10 z-30 overflow-y-auto"
-     style="display: none;">
+     x-transition:leave-start="transform translate-x-0"
+     x-transition:leave-end="transform translate-x-full"
+     style="position: fixed; right: 0; bottom: 100px; top: 0; width: 400px; background: #181818; border-left: 1px solid rgba(255,255,255,0.1); z-index: 30; display: flex; flex-direction: column;">
 
-    <div class="sticky top-0 bg-spotify-dark border-b border-white/10 px-6 py-4 flex items-center justify-between">
-        <h3 class="text-xl font-bold text-white">Çalma Sırası</h3>
-        <button @click="showQueue = false" class="text-gray-400 hover:text-white transition-all">
-            <i class="fas fa-times text-xl"></i>
+    <div style="position: sticky; top: 0; background: #181818; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 10;">
+        <h3 style="font-size: 22px; font-weight: 700; color: white; margin: 0;">Çalma Sırası</h3>
+        <button @click="showQueue = false" style="background: none; border: none; color: #9ca3af; cursor: pointer; padding: 8px; transition: all 0.2s; border-radius: 50%;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='white';" onmouseout="this.style.background='none'; this.style.color='#9ca3af';">
+            <i class="fas fa-times" style="font-size: 20px;"></i>
         </button>
     </div>
 
-    <div class="p-6">
+    <div style="flex: 1; overflow-y: auto; padding: 24px; padding-bottom: 40px;">
         <!-- Şu An Çalan -->
-        <div x-show="currentSong" class="mb-6">
-            <div class="text-sm text-gray-400 font-semibold mb-2">ŞU AN ÇALIYOR</div>
-            <div class="flex items-center gap-3 p-3 bg-spotify-gray rounded-lg">
-                <img :src="currentSong?.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=56&h=56&fit=crop'" class="w-12 h-12 rounded shadow-md">
-                <div class="flex-1 min-w-0">
-                    <div class="font-semibold text-white text-sm truncate" x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></div>
-                    <div class="text-xs text-gray-400 truncate" x-text="currentSong?.artist_title?.tr || ''"></div>
+        <div x-show="currentSong" style="margin-bottom: 24px;">
+            <div style="font-size: 14px; color: #9ca3af; font-weight: 600; margin-bottom: 8px;">ŞU AN ÇALIYOR</div>
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #282828; border-radius: 8px;">
+                <img :src="currentSong?.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=56&h=56&fit=crop'"
+                     style="width: 48px; height: 48px; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 600; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                         x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></div>
+                    <div style="font-size: 12px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                         x-text="currentSong?.artist_title?.tr || ''"></div>
                 </div>
-                <div class="pulse-play">
-                    <i class="fas fa-volume-up text-spotify-green"></i>
+                <div style="color: #1DB954; animation: pulse-slow 2s ease-in-out infinite;">
+                    <i class="fas fa-volume-up"></i>
                 </div>
             </div>
         </div>
 
         <!-- Sıradaki Şarkılar -->
         <div x-show="queue.length > 0">
-            <div class="text-sm text-gray-400 font-semibold mb-2 flex items-center justify-between">
+            <div style="font-size: 13px; color: #9ca3af; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; letter-spacing: 0.5px;">
                 <span>SIRADAKİ</span>
-                <span x-text="`${queue.length} şarkı`" class="text-xs"></span>
+                <span x-text="queue.length + ' şarkı'" style="font-size: 11px; color: #6b7280;"></span>
             </div>
-            <div class="space-y-1">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
                 <template x-for="(song, index) in queue" :key="song.song_id">
                     <div draggable="true"
                          @dragstart="dragStart(index, $event)"
@@ -347,22 +419,45 @@
                          @drop="drop(index)"
                          @dragend="dragEnd()"
                          @click="playSongFromQueue(index)"
-                         class="flex items-center gap-3 p-3 rounded-lg hover:bg-spotify-gray transition-all cursor-move group"
-                         :class="{'bg-spotify-gray/50': index === queueIndex, 'opacity-50': draggedIndex === index, 'border-t-2 border-spotify-green': dropTargetIndex === index}">
-                        <div class="w-8 text-center cursor-grab active:cursor-grabbing">
-                            <i class="fas fa-grip-vertical text-gray-600 text-sm group-hover:text-gray-400"></i>
+                         class="queue-item"
+                         style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 6px; cursor: grab; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; margin-bottom: 2px;"
+                         :style="index === queueIndex ? 'background: linear-gradient(90deg, rgba(29,185,84,0.15), rgba(29,185,84,0.05)); border-left: 3px solid #1DB954; padding-left: 9px;' : (draggedIndex === index ? 'opacity: 0.4; transform: scale(0.95);' : (dropTargetIndex === index ? 'border-top: 3px solid #1DB954; padding-top: 13px; margin-top: 6px;' : 'background: transparent;'))"
+                         onmouseover="if(!this.style.background.includes('linear-gradient')) { this.style.background='rgba(255,255,255,0.05)'; this.style.transform='translateX(4px)'; }"
+                         onmouseout="if(!this.style.background.includes('linear-gradient')) { this.style.background='transparent'; this.style.transform='translateX(0)'; }">
+                        <div style="width: 24px; text-align: center; cursor: grab; transition: all 0.2s;"
+                             :style="draggedIndex === index ? 'cursor: grabbing;' : ''"
+                             onmouseover="this.style.transform='scale(1.2)'"
+                             onmouseout="this.style.transform='scale(1)'">
+                            <i class="fas fa-grip-vertical" style="font-size: 13px; color: #4b5563; transition: color 0.2s;"
+                               onmouseover="this.style.color='#1DB954'"
+                               onmouseout="this.style.color='#4b5563'"></i>
                         </div>
-                        <div class="w-8 text-center">
-                            <span x-show="index !== queueIndex" class="text-gray-400 text-sm" x-text="index + 1"></span>
-                            <i x-show="index === queueIndex" class="fas fa-play text-spotify-green text-xs"></i>
+                        <div style="width: 28px; text-align: center; font-weight: 600;">
+                            <span x-show="index !== queueIndex"
+                                  style="color: #6b7280; font-size: 13px; transition: all 0.2s;"
+                                  x-text="index + 1"
+                                  :style="draggedIndex === index ? 'opacity: 0.5;' : ''"></span>
+                            <i x-show="index === queueIndex"
+                               class="fas fa-play"
+                               style="color: #1DB954; font-size: 11px; animation: pulse-play 1.5s ease-in-out infinite;"></i>
                         </div>
-                        <img :src="song.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=40&h=40&fit=crop'" class="w-10 h-10 rounded shadow-md">
-                        <div class="flex-1 min-w-0">
-                            <div class="font-medium text-white text-sm truncate" x-text="song.song_title?.tr || 'Untitled'"></div>
-                            <div class="text-xs text-gray-400 truncate" x-text="song.artist_title?.tr || 'Unknown'"></div>
+                        <img :src="song.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=40&h=40&fit=crop'"
+                             style="width: 44px; height: 44px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: all 0.3s;"
+                             :style="index === queueIndex ? 'box-shadow: 0 4px 16px rgba(29,185,84,0.4);' : ''"
+                             onmouseover="this.style.transform='scale(1.05)'"
+                             onmouseout="this.style.transform='scale(1)'">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.2s;"
+                                 :style="index === queueIndex ? 'color: #1DB954;' : ''"
+                                 x-text="song.song_title?.tr || 'Untitled'"></div>
+                            <div style="font-size: 12px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;"
+                                 x-text="song.artist_title?.tr || 'Unknown'"></div>
                         </div>
-                        <button @click.stop="removeFromQueue(index)" class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-white transition-all">
-                            <i class="fas fa-times text-xs"></i>
+                        <button @click.stop="removeFromQueue(index)"
+                                style="background: rgba(239,68,68,0.1); border: none; color: #ef4444; cursor: pointer; padding: 6px; opacity: 0; transition: all 0.3s; border-radius: 4px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;"
+                                onmouseover="this.style.opacity='1'; this.style.background='rgba(239,68,68,0.2)'; this.style.transform='scale(1.1) rotate(90deg)';"
+                                onmouseout="this.style.opacity='0'; this.style.background='rgba(239,68,68,0.1)'; this.style.transform='scale(1) rotate(0deg)';">
+                            <i class="fas fa-times" style="font-size: 11px;"></i>
                         </button>
                     </div>
                 </template>
@@ -370,18 +465,142 @@
         </div>
 
         <!-- Boş Queue Durumu -->
-        <div x-show="queue.length === 0" class="text-center py-12">
-            <i class="fas fa-music text-4xl text-gray-600 mb-3"></i>
-            <p class="text-gray-400 text-sm">Çalma sırası boş</p>
-            <p class="text-gray-500 text-xs mt-1">Bir şarkı veya playlist çalmaya başlayın</p>
+        <div x-show="queue.length === 0" style="text-align: center; padding: 48px 0;">
+            <i class="fas fa-music" style="font-size: 40px; color: #4b5563; margin-bottom: 12px; display: block;"></i>
+            <p style="color: #9ca3af; font-size: 14px; margin: 0;">Çalma sırası boş</p>
+            <p style="color: #6b7280; font-size: 12px; margin-top: 4px;">Bir şarkı veya playlist çalmaya başlayın</p>
         </div>
     </div>
 </div>
 
+<!-- Responsive: Player mobilde sidebar olmadan -->
+<style>
+    @media (max-width: 768px) {
+        /* Player mobilde full width */
+        div[style*="position: fixed"][style*="bottom: 0"] {
+            left: 0 !important;
+            padding: 12px 16px !important;
+        }
+
+        /* Queue mobilde full width */
+        div[style*="width: 384px"] {
+            width: 100% !important;
+        }
+    }
+
+    /* Desktop: Sidebar genişliği kadar sol boşluk */
+    @media (min-width: 769px) {
+        div[style*="position: fixed"][style*="bottom: 0"] {
+            left: 256px !important;
+        }
+    }
+
+    /* Pulse animation for playing indicator */
+    @keyframes pulse-slow {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+
+    /* Play button pulse animation */
+    @keyframes pulse-play {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.7;
+            transform: scale(0.9);
+        }
+    }
+
+    /* Queue item hover effect - smooth slide */
+    .queue-item {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .queue-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(29,185,84,0.1), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .queue-item:hover::before {
+        left: 100%;
+    }
+
+    /* Drag animation - smooth scale */
+    .queue-item[draggable="true"]:active {
+        cursor: grabbing !important;
+        transform: scale(0.98) rotate(2deg);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    /* Drop target indicator - glowing effect */
+    .queue-item[style*="border-top: 3px solid"] {
+        animation: glow-border 1s ease-in-out infinite;
+    }
+
+    @keyframes glow-border {
+        0%, 100% {
+            box-shadow: 0 -3px 12px rgba(29,185,84,0.3);
+        }
+        50% {
+            box-shadow: 0 -3px 20px rgba(29,185,84,0.6);
+        }
+    }
+
+    /* Smooth entrance animation for new items */
+    @keyframes slideInFromRight {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    /* Hover effects - buttons */
+    button:hover {
+        transform: scale(1.05);
+    }
+
+    button:active {
+        transform: scale(0.95);
+    }
+
+    /* Scrollbar styling for queue */
+    div[style*="overflow-y: auto"]::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    div[style*="overflow-y: auto"]::-webkit-scrollbar-track {
+        background: #181818;
+    }
+
+    div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb {
+        background: #282828;
+        border-radius: 4px;
+        transition: background 0.3s;
+    }
+
+    div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
+        background: #3e3e3e;
+    }
+</style>
+
 <script>
 function muzibuApp() {
     return {
-        isLoggedIn: false,
+        isLoggedIn: {{ auth()->check() ? 'true' : 'false' }},
+        currentUser: @json(auth()->check() ? ['id' => auth()->user()->id, 'name' => auth()->user()->name, 'email' => auth()->user()->email] : null),
         showAuthModal: null,
         showQueue: false,
         loginForm: { email: '', password: '', remember: false },
@@ -466,8 +685,8 @@ function muzibuApp() {
                 this.$refs.audio.volume = this.volume / 100;
             }
 
-            // Check authentication status
-            this.checkAuth();
+            // User already loaded from Laravel backend (no need for API check)
+            console.log('Muzibu initialized', { isLoggedIn: this.isLoggedIn, user: this.currentUser });
 
             // Load featured playlists on init
             this.loadFeaturedPlaylists();
@@ -597,8 +816,44 @@ function muzibuApp() {
             this.repeatMode = modes[(idx + 1) % modes.length];
         },
 
-        toggleLike() {
+        async toggleLike() {
+            if (!this.currentSong) return;
+
+            const songId = this.currentSong.song_id;
+            const previousState = this.isLiked;
+
+            // Optimistic UI update
             this.isLiked = !this.isLiked;
+
+            try {
+                const response = await fetch('/api/favorites/toggle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        model_class: 'Modules\\Muzibu\\App\\Models\\Song',
+                        model_id: songId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    // Başarısız ise eski haline döndür
+                    this.isLiked = previousState;
+
+                    // Eğer unauthorized ise login modali göster
+                    if (response.status === 401) {
+                        this.showAuthModal = 'login';
+                    }
+                }
+            } catch (error) {
+                console.error('Favorite toggle error:', error);
+                // Hata durumunda eski haline döndür
+                this.isLiked = previousState;
+            }
         },
 
         toggleMute() {
@@ -746,6 +1001,9 @@ function muzibuApp() {
             this.currentSong = song;
             this.queueIndex = index;
 
+            // Check if song is favorited
+            this.checkFavoriteStatus(song.song_id);
+
             try {
                 const response = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
                 const data = await response.json();
@@ -754,6 +1012,30 @@ function muzibuApp() {
                 console.error('Failed to load song:', error);
                 this.showToast('Şarkı yüklenemedi', 'error');
             }
+        },
+
+        async checkFavoriteStatus(songId) {
+            // Reset to false while checking
+            this.isLiked = false;
+
+            // Only check if user is logged in
+            @auth
+            try {
+                const response = await fetch(`/api/favorites/check?model_class=Modules\\Muzibu\\App\\Models\\Song&model_id=${songId}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    this.isLiked = data.is_favorited || false;
+                }
+            } catch (error) {
+                console.error('Failed to check favorite status:', error);
+            }
+            @endauth
         },
 
         async loadAndPlaySong(url) {
@@ -896,25 +1178,7 @@ function muzibuApp() {
             console.log(`Toast [${type}]:`, message);
         },
 
-        async checkAuth() {
-            try {
-                const response = await fetch('/api/auth/me', {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    credentials: 'same-origin'
-                });
-
-                const data = await response.json();
-
-                if (data.authenticated) {
-                    this.isLoggedIn = true;
-                    console.log('User authenticated:', data.user);
-                }
-            } catch (error) {
-                console.error('Auth check failed:', error);
-            }
-        },
+        // checkAuth() removed - user data now loaded directly from Laravel backend on page load
 
         async handleLogin() {
             try {
@@ -932,11 +1196,13 @@ function muzibuApp() {
 
                 const data = await response.json();
 
-                if (response.ok) {
+                if (response.ok && data.success) {
                     this.isLoggedIn = true;
+                    this.currentUser = data.user;
                     this.showAuthModal = null;
                     this.loginForm = { email: '', password: '', remember: false };
                     this.showToast('Başarıyla giriş yapıldı!', 'success');
+                    location.reload(); // Reload to update sidebar
                 } else {
                     this.showToast(data.message || 'Giriş başarısız', 'error');
                 }
@@ -964,11 +1230,13 @@ function muzibuApp() {
 
                 const data = await response.json();
 
-                if (response.ok) {
+                if (response.ok && data.success) {
                     this.isLoggedIn = true;
+                    this.currentUser = data.user;
                     this.showAuthModal = null;
                     this.registerForm = { name: '', email: '', password: '', company: '' };
                     this.showToast('Hesabınız oluşturuldu! 7 günlük deneme başladı.', 'success');
+                    location.reload(); // Reload to update sidebar
                 } else {
                     this.showToast(data.message || 'Kayıt başarısız', 'error');
                 }
@@ -1027,20 +1295,23 @@ function muzibuApp() {
 
                 if (response.ok) {
                     this.isLoggedIn = false;
+                    this.currentUser = null;
                     this.showAuthModal = null;
                     this.showToast('Çıkış yapıldı', 'info');
+                    location.reload(); // Reload to clear user data
                 }
             } catch (error) {
                 console.error('Logout error:', error);
                 // Still logout on frontend
                 this.isLoggedIn = false;
+                this.currentUser = null;
+                location.reload();
             }
         },
 
         toggleTheme() {
             this.isDarkMode = !this.isDarkMode;
             localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-            document.documentElement.classList.toggle('dark', this.isDarkMode);
             this.showToast(this.isDarkMode ? 'Koyu tema aktif' : 'Açık tema aktif', 'success');
         },
 
@@ -1113,20 +1384,51 @@ function muzibuApp() {
             }
         },
 
-        validateEmail() {
+        async validateEmail() {
             const email = this.registerForm.email.trim().toLowerCase();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if (!emailRegex.test(email)) {
                 this.registerValidation.email.valid = false;
                 this.registerValidation.email.message = 'Geçerli bir e-posta adresi giriniz';
-            } else if (email.includes('..')) {
+                return;
+            }
+
+            if (email.includes('..')) {
                 this.registerValidation.email.valid = false;
                 this.registerValidation.email.message = 'E-posta adresinde ardışık nokta olamaz';
-            } else if (email.startsWith('.') || email.endsWith('.')) {
+                return;
+            }
+
+            if (email.startsWith('.') || email.endsWith('.')) {
                 this.registerValidation.email.valid = false;
                 this.registerValidation.email.message = 'E-posta adresi nokta ile başlayamaz veya bitemez';
-            } else {
+                return;
+            }
+
+            // Format valid, check availability via API
+            try {
+                const response = await fetch('/api/auth/check-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (data.exists) {
+                    this.registerValidation.email.valid = false;
+                    this.registerValidation.email.message = 'Bu e-posta adresi zaten kullanılıyor';
+                } else {
+                    this.registerValidation.email.valid = true;
+                    this.registerValidation.email.message = '';
+                }
+            } catch (error) {
+                console.error('Email check failed:', error);
+                // Format is valid, just can't check availability
                 this.registerValidation.email.valid = true;
                 this.registerValidation.email.message = '';
             }

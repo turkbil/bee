@@ -1,4 +1,4 @@
-<aside class="fixed left-0 z-40 h-full w-64 bg-black" :class="isLoggedIn ? 'top-0' : 'top-14'">
+<aside class="fixed left-0 z-40 h-full w-64 bg-black {{ auth()->check() ? 'top-0' : 'top-14' }}">
     <div class="flex flex-col h-full">
         <div class="p-6">
             {!! app(\App\Services\LogoService::class)->renderHeaderLogo(['class' => 'h-10 w-auto']) !!}
@@ -23,7 +23,8 @@
                 </button>
             </div>
 
-            <div x-show="!isLoggedIn" x-transition class="mt-6 px-3 space-y-3">
+            @guest
+            <div class="mt-6 px-3 space-y-3">
                 <button @click="showAuthModal = 'register'" class="w-full px-4 py-3 rounded-full bg-gradient-to-r from-spotify-green to-green-600 hover:from-spotify-green-light hover:to-green-500 text-white font-bold transition-all shadow-lg">
                     <i class="fas fa-rocket mr-2"></i>Ücretsiz Başla
                 </button>
@@ -31,25 +32,48 @@
                     Giriş Yap
                 </button>
             </div>
+            @endguest
 
-            <div x-show="isLoggedIn" x-transition class="mt-6 px-3">
+            @auth
+            <div class="mt-6 px-3">
                 <div class="p-4 bg-spotify-gray rounded-lg">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-10 h-10 bg-gradient-to-br from-spotify-green to-green-600 rounded-full flex items-center justify-center shadow-lg">
                             <i class="fas fa-user text-white text-sm"></i>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="font-semibold text-white text-sm truncate">Demo Kullanıcı</div>
+                            <div class="font-semibold text-white text-sm truncate">{{ auth()->user()->name }}</div>
                             <div class="text-xs text-spotify-green-light flex items-center gap-1">
                                 <i class="fas fa-crown"></i> Premium
                             </div>
                         </div>
                     </div>
-                    <button @click="logout()" class="w-full px-3 py-2 bg-white/10 text-white rounded-full text-xs hover:bg-white/20 transition-all font-semibold">
+
+                    <button @click="logout()" class="w-full px-3 py-2 bg-white/10 text-white rounded-full text-xs hover:bg-white/20 transition-all font-semibold mb-2">
                         Çıkış Yap
                     </button>
+
+                    @if(auth()->user()->hasRole('root'))
+                        {{-- Root Only: Cache Clear & AI Clear Buttons --}}
+                        <div class="flex gap-2 mt-3 pt-3 border-t border-white/10">
+                            <button onclick="clearSystemCache(this)"
+                                    title="Cache Temizle"
+                                    class="flex-1 px-2 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1">
+                                <i class="fas fa-trash-can text-xs"></i>
+                                <span class="hidden sm:inline ml-1">Cache</span>
+                            </button>
+
+                            <button onclick="clearAIConversation(this)"
+                                    title="AI Chat Temizle"
+                                    class="flex-1 px-2 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1">
+                                <i class="fas fa-comments text-xs"></i>
+                                <span class="hidden sm:inline ml-1">AI</span>
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
+            @endauth
         </nav>
     </div>
 </aside>

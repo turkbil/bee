@@ -105,6 +105,7 @@ class CheckoutPage extends Component
     public $creditCardFee = 0; // Kredi kartı komisyonu (%4,29)
     public $grandTotal = 0; // Komisyon dahil son toplam
     public $itemCount = 0;
+    public $requiresShipping = true; // Sepette fiziksel ürün var mı?
 
     // Modal States (Hepsiburada Pattern)
     public $showShippingModal = false;
@@ -586,6 +587,14 @@ class CheckoutPage extends Component
             \Log::warning('⚠️ CheckoutPage: Could not create cart');
         }
 
+        // Kargo gereksinimi kontrolü - Herhangi bir item fiziksel mi?
+        // Eğer tüm itemlar dijital (subscription vb.) ise kargo gerekmez
+        $this->requiresShipping = $this->items->contains(function ($item) {
+            return $item->requiresShipping();
+        });
+
+        \Log::info('📦 Shipping requirement', ['requires_shipping' => $this->requiresShipping]);
+
         // TRY cinsinden toplam hesapla
         $subtotalTRY = 0;
 
@@ -756,16 +765,27 @@ class CheckoutPage extends Component
             'selectedPaymentMethodId' => 'required|exists:payment_methods,payment_method_id',
         ];
 
-        // Login user için adres seçimi zorunlu
+        // Adres seçimi - sadece fiziksel ürün varsa teslimat zorunlu
         if ($this->customerId) {
-            $rules['billing_address_id'] = 'required';
-            $rules['shipping_address_id'] = 'required';
-            \Log::info('📍 Login user - Address validation required');
+            // Fiziksel ürün varsa teslimat adresi zorunlu
+            if ($this->requiresShipping) {
+                $rules['shipping_address_id'] = 'required';
+                // Fatura adresi sadece "teslimat ile aynı" kapalıysa zorunlu
+                if (!$this->billing_same_as_shipping) {
+                    $rules['billing_address_id'] = 'required';
+                }
+            } else {
+                // Dijital ürün - sadece fatura adresi zorunlu
+                $rules['billing_address_id'] = 'required';
+            }
+            \Log::info('📍 Login user - Address validation', ['requires_shipping' => $this->requiresShipping]);
         } else {
-            // Guest user için inline adres formu zorunlu
-            $rules['shipping_address_line_1'] = 'required|string|max:255';
-            $rules['shipping_city'] = 'required|string|max:100';
-            $rules['shipping_district'] = 'required|string|max:100';
+            // Guest user için inline adres formu zorunlu (fiziksel ürünler için)
+            if ($this->requiresShipping) {
+                $rules['shipping_address_line_1'] = 'required|string|max:255';
+                $rules['shipping_city'] = 'required|string|max:100';
+                $rules['shipping_district'] = 'required|string|max:100';
+            }
             \Log::info('📝 Guest user - Inline form validation');
         }
 
@@ -846,6 +866,11 @@ class CheckoutPage extends Component
 
                     $this->billing_address_id = $billingAddress->address_id;
                 }
+            }
+
+            // Fatura adresi = Teslimat adresi ise, otomatik ata
+            if ($this->billing_same_as_shipping && $this->shipping_address_id) {
+                $this->billing_address_id = $this->shipping_address_id;
             }
 
             // Adresleri al (snapshot için)
@@ -1041,14 +1066,24 @@ class CheckoutPage extends Component
             'selectedGateway' => 'nullable|string|in:paytr,bank_transfer', // Yeni gateway sistemi
         ];
 
-        // Adres kontrolü
+        // Adres seçimi - sadece fiziksel ürün varsa teslimat zorunlu
         if ($this->customerId) {
-            $rules['billing_address_id'] = 'required';
-            $rules['shipping_address_id'] = 'required';
+            if ($this->requiresShipping) {
+                $rules['shipping_address_id'] = 'required';
+                // Fatura adresi sadece "teslimat ile aynı" kapalıysa zorunlu
+                if (!$this->billing_same_as_shipping) {
+                    $rules['billing_address_id'] = 'required';
+                }
+            } else {
+                // Dijital ürün - sadece fatura adresi zorunlu
+                $rules['billing_address_id'] = 'required';
+            }
         } else {
-            $rules['shipping_address_line_1'] = 'required|string|max:255';
-            $rules['shipping_city'] = 'required|string|max:100';
-            $rules['shipping_district'] = 'required|string|max:100';
+            if ($this->requiresShipping) {
+                $rules['shipping_address_line_1'] = 'required|string|max:255';
+                $rules['shipping_city'] = 'required|string|max:100';
+                $rules['shipping_district'] = 'required|string|max:100';
+            }
         }
 
         // Fatura tipi kontrolü
@@ -1114,6 +1149,11 @@ class CheckoutPage extends Component
 
                     $this->billing_address_id = $billingAddress->address_id;
                 }
+            }
+
+            // Fatura adresi = Teslimat adresi ise, otomatik ata
+            if ($this->billing_same_as_shipping && $this->shipping_address_id) {
+                $this->billing_address_id = $this->shipping_address_id;
             }
 
             // Adresleri al

@@ -248,6 +248,38 @@ class CartItem extends BaseModel
     }
 
     /**
+     * Bu item kargo gerektiriyor mu?
+     * SubscriptionPlan, dijital ürünler = false
+     * ShopProduct, fiziksel ürünler = true
+     */
+    public function requiresShipping(): bool
+    {
+        // Dijital ürün türleri - kargo gerektirmez
+        $digitalTypes = [
+            'Modules\\Subscription\\App\\Models\\SubscriptionPlan',
+            'Modules\\Subscription\\App\\Models\\Subscription',
+        ];
+
+        // cartable_type kontrolü
+        if (in_array($this->cartable_type, $digitalTypes)) {
+            return false;
+        }
+
+        // Cartable'ın kendi requiresShipping() metodu varsa kullan
+        if ($this->cartable && method_exists($this->cartable, 'requiresShipping')) {
+            return $this->cartable->requiresShipping();
+        }
+
+        // ShopProduct için is_digital kontrolü
+        if ($this->product && property_exists($this->product, 'is_digital')) {
+            return !$this->product->is_digital;
+        }
+
+        // Default: fiziksel ürün varsay, kargo gerektirir
+        return true;
+    }
+
+    /**
      * Item resmini al (polymorphic)
      */
     public function getItemImageAttribute(): ?string

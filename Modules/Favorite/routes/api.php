@@ -28,6 +28,25 @@ Route::middleware(['tenant'])
             return response()->json($result);
         })->name('toggle');
 
+        // Check if favorited
+        Route::get('/check', function(\Illuminate\Http\Request $request) {
+            // Auth kontrolü - web session veya sanctum token
+            if (!auth()->check() && !auth('sanctum')->check()) {
+                return response()->json(['is_favorited' => false]);
+            }
+
+            $service = app(FavoriteService::class);
+            $userId = auth()->id() ?? auth('sanctum')->id();
+
+            $isFavorited = $service->isFavorited(
+                $request->input('model_class'),
+                $request->input('model_id'),
+                $userId
+            );
+
+            return response()->json(['is_favorited' => $isFavorited]);
+        })->name('check');
+
         // Kullanıcının favorileri
         Route::get('/my-favorites', function(\Illuminate\Http\Request $request) {
             $service = app(FavoriteService::class);

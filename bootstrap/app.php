@@ -137,7 +137,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'locale.site', // Locale belirleme (URL parse için gerekli)
             'frontend.auto.seo', // 🎯 Frontend Auto SEO Fill (Premium tenants) - CACHE'DEN ÖNCE ÇALIŞMALI!
             \Spatie\ResponseCache\Middlewares\CacheResponse::class, // ✅ Response cache (URL-based, locale'den bağımsız)
-            \App\Http\Middleware\FixResponseCacheHeaders::class, // 🔧 Session middleware'in cache header'larını ezmesini engelle (EN SONDA)
+            \App\Http\Middleware\FixResponseCacheHeaders::class, // 🔧 Session middleware'in cache header'larını ezmesini engelle
         ]);
                 
         // Module middleware grupları - her modül için yetki kontrolü

@@ -98,3 +98,81 @@
         </div>
     </div>
 </footer>
+
+{{-- Cache Clear & AI Clear JavaScript Functions - SIMPLIFIED --}}
+<script>
+(function() {
+    'use strict';
+
+    // Cache Clear Function
+    window.clearSystemCache = function(button) {
+        if (!button || button.disabled) return;
+
+        const icon = button.querySelector('i');
+        const originalIcon = icon.className;
+
+        button.disabled = true;
+        icon.className = 'fas fa-spinner fa-spin text-xs';
+
+        fetch('/clear-cache', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) throw new Error(data.message);
+
+            // Success
+            icon.className = 'fas fa-check text-xs';
+            button.classList.remove('bg-red-500/20', 'text-red-400');
+            button.classList.add('bg-green-500/20', 'text-green-400');
+
+            setTimeout(() => location.reload(), 800);
+        })
+        .catch(error => {
+            console.error('[Cache] Error:', error);
+            icon.className = 'fas fa-times text-xs';
+
+            setTimeout(() => {
+                button.disabled = false;
+                icon.className = originalIcon;
+            }, 2000);
+        });
+    };
+
+    // AI Conversation Clear Function
+    window.clearAIConversation = function(button) {
+        if (!button || button.disabled) return;
+
+        const icon = button.querySelector('i');
+        const originalIcon = icon.className;
+
+        button.disabled = true;
+        icon.className = 'fas fa-spinner fa-spin text-xs';
+
+        try {
+            // Clear AI conversation from localStorage
+            localStorage.removeItem('ai_conversation_history');
+            localStorage.removeItem('ai_conversation_id');
+
+            // Success
+            icon.className = 'fas fa-check text-xs';
+            button.classList.remove('bg-purple-500/20', 'text-purple-400');
+            button.classList.add('bg-green-500/20', 'text-green-400');
+
+            setTimeout(() => location.reload(), 800);
+        } catch (error) {
+            console.error('[AI Chat] Error:', error);
+            icon.className = 'fas fa-times text-xs';
+
+            setTimeout(() => {
+                button.disabled = false;
+                icon.className = originalIcon;
+            }, 2000);
+        }
+    };
+})();
+</script>

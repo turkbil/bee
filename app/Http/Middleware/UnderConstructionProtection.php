@@ -15,9 +15,6 @@ class UnderConstructionProtection
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // 🎵 Muzibu artık canlı - password protection kald ırıldı
-        return $next($request);
-
         // Check if current tenant is under construction (Tenant ID: 1001)
         $tenant = tenant();
         if (!$tenant || $tenant->id !== 1001) {

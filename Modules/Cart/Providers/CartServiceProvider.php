@@ -40,7 +40,10 @@ class CartServiceProvider extends ServiceProvider
             }
         }
 
-        // Register Livewire components
+        // Register Livewire components - Admin
+        \Livewire\Livewire::component('cart::admin.cart-component', \Modules\Cart\App\Http\Livewire\Admin\CartComponent::class);
+
+        // Register Livewire components - Front
         \Livewire\Livewire::component('cart::front.cart-widget', \Modules\Cart\App\Http\Livewire\Front\CartWidget::class);
         \Livewire\Livewire::component('cart::front.cart-page', \Modules\Cart\App\Http\Livewire\Front\CartPage::class);
         \Livewire\Livewire::component('cart::front.checkout-page', \Modules\Cart\App\Http\Livewire\Front\CheckoutPage::class);

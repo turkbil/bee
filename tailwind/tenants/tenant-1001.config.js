@@ -39,8 +39,12 @@ module.exports = {
             ...baseConfig.theme.extend,
             colors: {
                 ...baseConfig.theme.extend.colors,
-                // muzibu ozgu renkler (sonra degistirilecek)
-                // Simdilik varsayilan
+                // Spotify-style Muzibu colors
+                'spotify-black': '#121212',
+                'spotify-dark': '#181818',
+                'spotify-green': '#1DB954',
+                'spotify-green-light': '#1ed760',
+                'spotify-gray': '#282828',
             }
         }
     },
@@ -52,5 +56,14 @@ module.exports = {
         'bg-gradient-to-b',
         'from-gray-900', 'to-black',
         'from-purple-900', 'to-gray-900',
+        // ALL Spotify colors (extracted from views)
+        'bg-spotify-black', 'bg-spotify-dark', 'bg-spotify-gray', 'bg-spotify-green',
+        'text-spotify-green', 'text-spotify-green-light',
+        'border-spotify-green',
+        'focus:ring-spotify-green',
+        'from-spotify-black', 'from-spotify-dark', 'from-spotify-green', 'from-spotify-green-light',
+        'to-spotify-black',
+        'hover:bg-spotify-gray', 'hover:bg-spotify-green-light',
+        'hover:text-spotify-green', 'hover:text-spotify-green-light',
     ],
 };

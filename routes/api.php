@@ -19,9 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // 🔐 AUTH ROUTES - Muzibu Authentication
-Route::prefix('auth')->group(function () {
+Route::prefix('auth')->middleware(['web'])->group(function () {
     Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login'])->name('api.auth.login');
     Route::post('/register', [\App\Http\Controllers\Api\Auth\AuthController::class, 'register'])->name('api.auth.register');
+    Route::post('/check-email', [\App\Http\Controllers\Api\Auth\AuthController::class, 'checkEmail'])->name('api.auth.check-email');
     Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.auth.logout');
     Route::get('/me', [\App\Http\Controllers\Api\Auth\AuthController::class, 'me'])->name('api.auth.me');
     Route::post('/forgot-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'forgotPassword'])->name('api.auth.forgot');

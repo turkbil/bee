@@ -1,31 +1,16 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" class="h-full" x-data="muzibuApp()" x-init="init()" :class="isDarkMode ? 'dark' : ''">
+<html lang="{{ app()->getLocale() }}" class="h-full" x-data="muzibuApp()" x-init="init()">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Muzibu - İşletmenize Yasal ve Telifsiz Müzik')</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tenant-Aware Tailwind CSS -->
+    <link rel="stylesheet" href="{{ asset('css/tenant-' . tenant('id') . '.css') }}?v=25112024-02">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
     <!-- Alpine.js Livewire tarafından otomatik yükleniyor, CDN'den tekrar yükleme! -->
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'spotify-black': '#121212',
-                        'spotify-dark': '#181818',
-                        'spotify-green': '#1DB954',
-                        'spotify-green-light': '#1ed760',
-                        'spotify-gray': '#282828',
-                    }
-                }
-            }
-        }
-    </script>
 
     <style>
         body { font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #121212; }
@@ -42,9 +27,10 @@
     @livewireStyles
     @yield('styles')
 </head>
-<body class="h-full bg-spotify-black text-white antialiased">
+<body class="h-full bg-spotify-black text-white antialiased" :class="isDarkMode ? 'dark' : ''">
     <!-- Top CTA Bar (Guest only) -->
-    <div x-show="!isLoggedIn" x-transition class="fixed top-0 left-0 right-0 bg-gradient-to-r from-spotify-green to-green-600 z-50 py-3 px-6 shadow-lg">
+    @guest
+    <div class="fixed top-0 left-0 right-0 bg-gradient-to-r from-spotify-green to-green-600 z-50 py-3 px-6 shadow-lg">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <i class="fas fa-gift text-white text-xl"></i>
@@ -56,20 +42,21 @@
             </div>
         </div>
     </div>
+    @endguest
 
     @include('themes.muzibu.components.sidebar')
 
-    <!-- Fixed Loading Indicator (top right) -->
+    <!-- Fixed Loading Indicator (over logo in sidebar) -->
     <div x-show="isLoading" x-transition
-         class="fixed top-4 right-4 z-50 px-4 py-2 bg-spotify-green rounded-full text-black text-sm font-semibold shadow-2xl flex items-center gap-2">
+         class="fixed top-6 left-6 z-50 px-4 py-2 bg-spotify-green/95 backdrop-blur-sm rounded-full text-black text-sm font-semibold shadow-2xl flex items-center gap-2">
         <i class="fas fa-spinner fa-spin"></i>
         <span>Yükleniyor...</span>
     </div>
 
     <!-- Main Content -->
-    <main class="ml-64 min-h-screen pb-32 bg-gradient-to-b from-spotify-dark to-spotify-black" :class="isLoggedIn ? 'pt-0' : 'pt-16'">
+    <main class="ml-64 min-h-screen pb-32 bg-gradient-to-b from-spotify-dark to-spotify-black {{ auth()->check() ? 'pt-0' : 'pt-16' }}">
         <!-- Top Bar -->
-        <div class="sticky z-30 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm" :class="isLoggedIn ? 'top-0' : 'top-14'">
+        <div class="sticky z-30 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm {{ auth()->check() ? 'top-0' : 'top-14' }}">
             <div class="flex items-center justify-between px-8 py-4">
                 <div class="relative flex-1 max-w-md" x-data="{ searchOpen: false, searchQuery: '' }">
                     <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-black"></i>
@@ -130,9 +117,10 @@
     @include('themes.muzibu.components.footer')
     @include('themes.muzibu.components.player')
 
-    <audio x-ref="audio" @timeupdate="updateProgress()" @loadedmetadata="onMetadataLoaded()" @ended="onTrackEnded()"></audio>
-
     @livewireScripts
     @yield('scripts')
+
+    <!-- instant.page for faster page transitions -->
+    <script src="//instant.page/5.2.0" type="module" data-instant-intensity="viewport-all"></script>
 </body>
 </html>

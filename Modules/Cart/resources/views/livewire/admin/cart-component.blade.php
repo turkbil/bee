@@ -316,13 +316,13 @@
                     </div>
                     <div class="modal-footer">
                         <!-- Navigation Buttons -->
-                        @if($canGoPrevious())
+                        @if($this->canGoPrevious())
                             <button type="button" class="btn btn-secondary me-auto" wire:click="previousCart">
                                 <i class="fas fa-arrow-left me-1"></i> Önceki
                             </button>
                         @endif
 
-                        @if($canGoNext())
+                        @if($this->canGoNext())
                             <button type="button" class="btn btn-secondary" wire:click="nextCart">
                                 Sonraki <i class="fas fa-arrow-right ms-1"></i>
                             </button>

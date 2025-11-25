@@ -6,7 +6,7 @@
     <div class="absolute inset-0 bg-gradient-to-b from-blue-900 via-purple-900 to-transparent"></div>
     <div class="relative z-10 container mx-auto px-8 h-full flex flex-col justify-end pb-12">
         <h1 class="text-6xl font-black mb-4 text-white drop-shadow-2xl">İşletmenize Telifsiz Müzik</h1>
-        <p class="text-xl text-white/90 mb-6 max-w-2xl">Restoranınız, kafeliz, mağazanız için yasal ve profesyonel müzik çözümü. 7 gün ücretsiz deneyin.</p>
+        <p class="text-xl text-white/90 mb-6 max-w-2xl">Restoranınız, kafeniz, mağazanız için yasal ve profesyonel müzik çözümü. 7 gün ücretsiz deneyin.</p>
         <div class="flex gap-4">
             <button @click="playPlaylist(1)" class="px-8 py-4 bg-spotify-green hover:bg-spotify-green-light rounded-full font-bold text-black transition-all hover:scale-105 shadow-2xl">
                 <i class="fas fa-play mr-2"></i>Hemen Dinle

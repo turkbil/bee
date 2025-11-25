@@ -42,14 +42,20 @@ class AdminAccessMiddleware
         
         // Admin izin kontrolü
         if ($user->isAdmin()) {
+            // Dashboard, cache, debug gibi sistem route'ları için modül kontrolü yapma
+            $systemRoutes = ['dashboard', 'cache', 'debug', 'ai', 'language', 'access-denied'];
+            if (in_array($moduleName, $systemRoutes)) {
+                return $next($request);
+            }
+
             // Central ise ve kısıtlı bir modüle erişmeye çalışıyorsa kontrol et
-            if (TenantHelpers::isCentral() && 
-                $moduleName && 
+            if (TenantHelpers::isCentral() &&
+                $moduleName &&
                 in_array($moduleName, config('module-permissions.admin_restricted_modules', []))) {
                 Log::warning("Admin kullanıcısı {$user->id} kısıtlı modüle erişmeye çalışıyor: {$moduleName}");
                 abort(403, 'Bu modüle erişim yetkiniz bulunmamaktadır.');
             }
-            
+
             // Tenant ise, tenant'a atanan modüllere erişebilir
             if (TenantHelpers::isTenant() && $moduleName) {
                 // Cache ile modül erişim kontrolü - 10 dakika
@@ -70,11 +76,20 @@ class AdminAccessMiddleware
         }
         
         // Editor rolü kontrolü - modüle özel izinleri var mı kontrol et
-        if ($user->isEditor() && $moduleName) {
-            $canAccess = $this->moduleAccessService->canAccess($moduleName, 'view');
-            if (!$canAccess) {
-                Log::warning("Editör kullanıcısı {$user->id} yetkisiz modüle erişmeye çalışıyor: {$moduleName}");
-                abort(403, 'Bu modüle erişim yetkiniz bulunmamaktadır.');
+        if ($user->isEditor()) {
+            // Dashboard, cache, debug gibi sistem route'ları için modül kontrolü yapma
+            $systemRoutes = ['dashboard', 'cache', 'debug', 'ai', 'language', 'access-denied'];
+            if (in_array($moduleName, $systemRoutes)) {
+                return $next($request);
+            }
+
+            // Modül erişim kontrolü
+            if ($moduleName) {
+                $canAccess = $this->moduleAccessService->canAccess($moduleName, 'view');
+                if (!$canAccess) {
+                    Log::warning("Editör kullanıcısı {$user->id} yetkisiz modüle erişmeye çalışıyor: {$moduleName}");
+                    abort(403, 'Bu modüle erişim yetkiniz bulunmamaktadır.');
+                }
             }
             return $next($request);
         }

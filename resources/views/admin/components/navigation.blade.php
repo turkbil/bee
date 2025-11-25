@@ -79,6 +79,14 @@ $moduleService = app(App\Services\ModuleService::class);
 // Modülleri her zaman taze şekilde al (önbellek yok)
 $modules = $moduleService->getModulesByTenant($tenantId);
 
+// Editör rolü için modül filtrelemesi - sadece yetkili modülleri göster
+if ($cachedUser && $cachedUser->hasCachedRole('editor') && !$cachedUser->hasCachedRole('admin') && !$cachedUser->hasCachedRole('root')) {
+    $moduleAccessService = app(App\Services\ModuleAccessService::class);
+    $modules = $modules->filter(function ($module) use ($moduleAccessService) {
+        return $moduleAccessService->canAccess($module->name, 'view');
+    });
+}
+
 // Modülleri tipine göre grupla
 $groupedModules = $moduleService->groupModulesByType($modules);
 

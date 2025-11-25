@@ -81,7 +81,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // 9. LIVEWIRE JSON SANITIZER - Livewire JSON responses için UTF-8 sanitization
         $middleware->appendToGroup('web', \App\Http\Middleware\LivewireJsonSanitizer::class);
 
-        // 10. UNDER CONSTRUCTION PROTECTION - Password protection for sites under construction
+        // 10. UNDER CONSTRUCTION PROTECTION - Tenant 1001 (muzibu.com.tr) için şifre koruması
         $middleware->appendToGroup('web', \App\Http\Middleware\UnderConstructionProtection::class);
 
         // Middleware alias tanımları

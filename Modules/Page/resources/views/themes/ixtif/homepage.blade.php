@@ -322,8 +322,9 @@
 
 <!-- Son Blog Yazıları Section - 5 Farklı Glass Tasarım -->
 @php
-    // Featured image media kaydı olan blogları çek
+    // Featured image media kaydı olan blogları çek (N+1 query çözümü: with('media'))
     $latestBlogs = \Modules\Blog\App\Models\Blog::published()
+        ->with('media')
         ->whereHas('media', function($query) {
             $query->where('collection_name', 'featured_image');
         })

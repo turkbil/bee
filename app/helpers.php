@@ -72,7 +72,21 @@ if (!function_exists('thumb')) {
             'c' => $options['cache'] ?? 1,
         ]);
 
-        return route('thumbmaker', $params);
+        // Tenant-aware URL oluştur
+        if (app()->runningInConsole()) {
+            // CLI'da tenant domain'ini kullan
+            $tenant = tenant();
+            if ($tenant && $tenant->domains->isNotEmpty()) {
+                $domain = $tenant->domains->first()->domain;
+                $baseUrl = 'https://' . $domain;
+            } else {
+                $baseUrl = config('app.url');
+            }
+        } else {
+            // Web request'te mevcut domain'i kullan
+            $baseUrl = request()->getSchemeAndHttpHost();
+        }
+        return $baseUrl . '/thumbmaker?' . http_build_query($params);
     }
 }
 
@@ -552,5 +566,101 @@ if (!function_exists('tenant_css_exists')) {
         }
 
         return false;
+    }
+}
+
+if (!function_exists('tenant_trans')) {
+    /**
+     * Get tenant-specific translation
+     * Falls back to default translation if tenant translation not found
+     *
+     * @param string $key Translation key (e.g., 'player.queue_title')
+     * @param array $replace Replacement parameters
+     * @param string|null $locale Locale (defaults to current app locale)
+     * @return string
+     */
+    function tenant_trans(string $key, array $replace = [], ?string $locale = null): string
+    {
+        $tenantId = tenant('id');
+        $locale = $locale ?? app()->getLocale();
+
+        // If no tenant, use default translation
+        if (!$tenantId) {
+            return __($key, $replace, $locale);
+        }
+
+        // Parse key to get file and key parts
+        $parts = explode('.', $key, 2);
+        if (count($parts) !== 2) {
+            return __($key, $replace, $locale);
+        }
+
+        [$file, $translationKey] = $parts;
+
+        // Build tenant-specific lang path
+        $tenantLangPath = base_path("lang/tenant/{$tenantId}/{$locale}/{$file}.php");
+
+        // Check if tenant translation file exists
+        if (file_exists($tenantLangPath)) {
+            $translations = include $tenantLangPath;
+
+            if (isset($translations[$translationKey])) {
+                $translation = $translations[$translationKey];
+
+                // Handle replacements
+                foreach ($replace as $search => $value) {
+                    $translation = str_replace(':' . $search, $value, $translation);
+                }
+
+                return $translation;
+            }
+        }
+
+        // Fallback to default translation
+        return __($key, $replace, $locale);
+    }
+}
+
+if (!function_exists('tenant_trans_choice')) {
+    /**
+     * Get tenant-specific pluralized translation
+     *
+     * @param string $key Translation key
+     * @param int $number Count for pluralization
+     * @param array $replace Replacement parameters
+     * @param string|null $locale Locale
+     * @return string
+     */
+    function tenant_trans_choice(string $key, int $number, array $replace = [], ?string $locale = null): string
+    {
+        $replace['count'] = $number;
+        return tenant_trans($key, $replace, $locale);
+    }
+}
+
+if (!function_exists('tenant_lang')) {
+    /**
+     * Get all translations for a tenant lang file (useful for JavaScript)
+     *
+     * @param string $file Lang file name (e.g., 'player')
+     * @param string|null $locale Locale
+     * @return array
+     */
+    function tenant_lang(string $file, ?string $locale = null): array
+    {
+        $tenantId = tenant('id');
+        $locale = $locale ?? app()->getLocale();
+
+        if (!$tenantId) {
+            return [];
+        }
+
+        $tenantLangPath = base_path("lang/tenant/{$tenantId}/{$locale}/{$file}.php");
+
+        if (file_exists($tenantLangPath)) {
+            return include $tenantLangPath;
+        }
+
+        return [];
     }
 }

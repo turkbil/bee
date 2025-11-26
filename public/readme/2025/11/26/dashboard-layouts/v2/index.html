@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Layout V2 - Modul Odakli</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #1a1d21; min-height: 100vh; }
+        .top-bar {
+            background: #242830;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+        }
+        .top-bar-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .greeting { color: #fff; font-size: 1.1rem; font-weight: 500; }
+        .greeting span { color: #6c7a89; font-weight: 400; }
+        .top-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        .top-stat {
+            text-align: center;
+        }
+        .top-stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .top-stat .label {
+            font-size: 0.7rem;
+            color: #6c7a89;
+            text-transform: uppercase;
+        }
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+        }
+        @media (max-width: 1200px) { .module-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) { .module-grid { grid-template-columns: repeat(2, 1fr); } }
+        .module-card {
+            background: #242830;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .module-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+        .module-header {
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .module-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .module-info .name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+        .module-info .count {
+            font-size: 0.8rem;
+            color: #6c7a89;
+        }
+        .module-actions {
+            display: flex;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .module-action {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            color: #6c7a89;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+        .module-action:last-child { border-right: none; }
+        .module-action:hover {
+            background: rgba(255,255,255,0.03);
+            color: #fff;
+        }
+        .module-action i { margin-right: 4px; }
+        .module-recent {
+            padding: 0.75rem 1.25rem;
+        }
+        .module-recent-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .module-recent-item:last-child { border-bottom: none; }
+        .module-recent-item .title {
+            flex: 1;
+            font-size: 0.8rem;
+            color: #9ca3af;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .module-recent-item .badge {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+        }
+        .quick-actions-bar {
+            background: #242830;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .quick-action-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .quick-action-btn i { color: #6c7a89; }
+    </style>
+</head>
+<body class="theme-dark">
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container-xl">
+            <div class="top-bar-content">
+                <div class="greeting">
+                    Hos geldin, Nurullah! <span>/ 26 aktif modul</span>
+                </div>
+                <div class="top-stats">
+                    <div class="top-stat">
+                        <div class="value" style="color: #f59e0b;">174K</div>
+                        <div class="label">AI Kredi</div>
+                    </div>
+                    <div class="top-stat">
+                        <div class="value" style="color: #3b82f6;">3</div>
+                        <div class="label">Kullanici</div>
+                    </div>
+                    <div class="top-stat">
+                        <div class="value" style="color: #22c55e;">99.9%</div>
+                        <div class="label">Uptime</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-xl">
+        <!-- Quick Actions Bar -->
+        <div class="quick-actions-bar">
+            <span style="color: #6c7a89; font-size: 0.85rem;">Hizli:</span>
+            <a href="#" class="quick-action-btn">
+                <i class="fas fa-plus"></i> Yeni Sayfa
+            </a>
+            <a href="#" class="quick-action-btn">
+                <i class="fas fa-plus"></i> Yeni Blog
+            </a>
+            <a href="#" class="quick-action-btn">
+                <i class="fas fa-sync"></i> Cache Temizle
+            </a>
+            <a href="#" class="quick-action-btn">
+                <i class="fas fa-robot"></i> AI Asistan
+            </a>
+        </div>
+
+        <!-- Module Grid -->
+        <div class="module-grid">
+            <!-- Sayfalar -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="module-icon" style="background: rgba(239, 68, 68, 0.15);">
+                            <i class="fas fa-file-alt" style="color: #ef4444;"></i>
+                        </div>
+                        <div class="module-info">
+                            <div class="name">Sayfalar</div>
+                            <div class="count">25 sayfa</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-recent">
+                    <div class="module-recent-item">
+                        <span class="title">Hakkimizda</span>
+                        <span class="badge bg-success-lt text-success">Aktif</span>
+                    </div>
+                    <div class="module-recent-item">
+                        <span class="title">Iletisim</span>
+                        <span class="badge bg-success-lt text-success">Aktif</span>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="#" class="module-action"><i class="fas fa-list"></i> Liste</a>
+                    <a href="#" class="module-action"><i class="fas fa-plus"></i> Ekle</a>
+                </div>
+            </div>
+
+            <!-- Blog -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="module-icon" style="background: rgba(34, 197, 94, 0.15);">
+                            <i class="fas fa-pen-fancy" style="color: #22c55e;"></i>
+                        </div>
+                        <div class="module-info">
+                            <div class="name">Blog</div>
+                            <div class="count">163 yazi</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-recent">
+                    <div class="module-recent-item">
+                        <span class="title">SEO Rehberi 2024</span>
+                        <span class="badge bg-success-lt text-success">Aktif</span>
+                    </div>
+                    <div class="module-recent-item">
+                        <span class="title">Laravel Tips</span>
+                        <span class="badge bg-secondary-lt">Taslak</span>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="#" class="module-action"><i class="fas fa-list"></i> Liste</a>
+                    <a href="#" class="module-action"><i class="fas fa-plus"></i> Ekle</a>
+                </div>
+            </div>
+
+            <!-- Sarkilar -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="module-icon" style="background: rgba(139, 92, 246, 0.15);">
+                            <i class="fas fa-music" style="color: #8b5cf6;"></i>
+                        </div>
+                        <div class="module-info">
+                            <div class="name">Sarkilar</div>
+                            <div class="count">61 sarki</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-recent">
+                    <div class="module-recent-item">
+                        <span class="title">Yeni Sarki 1</span>
+                        <span class="badge bg-success-lt text-success">Aktif</span>
+                    </div>
+                    <div class="module-recent-item">
+                        <span class="title">Yeni Sarki 2</span>
+                        <span class="badge bg-success-lt text-success">Aktif</span>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="#" class="module-action"><i class="fas fa-list"></i> Liste</a>
+                    <a href="#" class="module-action"><i class="fas fa-plus"></i> Ekle</a>
+                </div>
+            </div>
+
+            <!-- Albumler -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="module-icon" style="background: rgba(99, 102, 241, 0.15);">
+                            <i class="fas fa-compact-disc" style="color: #6366f1;"></i>
+                        </div>
+                        <div class="module-info">
+                            <div class="name">Albumler</div>
+                            <div class="count">3 album</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-recent">
+                    <div class="module-recent-item">
+                        <span class="title">Album 1</span>
+                        <span class="badge bg-success-lt text-success">Aktif</span>
+                    </div>
+                    <div class="module-recent-item">
+                        <span class="title">Album 2</span>
+                        <span class="badge bg-success-lt text-success">Aktif</span>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="#" class="module-action"><i class="fas fa-list"></i> Liste</a>
+                    <a href="#" class="module-action"><i class="fas fa-plus"></i> Ekle</a>
+                </div>
+            </div>
+
+            <!-- Portfolio -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="module-icon" style="background: rgba(245, 158, 11, 0.15);">
+                            <i class="fas fa-briefcase" style="color: #f59e0b;"></i>
+                        </div>
+                        <div class="module-info">
+                            <div class="name">Portfolio</div>
+                            <div class="count">0 proje</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-recent">
+                    <div class="module-recent-item">
+                        <span class="title" style="color: #6c7a89;">Henuz icerik yok</span>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="#" class="module-action"><i class="fas fa-list"></i> Liste</a>
+                    <a href="#" class="module-action"><i class="fas fa-plus"></i> Ekle</a>
+                </div>
+            </div>
+
+            <!-- Duyurular -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="module-icon" style="background: rgba(6, 182, 212, 0.15);">
+                            <i class="fas fa-bullhorn" style="color: #06b6d4;"></i>
+                        </div>
+                        <div class="module-info">
+                            <div class="name">Duyurular</div>
+                            <div class="count">0 duyuru</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-recent">
+                    <div class="module-recent-item">
+                        <span class="title" style="color: #6c7a89;">Henuz icerik yok</span>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="#" class="module-action"><i class="fas fa-list"></i> Liste</a>
+                    <a href="#" class="module-action"><i class="fas fa-plus"></i> Ekle</a>
+                </div>
+            </div>
+
+            <!-- Kullanicilar -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="module-icon" style="background: rgba(59, 130, 246, 0.15);">
+                            <i class="fas fa-users" style="color: #3b82f6;"></i>
+                        </div>
+                        <div class="module-info">
+                            <div class="name">Kullanicilar</div>
+                            <div class="count">3 kullanici</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-recent">
+                    <div class="module-recent-item">
+                        <span class="title">nurullah</span>
+                        <span class="badge bg-purple-lt text-purple">Root</span>
+                    </div>
+                    <div class="module-recent-item">
+                        <span class="title">editor</span>
+                        <span class="badge bg-blue-lt text-blue">Editor</span>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="#" class="module-action"><i class="fas fa-list"></i> Liste</a>
+                    <a href="#" class="module-action"><i class="fas fa-plus"></i> Ekle</a>
+                </div>
+            </div>
+
+            <!-- Ayarlar -->
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="module-icon" style="background: rgba(107, 114, 128, 0.15);">
+                            <i class="fas fa-cog" style="color: #6b7280;"></i>
+                        </div>
+                        <div class="module-info">
+                            <div class="name">Ayarlar</div>
+                            <div class="count">Sistem</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="module-recent">
+                    <div class="module-recent-item">
+                        <span class="title">PHP 8.3.28</span>
+                        <span class="badge bg-success-lt text-success">Aktif</span>
+                    </div>
+                    <div class="module-recent-item">
+                        <span class="title">Laravel 12.32</span>
+                        <span class="badge bg-success-lt text-success">Aktif</span>
+                    </div>
+                </div>
+                <div class="module-actions">
+                    <a href="#" class="module-action"><i class="fas fa-cog"></i> Ayarlar</a>
+                    <a href="#" class="module-action"><i class="fas fa-sync"></i> Cache</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

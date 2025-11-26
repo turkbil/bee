@@ -16,6 +16,30 @@ class Page extends BaseModel implements TranslatableEntity, HasMedia
 
     protected $primaryKey = 'page_id';
 
+    /**
+     * Boot method - Homepage uniqueness validation
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Kaydetmeden önce is_homepage kontrolü
+        static::saving(function ($page) {
+            // Eğer bu sayfa homepage olarak işaretleniyorsa
+            if ($page->is_homepage) {
+                // Başka homepage var mı kontrol et (kendi ID'si hariç)
+                $existingHomepage = static::where('is_homepage', true)
+                    ->where('page_id', '!=', $page->page_id ?? 0)
+                    ->first();
+
+                if ($existingHomepage) {
+                    // Mevcut homepage'i kaldır, yeni homepage yap
+                    $existingHomepage->update(['is_homepage' => false]);
+                }
+            }
+        });
+    }
+
     protected $fillable = [
         'title',
         'slug',

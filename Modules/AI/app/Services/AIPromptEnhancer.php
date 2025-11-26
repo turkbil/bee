@@ -8,14 +8,27 @@ use Illuminate\Support\Facades\Log;
 /**
  * AI Prompt Enhancer Service
  *
- * Basit promptları ultra detaylı, profesyonel JSON scene description'lara çevirir
- * OpenAI GPT-4 kullanarak gerçekçi fotoğraf kalitesinde promptlar üretir
+ * 11 KURAL FORMÜLÜ ile GERÇEK FOTOĞRAF GİBİ görünen promptlar üretir:
+ *
+ * 1. Photo Type → AI'ı fotoğraf moduna sokar
+ * 2. Subject + Action → Ana konu + ne yapıyor (mikro hikaye)
+ * 3. Environment → Mekan + zaman/mevsim
+ * 4. Camera Angle → Çekim açısı
+ * 5. Composition → Kompozisyon tekniği
+ * 6. Lighting → Işık kurulumu
+ * 7. Camera + Lens → Ekipman + DoF
+ * 8. Film Stock → Analog film referansı (Kodak Portra, Fuji Velvia)
+ * 9. Imperfections → Kusurlar (gerçekçilik için KRİTİK)
+ * 10. Mood + Emotion → Atmosfer + Duygu
+ * 11. Post-Processing → Renk düzenleme/color grade
+ *
+ * AMAÇ: Yapay zeka ürettiği BELLİ OLMAYAN, gerçek fotoğraf gibi görünen çıktı
  */
 class AIPromptEnhancer
 {
     protected string $apiKey;
     protected string $apiUrl = 'https://api.openai.com/v1/chat/completions';
-    protected string $model = 'gpt-4o'; // OpenAI GPT-4o (en hızlı GPT-4)
+    protected string $model = 'gpt-4o';
 
     public function __construct()
     {
@@ -23,40 +36,35 @@ class AIPromptEnhancer
     }
 
     /**
-     * Basit promptu ultra detaylı scene description'a çevir
+     * 11 KURAL FORMÜLÜ ile prompt geliştir
      *
      * @param string $simplePrompt Kullanıcının basit promptu
-     * @param string $style Fotoğraf stili (ultra_photorealistic, studio_photography, etc.)
-     * @param string $size Image size/aspect ratio (1024x1024, 1792x1024, 1024x1792)
-     * @return string Ultra detaylı, optimize edilmiş prompt
+     * @param string $style Leonardo stili
+     * @param string $size Image size (1472x832, 1024x1024, 832x1472)
+     * @param array|null $tenantContext Tenant'a özel context (site_name, sector, prompt_enhancement)
+     * @return string 11 kural formülüne göre optimize edilmiş, GERÇEK FOTOĞRAF gibi görünen prompt
      */
-    public function enhancePrompt(string $simplePrompt, string $style = 'ultra_photorealistic', string $size = '1024x1024'): string
+    public function enhancePrompt(string $simplePrompt, string $style = 'cinematic', string $size = '1472x832', ?array $tenantContext = null): string
     {
         if (empty($this->apiKey)) {
-            Log::warning('AIPromptEnhancer: OpenAI API key not configured, using basic enhancement');
-            return $this->basicEnhancement($simplePrompt, $style);
+            Log::warning('AIPromptEnhancer: OpenAI API key not configured, using 11-rule basic enhancement');
+            return $this->sevenRuleBasicEnhancement($simplePrompt, $style, $tenantContext);
         }
 
         try {
-            $systemPrompt = $this->buildSystemPrompt($style, $size);
-            $userPrompt = $this->buildUserPrompt($simplePrompt, $style, $size);
+            $systemPrompt = $this->buildSevenRuleSystemPrompt($style, $size, $tenantContext);
+            $userPrompt = $this->buildSevenRuleUserPrompt($simplePrompt, $style, $size, $tenantContext);
 
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
                 'Content-Type' => 'application/json',
             ])->timeout(30)->post($this->apiUrl, [
                 'model' => $this->model,
-                'max_tokens' => 800,
-                'temperature' => 0.9, // Yüksek creativity için - her call farklı output
+                'max_tokens' => 800,  // 11 kural için arttırıldı
+                'temperature' => 0.85,
                 'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => $systemPrompt
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $userPrompt
-                    ]
+                    ['role' => 'system', 'content' => $systemPrompt],
+                    ['role' => 'user', 'content' => $userPrompt]
                 ]
             ]);
 
@@ -65,300 +73,310 @@ class AIPromptEnhancer
                 $enhancedPrompt = $data['choices'][0]['message']['content'] ?? '';
 
                 if (!empty($enhancedPrompt)) {
-                    // DEBUG: OpenAI GPT-4'ün RAW JSON'unu logla
-                    Log::info('AIPromptEnhancer: OpenAI GPT-4 RAW output', [
-                        'raw_json' => $enhancedPrompt
+                    Log::info('AIPromptEnhancer: 11-Rule GPT-4 output', [
+                        'original' => $simplePrompt,
+                        'enhanced_length' => strlen($enhancedPrompt)
                     ]);
 
-                    // JSON parse et ve DALL-E için optimize prompt'a çevir
+                    // JSON ise parse et, değilse direkt kullan
                     if ($this->isJson($enhancedPrompt)) {
-                        $finalPrompt = $this->convertJsonToPrompt($enhancedPrompt);
-
-                        // DEBUG: Final DALL-E prompt'u logla
-                        Log::info('AIPromptEnhancer: Final DALL-E prompt', [
-                            'final_prompt' => $finalPrompt
-                        ]);
-
-                        return $finalPrompt;
+                        return $this->convertNineRuleJsonToPrompt($enhancedPrompt);
                     }
 
-                    // JSON değilse direkt kullan
-                    Log::info('AIPromptEnhancer: Using non-JSON prompt', [
-                        'prompt' => $enhancedPrompt
-                    ]);
                     return $enhancedPrompt;
                 }
             }
 
             Log::warning('AIPromptEnhancer: OpenAI API call failed', [
                 'status' => $response->status(),
-                'body' => $response->body()
+                'body' => substr($response->body(), 0, 500)
             ]);
 
         } catch (\Exception $e) {
-            Log::error('AIPromptEnhancer: Exception', [
-                'message' => $e->getMessage()
-            ]);
+            Log::error('AIPromptEnhancer: Exception', ['message' => $e->getMessage()]);
         }
 
-        // Fallback: Basic enhancement
-        return $this->basicEnhancement($simplePrompt, $style);
+        return $this->sevenRuleBasicEnhancement($simplePrompt, $style, $tenantContext);
     }
 
     /**
-     * System prompt oluştur - AI'ya photography director rolü ver
+     * 11 KURAL FORMÜLÜ System Prompt
+     * AMAÇ: Yapay zeka ürettiği BELLİ OLMAYAN, GERÇEK FOTOĞRAF gibi görünen çıktı
      */
-    protected function buildSystemPrompt(string $style, string $size): string
+    protected function buildSevenRuleSystemPrompt(string $style, string $size, ?array $tenantContext = null): string
     {
-        // Aspect ratio analizi
         [$width, $height] = explode('x', $size);
         $aspectRatio = $width / $height;
 
-        if ($aspectRatio > 1.5) {
-            $aspectGuidance = "HORIZONTAL FORMAT (1792x1024): Use WIDE-ANGLE lens (24mm or 35mm) to capture complete subject in horizontal frame. Frame composition must fit entire object width-wise without cropping top or bottom.";
-        } elseif ($aspectRatio < 0.7) {
-            $aspectGuidance = "VERTICAL FORMAT (1024x1792): Use standard to portrait lens (50mm to 85mm) for vertical composition. Ensure complete subject fits height-wise without cropping sides.";
+        if ($aspectRatio > 1.2) {
+            $aspectGuidance = "YATAY FORMAT: Geniş açı lens (24-35mm), panoramik kompozisyon";
+        } elseif ($aspectRatio < 0.8) {
+            $aspectGuidance = "DİKEY FORMAT: Portrait lens (50-85mm), dikey kompozisyon";
         } else {
-            $aspectGuidance = "SQUARE FORMAT (1024x1024): Use standard lens (35mm to 50mm) for balanced square composition. Frame subject completely within square format.";
+            $aspectGuidance = "KARE FORMAT: Standart lens (35-50mm), dengeli kompozisyon";
         }
 
-        $styleDescriptions = [
-            'ultra_photorealistic' => 'RAW photo shot on professional DSLR camera, natural unprocessed look, documentary photography style',
-            'studio_photography' => 'studio photo with professional lighting setup, controlled environment, commercial photography, studio lighting with 4K HD DSLR',
-            'natural_light' => 'outdoor photo with natural daylight, golden hour or soft morning light, environmental photography',
-            'cinematic_photography' => 'film camera aesthetic with cinematic composition, dramatic lighting, movie still quality',
-            'documentary_style' => 'documentary photo, photojournalism style, candid authentic moment captured in real-time',
-            'commercial_photography' => 'high-end commercial photo, advertising quality, professional product photography, industrial equipment catalog quality',
-            'portrait_photography' => 'portrait photo with environmental context, professional headshot or editorial portrait quality',
-            'macro_photography' => 'macro photo with extreme close-up, ultra-sharp detail, professional macro lens photography, visible material texture and finish',
-        ];
-
-        $styleDesc = $styleDescriptions[$style] ?? $styleDescriptions['ultra_photorealistic'];
+        // Tenant context'e göre sektör ayarları
+        $sectorGuidance = $this->buildSectorGuidance($tenantContext);
 
         return <<<SYSTEM
-You are a professional photography director. Transform prompts into detailed JSON scene descriptions for DALL-E 3 that produce authentic RAW photographs.
+Sen profesyonel bir fotoğraf yönetmenisin. Basit promptları 11 KURAL FORMÜLÜ ile GERÇEK FOTOĞRAF gibi görünen talimatlarına çeviriyorsun.
 
-TARGET STYLE: {$styleDesc}
+## 🎯 TEMEL AMAÇ
+YAPAY ZEKA ÜRETTİĞİ BELLİ OLMAYAN görsel üretmek. "AI gibi görünüyor" = BAŞARISIZ.
 
-🎯 ASPECT RATIO & LENS GUIDANCE: {$aspectGuidance}
+## 11 KURAL FORMÜLÜ (SIRASI KRİTİK!)
 
-Create a UNIQUE JSON for each prompt with this structure:
+1️⃣ **Photo Type** → AI'ı fotoğraf moduna sokar (ZORUNLU: "Photo of", "Editorial photograph of", "Documentary shot of")
+2️⃣ **Subject + Action** → Ana konu + MİKRO HİKAYE (ne yapıyor, nasıl etkileşim, anlık aksiyon)
+3️⃣ **Environment + Time/Season** → Mekan + ZAMAN/MEVSİM (sabah sisi, kış akşamı, yaz öğleni)
+4️⃣ **Camera Angle** → Çekim açısı (eye-level, low angle, high angle, dutch angle, POV, over-shoulder)
+5️⃣ **Composition** → Kompozisyon tekniği (rule of thirds, golden ratio, centered, leading lines, negative space)
+6️⃣ **Lighting** → Işık kurulumu (golden hour, Rembrandt, split, rim light, practical lights, mixed sources)
+7️⃣ **Camera + Lens + DoF** → Ekipman detayı (Canon R5 85mm f/1.4, bokeh karakteri, focus distance)
+8️⃣ **Film Stock** → ANALOG FİLM REFERANSI (Kodak Portra 400 warm tones, Fuji Velvia vivid, Kodak Tri-X grain)
+9️⃣ **Imperfections** → KUSURLAR - GERÇEKÇİLİK İÇİN KRİTİK (lens dust, vignetting, chromatic aberration, motion blur, camera shake, film grain, scratches)
+🔟 **Mood + Emotion** → Atmosfer + Duygu (tension, serenity, energy, melancholy, nostalgia, hope, determination)
+1️⃣1️⃣ **Post-Processing** → RENK DÜZENLEMESİ (cinematic color grading, desaturated film look, lifted blacks, crushed shadows, teal and orange)
+
+## ASPEKT: {$aspectGuidance}
+
+## OUTPUT FORMAT (JSON):
+```json
 {
-  "subject": "Main subject with specific details",
-  "view_framing": "CRITICAL: For equipment/objects: FULL complete view (entire object visible, NOT cropped). For people: full body / environmental portrait. Wide shot / medium shot",
-  "background": "Specific background description with depth and context",
-  "lighting": "Exact lighting setup with direction and quality",
-  "camera": {
-    "model": "Canon EOS R5",
-    "lens": "85mm f/1.8",
-    "settings": "f/11, 1/60th shutter, ISO 800, auto white balance"
-  },
-  "imperfections": ["natural skin texture with visible pores", "fine vellus hair", "uneven skin tone"],
-  "materials": ["visible surface details", "fabric weave texture", "subtle specular highlights"],
-  "mood": "Candid moment, authentic expression, documentary style"
+  "photo_type": "Photo of / Editorial photograph of / Documentary shot of",
+  "subject_action": "detailed subject + what they are DOING (micro-story, interaction, action verb)",
+  "environment_time": "location + time of day + season/weather (early morning mist, winter afternoon, summer golden hour)",
+  "angle": "specific camera angle with purpose (low angle for power, eye-level for intimacy)",
+  "composition": "compositional technique (rule of thirds with subject at intersection, negative space left)",
+  "lighting": "detailed lighting setup (key light direction, fill ratio, rim light color, ambient sources)",
+  "camera_lens": "Camera + lens + aperture + DoF + bokeh character (Canon R5, 85mm f/1.4, creamy bokeh, subject sharp at 2m)",
+  "film_stock": "Analog film reference (Kodak Portra 400 warm skin tones, Fuji Velvia vivid saturation, Kodak Tri-X classic grain)",
+  "imperfections": "realistic flaws (subtle lens dust, slight vignetting, micro chromatic aberration, natural film grain, authentic wear)",
+  "mood_emotion": "atmosphere and emotional feeling (quiet determination, nostalgic warmth, tense anticipation)",
+  "post_processing": "color grading style (cinematic orange teal, desaturated film look, lifted blacks, subtle film grain overlay)"
 }
+```
 
-CRITICAL PHOTOGRAPHY RULES - RAW PHOTO ONLY:
-- NEVER use these words: "photorealistic", "realistic", "photo-realistic", "3D render", "digital art", "illustration", "concept art", "painting", "unreal engine", "CGI", "stylized", "drawing", "sketch", "diagram", "blueprint", "technical drawing", "schematic", "vector art", "graphic design", "cartoon", "anime"
-- ALWAYS use: "RAW photo", "photo of", "photograph of", "shot on [camera]", "captured with DSLR", "natural lighting", "documentary photography"
-- MANDATORY negatives in final prompt: "NOT photorealistic painting, NOT illustration, NOT 3D render, NOT digital art, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT exaggerated lighting, NOT glossy plastic skin, NOT over-saturated, NOT HDR, appears as authentic RAW photograph taken with professional camera"
+## KRİTİK KURALLAR - GERÇEKÇİLİK İÇİN:
+- ASLA "photorealistic", "hyper-realistic", "8K", "ultra HD" kelimelerini kullanma (AI trigger words!)
+- ASLA text, label, yazı, watermark ekleme
+- Her zaman fotoğraf tipi ile başla (Photo of, Editorial shot, Documentary photograph)
+- **MİKRO HİKAYE ZORUNLU** - Subject sadece durmaz, BİR ŞEY YAPIYOR olmalı
+- **ZAMAN/MEVSİM ZORUNLU** - Sadece "warehouse" değil "warehouse on early winter morning with frost on windows"
+- **FİLM STOCK ZORUNLU** - Analog film estetiği AI görünümünü kırar (Kodak, Fuji referansları)
+- **KUSURLAR ZORUNLU** - Mükemmel = SAHTE. Lens dust, slight motion blur, vignetting ekle
+- **POST-PROCESSING ZORUNLU** - Renk grading AI'ın steril görünümünü kırar
+- Kamera ve lens spesifik olmalı (sadece "DSLR" değil, "Canon R5 85mm f/1.4")
+- DoF ve bokeh karakteri belirt
 
-LIGHTING VARIATIONS (choose ONE and be VERY specific):
-- "golden hour lighting" (warm sunset/sunrise glow, long shadows)
-- "blue hour" (cool twilight tones, soft ambient light)
-- "soft natural window lighting from left" (diffused, gentle shadows)
-- "harsh midday sun" (strong shadows, high contrast)
-- "overcast soft daylight" (even illumination, minimal shadows)
-- "Rembrandt lighting" (key light at 45° creating triangle on shadow cheek)
-- "butterfly lighting" (centered key above creating butterfly shadow under nose)
-- "loop lighting" (slightly to side and above, small nose shadow)
-- "dramatic backlighting" (subject backlit, rim light effect)
-- "soft diffused morning light" (gentle, warm, low-angle sun)
+## MARKA/LOGO YASAĞI (ÇOK ÖNEMLİ!):
+- Ekipman/araç üzerinde ASLA marka logosu, isim, yazı OLMASIN
+- "unbranded", "generic", "no visible branding" ifadelerini MUTLAKA ekle
+- "blank panels", "clean surfaces without logos" kullan
+- Forklift, transpalet vb. → "generic industrial equipment, no manufacturer logos"
+- Müzik aletleri → "unbranded instrument, no visible maker marks"
 
-CAMERA VARIATIONS (choose ONE and specify ALL settings):
-- Canon EOS R5 + 85mm f/1.8 lens, f/2.8, 1/125s, ISO 400
-- Sony A7 III + 50mm f/1.4 lens, f/4, 1/200s, ISO 800
-- Nikon D810 + 24mm wide-angle lens, f/11, 1/60s, ISO 400
-- Fujifilm GFX 100S + 35mm f/2 lens, f/5.6, 1/250s, ISO 640
-- Leica M10 + 35mm f/2 lens, f/2.8, 1/500s, ISO 800
+## STYLE MODIFIERS: {$style}
+- cinematic: Dramatik ışık, 2.39:1 film look, anamorphic lens flare
+- dynamic: Hareket, enerji, slight motion blur, aksiyon anı
+- moody: Low-key lighting, dramatik gölgeler, emotional depth
+- film: Strong analog film aesthetic, visible grain, color shift
+- hdr: Natural HDR look (not overdone), shadow detail, highlight retention
+- stock_photo: Clean, professional, commercial quality
+- vibrant: Saturated colors, energetic, Fuji Velvia style
+- neutral: Balanced tones, Kodak Portra style, natural rendering
 
-IMPERFECTIONS (ALWAYS include for realism):
-- For portraits: "natural skin texture with visible pores", "fine vellus hair", "uneven skin tone", "gentle specular highlights", "subtle wrinkles" (for older subjects)
-- For objects: "subtle wear patterns", "natural aging", "weathered surface", "realistic material imperfections"
-- For scenes: "natural variation", "authentic details", "lived-in space", "realistic imperfections"
+{$sectorGuidance}
 
-🌍 CONTEXT: Images will be used in Turkey (Türkiye)
-- Industrial/business equipment context
-- Focus on EQUIPMENT, MACHINERY, and WORKPLACE ENVIRONMENT
-
-MAXIMUM CREATIVITY RULES:
-- Every JSON must be COMPLETELY DIFFERENT from previous ones
-- NEVER repeat same camera + lens + lighting combination
-- VARY focal length: wide (24mm), normal (35mm, 50mm), portrait (85mm, 100mm)
-- VARY aperture: shallow DOF (f/1.8, f/2.8) vs deep focus (f/8, f/11)
-- VARY lighting time and direction for each generation
-- Adapt to subject AND add unexpected authentic details
-
-🚨🚨🚨 ULTRA CRITICAL: ABSOLUTELY NO TEXT/WORDS/LABELS 🚨🚨🚨
-THIS IS THE #1 PRIORITY RULE - VIOLATION = FAILED IMAGE
-
-❌ FORBIDDEN - NEVER INCLUDE:
-- NO text of any kind (English, Turkish, Asian, ANY language)
-- NO labels, NO captions, NO annotations, NO subtitles
-- NO infographics, NO diagrams, NO charts, NO data visualization
-- NO UI elements, NO blue boxes, NO overlays, NO frames with text
-- NO brands, NO trademarks, NO logos, NO company names
-- NO camera settings overlay, NO EXIF data display
-- NO numbered labels, NO arrows with text, NO explanatory text
-- NO ethnic/racial descriptors as text (e.g., "Asian", "Black", "White")
-- NO demographic labels, NO job titles, NO name tags
-- NO instructional text, NO how-to steps, NO descriptions
-
-✅ ONLY ALLOWED:
-- PURE CLEAN PHOTOGRAPH
-- Visual elements only
-- No written language whatsoever
-- Let the IMAGE speak, not words
-
-⚠️ REMEMBER: This is PHOTOGRAPHY, not graphic design/infographic/presentation
-If you add ANY text/words/labels → IMAGE REJECTED → TRY AGAIN
-
-OUTPUT: Valid JSON only
+Sadece geçerli JSON döndür. Her 11 kural için değer olmalı.
 SYSTEM;
     }
 
     /**
-     * User prompt oluştur
+     * 11 KURAL User Prompt
+     * AMAÇ: Gerçek fotoğraf gibi görünen, AI belli olmayan prompt
      */
-    protected function buildUserPrompt(string $simplePrompt, string $style, string $size): string
+    protected function buildSevenRuleUserPrompt(string $simplePrompt, string $style, string $size, ?array $tenantContext = null): string
     {
-        // Aspect ratio analizi
-        [$width, $height] = explode('x', $size);
-        $aspectRatio = $width / $height;
-
-        if ($aspectRatio > 1.5) {
-            $lensGuidance = "CRITICAL FOR HORIZONTAL FORMAT: Use 24mm or 35mm WIDE-ANGLE lens to fit complete subject in wide horizontal frame. Do NOT crop top or bottom of subject.";
-        } elseif ($aspectRatio < 0.7) {
-            $lensGuidance = "CRITICAL FOR VERTICAL FORMAT: Use 50mm to 85mm lens for vertical composition. Fit complete subject in tall frame without cropping sides.";
-        } else {
-            $lensGuidance = "For square format: Use 35mm to 50mm standard lens for balanced composition.";
-        }
+        // Tenant context'ten sektör bilgisi al
+        $contextLine = $this->buildContextLine($tenantContext);
 
         return <<<USER
-Create a COMPLETELY UNIQUE detailed JSON scene description for an authentic RAW photograph of:
+11 KURAL FORMÜLÜ ile bu promptu GERÇEK FOTOĞRAF gibi görünen talimata çevir:
 
 "{$simplePrompt}"
 
 Style: {$style}
-Target Size: {$size}
-{$lensGuidance}
+Size: {$size}
 
-CRITICAL REQUIREMENTS - RAW PHOTO ONLY:
-1. This must be a RAW PHOTO, NOT photorealistic painting/illustration/drawing/3D render/blueprint/diagram
-2. Photo of [subject], shot on professional DSLR camera
-3. Actual physical scene captured with camera, not digital art or CGI
-4. 🚨 SUBJECT MUST BE COMPLETE AND FULLY VISIBLE - For equipment/objects/vehicles: ENTIRE object in frame, NOT cropped, NOT cut off at edges. Show COMPLETE subject from all sides
-5. Natural imperfections (visible pores, fine vellus hair, uneven skin tone, weathered surfaces)
-6. Real-world lighting with specific direction and quality
-7. Documentary photography style - authentic candid moment
+## 🎯 AMAÇ: YAPAY ZEKA ÜRETTİĞİ BELLİ OLMAYAN GÖRSEL
 
-STRUCTURED PROMPT FORMULA:
-Subject + View/Framing + Background + Lighting + Camera Brand + Lens Setup
+## 11 ZORUNLU ELEMENT:
 
-Example structure:
-"RAW photo of [subject], [FULL EQUIPMENT VIEW showing complete object / full body / wide shot], [specific background], [golden hour lighting/Rembrandt lighting/etc], shot on [Canon EOS R5], [85mm f/1.8 lens], [f/2.8, 1/125s, ISO 400]"
+1. **Photo Type** → Fotoğraf tipi ile başla:
+   - "Photo of" (genel)
+   - "Editorial photograph of" (dergi kalitesi)
+   - "Documentary shot of" (gerçekçi, ham)
+   - "Candid moment of" (anlık, doğal)
 
-MAXIMUM VARIATION - This must be DIFFERENT from any previous generation:
-- Camera model: Canon EOS R5, Sony A7 III, Nikon D810, Fujifilm GFX 100S, or Leica M10
-- Lens focal length: 24mm (wide), 35mm (normal), 50mm (normal), 85mm (portrait), or 100mm (telephoto)
-- Aperture: f/1.8 (shallow DOF) to f/11 (deep focus)
-- Lighting: golden hour, blue hour, window light from left, harsh midday sun, Rembrandt, butterfly, loop, or dramatic backlighting
-- Perspective: eye-level, slight high angle, low angle, 3/4 view, side view (BUT ALWAYS keep complete subject in frame, NOT cropped)
-- Framing: FULL view for equipment/objects (entire subject visible), wide shot, medium shot (NEVER tight crop that cuts off parts)
-- Specific imperfections: visible pores, fine vellus hair, weathered surface, natural aging, wear patterns
+2. **Subject + Action** → MİKRO HİKAYE (sadece durmaz, BİR ŞEY YAPAR):
+   ❌ "forklift"
+   ✅ "forklift operator carefully maneuvering loaded pallets through narrow aisle"
+   ❌ "guitarist"
+   ✅ "guitarist mid-strum, eyes closed, feeling the chord progression"
 
-Output valid JSON with: subject, view_framing, background, lighting, camera (model, lens, settings), imperfections, materials, mood.
+3. **Environment + Time/Season** → Mekan + ZAMAN:
+   ❌ "warehouse"
+   ✅ "industrial warehouse on foggy winter morning, condensation on windows, early shift"
+   ❌ "studio"
+   ✅ "dimly lit recording studio at 2am, coffee cups scattered, late night session"
 
-Make it authentic RAW PHOTOGRAPH but CREATIVELY DIFFERENT each time.
+4. **Camera Angle** → Çekim açısı + AMAÇ:
+   - "low angle emphasizing power and scale"
+   - "eye-level for intimate connection"
+   - "over-shoulder POV for immersion"
+   - "high angle showing context and environment"
 
-🚨 CRITICAL: ABSOLUTELY NO TEXT/LABELS IN THE PHOTOGRAPH:
-- This is a PURE PHOTOGRAPH, NOT an infographic/diagram/presentation
-- NO text overlays, NO blue boxes with labels, NO captions, NO UI elements
-- NO numbered labels, NO explanatory text, NO annotations
-- Pure visual photograph only - like a professional would shoot for a catalog
+5. **Composition** → Kompozisyon tekniği:
+   - "rule of thirds with subject at right intersection"
+   - "leading lines drawing eye to focal point"
+   - "negative space on left creating tension"
+   - "symmetrical framing for stability"
+
+6. **Lighting** → Detaylı ışık kurulumu:
+   - "golden hour side light with long shadows"
+   - "Rembrandt lighting with 3:1 ratio"
+   - "practical lights only (overhead fluorescent)"
+   - "mixed color temperature (warm tungsten + cool daylight)"
+
+7. **Camera + Lens + DoF** → Spesifik ekipman:
+   - "Canon EOS R5, 85mm f/1.4L, creamy bokeh, subject sharp at 2m"
+   - "Sony A7IV, 35mm f/1.8, environmental context, moderate DoF"
+   - "Fuji X-T5, 56mm f/1.2, classic Fuji colors, subject isolation"
+
+8. **Film Stock** → ANALOG FİLM REFERANSI (AI görünümünü KIRAR):
+   - "Kodak Portra 400 - warm skin tones, soft contrast"
+   - "Fuji Velvia 50 - vivid saturation, punchy colors"
+   - "Kodak Tri-X 400 - classic B&W grain, high contrast"
+   - "Kodak Ektar 100 - fine grain, saturated, high detail"
+   - "Ilford HP5 - gritty, documentary feel"
+
+9. **Imperfections** → KUSURLAR (GERÇEKÇİLİK İÇİN KRİTİK):
+   - Lens kusurları: subtle lens dust, slight vignetting, micro chromatic aberration
+   - Hareket: slight motion blur on hands, micro camera shake
+   - Film: natural film grain, slight color shift in shadows
+   - Fiziksel: dust particles in air, scratches on surfaces, wear marks
+
+10. **Mood + Emotion** → Atmosfer + Duygu:
+    - "quiet determination and focused concentration"
+    - "nostalgic warmth of familiar routine"
+    - "tense anticipation before the moment"
+    - "peaceful exhaustion of completed work"
+
+11. **Post-Processing** → RENK GRADE (AI steril görünümünü KIRAR):
+    - "cinematic teal and orange color grading"
+    - "desaturated film look with lifted blacks"
+    - "warm vintage tones with crushed shadows"
+    - "natural editing, minimal processing, true-to-life colors"
+
+## CONTEXT:
+{$contextLine}
+
+## KRİTİK KURALLAR:
+- ❌ ASLA: "photorealistic", "hyper-realistic", "8K", "ultra HD" (AI trigger words!)
+- ❌ ASLA: text, labels, watermarks, logos, brand names
+- ✅ Her element için SPESİFİK değer (genel terimler YASAK)
+- ✅ Kusurlar ZORUNLU - mükemmel = SAHTE
+- ✅ Film stock ZORUNLU - AI görünümünü kırar
+- ✅ Post-processing ZORUNLU - steril AI tonunu kırar
+- ✅ Maximum creativity - her seferinde FARKLI kombinasyon
+
+JSON formatında döndür. HER 11 ALAN DOLU OLMALI.
 USER;
     }
 
     /**
-     * JSON string'i prompt'a çevir
+     * 11 Kural JSON'ı prompt'a çevir
+     * Her kural sırayla eklenir - sıra önemli!
      */
-    protected function convertJsonToPrompt(string $jsonString): string
+    protected function convertNineRuleJsonToPrompt(string $jsonString): string
     {
         try {
             $data = json_decode($jsonString, true);
+            if (!$data) return $jsonString;
 
-            if (!$data) {
-                return $jsonString;
+            $parts = [];
+
+            // 1. Photo Type + Subject/Action (MİKRO HİKAYE)
+            $photoType = $data['photo_type'] ?? 'Photo of';
+            $subjectAction = $data['subject_action'] ?? $data['subject'] ?? 'subject';
+            $parts[] = $photoType . ' ' . $subjectAction;
+
+            // 2. Environment + Time/Season
+            if (!empty($data['environment_time'])) {
+                $parts[] = $data['environment_time'];
+            } elseif (!empty($data['environment'])) {
+                $parts[] = $data['environment'];
+            } elseif (!empty($data['background'])) {
+                $parts[] = $data['background'];
             }
 
-            $prompt = '';
-
-            // Start with "RAW photo of" structure
-            if (isset($data['subject'])) {
-                $prompt .= "RAW photo of {$data['subject']}";
+            // 3. Camera Angle
+            if (!empty($data['angle'])) {
+                $parts[] = $data['angle'];
             }
 
-            // View/Framing
-            if (isset($data['view_framing'])) {
-                $prompt .= ", {$data['view_framing']}";
+            // 4. Composition
+            if (!empty($data['composition'])) {
+                $parts[] = $data['composition'];
             }
 
-            // Background
-            if (isset($data['background'])) {
-                $prompt .= ", {$data['background']}";
+            // 5. Lighting
+            if (!empty($data['lighting'])) {
+                $parts[] = $data['lighting'];
             }
 
-            // Lighting (very specific)
-            if (isset($data['lighting'])) {
-                $prompt .= ", {$data['lighting']}";
+            // 6. Camera + Lens + DoF
+            if (!empty($data['camera_lens'])) {
+                $parts[] = "shot on " . $data['camera_lens'];
+            } elseif (!empty($data['camera'])) {
+                $parts[] = "shot on " . $data['camera'];
             }
 
-            // Camera details (full specifications)
-            if (isset($data['camera'])) {
-                $cam = $data['camera'];
-                $prompt .= ", shot on";
-                if (isset($cam['model'])) $prompt .= " {$cam['model']}";
-                if (isset($cam['lens'])) $prompt .= " with {$cam['lens']} lens";
-                if (isset($cam['settings'])) $prompt .= ", {$cam['settings']}";
+            // 7. Film Stock (YENİ - AI görünümünü kırar)
+            if (!empty($data['film_stock'])) {
+                $parts[] = $data['film_stock'];
             }
 
-            $prompt .= ". ";
-
-            // Imperfections (critical for realism)
-            if (isset($data['imperfections']) && is_array($data['imperfections'])) {
-                $prompt .= implode(', ', $data['imperfections']) . ". ";
+            // 8. Imperfections (KUSURLAR - GERÇEKÇİLİK İÇİN KRİTİK!)
+            if (!empty($data['imperfections'])) {
+                $parts[] = $data['imperfections'];
             }
 
-            // Materials
-            if (isset($data['materials']) && is_array($data['materials'])) {
-                $prompt .= implode(', ', $data['materials']) . ". ";
+            // 9. Mood + Emotion
+            if (!empty($data['mood_emotion'])) {
+                $parts[] = $data['mood_emotion'];
+            } elseif (!empty($data['mood'])) {
+                $parts[] = $data['mood'];
+            } elseif (!empty($data['emotion'])) {
+                $parts[] = $data['emotion'];
             }
 
-            // Mood
-            if (isset($data['mood'])) {
-                $prompt .= $data['mood'] . ". ";
+            // 10. Post-Processing (YENİ - AI steril görünümünü kırar)
+            if (!empty($data['post_processing'])) {
+                $parts[] = $data['post_processing'];
             }
 
-            // CRITICAL: Comprehensive negatives - NO "photorealistic" word!
-            $prompt .= "NOT photorealistic painting, NOT illustration, NOT 3D render, NOT digital art, NOT drawing, NOT sketch, NOT blueprint, NOT diagram, NOT technical drawing, NOT infographic, NOT labeled diagram, NOT presentation slide, NOT cropped, NOT cut off, NOT partial view, NOT tight crop, NOT exaggerated lighting, NOT glossy plastic skin, NOT over-saturated, NOT HDR, NOT filters, NOT cinematic color grading. ";
-            $prompt .= "Appears as authentic RAW photograph taken with professional DSLR camera, actual physical scene, documentary photography, natural appearance, real-world photography, no artificial elements. ";
-            $prompt .= "Complete subject visible in frame, entire object shown from edge to edge, FULL view of equipment/vehicle/object. ";
-            $prompt .= "ABSOLUTELY NO text, NO labels, NO captions, NO annotations, NO blue boxes, NO text overlays, NO UI elements, NO numbered labels, NO arrows with text, pure photograph only like professional catalog photography";
+            $prompt = implode(', ', $parts);
+
+            // Final negatives - MARKA YASAĞI GÜÇLENDİRİLDİ
+            $prompt .= ". Unbranded generic equipment, no manufacturer logos, no visible brand names, blank clean surfaces. NO text, NO labels, NO watermarks, authentic photograph only";
 
             return trim($prompt);
 
         } catch (\Exception $e) {
-            Log::warning('JSON to prompt conversion failed', ['error' => $e->getMessage()]);
+            Log::warning('11-Rule JSON conversion failed', ['error' => $e->getMessage()]);
             return $jsonString;
         }
     }
@@ -373,30 +391,315 @@ USER;
     }
 
     /**
-     * Fallback: API başarısız olursa basic enhancement
+     * 11 Kural Basic Enhancement (API başarısız olursa)
+     * AMAÇ: Gerçek fotoğraf gibi görünen, AI belli olmayan prompt
      */
-    protected function basicEnhancement(string $prompt, string $style): string
+    protected function sevenRuleBasicEnhancement(string $prompt, string $style, ?array $tenantContext = null): string
     {
-        $enhancements = [
-            'ultra_photorealistic' => 'RAW photo shot on Canon EOS R5, 85mm f/1.8 lens, f/2.8, 1/125s, ISO 400, natural daylight, natural skin texture with visible pores, fine vellus hair, uneven skin tone, subtle imperfections, authentic scene, documentary photography style. NOT photorealistic painting, NOT 3D render, NOT digital art, NOT illustration, NOT drawing, NOT blueprint, NOT glossy plastic skin, appears as authentic RAW photograph taken with DSLR camera',
+        // Sektöre göre config al
+        $sector = $tenantContext['sector'] ?? 'general_business';
+        $sectorConfig = $this->getSectorConfig($sector);
 
-            'studio_photography' => 'Studio photo shot on Phase One IQ4, 85mm macro lens, f/4, professional softbox lighting, clean white background, realistic commercial photography, visible material textures, subtle specular highlights, authentic product appearance. NOT 3D render, NOT digital art, NOT illustration, NOT over-saturated',
-
-            'natural_light' => 'RAW photo shot on Fujifilm GFX 100S, 35mm f/2 lens, f/5.6, 1/250s, ISO 640, golden hour natural light, shallow depth of field, authentic atmosphere, visible environmental details, natural variation, unposed candid moment, documentary photography. NOT illustration, NOT drawing, NOT digital art, NOT filters',
-
-            'cinematic_photography' => 'Film photo shot on 35mm film camera, natural lighting, cinematic composition, film grain aesthetic, authentic moment, documentary style, real location photography, natural imperfections. NOT 3D render, NOT illustration, NOT digital art, NOT over-processed',
-
-            'documentary_style' => 'RAW photo shot on Leica M10, 35mm f/2 lens, f/2.8, 1/500s, ISO 800, natural lighting, photojournalism style, candid authentic moment, documentary photography, visible imperfections, real-world scene. NOT staged, NOT illustration, NOT 3D render',
-
-            'commercial_photography' => 'Commercial photo shot on Sony A7 III, 50mm f/1.4 lens, f/4, professional lighting, high-end advertising quality, realistic material textures, visible details, authentic product photography. NOT 3D render, NOT over-processed, NOT glossy plastic',
-
-            'portrait_photography' => 'Portrait photo shot on Canon EOS R5, 85mm f/1.8 lens, f/2.8, Rembrandt lighting, natural skin texture with visible pores, uneven skin tone, gentle specular highlights, authentic expression, professional portrait quality. NOT illustration, NOT 3D render, NOT over-smoothed',
-
-            'macro_photography' => 'Macro photo shot on Nikon D810, 100mm macro lens, f/8, ultra-sharp detail, extreme close-up, visible surface textures, realistic material imperfections, professional macro photography. NOT 3D render, NOT illustration, NOT digital art',
+        // 1. Photo Type (AI'ı fotoğraf moduna sokar)
+        $photoTypes = [
+            'Photo of',
+            'Editorial photograph of',
+            'Documentary shot of',
+            'Candid moment of'
         ];
+        $photoType = $photoTypes[array_rand($photoTypes)];
 
-        $enhancement = $enhancements[$style] ?? $enhancements['ultra_photorealistic'];
+        // 2. Subject + Action = MİKRO HİKAYE (prompt içinde gelir, action ekliyoruz)
+        $actions = [
+            'in motion',
+            'mid-action',
+            'focused on task',
+            'during work',
+            'in active use'
+        ];
+        $action = $actions[array_rand($actions)];
 
-        return "RAW photo of {$prompt}. {$enhancement}. ABSOLUTELY NO text, NO labels, NO captions, NO blue boxes, NO UI elements, pure photograph only";
+        // 3. Environment + Time/Season (sektöre göre)
+        $environment = $sectorConfig['backgrounds'][array_rand($sectorConfig['backgrounds'])];
+        $timeSeason = $sectorConfig['time_season'][array_rand($sectorConfig['time_season'])];
+
+        // 4. Camera Angle
+        $angles = [
+            'eye-level shot for intimate connection',
+            'low angle emphasizing power and scale',
+            'high angle showing context',
+            '3/4 angle with depth',
+            'over-shoulder POV for immersion',
+            'slight dutch angle adding dynamism'
+        ];
+        $angle = $angles[array_rand($angles)];
+
+        // 5. Composition
+        $compositions = [
+            'rule of thirds with subject at intersection',
+            'centered symmetrical composition',
+            'golden ratio framing',
+            'leading lines drawing eye to subject',
+            'negative space on left creating tension',
+            'frame within frame composition'
+        ];
+        $composition = $compositions[array_rand($compositions)];
+
+        // 6. Lighting (sektöre göre, daha detaylı)
+        $lighting = $sectorConfig['lightings'][array_rand($sectorConfig['lightings'])];
+
+        // 7. Camera + Lens + DoF (daha spesifik)
+        $cameras = [
+            'Canon EOS R5, 85mm f/1.4L, creamy bokeh, subject sharp at 2m',
+            'Sony A7IV, 35mm f/1.8, environmental context, moderate DoF',
+            'Nikon Z8, 50mm f/1.2, subject isolation, smooth bokeh',
+            'Fuji X-T5, 56mm f/1.2, classic Fuji colors, shallow focus',
+            'Leica M11, 35mm f/2 Summicron, natural rendering, zone focus',
+            'Canon EOS R3, 24-70mm f/2.8 at 50mm, versatile, sharp'
+        ];
+        $camera = $cameras[array_rand($cameras)];
+
+        // 8. Film Stock (YENİ - AI görünümünü kırar)
+        $filmStock = $sectorConfig['film_stocks'][array_rand($sectorConfig['film_stocks'])];
+
+        // 9. Imperfections (KRİTİK - gerçekçilik için genişletildi)
+        $imperfection = $sectorConfig['imperfections'][array_rand($sectorConfig['imperfections'])];
+
+        // 10. Mood + Emotion (KRİTİK - atmosfer için)
+        $emotion = $sectorConfig['emotions'][array_rand($sectorConfig['emotions'])];
+
+        // 11. Post-Processing (YENİ - AI steril görünümünü kırar)
+        $postProcessing = $sectorConfig['post_processing'][array_rand($sectorConfig['post_processing'])];
+
+        // Tenant'a özel enhancement varsa ekle
+        $enhancement = '';
+        if (!empty($tenantContext['prompt_enhancement'])) {
+            $enhancement = ', ' . $tenantContext['prompt_enhancement'];
+        }
+
+        // 11 KURAL FORMÜLÜ + MARKA YASAĞI
+        return "{$photoType} {$prompt} {$action}, {$environment}, {$timeSeason}, {$angle}, {$composition}, {$lighting}, shot on {$camera}, {$filmStock}, {$imperfection}, {$emotion}, {$postProcessing}{$enhancement}. Unbranded generic equipment, no manufacturer logos, no visible brand names, blank clean surfaces. NO text, NO labels, NO watermarks, authentic photograph only";
+    }
+
+    /**
+     * Tenant context'e göre sektör guidance oluştur
+     */
+    protected function buildSectorGuidance(?array $tenantContext): string
+    {
+        if (empty($tenantContext)) {
+            return '';
+        }
+
+        $guidance = "## TENANT CONTEXT (ZORUNLU):\n";
+
+        $sector = $tenantContext['sector'] ?? null;
+        if ($sector) {
+            $sectorDescriptions = [
+                'industrial_equipment' => 'Endüstriyel ekipman sektörü - depo, fabrika, lojistik ortamları. Türkiye iş ortamı context\'i.',
+                'music_platform' => 'Müzik platformu - profesyonel kayıt stüdyosu, konser sahnesi, müzik aletleri, sanatçı performansı. Türkiye müzik kültürü.',
+                'ecommerce' => 'E-ticaret - ürün fotoğrafçılığı, temiz arka plan, ticari kalite.',
+                'general_business' => 'Genel iş ortamı - profesyonel, kurumsal atmosfer.',
+            ];
+
+            $guidance .= "- SEKTÖR: " . ($sectorDescriptions[$sector] ?? $sector) . "\n";
+        }
+
+        if (!empty($tenantContext['site_name'])) {
+            $guidance .= "- MARKA: {$tenantContext['site_name']} için içerik üretiliyor\n";
+        }
+
+        if (!empty($tenantContext['prompt_enhancement'])) {
+            $guidance .= "- ÖZEL CONTEXT: {$tenantContext['prompt_enhancement']}\n";
+        }
+
+        $guidance .= "- ÜLKE: Türkiye\n";
+
+        return $guidance;
+    }
+
+    /**
+     * User prompt için context satırı oluştur
+     */
+    protected function buildContextLine(?array $tenantContext): string
+    {
+        if (empty($tenantContext)) {
+            return "- Türkiye iş ortamı context'i";
+        }
+
+        $sector = $tenantContext['sector'] ?? 'general_business';
+
+        $contextLines = match ($sector) {
+            'industrial_equipment' => "- Türkiye endüstriyel/iş ortamı context'i\n- Depo, fabrika, lojistik mekanları",
+            'music_platform' => "- Türkiye müzik endüstrisi context'i\n- Stüdyo, sahne, konser, müzik aletleri, sanatçı performansı\n- Dramatik sahne ışıkları, artistik atmosfer",
+            'ecommerce' => "- E-ticaret profesyonel fotoğrafçılık\n- Temiz, minimal arka plan",
+            default => "- Türkiye profesyonel iş ortamı context'i",
+        };
+
+        // Özel enhancement varsa ekle
+        if (!empty($tenantContext['prompt_enhancement'])) {
+            $contextLines .= "\n- {$tenantContext['prompt_enhancement']}";
+        }
+
+        return $contextLines;
+    }
+
+    /**
+     * Sektöre göre konfigürasyon al
+     * 11 KURAL FORMÜLÜ için genişletilmiş config
+     */
+    protected function getSectorConfig(string $sector): array
+    {
+        return match ($sector) {
+            'music_platform' => [
+                'lightings' => [
+                    'dramatic stage lighting with colored gels, blue and magenta',
+                    'soft studio lighting with professional diffusion, warm 3200K',
+                    'concert atmosphere with spotlights cutting through haze',
+                    'moody blue and purple stage ambiance, practical lights only',
+                    'warm golden acoustic session lighting, intimate',
+                    'dramatic backlight with lens flare, silhouette edge'
+                ],
+                'backgrounds' => [
+                    'professional recording studio with acoustic panels on late night session',
+                    'concert stage with dramatic lighting, crowd silhouettes in background',
+                    'intimate acoustic performance space at golden hour',
+                    'modern music production room at 2am, coffee cups scattered',
+                    'live performance venue atmosphere, mid-show energy',
+                    'backstage area with equipment, pre-show tension'
+                ],
+                'time_season' => [
+                    'late night recording session at 2am',
+                    'golden hour outdoor concert, summer evening',
+                    'rainy autumn afternoon in studio',
+                    'winter morning rehearsal, frost on windows',
+                    'spring festival atmosphere, cherry blossoms visible',
+                    'sunset soundcheck, orange light flooding stage'
+                ],
+                'emotions' => [
+                    'conveying musical passion and creative flow',
+                    'atmosphere of artistic expression and vulnerability',
+                    'sense of performance energy and adrenaline',
+                    'feeling of musical intimacy and connection',
+                    'mood of creative inspiration and discovery'
+                ],
+                'imperfections' => [
+                    'subtle wear on guitar frets, fingerprints on neck, authentic unbranded instrument patina',
+                    'microphone mesh with slight discoloration from use, breath condensation, no brand markings',
+                    'keyboard keys showing gentle wear patterns, dust between keys, blank instrument surfaces',
+                    'cable management showing real studio environment, slight lens dust, generic equipment',
+                    'natural film grain, slight vignetting at corners, micro chromatic aberration'
+                ],
+                'film_stocks' => [
+                    'Kodak Portra 800 pushed, warm skin tones, visible grain',
+                    'Fuji Pro 400H discontinued film look, soft greens',
+                    'Kodak Tri-X 400 B&W, high contrast, gritty grain',
+                    'Cinestill 800T tungsten balanced, halation on highlights',
+                    'Ilford HP5 pushed to 1600, documentary feel'
+                ],
+                'post_processing' => [
+                    'cinematic teal and orange color grading, lifted blacks',
+                    'desaturated film look with crushed shadows',
+                    'warm vintage tones, slight color shift in shadows',
+                    'high contrast B&W conversion with rich blacks',
+                    'natural minimal editing, true-to-life colors'
+                ]
+            ],
+            'industrial_equipment' => [
+                'lightings' => [
+                    'golden hour side lighting with warm tones, long shadows',
+                    'soft diffused window light from left, 5600K daylight',
+                    'dramatic Rembrandt lighting with 3:1 ratio',
+                    'natural overcast daylight, soft and even',
+                    'industrial fluorescent ambient mixed with window light',
+                    'harsh midday sun with strong shadows, high contrast'
+                ],
+                'backgrounds' => [
+                    'industrial warehouse with metal shelving, early morning shift',
+                    'modern factory floor with equipment, active work environment',
+                    'professional workspace with organized tools',
+                    'logistics facility with stacked pallets, forklift activity',
+                    'clean workshop setting with natural light from skylights'
+                ],
+                'time_season' => [
+                    'early winter morning, frost on warehouse windows, breath visible',
+                    'summer afternoon, hot warehouse, workers in short sleeves',
+                    'autumn overcast day, soft even light through skylights',
+                    'spring morning, fresh air, warehouse doors open',
+                    'late evening shift, artificial lights on, dusk through windows',
+                    'rainy day, wet loading dock, reflections on concrete'
+                ],
+                'emotions' => [
+                    'conveying industrial efficiency and precision',
+                    'atmosphere of focused concentration and expertise',
+                    'sense of professional competence and reliability',
+                    'feeling of quiet productivity and routine',
+                    'mood of authentic workplace energy and teamwork'
+                ],
+                'imperfections' => [
+                    'subtle scratches on metal surfaces, dust particles in air, unbranded generic equipment',
+                    'weathered texture, signs of daily use, oil stains on floor, no manufacturer logos',
+                    'natural wear patterns, authentic aging, scuff marks, blank equipment panels',
+                    'minor dents, realistic surface imperfections, safety tape wear, no brand markings',
+                    'lens dust visible in light beams, slight vignetting, micro camera shake'
+                ],
+                'film_stocks' => [
+                    'Kodak Portra 400, warm neutral tones, fine grain',
+                    'Kodak Ektar 100, saturated colors, high detail, punchy',
+                    'Fuji Pro 400H, soft contrast, natural greens',
+                    'Kodak Gold 200, consumer film look, nostalgic',
+                    'Ilford FP4 B&W, fine grain, classic documentary'
+                ],
+                'post_processing' => [
+                    'industrial documentary grade, slightly desaturated',
+                    'warm vintage tones, lifted shadows, reduced highlights',
+                    'natural processing, minimal intervention, true colors',
+                    'cinematic orange teal subtle, professional commercial look',
+                    'high contrast with crushed blacks, dramatic industrial'
+                ]
+            ],
+            default => [
+                'lightings' => [
+                    'golden hour lighting with warm tones, soft shadows',
+                    'soft diffused natural light from large window',
+                    'professional studio lighting with softbox key',
+                    'natural overcast daylight, even and flattering',
+                    'soft morning light, gentle and warm'
+                ],
+                'backgrounds' => [
+                    'modern office environment during business hours',
+                    'professional workspace with natural elements',
+                    'clean minimal setting with negative space',
+                    'contemporary business space with large windows'
+                ],
+                'time_season' => [
+                    'weekday morning, fresh start energy',
+                    'afternoon light, productive atmosphere',
+                    'spring day, natural light flooding in',
+                    'autumn afternoon, warm golden tones'
+                ],
+                'emotions' => [
+                    'conveying professionalism and competence',
+                    'atmosphere of trust and reliability',
+                    'sense of quality and attention to detail',
+                    'feeling of confidence and expertise'
+                ],
+                'imperfections' => [
+                    'subtle natural textures, slight dust in air',
+                    'authentic surface details, minor wear',
+                    'realistic material properties, not perfect',
+                    'slight lens imperfections, natural vignetting'
+                ],
+                'film_stocks' => [
+                    'Kodak Portra 400, warm and natural',
+                    'Fuji Pro 400H, soft and balanced',
+                    'Kodak Ektar 100, vivid but natural'
+                ],
+                'post_processing' => [
+                    'clean professional grade, balanced colors',
+                    'subtle warm tones, commercial quality',
+                    'natural editing, minimal processing'
+                ]
+            ]
+        };
     }
 }

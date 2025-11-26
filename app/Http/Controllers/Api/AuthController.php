@@ -129,10 +129,30 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        try {
+            // Session-based auth için (web) - session varsa temizle
+            if ($request->hasSession()) {
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
 
-        return response()->json([
-            'message' => 'Logged out successfully',
-        ]);
+            // Token-based auth için (API/mobile)
+            $user = $request->user('sanctum');
+            if ($user && method_exists($user, 'currentAccessToken') && $user->currentAccessToken()) {
+                $user->currentAccessToken()->delete();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logged out successfully',
+            ]);
+        } catch (\Exception $e) {
+            // Hata olsa bile logout başarılı say
+            return response()->json([
+                'success' => true,
+                'message' => 'Logged out',
+            ]);
+        }
     }
 }

@@ -20,6 +20,35 @@ class SongStreamController extends Controller
     {
         try {
             $song = Song::findOrFail($songId);
+            $user = auth()->user();
+
+            // Guest kullanıcı → 30 saniye preview
+            if (!$user) {
+                return response()->json([
+                    'status' => 'preview',
+                    'message' => 'Kayıt olun, tam dinleyin',
+                    'stream_url' => $song->needsHlsConversion() ? $song->getAudioUrl() : $song->getHlsUrl(),
+                    'stream_type' => $song->needsHlsConversion() ? 'mp3' : 'hls',
+                    'preview_duration' => 30,
+                    'song' => [
+                        'id' => $song->song_id,
+                        'title' => $song->getTranslated('title', app()->getLocale()),
+                        'duration' => $song->getFormattedDuration(),
+                        'cover_url' => $song->getCoverUrl(600, 600),
+                    ]
+                ]);
+            }
+
+            // Premium/Trial limit kontrolü
+            if (!$user->canPlaySong()) {
+                return response()->json([
+                    'status' => 'limit_exceeded',
+                    'message' => 'Günlük 5 şarkı limitiniz doldu',
+                    'played_today' => $user->getTodayPlayedCount(),
+                    'limit' => 5,
+                    'remaining' => 0
+                ], 403);
+            }
 
             // Check if song needs HLS conversion
             if ($song->needsHlsConversion()) {
@@ -55,6 +84,7 @@ class SongStreamController extends Controller
                 'stream_url' => $song->getHlsUrl(),
                 'stream_type' => 'hls',
                 'hls_converting' => false,
+                'remaining' => $user->getRemainingPlays(),
                 'song' => [
                     'id' => $song->song_id,
                     'title' => $song->getTranslated('title', app()->getLocale()),
@@ -131,5 +161,80 @@ class SongStreamController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Track listening progress (Premium system)
+     * Her 5 saniyede frontend tarafından çağrılır
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $songId
+     * @return JsonResponse
+     */
+    public function trackProgress(\Illuminate\Http\Request $request, int $songId): JsonResponse
+    {
+        try {
+            if (!auth()->check()) {
+                return response()->json(['error' => 'unauthorized'], 401);
+            }
+
+            $song = Song::findOrFail($songId);
+            $duration = (int) $request->input('duration', 0);
+
+            // Güvenlik: Max süre kontrolü (şarkı süresi + 10 saniye tolerance)
+            if ($duration > ($song->duration_seconds + 10)) {
+                return response()->json(['error' => 'invalid_duration'], 400);
+            }
+
+            // Insert or Update
+            \DB::table('muzibu_song_plays')->updateOrInsert(
+                [
+                    'user_id' => auth()->id(),
+                    'song_id' => $songId,
+                    'created_at' => now()->format('Y-m-d H:i:s')
+                ],
+                [
+                    'duration_listened' => $duration,
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                    'device_type' => $this->detectDevice($request),
+                    'updated_at' => now()
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'remaining' => auth()->user()->getRemainingPlays()
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Muzibu: Failed to track progress', [
+                'song_id' => $songId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'error' => 'tracking_failed',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Detect device type from user agent
+     */
+    private function detectDevice(\Illuminate\Http\Request $request): string
+    {
+        $userAgent = strtolower($request->userAgent());
+
+        if (preg_match('/mobile|android|iphone|ipod/', $userAgent)) {
+            return 'mobile';
+        }
+
+        if (preg_match('/ipad|tablet/', $userAgent)) {
+            return 'tablet';
+        }
+
+        return 'desktop';
     }
 }

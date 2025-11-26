@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Premium Sistem - Tasarım v2 (Düzeltilmiş)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            color: #60a5fa;
+            padding: 12px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .mockup-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .mockup-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mockup-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .mockup-title {
+            font-size: 2rem;
+            color: #60a5fa;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mockup-description {
+            color: #cbd5e1;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* MODAL DESIGNS */
+        .modal-demo {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .modal-content h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .modal-content p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #e0e7ff;
+        }
+
+        .modal-features {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .modal-features li {
+            list-style: none;
+            padding: 10px 0;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        .modal-features li:before {
+            content: "✅";
+            margin-right: 10px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1e293b;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* SIDEBAR DESIGN */
+        .sidebar-demo {
+            background: rgba(15, 23, 42, 0.8);
+            width: 350px;
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .user-details h3 {
+            font-size: 1.2rem;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .membership-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .membership-card.premium {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+            border: 2px solid rgba(251, 191, 36, 0.5);
+        }
+
+        .membership-card.trial {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.2));
+            border: 2px solid rgba(139, 92, 246, 0.5);
+        }
+
+        .membership-badge {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .membership-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .membership-subtitle {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .progress-bar-container {
+            margin: 20px 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(100, 116, 139, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .countdown-timer {
+            text-align: center;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(239, 68, 68, 0.2));
+            border-radius: 16px;
+            border: 2px solid rgba(220, 38, 38, 0.5);
+            margin-top: 20px;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            color: #fca5a5;
+            margin-bottom: 10px;
+        }
+
+        .countdown-value {
+            font-size: 2.5rem;
+            color: #ef4444;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .countdown-unit {
+            font-size: 1rem;
+            color: #f87171;
+            font-weight: 600;
+        }
+
+        /* ADMIN PANEL */
+        .admin-table {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .admin-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 20px;
+            text-align: left;
+            color: #60a5fa;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .admin-table td {
+            padding: 20px;
+            border-bottom: 1px solid rgba(100, 116, 139, 0.2);
+            color: #cbd5e1;
+        }
+
+        .admin-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge.normal {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .badge.premium {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .badge.trial {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+
+        .admin-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #3b82f6;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .admin-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .note-box {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid #fbbf24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .note-box h3 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .note-box p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .warning-box h3 {
+            color: #ef4444;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .warning-box p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .success-box h3 {
+            color: #10b981;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .success-box p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .tenant-badge {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .tabs { flex-direction: column; }
+            .demo-grid { grid-template-columns: 1fr; }
+            .sidebar-demo { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Muzibu Premium Üyelik Sistemi</h1>
+            <div class="version-badge">v2 - Düzeltilmiş Versiyon</div>
+            <h2 style="color: #60a5fa; font-size: 1.5rem; margin-top: 15px;">Tenant-Aware & Performans Optimized</h2>
+            <div class="meta">
+                📅 26 Kasım 2025 | 🎯 Tenant 1001 (muzibu.com) | 🚀 Production-Ready Design
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('overview')">📋 Genel Bakış</button>
+            <button class="tab-btn" onclick="showTab('modal-guest')">🚫 Guest Modal</button>
+            <button class="tab-btn" onclick="showTab('modal-limit')">⏱️ Limit Doldu Modal</button>
+            <button class="tab-btn" onclick="showTab('sidebar')">📱 Sidebar Tasarımı</button>
+            <button class="tab-btn" onclick="showTab('admin')">⚙️ Admin Panel</button>
+            <button class="tab-btn" onclick="showTab('performance')">⚡ Performans</button>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div id="overview" class="mockup-section active">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    📋 Sistem Genel Bakış
+                </div>
+
+                <div class="mockup-description">
+                    <h3 style="color: #60a5fa; font-size: 1.5rem; margin-bottom: 20px;">🎯 3 Seviyeli Üyelik Sistemi</h3>
+
+                    <table style="width: 100%; background: rgba(30, 41, 59, 0.3); border-radius: 12px; overflow: hidden; margin: 30px 0;">
+                        <thead>
+                            <tr style="background: rgba(59, 130, 246, 0.2);">
+                                <th style="padding: 20px; text-align: left; color: #60a5fa;">Seviye</th>
+                                <th style="padding: 20px; text-align: left; color: #60a5fa;">Durum</th>
+                                <th style="padding: 20px; text-align: left; color: #60a5fa;">Dinleme Limiti</th>
+                                <th style="padding: 20px; text-align: left; color: #60a5fa;">Özellikler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 20px;">🚫 <strong>ÜYE DEĞİL</strong></td>
+                                <td style="padding: 20px; color: #94a3b8;">Kayıtsız ziyaretçi</td>
+                                <td style="padding: 20px; color: #f97316;"><strong>30 saniye</strong> önizleme</td>
+                                <td style="padding: 20px; color: #cbd5e1;">Her şarkının ilk 30 saniyesi</td>
+                            </tr>
+                            <tr style="background: rgba(59, 130, 246, 0.05);">
+                                <td style="padding: 20px;">👤 <strong>NORMAL ÜYE</strong></td>
+                                <td style="padding: 20px; color: #94a3b8;">Kayıtlı hesap</td>
+                                <td style="padding: 20px; color: #3b82f6;"><strong>1 saat/gün</strong> toplam</td>
+                                <td style="padding: 20px; color: #cbd5e1;">Tam şarkı dinleme, günlük reset</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 20px;">⭐ <strong>PREMIUM/DENEME</strong></td>
+                                <td style="padding: 20px; color: #94a3b8;">Ödeme veya trial</td>
+                                <td style="padding: 20px; color: #10b981;"><strong>Sınırsız</strong></td>
+                                <td style="padding: 20px; color: #cbd5e1;">Tüm yetkiler</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Tenant-Aware Sistem</h3>
+                    <p>
+                        <strong>SADECE Tenant 1001 (muzibu.com) için aktif!</strong><br>
+                        - Users tablosu universal (tüm tenant'lar paylaşır)<br>
+                        - Premium alanlar sadece ilişki: is_premium, trial_ends_at, daily_listening_seconds<br>
+                        - Diğer tenant'lar bu sistem etkilenmez
+                    </p>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ v2 Düzeltmeleri</h3>
+                    <p>
+                        ✓ Guest kullanıcılar her şarkının ilk 30 saniyesini dinleyebilir<br>
+                        ✓ "Reklamsız" ve "Offline indirme" özellikler kaldırıldı<br>
+                        ✓ Deneme süresi geri sayım olarak gösteriliyor<br>
+                        ✓ Admin panel tenant 1001'e özel kolonlarla gösteriliyor<br>
+                        ✓ Performans optimizasyonları eklendi (Redis, Cache, Lazy Reset)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUEST MODAL -->
+        <div id="modal-guest" class="mockup-section">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    🚫 Guest Kullanıcı - 30 Saniye Önizleme Modal
+                </div>
+                <div class="mockup-description">
+                    Kayıtsız kullanıcılar <strong>her şarkının ilk 30 saniyesini</strong> dinleyebilir.
+                    25. saniyede fade-out başlar, 30. saniyede şarkı durur ve modal belirir.
+                </div>
+
+                <div class="modal-demo">
+                    <div class="modal-content">
+                        <div class="modal-icon">🎵</div>
+                        <h2>Önizleme Süresi Doldu</h2>
+                        <p>Tüm şarkıları tam dinlemek için ücretsiz kayıt olun!</p>
+
+                        <ul class="modal-features">
+                            <li>Her şarkının tam halini dinleyin</li>
+                            <li>Günde 1 saat dinleme hakkı</li>
+                            <li>Playlist oluşturma</li>
+                            <li>Favorilere ekleme</li>
+                        </ul>
+
+                        <div class="modal-buttons">
+                            <button class="btn-primary">KAYIT OL</button>
+                            <button class="btn-secondary">Daha Sonra</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="note-box">
+                    <h3>💡 Teknik Detaylar</h3>
+                    <p>
+                        <strong>Fade-out:</strong> 25. saniyede volume 1.0'dan 0.0'a 5 saniyede linear geçiş<br>
+                        <strong>Modal tetik:</strong> 30. saniyede Howler onEnd event<br>
+                        <strong>Kontrol:</strong> !auth()->check() ? preview mode : full mode<br>
+                        <strong>Component:</strong> Mevcut auth modal sistemi kullanılacak
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIMIT EXCEEDED MODAL -->
+        <div id="modal-limit" class="mockup-section">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    ⏱️ Normal Üye - Günlük Limit Doldu Modal
+                </div>
+                <div class="mockup-description">
+                    Kayıtlı kullanıcılar günlük 1 saatlik limitlerini doldurduğunda bu modal gösterilir.
+                    Şarkı çalma engellenir, yarın tekrar dinleme hakkı kazanır.
+                </div>
+
+                <div class="modal-demo">
+                    <div class="modal-content" style="background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);">
+                        <div class="modal-icon">⏱️</div>
+                        <h2>Günlük Dinleme Limitiniz Doldu</h2>
+                        <p>Bugün toplam <strong>1 saat</strong> müzik dinlediniz.</p>
+                        <p style="font-size: 1rem; margin-top: 10px;">Yarın saat <strong>00:00</strong>'da limitiniz yenilenecek.</p>
+
+                        <div style="margin: 30px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 15px;">🌟 Premium'a Geçin, Sınırsız Dinleyin!</h3>
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button class="btn-primary">PREMİUM OL - 49₺/ay</button>
+                            <button class="btn-secondary">Kapat</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="note-box">
+                    <h3>💡 Teknik Detaylar</h3>
+                    <p>
+                        <strong>Kontrol:</strong> Her şarkı başlamadan önce API'den user.daily_listening_seconds kontrol<br>
+                        <strong>Limit:</strong> 3600 saniye (1 saat)<br>
+                        <strong>Reset:</strong> Lazy reset (kullanıcı çalarken last_listen_reset < today() kontrolü)<br>
+                        <strong>Modal tetik:</strong> Player play() fonksiyonu içinde kontrolle engelleme
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR DESIGN -->
+        <div id="sidebar" class="mockup-section">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    📱 Sidebar - Kullanıcı Durumu & Limit Göstergesi
+                    <span class="tenant-badge">Tenant 1001</span>
+                </div>
+                <div class="mockup-description">
+                    Sidebar'da kullanıcı tipine göre farklı görünümler. Player'ın yanında/altında değil,
+                    sidebar kullanıcı bilgilerinin hemen altında gösterilir.
+                </div>
+
+                <div class="demo-grid">
+                    <!-- NORMAL ÜYE -->
+                    <div class="sidebar-demo">
+                        <div class="user-info">
+                            <div class="user-avatar">👤</div>
+                            <div class="user-details">
+                                <h3>Ahmet Yılmaz</h3>
+                                <p>ahmet@example.com</p>
+                            </div>
+                        </div>
+
+                        <div class="membership-card">
+                            <div class="membership-badge">👤</div>
+                            <div class="membership-text">Normal Üye</div>
+                            <div class="membership-subtitle">Günlük 1 saat dinleme hakkı</div>
+                        </div>
+
+                        <div class="progress-bar-container">
+                            <div class="progress-label">
+                                <span>⏱️ BUGÜNKÜ DİNLEME</span>
+                                <span>42 dk / 60 dk</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%;"></div>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" style="width: 100%; margin-top: 20px;">
+                            ⭐ Premium Ol
+                        </button>
+                    </div>
+
+                    <!-- PREMIUM ÜYE -->
+                    <div class="sidebar-demo">
+                        <div class="user-info">
+                            <div class="user-avatar" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">💎</div>
+                            <div class="user-details">
+                                <h3>Mehmet Demir</h3>
+                                <p>mehmet@example.com</p>
+                            </div>
+                        </div>
+
+                        <div class="membership-card premium">
+                            <div class="membership-badge">💎</div>
+                            <div class="membership-text">PREMİUM ÜYE</div>
+                            <div class="membership-subtitle">Sınırsız Dinleme Aktif</div>
+                        </div>
+
+                        <div style="padding: 20px; background: rgba(251, 191, 36, 0.1); border-radius: 12px; text-align: center;">
+                            <div style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 5px;">Üyelik Süresi</div>
+                            <div style="font-size: 1.2rem; color: #fbbf24; font-weight: 600;">15 Ocak 2026'ya kadar</div>
+                        </div>
+                    </div>
+
+                    <!-- DENEME ÜYESİ (GERİ SAYIM) -->
+                    <div class="sidebar-demo">
+                        <div class="user-info">
+                            <div class="user-avatar" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">🎁</div>
+                            <div class="user-details">
+                                <h3>Ayşe Kaya</h3>
+                                <p>ayse@example.com</p>
+                            </div>
+                        </div>
+
+                        <div class="membership-card trial">
+                            <div class="membership-badge">🎁</div>
+                            <div class="membership-text">DENEME AKTİF</div>
+                            <div class="membership-subtitle">Sınırsız dinleme deneyimi</div>
+                        </div>
+
+                        <!-- GERİ SAYIM -->
+                        <div class="countdown-timer">
+                            <div class="countdown-label">⏰ Deneme Süresi Bitiş</div>
+                            <div class="countdown-value" id="countdown-days">5</div>
+                            <div class="countdown-unit">GÜN KALDI</div>
+                            <div style="margin-top: 15px; font-size: 0.85rem; color: #fca5a5;">
+                                1 Aralık 2025 23:59'da sona erecek
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                            Premium'a Geç - %20 İndirim!
+                        </button>
+                    </div>
+                </div>
+
+                <div class="note-box">
+                    <h3>💡 Teknik Detaylar</h3>
+                    <p>
+                        <strong>Konum:</strong> resources/views/themes/muzibu/components/sidebar.blade.php<br>
+                        <strong>Progress bar:</strong> (daily_listening_seconds / 3600) * 100<br>
+                        <strong>Premium check:</strong> user.is_premium == true || user.trial_ends_at > now()<br>
+                        <strong>Countdown:</strong> JavaScript setInterval ile gerçek zamanlı geri sayım<br>
+                        <strong>Cache:</strong> 5 dakika cache ile performans koruması
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN PANEL -->
+        <div id="admin" class="mockup-section">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    ⚙️ Admin Panel - Tenant 1001 Özel Görünüm
+                    <span class="tenant-badge">Sadece Tenant 1001</span>
+                </div>
+                <div class="mockup-description">
+                    UserManagement modülünde tenant kontrolü ile Muzibu'ya özel kolonlar eklenir.
+                    Diğer tenant'lar bu kolonları görmez.
+                </div>
+
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 2px solid rgba(139, 92, 246, 0.3);">
+                    <h3 style="color: #a78bfa; margin-bottom: 15px;">📝 Kod Yapısı</h3>
+                    <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto; color: #cbd5e1; font-size: 0.9rem;">
+// UserManageComponent.php
+
+if (tenant()->id == 1001) {
+    $this->columns[] = 'membership_type';
+    $this->columns[] = 'daily_listening';
+    $this->bulkActions[] = 'make_premium';
+    $this->bulkActions[] = 'give_trial_7';
+}</pre>
+                </div>
+
+                <div class="admin-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>Kullanıcı</th>
+                                <th>E-posta</th>
+                                <th style="background: rgba(139, 92, 246, 0.2);">🎵 Üyelik Tipi</th>
+                                <th style="background: rgba(139, 92, 246, 0.2);">⏱️ Bugün Dinleme</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Ahmet Yılmaz</strong></td>
+                                <td>ahmet@example.com</td>
+                                <td><span class="badge normal">👤 Normal Üye</span></td>
+                                <td>42 dk / 60 dk</td>
+                                <td><button class="admin-btn">Premium Yap</button></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Mehmet Demir</strong></td>
+                                <td>mehmet@example.com</td>
+                                <td><span class="badge premium">💎 Premium</span></td>
+                                <td>Sınırsız</td>
+                                <td><button class="admin-btn">Premium Kaldır</button></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Ayşe Kaya</strong></td>
+                                <td>ayse@example.com</td>
+                                <td><span class="badge trial">🎁 Deneme (5 gün)</span></td>
+                                <td>Sınırsız</td>
+                                <td><button class="admin-btn">Deneme Uzat</button></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><strong>Zeynep Şahin</strong></td>
+                                <td>zeynep@example.com</td>
+                                <td><span class="badge normal">👤 Normal Üye</span></td>
+                                <td style="color: #ef4444; font-weight: 600;">60 dk / 60 dk (DOLDU)</td>
+                                <td><button class="admin-btn">7 Gün Deneme Ver</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 30px; padding: 25px; background: rgba(59, 130, 246, 0.1); border-radius: 12px;">
+                    <h3 style="color: #60a5fa; margin-bottom: 20px;">Toplu İşlemler (Bulk Actions)</h3>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button class="admin-btn">Seçilileri Premium Yap</button>
+                        <button class="admin-btn">7 Gün Deneme Ver</button>
+                        <button class="admin-btn">14 Gün Deneme Ver</button>
+                        <button class="admin-btn">Premium'u Kaldır</button>
+                        <button class="admin-btn">Günlük Limiti Sıfırla</button>
+                    </div>
+                </div>
+
+                <div class="success-box" style="margin-top: 30px;">
+                    <h3>✅ Tenant-Aware Yapı</h3>
+                    <p>
+                        <strong>Universal Users Tablosu:</strong><br>
+                        - is_premium (boolean)<br>
+                        - trial_ends_at (timestamp)<br>
+                        - daily_listening_seconds (integer)<br>
+                        - last_listen_reset (date)<br><br>
+
+                        <strong>Diğer Tenant'lar:</strong> Bu kolonları görmez, etkilenmez
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PERFORMANCE -->
+        <div id="performance" class="mockup-section">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    ⚡ Performans Optimizasyonları
+                </div>
+
+                <div class="mockup-description">
+                    Premium sistem performans sorunlarına karşı optimize edilmiştir.
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Potansiyel Performans Sorunları</h3>
+                    <table style="width: 100%; margin-top: 20px;">
+                        <tr style="background: rgba(239, 68, 68, 0.1);">
+                            <td style="padding: 15px; font-weight: 600; color: #ef4444;">İşlem</td>
+                            <td style="padding: 15px; font-weight: 600; color: #ef4444;">Sorun</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 15px; color: #fca5a5;">Her şarkı başlamadan API call</td>
+                            <td style="padding: 15px; color: #cbd5e1;">N+1 problem, DB yükü</td>
+                        </tr>
+                        <tr style="background: rgba(239, 68, 68, 0.05);">
+                            <td style="padding: 15px; color: #fca5a5;">Her saniye dinleme artırma</td>
+                            <td style="padding: 15px; color: #cbd5e1;">DB'ye sürekli write</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 15px; color: #fca5a5;">Günlük reset (tüm kullanıcılar)</td>
+                            <td style="padding: 15px; color: #cbd5e1;">00:00'da DB lock</td>
+                        </tr>
+                        <tr style="background: rgba(239, 68, 68, 0.05);">
+                            <td style="padding: 15px; color: #fca5a5;">user_listening_logs tablosu</td>
+                            <td style="padding: 15px; color: #cbd5e1;">Hızlı şişme (milyon satır)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Çözümler</h3>
+
+                    <h4 style="color: #10b981; margin: 30px 0 15px 0;">1️⃣ Cache Strategy (5 dk)</h4>
+                    <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto; color: #cbd5e1; font-size: 0.9rem;">
+// Her API call'da user bilgisi cache'den
+$userAccess = Cache::remember("user_access_{$userId}", 300, function() {
+    return [
+        'is_premium' => $user->isPremium(),
+        'daily_listening_seconds' => $user->daily_listening_seconds,
+        'limit' => 3600
+    ];
+});</pre>
+
+                    <h4 style="color: #10b981; margin: 30px 0 15px 0;">2️⃣ Redis Counter (Her 10 saniyede DB flush)</h4>
+                    <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto; color: #cbd5e1; font-size: 0.9rem;">
+// Frontend: Her timeupdate'de Redis'e yaz
+Redis::hincrby("listening:{$userId}", date('Y-m-d'), $seconds);
+
+// Background job: Her 10 saniyede DB'ye flush
+$dailySeconds = Redis::hget("listening:{$userId}", date('Y-m-d'));
+User::where('id', $userId)->update(['daily_listening_seconds' => $dailySeconds]);</pre>
+
+                    <h4 style="color: #10b981; margin: 30px 0 15px 0;">3️⃣ Lazy Daily Reset (Cron job YOK!)</h4>
+                    <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto; color: #cbd5e1; font-size: 0.9rem;">
+// Kullanıcı şarkı çalarken kontrol:
+if ($user->last_listen_reset < today()) {
+    $user->update([
+        'daily_listening_seconds' => 0,
+        'last_listen_reset' => today()
+    ]);
+    Cache::forget("user_access_{$userId}");
+}</pre>
+
+                    <h4 style="color: #10b981; margin: 30px 0 15px 0;">4️⃣ Listening Logs - Partitioning & Auto-Delete</h4>
+                    <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto; color: #cbd5e1; font-size: 0.9rem;">
+// Migration: Aylık partitioning
+CREATE TABLE user_listening_logs (
+    id BIGINT AUTO_INCREMENT,
+    user_id BIGINT,
+    song_id BIGINT,
+    listened_seconds INT,
+    listened_at TIMESTAMP,
+    PRIMARY KEY (id, listened_at)
+) PARTITION BY RANGE (YEAR(listened_at) * 100 + MONTH(listened_at)) (
+    PARTITION p202511 VALUES LESS THAN (202512),
+    PARTITION p202512 VALUES LESS THAN (202601)
+);
+
+// Cron: 90 günden eski logları sil
+DB::table('user_listening_logs')
+    ->where('listened_at', '<', now()->subDays(90))
+    ->delete();</pre>
+                </div>
+
+                <div class="note-box">
+                    <h3>📊 Performans Metrikleri</h3>
+                    <table style="width: 100%; margin-top: 20px;">
+                        <tr style="background: rgba(251, 191, 36, 0.1);">
+                            <td style="padding: 15px; font-weight: 600; color: #fbbf24;">Metrik</td>
+                            <td style="padding: 15px; font-weight: 600; color: #fbbf24;">Hedef</td>
+                            <td style="padding: 15px; font-weight: 600; color: #fbbf24;">Optimizasyon</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 15px; color: #cbd5e1;">API Response Time</td>
+                            <td style="padding: 15px; color: #cbd5e1;">&lt; 50ms</td>
+                            <td style="padding: 15px; color: #10b981;">Cache (5 dk)</td>
+                        </tr>
+                        <tr style="background: rgba(251, 191, 36, 0.05);">
+                            <td style="padding: 15px; color: #cbd5e1;">DB Write Operations</td>
+                            <td style="padding: 15px; color: #cbd5e1;">&lt; 6 per minute</td>
+                            <td style="padding: 15px; color: #10b981;">Redis + 10s flush</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 15px; color: #cbd5e1;">Daily Reset Time</td>
+                            <td style="padding: 15px; color: #cbd5e1;">0ms (no cron)</td>
+                            <td style="padding: 15px; color: #10b981;">Lazy reset</td>
+                        </tr>
+                        <tr style="background: rgba(251, 191, 36, 0.05);">
+                            <td style="padding: 15px; color: #cbd5e1;">Logs Table Size</td>
+                            <td style="padding: 15px; color: #cbd5e1;">&lt; 10M rows</td>
+                            <td style="padding: 15px; color: #10b981;">Partitioning + 90d delete</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🤖 Muzibu Premium Üyelik Sistemi - v2 Düzeltilmiş Tasarım</p>
+            <p style="margin-top: 10px;">✅ Tenant-Aware | ⚡ Performance Optimized | 🎵 Production-Ready</p>
+            <p style="margin-top: 10px; color: #64748b;">Claude AI - 26 Kasım 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.mockup-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Countdown animation
+        let countdownValue = 5;
+        setInterval(() => {
+            const element = document.getElementById('countdown-days');
+            if (element) {
+                countdownValue = countdownValue > 0 ? countdownValue - 1 : 5;
+                element.textContent = countdownValue;
+
+                // Color change effect
+                if (countdownValue <= 2) {
+                    element.style.color = '#dc2626';
+                    element.style.animation = 'pulse 1s infinite';
+                } else {
+                    element.style.color = '#ef4444';
+                    element.style.animation = 'none';
+                }
+            }
+        }, 2000);
+
+        // Progress bar animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressFills = document.querySelectorAll('.progress-fill');
+            progressFills.forEach(fill => {
+                const targetWidth = fill.style.width;
+                fill.style.width = '0%';
+                setTimeout(() => {
+                    fill.style.width = targetWidth;
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>

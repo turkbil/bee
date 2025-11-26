@@ -607,12 +607,19 @@ Her adıma farklı ve konuya uygun icon seç.";
                     }
                 }
 
-                // ❌ All methods failed
+                // ❌ All methods failed - Generate fallback HowTo
                 if (empty($howtoData)) {
-                    Log::warning('❌ HowTo generation failed - All extraction methods failed', [
+                    Log::warning('❌ HowTo generation failed - Generating fallback', [
                         'draft_id' => $draft->id,
                         'response_preview' => substr($howtoResponse, 0, 500),
                         'response_length' => strlen($howtoResponse),
+                    ]);
+
+                    // 🔧 FALLBACK: Dinamik HowTo oluştur
+                    $howtoData = $this->generateFallbackHowTo($draftContext['topic_keyword']);
+                    Log::info('✅ Fallback HowTo created', [
+                        'draft_id' => $draft->id,
+                        'steps_count' => count($howtoData['steps'] ?? []),
                     ]);
                 }
 
@@ -1658,5 +1665,77 @@ PROMPT;
             ]);
             return $default;
         }
+    }
+
+    /**
+     * 🔧 Generate fallback HowTo when AI extraction fails
+     *
+     * Dinamik olarak topic'e uygun HowTo adımları oluşturur.
+     * AI extraction başarısız olduğunda kullanılır.
+     *
+     * @param string $topic Blog topic/keyword
+     * @return array HowTo data structure with name, description, steps
+     */
+    protected function generateFallbackHowTo(string $topic): array
+    {
+        // Topic'i temizle ve kısalt
+        $cleanTopic = trim($topic);
+        $shortTopic = mb_strlen($cleanTopic) > 50 ? mb_substr($cleanTopic, 0, 47) . '...' : $cleanTopic;
+
+        // Genel adım ikonları
+        $icons = [
+            'fas fa-search',
+            'fas fa-clipboard-check',
+            'fas fa-tools',
+            'fas fa-cogs',
+            'fas fa-chart-line',
+            'fas fa-shield-alt',
+            'fas fa-check-circle',
+        ];
+
+        // Dinamik fallback adımları
+        $steps = [
+            [
+                'name' => ['tr' => 'Araştırma ve Planlama'],
+                'text' => ['tr' => "{$shortTopic} konusunda kapsamlı bir araştırma yaparak ihtiyaçlarınızı belirleyin. Piyasadaki seçenekleri karşılaştırın ve bütçenize uygun alternatifleri listeleyin."],
+                'icon' => $icons[0],
+            ],
+            [
+                'name' => ['tr' => 'Gereksinimleri Belirleme'],
+                'text' => ['tr' => "İşletmenizin veya projenizin {$shortTopic} ile ilgili spesifik gereksinimlerini detaylı olarak listeleyin. Bu adım doğru karar vermeniz için kritik öneme sahiptir."],
+                'icon' => $icons[1],
+            ],
+            [
+                'name' => ['tr' => 'Hazırlık ve Kurulum'],
+                'text' => ['tr' => "{$shortTopic} için gerekli hazırlıkları tamamlayın. Tüm araç ve ekipmanların hazır olduğundan emin olun. Güvenlik önlemlerini gözden geçirin."],
+                'icon' => $icons[2],
+            ],
+            [
+                'name' => ['tr' => 'Uygulama Süreci'],
+                'text' => ['tr' => "Belirlediğiniz plan doğrultusunda {$shortTopic} uygulamasını başlatın. Her adımı dikkatle takip edin ve gerekli kontrolleri yapın."],
+                'icon' => $icons[3],
+            ],
+            [
+                'name' => ['tr' => 'Performans Değerlendirmesi'],
+                'text' => ['tr' => "Uygulama sonrası {$shortTopic} performansını değerlendirin. Beklenen sonuçlara ulaşılıp ulaşılmadığını kontrol edin ve iyileştirme alanlarını belirleyin."],
+                'icon' => $icons[4],
+            ],
+            [
+                'name' => ['tr' => 'Güvenlik ve Bakım'],
+                'text' => ['tr' => "{$shortTopic} ile ilgili güvenlik protokollerini uygulayın. Düzenli bakım planı oluşturun ve periyodik kontrolleri aksatmadan gerçekleştirin."],
+                'icon' => $icons[5],
+            ],
+            [
+                'name' => ['tr' => 'Sürekli İyileştirme'],
+                'text' => ['tr' => "{$shortTopic} süreçlerinizi sürekli olarak izleyin ve optimize edin. Yeni teknolojileri ve en iyi uygulamaları takip ederek sisteminizi güncel tutun."],
+                'icon' => $icons[6],
+            ],
+        ];
+
+        return [
+            'name' => ['tr' => "{$shortTopic}: Adım Adım Rehber"],
+            'description' => ['tr' => "{$cleanTopic} konusunda başarılı olmak için takip etmeniz gereken temel adımları içeren kapsamlı rehber."],
+            'steps' => $steps,
+        ];
     }
 }

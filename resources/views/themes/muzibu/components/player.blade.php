@@ -1,274 +1,384 @@
-<!-- Hidden Audio Element -->
-<audio x-ref="audio"
-       @timeupdate="updateProgress()"
-       @loadedmetadata="onMetadataLoaded()"
-       @ended="onTrackEnded()"
-       preload="metadata"></audio>
+@php
+    // Tenant-specific translations for JavaScript
+    $playerLang = tenant_lang('player');
+    $frontLang = tenant_lang('front');
+@endphp
+
+<!-- Hidden Audio Element for HLS streams -->
+<audio x-ref="hlsAudio" style="display: none;"></audio>
 
 <!-- Auth Modal -->
-<div x-show="showAuthModal !== null"
-     x-transition
-     @click.self="showAuthModal = null"
-     style="position: fixed; top: 0; left: 0; right: 0; bottom: 120px; z-index: 50; display: none; align-items: center; justify-content: center; padding: 0 16px; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);">
+<template x-teleport="body">
+    <div x-show="showAuthModal !== null"
+         x-cloak
+         class="auth-modal-overlay">
 
-    <!-- Modal Content -->
-    <div style="position: relative; background: #181818; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); width: 100%; border: 1px solid rgba(255,255,255,0.1); max-height: 90vh; display: flex; flex-direction: column;"
-         :style="showAuthModal === 'register' ? 'max-width: 42rem' : 'max-width: 28rem'">
-        <!-- Close Button -->
-        <button @click="showAuthModal = null" style="position: absolute; top: 16px; right: 16px; color: #9ca3af; background: none; border: none; cursor: pointer; z-index: 10; transition: color 0.2s;">
-            <i class="fas fa-times text-xl"></i>
-        </button>
+        <!-- Modal Box -->
+        <div x-show="showAuthModal !== null"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             class="auth-modal-box"
+             :class="showAuthModal === 'register' ? 'auth-modal-wide' : ''">
 
-        <!-- Scrollable Content -->
-        <div style="overflow-y: auto; padding: 32px;">
-
-        <!-- Logo -->
-        <div style="text-align: center; margin-bottom: 24px;">
-            <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #1DB954, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(29,185,84,0.3); margin: 0 auto 16px;">
-                <i class="fas fa-music" style="color: white; font-size: 24px;"></i>
-            </div>
-            <h2 style="font-size: 30px; font-weight: 700; color: white; margin-bottom: 8px;" x-text="showAuthModal === 'login' ? 'Giriş Yap' : 'Ücretsiz Başla'"></h2>
-            <p style="color: #9ca3af; font-size: 14px;" x-text="showAuthModal === 'login' ? 'Hesabınıza giriş yapın' : '7 gün ücretsiz deneme - Kredi kartı gerekmez'"></p>
-        </div>
-
-        <!-- Login Form -->
-        <form x-show="showAuthModal === 'login'" @submit.prevent="handleLogin()" style="display: flex; flex-direction: column; gap: 16px;">
-            <div>
-                <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">E-posta</label>
-                <input type="email" x-model="loginForm.email" @input="validateLoginEmail()" required
-                       style="width: 100%; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
-                       :style="loginValidation.email.valid ? 'border-color: #10b981' : (loginForm.email.length > 0 ? 'border-color: #ef4444' : '')"
-                       placeholder="ornek@email.com">
-                <div style="height: 20px; margin-top: 4px;">
-                    <div x-show="!loginValidation.email.valid && loginForm.email.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span x-text="loginValidation.email.message"></span>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Şifre</label>
-                <div style="position: relative;">
-                    <input :type="showLoginPassword ? 'text' : 'password'" x-model="loginForm.password" @input="validateLoginPassword()" required
-                           style="width: 100%; padding: 12px 16px; padding-right: 48px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
-                           :style="loginValidation.password.valid ? 'border-color: #10b981' : (loginForm.password.length > 0 ? 'border-color: #ef4444' : '')"
-                           placeholder="••••••••">
-                    <button type="button" @click="showLoginPassword = !showLoginPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
-                        <i :class="showLoginPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                    </button>
-                </div>
-                <div style="height: 20px; margin-top: 4px;">
-                    <div x-show="!loginValidation.password.valid && loginForm.password.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span x-text="loginValidation.password.message"></span>
-                    </div>
-                </div>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <button type="button" @click="loginForm.remember = !loginForm.remember"
-                            style="position: relative; display: inline-flex; height: 24px; width: 44px; align-items: center; border-radius: 12px; transition: all 0.2s; outline: none; border: none; cursor: pointer;"
-                            :style="loginForm.remember ? 'background: #1DB954' : 'background: #4b5563'">
-                        <span style="display: inline-block; height: 16px; width: 16px; border-radius: 50%; background: white; transition: transform 0.2s;"
-                              :style="loginForm.remember ? 'transform: translateX(24px)' : 'transform: translateX(4px)'"></span>
-                    </button>
-                    <label style="font-size: 14px; color: #d1d5db; cursor: pointer;" @click="loginForm.remember = !loginForm.remember">Beni Hatırla</label>
-                </div>
-                <button type="button" @click="showAuthModal = 'forgot'" style="font-size: 14px; color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
-                    Şifremi Unuttum
-                </button>
-            </div>
-            <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(90deg, #1DB954, #16a34a); color: white; font-weight: 700; border-radius: 9999px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(29,185,84,0.4);">
-                Giriş Yap
+            <!-- Close Button -->
+            <button @click="showAuthModal = null" class="auth-modal-close">
+                <i class="fas fa-times"></i>
             </button>
-            <div style="text-align: center;">
-                <button type="button" @click="showAuthModal = 'register'" style="font-size: 14px; color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
-                    Hesabınız yok mu? <span style="color: #1DB954; font-weight: 600;">Ücretsiz Başlayın</span>
+
+            <!-- Login Header -->
+            <div x-show="showAuthModal === 'login'" class="auth-modal-header">
+                <div class="auth-modal-logo"><i class="fas fa-music"></i></div>
+                <h2 class="auth-modal-title">{{ tenant_trans('player.login') }}</h2>
+                <p class="auth-modal-subtitle">{{ tenant_trans('player.login_subtitle') }}</p>
+            </div>
+
+            <!-- Register Header -->
+            <div x-show="showAuthModal === 'register'" class="auth-modal-header">
+                <div class="auth-modal-logo"><i class="fas fa-music"></i></div>
+                <h2 class="auth-modal-title">{{ tenant_trans('player.register') }}</h2>
+                <p class="auth-modal-subtitle">{{ tenant_trans('player.register_subtitle') }}</p>
+            </div>
+
+            <!-- Forgot Header -->
+            <div x-show="showAuthModal === 'forgot'" class="auth-modal-header">
+                <div class="auth-modal-logo"><i class="fas fa-music"></i></div>
+                <h2 class="auth-modal-title">{{ tenant_trans('player.forgot_password') }}</h2>
+                <p class="auth-modal-subtitle">{{ tenant_trans('player.forgot_password_subtitle') }}</p>
+            </div>
+
+            <!-- Login Form -->
+            <form x-show="showAuthModal === 'login'" @submit.prevent="handleLogin()" class="auth-form" autocomplete="on">
+                <div class="auth-field">
+                    <label>{{ tenant_trans('player.email') }}</label>
+                    <input type="email" x-model="loginForm.email" placeholder="{{ tenant_trans('player.email_placeholder') }}" required autocomplete="email" name="email">
+                </div>
+                <div class="auth-field">
+                    <label>{{ tenant_trans('player.password') }}</label>
+                    <div class="auth-password-wrap">
+                        <input :type="showLoginPassword ? 'text' : 'password'" x-model="loginForm.password" placeholder="••••••••" required autocomplete="current-password" name="password">
+                        <button type="button" @click="showLoginPassword = !showLoginPassword" class="auth-eye-btn">
+                            <i :class="showLoginPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="auth-options">
+                    <label class="auth-toggle">
+                        <input type="checkbox" x-model="loginForm.remember" class="sr-only">
+                        <span class="auth-toggle-track" :class="loginForm.remember ? 'active' : ''">
+                            <span class="auth-toggle-thumb" :class="loginForm.remember ? 'active' : ''"></span>
+                        </span>
+                        <span class="auth-toggle-label">{{ tenant_trans('player.remember_me') }}</span>
+                    </label>
+                    <button type="button" @click="showAuthModal = 'forgot'" class="auth-link">{{ tenant_trans('player.forgot_password_link') }}</button>
+                </div>
+                <button type="submit" class="auth-submit-btn">
+                    <span x-show="!isLoading">{{ tenant_trans('player.login_button') }}</span>
+                    <i x-show="isLoading" class="fas fa-spinner fa-spin"></i>
                 </button>
-            </div>
-        </form>
+                <p class="auth-switch">{{ tenant_trans('player.no_account') }} <button type="button" @click="showAuthModal = 'register'">{{ tenant_trans('player.start_free') }}</button></p>
+            </form>
 
-        <!-- Forgot Password Form -->
-        <form x-show="showAuthModal === 'forgot'" @submit.prevent="handleForgotPassword()" style="display: flex; flex-direction: column; gap: 16px;">
-            <div style="text-align: center; margin-bottom: 16px;">
-                <p style="color: #9ca3af; font-size: 14px;">Şifre sıfırlama linki e-posta adresinize gönderilecektir.</p>
-            </div>
-            <div>
-                <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">E-posta</label>
-                <input type="email" x-model="forgotForm.email" @input="validateForgotEmail()" required
-                       style="width: 100%; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
-                       :style="forgotValidation.email.valid ? 'border-color: #10b981' : (forgotForm.email.length > 0 ? 'border-color: #ef4444' : '')"
-                       placeholder="ornek@email.com">
-                <div style="height: 20px; margin-top: 4px;">
-                    <div x-show="!forgotValidation.email.valid && forgotForm.email.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span x-text="forgotValidation.email.message"></span>
-                    </div>
-                    <div x-show="forgotValidation.email.valid" style="font-size: 12px; color: #10b981; display: flex; align-items: center; gap: 4px;">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Geçerli e-posta adresi</span>
-                    </div>
+            <!-- Forgot Password Form -->
+            <form x-show="showAuthModal === 'forgot'" @submit.prevent="handleForgotPassword()" class="auth-form">
+                <div class="auth-field">
+                    <label>{{ tenant_trans('player.email') }}</label>
+                    <input type="email" x-model="forgotForm.email" placeholder="{{ tenant_trans('player.email_placeholder') }}" required>
                 </div>
-            </div>
-            <button type="submit" style="width: 100%; padding: 12px; background: linear-gradient(90deg, #1DB954, #16a34a); color: white; font-weight: 700; border-radius: 9999px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(29,185,84,0.4);">
-                Sıfırlama Linki Gönder
-            </button>
-            <div style="text-align: center;">
-                <button type="button" @click="showAuthModal = 'login'" style="font-size: 14px; color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
-                    <i class="fas fa-arrow-left" style="margin-right: 4px;"></i> Giriş Sayfasına Dön
+                <button type="submit" class="auth-submit-btn">
+                    <span x-show="!isLoading">{{ tenant_trans('player.reset_password_button') }}</span>
+                    <i x-show="isLoading" class="fas fa-spinner fa-spin"></i>
                 </button>
-            </div>
-        </form>
+                <p class="auth-switch"><button type="button" @click="showAuthModal = 'login'"><i class="fas fa-arrow-left"></i> {{ tenant_trans('player.back_to_login') }}</button></p>
+            </form>
 
-        <!-- Register Form -->
-        <form x-show="showAuthModal === 'register'" @submit.prevent="handleRegister()" style="display: flex; flex-direction: column; gap: 16px;">
-            <!-- 2 Kolon Grid -->
-            <div style="display: grid; grid-template-columns: 1fr; gap: 16px;">
-                <!-- Sol Kolon: Ad + Email -->
-                <div style="display: flex; flex-direction: column; gap: 16px;">
-                    <div>
-                        <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Ad Soyad</label>
-                        <input type="text" x-model="registerForm.name" @input="validateName()" required
-                               style="width: 100%; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
-                               :style="registerValidation.name.valid ? 'border-color: #10b981' : (registerForm.name.length > 0 ? 'border-color: #ef4444' : '')"
-                               placeholder="Adınız Soyadınız">
-                        <div style="height: 20px; margin-top: 4px;">
-                            <div x-show="!registerValidation.name.valid && registerForm.name.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-exclamation-circle"></i>
-                                <span x-text="registerValidation.name.message"></span>
-                            </div>
-                            <div x-show="registerValidation.name.valid" style="font-size: 12px; color: #10b981; display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Geçerli</span>
-                            </div>
-                        </div>
+            <!-- Register Form -->
+            <form x-show="showAuthModal === 'register'" @submit.prevent="handleRegister()" class="auth-form">
+                <!-- Ad / Soyad - 2 Kolon -->
+                <div class="auth-grid">
+                    <div class="auth-field">
+                        <label>{{ tenant_trans('player.first_name') }}</label>
+                        <input type="text" x-model="registerForm.firstName" @input="validateName()" placeholder="{{ tenant_trans('player.first_name_placeholder') }}" required>
+                        <span x-show="registerForm.firstName.length > 0 && registerForm.firstName.length < 2" class="auth-error" x-text="lang.min_chars.replace(':count', 2)"></span>
                     </div>
-
-                    <!-- Email -->
-                    <div>
-                        <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">E-posta</label>
-                        <input type="email" x-model="registerForm.email" @input.debounce.500ms="validateEmail()" required
-                               style="width: 100%; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
-                               :style="registerValidation.email.valid ? 'border-color: #10b981' : (registerForm.email.length > 0 ? 'border-color: #ef4444' : '')"
-                               placeholder="ornek@email.com">
-                        <div style="height: 20px; margin-top: 4px;">
-                            <div x-show="!registerValidation.email.valid && registerForm.email.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-exclamation-circle"></i>
-                                <span x-text="registerValidation.email.message"></span>
-                            </div>
-                            <div x-show="registerValidation.email.valid" style="font-size: 12px; color: #10b981; display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Geçerli</span>
-                            </div>
-                        </div>
+                    <div class="auth-field">
+                        <label>{{ tenant_trans('player.last_name') }}</label>
+                        <input type="text" x-model="registerForm.lastName" @input="validateName()" placeholder="{{ tenant_trans('player.last_name_placeholder') }}" required>
+                        <span x-show="registerForm.lastName.length > 0 && registerForm.lastName.length < 2" class="auth-error" x-text="lang.min_chars.replace(':count', 2)"></span>
                     </div>
                 </div>
 
-                <!-- Sağ Kolon: Telefon + Şifre -->
-                <div style="display: flex; flex-direction: column; gap: 16px;">
-                    <!-- Telefon (Tenant 1001 için zorunlu) -->
-                    <div x-show="tenantId === 1001">
-                <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">
-                    Telefon
-                    <span style="color: #f87171;">*</span>
-                </label>
-                <div style="position: relative;">
-                    <div style="display: flex; gap: 8px;">
-                        <!-- Country Code Selector -->
-                        <div style="position: relative;" x-data="{ countryOpen: false }">
-                            <button type="button" @click="countryOpen = !countryOpen"
-                                    style="padding: 12px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s; display: flex; align-items: center; gap: 8px; min-width: 100px; cursor: pointer;">
-                                <span x-text="phoneCountry.flag">🇹🇷</span>
-                                <span x-text="phoneCountry.code" style="font-size: 14px;">+90</span>
-                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
-                            </button>
-                            <div x-show="countryOpen" @click.away="countryOpen = false" x-transition
-                                 style="position: absolute; top: 100%; left: 0; margin-top: 8px; width: 256px; background: #282828; border-radius: 8px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); overflow: hidden; z-index: 50; max-height: 256px; overflow-y: auto;">
-                                <template x-for="country in phoneCountries" :key="country.code">
-                                    <button type="button" @click="selectCountry(country); countryOpen = false"
-                                            style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px; background: none; border: none; cursor: pointer; transition: all 0.2s; text-align: left; color: white;"
-                                            onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                                            onmouseout="this.style.background='none'">
-                                        <span x-text="country.flag" style="font-size: 20px;"></span>
-                                        <div style="flex: 1;">
-                                            <div style="color: white; font-size: 14px;" x-text="country.name"></div>
-                                            <div style="color: #9ca3af; font-size: 12px;" x-text="country.code"></div>
-                                        </div>
-                                    </button>
-                                </template>
-                            </div>
-                        </div>
-
-                        <!-- Phone Number Input -->
-                        <input type="tel" x-model="registerForm.phone" @input="formatPhoneNumber()" :required="tenantId === 1001"
-                               style="flex: 1; padding: 12px 16px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
-                               :style="registerValidation.phone.valid ? 'border-color: #10b981' : (registerForm.phone.length > 0 ? 'border-color: #ef4444' : '')"
-                               :placeholder="phoneCountry.placeholder" maxlength="20">
-                    </div>
-                    <!-- Validation message with fixed height -->
-                    <div style="height: 20px; margin-top: 4px;">
-                        <div x-show="!registerValidation.phone.valid && registerForm.phone.length > 0" style="font-size: 12px; color: #f87171; display: flex; align-items: center; gap: 4px;">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span x-text="registerValidation.phone.message"></span>
-                        </div>
-                        <div x-show="registerValidation.phone.valid" style="font-size: 12px; color: #10b981; display: flex; align-items: center; gap: 4px;">
-                            <i class="fas fa-check-circle"></i>
-                            <span>Geçerli telefon numarası</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- E-posta / Telefon - 2 Kolon -->
+                <div class="auth-grid">
+                    <!-- Sol: E-posta -->
+                    <div class="auth-field">
+                        <label>{{ tenant_trans('player.email') }}</label>
+                        <input type="email" x-model="registerForm.email" @input.debounce.500ms="validateEmail()" placeholder="{{ tenant_trans('player.email_placeholder') }}" required>
+                        <span x-show="registerForm.email.length > 0 && !registerValidation.email.valid" class="auth-error" x-text="registerValidation.email.message"></span>
                     </div>
 
-                    <!-- Şifre -->
-                    <div>
-                        <label style="display: block; font-size: 14px; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Şifre</label>
-                        <div style="position: relative;">
-                            <input :type="showPassword ? 'text' : 'password'" x-model="registerForm.password" @input="validatePassword()" required
-                                   style="width: 100%; padding: 12px 16px; padding-right: 48px; background: #282828; color: white; border-radius: 8px; border: 2px solid transparent; outline: none; transition: all 0.2s;"
-                                   :style="registerValidation.password.valid ? 'border-color: #10b981' : (registerForm.password.length > 0 ? 'border-color: #ef4444' : '')"
-                                   placeholder="En az 8 karakter">
-                            <button type="button" @click="showPassword = !showPassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
-                                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                            </button>
-                        </div>
-
-                        <!-- Şifre Güvenlik Göstergesi (Kompakt) -->
-                        <div x-show="registerForm.password.length > 0" style="margin-top: 8px;">
-                            <div style="display: flex; gap: 4px; margin-bottom: 4px;">
-                                <div style="height: 4px; flex: 1; border-radius: 2px; background: #4b5563; transition: all 0.2s;" :style="registerValidation.password.strength >= 1 ? 'background: #ef4444' : ''"></div>
-                                <div style="height: 4px; flex: 1; border-radius: 2px; background: #4b5563; transition: all 0.2s;" :style="registerValidation.password.strength >= 2 ? 'background: #f97316' : ''"></div>
-                                <div style="height: 4px; flex: 1; border-radius: 2px; background: #4b5563; transition: all 0.2s;" :style="registerValidation.password.strength >= 3 ? 'background: #facc15' : ''"></div>
-                                <div style="height: 4px; flex: 1; border-radius: 2px; background: #4b5563; transition: all 0.2s;" :style="registerValidation.password.strength >= 4 ? 'background: #10b981' : ''"></div>
-                            </div>
-                            <div style="font-size: 10px; display: flex; align-items: center; justify-content: space-between;">
-                                <span :style="registerValidation.password.strength === 1 ? 'color: #f87171' : registerValidation.password.strength === 2 ? 'color: #fb923c' : registerValidation.password.strength === 3 ? 'color: #fde047' : 'color: #10b981'" x-text="registerValidation.password.strengthText"></span>
-                                <!-- Kompakt Checkler -->
-                                <div style="display: flex; align-items: center; gap: 4px;">
-                                    <i :class="registerValidation.password.checks.length ? 'fas fa-check-circle' : 'far fa-circle'" :style="registerValidation.password.checks.length ? 'color: #10b981' : 'color: #6b7280'" style="font-size: 10px;" title="8+ karakter"></i>
-                                    <i :class="registerValidation.password.checks.uppercase ? 'fas fa-check-circle' : 'far fa-circle'" :style="registerValidation.password.checks.uppercase ? 'color: #10b981' : 'color: #6b7280'" style="font-size: 10px;" title="Büyük harf"></i>
-                                    <i :class="registerValidation.password.checks.lowercase ? 'fas fa-check-circle' : 'far fa-circle'" :style="registerValidation.password.checks.lowercase ? 'color: #10b981' : 'color: #6b7280'" style="font-size: 10px;" title="Küçük harf"></i>
-                                    <i :class="registerValidation.password.checks.number ? 'fas fa-check-circle' : 'far fa-circle'" :style="registerValidation.password.checks.number ? 'color: #10b981' : 'color: #6b7280'" style="font-size: 10px;" title="Rakam"></i>
+                    <!-- Sağ: Telefon -->
+                    <div class="auth-field" x-show="tenantId === 1001">
+                        <label>{{ tenant_trans('player.phone') }} <span style="color: #f87171;">*</span></label>
+                        <div class="auth-phone-wrap">
+                            <div class="auth-country-select" x-data="{ open: false }">
+                                <button type="button" @click="open = !open" class="auth-country-btn">
+                                    <span x-text="phoneCountry.flag"></span>
+                                    <span x-text="phoneCountry.code"></span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div x-show="open" @click.away="open = false" class="auth-country-dropdown">
+                                    <template x-for="country in phoneCountries" :key="country.code">
+                                        <button type="button" @click="selectCountry(country); open = false" class="auth-country-option">
+                                            <span x-text="country.flag"></span>
+                                            <span x-text="country.name"></span>
+                                            <span style="color: #6b7280;" x-text="country.code"></span>
+                                        </button>
+                                    </template>
                                 </div>
                             </div>
+                            <input type="tel" x-model="registerForm.phone" @input="formatPhoneNumber()" :placeholder="phoneCountry.placeholder" maxlength="20">
+                        </div>
+                        <span x-show="registerForm.phone.length > 0 && !registerValidation.phone.valid" class="auth-error" x-text="registerValidation.phone.message"></span>
+                    </div>
+                </div>
+
+                <!-- Şifre - Full Width -->
+                <div class="auth-field">
+                    <label>{{ tenant_trans('player.password') }}</label>
+                    <div class="auth-password-wrap">
+                        <input :type="showPassword ? 'text' : 'password'" x-model="registerForm.password" @input="validatePassword()" placeholder="{{ tenant_trans('player.password_placeholder') }}" required>
+                        <button type="button" @click="showPassword = !showPassword" class="auth-eye-btn">
+                            <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                        </button>
+                    </div>
+                    <!-- Şifre Kriterleri -->
+                    <div x-show="registerForm.password.length > 0" class="auth-password-criteria">
+                        <div class="auth-criteria-item" :class="registerValidation.password.checks.length ? 'valid' : 'invalid'">
+                            <i :class="registerValidation.password.checks.length ? 'fas fa-check' : 'fas fa-times'"></i>
+                            <span>{{ tenant_trans('player.password_length') }}</span>
+                        </div>
+                        <div class="auth-criteria-item" :class="registerValidation.password.checks.uppercase ? 'valid' : 'invalid'">
+                            <i :class="registerValidation.password.checks.uppercase ? 'fas fa-check' : 'fas fa-times'"></i>
+                            <span>{{ tenant_trans('player.password_uppercase') }}</span>
+                        </div>
+                        <div class="auth-criteria-item" :class="registerValidation.password.checks.lowercase ? 'valid' : 'invalid'">
+                            <i :class="registerValidation.password.checks.lowercase ? 'fas fa-check' : 'fas fa-times'"></i>
+                            <span>{{ tenant_trans('player.password_lowercase') }}</span>
+                        </div>
+                        <div class="auth-criteria-item" :class="registerValidation.password.checks.number ? 'valid' : 'invalid'">
+                            <i :class="registerValidation.password.checks.number ? 'fas fa-check' : 'fas fa-times'"></i>
+                            <span>{{ tenant_trans('player.password_number') }}</span>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <button type="submit" :disabled="!isRegisterFormValid()"
-                    style="width: 100%; padding: 12px; background: linear-gradient(90deg, #1DB954, #16a34a); color: white; font-weight: 700; border-radius: 9999px; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(29,185,84,0.4);"
-                    :style="!isRegisterFormValid() ? 'opacity: 0.5; cursor: not-allowed' : ''">
-                7 Gün Ücretsiz Başla
-            </button>
-            <div style="text-align: center;">
-                <button type="button" @click="showAuthModal = 'login'" style="font-size: 14px; color: #9ca3af; background: none; border: none; cursor: pointer; transition: color 0.2s;">
-                    Zaten hesabınız var mı? <span style="color: #1DB954; font-weight: 600;">Giriş Yapın</span>
+                <button type="submit" class="auth-submit-btn" :disabled="!isRegisterFormValid()">
+                    <span x-show="!isLoading">{{ tenant_trans('player.register_button') }}</span>
+                    <i x-show="isLoading" class="fas fa-spinner fa-spin"></i>
                 </button>
-            </div>
-        </form>
+                <p class="auth-switch">{{ tenant_trans('player.have_account') }} <button type="button" @click="showAuthModal = 'login'">{{ tenant_trans('player.login_link') }}</button></p>
+            </form>
+        </div>
     </div>
-</div>
-</div>
+</template>
+
+<style>
+/* Auth Modal Styles */
+.auth-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+}
+.auth-modal-box {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #181818;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 32px;
+}
+.auth-modal-wide { max-width: 680px; }
+.auth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 700px) { .auth-grid { grid-template-columns: 1fr; } .auth-modal-wide { max-width: 400px; } }
+.auth-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 50%;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.auth-modal-close:hover { background: rgba(255,255,255,0.2); color: white; }
+.auth-modal-header { text-align: center; margin-bottom: 24px; }
+.auth-modal-logo {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #1DB954, #16a34a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+.auth-modal-title { font-size: 24px; font-weight: 700; color: white; margin: 0 0 8px; }
+.auth-modal-subtitle { font-size: 14px; color: #9ca3af; margin: 0; }
+.auth-form { display: flex; flex-direction: column; gap: 16px; }
+.auth-field { display: flex; flex-direction: column; gap: 6px; }
+.auth-field label { font-size: 13px; font-weight: 500; color: #d1d5db; }
+.auth-field input {
+    width: 100%;
+    padding: 12px 14px;
+    background: #282828;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.auth-field input:focus { border-color: #1DB954; }
+.auth-field input::placeholder { color: #6b7280; }
+.auth-error { font-size: 12px; color: #f87171; }
+.auth-password-wrap { position: relative; }
+.auth-password-wrap input { padding-right: 44px; }
+.auth-eye-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 4px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.auth-eye-btn:hover { color: #9ca3af; transform: translateY(-50%); }
+.auth-eye-btn i { font-size: 14px; }
+.auth-options { display: flex; align-items: center; justify-content: space-between; }
+.auth-toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.auth-toggle-track {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    background: #3f3f46;
+    border-radius: 11px;
+    transition: background 0.2s;
+}
+.auth-toggle-track.active { background: #1DB954; }
+.auth-toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+.auth-toggle-thumb.active { transform: translateX(18px); }
+.auth-toggle-label { font-size: 13px; color: #d1d5db; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+.auth-link { background: none; border: none; color: #9ca3af; font-size: 13px; cursor: pointer; }
+.auth-link:hover { color: #1DB954; }
+.auth-submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #1DB954, #16a34a);
+    border: none;
+    border-radius: 9999px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.auth-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(29,185,84,0.4); }
+.auth-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.auth-switch { text-align: center; font-size: 13px; color: #9ca3af; margin: 0; }
+.auth-switch button { background: none; border: none; color: #1DB954; font-weight: 600; cursor: pointer; }
+.auth-switch button:hover { text-decoration: underline; }
+.auth-phone-wrap { display: flex; gap: 8px; }
+.auth-phone-wrap input { flex: 1; }
+.auth-country-select { position: relative; }
+.auth-country-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px;
+    background: #282828;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+}
+.auth-country-btn i { font-size: 10px; color: #6b7280; }
+.auth-country-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    width: 220px;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #282828;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    z-index: 50;
+}
+.auth-country-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+}
+.auth-country-option:hover { background: rgba(255,255,255,0.1); }
+.auth-strength { margin-top: 8px; }
+.auth-strength-bars { display: flex; gap: 4px; margin-bottom: 4px; }
+.auth-strength-bars div { height: 3px; flex: 1; border-radius: 2px; transition: background 0.2s; }
+.auth-strength-text { font-size: 11px; color: #9ca3af; }
+.auth-password-criteria { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-top: 10px; }
+.auth-criteria-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.auth-criteria-item.valid { color: #10b981; }
+.auth-criteria-item.invalid { color: #6b7280; }
+.auth-criteria-item i { font-size: 10px; width: 12px; }
+[x-cloak] { display: none !important; }
+</style>
 
 <!-- PLAYER BAR - Inline Styles (Spotify Inspired) -->
 <div style="position: fixed !important;
@@ -322,23 +432,22 @@
                     <i class="fas fa-step-forward"></i>
                 </button>
                 <button @click="cycleRepeat()"
-                        :title="repeatMode === 'off' ? 'Tekrar: Kapalı' : (repeatMode === 'one' ? 'Tekrar: Tek Şarkı' : 'Tekrar: Tümü')"
-                        style="background: none; border: none; cursor: pointer; padding: 4px; transition: all 0.2s;"
-                        :style="repeatMode !== 'off' ? 'color: #1DB954;' : 'color: #9ca3af;'">
-                    <i :class="repeatMode === 'one' ? 'fas fa-repeat-1' : 'fas fa-redo'" style="font-size: 14px;"></i>
+                        :title="repeatMode === 'off' ? '{{ tenant_trans('player.repeat_off') }}' : (repeatMode === 'one' ? '{{ tenant_trans('player.repeat_one') }}' : '{{ tenant_trans('player.repeat_all') }}')"
+                        class="player-repeat-btn"
+                        :class="{ 'active': repeatMode !== 'off' }">
+                    <i class="fas fa-redo" style="font-size: 14px;"></i>
+                    <span x-show="repeatMode === 'one'" class="repeat-one-badge">1</span>
                 </button>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 12px; color: #9ca3af;" x-text="formatTime(currentTime)">0:00</span>
-                <div @click="seekTo($event)"
-                     style="flex: 1; height: 4px; background: #4b5563; border-radius: 2px; overflow: hidden; cursor: pointer; position: relative;"
-                     onmouseover="this.style.height='6px'" onmouseout="this.style.height='4px'">
-                    <div :style="'width: ' + progressPercent + '%; height: 100%; background: #1DB954; border-radius: 2px; transition: width 0.1s;'">
-                        <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #1DB954; border-radius: 50%; box-shadow: 0 0 4px rgba(29,185,84,0.6); opacity: 0; transition: opacity 0.2s;"
-                             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'"></div>
+                <span style="font-size: 12px; color: #9ca3af; min-width: 40px; text-align: right;" x-text="formatTime(currentTime)">0:00</span>
+                <div class="player-progress-bar" @click="seekTo($event)">
+                    <div class="player-progress-track">
+                        <div class="player-progress-fill" :style="'width: ' + progressPercent + '%'"></div>
+                        <div class="player-progress-thumb" :style="'left: ' + progressPercent + '%'"></div>
                     </div>
                 </div>
-                <span style="font-size: 12px; color: #9ca3af;" x-text="formatTime(duration)">0:00</span>
+                <span style="font-size: 12px; color: #9ca3af; min-width: 40px;" x-text="formatTime(duration)">0:00</span>
             </div>
         </div>
 
@@ -354,15 +463,12 @@
                     :title="isMuted ? 'Sesi Aç' : 'Sessiz'"
                     style="background: none; border: none; cursor: pointer; padding: 4px; font-size: 14px; transition: all 0.2s;"
                     :style="isMuted ? 'color: #ef4444;' : 'color: #9ca3af;'">
-                <i :class="isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up'"></i>
+                <i :class="isMuted ? 'fas fa-volume-mute' : (volume > 50 ? 'fas fa-volume-up' : (volume > 0 ? 'fas fa-volume-down' : 'fas fa-volume-off'))"></i>
             </button>
-            <div @click="setVolume($event)"
-                 title="Ses Seviyesi"
-                 style="width: 96px; height: 4px; background: #4b5563; border-radius: 2px; overflow: hidden; cursor: pointer; position: relative;"
-                 onmouseover="this.style.height='6px'" onmouseout="this.style.height='4px'">
-                <div :style="'width: ' + volume + '%; height: 100%; background: #1DB954; border-radius: 2px; transition: width 0.1s;'">
-                    <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: #1DB954; border-radius: 50%; box-shadow: 0 0 4px rgba(29,185,84,0.6); opacity: 0; transition: opacity 0.2s;"
-                         onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'"></div>
+            <div class="player-volume-bar" @click="setVolume($event)" title="Ses Seviyesi">
+                <div class="player-volume-track">
+                    <div class="player-volume-fill" :style="'width: ' + volume + '%'"></div>
+                    <div class="player-volume-thumb" :style="'left: ' + volume + '%'"></div>
                 </div>
             </div>
         </div>
@@ -377,29 +483,27 @@
      x-transition:leave="transition ease-in duration-200"
      x-transition:leave-start="transform translate-x-0"
      x-transition:leave-end="transform translate-x-full"
-     style="position: fixed; right: 0; bottom: 100px; top: 0; width: 400px; background: #181818; border-left: 1px solid rgba(255,255,255,0.1); z-index: 30; display: flex; flex-direction: column;">
+     class="queue-panel">
 
-    <div style="position: sticky; top: 0; background: #181818; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; z-index: 10;">
-        <h3 style="font-size: 22px; font-weight: 700; color: white; margin: 0;">Çalma Sırası</h3>
-        <button @click="showQueue = false" style="background: none; border: none; color: #9ca3af; cursor: pointer; padding: 8px; transition: all 0.2s; border-radius: 50%;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='white';" onmouseout="this.style.background='none'; this.style.color='#9ca3af';">
-            <i class="fas fa-times" style="font-size: 20px;"></i>
+    <div class="queue-panel-header">
+        <h3>{{ tenant_trans('player.queue_title') }}</h3>
+        <button @click="showQueue = false" class="queue-close-btn">
+            <i class="fas fa-times"></i>
         </button>
     </div>
 
-    <div style="flex: 1; overflow-y: auto; padding: 24px; padding-bottom: 40px;">
+    <div class="queue-scroll-area">
         <!-- Şu An Çalan -->
-        <div x-show="currentSong" style="margin-bottom: 24px;">
-            <div style="font-size: 14px; color: #9ca3af; font-weight: 600; margin-bottom: 8px;">ŞU AN ÇALIYOR</div>
-            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: #282828; border-radius: 8px;">
-                <img :src="currentSong?.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=56&h=56&fit=crop'"
-                     style="width: 48px; height: 48px; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-                <div style="flex: 1; min-width: 0;">
-                    <div style="font-weight: 600; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                         x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></div>
-                    <div style="font-size: 12px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                         x-text="currentSong?.artist_title?.tr || ''"></div>
+        <div x-show="currentSong" class="now-playing-section">
+            <div class="now-playing-label">{{ tenant_trans('player.now_playing') }}</div>
+            <div class="now-playing-card">
+                <img :src="currentSong?.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=48&h=48&fit=crop'"
+                     class="now-playing-cover">
+                <div class="now-playing-info">
+                    <div class="now-playing-title" x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></div>
+                    <div class="now-playing-artist" x-text="currentSong?.artist_title?.tr || ''"></div>
                 </div>
-                <div style="color: #1DB954; animation: pulse-slow 2s ease-in-out infinite;">
+                <div class="now-playing-indicator">
                     <i class="fas fa-volume-up"></i>
                 </div>
             </div>
@@ -407,11 +511,11 @@
 
         <!-- Sıradaki Şarkılar -->
         <div x-show="queue.length > 0">
-            <div style="font-size: 13px; color: #9ca3af; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; letter-spacing: 0.5px;">
-                <span>SIRADAKİ</span>
-                <span x-text="queue.length + ' şarkı'" style="font-size: 11px; color: #6b7280;"></span>
+            <div class="queue-header">
+                <span>{{ tenant_trans('player.up_next') }}</span>
+                <span x-text="queue.length + ' ' + lang.songs_count.replace(':count ', '')" class="queue-count"></span>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div class="queue-list">
                 <template x-for="(song, index) in queue" :key="song.song_id">
                     <div draggable="true"
                          @dragstart="dragStart(index, $event)"
@@ -420,44 +524,33 @@
                          @dragend="dragEnd()"
                          @click="playSongFromQueue(index)"
                          class="queue-item"
-                         style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 6px; cursor: grab; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; margin-bottom: 2px;"
-                         :style="index === queueIndex ? 'background: linear-gradient(90deg, rgba(29,185,84,0.15), rgba(29,185,84,0.05)); border-left: 3px solid #1DB954; padding-left: 9px;' : (draggedIndex === index ? 'opacity: 0.4; transform: scale(0.95);' : (dropTargetIndex === index ? 'border-top: 3px solid #1DB954; padding-top: 13px; margin-top: 6px;' : 'background: transparent;'))"
-                         onmouseover="if(!this.style.background.includes('linear-gradient')) { this.style.background='rgba(255,255,255,0.05)'; this.style.transform='translateX(4px)'; }"
-                         onmouseout="if(!this.style.background.includes('linear-gradient')) { this.style.background='transparent'; this.style.transform='translateX(0)'; }">
-                        <div style="width: 24px; text-align: center; cursor: grab; transition: all 0.2s;"
-                             :style="draggedIndex === index ? 'cursor: grabbing;' : ''"
-                             onmouseover="this.style.transform='scale(1.2)'"
-                             onmouseout="this.style.transform='scale(1)'">
-                            <i class="fas fa-grip-vertical" style="font-size: 13px; color: #4b5563; transition: color 0.2s;"
-                               onmouseover="this.style.color='#1DB954'"
-                               onmouseout="this.style.color='#4b5563'"></i>
+                         :class="{
+                             'queue-item-active': index === queueIndex,
+                             'queue-item-dragging': draggedIndex === index,
+                             'queue-item-drop-target': dropTargetIndex === index
+                         }">
+                        <!-- Drag Handle -->
+                        <div class="queue-drag-handle">
+                            <i class="fas fa-grip-vertical"></i>
                         </div>
-                        <div style="width: 28px; text-align: center; font-weight: 600;">
-                            <span x-show="index !== queueIndex"
-                                  style="color: #6b7280; font-size: 13px; transition: all 0.2s;"
-                                  x-text="index + 1"
-                                  :style="draggedIndex === index ? 'opacity: 0.5;' : ''"></span>
-                            <i x-show="index === queueIndex"
-                               class="fas fa-play"
-                               style="color: #1DB954; font-size: 11px; animation: pulse-play 1.5s ease-in-out infinite;"></i>
+                        <!-- Index / Play Icon -->
+                        <div class="queue-index">
+                            <span x-show="index !== queueIndex" x-text="index + 1"></span>
+                            <i x-show="index === queueIndex" class="fas fa-play queue-playing-icon"></i>
                         </div>
+                        <!-- Album Cover -->
                         <img :src="song.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=40&h=40&fit=crop'"
-                             style="width: 44px; height: 44px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: all 0.3s;"
-                             :style="index === queueIndex ? 'box-shadow: 0 4px 16px rgba(29,185,84,0.4);' : ''"
-                             onmouseover="this.style.transform='scale(1.05)'"
-                             onmouseout="this.style.transform='scale(1)'">
-                        <div style="flex: 1; min-width: 0;">
-                            <div style="font-weight: 600; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.2s;"
-                                 :style="index === queueIndex ? 'color: #1DB954;' : ''"
+                             class="queue-cover"
+                             :class="{ 'queue-cover-active': index === queueIndex }">
+                        <!-- Song Info -->
+                        <div class="queue-info">
+                            <div class="queue-title" :class="{ 'queue-title-active': index === queueIndex }"
                                  x-text="song.song_title?.tr || 'Untitled'"></div>
-                            <div style="font-size: 12px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;"
-                                 x-text="song.artist_title?.tr || 'Unknown'"></div>
+                            <div class="queue-artist" x-text="song.artist_title?.tr || 'Unknown'"></div>
                         </div>
-                        <button @click.stop="removeFromQueue(index)"
-                                style="background: rgba(239,68,68,0.1); border: none; color: #ef4444; cursor: pointer; padding: 6px; opacity: 0; transition: all 0.3s; border-radius: 4px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;"
-                                onmouseover="this.style.opacity='1'; this.style.background='rgba(239,68,68,0.2)'; this.style.transform='scale(1.1) rotate(90deg)';"
-                                onmouseout="this.style.opacity='0'; this.style.background='rgba(239,68,68,0.1)'; this.style.transform='scale(1) rotate(0deg)';">
-                            <i class="fas fa-times" style="font-size: 11px;"></i>
+                        <!-- Remove Button -->
+                        <button @click.stop="removeFromQueue(index)" class="queue-remove-btn">
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
                 </template>
@@ -467,8 +560,8 @@
         <!-- Boş Queue Durumu -->
         <div x-show="queue.length === 0" style="text-align: center; padding: 48px 0;">
             <i class="fas fa-music" style="font-size: 40px; color: #4b5563; margin-bottom: 12px; display: block;"></i>
-            <p style="color: #9ca3af; font-size: 14px; margin: 0;">Çalma sırası boş</p>
-            <p style="color: #6b7280; font-size: 12px; margin-top: 4px;">Bir şarkı veya playlist çalmaya başlayın</p>
+            <p style="color: #9ca3af; font-size: 14px; margin: 0;">{{ tenant_trans('player.queue_empty') }}</p>
+            <p style="color: #6b7280; font-size: 12px; margin-top: 4px;">{{ tenant_trans('player.queue_empty_hint') }}</p>
         </div>
     </div>
 </div>
@@ -503,108 +596,510 @@
 
     /* Play button pulse animation */
     @keyframes pulse-play {
-        0%, 100% {
-            opacity: 1;
-            transform: scale(1);
-        }
-        50% {
-            opacity: 0.7;
-            transform: scale(0.9);
-        }
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(0.9); }
     }
 
-    /* Queue item hover effect - smooth slide */
-    .queue-item {
+    /* ============================================
+       PLAYER PROGRESS & VOLUME BARS
+       ============================================ */
+
+    /* Progress Bar */
+    .player-progress-bar {
+        flex: 1;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 6px 0;
+    }
+
+    .player-progress-track {
         position: relative;
-        overflow: hidden;
-    }
-
-    .queue-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
         width: 100%;
+        height: 6px;
+        background: #4b5563;
+        border-radius: 3px;
+        overflow: visible;
+    }
+
+    .player-progress-bar:hover .player-progress-track {
+        height: 8px;
+    }
+
+    .player-progress-fill {
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(29,185,84,0.1), transparent);
-        transition: left 0.6s ease;
+        background: #1DB954;
+        border-radius: 3px;
+        transition: width 0.05s linear;
     }
 
-    .queue-item:hover::before {
-        left: 100%;
+    .player-progress-bar:hover .player-progress-fill {
+        background: #22c55e;
     }
 
-    /* Drag animation - smooth scale */
-    .queue-item[draggable="true"]:active {
-        cursor: grabbing !important;
-        transform: scale(0.98) rotate(2deg);
-        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    .player-progress-thumb {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 14px;
+        height: 14px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        opacity: 0;
+        transition: opacity 0.15s ease;
+        pointer-events: none;
     }
 
-    /* Drop target indicator - glowing effect */
-    .queue-item[style*="border-top: 3px solid"] {
-        animation: glow-border 1s ease-in-out infinite;
+    .player-progress-bar:hover .player-progress-thumb {
+        opacity: 1;
     }
 
-    @keyframes glow-border {
-        0%, 100% {
-            box-shadow: 0 -3px 12px rgba(29,185,84,0.3);
-        }
-        50% {
-            box-shadow: 0 -3px 20px rgba(29,185,84,0.6);
-        }
+    /* Volume Bar */
+    .player-volume-bar {
+        width: 100px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 6px 0;
     }
 
-    /* Smooth entrance animation for new items */
-    @keyframes slideInFromRight {
-        from {
-            opacity: 0;
-            transform: translateX(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+    .player-volume-track {
+        position: relative;
+        width: 100%;
+        height: 6px;
+        background: #4b5563;
+        border-radius: 3px;
+        overflow: visible;
     }
 
-    /* Hover effects - buttons */
-    button:hover {
-        transform: scale(1.05);
+    .player-volume-bar:hover .player-volume-track {
+        height: 8px;
     }
 
-    button:active {
-        transform: scale(0.95);
+    .player-volume-fill {
+        height: 100%;
+        background: #1DB954;
+        border-radius: 3px;
+        transition: width 0.05s linear;
     }
+
+    .player-volume-bar:hover .player-volume-fill {
+        background: #22c55e;
+    }
+
+    .player-volume-thumb {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 14px;
+        height: 14px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        opacity: 0;
+        transition: opacity 0.15s ease;
+        pointer-events: none;
+    }
+
+    .player-volume-bar:hover .player-volume-thumb {
+        opacity: 1;
+    }
+
+    /* Repeat Button */
+    .player-repeat-btn {
+        position: relative;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        color: #9ca3af;
+        transition: color 0.2s ease;
+    }
+
+    .player-repeat-btn.active {
+        color: #1DB954;
+    }
+
+    .player-repeat-btn:hover {
+        color: white;
+    }
+
+    .player-repeat-btn.active:hover {
+        color: #22c55e;
+    }
+
+    .repeat-one-badge {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 12px;
+        height: 12px;
+        background: #1DB954;
+        color: white;
+        font-size: 8px;
+        font-weight: 700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+
+    /* ============================================
+       QUEUE PANEL STYLES - Clean Professional Design
+       ============================================ */
+
+    /* Queue Panel Container */
+    .queue-panel {
+        position: fixed !important;
+        right: 0 !important;
+        bottom: 88px !important;
+        top: 0 !important;
+        width: 380px !important;
+        background: #181818 !important;
+        border-left: 1px solid rgba(255,255,255,0.1) !important;
+        z-index: 30 !important;
+        flex-direction: column !important;
+    }
+
+    /* Alpine.js x-show ile birlikte çalışması için */
+    .queue-panel:not([style*="display: none"]) {
+        display: flex !important;
+    }
+
+    /* Queue Panel Header */
+    .queue-panel-header {
+        position: sticky !important;
+        top: 0 !important;
+        background: #181818 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+        padding: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        z-index: 10 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .queue-panel-header h3 {
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        color: white !important;
+        margin: 0 !important;
+    }
+
+    .queue-close-btn {
+        background: none !important;
+        border: none !important;
+        color: #9ca3af !important;
+        cursor: pointer !important;
+        padding: 8px !important;
+        border-radius: 50% !important;
+        width: 32px !important;
+        height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .queue-close-btn:hover {
+        background: rgba(255,255,255,0.1) !important;
+        color: white !important;
+    }
+
+    .queue-close-btn i {
+        font-size: 16px !important;
+    }
+
+    /* Queue Scroll Area */
+    .queue-scroll-area {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        padding: 16px !important;
+        padding-bottom: 120px !important;
+    }
+
+    /* Queue Section Header */
+    .queue-header {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        font-size: 12px;
+        color: #9ca3af;
+        font-weight: 700;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    .queue-count {
+        font-size: 11px;
+        color: #6b7280;
+    }
+
+    /* Queue List Container */
+    .queue-list {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+    }
+
+    /* Queue Item - MAIN FLEXBOX - Compact & Professional */
+    .queue-item {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 8px !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        transition: background 0.15s ease !important;
+        background: transparent !important;
+        position: relative !important;
+    }
+
+    .queue-item:hover {
+        background: rgba(255,255,255,0.05) !important;
+    }
+
+    .queue-item:hover .queue-remove-btn {
+        opacity: 1 !important;
+    }
+
+    /* Active (Currently Playing) Item */
+    .queue-item-active {
+        background: rgba(29,185,84,0.1) !important;
+        border-left: 2px solid #1DB954 !important;
+        padding-left: 6px !important;
+    }
+
+    .queue-item-active:hover {
+        background: rgba(29,185,84,0.15) !important;
+    }
+
+    /* Dragging State */
+    .queue-item-dragging {
+        opacity: 0.5 !important;
+    }
+
+    /* Drop Target State */
+    .queue-item-drop-target {
+        border-top: 2px solid #1DB954 !important;
+    }
+
+    /* Drag Handle */
+    .queue-drag-handle {
+        width: 20px !important;
+        min-width: 20px !important;
+        text-align: center !important;
+        cursor: grab !important;
+        flex-shrink: 0 !important;
+    }
+
+    .queue-drag-handle i {
+        font-size: 12px !important;
+        color: #4b5563 !important;
+    }
+
+    .queue-item:hover .queue-drag-handle i {
+        color: #6b7280 !important;
+    }
+
+    /* Queue Index Number */
+    .queue-index {
+        width: 24px !important;
+        min-width: 24px !important;
+        text-align: center !important;
+        font-weight: 500 !important;
+        color: #6b7280 !important;
+        font-size: 12px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .queue-playing-icon {
+        color: #1DB954 !important;
+        font-size: 10px !important;
+    }
+
+    /* Album Cover - Smaller */
+    .queue-cover {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        border-radius: 4px !important;
+        flex-shrink: 0 !important;
+        object-fit: cover !important;
+    }
+
+    .queue-cover-active {
+        box-shadow: 0 0 0 1px #1DB954 !important;
+    }
+
+    /* Song Info Container */
+    .queue-info {
+        flex: 1 !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .queue-title {
+        font-weight: 500 !important;
+        color: white !important;
+        font-size: 13px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .queue-title-active {
+        color: #1DB954 !important;
+    }
+
+    .queue-artist {
+        font-size: 11px !important;
+        color: #9ca3af !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        margin-top: 1px !important;
+    }
+
+    /* Remove Button */
+    .queue-remove-btn {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        background: transparent !important;
+        border: none !important;
+        color: #6b7280 !important;
+        cursor: pointer !important;
+        padding: 4px !important;
+        opacity: 0 !important;
+        transition: opacity 0.15s ease, color 0.15s ease !important;
+        border-radius: 4px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+    }
+
+    .queue-remove-btn:hover {
+        color: #ef4444 !important;
+    }
+
+    .queue-remove-btn i {
+        font-size: 10px !important;
+    }
+
+    /* Now Playing Section */
+    .now-playing-section {
+        margin-bottom: 20px !important;
+    }
+
+    .now-playing-label {
+        font-size: 11px !important;
+        color: #9ca3af !important;
+        font-weight: 700 !important;
+        margin-bottom: 8px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .now-playing-card {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 10px !important;
+        background: #282828 !important;
+        border-radius: 6px !important;
+    }
+
+    .now-playing-cover {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 4px !important;
+        flex-shrink: 0 !important;
+        object-fit: cover !important;
+    }
+
+    .now-playing-info {
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+
+    .now-playing-title {
+        font-weight: 500 !important;
+        color: white !important;
+        font-size: 13px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .now-playing-artist {
+        font-size: 11px !important;
+        color: #9ca3af !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        margin-top: 1px !important;
+    }
+
+    .now-playing-indicator {
+        color: #1DB954 !important;
+        font-size: 14px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* ============================================
+       END QUEUE STYLES
+       ============================================ */
 
     /* Scrollbar styling for queue */
-    div[style*="overflow-y: auto"]::-webkit-scrollbar {
-        width: 8px;
+    .queue-scroll-area::-webkit-scrollbar {
+        width: 6px;
     }
 
-    div[style*="overflow-y: auto"]::-webkit-scrollbar-track {
-        background: #181818;
+    .queue-scroll-area::-webkit-scrollbar-track {
+        background: transparent;
     }
 
-    div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb {
-        background: #282828;
-        border-radius: 4px;
-        transition: background 0.3s;
+    .queue-scroll-area::-webkit-scrollbar-thumb {
+        background: #3f3f46;
+        border-radius: 3px;
     }
 
-    div[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
-        background: #3e3e3e;
+    .queue-scroll-area::-webkit-scrollbar-thumb:hover {
+        background: #52525b;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 480px) {
+        .queue-panel {
+            width: 100% !important;
+        }
     }
 </style>
 
 <script>
 function muzibuApp() {
     return {
+        // Tenant-specific translations
+        lang: @json($playerLang ?? []),
+        frontLang: @json($frontLang ?? []),
+
         isLoggedIn: {{ auth()->check() ? 'true' : 'false' }},
         currentUser: @json(auth()->check() ? ['id' => auth()->user()->id, 'name' => auth()->user()->name, 'email' => auth()->user()->email] : null),
         showAuthModal: null,
         showQueue: false,
-        loginForm: { email: '', password: '', remember: false },
-        registerForm: { name: '', email: '', password: '', phone: '' },
+        loginForm: {
+            email: localStorage.getItem('remembered_email') || '',
+            password: '',
+            remember: localStorage.getItem('remembered_email') ? true : false
+        },
+        registerForm: { firstName: '', lastName: '', name: '', email: '', password: '', phone: '' },
         forgotForm: { email: '' },
         showPassword: false,
         showLoginPassword: false,
@@ -666,11 +1161,34 @@ function muzibuApp() {
         queue: [],
         queueIndex: 0,
         isLoading: false,
+        isLoggingOut: false,
         currentPath: window.location.pathname,
         _initialized: false,
         isDarkMode: localStorage.getItem('theme') === 'light' ? false : true,
         draggedIndex: null,
         dropTargetIndex: null,
+
+        // Crossfade settings (using Howler.js + HLS.js)
+        crossfadeEnabled: true,
+        crossfadeDuration: 6000, // 6 seconds for automatic song transitions
+        fadeOutDuration: 1000, // 1 second for pause/play/manual change fade
+        isCrossfading: false,
+        howl: null, // Current Howler instance (for MP3)
+        howlNext: null, // Next song Howler instance for crossfade
+        hls: null, // Current HLS.js instance
+        hlsNext: null, // Next HLS.js instance for crossfade
+        isHlsStream: false, // Whether current stream is HLS
+        activeHlsAudioId: 'hlsAudio', // Which HLS audio element is active ('hlsAudio' or 'hlsAudioNext')
+        progressInterval: null, // Interval for updating progress
+        _fadeAnimation: null, // For requestAnimationFrame fade
+
+        // Get the currently active HLS audio element
+        getActiveHlsAudio() {
+            if (this.activeHlsAudioId === 'hlsAudioNext') {
+                return document.getElementById('hlsAudioNext');
+            }
+            return this.$refs.hlsAudio;
+        },
 
         init() {
             // Prevent double initialization
@@ -680,10 +1198,7 @@ function muzibuApp() {
             }
             this._initialized = true;
 
-            console.log('Muzibu initialized');
-            if (this.$refs.audio) {
-                this.$refs.audio.volume = this.volume / 100;
-            }
+            console.log('Muzibu initialized with Howler.js');
 
             // User already loaded from Laravel backend (no need for API check)
             console.log('Muzibu initialized', { isLoggedIn: this.isLoggedIn, user: this.currentUser });
@@ -753,13 +1268,40 @@ function muzibuApp() {
                 return;
             }
 
-            this.isPlaying = !this.isPlaying;
-            const audio = this.$refs.audio;
-            if (audio) {
-                if (this.isPlaying) {
-                    audio.play();
-                } else {
-                    audio.pause();
+            const targetVolume = this.isMuted ? 0 : this.volume / 100;
+
+            if (this.isPlaying) {
+                // Fade out then pause
+                if (this.howl) {
+                    const currentVolume = this.howl.volume();
+                    this.howl.fade(currentVolume, 0, this.fadeOutDuration);
+                    this.howl.once('fade', () => {
+                        this.howl.pause();
+                        this.isPlaying = false;
+                    });
+                } else if (this.hls) {
+                    const audio = this.getActiveHlsAudio();
+                    if (audio) {
+                        await this.fadeAudioElement(audio, audio.volume, 0, this.fadeOutDuration);
+                        audio.pause();
+                        this.isPlaying = false;
+                    }
+                }
+            } else {
+                // Fade in then play
+                if (this.howl) {
+                    this.howl.volume(0);
+                    this.howl.play();
+                    this.howl.fade(0, targetVolume, this.fadeOutDuration);
+                    this.isPlaying = true;
+                } else if (this.hls) {
+                    const audio = this.getActiveHlsAudio();
+                    if (audio) {
+                        audio.volume = 0;
+                        await audio.play();
+                        this.fadeAudioElement(audio, 0, targetVolume, this.fadeOutDuration);
+                        this.isPlaying = true;
+                    }
                 }
             }
         },
@@ -858,27 +1400,276 @@ function muzibuApp() {
 
         toggleMute() {
             this.isMuted = !this.isMuted;
-            if (this.$refs.audio) {
-                this.$refs.audio.muted = this.isMuted;
+            if (this.howl) {
+                this.howl.mute(this.isMuted);
+            }
+            if (this.hls) {
+                const audio = this.getActiveHlsAudio();
+                if (audio) {
+                    audio.muted = this.isMuted;
+                }
             }
         },
 
-        updateProgress() {
-            const audio = this.$refs.audio;
-            if (audio) {
-                this.currentTime = audio.currentTime;
-                this.duration = audio.duration || 240;
+        // Progress tracking is handled by Howler.js in loadAndPlaySong()
+
+        // Get index of next song (considering repeat and shuffle)
+        getNextSongIndex() {
+            if (this.repeatMode === 'one') {
+                return this.queueIndex; // Same song
             }
+
+            if (this.queueIndex < this.queue.length - 1) {
+                return this.queueIndex + 1;
+            } else if (this.repeatMode === 'all') {
+                return 0; // Loop back
+            }
+
+            return -1; // No next song
+        },
+
+        // Start crossfade transition (using Howler.js)
+        async startCrossfade() {
+            if (this.isCrossfading) return;
+
+            // Check if any player is active (Howler OR HLS)
+            const hasActiveHowler = this.howl && this.howl.playing();
+            const audio = this.$refs.hlsAudio;
+            const hasActiveHls = this.hls && audio && !audio.paused;
+
+            if (!hasActiveHowler && !hasActiveHls) return;
+
+            const nextIndex = this.getNextSongIndex();
+            if (nextIndex === -1) return;
+
+            const nextSong = this.queue[nextIndex];
+            if (!nextSong) return;
+
+            this.isCrossfading = true;
+            console.log('Starting crossfade...');
+
+            const self = this;
+            const targetVolume = this.isMuted ? 0 : this.volume / 100;
+
+            // Get next song URL and type
+            try {
+                const response = await fetch(`/api/muzibu/songs/${nextSong.song_id}/stream`);
+                const data = await response.json();
+
+                if (!data.stream_url) {
+                    this.isCrossfading = false;
+                    return;
+                }
+
+                const nextStreamType = data.stream_type || 'mp3';
+                const nextIsHls = nextStreamType === 'hls';
+
+                console.log('Next song type:', nextStreamType, 'URL:', data.stream_url);
+
+                // Create next player based on stream type
+                if (nextIsHls) {
+                    // Create HLS player for next song
+                    await this.createNextHlsPlayer(data.stream_url, targetVolume);
+                } else {
+                    // Create Howler for next song (MP3)
+                    this.createNextHowlerPlayer(data.stream_url, targetVolume);
+                }
+
+                // Fade out current player (Howler or HLS)
+                if (hasActiveHowler) {
+                    this.howl.fade(targetVolume, 0, this.crossfadeDuration);
+                } else if (hasActiveHls) {
+                    this.fadeAudioElement(audio, audio.volume, 0, this.crossfadeDuration);
+                }
+
+                // After crossfade duration, complete the transition
+                setTimeout(() => {
+                    this.completeCrossfade(nextIndex, nextIsHls);
+                }, this.crossfadeDuration);
+
+            } catch (error) {
+                console.error('Crossfade error:', error);
+                this.isCrossfading = false;
+            }
+        },
+
+        // Create next Howler player for crossfade
+        createNextHowlerPlayer(url, targetVolume) {
+            const self = this;
+
+            // Determine format from URL
+            let format = ['mp3'];
+            if (url.includes('.ogg')) format = ['ogg'];
+            else if (url.includes('.wav')) format = ['wav'];
+            else if (url.includes('.webm')) format = ['webm'];
+
+            this.howlNext = new Howl({
+                src: [url],
+                format: format,
+                html5: true,
+                volume: 0,
+                onplay: function() {
+                    // Fade in next song
+                    self.howlNext.fade(0, targetVolume, self.crossfadeDuration);
+                },
+                onloaderror: function(id, error) {
+                    console.error('Howler load error (crossfade):', error);
+                }
+            });
+
+            // Start playing next
+            this.howlNext.play();
+        },
+
+        // Create next HLS player for crossfade
+        async createNextHlsPlayer(url, targetVolume) {
+            const self = this;
+
+            // Create a second audio element for crossfade
+            let nextAudio = document.getElementById('hlsAudioNext');
+            if (!nextAudio) {
+                nextAudio = document.createElement('audio');
+                nextAudio.id = 'hlsAudioNext';
+                nextAudio.style.display = 'none';
+                document.body.appendChild(nextAudio);
+            }
+
+            return new Promise((resolve, reject) => {
+                if (Hls.isSupported()) {
+                    this.hlsNext = new Hls({
+                        enableWorker: true,
+                        lowLatencyMode: false
+                    });
+
+                    this.hlsNext.loadSource(url);
+                    this.hlsNext.attachMedia(nextAudio);
+
+                    this.hlsNext.on(Hls.Events.MANIFEST_PARSED, function() {
+                        nextAudio.volume = 0;
+                        nextAudio.play().then(() => {
+                            // Fade in next HLS stream
+                            self.fadeAudioElement(nextAudio, 0, targetVolume, self.crossfadeDuration);
+                            resolve();
+                        }).catch(e => {
+                            console.error('HLS crossfade play error:', e);
+                            reject(e);
+                        });
+                    });
+
+                    this.hlsNext.on(Hls.Events.ERROR, function(event, data) {
+                        if (data.fatal) {
+                            console.error('HLS crossfade fatal error:', data);
+                            reject(data);
+                        }
+                    });
+                } else if (nextAudio.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Native HLS support (Safari)
+                    nextAudio.src = url;
+                    nextAudio.volume = 0;
+                    nextAudio.play().then(() => {
+                        self.fadeAudioElement(nextAudio, 0, targetVolume, self.crossfadeDuration);
+                        resolve();
+                    }).catch(reject);
+                } else {
+                    console.error('HLS not supported for crossfade');
+                    reject(new Error('HLS not supported'));
+                }
+            });
+        },
+
+        // Complete the crossfade transition
+        completeCrossfade(nextIndex, nextIsHls = false) {
+            // Stop and unload old Howler
+            if (this.howl) {
+                this.howl.stop();
+                this.howl.unload();
+                this.howl = null;
+            }
+
+            // Stop and unload old HLS
+            if (this.hls) {
+                const oldAudio = this.$refs.hlsAudio;
+                if (oldAudio) {
+                    oldAudio.pause();
+                    oldAudio.src = '';
+                }
+                this.hls.destroy();
+                this.hls = null;
+            }
+
+            // Clear old progress interval
+            if (this.progressInterval) {
+                clearInterval(this.progressInterval);
+            }
+
+            // Swap next player to current based on type
+            if (nextIsHls) {
+                // HLS crossfade - swap hlsNext to hls
+                this.hls = this.hlsNext;
+                this.hlsNext = null;
+                this.isHlsStream = true;
+
+                // Mark hlsAudioNext as the active audio element
+                this.activeHlsAudioId = 'hlsAudioNext';
+
+                // Get reference to the next audio element (now becomes main)
+                const nextAudio = document.getElementById('hlsAudioNext');
+                if (nextAudio) {
+                    this.duration = nextAudio.duration || 0;
+
+                    // Set up ended handler for the new audio
+                    const self = this;
+                    nextAudio.onended = function() {
+                        if (!self.isCrossfading) {
+                            self.onTrackEnded();
+                        }
+                    };
+                }
+
+                // Start progress tracking with next audio element
+                this.startProgressTrackingWithElement(nextAudio);
+
+            } else {
+                // MP3 crossfade - swap howlNext to howl
+                this.howl = this.howlNext;
+                this.howlNext = null;
+                this.isHlsStream = false;
+
+                // Get duration and start tracking
+                if (this.howl) {
+                    this.duration = this.howl.duration();
+                }
+                this.startProgressTracking('howler');
+            }
+
+            // Update queue index and current song
+            this.queueIndex = nextIndex;
+            this.currentSong = this.queue[nextIndex];
+
+            // Reset crossfade state
+            this.isCrossfading = false;
+
+            console.log('Crossfade complete, now playing:', this.currentSong?.song_title?.tr);
         },
 
         seekTo(e) {
             const bar = e.currentTarget;
             const rect = bar.getBoundingClientRect();
             const percent = (e.clientX - rect.left) / rect.width;
-            const audio = this.$refs.audio;
-            if (audio && audio.duration) {
-                audio.currentTime = audio.duration * percent;
+            const newTime = this.duration * percent;
+
+            if (this.howl && this.duration) {
+                this.howl.seek(newTime);
             }
+            if (this.hls) {
+                const audio = this.getActiveHlsAudio();
+                if (audio && this.duration) {
+                    audio.currentTime = newTime;
+                }
+            }
+
+            this.currentTime = newTime;
+            this.progressPercent = percent * 100;
         },
 
         setVolume(e) {
@@ -886,27 +1677,48 @@ function muzibuApp() {
             const rect = bar.getBoundingClientRect();
             const percent = (e.clientX - rect.left) / rect.width;
             this.volume = Math.max(0, Math.min(100, percent * 100));
-            if (this.$refs.audio) {
-                this.$refs.audio.volume = this.volume / 100;
+
+            const volumeValue = this.volume / 100;
+
+            if (this.howl) {
+                this.howl.volume(volumeValue);
             }
+            if (this.hls) {
+                const audio = this.getActiveHlsAudio();
+                if (audio) {
+                    audio.volume = volumeValue;
+                }
+            }
+
             if (this.isMuted && this.volume > 0) {
                 this.isMuted = false;
-                if (this.$refs.audio) {
-                    this.$refs.audio.muted = false;
+                if (this.howl) {
+                    this.howl.mute(false);
+                }
+                if (this.hls) {
+                    const audio = this.getActiveHlsAudio();
+                    if (audio) {
+                        audio.muted = false;
+                    }
                 }
             }
         },
 
-        onMetadataLoaded() {
-            if (this.$refs.audio) {
-                this.duration = this.$refs.audio.duration;
-            }
-        },
+        // Metadata is handled by Howler.js onload callback
 
         onTrackEnded() {
             if (this.repeatMode === 'one') {
-                if (this.$refs.audio) {
-                    this.$refs.audio.play();
+                // Repeat current song
+                if (this.howl) {
+                    this.howl.seek(0);
+                    this.howl.play();
+                }
+                if (this.hls) {
+                    const audio = this.getActiveHlsAudio();
+                    if (audio) {
+                        audio.currentTime = 0;
+                        audio.play();
+                    }
                 }
             } else {
                 this.nextTrack();
@@ -1007,10 +1819,40 @@ function muzibuApp() {
             try {
                 const response = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
                 const data = await response.json();
-                await this.loadAndPlaySong(data.stream_url);
+
+                // Pass stream type from API response ('hls' or 'mp3')
+                const streamType = data.stream_type || 'mp3';
+                console.log('Playing song:', data.stream_url, 'Type:', streamType);
+                await this.loadAndPlaySong(data.stream_url, streamType);
+
+                // Prefetch HLS for next songs in queue (background)
+                this.prefetchHlsForQueue(index);
             } catch (error) {
                 console.error('Failed to load song:', error);
                 this.showToast('Şarkı yüklenemedi', 'error');
+            }
+        },
+
+        // Prefetch HLS conversion for upcoming songs in queue
+        prefetchHlsForQueue(currentIndex) {
+            // Prefetch next 3 songs (or remaining songs if less)
+            const prefetchCount = 3;
+            const startIndex = currentIndex + 1;
+            const endIndex = Math.min(startIndex + prefetchCount, this.queue.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const song = this.queue[i];
+                if (song && song.song_id) {
+                    // Fire and forget - just trigger the API to start HLS conversion
+                    fetch(`/api/muzibu/songs/${song.song_id}/stream`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.hls_converting) {
+                                console.log(`HLS prefetch started for: ${song.song_title?.tr || song.song_id}`);
+                            }
+                        })
+                        .catch(() => {}); // Ignore errors for prefetch
+                }
             }
         },
 
@@ -1038,32 +1880,274 @@ function muzibuApp() {
             @endauth
         },
 
-        async loadAndPlaySong(url) {
-            const audio = this.$refs.audio;
-            if (!audio) return;
+        async loadAndPlaySong(url, streamType = null) {
+            const self = this;
+            const targetVolume = this.isMuted ? 0 : this.volume / 100;
 
-            // Stop current playback first
-            if (!audio.paused) {
-                audio.pause();
+            // Stop and fade out current playback
+            await this.stopCurrentPlayback();
+
+            // Clear progress interval
+            if (this.progressInterval) {
+                clearInterval(this.progressInterval);
             }
 
-            // Reset audio element
-            audio.src = url;
-            audio.load();
+            // Use stream type from API if provided, otherwise detect from URL
+            let useHls = false;
+            if (streamType) {
+                useHls = streamType === 'hls';
+            } else {
+                // Fallback: detect from URL
+                const isDirectAudio = url.match(/\.(mp3|ogg|wav|webm|aac|m4a)(\?|$)/i);
+                const isHlsUrl = url.includes('.m3u8') || url.includes('m3u8') || url.includes('/hls/');
+                useHls = isHlsUrl || !isDirectAudio;
+            }
 
-            try {
-                // Wait a bit for load to complete
-                await new Promise(resolve => setTimeout(resolve, 100));
-                await audio.play();
-                this.isPlaying = true;
-            } catch (error) {
-                // Ignore AbortError (happens when rapidly clicking play buttons)
-                if (error.name !== 'AbortError') {
-                    console.error('Playback error:', error);
-                    this.isPlaying = false;
-                    this.showToast('Çalma hatası', 'error');
+            console.log('loadAndPlaySong:', { url, streamType, useHls });
+
+            if (useHls) {
+                this.isHlsStream = true;
+                await this.playHlsStream(url, targetVolume);
+            } else {
+                this.isHlsStream = false;
+                await this.playWithHowler(url, targetVolume);
+            }
+        },
+
+        // Stop current playback with fade out
+        async stopCurrentPlayback() {
+            const targetVolume = this.volume / 100;
+
+            // Stop Howler if playing
+            if (this.howl) {
+                if (this.howl.playing()) {
+                    await new Promise(resolve => {
+                        const currentVolume = this.howl.volume();
+                        this.howl.fade(currentVolume, 0, this.fadeOutDuration);
+                        this.howl.once('fade', () => {
+                            this.howl.stop();
+                            this.howl.unload();
+                            this.howl = null;
+                            resolve();
+                        });
+                    });
+                } else {
+                    this.howl.unload();
+                    this.howl = null;
                 }
             }
+
+            // Stop HLS if playing (check both audio elements)
+            if (this.hls) {
+                const audio = this.getActiveHlsAudio();
+                if (audio && !audio.paused) {
+                    await this.fadeAudioElement(audio, audio.volume, 0, this.fadeOutDuration);
+                    audio.pause();
+                }
+                this.hls.destroy();
+                this.hls = null;
+            }
+
+            // Also clean up hlsAudioNext if exists
+            const nextAudio = document.getElementById('hlsAudioNext');
+            if (nextAudio) {
+                nextAudio.pause();
+                nextAudio.src = '';
+            }
+
+            // Reset active HLS audio to default
+            this.activeHlsAudioId = 'hlsAudio';
+        },
+
+        // Play using Howler.js (for MP3, etc.)
+        async playWithHowler(url, targetVolume) {
+            const self = this;
+
+            // Determine format from URL or default to mp3
+            let format = ['mp3'];
+            if (url.includes('.ogg')) format = ['ogg'];
+            else if (url.includes('.wav')) format = ['wav'];
+            else if (url.includes('.webm')) format = ['webm'];
+
+            this.howl = new Howl({
+                src: [url],
+                format: format,
+                html5: true,
+                volume: 0,
+                onload: function() {
+                    self.duration = self.howl.duration();
+                    console.log('Howler loaded, duration:', self.duration);
+                },
+                onplay: function() {
+                    self.isPlaying = true;
+                    self.startProgressTracking('howler');
+                },
+                onend: function() {
+                    if (!self.isCrossfading) {
+                        self.onTrackEnded();
+                    }
+                },
+                onloaderror: function(id, error) {
+                    console.error('Howler load error:', error);
+                    // Fallback to HLS.js if Howler fails
+                    console.log('Trying HLS.js fallback...');
+                    self.playHlsStream(url, targetVolume);
+                },
+                onplayerror: function(id, error) {
+                    console.error('Howler play error:', error);
+                    self.showToast('Çalma hatası', 'error');
+                    self.isPlaying = false;
+                }
+            });
+
+            this.howl.play();
+            this.howl.fade(0, targetVolume, this.fadeOutDuration);
+            this.isPlaying = true;
+        },
+
+        // Play using HLS.js (for HLS streams)
+        async playHlsStream(url, targetVolume) {
+            const self = this;
+            const audio = this.$refs.hlsAudio;
+
+            if (!audio) {
+                console.error('HLS audio element not found');
+                return;
+            }
+
+            // Check HLS.js support
+            if (Hls.isSupported()) {
+                this.hls = new Hls({
+                    enableWorker: true,
+                    lowLatencyMode: false
+                });
+
+                this.hls.loadSource(url);
+                this.hls.attachMedia(audio);
+
+                this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    audio.volume = 0;
+                    audio.play().then(() => {
+                        self.isPlaying = true;
+                        self.fadeAudioElement(audio, 0, targetVolume, self.fadeOutDuration);
+                        self.startProgressTracking('hls');
+                    }).catch(e => {
+                        console.error('HLS play error:', e);
+                        self.showToast('Çalma hatası', 'error');
+                    });
+                });
+
+                this.hls.on(Hls.Events.ERROR, function(event, data) {
+                    if (data.fatal) {
+                        console.error('HLS fatal error:', data);
+                        self.showToast('Şarkı yüklenemedi', 'error');
+                        self.isPlaying = false;
+                    }
+                });
+
+                // Handle track end
+                audio.onended = function() {
+                    if (!self.isCrossfading) {
+                        self.onTrackEnded();
+                    }
+                };
+
+                // Get duration when available
+                audio.onloadedmetadata = function() {
+                    self.duration = audio.duration;
+                    console.log('HLS loaded, duration:', self.duration);
+                };
+            } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+                // Native HLS support (Safari)
+                audio.src = url;
+                audio.volume = 0;
+                audio.play().then(() => {
+                    self.isPlaying = true;
+                    self.fadeAudioElement(audio, 0, targetVolume, self.fadeOutDuration);
+                    self.startProgressTracking('hls');
+                });
+            } else {
+                console.error('HLS not supported');
+                this.showToast('HLS desteklenmiyor', 'error');
+            }
+        },
+
+        // Fade audio element volume using requestAnimationFrame
+        fadeAudioElement(audio, fromVolume, toVolume, duration) {
+            return new Promise(resolve => {
+                if (this._fadeAnimation) cancelAnimationFrame(this._fadeAnimation);
+
+                const startTime = performance.now();
+                const volumeDiff = toVolume - fromVolume;
+
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+
+                    audio.volume = fromVolume + (volumeDiff * progress);
+
+                    if (progress < 1) {
+                        this._fadeAnimation = requestAnimationFrame(animate);
+                    } else {
+                        audio.volume = toVolume;
+                        resolve();
+                    }
+                };
+
+                this._fadeAnimation = requestAnimationFrame(animate);
+            });
+        },
+
+        // Start progress tracking for either Howler or HLS
+        startProgressTracking(type) {
+            const self = this;
+
+            this.progressInterval = setInterval(() => {
+                let currentTime = 0;
+                let isCurrentlyPlaying = false;
+
+                if (type === 'howler' && this.howl) {
+                    currentTime = this.howl.seek();
+                    isCurrentlyPlaying = this.howl.playing();
+                } else if (type === 'hls') {
+                    const audio = this.$refs.hlsAudio;
+                    if (audio) {
+                        currentTime = audio.currentTime;
+                        isCurrentlyPlaying = !audio.paused;
+                    }
+                }
+
+                if (isCurrentlyPlaying && this.duration > 0) {
+                    this.currentTime = currentTime;
+                    this.progressPercent = (currentTime / this.duration) * 100;
+
+                    // Check for crossfade at end of song
+                    const timeRemaining = this.duration - currentTime;
+                    if (this.crossfadeEnabled && timeRemaining <= (this.crossfadeDuration / 1000) && timeRemaining > 0 && !this.isCrossfading) {
+                        this.startCrossfade();
+                    }
+                }
+            }, 100);
+        },
+
+        // Start progress tracking with a specific audio element (for HLS crossfade)
+        startProgressTrackingWithElement(audioElement) {
+            const self = this;
+
+            if (!audioElement) return;
+
+            this.progressInterval = setInterval(() => {
+                if (!audioElement.paused && this.duration > 0) {
+                    this.currentTime = audioElement.currentTime;
+                    this.progressPercent = (this.currentTime / this.duration) * 100;
+
+                    // Check for crossfade at end of song
+                    const timeRemaining = this.duration - this.currentTime;
+                    if (this.crossfadeEnabled && timeRemaining <= (this.crossfadeDuration / 1000) && timeRemaining > 0 && !this.isCrossfading) {
+                        this.startCrossfade();
+                    }
+                }
+            }, 100);
         },
 
         // SPA Navigation: Navigate to URL
@@ -1148,8 +2232,8 @@ function muzibuApp() {
             // If removing current song, stop playback
             if (index === this.queueIndex) {
                 this.isPlaying = false;
-                if (this.$refs.audio) {
-                    this.$refs.audio.pause();
+                if (this.howl) {
+                    this.howl.stop();
                 }
             }
 
@@ -1197,12 +2281,18 @@ function muzibuApp() {
                 const data = await response.json();
 
                 if (response.ok && data.success) {
+                    // Beni Hatırla - email'i kaydet veya sil
+                    if (this.loginForm.remember) {
+                        localStorage.setItem('remembered_email', this.loginForm.email);
+                    } else {
+                        localStorage.removeItem('remembered_email');
+                    }
+
                     this.isLoggedIn = true;
                     this.currentUser = data.user;
                     this.showAuthModal = null;
-                    this.loginForm = { email: '', password: '', remember: false };
                     this.showToast('Başarıyla giriş yapıldı!', 'success');
-                    location.reload(); // Reload to update sidebar
+                    location.reload();
                 } else {
                     this.showToast(data.message || 'Giriş başarısız', 'error');
                 }
@@ -1234,7 +2324,7 @@ function muzibuApp() {
                     this.isLoggedIn = true;
                     this.currentUser = data.user;
                     this.showAuthModal = null;
-                    this.registerForm = { name: '', email: '', password: '', company: '' };
+                    this.registerForm = { firstName: '', lastName: '', name: '', email: '', password: '', phone: '' };
                     this.showToast('Hesabınız oluşturuldu! 7 günlük deneme başladı.', 'success');
                     location.reload(); // Reload to update sidebar
                 } else {
@@ -1283,29 +2373,34 @@ function muzibuApp() {
         },
 
         async logout() {
+            // Çift tıklamayı engelle
+            if (this.isLoggingOut) return;
+
+            // Hemen UI'ı güncelle
+            this.isLoggingOut = true;
+            this.isLoggedIn = false;
+            this.currentUser = null;
+            this.showAuthModal = null;
+
             try {
-                const response = await fetch('/api/auth/logout', {
+                // Logout isteğini BEKLE
+                const response = await fetch('/logout', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
                     },
                     credentials: 'same-origin'
                 });
 
-                if (response.ok) {
-                    this.isLoggedIn = false;
-                    this.currentUser = null;
-                    this.showAuthModal = null;
-                    this.showToast('Çıkış yapıldı', 'info');
-                    location.reload(); // Reload to clear user data
-                }
+                // Kısa bekle ve sayfayı yenile (cache'siz)
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 100);
             } catch (error) {
                 console.error('Logout error:', error);
-                // Still logout on frontend
-                this.isLoggedIn = false;
-                this.currentUser = null;
-                location.reload();
+                window.location.reload(true);
             }
         },
 
@@ -1368,19 +2463,21 @@ function muzibuApp() {
         },
 
         validateName() {
-            const name = this.registerForm.name.trim();
-            if (name.length < 2) {
-                this.registerValidation.name.valid = false;
-                this.registerValidation.name.message = 'Ad soyad en az 2 karakter olmalıdır';
-            } else if (!/^[a-zA-ZğüşöçıİĞÜŞÖÇ\s]+$/.test(name)) {
-                this.registerValidation.name.valid = false;
-                this.registerValidation.name.message = 'Sadece harf ve boşluk kullanılabilir';
-            } else if (name.split(' ').length < 2) {
-                this.registerValidation.name.valid = false;
-                this.registerValidation.name.message = 'Lütfen ad ve soyadınızı giriniz';
-            } else {
+            const firstName = this.registerForm.firstName.trim();
+            const lastName = this.registerForm.lastName.trim();
+
+            // Birleşik name'i güncelle (API için)
+            this.registerForm.name = (firstName + ' ' + lastName).trim();
+
+            // Validation
+            if (firstName.length >= 2 && lastName.length >= 2 &&
+                /^[a-zA-ZğüşöçıİĞÜŞÖÇ]+$/.test(firstName) &&
+                /^[a-zA-ZğüşöçıİĞÜŞÖÇ]+$/.test(lastName)) {
                 this.registerValidation.name.valid = true;
                 this.registerValidation.name.message = '';
+            } else {
+                this.registerValidation.name.valid = false;
+                this.registerValidation.name.message = 'Ad ve soyad en az 2 karakter olmalıdır';
             }
         },
 

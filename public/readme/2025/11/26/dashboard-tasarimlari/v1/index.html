@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard V1 - Minimal & Clean</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --tblr-primary: #206bc4;
+            --tblr-bg-surface: #1a1d21;
+            --tblr-body-bg: #141619;
+        }
+        body {
+            background: var(--tblr-body-bg);
+            min-height: 100vh;
+        }
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        .welcome-section h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .welcome-section p {
+            opacity: 0.9;
+            margin: 0;
+        }
+        .stat-card {
+            background: var(--tblr-bg-surface);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .stat-label {
+            color: #6c7a89;
+            font-size: 0.875rem;
+        }
+        .quick-action-card {
+            background: var(--tblr-bg-surface);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        .quick-action-card:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: var(--tblr-primary);
+            color: inherit;
+        }
+        .quick-action-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        .quick-action-title {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .quick-action-desc {
+            font-size: 0.8rem;
+            color: #6c7a89;
+        }
+        .module-card {
+            background: var(--tblr-bg-surface);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .module-card-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .module-card-title {
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .activity-item {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+        .activity-content {
+            flex: 1;
+        }
+        .activity-title {
+            color: #fff;
+            font-size: 0.875rem;
+            margin-bottom: 2px;
+        }
+        .activity-time {
+            color: #6c7a89;
+            font-size: 0.75rem;
+        }
+        .info-badge {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="theme-dark">
+    <div class="page-wrapper">
+        <div class="page-body">
+            <div class="container-xl py-4">
+
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h1>Hoş geldin, Nurullah!</h1>
+                            <p>Bugün sistemde 3 yeni güncelleme var. Hızlı işlemlerle başlayabilirsin.</p>
+                        </div>
+                        <div class="col-auto d-none d-md-block">
+                            <div class="d-flex gap-2">
+                                <span class="info-badge"><i class="fas fa-bell me-1"></i> 3 Bildirim</span>
+                                <span class="info-badge"><i class="fas fa-tasks me-1"></i> 5 Görev</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                    <i class="fas fa-coins text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="stat-value">24.5</div>
+                                    <div class="stat-label">AI Kredisi</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                    <i class="fas fa-file-alt text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="stat-value">48</div>
+                                    <div class="stat-label">Sayfalar</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                                    <i class="fas fa-users text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="stat-value">1,247</div>
+                                    <div class="stat-label">Kullanıcılar</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="stat-card">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                    <i class="fas fa-eye text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="stat-value">8.2K</div>
+                                    <div class="stat-label">Ziyaretler</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="row g-4">
+                    <!-- Left Column - Quick Actions -->
+                    <div class="col-lg-8">
+                        <div class="module-card mb-4">
+                            <div class="module-card-header">
+                                <div class="module-card-title">
+                                    <i class="fas fa-bolt text-warning"></i> Hızlı İşlemler
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <a href="#" class="quick-action-card">
+                                            <div class="quick-action-icon" style="background: rgba(239, 68, 68, 0.2);">
+                                                <i class="fas fa-plus text-danger"></i>
+                                            </div>
+                                            <div>
+                                                <div class="quick-action-title">Yeni Sayfa</div>
+                                                <div class="quick-action-desc">Sayfa oluştur</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="#" class="quick-action-card">
+                                            <div class="quick-action-icon" style="background: rgba(34, 197, 94, 0.2);">
+                                                <i class="fas fa-pen-fancy text-success"></i>
+                                            </div>
+                                            <div>
+                                                <div class="quick-action-title">Yeni Blog</div>
+                                                <div class="quick-action-desc">Blog yazısı ekle</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="#" class="quick-action-card">
+                                            <div class="quick-action-icon" style="background: rgba(139, 92, 246, 0.2);">
+                                                <i class="fas fa-robot text-purple"></i>
+                                            </div>
+                                            <div>
+                                                <div class="quick-action-title">AI Asistan</div>
+                                                <div class="quick-action-desc">Yapay zeka yardımı</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="#" class="quick-action-card">
+                                            <div class="quick-action-icon" style="background: rgba(59, 130, 246, 0.2);">
+                                                <i class="fas fa-cog text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="quick-action-title">Ayarlar</div>
+                                                <div class="quick-action-desc">Sistem ayarları</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="module-card">
+                            <div class="module-card-header">
+                                <div class="module-card-title">
+                                    <i class="fas fa-history text-info"></i> Son Aktiviteler
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Tümünü Gör</a>
+                            </div>
+                            <div>
+                                <div class="activity-item">
+                                    <div class="activity-avatar" style="background: rgba(34, 197, 94, 0.2);">
+                                        <i class="fas fa-check text-success"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Yeni sayfa oluşturuldu: "Hakkımızda"</div>
+                                        <div class="activity-time">2 dakika önce</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-avatar" style="background: rgba(59, 130, 246, 0.2);">
+                                        <i class="fas fa-edit text-primary"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Blog yazısı güncellendi: "2024 Trendleri"</div>
+                                        <div class="activity-time">15 dakika önce</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-avatar" style="background: rgba(139, 92, 246, 0.2);">
+                                        <i class="fas fa-user-plus text-purple"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Yeni kullanıcı kaydı: mehmet@example.com</div>
+                                        <div class="activity-time">1 saat önce</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-lg-4">
+                        <!-- Profile Card -->
+                        <div class="module-card mb-4">
+                            <div class="module-card-header">
+                                <div class="module-card-title">
+                                    <i class="fas fa-user text-primary"></i> Profilim
+                                </div>
+                            </div>
+                            <div class="p-3 text-center">
+                                <div class="avatar avatar-xl mb-3" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                    <span class="text-white" style="font-size: 1.5rem;">N</span>
+                                </div>
+                                <h4 class="text-white mb-1">Nurullah</h4>
+                                <div class="text-muted mb-3">Administrator</div>
+                                <div class="d-flex justify-content-center gap-4">
+                                    <div class="text-center">
+                                        <div class="text-white fw-bold">48</div>
+                                        <div class="text-muted small">İçerik</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-white fw-bold">12</div>
+                                        <div class="text-muted small">Modül</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-white fw-bold">365</div>
+                                        <div class="text-muted small">Gün</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- System Status -->
+                        <div class="module-card">
+                            <div class="module-card-header">
+                                <div class="module-card-title">
+                                    <i class="fas fa-server text-success"></i> Sistem Durumu
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <span class="text-muted">PHP</span>
+                                    <span class="badge bg-success-lt text-success">8.3.28</span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <span class="text-muted">Laravel</span>
+                                    <span class="badge bg-success-lt text-success">11.x</span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <span class="text-muted">Database</span>
+                                    <span class="badge bg-success-lt text-success">Bağlı</span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-muted">Cache</span>
+                                    <span class="badge bg-success-lt text-success">Aktif</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+</body>
+</html>

@@ -8,8 +8,8 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
+use Modules\UserManagement\App\Http\Livewire\Traits\WithImageUpload;
 use Modules\ModuleManagement\App\Models\Module;
 use Modules\UserManagement\App\Models\UserModulePermission;
 use Illuminate\Support\Facades\Cache;
@@ -18,13 +18,12 @@ use Illuminate\Support\Facades\Log;
 #[Layout('admin.layout')]
 class UserManageComponent extends Component
 {
-    use WithFileUploads;
+    use WithImageUpload;
 
     public $userId;
     public $inputs = [];
     public $allRoles;
     public $allPermissions;
-    public $temporaryImages = [];
     
     // Modül izinleri için
     public $modulePermissions = [];

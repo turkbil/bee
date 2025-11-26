@@ -67,37 +67,40 @@
                             </small>
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" wire:model="useSiteSettings" {{ $isGenerating ? 'disabled' : '' }} checked>
+                                <span class="form-check-label">🏢 Site Ayarlarını Kullan</span>
+                            </label>
+                            <small class="form-hint text-muted">
+                                Tenant'a özel sektör ve marka bilgilerini prompt'a ekler ({{ setting('site_name') ?? 'Site' }} için optimize eder)
+                            </small>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">Boyut</label>
                                     <select wire:model="size" class="form-select" {{ $isGenerating ? 'disabled' : '' }}>
+                                        <option value="1472x832">1472x832 (Yatay - Blog)</option>
                                         <option value="1024x1024">1024x1024 (Kare)</option>
-                                        <option value="1024x1792">1024x1792 (Dikey)</option>
-                                        <option value="1792x1024">1792x1024 (Yatay)</option>
+                                        <option value="832x1472">832x1472 (Dikey)</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">Fotoğraf Stili</label>
+                                    <label class="form-label">Leonardo Stili</label>
                                     <select wire:model="style" class="form-select" {{ $isGenerating ? 'disabled' : '' }}>
-                                        <optgroup label="Gerçekçi Fotoğraf Stilleri">
-                                            <option value="ultra_photorealistic">Ultra Gerçekçi</option>
-                                            <option value="studio_photography">Stüdyo Fotoğrafı</option>
-                                            <option value="natural_light">Doğal Işık</option>
-                                            <option value="cinematic_photography">Sinematik</option>
-                                            <option value="documentary_style">Belgesel Tarzı</option>
-                                            <option value="commercial_photography">Ticari Fotoğraf</option>
-                                            <option value="portrait_photography">Portre Fotoğrafı</option>
-                                            <option value="macro_photography">Makro Fotoğraf</option>
-                                        </optgroup>
-                                        <optgroup label="Artistik & Dijital Stiller">
-                                            <option value="digital_art">Dijital Sanat</option>
-                                            <option value="illustration">İllüstrasyon</option>
-                                            <option value="3d_render">3D Render</option>
-                                            <option value="minimalist">Minimalist</option>
-                                        </optgroup>
+                                        <option value="cinematic">Sinematik</option>
+                                        <option value="cinematic_closeup">Sinematik Yakın Çekim</option>
+                                        <option value="dynamic">Dinamik</option>
+                                        <option value="film">Film</option>
+                                        <option value="hdr">HDR</option>
+                                        <option value="moody">Dramatik</option>
+                                        <option value="stock_photo">Stok Fotoğraf</option>
+                                        <option value="vibrant">Canlı Renkler</option>
+                                        <option value="neutral">Nötr</option>
                                     </select>
                                 </div>
                             </div>
@@ -150,13 +153,13 @@
                     </div>
                 </div>
 
-                {{-- DALL-E GPT-4 Revised Prompt --}}
+                {{-- OpenAI GPT-4 Enhanced Prompt --}}
                 @if ($revisedPrompt)
                     <div class="card mt-3">
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="fas fa-robot me-2"></i>
-                                DALL-E GPT-4 Tarafından Geliştirilen Prompt
+                                OpenAI GPT-4 ile Geliştirilen Prompt
                             </h3>
                             <div class="card-actions">
                                 <button type="button" class="btn btn-sm btn-ghost-secondary" onclick="copyRevisedPrompt()">
@@ -172,7 +175,7 @@
                                         <i class="fas fa-info-circle me-2"></i>
                                     </div>
                                     <div>
-                                        <strong>Otomatik İyileştirme:</strong> DALL-E 3, sizin promptunuzu GPT-4 ile otomatik olarak geliştirdi. İşte görseli oluşturmak için kullanılan nihai prompt:
+                                        <strong>OpenAI Prompt Enhancement:</strong> Promptunuz GPT-4 ile profesyonel fotoğraf talimatına dönüştürüldü ve Leonardo AI'a gönderildi:
                                     </div>
                                 </div>
                             </div>
@@ -237,8 +240,12 @@
                 <div class="card-body">
                     <div class="datagrid">
                         <div class="datagrid-item">
-                            <div class="datagrid-title">Model</div>
-                            <div class="datagrid-content">DALL-E 3</div>
+                            <div class="datagrid-title">Görsel Model</div>
+                            <div class="datagrid-content">Leonardo AI (Lucid Origin)</div>
+                        </div>
+                        <div class="datagrid-item">
+                            <div class="datagrid-title">Prompt Enhancer</div>
+                            <div class="datagrid-content">OpenAI GPT-4</div>
                         </div>
                         <div class="datagrid-item">
                             <div class="datagrid-title">Kredi Maliyeti</div>
@@ -279,6 +286,39 @@
         padding-top: 120px;
     }
     </style>
+
+    <!-- Rehber Linkleri -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-dark-lt">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="avatar avatar-lg bg-primary-lt">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-book" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0"></path><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0"></path><path d="M3 6l0 13"></path><path d="M12 6l0 13"></path><path d="M21 6l0 13"></path></svg>
+                            </span>
+                        </div>
+                        <div class="col">
+                            <h3 class="mb-1">Kullanım Kılavuzları</h3>
+                            <p class="text-muted mb-0">Görsel üretimi ve thumbnail sistemi hakkında detaylı bilgi</p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="btn-list">
+                                <a href="{{ route('admin.mediamanagement.11-kural-formulu') }}" target="_blank" class="btn btn-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 4h6a2 2 0 0 1 2 2v14l-5 -3l-5 3v-14a2 2 0 0 1 2 -2"></path></svg>
+                                    11 Kural Formülü
+                                </a>
+                                <a href="{{ route('admin.mediamanagement.thumbnail') }}" class="btn btn-outline-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon me-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M15 8h.01"></path><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z"></path><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5"></path><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3"></path></svg>
+                                    Thumbnail Kullanımı
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
     function copyRevisedPrompt() {

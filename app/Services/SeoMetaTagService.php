@@ -546,16 +546,8 @@ readonly class SeoMetaTagService
             }
             
             // 1. TITLE - Geliştirilmiş Hiyerarşi
-            \Log::debug('SEO TITLE CHECK', [
-                'locale' => $locale,
-                'has_seo_setting' => ($seoSetting ? 'YES' : 'NO'),
-                'hasDirectTitle' => ($seoSetting ? $seoSetting->hasDirectTitle($locale) : 'N/A'),
-                'seoTitle' => ($seoSetting ? $seoSetting->getTitle($locale) : 'N/A'),
-            ]);
-
             if ($seoSetting && $seoSetting->hasDirectTitle($locale) && $seoTitle = $seoSetting->getTitle($locale)) {
                 // 1. Öncelik: SEO ayarlarındaki manuel title
-                \Log::debug('SEO TITLE: Using SEO Setting', ['title' => $seoTitle]);
                 // Site name'i SettingManagement'ten al
                 $settingSiteName = setting('site_name') ?: setting('site_title', $siteName) ?: '';
                 $siteNameSafe = $siteName ?? '';
@@ -568,12 +560,10 @@ readonly class SeoMetaTagService
                 }
             } elseif (method_exists($model, 'getTranslated') && $modelTitle = $model->getTranslated('title', $locale)) {
                 // 2. Öncelik: Model'in title alanı + site name
-                \Log::debug('SEO TITLE: Using Model Title', ['title' => $modelTitle, 'locale' => $locale]);
                 $settingSiteName = setting('site_name') ?: setting('site_title', $siteName) ?: config('app.name');
                 $data['title'] = $modelTitle . ' - ' . $settingSiteName;
             } else {
                 // 3. Fallback: Sadece site default title
-                \Log::debug('SEO TITLE: Using Site Title Fallback');
                 $data['title'] = setting('site_name') ?: setting('site_title', $siteName) ?: config('app.name');
             }
             

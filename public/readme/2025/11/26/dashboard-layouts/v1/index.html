@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Layout V1 - Kompakt</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #1a1d21; min-height: 100vh; }
+        .welcome-compact {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .welcome-compact h2 { font-size: 1.25rem; margin: 0; color: #fff; }
+        .welcome-compact p { margin: 0; opacity: 0.8; font-size: 0.875rem; color: #fff; }
+        .stat-mini {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: #fff;
+        }
+        .stat-mini .value { font-weight: 700; font-size: 1.1rem; }
+        .stat-mini .label { font-size: 0.75rem; opacity: 0.8; }
+        .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .quick-card {
+            background: #242830;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .quick-card:hover {
+            background: #2d323c;
+            transform: translateY(-2px);
+            border-color: #667eea;
+        }
+        .quick-card .icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+        .quick-card .title { font-weight: 600; color: #fff; margin-bottom: 0.25rem; }
+        .quick-card .count { font-size: 0.8rem; color: #6c7a89; }
+        .section-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6c7a89;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+        .sidebar-card {
+            background: #242830;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .sidebar-card:last-child { margin-bottom: 0; }
+        .profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .profile-mini .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        .profile-mini .info .name { font-weight: 600; color: #fff; }
+        .profile-mini .info .role { font-size: 0.8rem; color: #6c7a89; }
+        .system-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .system-item:last-child { border-bottom: none; }
+        .system-item .label { color: #6c7a89; font-size: 0.875rem; }
+        .system-item .value { color: #10b981; font-size: 0.875rem; font-weight: 500; }
+        .ai-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            color: #fff;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+            transition: all 0.2s;
+        }
+        .ai-fab:hover { transform: scale(1.1); }
+        .recent-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .recent-item:last-child { border-bottom: none; }
+        .recent-item .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+        }
+        .recent-item .title { flex: 1; color: #fff; font-size: 0.875rem; }
+        .recent-item .time { color: #6c7a89; font-size: 0.75rem; }
+    </style>
+</head>
+<body class="theme-dark">
+    <div class="container-xl py-4">
+        <!-- Welcome Compact -->
+        <div class="welcome-compact">
+            <div>
+                <h2>Hos geldin, Nurullah!</h2>
+                <p>26 aktif modul</p>
+            </div>
+            <div class="d-flex gap-3">
+                <div class="stat-mini">
+                    <i class="fas fa-coins"></i>
+                    <div>
+                        <div class="value">174K</div>
+                        <div class="label">Kredi</div>
+                    </div>
+                </div>
+                <div class="stat-mini">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <div class="value">3</div>
+                        <div class="label">Kullanici</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sol - Hizli Islemler -->
+            <div class="col-lg-8">
+                <div class="section-title">Hizli Islemler</div>
+                <div class="quick-grid mb-4">
+                    <a href="#" class="quick-card">
+                        <div class="icon" style="background: rgba(239, 68, 68, 0.15);">
+                            <i class="fas fa-file-alt" style="color: #ef4444;"></i>
+                        </div>
+                        <div class="title">Sayfalar</div>
+                        <div class="count">25 sayfa</div>
+                    </a>
+                    <a href="#" class="quick-card">
+                        <div class="icon" style="background: rgba(245, 158, 11, 0.15);">
+                            <i class="fas fa-briefcase" style="color: #f59e0b;"></i>
+                        </div>
+                        <div class="title">Portfolio</div>
+                        <div class="count">0 proje</div>
+                    </a>
+                    <a href="#" class="quick-card">
+                        <div class="icon" style="background: rgba(34, 197, 94, 0.15);">
+                            <i class="fas fa-pen-fancy" style="color: #22c55e;"></i>
+                        </div>
+                        <div class="title">Blog</div>
+                        <div class="count">163 yazi</div>
+                    </a>
+                    <a href="#" class="quick-card">
+                        <div class="icon" style="background: rgba(6, 182, 212, 0.15);">
+                            <i class="fas fa-bullhorn" style="color: #06b6d4;"></i>
+                        </div>
+                        <div class="title">Duyurular</div>
+                        <div class="count">0 duyuru</div>
+                    </a>
+                    <a href="#" class="quick-card">
+                        <div class="icon" style="background: rgba(139, 92, 246, 0.15);">
+                            <i class="fas fa-music" style="color: #8b5cf6;"></i>
+                        </div>
+                        <div class="title">Sarkilar</div>
+                        <div class="count">61 sarki</div>
+                    </a>
+                    <a href="#" class="quick-card">
+                        <div class="icon" style="background: rgba(59, 130, 246, 0.15);">
+                            <i class="fas fa-cog" style="color: #3b82f6;"></i>
+                        </div>
+                        <div class="title">Ayarlar</div>
+                        <div class="count">Sistem</div>
+                    </a>
+                </div>
+
+                <div class="section-title">Son Aktiviteler</div>
+                <div class="sidebar-card">
+                    <div class="recent-item">
+                        <span class="dot" style="background: #22c55e;"></span>
+                        <span class="title">Hakkimizda sayfasi guncellendi</span>
+                        <span class="time">2 dk once</span>
+                    </div>
+                    <div class="recent-item">
+                        <span class="dot" style="background: #3b82f6;"></span>
+                        <span class="title">Yeni blog yazisi eklendi</span>
+                        <span class="time">15 dk once</span>
+                    </div>
+                    <div class="recent-item">
+                        <span class="dot" style="background: #8b5cf6;"></span>
+                        <span class="title">Yeni kullanici kaydi</span>
+                        <span class="time">1 saat once</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sag - Sidebar -->
+            <div class="col-lg-4">
+                <div class="section-title">Profil</div>
+                <div class="sidebar-card">
+                    <div class="profile-mini">
+                        <div class="avatar">N</div>
+                        <div class="info">
+                            <div class="name">Nurullah</div>
+                            <div class="role">Root</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title">Sistem</div>
+                <div class="sidebar-card">
+                    <div class="system-item">
+                        <span class="label">PHP</span>
+                        <span class="value">8.3.28</span>
+                    </div>
+                    <div class="system-item">
+                        <span class="label">Laravel</span>
+                        <span class="value">12.32.5</span>
+                    </div>
+                    <div class="system-item">
+                        <span class="label">Database</span>
+                        <span class="value">Bagli</span>
+                    </div>
+                    <div class="system-item">
+                        <span class="label">Cache</span>
+                        <span class="value">Aktif</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Floating Button -->
+    <button class="ai-fab">
+        <i class="fas fa-robot"></i>
+    </button>
+</body>
+</html>

@@ -1,0 +1,1934 @@
+a<html lang="tr"><head><style>body {transition: opacity ease-in 0.2s; } 
+body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+</style><style>body {transition: opacity ease-in 0.2s; } 
+body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relative; } 
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu B2B Premium System - Ultimate Master Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f0f1a;
+            --bg-card: rgba(30, 30, 50, 0.6);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --spotify: #1DB954;
+        }
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+        }
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(6, 182, 212, 0.2) 100%);
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.4);
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        .hero .subtitle { font-size: 1.4rem; color: var(--text-muted); margin-bottom: 25px; }
+        .badge-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .badge { padding: 10px 24px; border-radius: 50px; font-weight: 600; font-size: 0.95rem; }
+        .badge-gold { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .badge-green { background: linear-gradient(135deg, #10b981, #059669); }
+        .badge-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+
+        /* TOC */
+        .toc {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .toc h2 { font-size: 1.8rem; color: var(--primary); margin-bottom: 25px; }
+        .toc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+        .toc-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 18px; background: rgba(139, 92, 246, 0.1);
+            border-radius: 10px; text-decoration: none; color: var(--text);
+            transition: all 0.3s ease;
+        }
+        .toc-item:hover { background: rgba(139, 92, 246, 0.2); transform: translateX(5px); }
+        .toc-num {
+            background: var(--primary); color: white;
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 600;
+        }
+
+        /* Progress */
+        .progress-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1));
+            border: 2px solid var(--success);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        .progress-percent { font-size: 5rem; font-weight: 800; color: var(--success); }
+        .progress-bar { background: #1e1e30; border-radius: 10px; height: 24px; overflow: hidden; margin: 20px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), var(--accent)); border-radius: 10px; }
+        .progress-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 25px; }
+        .progress-stat { padding: 15px; background: rgba(0,0,0,0.2); border-radius: 12px; }
+        .progress-stat-val { font-size: 2rem; font-weight: 700; }
+        .progress-stat-val.green { color: var(--success); }
+        .progress-stat-val.orange { color: var(--warning); }
+        .progress-stat-val.red { color: var(--danger); }
+        .progress-stat-val.blue { color: var(--accent); }
+        .progress-stat-label { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Sections */
+        section { margin-bottom: 60px; }
+        .section-header {
+            display: flex; align-items: center; gap: 15px;
+            margin-bottom: 25px; padding-bottom: 15px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        .section-header .icon { font-size: 2rem; }
+        .section-header h2 { font-size: 1.8rem; color: var(--primary); }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .card h3 { color: var(--accent); font-size: 1.4rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .card h4 { color: var(--primary); font-size: 1.1rem; margin: 18px 0 10px 0; }
+        .card p { color: var(--text-muted); margin-bottom: 12px; }
+        .card ul { list-style: none; }
+        .card li { padding: 7px 0 7px 25px; position: relative; color: var(--text-muted); }
+        .card li::before { content: "→"; position: absolute; left: 0; color: var(--primary); }
+
+        /* Grid */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+        /* Status */
+        .status { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .status-done { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-partial { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status-todo { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status-critical { background: #dc2626; color: white; }
+
+        /* Alerts */
+        .alert { padding: 20px; border-radius: 12px; margin: 20px 0; }
+        .alert-critical { background: rgba(220, 38, 38, 0.15); border-left: 4px solid #dc2626; }
+        .alert-warning { background: rgba(245, 158, 11, 0.15); border-left: 4px solid #f59e0b; }
+        .alert-success { background: rgba(16, 185, 129, 0.15); border-left: 4px solid #10b981; }
+        .alert-info { background: rgba(59, 130, 246, 0.15); border-left: 4px solid #3b82f6; }
+
+        /* Tables */
+        .table-wrap { overflow-x: auto; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { background: rgba(139, 92, 246, 0.2); color: var(--primary); font-weight: 600; }
+        tr:hover td { background: rgba(139, 92, 246, 0.05); }
+
+        /* Feature Grid */
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; }
+        .feature-item {
+            display: flex; align-items: flex-start; gap: 15px;
+            padding: 20px; background: rgba(0,0,0,0.2);
+            border-radius: 12px; border-left: 4px solid var(--primary);
+        }
+        .feature-item.done { border-left-color: var(--success); }
+        .feature-item.partial { border-left-color: var(--warning); }
+        .feature-item.todo { border-left-color: var(--danger); }
+        .feature-icon { font-size: 1.5rem; }
+        .feature-content { flex: 1; }
+        .feature-title { font-weight: 600; color: white; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .feature-desc { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* Flow */
+        .flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 12px; margin: 20px 0; }
+        .flow-item { background: linear-gradient(135deg, var(--primary), #7c3aed); padding: 12px 20px; border-radius: 8px; font-weight: 500; font-size: 0.9rem; }
+        .flow-arrow { color: var(--accent); font-size: 1.5rem; }
+
+        /* Comparison */
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .comparison-side { padding: 20px; border-radius: 12px; }
+        .comparison-winner { background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); }
+        .comparison-loser { background: rgba(239, 68, 68, 0.1); border: 2px solid rgba(239, 68, 68, 0.3); }
+
+        /* Pricing */
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin: 30px 0; }
+        .pricing-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        .pricing-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .pricing-card.featured { border-color: var(--accent); background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1)); }
+        .pricing-name { font-size: 1.3rem; font-weight: 600; margin-bottom: 10px; }
+        .pricing-price { font-size: 2.5rem; font-weight: 700; color: var(--accent); }
+        .pricing-price span { font-size: 1rem; color: var(--text-muted); }
+        .pricing-features { list-style: none; margin: 20px 0; text-align: left; }
+        .pricing-features li { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; }
+        .pricing-features li::before { content: "✓"; color: var(--success); font-weight: bold; }
+
+        /* Timeline */
+        .timeline { position: relative; padding-left: 30px; }
+        .timeline::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--primary), var(--accent), var(--success)); border-radius: 3px; }
+        .timeline-item { position: relative; margin-bottom: 30px; padding: 25px; background: var(--bg-card); border-radius: 12px; }
+        .timeline-item::before { content: ""; position: absolute; left: -36px; top: 30px; width: 12px; height: 12px; background: var(--accent); border-radius: 50%; border: 3px solid var(--bg-dark); }
+        .timeline-phase { display: inline-block; background: var(--primary); padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; }
+        .timeline-phase.current { background: var(--success); }
+
+        /* WOW Grid */
+        .wow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .wow-item {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.05));
+            border-radius: 16px; padding: 25px; text-align: center;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        .wow-item:hover { transform: scale(1.02); border-color: var(--accent); }
+        .wow-icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .wow-title { font-size: 1rem; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+        .wow-desc { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* Code Stats */
+        .code-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin: 20px 0; }
+        .code-stat { background: rgba(139, 92, 246, 0.1); padding: 20px; border-radius: 12px; text-align: center; }
+        .code-stat-val { font-size: 2.5rem; font-weight: 700; color: var(--accent); }
+        .code-stat-label { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* File Tree */
+        .file-tree { font-family: 'Monaco', 'Consolas', monospace; font-size: 0.85rem; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; overflow-x: auto; }
+        .file-tree .folder { color: var(--accent); }
+        .file-tree .file { color: var(--text-muted); }
+        .file-tree .count { color: var(--warning); }
+
+        footer { text-align: center; padding: 50px 20px; border-top: 1px solid rgba(139, 92, 246, 0.2); color: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .comparison { grid-template-columns: 1fr; }
+            .grid-2, .feature-grid { grid-template-columns: 1fr; }
+            .flow { flex-direction: column; }
+            .flow-arrow { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>Muzibu B2B Premium System</h1>
+        <p class="subtitle">Kurumsal Muzik Streaming Platformu - Ultimate Master Plan</p>
+        <div class="badge-row">
+            <span class="badge badge-gold">v8 Ultimate</span>
+            <span class="badge badge-green">Kod Analizi + Tum Planlar</span>
+            <span class="badge badge-purple">26 Kasim 2025</span>
+        </div>
+        <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.95rem;">
+            v1 + v2 + v3 + v4 + v5 + v6 + v7 = Ultimate Birlesik Versiyon
+        </p>
+    </div>
+
+    <div class="container">
+
+        <!-- TABLE OF CONTENTS -->
+        <div class="toc">
+            <h2>Icindekiler (26 Bolum)</h2>
+            <div class="toc-grid">
+                <a href="#progress" class="toc-item"><span class="toc-num">1</span>Platform Durumu (%68)</a>
+                <a href="#codebase" class="toc-item"><span class="toc-num">2</span>Mevcut Kod Analizi</a>
+                <a href="#completed" class="toc-item"><span class="toc-num">3</span>Tamamlanan Ozellikler</a>
+                <a href="#security" class="toc-item"><span class="toc-num">4</span>Guvenlik (6 Katman)</a>
+                <a href="#audio-lib" class="toc-item"><span class="toc-num">5</span>Howler.js vs AmplitudeJS</a>
+                <a href="#crossfade" class="toc-item"><span class="toc-num">6</span>Crossfade Sistemi</a>
+                <a href="#volume-norm" class="toc-item"><span class="toc-num">7</span>Volume Normalization</a>
+                <a href="#wavesurfer" class="toc-item"><span class="toc-num">8</span>WaveSurfer.js</a>
+                <a href="#theming" class="toc-item"><span class="toc-num">9</span>Dinamik Tema</a>
+                <a href="#plyr" class="toc-item"><span class="toc-num">10</span>Plyr Analizi</a>
+                <a href="#equalizer" class="toc-item"><span class="toc-num">11</span>Equalizer Sistemi</a>
+                <a href="#audio-quality" class="toc-item"><span class="toc-num">12</span>Ses Kalitesi Seviyeleri</a>
+                <a href="#spa" class="toc-item"><span class="toc-num">13</span>SPA Mimarisi</a>
+                <a href="#premium" class="toc-item" style="background: rgba(16, 185, 129, 0.15); border-left: 3px solid var(--success);"><span class="toc-num" style="background: var(--success);">14</span>✅ Premium Uyelik Sistemi</a>
+                <a href="#preview" class="toc-item" style="background: rgba(16, 185, 129, 0.15); border-left: 3px solid var(--success);"><span class="toc-num" style="background: var(--success);">15</span>✅ 30sn Onizleme</a>
+                <a href="#playcount" class="toc-item" style="background: rgba(16, 185, 129, 0.15); border-left: 3px solid var(--success);"><span class="toc-num" style="background: var(--success);">16</span>✅ Dinlenme Sayaci</a>
+                <a href="#logging" class="toc-item"><span class="toc-num">17</span>Loglama Sistemi</a>
+                <a href="#ai-metadata" class="toc-item"><span class="toc-num">18</span>AI Metadata (26K)</a>
+                <a href="#ai-images" class="toc-item"><span class="toc-num">19</span>AI Gorsel Uretimi</a>
+                <a href="#playlists" class="toc-item"><span class="toc-num">20</span>Akilli Playlistler</a>
+                <a href="#corporate" class="toc-item"><span class="toc-num">21</span>Kurumsal Coklu Sube</a>
+                <a href="#announcements" class="toc-item"><span class="toc-num">22</span>Anons Sistemi</a>
+                <a href="#pricing" class="toc-item"><span class="toc-num">23</span>Fiyatlandirma</a>
+                <a href="#social" class="toc-item"><span class="toc-num">24</span>Sosyal Ozellikler</a>
+                <a href="#wow" class="toc-item"><span class="toc-num">25</span>WOW Faktorleri</a>
+                <a href="#roadmap" class="toc-item"><span class="toc-num">26</span>Yol Haritasi</a>
+            </div>
+        </div>
+
+        <!-- 1. PROGRESS -->
+        <section id="progress">
+            <div class="section-header">
+                <span class="icon">📊</span>
+                <h2>1. Platform Tamamlanma Durumu</h2>
+            </div>
+            <div class="progress-box">
+                <div class="progress-percent">68%</div>
+                <p style="color: var(--text-muted); margin-bottom: 15px;">Temel altyapi hazir, B2B ozellikleri bekleniyor</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 68%;"></div>
+                </div>
+                <div class="progress-stats">
+                    <div class="progress-stat">
+                        <div class="progress-stat-val green">17</div>
+                        <div class="progress-stat-label">Tamamlanan</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="progress-stat-val orange">8</div>
+                        <div class="progress-stat-label">Kismi</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="progress-stat-val red">12</div>
+                        <div class="progress-stat-label">Yapilacak</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="progress-stat-val blue">86</div>
+                        <div class="progress-stat-label">PHP Dosyasi</div>
+                    </div>
+                    <div class="progress-stat">
+                        <div class="progress-stat-val blue">2,685</div>
+                        <div class="progress-stat-label">Player Satir</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. CODEBASE -->
+        <section id="codebase">
+            <div class="section-header">
+                <span class="icon">📁</span>
+                <h2>2. Mevcut Kod Analizi</h2>
+            </div>
+
+            <div class="code-stats">
+                <div class="code-stat">
+                    <div class="code-stat-val">2,685</div>
+                    <div class="code-stat-label">player.blade.php satir</div>
+                </div>
+                <div class="code-stat">
+                    <div class="code-stat-val">86</div>
+                    <div class="code-stat-label">PHP dosyasi</div>
+                </div>
+                <div class="code-stat">
+                    <div class="code-stat-val">8</div>
+                    <div class="code-stat-label">Model</div>
+                </div>
+                <div class="code-stat">
+                    <div class="code-stat-val">6</div>
+                    <div class="code-stat-label">API Controller</div>
+                </div>
+                <div class="code-stat">
+                    <div class="code-stat-val">7</div>
+                    <div class="code-stat-label">Repository</div>
+                </div>
+                <div class="code-stat">
+                    <div class="code-stat-val">5</div>
+                    <div class="code-stat-label">Background Job</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Modules/Muzibu Yapisi</h3>
+                <pre style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; overflow-x: auto; line-height: 1.6;">Modules/Muzibu/
+├── app/
+│   ├── Http/Controllers/
+│   │   ├── Api/
+│   │   │   ├── AlbumController.php
+│   │   │   ├── GenreController.php
+│   │   │   ├── PlaylistController.php
+│   │   │   ├── SectorController.php
+│   │   │   ├── SongController.php
+│   │   │   └── SongStreamController.php
+│   │   ├── Admin/
+│   │   │   └── CorporateAccountController.php
+│   │   └── Front/
+│   │       └── (Home, Album, Playlist, Genre, Sector, Search)
+│   ├── Livewire/Admin/
+│   │   └── CorporateAccountComponent.php
+│   ├── Jobs/
+│   │   ├── ConvertToHLSJob.php
+│   │   ├── ProcessBulkSongHLSJob.php
+│   │   ├── TranslateMuzibuJob.php
+│   │   └── BulkDeleteMuzibusJob.php
+│   ├── Models/
+│   │   ├── Album.php
+│   │   ├── Artist.php
+│   │   ├── Genre.php
+│   │   ├── Playlist.php
+│   │   ├── Radio.php
+│   │   ├── Sector.php
+│   │   ├── Song.php (14,321 bytes)
+│   │   ├── SongPlay.php
+│   │   └── MuzibuCorporateAccount.php (✅ GÜNCEL)
+│   └── Repositories/ (7 repository)
+├── database/migrations/
+│   ├── central/
+│   │   └── 2025_11_26_000001_add_branch_name_to_muzibu_corporate_accounts.php
+│   └── tenant/
+│       ├── 2025_11_24_000001_create_muzibu_corporate_accounts_table.php
+│       └── 2025_11_26_000001_add_branch_name_to_muzibu_corporate_accounts.php
+├── resources/views/
+│   ├── admin/
+│   │   ├── corporate-index.blade.php
+│   │   ├── corporate-manage.blade.php
+│   │   └── livewire/
+│   │       └── corporate-account-component.blade.php
+│   └── themes/muzibu/
+│       └── (Frontend views)
+├── lang/ (tr, en, de)
+└── routes/
+    ├── admin.php
+    ├── api.php
+    └── web.php
+                </pre>
+            </div>
+
+            <div class="card">
+                <h3>Player.blade.php Analizi</h3>
+                <p>Monolitik 2,685 satirlik dosya. Icerigi:</p>
+                <ul>
+                    <li><strong>1-380 satir:</strong> Auth Modal (Login/Register/Forgot)</li>
+                    <li><strong>383-476 satir:</strong> Player Bar UI (Spotify-style)</li>
+                    <li><strong>478-567 satir:</strong> Queue Panel</li>
+                    <li><strong>570-1080 satir:</strong> CSS Stilleri</li>
+                    <li><strong>1082-2685 satir:</strong> JavaScript (Alpine.js + Howler.js + HLS.js)</li>
+                </ul>
+                <div class="alert alert-warning">
+                    <strong>Refactoring Gerekli:</strong> ~1,600 satir inline JavaScript ayri dosyaya tasinmali.
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. COMPLETED -->
+        <section id="completed">
+            <div class="section-header">
+                <span class="icon">✅</span>
+                <h2>3. Tamamlanan Ozellikler</h2>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-item done">
+                    <span class="feature-icon">🎧</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Howler.js 2.2.4 <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Web Audio API, MP3/OGG/WAV/WebM, html5: true, pool size: 5</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">📡</span>
+                    <div class="feature-content">
+                        <div class="feature-title">HLS.js Streaming <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Adaptive bitrate, enableWorker: true, Safari native fallback</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">🔀</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Crossfade Sistemi <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">6sn otomatik, 1sn manuel, dual audio element, HLS+Howler</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">📋</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Queue Yonetimi <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Drag &amp; drop siralama, prefetch (sonraki 3 sarki)</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">⚡</span>
+                    <div class="feature-content">
+                        <div class="feature-title">SPA Navigasyon <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Custom implementation, history.pushState, muzik kesilmez</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">🔐</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Auth Sistemi <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Login/Register/Forgot modal, telefon validasyonu, remember me</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">❤️</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Favoriler <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Like toggle, optimistic UI, API entegrasyonu</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">🔊</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Volume Kontrol <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Slider, mute toggle, Howler+HLS senkronizasyonu</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">🔁</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Repeat Modlari <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Off, All, One - cycleRepeat() fonksiyonu</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">🔀</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Shuffle <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">playRandomSongs() - 50 populer sarki</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">🎨</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Dark Theme UI <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Spotify-inspired, #181818 bg, #1DB954 accent</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">📱</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Responsive Design <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">Mobil player bar, queue panel, sidebar</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">🌍</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Coklu Dil <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">tenant_trans() helper, TR/EN/DE</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">📊</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Progress Tracking <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">100ms interval, seek bar, yuzde gosterimi</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">🏷️</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Album/Playlist/Genre <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">playAlbum(), playPlaylist() fonksiyonlari</div>
+                    </div>
+                </div>
+                <div class="feature-item done">
+                    <span class="feature-icon">🔄</span>
+                    <div class="feature-content">
+                        <div class="feature-title">HLS Conversion Jobs <span class="status status-done">TAMAM</span></div>
+                        <div class="feature-desc">ConvertToHLSJob, ProcessBulkSongHLSJob</div>
+                    </div>
+                </div>
+                <div class="feature-item partial">
+                    <span class="feature-icon">🏢</span>
+                    <div class="feature-content">
+                        <div class="feature-title">Corporate Model <span class="status status-partial">KISMI</span></div>
+                        <div class="feature-desc">MuzibuCorporateAccount var, hiyerarsi eksik</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SECURITY -->
+        <section id="security">
+            <div class="section-header">
+                <span class="icon">🔐</span>
+                <h2>4. Guvenlik Sistemi</h2>
+                <span class="status status-critical">KRITIK</span>
+            </div>
+
+            <div class="alert alert-critical">
+                <strong>⚠️ MEVCUT SORUN:</strong> /api/muzibu/songs/{id}/stream endpoint'i herkesin erisebilecegi sekilde acik. Kullanici console'dan link alip indirebilir!
+            </div>
+
+            <div class="card">
+                <h3>Mevcut Guvenlik Durumu</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>Katman</th><th>Durum</th><th>Aciklama</th></tr>
+                        <tr><td>Rate Limiting</td><td><span class="status status-todo">YOK</span></td><td>API sinirsiz erisime acik</td></tr>
+                        <tr><td>Bearer Token</td><td><span class="status status-partial">KISMI</span></td><td>Login var ama stream'de zorunlu degil</td></tr>
+                        <tr><td>Subscription Check</td><td><span class="status status-todo">YOK</span></td><td>Premium kontrol yapilmiyor</td></tr>
+                        <tr><td>Signed URL</td><td><span class="status status-todo">YOK</span></td><td>URL'ler sifreli degil</td></tr>
+                        <tr><td>HLS + AES-128</td><td><span class="status status-todo">YOK</span></td><td>HLS var ama sifresiz</td></tr>
+                        <tr><td>Device Fingerprint</td><td><span class="status status-todo">YOK</span></td><td>Cihaz tespiti yok</td></tr>
+                        <tr><td>CSRF Protection</td><td><span class="status status-done">VAR</span></td><td>X-CSRF-TOKEN kullaniliyor</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>6 Katmanli Guvenlik Plani</h3>
+                <div class="flow">
+                    <div class="flow-item">1. Rate Limiting</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">2. Auth Token</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">3. Subscription</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">4. Signed URL</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">5. HLS+AES-128</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">6. Fingerprint</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>1. Rate Limiting</h3>
+                    <ul>
+                        <li>IP basi: 60 istek/dakika</li>
+                        <li>Token basi: 100 istek/dakika</li>
+                        <li>Supheli davranis tespiti</li>
+                        <li>Redis tabanli sayac</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>2. Bearer Token Auth</h3>
+                    <ul>
+                        <li>Laravel Sanctum entegrasyonu</li>
+                        <li>Token suresi: 24 saat</li>
+                        <li>Her oturumda yeni token</li>
+                        <li>Coklu cihaz destegi</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>3. Subscription Check</h3>
+                    <ul>
+                        <li>Aktif abonelik zorunlulugu</li>
+                        <li>Paket ozellik kontrolu</li>
+                        <li>Kullanim limiti takibi</li>
+                        <li>Deneme suresi yonetimi</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>4. Signed URL</h3>
+                    <ul>
+                        <li>Tek kullanimlik URL'ler</li>
+                        <li>5 dakika gecerlilik</li>
+                        <li>IP + UserAgent baglama</li>
+                        <li>HMAC-SHA256 imzalama</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>5. HLS + AES-128</h3>
+                    <ul>
+                        <li>Segmentli streaming</li>
+                        <li>Her segment AES-128 sifreli</li>
+                        <li>Dinamik key rotasyonu</li>
+                        <li>Indirilen dosyalar calismaz!</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>6. Device Fingerprint</h3>
+                    <ul>
+                        <li>FingerprintJS Pro</li>
+                        <li>Max 3 cihaz limiti</li>
+                        <li>Cihaz yonetim paneli</li>
+                        <li>Supheli cihaz uyarisi</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. AUDIO LIBRARY -->
+        <section id="audio-lib">
+            <div class="section-header">
+                <span class="icon">🎧</span>
+                <h2>5. Howler.js vs AmplitudeJS</h2>
+            </div>
+
+            <div class="card">
+                <h3>Karsilastirma</h3>
+                <div class="comparison">
+                    <div class="comparison-side comparison-winner">
+                        <h4 style="color: var(--success);">✅ Howler.js (MEVCUT - DOGRU SECIM)</h4>
+                        <ul>
+                            <li>Web Audio API tam destek</li>
+                            <li>GitHub: 22K+ yildiz</li>
+                            <li>Sprite destegi (ses efektleri)</li>
+                            <li>3D audio / spatial sound</li>
+                            <li>Daha iyi dokumantasyon</li>
+                            <li>HLS.js ile mukemmel entegrasyon</li>
+                            <li>Profesyonel projeler icin ideal</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-side comparison-loser">
+                        <h4 style="color: var(--danger);">❌ AmplitudeJS</h4>
+                        <ul>
+                            <li>Gorsel odakli (UI agirlikli)</li>
+                            <li>Daha kucuk topluluk</li>
+                            <li>Sinirli API kontrolu</li>
+                            <li>HTML5 Audio bagimliligi</li>
+                            <li>Streaming icin zayif</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="alert alert-success">
+                    <strong>Sonuc:</strong> Howler.js v2.2.4 zaten sistemde ve dogru secim. Degisiklik gereksiz.
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. CROSSFADE -->
+        <section id="crossfade">
+            <div class="section-header">
+                <span class="icon">🔀</span>
+                <h2>6. Crossfade Sistemi</h2>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>✅ MEVCUT:</strong> Crossfade fonksiyonlari aktif! createNextHowlerPlayer(), createNextHlsPlayer(), completeCrossfade(), fadeAudioElement()
+            </div>
+
+            <div class="card">
+                <h3>Mevcut Crossfade Ayarlari</h3>
+                <ul>
+                    <li><strong>crossfadeDuration:</strong> 6000ms (otomatik gecis)</li>
+                    <li><strong>fadeOutDuration:</strong> 1000ms (manuel gecis)</li>
+                    <li><strong>isCrossfading:</strong> Cift oynatma engelleme flag</li>
+                    <li><strong>Dual Audio:</strong> howl + howlNext veya hls + hlsNext</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Ture Gore Crossfade Sureleri (ONERILEN)</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>Tur</th><th>Sure</th><th>Neden?</th></tr>
+                        <tr><td>🎸 Rock / Metal</td><td>2-3 saniye</td><td>Keskin gecisler, enerji kaybi olmasin</td></tr>
+                        <tr><td>🎹 Caz / Blues</td><td>4-6 saniye</td><td>Yumusak, dogal gecis</td></tr>
+                        <tr><td>🎧 Elektronik</td><td>6-10 saniye</td><td>Beat matching, DJ tarzi mix</td></tr>
+                        <tr><td>🎻 Klasik</td><td>5-8 saniye</td><td>Sessiz finaller, zarif gecis</td></tr>
+                        <tr><td>🎤 Pop</td><td>3-4 saniye</td><td>Dengeli, standart gecis</td></tr>
+                        <tr><td>☕ Ambient</td><td>8-12 saniye</td><td>Atmosfer koruma</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. VOLUME NORM -->
+        <section id="volume-norm">
+            <div class="section-header">
+                <span class="icon">🔊</span>
+                <h2>7. Volume Normalization</h2>
+                <span class="status status-todo">YAPILACAK</span>
+            </div>
+
+            <div class="card">
+                <h3>ReplayGain Standardi</h3>
+                <p>Sarkilar arasi ses farkini ortadan kaldirmak icin kritik ozellik!</p>
+                <ul>
+                    <li><strong>Target:</strong> -14 LUFS (Spotify standardi)</li>
+                    <li><strong>Analiz:</strong> Sarki yuklenirken loudness_db hesapla</li>
+                    <li><strong>Gain:</strong> target - actual_loudness</li>
+                    <li><strong>Max Gain:</strong> +6dB (clipping onleme)</li>
+                    <li><strong>Uygulama:</strong> Howler.js volume() ile</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 8. WAVESURFER -->
+        <section id="wavesurfer">
+            <div class="section-header">
+                <span class="icon">📊</span>
+                <h2>8. WaveSurfer.js</h2>
+                <span class="status status-todo">ONERILEN</span>
+            </div>
+
+            <div class="code-stats">
+                <div class="code-stat"><div class="code-stat-val">8K+</div><div class="code-stat-label">GitHub Stars</div></div>
+                <div class="code-stat"><div class="code-stat-val">9+</div><div class="code-stat-label">Yillik Gecmis</div></div>
+                <div class="code-stat"><div class="code-stat-val">40+</div><div class="code-stat-label">Plugin</div></div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Avantajlar</h3>
+                    <ul>
+                        <li>Gercek zamanli dalga formu</li>
+                        <li>Seek icin gorsel tiklama</li>
+                        <li>Zoom in/out ozelligi</li>
+                        <li>Regions plugin (bolum isaretleme)</li>
+                        <li>Spectogram plugin</li>
+                        <li>Canvas tabanli, performansli</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Entegrasyon</h3>
+                    <ul>
+                        <li>WaveSurfer: Sadece gorsellestirme</li>
+                        <li>Howler.js: Ses kontrolu (degismez)</li>
+                        <li>Senkronizasyon: timeupdate eventi</li>
+                        <li>Seek: WaveSurfer tiklamasi → Howler seek</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. THEMING -->
+        <section id="theming">
+            <div class="section-header">
+                <span class="icon">🎨</span>
+                <h2>9. Dinamik Player Temasi</h2>
+                <span class="status status-todo">COK ONERILEN</span>
+            </div>
+
+            <div class="card">
+                <h3>Album Kapakindan Renk Cikarma</h3>
+                <p>Spotify, Apple Music, YouTube Music gibi buyuk platformlarin kullandigi etkileyici ozellik!</p>
+                <div class="grid-2">
+                    <div class="alert alert-info">
+                        <strong>Color Thief:</strong> Basit ve hizli. ~8KB boyut. Dominant renk + palet.
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Vibrant.js:</strong> Daha gelismis. Vibrant, Muted, Dark, Light varyantlari.
+                    </div>
+                </div>
+                <h4>Uygulama Alanlari:</h4>
+                <ul>
+                    <li>Player arka plani: Gradient efekt</li>
+                    <li>Progress bar rengi</li>
+                    <li>Dalga formu rengi (WaveSurfer)</li>
+                    <li>Now Playing ekrani</li>
+                </ul>
+                <div class="alert alert-warning">
+                    <strong>Performans:</strong> Renk cikarma backend'de onceden hesaplanip DB'ye kaydedilmeli (dominant_color, secondary_color).
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. PLYR -->
+        <section id="plyr">
+            <div class="section-header">
+                <span class="icon">🎬</span>
+                <h2>10. Plyr Analizi</h2>
+            </div>
+
+            <div class="card">
+                <h3>Plyr Gerekli mi?</h3>
+                <div class="comparison">
+                    <div class="comparison-side comparison-loser">
+                        <h4>Plyr</h4>
+                        <ul>
+                            <li>Hazir UI bilesenleri</li>
+                            <li>Video odakli tasarim</li>
+                            <li>YouTube/Vimeo embed</li>
+                            <li>Sinirli ses kontrolu</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-side comparison-winner">
+                        <h4>Howler.js (Mevcut)</h4>
+                        <ul>
+                            <li>Ses odakli, derin kontrol</li>
+                            <li>Web Audio API tam destek</li>
+                            <li>Crossfade, spatial audio</li>
+                            <li>HLS entegrasyonu</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="alert alert-warning">
+                    <strong>Sonuc:</strong> Plyr gereksiz. Howler.js + custom UI ile devam edilmeli.
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. EQUALIZER -->
+        <section id="equalizer">
+            <div class="section-header">
+                <span class="icon">🎚️</span>
+                <h2>11. Equalizer Sistemi</h2>
+                <span class="status status-todo">PREMIUM OZELLIK</span>
+            </div>
+
+            <div class="card">
+                <h3>10-Band Equalizer</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>Frekans</th><th>Band</th><th>Etki</th></tr>
+                        <tr><td>32 Hz</td><td>Sub Bass</td><td>Derin bas, titresim</td></tr>
+                        <tr><td>64 Hz</td><td>Bass</td><td>Davul kick, bas gitar</td></tr>
+                        <tr><td>125 Hz</td><td>Low Mid</td><td>Vokal sicakligi</td></tr>
+                        <tr><td>250 Hz</td><td>Mid</td><td>Enstruman govdesi</td></tr>
+                        <tr><td>500 Hz</td><td>Mid</td><td>Vokal netligi</td></tr>
+                        <tr><td>1 kHz</td><td>Upper Mid</td><td>Ses presence</td></tr>
+                        <tr><td>2 kHz</td><td>Upper Mid</td><td>Vokal artikulasyonu</td></tr>
+                        <tr><td>4 kHz</td><td>Presence</td><td>Clarity, detay</td></tr>
+                        <tr><td>8 kHz</td><td>Brilliance</td><td>Parlaklik</td></tr>
+                        <tr><td>16 kHz</td><td>Air</td><td>Ultra high, sparkle</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Hazir Presetler</h3>
+                <div class="grid-3">
+                    <div class="alert alert-info"><strong>🎸 Rock:</strong> Bass +3, Mid +1, Treble +2</div>
+                    <div class="alert alert-info"><strong>🎹 Jazz:</strong> Bass +2, Mid +3, Treble +1</div>
+                    <div class="alert alert-info"><strong>🎤 Vocal:</strong> Mid +4, Presence +2</div>
+                    <div class="alert alert-info"><strong>🔊 Bass Boost:</strong> Sub +5, Bass +4</div>
+                    <div class="alert alert-info"><strong>📻 Podcast:</strong> Bass -2, Voice +3</div>
+                    <div class="alert alert-info"><strong>🎧 Flat:</strong> Tum bantlar 0</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 12. AUDIO QUALITY -->
+        <section id="audio-quality">
+            <div class="section-header">
+                <span class="icon">💎</span>
+                <h2>12. Ses Kalitesi Seviyeleri</h2>
+            </div>
+
+            <div class="card">
+                <h3>Bitrate Katmanlari</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>Kalite</th><th>Bitrate</th><th>Paket</th><th>Kullanim</th></tr>
+                        <tr><td>📱 Normal</td><td>96 kbps AAC</td><td>Ucretsiz/Onizleme</td><td>Mobil veri tasarrufu</td></tr>
+                        <tr><td>🎧 Yuksek</td><td>192 kbps AAC</td><td>Starter</td><td>Gunluk dinleme</td></tr>
+                        <tr><td>🔊 Cok Yuksek</td><td>320 kbps AAC</td><td>Professional</td><td>Kaliteli hoparlor</td></tr>
+                        <tr><td>💎 Lossless</td><td>FLAC 16-bit/44.1kHz</td><td>Premium</td><td>Hi-Fi sistem</td></tr>
+                        <tr><td>👑 Hi-Res</td><td>FLAC 24-bit/96kHz</td><td>Enterprise</td><td>Studyo kalitesi</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 13. SPA -->
+        <section id="spa">
+            <div class="section-header">
+                <span class="icon">⚡</span>
+                <h2>13. SPA Mimarisi</h2>
+                <span class="status status-done">TAMAM</span>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>✅ MEVCUT:</strong> Custom SPA implementation aktif! navigateTo(), loadPage() fonksiyonlari calisir durumda.
+            </div>
+
+            <div class="card">
+                <h3>Mevcut Implementasyon</h3>
+                <ul>
+                    <li><strong>navigateTo(url):</strong> history.pushState + loadPage</li>
+                    <li><strong>loadPage(url):</strong> AJAX ile sayfa icerigi cek</li>
+                    <li><strong>popstate event:</strong> Browser back/forward destegi</li>
+                    <li><strong>Link intercept:</strong> Tum ic linkleri yakala</li>
+                    <li><strong>Content swap:</strong> main elementi icerigi degistir</li>
+                    <li><strong>Player korunur:</strong> Muzik kesilmez!</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Livewire 3 Alternatifi (Opsiyonel)</h3>
+                <p>Gelecekte @persist direktifi ile daha temiz cozum:</p>
+                <ul>
+                    <li>wire:navigate ile SPA navigasyon</li>
+                    <li>@persist('player') ile player korunur</li>
+                    <li>Daha az custom kod</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 14. PREMIUM MEMBERSHIP -->
+        <section id="premium">
+            <div class="section-header">
+                <span class="icon">👑</span>
+                <h2>14. Premium Uyelik Sistemi</h2>
+                <span class="status status-done">TAMAM</span>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>✅ TAMAMLANDI:</strong> Backend + Frontend tamamen implementa edildi! (26 Kasim 2025)
+            </div>
+
+            <div class="card">
+                <h3>Uyelik Seviyeleri</h3>
+                <ul>
+                    <li><strong>Guest (Kayitsiz):</strong> 30 saniye onizleme (fade-out ile sonlanir)</li>
+                    <li><strong>Normal Uye:</strong> Gunluk 5 sarki (60+ saniye dinleme = 1 hak)</li>
+                    <li><strong>Trial:</strong> 7 gun sinirsiz (kredi karti gerekmez)</li>
+                    <li><strong>Premium:</strong> Sinirsiz dinleme + tum ozellikler</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Backend Implementasyon</h3>
+                <ul>
+                    <li><strong>Migration:</strong> muzibu_song_plays.duration_listened (60+ saniye threshold)</li>
+                    <li><strong>User Model:</strong> 5 yeni metod (getTodayPlayedCount, canPlaySong, getRemainingPlays, isPremium, isTrialActive)</li>
+                    <li><strong>API Endpoint:</strong> POST /api/muzibu/songs/{id}/track-progress (her 5 saniyede rapor)</li>
+                    <li><strong>Guvenlik:</strong> Backend validation (JS bypass edilemez)</li>
+                    <li><strong>Performance:</strong> 1-2ms sorgu hizi (composite index)</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Frontend Implementasyon</h3>
+                <ul>
+                    <li><strong>Alpine Component:</strong> play-limits.js (player binding, progress tracking)</li>
+                    <li><strong>CSS:</strong> play-limits.css (tema-bagimsiz modern stil)</li>
+                    <li><strong>Modals:</strong> Guest preview ended + Member limit exceeded</li>
+                    <li><strong>Widget:</strong> Sidebar kalan hak gostergesi (3/5 sarki + progress bar)</li>
+                    <li><strong>Layout:</strong> app.blade.php + sidebar.blade.php entegrasyonu</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Tema Bagimsiz Mimari</h3>
+                <p>Muzibu tema kodu degisse bile sistem calismaya devam eder:</p>
+                <ul>
+                    <li>Ayri JS/CSS/Blade modul dosyalari</li>
+                    <li>Alpine.js ile mevcut player'a binding</li>
+                    <li>x-teleport ile body level modal rendering</li>
+                    <li>Yeni tema gelirse kolayca entegre edilir</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Guvenlik & Performans</h3>
+                <ul>
+                    <li><strong>Backend Validation:</strong> JS manipule edilse bile backend limit kontrol eder</li>
+                    <li><strong>60 Saniye Threshold:</strong> Zap dinlemeyi engelliyor</li>
+                    <li><strong>Progress Reporting:</strong> Her 5 saniyede backend'e rapor (network friendly)</li>
+                    <li><strong>Lazy Reset:</strong> Gunluk limit gece yarisi otomatik sifirlanir</li>
+                    <li><strong>Device Tracking:</strong> IP + User Agent + Device type kaydi</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 15. PREVIEW -->
+        <section id="preview">
+            <div class="section-header">
+                <span class="icon">⏱️</span>
+                <h2>15. 30 Saniye Onizleme</h2>
+                <span class="status status-done">TAMAM</span>
+            </div>
+
+            <div class="card">
+                <h3>Onizleme Mantigi</h3>
+                <ul>
+                    <li><strong>Varsayilan sure:</strong> 30 saniye</li>
+                    <li><strong>Baslangic noktasi:</strong> Sarkinin %20'sinden basla (intro'yu atla)</li>
+                    <li><strong>Admin ayarlanabilir:</strong> 15-60 saniye arasi</li>
+                    <li><strong>Fade out:</strong> Son 3 saniyede ses azalir</li>
+                    <li><strong>Premium tesvik:</strong> "Devamini dinlemek icin Premium'a gec"</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Onizleme Guvenligi</h3>
+                <ul>
+                    <li>Onizleme dosyasi ayri (preview_url)</li>
+                    <li>Full sarkiya erisim premium zorunlu</li>
+                    <li>Onizleme bile signed URL ile</li>
+                    <li>Gunluk onizleme limiti (ucretsiz kullanici)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 16. PLAYCOUNT -->
+        <section id="playcount">
+            <div class="section-header">
+                <span class="icon">📈</span>
+                <h2>16. Dinlenme Sayaci</h2>
+                <span class="status status-done">TAMAM</span>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>✅ AKTIF:</strong> 60 saniye threshold sistemi calisiyor! (Premium Uyelik ile entegre)
+            </div>
+
+            <div class="card">
+                <h3>60 Saniye Threshold (Aktif)</h3>
+                <p>Muzibu'da bir dinlenme sayilmasi icin sarki en az <strong>60 saniye</strong> dinlenmeli.</p>
+                <ul>
+                    <li><strong>Neden 60 saniye?</strong> Performans + zap onleme (30 saniye yerine)</li>
+                    <li><strong>Tek tablo sorgusu:</strong> 1-2ms hiz (composite index)</li>
+                    <li><strong>Premium entegrasyon:</strong> Gunluk 5 sarki limiti icin ayni threshold</li>
+                    <li><strong>Progress tracking:</strong> Her 5 saniyede backend'e rapor</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Ek Kurallar (Aktif)</h3>
+                <ul>
+                    <li><strong>IP tracking:</strong> Her play kayit edilir (device + user agent)</li>
+                    <li><strong>Device detection:</strong> Mobile/Desktop/Tablet ayrim</li>
+                    <li><strong>Tenant aware:</strong> Sadece Tenant 1001 etkilenir</li>
+                    <li><strong>Lazy reset:</strong> Gunluk sayac gece yarisi otomatik sifirlanir</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 16. LOGGING -->
+        <section id="logging">
+            <div class="section-header">
+                <span class="icon">📋</span>
+                <h2>16. Loglama Sistemi</h2>
+                <span class="status status-partial">KISMI</span>
+            </div>
+
+            <div class="card">
+                <h3>Kaydedilecek Veriler</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>Alan</th><th>Aciklama</th><th>Kullanim</th></tr>
+                        <tr><td>user_id</td><td>Dinleyici kimligi</td><td>Kisisel oneri</td></tr>
+                        <tr><td>song_id</td><td>Sarki kimligi</td><td>Populerlik analizi</td></tr>
+                        <tr><td>branch_id</td><td>Sube kimligi</td><td>Sube raporlari</td></tr>
+                        <tr><td>duration_seconds</td><td>Dinleme suresi</td><td>Engagement olcumu</td></tr>
+                        <tr><td>completed</td><td>Sarki bitti mi?</td><td>Skip analizi</td></tr>
+                        <tr><td>ip_address</td><td>IP adresi (hashed)</td><td>Guvenlik</td></tr>
+                        <tr><td>device_type</td><td>Cihaz turu</td><td>Platform analizi</td></tr>
+                        <tr><td>quality</td><td>Ses kalitesi</td><td>Bandwidth analizi</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 17. AI METADATA -->
+        <section id="ai-metadata">
+            <div class="section-header">
+                <span class="icon">🤖</span>
+                <h2>17. AI Metadata (26K Sarki)</h2>
+                <span class="status status-todo">YAPILACAK</span>
+            </div>
+
+            <div class="code-stats">
+                <div class="code-stat"><div class="code-stat-val">26K+</div><div class="code-stat-label">Eski Sarki</div></div>
+                <div class="code-stat"><div class="code-stat-val">~8</div><div class="code-stat-label">Metadata/Sarki</div></div>
+                <div class="code-stat"><div class="code-stat-val">%95+</div><div class="code-stat-label">Dogruluk Hedefi</div></div>
+            </div>
+
+            <div class="card">
+                <h3>Tespit Edilecek Metadata</h3>
+                <div class="grid-2">
+                    <ul>
+                        <li><strong>Mood:</strong> Mutlu, Huzunlu, Enerjik, Sakin</li>
+                        <li><strong>Genre:</strong> Rock, Pop, Caz, Elektronik</li>
+                        <li><strong>Sub-genre:</strong> Anadolu Rock, Hard Rock</li>
+                        <li><strong>Tempo (BPM):</strong> 60-200 arasi</li>
+                    </ul>
+                    <ul>
+                        <li><strong>Energy Level:</strong> 1-10 skala</li>
+                        <li><strong>Danceability:</strong> Dans edilebilirlik</li>
+                        <li><strong>Acousticness:</strong> Akustik orani</li>
+                        <li><strong>Instrumentalness:</strong> Vokal/enstruman</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>AI Servis Secenekleri</h3>
+                <div class="grid-2">
+                    <div class="alert alert-info"><strong>Essentia (MTG):</strong> Acik kaynak, self-hosted, BPM/key/mood</div>
+                    <div class="alert alert-info"><strong>AcoustID + MusicBrainz:</strong> Ses parmak izi, ucretsiz</div>
+                    <div class="alert alert-info"><strong>Cyanite.ai:</strong> Ticari API, yuksek dogruluk</div>
+                    <div class="alert alert-info"><strong>Spotify API:</strong> Var olan sarkilar icin</div>
+                </div>
+                <div class="alert alert-success">
+                    <strong>Oneri:</strong> Essentia (ucretsiz) + AcoustID kombinasyonu. 26K sarki icin Cyanite.ai maliyetli.
+                </div>
+            </div>
+        </section>
+
+        <!-- 18. AI IMAGES -->
+        <section id="ai-images">
+            <div class="section-header">
+                <span class="icon">🖼️</span>
+                <h2>18. AI Gorsel Uretimi</h2>
+                <span class="status status-todo">YAPILACAK</span>
+            </div>
+
+            <div class="card">
+                <h3>Servis Karsilastirmasi</h3>
+                <div class="grid-2">
+                    <div class="alert alert-info"><strong>DALL-E 3:</strong> En yuksek kalite, $0.04/gorsel</div>
+                    <div class="alert alert-info"><strong>Midjourney:</strong> Sanatsal, $30/ay, API yok</div>
+                    <div class="alert alert-info"><strong>Stable Diffusion:</strong> Self-hosted, GPU gerekli</div>
+                    <div class="alert alert-success"><strong>Leonardo.ai:</strong> API mevcut, $0.01/gorsel - ONERILEN</div>
+                </div>
+                <p style="margin-top: 15px;"><strong>Maliyet:</strong> 26K sarki × $0.01 = <strong>$260</strong> (Leonardo.ai)</p>
+            </div>
+
+            <div class="card">
+                <h3>Prompt Stratejisi</h3>
+                <ul>
+                    <li><strong>Mood → Renk:</strong> "Mutlu" → Canli, sicak renkler</li>
+                    <li><strong>Genre → Stil:</strong> "Rock" → Grunge, karanlik tonlar</li>
+                    <li><strong>Tempo → Hareket:</strong> "Hizli" → Dinamik sekiller</li>
+                    <li><strong>Era → Estetik:</strong> "80s" → Neon, retro-futuristik</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 19. PLAYLISTS -->
+        <section id="playlists">
+            <div class="section-header">
+                <span class="icon">🎯</span>
+                <h2>19. Akilli Playlistler</h2>
+                <span class="status status-todo">YAPILACAK</span>
+            </div>
+
+            <div class="card">
+                <h3>Otomatik Oneri Tipleri</h3>
+                <div class="grid-2">
+                    <div class="alert alert-info"><strong>☀️ Zamana Gore:</strong> Sabah enerjik, ogle sakin, aksam romantik</div>
+                    <div class="alert alert-info"><strong>🏪 Mekana Gore:</strong> Kafe → Jazz, Gym → Upbeat</div>
+                    <div class="alert alert-info"><strong>📊 Gecmise Gore:</strong> Kullanicinin begenilerinden</div>
+                    <div class="alert alert-info"><strong>🔥 Trend:</strong> En cok dinlenenler</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Playlist Turleri</h3>
+                <ul>
+                    <li><strong>Editor Secimi:</strong> Muzibu ekibi kuratorlu</li>
+                    <li><strong>Algoritmik:</strong> AI tarafindan olusturulan</li>
+                    <li><strong>Kullanici:</strong> Isletme ozel playlistleri</li>
+                    <li><strong>Radio Mode:</strong> Sonsuz benzer sarki akisi</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 20. CORPORATE -->
+        <section id="corporate">
+            <div class="section-header">
+                <span class="icon">🏢</span>
+                <h2>20. Kurumsal Coklu Sube</h2>
+                <span class="status status-partial">KISMI</span>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>✅ MİMARİ NETLEŞTİ (26 Kasım):</strong><br>
+                • Her users = Ayrı premium üye (para öder)<br>
+                • Şubeler istedikleri zaman ana firmadan ayrılabilir<br>
+                • Her şube kendi başına ana firma olabilir<br>
+                • branch_name migration tamamlandı ✅
+            </div>
+
+            <div class="card">
+                <h3>✅ Doğru Sistem Mimarisi</h3>
+                <p><strong>Temel Prensipler:</strong></p>
+                <ul>
+                    <li><strong>1 User = 1 Premium Üye:</strong> Her şube ayrı bir users kaydı</li>
+                    <li><strong>parent_id Hiyerarşisi:</strong> NULL = Ana firma, VALUE = Alt şube</li>
+                    <li><strong>Dinamik Yapı:</strong> Alt şube parent_id NULL yapılarak bağımsızlaşabilir</li>
+                    <li><strong>İstatistik Yetkisi:</strong> Ana şube → Tüm alt şubeler, Alt şube → Sadece kendisi</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Örnek Senaryo: Starbucks</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>ID</th><th>User ID</th><th>Parent ID</th><th>Company Name</th><th>Branch Name</th><th>Durum</th></tr>
+                        <tr style="background: rgba(139, 92, 246, 0.1);">
+                            <td>1</td><td>100</td><td>NULL</td><td>Starbucks</td><td>NULL</td><td>🏢 Ana Firma</td>
+                        </tr>
+                        <tr>
+                            <td>2</td><td>200</td><td>1</td><td>NULL</td><td>Kadıköy Şubesi</td><td>🏪 Alt Şube</td>
+                        </tr>
+                        <tr>
+                            <td>3</td><td>201</td><td>1</td><td>NULL</td><td>Beşiktaş Şubesi</td><td>🏪 Alt Şube</td>
+                        </tr>
+                        <tr>
+                            <td>4</td><td>202</td><td>1</td><td>NULL</td><td>Şişli Şubesi</td><td>🏪 Alt Şube</td>
+                        </tr>
+                    </tbody></table>
+                </div>
+                <p style="margin-top: 15px;"><strong>Kadıköy Bağımsızlaşırsa:</strong></p>
+                <div class="code-block">
+$branch = MuzibuCorporateAccount::find(2);
+$branch-&gt;update([
+    'parent_id' =&gt; null,
+    'company_name' =&gt; 'Kadıköy Coffee',
+    'corporate_code' =&gt; 'KDK-X8Y2P',
+]);
+// Artık Kadıköy ana firma!
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Database Yapısı (GÜNCEL)</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>Alan</th><th>Tip</th><th>Açıklama</th></tr>
+                        <tr><td>id</td><td>bigint</td><td>Primary key</td></tr>
+                        <tr><td>user_id</td><td>bigint</td><td>Her şube = Ayrı user (premium)</td></tr>
+                        <tr><td>parent_id</td><td>bigint (nullable)</td><td>NULL = Ana, VALUE = Alt şube</td></tr>
+                        <tr><td>company_name</td><td>string</td><td>Ana firma adı</td></tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);"><td>branch_name</td><td>string (nullable)</td><td>✅ YENİ: Alt şube adı</td></tr>
+                        <tr><td>corporate_code</td><td>string (unique)</td><td>Sadece ana firmada</td></tr>
+                        <tr><td>is_active</td><td>boolean</td><td>Aktif/Pasif</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎨 Mevcut UI Durumu</h3>
+                <p><strong>✅ İyi Yönler:</strong></p>
+                <ul>
+                    <li>Tree-view yapısı (Alpine.js ile açılır/kapanır)</li>
+                    <li>İki panel şube yönetimi (Sol: Userlar, Sağ: Şubeler)</li>
+                    <li>Inline şube adı düzenleme</li>
+                    <li>Livewire reaktif güncellemeler</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>❌ Eksikler:</strong></p>
+                <ul>
+                    <li>branch_name kullanılmıyor (company_name kullanılıyor)</li>
+                    <li>Şubeyi bağımsızlaştırma özelliği yok</li>
+                    <li>İstatistik yetki kontrolü eksik</li>
+                    <li>Ana/Alt şube badge'leri yok</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>📋 Yapılacaklar (Öncelik Sırasına Göre)</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>Öncelik</th><th>İşlem</th><th>Dosya</th></tr>
+                        <tr style="background: rgba(245, 158, 11, 0.1);">
+                            <td>1️⃣ YÜKSEK</td>
+                            <td>View'de branch_name kullan</td>
+                            <td>corporate-account-component.blade.php</td>
+                        </tr>
+                        <tr style="background: rgba(245, 158, 11, 0.1);">
+                            <td>2️⃣ YÜKSEK</td>
+                            <td>detachBranch() method ekle</td>
+                            <td>CorporateAccountComponent.php</td>
+                        </tr>
+                        <tr>
+                            <td>3️⃣ ORTA</td>
+                            <td>canViewBranchStats() yetki kontrolü</td>
+                            <td>MuzibuCorporateAccount.php</td>
+                        </tr>
+                        <tr>
+                            <td>4️⃣ ORTA</td>
+                            <td>Ana/Alt şube badge'leri</td>
+                            <td>corporate-account-component.blade.php</td>
+                        </tr>
+                        <tr>
+                            <td>5️⃣ DÜŞÜK</td>
+                            <td>İstatistik raporu sayfası</td>
+                            <td>Yeni route + view</td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Odeme Modelleri</h3>
+                <div class="grid-3">
+                    <div class="alert alert-info"><strong>🏦 Merkezi:</strong> Ana firma tum subelerin odemesini yapar</div>
+                    <div class="alert alert-info"><strong>🏪 Sube Bazli:</strong> Her sube kendi odemesini yapar</div>
+                    <div class="alert alert-info"><strong>🔀 Hibrit:</strong> Ana firma temel, subeler ek ozellikler</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🤖 Yapay Zeka İçin Sistem Açıklaması</h3>
+                <div class="alert alert-success">
+                    <strong>⚠️ YAPAY ZEKA DİKKAT:</strong><br>
+                    Bu dosya MASTER dokümandır. ASLA silme!<br>
+                    Sadece ilgili bölümleri/maddeleri güncelleyebilirsin.<br>
+                    Her güncelleme bu dosyanın en güncel hali olacaktır.<br><br>
+                    <strong>📖 Bu Dosyayı Nasıl Kullanacaksın?</strong><br>
+                    1. Kullanıcı sana bu dosyanın linkini verecek<br>
+                    2. Sen bu sayfayı okuyacaksın<br>
+                    3. İlgili bölümdeki açıklamaları anlayacaksın<br>
+                    4. Yaptığın işi "📋 Yapılan İşlemler" tablosuna ekleyeceksin<br>
+                    5. Kalan işleri "🚧 Yapılacak İşlemler" tablosundan güncelleyeceksin<br><br>
+                    <strong>Bu bölüm yapay zekaların sistemi anlaması için yazılmıştır:</strong>
+                </div>
+                <h4>1. Temel Konsept</h4>
+                <p>Muzibu Corporate sistemi, çoklu şubeli işletmelerin müzik yayını yapmasını sağlar. Ancak <strong>ÖNEMLI:</strong> Bu klasik bir hiyerarşik sistem değildir!</p>
+                <ul>
+                    <li><strong>Her users = Bağımsız premium üye:</strong> Her kullanıcı kendi başına para öder</li>
+                    <li><strong>Şubeler = Başka users kayıtları:</strong> Alt şube aslında farklı bir user_id'dir</li>
+                    <li><strong>Dinamik ilişki:</strong> Şubeler istedikleri zaman parent_id'yi NULL yaparak bağımsızlaşabilir</li>
+                </ul>
+
+                <h4>2. Database Mantığı</h4>
+                <pre style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; margin: 15px 0;">-- Ana Firma
+INSERT INTO muzibu_corporate_accounts (user_id, parent_id, company_name, branch_name, corporate_code)
+VALUES (100, NULL, 'Starbucks', NULL, 'STB-X8K2M');
+
+-- Alt Şube (farklı user!)
+INSERT INTO muzibu_corporate_accounts (user_id, parent_id, company_name, branch_name, corporate_code)
+VALUES (200, 1, NULL, 'Kadıköy Şubesi', NULL);
+
+-- Şube Bağımsızlaşma
+UPDATE muzibu_corporate_accounts
+SET parent_id = NULL, company_name = 'Kadıköy Coffee', corporate_code = 'KDK-P9L3X'
+WHERE id = 2;
+                </pre>
+
+                <h4>3. Yetki Mantığı</h4>
+                <ul>
+                    <li><strong>Ana Şube (parent_id = NULL):</strong> Tüm alt şubelerinin (parent_id = kendi_id) istatistiklerini görebilir</li>
+                    <li><strong>Alt Şube (parent_id != NULL):</strong> Sadece kendi istatistiklerini görebilir</li>
+                    <li><strong>Kontrol:</strong> Model'de canViewBranchStats($branchId) ile yetki kontrolü yapılır</li>
+                </ul>
+
+                <h4>4. Model Methods (MuzibuCorporateAccount.php)</h4>
+                <pre style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; margin: 15px 0;">// Ana şube mi?
+public function isMainBranch(): bool
+{
+    return $this-&gt;parent_id === null;
+}
+
+// Alt şubeleri getir
+public function getSubBranches()
+{
+    return $this-&gt;children()-&gt;get();
+}
+
+// Şirket adını döndür (ana şubeyse kendi, alt şubeyse parent'tan)
+public function getCompanyName(): ?string
+{
+    if ($this-&gt;isMainBranch()) {
+        return $this-&gt;company_name;
+    }
+    return $this-&gt;parent ? $this-&gt;parent-&gt;company_name : null;
+}
+
+// Yetki kontrolü
+public function canViewBranchStats($branchId): bool
+{
+    if ($this-&gt;isMainBranch()) {
+        return $this-&gt;children()-&gt;where('id', $branchId)-&gt;exists();
+    }
+    return $this-&gt;id === $branchId;
+}
+                </pre>
+
+                <h4>5. Livewire Component İşleyişi (CorporateAccountComponent.php)</h4>
+                <p><strong>Ana işlemler:</strong></p>
+                <ul>
+                    <li><strong>createParent():</strong> Yeni ana firma oluşturur (user_id, company_name, corporate_code)</li>
+                    <li><strong>addBranch($userId):</strong> Mevcut bir user'ı alt şube olarak ekler (parent_id set edilir)</li>
+                    <li><strong>removeBranch($accountId):</strong> Alt şubeyi siler (cascade delete yok, sadece relation kopar)</li>
+                    <li><strong>detachBranch($accountId):</strong> ❌ YAPILACAK - Alt şubeyi bağımsızlaştırır (parent_id = NULL)</li>
+                    <li><strong>updateBranchName($accountId, $name):</strong> Şube adını günceller (inline edit)</li>
+                </ul>
+
+                <h4>6. View Yapısı (corporate-account-component.blade.php)</h4>
+                <ul>
+                    <li><strong>Tree-view:</strong> Ana firmalar listelenir, tıklanınca alt şubeler açılır (Alpine.js)</li>
+                    <li><strong>İki Panel:</strong> Sol = Bağlı olmayan userlar, Sağ = Seçili ana firmanın alt şubeleri</li>
+                    <li><strong>Inline Edit:</strong> Şube adı direkt input üzerinden değiştirilebilir</li>
+                    <li><strong>❌ HATA:</strong> Şimdilik view'de {{ $branch-&gt;company_name }} kullanılıyor ama {{ $branch-&gt;branch_name }} olmalı!</li>
+                </ul>
+
+                <h4>7. Workflow Örneği</h4>
+                <pre style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; margin: 15px 0;">1. User A (id: 100) → Ana firma oluştur: "Starbucks"
+2. User B (id: 200) → Alt şube olarak ekle: "Kadıköy Şubesi" (parent_id: 1)
+3. User C (id: 201) → Alt şube olarak ekle: "Beşiktaş Şubesi" (parent_id: 1)
+4. User A → Tüm şubelerin istatistiklerini görebilir (Kadıköy + Beşiktaş)
+5. User B → Sadece Kadıköy'ün istatistiklerini görebilir
+6. User B → Bağımsızlaşma talep eder
+7. Admin → User B'nin parent_id'sini NULL yapar
+8. User B → Artık ana firma! Kendi corporate_code'u var
+                </pre>
+
+                <h4>8. Yapay Zeka Hatırlatması</h4>
+                <div class="alert alert-warning">
+                    <strong>⚠️ YAPAY ZEKA UNUTMA:</strong><br>
+                    • Her şube = Farklı user_id (aynı user değil!)<br>
+                    • parent_id NULL = Ana firma, VALUE = Alt şube<br>
+                    • company_name = Ana firma adı (alt şubede NULL)<br>
+                    • branch_name = Alt şube adı (ana firmada NULL)<br>
+                    • Bağımsızlaşma = parent_id NULL yap + corporate_code oluştur<br>
+                    • Yetki = Ana şube hepsini görür, alt şube sadece kendisini
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Yapılan İşlemler (26 Kasım 2025)</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>İşlem</th><th>Durum</th><th>Yapan</th></tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td>Migration: branch_name alan ekleme (central)</td>
+                            <td>✅ TAMAM</td>
+                            <td>Claude</td>
+                        </tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td>Migration: branch_name alan ekleme (tenant)</td>
+                            <td>✅ TAMAM</td>
+                            <td>Claude</td>
+                        </tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td>Model: branch_name fillable + helper methodlar</td>
+                            <td>✅ TAMAM</td>
+                            <td>Claude</td>
+                        </tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td>Migration çalıştırma (central + tüm tenant'lar)</td>
+                            <td>✅ TAMAM</td>
+                            <td>Claude</td>
+                        </tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td>Sistem mimarisi dokümantasyonu</td>
+                            <td>✅ TAMAM</td>
+                            <td>Claude</td>
+                        </tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td>View'de branch_name kullanımı</td>
+                            <td>✅ TAMAM</td>
+                            <td>Claude</td>
+                        </tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td>detachBranch() method ekleme</td>
+                            <td>✅ TAMAM</td>
+                            <td>Claude</td>
+                        </tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td>Ana Şube / Alt Şube badge'leri</td>
+                            <td>✅ TAMAM</td>
+                            <td>Claude</td>
+                        </tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);">
+                            <td>Bağımsızlaştır butonu (rocket icon)</td>
+                            <td>✅ TAMAM</td>
+                            <td>Claude</td>
+                        </tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🚧 Yapılacak İşlemler (Sırayla)</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>Öncelik</th><th>İşlem</th><th>Dosya</th><th>Yapacak</th></tr>
+                        <tr style="background: rgba(239, 68, 68, 0.1);">
+                            <td>1️⃣ YÜK</td>
+                            <td><strong>FRONTEND:</strong> Şube seçici UI</td>
+                            <td>themes/muzibu/layouts/app.blade.php</td>
+                            <td>Frontend yapay zekası</td>
+                        </tr>
+                        <tr style="background: rgba(239, 68, 68, 0.1);">
+                            <td>2️⃣ YÜK</td>
+                            <td><strong>FRONTEND:</strong> Player şube bilgisi</td>
+                            <td>themes/muzibu/components/player.blade.php</td>
+                            <td>Frontend yapay zekası</td>
+                        </tr>
+                        <tr style="background: rgba(239, 68, 68, 0.1);">
+                            <td>3️⃣ ORT</td>
+                            <td><strong>FRONTEND:</strong> Şube istatistik widget'ı</td>
+                            <td>Yeni component</td>
+                            <td>Frontend yapay zekası</td>
+                        </tr>
+                        <tr style="background: rgba(100, 116, 139, 0.1);">
+                            <td>❄️ İLERİ</td>
+                            <td><strong>ADMIN:</strong> İstatistik sistem (canViewBranchStats + rapor)</td>
+                            <td>Çok daha sonra yapılacak</td>
+                            <td>İleri tarihte</td>
+                        </tr>
+                    </tbody></table>
+                </div>
+                <div class="alert alert-info" style="margin-top: 20px;">
+                    <strong>📌 NOT:</strong><br>
+                    Admin panel temel işlevleri ✅ TAMAM. Şimdi FRONTEND'e geçiliyor (1-3).<br>
+                    Her yapay zeka yaptığı işi bu tabloya eklemeli ve yapılacakları güncellemelidir.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Sistem Nasıl Çalışıyor?</h3>
+
+                <div class="alert alert-success">
+                    <strong>✅ ÇOK BASİT MANTIK:</strong><br><br>
+
+                    <strong>1. Admin Panel (✅ TAMAM):</strong><br>
+                    → Yönetici "Starbucks" firmasını oluşturur<br>
+                    → Kadıköy, Beşiktaş, Nişantaşı şubelerini ekler<br>
+                    → Her şubeye farklı kullanıcılar atar<br><br>
+
+                    <strong>2. Site Kullanımı:</strong><br>
+                    → Ahmet (Kadıköy şubesi kullanıcısı) → Login olur → Müzik dinler<br>
+                    → Mehmet (Beşiktaş şubesi kullanıcısı) → Login olur → Müzik dinler<br>
+                    → <strong>O KADAR!</strong><br><br>
+
+                    <strong>3. Arka Planda:</strong><br>
+                    → Her dinleme → Kullanıcının şubesine kaydedilir<br>
+                    → Şube bilgisi → <code>MuzibuCorporateAccount</code> tablosundan gelir<br>
+                    → İstatistikler → Şube bazlı ayrılır<br><br>
+
+                    <strong>🎯 SONUÇ:</strong> Kullanıcı şube bilgileriyle login olur, müzik dinler. Sistem otomatik çalışır!
+                </div>
+
+                <h4>🎨 Opsiyonel İyileştirmeler (İsteğe Bağlı)</h4>
+                <ul>
+                    <li><strong>Player Badge:</strong> "🏪 Kadıköy Şubesi olarak dinliyorsunuz" yazısı (güzel durur ama zorunlu değil)</li>
+                    <li><strong>Dashboard Widget:</strong> "Bu ay 320 şarkı dinlediniz" istatistik kartı (güzel olur)</li>
+                    <li><strong>Şube Profili:</strong> Kullanıcı profil sayfasında şube bilgisi göster</li>
+                </ul>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ ÖNEMLİ:</strong> Yukarıdaki iyileştirmeler tamamen opsiyoneldir. Sistem şu anda bile çalışır durumda!
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>📊 Detaylı Analiz:</strong><br>
+                Sistem mimarisi, UI analizi ve kod önerileri için:<br>
+                <a href="https://muzibu.com.tr/readme/2025/11/26/corporate-hierarchy-plan/v4/" style="color: var(--accent);">
+                    Corporate Hierarchy Plan v4 →
+                </a>
+            </div>
+        </section>
+
+        <!-- 21. ANNOUNCEMENTS -->
+        <section id="announcements">
+            <div class="section-header">
+                <span class="icon">📢</span>
+                <h2>21. Anons Sistemi</h2>
+                <span class="status status-todo">YAPILACAK</span>
+            </div>
+
+            <div class="card">
+                <h3>Tetikleme Yontemleri</h3>
+                <div class="table-wrap">
+                    <table>
+                        <tbody><tr><th>Yontem</th><th>Aciklama</th><th>Oneri</th></tr>
+                        <tr><td>⏰ Sabit Saat</td><td>09:00, 12:00, 18:00</td><td>Onemli duyurular</td></tr>
+                        <tr><td>🎵 X Sarki Sonra</td><td>Her 5 sarkida bir</td><td>Reklam icin</td></tr>
+                        <tr><td>⏱️ X Dakika Sonra</td><td>Her 30 dakikada</td><td>Duzenli hatirlatma</td></tr>
+                        <tr style="background: rgba(16, 185, 129, 0.1);"><td>🎼 Sarki Bitiminde</td><td>Dogal bitiste anons</td><td>✅ EN IYI UX!</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Anons Ozellikleri</h3>
+                <ul>
+                    <li>Ses dosyasi yukleme (MP3/WAV)</li>
+                    <li>TTS entegrasyonu (metin → ses)</li>
+                    <li>Zamanlama (baslangic/bitis tarihi)</li>
+                    <li>Sube hedefleme</li>
+                    <li>Oncelik sirasi</li>
+                    <li>Crossfade ile yumusak gecis</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 22. PRICING -->
+        <section id="pricing">
+            <div class="section-header">
+                <span class="icon">💰</span>
+                <h2>22. Fiyatlandirma Paketleri</h2>
+            </div>
+
+            <h3 style="text-align: center; margin-bottom: 25px; color: var(--text-muted);">🏪 Tekil Isletmeler</h3>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-name">Starter</div>
+                    <div class="pricing-price">₺149<span>/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>192 kbps ses</li>
+                        <li>Temel playlistler</li>
+                        <li>1 lokasyon</li>
+                        <li>Email destek</li>
+                    </ul>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-name">Professional</div>
+                    <div class="pricing-price">₺299<span>/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>320 kbps ses</li>
+                        <li>Sinirsiz playlist</li>
+                        <li>3 lokasyon</li>
+                        <li>Anons sistemi</li>
+                        <li>Detayli analitik</li>
+                    </ul>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-name">Premium</div>
+                    <div class="pricing-price">₺499<span>/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>Lossless FLAC</li>
+                        <li>Equalizer</li>
+                        <li>5 lokasyon</li>
+                        <li>7/24 destek</li>
+                        <li>API erisimi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 40px 0 25px; color: var(--text-muted);">🏢 Kurumsal (Coklu Sube)</h3>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-name">Business</div>
+                    <div class="pricing-price">₺79<span>/sube/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>10-50 sube</li>
+                        <li>Merkezi yonetim</li>
+                        <li>Toplu playlist</li>
+                        <li>Account manager</li>
+                    </ul>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-name">Enterprise</div>
+                    <div class="pricing-price">₺59<span>/sube/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>50+ sube</li>
+                        <li>Tum Premium ozellikler</li>
+                        <li>Ozel API</li>
+                        <li>SLA garantisi</li>
+                        <li>On-site egitim</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 23. SOCIAL -->
+        <section id="social">
+            <div class="section-header">
+                <span class="icon">💬</span>
+                <h2>23. Sosyal Ozellikler</h2>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>❤️ Begeni &amp; Kaydetme</h3>
+                    <ul>
+                        <li>Sarki begeni (kalp) ✅ MEVCUT</li>
+                        <li>Playlist kaydetme</li>
+                        <li>Album takip</li>
+                        <li>"Begendiklerim" playlist</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>📤 Paylasim</h3>
+                    <ul>
+                        <li>Sarki linki kopyalama</li>
+                        <li>Sosyal medya paylasimi</li>
+                        <li>QR kod ile paylasim</li>
+                        <li>"Su an dinliyorum" durumu</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 24. WOW FACTORS -->
+        <section id="wow">
+            <div class="section-header">
+                <span class="icon">✨</span>
+                <h2>24. WOW Faktorleri</h2>
+            </div>
+
+            <p style="text-align: center; margin-bottom: 25px; color: var(--text-muted);">Musteriyi etkileyecek, rakiplerden ayiracak ozellikler</p>
+
+            <div class="wow-grid">
+                <div class="wow-item">
+                    <div class="wow-icon">🌊</div>
+                    <div class="wow-title">WaveSurfer Dalga</div>
+                    <div class="wow-desc">Gercek zamanli dalga formu</div>
+                </div>
+                <div class="wow-item">
+                    <div class="wow-icon">🎨</div>
+                    <div class="wow-title">Dinamik Tema</div>
+                    <div class="wow-desc">Kapak rengine gore UI</div>
+                </div>
+                <div class="wow-item">
+                    <div class="wow-icon">🎚️</div>
+                    <div class="wow-title">10-Band EQ</div>
+                    <div class="wow-desc">Profesyonel ses esitleme</div>
+                </div>
+                <div class="wow-item">
+                    <div class="wow-icon">💎</div>
+                    <div class="wow-title">Hi-Res Audio</div>
+                    <div class="wow-desc">24-bit/96kHz Lossless</div>
+                </div>
+                <div class="wow-item">
+                    <div class="wow-icon">🤖</div>
+                    <div class="wow-title">AI Metadata</div>
+                    <div class="wow-desc">Otomatik mood/genre</div>
+                </div>
+                <div class="wow-item">
+                    <div class="wow-icon">🖼️</div>
+                    <div class="wow-title">AI Kapaklar</div>
+                    <div class="wow-desc">Her sarkiya ozgun gorsel</div>
+                </div>
+                <div class="wow-item">
+                    <div class="wow-icon">🔀</div>
+                    <div class="wow-title">Smart Crossfade</div>
+                    <div class="wow-desc">Ture gore gecis suresi</div>
+                </div>
+                <div class="wow-item">
+                    <div class="wow-icon">📊</div>
+                    <div class="wow-title">Volume Normalize</div>
+                    <div class="wow-desc">Sarkilar arasi denge</div>
+                </div>
+                <div class="wow-item">
+                    <div class="wow-icon">🏢</div>
+                    <div class="wow-title">200+ Sube</div>
+                    <div class="wow-desc">Kurumsal coklu lokasyon</div>
+                </div>
+                <div class="wow-item">
+                    <div class="wow-icon">📢</div>
+                    <div class="wow-title">Akilli Anons</div>
+                    <div class="wow-desc">Sarki bitisinde yumusak</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 25. ROADMAP -->
+        <section id="roadmap">
+            <div class="section-header">
+                <span class="icon">🗺️</span>
+                <h2>25. Yol Haritasi</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="timeline-phase current">FAZ 1 - GUVENLIK (ONCELIK)</span>
+                    <h4>🔐 Temel Guvenlik</h4>
+                    <ul>
+                        <li>6 katmanli guvenlik sistemi</li>
+                        <li>HLS + AES-128 sifreleme</li>
+                        <li>Signed URL implementasyonu</li>
+                        <li>Rate limiting &amp; device fingerprint</li>
+                        <li>30 saniyelik onizleme sistemi</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">FAZ 2 - PLAYER</span>
+                    <h4>🎧 Player Gelistirmeleri</h4>
+                    <ul>
+                        <li>WaveSurfer.js entegrasyonu</li>
+                        <li>Color Thief dinamik tema</li>
+                        <li>10-band Equalizer</li>
+                        <li>Volume normalization</li>
+                        <li>Ture gore crossfade</li>
+                        <li>Kalite secimi UI</li>
+                        <li>JS modularizasyonu</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">FAZ 3 - B2B</span>
+                    <h4>🏢 Kurumsal Ozellikler</h4>
+                    <ul>
+                        <li>Coklu sube yonetimi (200+)</li>
+                        <li>Kurumsal hiyerarsi</li>
+                        <li>Anons sistemi</li>
+                        <li>Analytics dashboard</li>
+                        <li>Fiyatlandirma/abonelik</li>
+                        <li>Sube bazli raporlar</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">FAZ 4 - AI</span>
+                    <h4>🤖 AI Entegrasyonu</h4>
+                    <ul>
+                        <li>26K sarki metadata analizi</li>
+                        <li>Mood/genre/tempo tespiti</li>
+                        <li>AI kapak gorseli uretimi</li>
+                        <li>Akilli playlist onerileri</li>
+                        <li>Radio mode</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">FAZ 5 - PREMIUM</span>
+                    <h4>💎 Premium Ozellikler</h4>
+                    <ul>
+                        <li>Hi-Res audio (FLAC 24-bit)</li>
+                        <li>Adaptive bitrate streaming</li>
+                        <li>Offline mode (mobil)</li>
+                        <li>API erisimi</li>
+                        <li>White-label secenegi</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- FINAL SUMMARY -->
+        <section>
+            <div class="section-header">
+                <span class="icon">🎯</span>
+                <h2>Sonuc</h2>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="color: var(--success);">✅ Guclu Yonler</h3>
+                    <ul>
+                        <li>Solid streaming altyapisi (Howler+HLS)</li>
+                        <li>Profesyonel crossfade mekanizmasi</li>
+                        <li>Modern UI/UX (Spotify-inspired)</li>
+                        <li>SPA navigasyon (muzik kesilmez)</li>
+                        <li>Multi-tenant hazir mimari</li>
+                        <li>Kapsamli API yapisi</li>
+                        <li>Background job sistemi</li>
+                        <li>Coklu dil destegi</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="color: var(--danger);">❌ Kritik Eksikler</h3>
+                    <ul>
+                        <li>API guvenligi (stream acik!)</li>
+                        <li>HLS sifreleme (AES-128) yok</li>
+                        <li>Premium/abonelik sistemi yok</li>
+                        <li>Kurumsal hiyerarsi eksik</li>
+                        <li>Anons sistemi yok</li>
+                        <li>AI metadata/gorsel yok</li>
+                        <li>Kod modularizasyonu gerekli</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-success" style="text-align: center; margin-top: 30px;">
+                <strong style="font-size: 1.2rem;">🎯 Platform %68 Tamamlandi</strong><br><br>
+                Temel altyapi guclu ve calisir durumda.<br>
+                Guvenlik FAZ 1 oncelikli olarak ele alinmali.<br>
+                B2B ozellikleri eklendiginde tam fonksiyonel olacak.
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>🤖 Claude AI tarafindan olusturuldu</p>
+        <p style="margin-top: 10px; font-size: 1.1rem; color: var(--accent);">Muzibu B2B Premium System - v8 Ultimate Master Plan</p>
+        <p style="margin-top: 8px; font-size: 0.85rem;">v1 Guvenlik + v2 Howler + v3 Crossfade + v4 B2B + v5 WOW + v6 Birlestirme + v7 Kod Analizi = ULTIMATE</p>
+        <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);">26 Kasim 2025 | muzibu.com.tr | Tenant 1001</p>
+    </footer>
+
+
+</body></html>

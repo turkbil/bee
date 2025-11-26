@@ -97,12 +97,6 @@ trait HasTranslations
         }
         
         // 4. Hiçbiri yoksa null
-        \Log::warning('⚠️ Fallback translation bulunamadı', [
-            'requested_locale' => $requestedLocale,
-            'tenant_default_locale' => $defaultLocale,
-            'available_translations' => array_keys($translations)
-        ]);
-        
         return null;
     }
     

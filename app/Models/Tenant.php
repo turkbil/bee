@@ -19,6 +19,28 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     protected $table = 'tenants';
     public $incrementing = true;
 
+    /**
+     * Serialize edilmemesi gereken büyük alanlar
+     * Session'a yazılırken 8MB+ theme_settings problemi
+     */
+    protected $hidden = [
+        'theme_settings',
+    ];
+
+    /**
+     * Session serialize için büyük alanları hariç tut
+     * PHP serialize (session) için __sleep() kullanılır
+     */
+    public function __sleep()
+    {
+        // Sadece temel alanları serialize et, theme_settings hariç
+        // Hem attributes hem original'dan kaldır
+        unset($this->attributes['theme_settings']);
+        unset($this->original['theme_settings']);
+
+        return array_keys(get_object_vars($this));
+    }
+
     protected static function boot()
     {
         parent::boot();

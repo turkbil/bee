@@ -47,19 +47,21 @@ class PageController extends Controller
         view()->share('currentModel', $page);
 
         // Homepage products'ları çek (homepage_sort_order'a göre sıralı)
-        $homepageProducts = \Modules\Shop\App\Models\ShopProduct::where('show_on_homepage', true)
+        $homepageProductsQuery = \Modules\Shop\App\Models\ShopProduct::where('show_on_homepage', true)
             ->where('is_active', true)
             ->with(['category', 'brand', 'media'])
             ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
             ->orderBy('product_id', 'desc')
-            ->get()
-            ->map(function ($product) {
+            ->get();
+
+        // N+1 sorunu çözümü: Tüm currency'leri tek sorguda çek
+        $currencyIds = $homepageProductsQuery->pluck('currency_id')->unique()->filter();
+        $currencies = \Modules\Shop\App\Models\ShopCurrency::whereIn('currency_id', $currencyIds)->get()->keyBy('currency_id');
+
+        $homepageProducts = $homepageProductsQuery->map(function ($product) use ($currencies) {
                 // Currency field (string) ve currency() relation çakışıyor
-                // Manuel olarak currency_id'den ShopCurrency'yi çekelim
-                $currencyRelation = null;
-                if ($product->currency_id) {
-                    $currencyRelation = \Modules\Shop\App\Models\ShopCurrency::find($product->currency_id);
-                }
+                // Önceden yüklenmiş currencies collection'dan al (N+1 çözümü)
+                $currencyRelation = $product->currency_id ? ($currencies[$product->currency_id] ?? null) : null;
                 $currencyCode = $product->getAttribute('currency') ?? 'TRY';
 
                 // TRY conversion için exchange rate hesapla

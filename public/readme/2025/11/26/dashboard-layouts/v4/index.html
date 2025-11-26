@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Layout V4 - Hybrid (V1 + V2)</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #0f1115; min-height: 100vh; }
+
+        /* Welcome Banner - V1 Style */
+        .welcome-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .welcome-banner h2 {
+            font-size: 1.5rem;
+            margin: 0;
+            color: #fff;
+            font-weight: 600;
+        }
+        .welcome-banner p {
+            margin: 0.25rem 0 0;
+            opacity: 0.85;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+        .stat-pills {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .stat-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            color: #fff;
+            backdrop-filter: blur(10px);
+        }
+        .stat-pill .value { font-weight: 700; font-size: 1.1rem; }
+        .stat-pill .label { font-size: 0.75rem; opacity: 0.85; }
+
+        /* Main Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 1.5rem;
+        }
+        @media (max-width: 1200px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        /* Quick Actions Bar - V1 Style */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 1400px) { .quick-actions { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 992px) { .quick-actions { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 576px) { .quick-actions { grid-template-columns: repeat(2, 1fr); } }
+
+        .quick-btn {
+            background: #1a1d21;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .quick-btn:hover {
+            background: #1f2329;
+            transform: translateY(-2px);
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+        .quick-btn i {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .quick-btn span {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            display: block;
+        }
+
+        /* Module Cards - V2 Style */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        @media (max-width: 768px) { .module-grid { grid-template-columns: 1fr; } }
+
+        .module-card {
+            background: #1a1d21;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .module-header {
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .module-header .left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .module-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .module-title {
+            font-weight: 600;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+        .module-count {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .module-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .module-actions a {
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .module-actions .list-btn {
+            background: rgba(255,255,255,0.06);
+            color: #9ca3af;
+        }
+        .module-actions .list-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .module-actions .add-btn {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+        }
+        .module-actions .add-btn:hover {
+            background: rgba(102, 126, 234, 0.25);
+        }
+
+        /* Recent Items - V2 Style */
+        .recent-list {
+            padding: 0;
+        }
+        .recent-item {
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: background 0.2s;
+        }
+        .recent-item:last-child { border-bottom: none; }
+        .recent-item:hover { background: rgba(255,255,255,0.02); }
+        .recent-item .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .recent-item .title {
+            flex: 1;
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .recent-item .time {
+            color: #6b7280;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        /* Sidebar Cards */
+        .sidebar-card {
+            background: #1a1d21;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .sidebar-card:last-child { margin-bottom: 0; }
+        .sidebar-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .sidebar-header h4 {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .sidebar-body { padding: 1.25rem; }
+
+        /* Profile Card */
+        .profile-center {
+            text-align: center;
+        }
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .profile-name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        .profile-role {
+            color: #6b7280;
+            font-size: 0.85rem;
+        }
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .profile-stat {
+            text-align: center;
+        }
+        .profile-stat .value {
+            font-weight: 700;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        .profile-stat .label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        /* System Status */
+        .system-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .system-item:last-child { border-bottom: none; }
+        .system-item .label {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .system-item .label .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+        .system-item .value {
+            color: #22c55e;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* AI Chat */
+        .ai-badge {
+            background: rgba(139, 92, 246, 0.15);
+            color: #8b5cf6;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .ai-messages {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+        .ai-message {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .ai-message:last-child { margin-bottom: 0; }
+        .ai-message .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+        .ai-message .avatar.ai { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        .ai-message .avatar.user { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .ai-message .bubble {
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #e2e8f0;
+        }
+        .ai-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .ai-input input {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .ai-input input::placeholder { color: #6b7280; }
+        .ai-input input:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+        .ai-input button {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            border-radius: 8px;
+            padding: 0 1rem;
+            color: #fff;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .ai-input button:hover { opacity: 0.9; }
+    </style>
+</head>
+<body class="theme-dark">
+    <div class="container-xl py-4">
+        <!-- Welcome Banner (V1 Style) -->
+        <div class="welcome-banner">
+            <div>
+                <h2>Hos geldin, Nurullah!</h2>
+                <p>Sistemde 26 aktif modul bulunuyor</p>
+            </div>
+            <div class="stat-pills">
+                <div class="stat-pill">
+                    <i class="fas fa-coins"></i>
+                    <div>
+                        <div class="value">174K</div>
+                        <div class="label">AI Kredi</div>
+                    </div>
+                </div>
+                <div class="stat-pill">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <div class="value">3</div>
+                        <div class="label">Kullanici</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions (V1 Style - Compact) -->
+        <div class="section-title">Hizli Islemler</div>
+        <div class="quick-actions">
+            <a href="#" class="quick-btn">
+                <i class="fas fa-plus" style="color: #22c55e;"></i>
+                <span>Yeni Sayfa</span>
+            </a>
+            <a href="#" class="quick-btn">
+                <i class="fas fa-pen" style="color: #f59e0b;"></i>
+                <span>Yeni Yazi</span>
+            </a>
+            <a href="#" class="quick-btn">
+                <i class="fas fa-music" style="color: #8b5cf6;"></i>
+                <span>Yeni Sarki</span>
+            </a>
+            <a href="#" class="quick-btn">
+                <i class="fas fa-sync" style="color: #3b82f6;"></i>
+                <span>Cache Temizle</span>
+            </a>
+            <a href="#" class="quick-btn">
+                <i class="fas fa-robot" style="color: #8b5cf6;"></i>
+                <span>AI Asistan</span>
+            </a>
+            <a href="#" class="quick-btn">
+                <i class="fas fa-cog" style="color: #6b7280;"></i>
+                <span>Ayarlar</span>
+            </a>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Left: Module Cards (V2 Style) -->
+            <div>
+                <div class="section-title">Moduller</div>
+                <div class="module-grid">
+                    <!-- Pages Module -->
+                    <div class="module-card">
+                        <div class="module-header">
+                            <div class="left">
+                                <div class="module-icon" style="background: rgba(239, 68, 68, 0.15);">
+                                    <i class="fas fa-file-alt" style="color: #ef4444;"></i>
+                                </div>
+                                <div>
+                                    <div class="module-title">Sayfalar</div>
+                                    <div class="module-count">25 sayfa</div>
+                                </div>
+                            </div>
+                            <div class="module-actions">
+                                <a href="#" class="list-btn">Listele</a>
+                                <a href="#" class="add-btn">+ Ekle</a>
+                            </div>
+                        </div>
+                        <div class="recent-list">
+                            <div class="recent-item">
+                                <span class="dot" style="background: #22c55e;"></span>
+                                <span class="title">Hakkimizda</span>
+                                <span class="time">2 dk</span>
+                            </div>
+                            <div class="recent-item">
+                                <span class="dot" style="background: #22c55e;"></span>
+                                <span class="title">Iletisim</span>
+                                <span class="time">1 saat</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Blog Module -->
+                    <div class="module-card">
+                        <div class="module-header">
+                            <div class="left">
+                                <div class="module-icon" style="background: rgba(34, 197, 94, 0.15);">
+                                    <i class="fas fa-pen-fancy" style="color: #22c55e;"></i>
+                                </div>
+                                <div>
+                                    <div class="module-title">Blog</div>
+                                    <div class="module-count">163 yazi</div>
+                                </div>
+                            </div>
+                            <div class="module-actions">
+                                <a href="#" class="list-btn">Listele</a>
+                                <a href="#" class="add-btn">+ Ekle</a>
+                            </div>
+                        </div>
+                        <div class="recent-list">
+                            <div class="recent-item">
+                                <span class="dot" style="background: #22c55e;"></span>
+                                <span class="title">Forklift Secim Rehberi</span>
+                                <span class="time">15 dk</span>
+                            </div>
+                            <div class="recent-item">
+                                <span class="dot" style="background: #f59e0b;"></span>
+                                <span class="title">Akulu Transpalet...</span>
+                                <span class="time">1 gun</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Songs Module -->
+                    <div class="module-card">
+                        <div class="module-header">
+                            <div class="left">
+                                <div class="module-icon" style="background: rgba(139, 92, 246, 0.15);">
+                                    <i class="fas fa-music" style="color: #8b5cf6;"></i>
+                                </div>
+                                <div>
+                                    <div class="module-title">Sarkilar</div>
+                                    <div class="module-count">61 sarki</div>
+                                </div>
+                            </div>
+                            <div class="module-actions">
+                                <a href="#" class="list-btn">Listele</a>
+                                <a href="#" class="add-btn">+ Ekle</a>
+                            </div>
+                        </div>
+                        <div class="recent-list">
+                            <div class="recent-item">
+                                <span class="dot" style="background: #22c55e;"></span>
+                                <span class="title">Yeni Sarki Adi</span>
+                                <span class="time">3 saat</span>
+                            </div>
+                            <div class="recent-item">
+                                <span class="dot" style="background: #22c55e;"></span>
+                                <span class="title">Diger Sarki</span>
+                                <span class="time">1 gun</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Albums Module -->
+                    <div class="module-card">
+                        <div class="module-header">
+                            <div class="left">
+                                <div class="module-icon" style="background: rgba(99, 102, 241, 0.15);">
+                                    <i class="fas fa-compact-disc" style="color: #6366f1;"></i>
+                                </div>
+                                <div>
+                                    <div class="module-title">Albumler</div>
+                                    <div class="module-count">3 album</div>
+                                </div>
+                            </div>
+                            <div class="module-actions">
+                                <a href="#" class="list-btn">Listele</a>
+                                <a href="#" class="add-btn">+ Ekle</a>
+                            </div>
+                        </div>
+                        <div class="recent-list">
+                            <div class="recent-item">
+                                <span class="dot" style="background: #22c55e;"></span>
+                                <span class="title">Album 1</span>
+                                <span class="time">2 gun</span>
+                            </div>
+                            <div class="recent-item">
+                                <span class="dot" style="background: #22c55e;"></span>
+                                <span class="title">Album 2</span>
+                                <span class="time">1 hafta</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Sidebar -->
+            <div>
+                <!-- AI Chat -->
+                <div class="sidebar-card">
+                    <div class="sidebar-header">
+                        <h4><i class="fas fa-robot" style="color: #8b5cf6;"></i> AI Asistan</h4>
+                        <span class="ai-badge">174K Kredi</span>
+                    </div>
+                    <div class="sidebar-body">
+                        <div class="ai-messages">
+                            <div class="ai-message">
+                                <div class="avatar ai"><i class="fas fa-robot"></i></div>
+                                <div class="bubble">Merhaba! Size nasil yardimci olabilirim?</div>
+                            </div>
+                        </div>
+                        <div class="ai-input">
+                            <input type="text" placeholder="Mesajinizi yazin...">
+                            <button><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile -->
+                <div class="sidebar-card">
+                    <div class="sidebar-body">
+                        <div class="profile-center">
+                            <div class="profile-avatar">N</div>
+                            <div class="profile-name">Nurullah</div>
+                            <div class="profile-role">Root</div>
+                            <div class="profile-stats">
+                                <div class="profile-stat">
+                                    <div class="value">26</div>
+                                    <div class="label">Modul</div>
+                                </div>
+                                <div class="profile-stat">
+                                    <div class="value">45</div>
+                                    <div class="label">Gun</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="sidebar-card">
+                    <div class="sidebar-header">
+                        <h4><i class="fas fa-server" style="color: #22c55e;"></i> Sistem</h4>
+                    </div>
+                    <div class="sidebar-body" style="padding-top: 0.5rem;">
+                        <div class="system-item">
+                            <span class="label"><span class="dot"></span> PHP</span>
+                            <span class="value">8.3.28</span>
+                        </div>
+                        <div class="system-item">
+                            <span class="label"><span class="dot"></span> Laravel</span>
+                            <span class="value">12.32.5</span>
+                        </div>
+                        <div class="system-item">
+                            <span class="label"><span class="dot"></span> Database</span>
+                            <span class="value">Bagli</span>
+                        </div>
+                        <div class="system-item">
+                            <span class="label"><span class="dot"></span> Cache</span>
+                            <span class="value">Aktif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -20,11 +20,23 @@ Route::middleware(['auth', 'tenant'])->prefix('admin')->name('admin.')->group(fu
     })->middleware('permission:mediamanagement.view')
       ->name('mediamanagement.index');
 
-    // Thumbmaker Kullanım Kılavuzu
+    // Thumbmaker Kullanım Kılavuzu (eski URL)
     Route::get('/mediamanagement/thumbmaker-guide', function () {
         return view('mediamanagement::admin.thumbmaker-guide');
     })->middleware('permission:mediamanagement.view')
       ->name('mediamanagement.thumbmaker-guide');
+
+    // Thumbnail Kullanım Kılavuzu (yeni kısa URL)
+    Route::get('/mediamanagement/thumbnail', function () {
+        return view('mediamanagement::admin.thumbmaker-guide');
+    })->middleware('permission:mediamanagement.view')
+      ->name('mediamanagement.thumbnail');
+
+    // 11 Kural Formülü - AI Gerçekçi Fotoğraf Üretim Rehberi
+    Route::get('/mediamanagement/11-kural-formulu', function () {
+        return redirect('https://ixtif.com/readme/2025/11/26/11-kural-formulu/');
+    })->middleware('permission:mediamanagement.view')
+      ->name('mediamanagement.11-kural-formulu');
 
     // AI Image Generator
     Route::get('/mediamanagement/ai-generator', \Modules\MediaManagement\App\Http\Livewire\Admin\AiImageGeneratorComponent::class)

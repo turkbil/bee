@@ -1,5 +1,8 @@
 <?php
 
+// Memory limit - Laravel bootstrap öncesi ayarla
+ini_set('memory_limit', '1G');
+
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));

@@ -149,13 +149,8 @@ Route::middleware(['admin', 'tenant'])->prefix('admin')->name('admin.')->group(f
     });
     
     // Admin dashboard rotası - TÜM yetkilendirilmiş kullanıcılar için (editor, admin, root)
+    // NOT: Rol kontrolü zaten 'admin' middleware grubunda yapılıyor (AdminAccessMiddleware)
     Route::get('/dashboard', function () {
-        
-        // Rol kontrolü
-        if (!auth()->user()->hasAnyRole(['admin', 'root', 'editor'])) {
-            abort(403, 'Bu alana erişim yetkiniz bulunmamaktadır.');
-        }
-        
         $currentTenant = null;
         
         if (app(\Stancl\Tenancy\Tenancy::class)->initialized) {

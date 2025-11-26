@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu B2B Premium Sistem - Kapsamli Plan v4</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #818cf8, #6366f1, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle { color: #94a3b8; font-size: 1.1rem; margin-bottom: 20px; }
+
+        .meta-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-purple { background: rgba(139, 92, 246, 0.3); color: #a78bfa; }
+        .badge-blue { background: rgba(59, 130, 246, 0.3); color: #60a5fa; }
+        .badge-green { background: rgba(34, 197, 94, 0.3); color: #4ade80; }
+        .badge-orange { background: rgba(249, 115, 22, 0.3); color: #fb923c; }
+        .badge-pink { background: rgba(236, 72, 153, 0.3); color: #f472b6; }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 10, 0.98);
+            padding: 15px;
+            border-radius: 15px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-tab {
+            padding: 10px 18px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            background: rgba(99, 102, 241, 0.3);
+            color: #fff;
+            border-color: #6366f1;
+        }
+
+        .nav-tab.new {
+            background: rgba(236, 72, 153, 0.3);
+            border-color: #ec4899;
+            color: #f472b6;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 50px;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #818cf8;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #a5b4fc;
+            margin: 25px 0 15px 0;
+        }
+
+        h4 {
+            color: #e2e8f0;
+            margin-bottom: 12px;
+            font-size: 1.15rem;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #6366f1;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .card-danger { border-left-color: #ef4444; }
+        .card-warning { border-left-color: #f59e0b; }
+        .card-success { border-left-color: #10b981; }
+        .card-info { border-left-color: #3b82f6; }
+        .card-pink { border-left-color: #ec4899; }
+        .card-cyan { border-left-color: #06b6d4; }
+
+        .card p { color: #cbd5e1; line-height: 1.8; }
+
+        /* Priority Tags */
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #3b82f6; color: white; }
+        .priority-low { background: #10b981; color: white; }
+        .priority-ai { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; }
+        .priority-new { background: linear-gradient(135deg, #ec4899, #f43f5e); color: white; }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        th {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a5b4fc;
+            font-weight: 600;
+        }
+
+        tr:hover { background: rgba(99, 102, 241, 0.1); }
+
+        /* Lists */
+        ul, ol { margin: 15px 0 15px 25px; }
+        li { margin-bottom: 10px; color: #cbd5e1; }
+
+        /* Code-like text */
+        .tech { color: #fbbf24; font-weight: 500; }
+
+        .file-path {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #10b981;
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .flow-step.ai {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+        }
+
+        .flow-arrow { color: #6366f1; font-size: 1.5rem; }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card.ai {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.3));
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #818cf8;
+        }
+
+        .stat-label { color: #94a3b8; margin-top: 5px; font-size: 0.9rem; }
+
+        /* Alert Box */
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .alert-icon { font-size: 1.5rem; }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .alert-ai {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        /* Comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-col {
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .comparison-col.left {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .comparison-col.right {
+            background: rgba(236, 72, 153, 0.1);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+        }
+
+        .comparison-col h5 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .comparison-col.left h5 { color: #60a5fa; }
+        .comparison-col.right h5 { color: #f472b6; }
+
+        /* Verdict Box */
+        .verdict {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.1));
+            border: 2px solid rgba(34, 197, 94, 0.4);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+        }
+
+        .verdict h4 {
+            color: #4ade80;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        /* Org Chart */
+        .org-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .org-node {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px;
+        }
+
+        .org-node.main {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            font-size: 1.1rem;
+        }
+
+        .org-node.sub {
+            background: linear-gradient(135deg, #059669, #10b981);
+            font-size: 0.9rem;
+        }
+
+        .org-branches {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .org-line {
+            width: 2px;
+            height: 30px;
+            background: #6366f1;
+        }
+
+        /* Pricing Table */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        .pricing-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            border-color: #6366f1;
+            transform: translateY(-5px);
+        }
+
+        .pricing-card.popular {
+            border-color: #ec4899;
+            background: rgba(236, 72, 153, 0.1);
+        }
+
+        .pricing-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #818cf8;
+            margin: 15px 0;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+
+        .pricing-features {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .pricing-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .check { color: #4ade80; font-weight: bold; }
+        .cross { color: #f87171; }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #ec4899, #8b5cf6, #6366f1);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 12px;
+            margin-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 25px;
+            width: 12px;
+            height: 12px;
+            background: #6366f1;
+            border-radius: 50%;
+            border: 3px solid #0a0a0a;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding: 30px;
+            text-align: center;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 15px;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .nav-tabs { flex-direction: column; }
+            .comparison { grid-template-columns: 1fr; }
+            .flow-diagram { flex-direction: column; }
+            .flow-arrow { transform: rotate(90deg); }
+            .pricing-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Muzibu B2B Premium Sistem</h1>
+            <p class="subtitle">Kapsamli Platform Planlama & Kurumsal Cozumler</p>
+            <div class="meta-badges">
+                <span class="badge badge-purple">Tenant: 1001</span>
+                <span class="badge badge-blue">26 Kasim 2025</span>
+                <span class="badge badge-green">B2B Muzik</span>
+                <span class="badge badge-orange">26.000 Sarki</span>
+                <span class="badge badge-pink">v4 - Kurumsal & AI</span>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <a href="#ozet" class="nav-tab active">Ozet</a>
+            <a href="#spa" class="nav-tab new">Kesintisiz Calisma</a>
+            <a href="#ai-metadata" class="nav-tab new">AI Metadata</a>
+            <a href="#ai-image" class="nav-tab new">AI Gorsel</a>
+            <a href="#kurumsal" class="nav-tab new">Kurumsal Sistem</a>
+            <a href="#anons" class="nav-tab new">Anons Sistemi</a>
+            <a href="#paketler" class="nav-tab new">Paket Onerileri</a>
+            <a href="#sosyal" class="nav-tab">Sosyal Ozellikler</a>
+            <a href="#guvenlik" class="nav-tab">Guvenlik</a>
+            <a href="#roadmap" class="nav-tab">Yol Haritasi</a>
+        </nav>
+
+        <!-- OZET -->
+        <section id="ozet">
+            <h2>Yonetici Ozeti</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">26K</div>
+                    <div class="stat-label">Mevcut Sarki</div>
+                </div>
+                <div class="stat-card ai">
+                    <div class="stat-value">AI</div>
+                    <div class="stat-label">Metadata & Gorsel</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">200+</div>
+                    <div class="stat-label">Sube Destegi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">B2B</div>
+                    <div class="stat-label">Kurumsal Odakli</div>
+                </div>
+            </div>
+
+            <div class="alert alert-ai">
+                <span class="alert-icon">🤖</span>
+                <div>
+                    <strong>AI Vizyonu:</strong> 26.000 eski sarkiya otomatik mood/genre tespiti,
+                    her sarkiya ozel AI gorsel uretimi, akilli playlist onerileri.
+                    Bu v4 raporda tum bunlarin nasil yapilacagi planlanmistir.
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>Bu Raporda Neler Var?</h4>
+                <ul>
+                    <li><strong>Kesintisiz Muzik:</strong> Sayfa degisse bile muzik calsin (SPA mimarisi)</li>
+                    <li><strong>AI Metadata:</strong> 26K sarkiya otomatik mood, genre, tempo analizi</li>
+                    <li><strong>AI Gorsel:</strong> Her sarkiya ozel kapak gorseli uretimi</li>
+                    <li><strong>Kurumsal Sistem:</strong> 200 subeli firma yonetimi, ana/alt sube, odeme planlari</li>
+                    <li><strong>Anons Sistemi:</strong> Profesyonel isletme anonslari</li>
+                    <li><strong>Paket Onerileri:</strong> Bireysel ve kurumsal fiyatlandirma</li>
+                    <li><strong>Sosyal Ozellikler:</strong> Yorum, puan, favori, playlist paylasimi</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- KESINTISIZ CALISMA (SPA) -->
+        <section id="spa">
+            <h2>Kesintisiz Muzik Calisma (SPA)</h2>
+
+            <div class="alert alert-danger">
+                <span class="alert-icon">⚠️</span>
+                <div>
+                    <strong>Kritik Gereksinim:</strong> Kullanici sayfalar arasi gezinirken muzik KESILMEMELI!
+                    Bu, profesyonel bir muzik platformunun olmazsa olmazi.
+                </div>
+            </div>
+
+            <h3>Mevcut Problem</h3>
+            <div class="card card-danger">
+                <h4>Geleneksel Sayfa Gecisi</h4>
+                <p>
+                    Normal Laravel/Blade yapisinda her sayfa degisiminde tam sayfa yenilenir.
+                    Bu durumda player sifirlanir ve muzik kesilir.
+                    Kullanici deneyimi bozulur.
+                </p>
+            </div>
+
+            <h3>Cozum Alternatifleri</h3>
+
+            <div class="comparison">
+                <div class="comparison-col left">
+                    <h5>Secenek 1: Livewire SPA Mode</h5>
+                    <ul>
+                        <li>Mevcut Livewire yapisini kullan</li>
+                        <li>wire:navigate ile sayfa gecisi</li>
+                        <li>Player component persist</li>
+                        <li>Daha az kod degisikligi</li>
+                        <li>Laravel ekosisteminde kal</li>
+                    </ul>
+                    <p style="margin-top: 15px; color: #4ade80;"><strong>Oneri: Bu secenegi kullanin!</strong></p>
+                </div>
+                <div class="comparison-col right">
+                    <h5>Secenek 2: Inertia.js</h5>
+                    <ul>
+                        <li>Vue/React frontend</li>
+                        <li>Tam SPA deneyimi</li>
+                        <li>Daha fazla refactor</li>
+                        <li>Ogrenim egrisi</li>
+                        <li>Daha esnek</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Livewire SPA Uygulama Plani</h3>
+
+            <div class="card card-success">
+                <h4>Adim Adim Uygulama</h4>
+                <ol>
+                    <li><strong>Layout Guncelleme:</strong> Ana layout'a <span class="tech">@persist('player')</span> ekle</li>
+                    <li><strong>Navigation:</strong> Tum linklere <span class="tech">wire:navigate</span> ekle</li>
+                    <li><strong>Player State:</strong> Alpine.js store ile global state yonetimi</li>
+                    <li><strong>URL Guncelleme:</strong> History API ile URL senkronizasyonu</li>
+                    <li><strong>Prefetch:</strong> Hover'da sonraki sayfayi onbellekle</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h4>Teknik Detay</h4>
+                <p><strong>Layout (app.blade.php):</strong></p>
+                <ul>
+                    <li>Player component'i @persist ile sarmalama</li>
+                    <li>Alpine.js $store.player ile global state</li>
+                    <li>Sayfa icerigi dinamik olarak degisir</li>
+                    <li>Player hic yeniden yuklenmez</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Navigasyon:</strong></p>
+                <ul>
+                    <li>Tum &lt;a&gt; taglarine wire:navigate ekle</li>
+                    <li>Sayfa gecislerinde sadece icerik degisir</li>
+                    <li>Player, header, footer sabit kalir</li>
+                </ul>
+            </div>
+
+            <div class="verdict">
+                <h4>SPA Ozeti</h4>
+                <ul>
+                    <li>✅ Livewire 3 @persist ozelligi kullanilacak</li>
+                    <li>✅ wire:navigate ile sayfa gecisleri</li>
+                    <li>✅ Alpine.js global store ile player state</li>
+                    <li>✅ Mevcut kod yapisina minimum mudahale</li>
+                    <li>✅ SEO dostu (SSR devam eder)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- AI METADATA -->
+        <section id="ai-metadata">
+            <h2>AI ile 26.000 Sarkiya Metadata</h2>
+
+            <div class="alert alert-ai">
+                <span class="alert-icon">🎵</span>
+                <div>
+                    <strong>Hedef:</strong> 26.000 eski sarkiya otomatik olarak mood, genre, tempo,
+                    enerji seviyesi, enstruman analizi eklemek. Bu sayede akilli playlist ve
+                    oneri sistemi calisabilir.
+                </div>
+            </div>
+
+            <h3>AI Analiz Sureci</h3>
+
+            <div class="flow-diagram">
+                <div class="flow-step">MP3 Dosyasi<br><small>Input</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step ai">AI Analiz<br><small>API Call</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Metadata<br><small>JSON</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Database<br><small>Kayit</small></div>
+            </div>
+
+            <h3>Kullanilabilecek AI Servisleri</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Servis</th>
+                            <th>Ozellikler</th>
+                            <th>Fiyat</th>
+                            <th>Oneri</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Spotify Audio Analysis</strong></td>
+                            <td>Tempo, key, mode, energy, danceability, valence</td>
+                            <td>Ucretsiz (API)</td>
+                            <td>Sarkilar Spotify'da varsa ideal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AcoustID + MusicBrainz</strong></td>
+                            <td>Fingerprint, metadata, genre</td>
+                            <td>Ucretsiz</td>
+                            <td>Acik kaynak, iyi baslangic</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Essentia (Open Source)</strong></td>
+                            <td>Tempo, key, mood, genre, loudness</td>
+                            <td>Ucretsiz (self-host)</td>
+                            <td>En kapsamli, server gerekli</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cyanite.ai</strong></td>
+                            <td>Mood, genre, era, vocal/instrumental</td>
+                            <td>$0.01/sarki</td>
+                            <td>B2B icin profesyonel</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Musiio (by SoundCloud)</strong></td>
+                            <td>Genre, mood, BPM, key</td>
+                            <td>Enterprise</td>
+                            <td>Buyuk kataloglar icin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Onerilen Yaklasim: Hibrit Sistem</h3>
+
+            <div class="card card-success">
+                <h4>3 Asamali Analiz</h4>
+                <ol>
+                    <li>
+                        <strong>Asama 1: AcoustID ile Eslesme</strong>
+                        <p>Sarkinin fingerprint'ini cikar, MusicBrainz'de ara. Zaten metadata varsa al.</p>
+                    </li>
+                    <li>
+                        <strong>Asama 2: Essentia ile Lokal Analiz</strong>
+                        <p>Eslesmeyenler icin kendi sunucunda Essentia ile analiz et.</p>
+                    </li>
+                    <li>
+                        <strong>Asama 3: AI Tahmin (GPT/Claude)</strong>
+                        <p>Sarki adi, sanatci, varolan metadata'dan mood tahmini yap.</p>
+                    </li>
+                </ol>
+            </div>
+
+            <h3>Cikarilacak Metadata Alanlari</h3>
+
+            <div class="stats-grid">
+                <div class="stat-card ai">
+                    <div class="stat-value">🎭</div>
+                    <div class="stat-label">Mood (Mutlu, Huzunlu, Enerjik...)</div>
+                </div>
+                <div class="stat-card ai">
+                    <div class="stat-value">🎸</div>
+                    <div class="stat-label">Genre (Rock, Jazz, Pop...)</div>
+                </div>
+                <div class="stat-card ai">
+                    <div class="stat-value">⏱️</div>
+                    <div class="stat-label">BPM (Tempo)</div>
+                </div>
+                <div class="stat-card ai">
+                    <div class="stat-value">🎹</div>
+                    <div class="stat-label">Key (Do, Re, Mi...)</div>
+                </div>
+                <div class="stat-card ai">
+                    <div class="stat-value">⚡</div>
+                    <div class="stat-label">Energy (0-100)</div>
+                </div>
+                <div class="stat-card ai">
+                    <div class="stat-value">💃</div>
+                    <div class="stat-label">Danceability</div>
+                </div>
+                <div class="stat-card ai">
+                    <div class="stat-value">🎤</div>
+                    <div class="stat-label">Vocal/Instrumental</div>
+                </div>
+                <div class="stat-card ai">
+                    <div class="stat-value">📅</div>
+                    <div class="stat-label">Era (80s, 90s, Modern...)</div>
+                </div>
+            </div>
+
+            <h3>Database Semasi (Yeni Alanlar)</h3>
+
+            <div class="card">
+                <h4>songs Tablosuna Eklenecekler</h4>
+                <ul>
+                    <li><span class="tech">mood</span> - JSON array ["happy", "energetic"]</li>
+                    <li><span class="tech">ai_genre</span> - AI tespit edilen genre</li>
+                    <li><span class="tech">bpm</span> - Tempo (60-200)</li>
+                    <li><span class="tech">music_key</span> - Muzik tonu (C, D, E...)</li>
+                    <li><span class="tech">energy</span> - 0-100 arasi</li>
+                    <li><span class="tech">danceability</span> - 0-100 arasi</li>
+                    <li><span class="tech">valence</span> - Pozitiflik (0-100)</li>
+                    <li><span class="tech">is_vocal</span> - Boolean</li>
+                    <li><span class="tech">era</span> - Donem tahmini</li>
+                    <li><span class="tech">ai_analyzed_at</span> - Analiz tarihi</li>
+                    <li><span class="tech">ai_confidence</span> - Guvenilirlik skoru</li>
+                </ul>
+            </div>
+
+            <h3>Islem Sureci (26K Sarki)</h3>
+
+            <div class="card card-warning">
+                <h4>Batch Isleme Plani</h4>
+                <ul>
+                    <li><strong>Gunluk Kapasite:</strong> ~1000 sarki/gun (rate limit'e gore)</li>
+                    <li><strong>Toplam Sure:</strong> ~26-30 gun</li>
+                    <li><strong>Queue Sistemi:</strong> Laravel Queue ile arka planda</li>
+                    <li><strong>Onceliklendirme:</strong> Populer sarkilar once</li>
+                    <li><strong>Hata Yonetimi:</strong> Basarisizlar retry queue'da</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- AI GORSEL -->
+        <section id="ai-image">
+            <h2>AI ile Sarki Gorselleri</h2>
+
+            <div class="alert alert-ai">
+                <span class="alert-icon">🎨</span>
+                <div>
+                    <strong>Hedef:</strong> Her sarkiya ozel, sarki mood'una ve icerigi uygun
+                    benzersiz kapak gorseli uretmek. 26.000 sarki icin otomatik gorsel.
+                </div>
+            </div>
+
+            <h3>AI Gorsel Servisleri</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Servis</th>
+                            <th>Kalite</th>
+                            <th>Fiyat</th>
+                            <th>Hiz</th>
+                            <th>Oneri</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>DALL-E 3</strong></td>
+                            <td>Cok yuksek</td>
+                            <td>$0.04/gorsel</td>
+                            <td>~20sn</td>
+                            <td>Premium sarkilar icin</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Midjourney</strong></td>
+                            <td>En yuksek</td>
+                            <td>$10/ay (sinirsiz)</td>
+                            <td>~60sn</td>
+                            <td>Sanatsal sonuclar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stable Diffusion (Self-host)</strong></td>
+                            <td>Yuksek</td>
+                            <td>Sadece sunucu</td>
+                            <td>~10sn</td>
+                            <td>Buyuk hacim icin ideal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Leonardo.ai</strong></td>
+                            <td>Yuksek</td>
+                            <td>$0.01/gorsel</td>
+                            <td>~15sn</td>
+                            <td>Dengeli secim</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ideogram</strong></td>
+                            <td>Yuksek</td>
+                            <td>Ucretsiz tier var</td>
+                            <td>~30sn</td>
+                            <td>Yazi iceren gorseller</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Prompt Stratejisi</h3>
+
+            <div class="card card-info">
+                <h4>Dinamik Prompt Olusturma</h4>
+                <p>Her sarki icin metadata'dan prompt olusturulur:</p>
+                <ul>
+                    <li><strong>Mood:</strong> "dreamy", "energetic", "melancholic"</li>
+                    <li><strong>Genre:</strong> "rock album cover", "jazz artwork"</li>
+                    <li><strong>Era:</strong> "80s retro style", "modern minimalist"</li>
+                    <li><strong>Sarki Adi:</strong> Konsept olarak kullan</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Ornek Prompt:</strong></p>
+                <p class="file-path">"Album cover art for a melancholic jazz song, night city scene, rain, neon lights, 1980s style, dark blue and purple colors, cinematic, 4K"</p>
+            </div>
+
+            <div class="card card-success">
+                <h4>Maliyet Hesabi (26K Sarki)</h4>
+                <ul>
+                    <li><strong>Leonardo.ai:</strong> 26,000 x $0.01 = <strong>$260</strong></li>
+                    <li><strong>DALL-E 3:</strong> 26,000 x $0.04 = <strong>$1,040</strong></li>
+                    <li><strong>Stable Diffusion (Self):</strong> Sunucu maliyeti ~$50/ay</li>
+                </ul>
+                <p style="margin-top: 15px; color: #4ade80;"><strong>Oneri:</strong> Leonardo.ai veya Self-hosted Stable Diffusion</p>
+            </div>
+
+            <h3>Gorsel Varyasyonlari</h3>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">1:1</div>
+                    <div class="stat-label">Album Kapagi (500x500)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">16:9</div>
+                    <div class="stat-label">Player Banner (1920x1080)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">9:16</div>
+                    <div class="stat-label">Mobil Story (1080x1920)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">Thumb</div>
+                    <div class="stat-label">Kucuk Onizleme (150x150)</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>Otomatik Islem Akisi</h4>
+                <ol>
+                    <li>Sarki metadata'si okunur (mood, genre, era)</li>
+                    <li>GPT/Claude ile prompt olusturulur</li>
+                    <li>Leonardo.ai/SD ile gorsel uretilir</li>
+                    <li>Gorsel optimize edilir (WebP, boyutlar)</li>
+                    <li>Media library'e kaydedilir</li>
+                    <li>Sarki kaydina baglanir</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- KURUMSAL SISTEM -->
+        <section id="kurumsal">
+            <h2>Kurumsal Firma Yonetimi</h2>
+
+            <div class="alert alert-info">
+                <span class="alert-icon">🏢</span>
+                <div>
+                    <strong>Senaryo:</strong> 200 subeli bir restoran zinciri. Merkez ofis tum subelerin
+                    muzik yonetimini yapacak. Her subenin kendi ayarlari olabilecek.
+                    Faturalama merkezi veya sube bazli olabilecek.
+                </div>
+            </div>
+
+            <h3>Organizasyon Yapisi</h3>
+
+            <div class="org-chart">
+                <div class="org-node main">
+                    Ana Firma (Holding)
+                    <br><small>Merkez Yonetim</small>
+                </div>
+                <div class="org-line"></div>
+                <div class="org-branches">
+                    <div class="org-node sub">Sube 1<br><small>Istanbul Kadikoy</small></div>
+                    <div class="org-node sub">Sube 2<br><small>Istanbul Besiktas</small></div>
+                    <div class="org-node sub">Sube 3<br><small>Ankara Cankaya</small></div>
+                    <div class="org-node sub">...</div>
+                    <div class="org-node sub">Sube 200<br><small>Izmir Alsancak</small></div>
+                </div>
+            </div>
+
+            <h3>Yetki Matrisi</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ozellik</th>
+                            <th>Super Admin</th>
+                            <th>Firma Admin</th>
+                            <th>Sube Yoneticisi</th>
+                            <th>Sube Calisan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Firma ayarlari</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sube ekle/sil</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Tum subeleri gor</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Kendi subesini yonet</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Playlist olustur</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Muzik cal/durdur</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                        </tr>
+                        <tr>
+                            <td>Raporlari gor</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td>Kendi subesi</td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fatura gor</td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="check">✓</span></td>
+                            <td><span class="cross">✗</span></td>
+                            <td><span class="cross">✗</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Odeme Modelleri</h3>
+
+            <div class="card card-warning">
+                <h4>Model 1: Merkezi Odeme (Onerilen)</h4>
+                <ul>
+                    <li>Ana firma tek fatura alir</li>
+                    <li>Sube sayisina gore fiyatlandirma</li>
+                    <li>Toplu indirim uygulanir</li>
+                    <li>Muhasebe kolayligi</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>Ornek:</strong> 200 sube x 99 TL = 19,800 TL/ay → %40 indirim = <strong>11,880 TL/ay</strong></p>
+            </div>
+
+            <div class="card">
+                <h4>Model 2: Sube Bazli Odeme</h4>
+                <ul>
+                    <li>Her sube kendi odemesini yapar</li>
+                    <li>Franchise modeli icin uygun</li>
+                    <li>Ana firma sadece yonetir, odemez</li>
+                    <li>Her subeye ayri fatura</li>
+                </ul>
+            </div>
+
+            <div class="card card-info">
+                <h4>Model 3: Hibrit Odeme</h4>
+                <ul>
+                    <li>Ana firma temel paketi oder</li>
+                    <li>Subeler ekstra ozellikleri kendi oder</li>
+                    <li>Ornek: Merkez playlist yonetimi, sube premium kalite</li>
+                </ul>
+            </div>
+
+            <h3>Sube Bazli Ozellikler</h3>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">📍</div>
+                    <div class="stat-label">Lokasyon Bazli Playlist</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">⏰</div>
+                    <div class="stat-label">Sube Calisma Saatleri</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">🔊</div>
+                    <div class="stat-label">Volume Limiti</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">📊</div>
+                    <div class="stat-label">Sube Raporlari</div>
+                </div>
+            </div>
+
+            <h3>Subeler Arasi Gorunurluk</h3>
+
+            <div class="card">
+                <h4>Firma Admin Gorebilir:</h4>
+                <ul>
+                    <li>Tum subelerin canli durumu (calıyor/durdu)</li>
+                    <li>Hangi sube hangi sarkiyi caliyor</li>
+                    <li>Gunluk/haftalik dinleme istatistikleri</li>
+                    <li>En cok dinlenen sarkilar (firma geneli)</li>
+                    <li>Sube bazli karsilastirma raporlari</li>
+                    <li>Anons istatistikleri</li>
+                </ul>
+            </div>
+
+            <div class="card card-success">
+                <h4>Merkezi Yonetim Ozellikleri</h4>
+                <ul>
+                    <li><strong>Global Playlist:</strong> Tum subelere ayni playlist yayini</li>
+                    <li><strong>Zorunlu Sarkilar:</strong> Belirli sarkilar mutlaka calinsin</li>
+                    <li><strong>Yasakli Sarkilar:</strong> Marka imajina uymayanlar</li>
+                    <li><strong>Merkezi Anons:</strong> Tum subelere ayni anda anons</li>
+                    <li><strong>Tema Gunleri:</strong> "Cuma gunu Jazz" tum subelerde</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ANONS SISTEMI -->
+        <section id="anons">
+            <h2>Profesyonel Anons Sistemi</h2>
+
+            <div class="alert alert-warning">
+                <span class="alert-icon">📢</span>
+                <div>
+                    <strong>Amac:</strong> Isletmelerin musteri iletisimi icin profesyonel
+                    anons sistemi. Kampanya duyurulari, calisma saati bildirimleri,
+                    ozel gun kutlamalari.
+                </div>
+            </div>
+
+            <h3>Anons Tipleri</h3>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">⏰</div>
+                    <div class="stat-label">Zamanlanmis Anons</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">🔄</div>
+                    <div class="stat-label">Periyodik Anons</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">🎯</div>
+                    <div class="stat-label">Tetiklemeli Anons</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">🚨</div>
+                    <div class="stat-label">Acil Anons</div>
+                </div>
+            </div>
+
+            <h3>Anons Zamanlama Secenekleri</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Yontem</th>
+                            <th>Aciklama</th>
+                            <th>Kullanim Alani</th>
+                            <th>Oneri</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sabit Saat</strong></td>
+                            <td>Her gun 12:00, 18:00, 21:00</td>
+                            <td>Yemek saatleri, kapanis uyarisi</td>
+                            <td><span class="check">✓</span> Ideal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>X Sarkida Bir</strong></td>
+                            <td>Her 5-10 sarkida anons</td>
+                            <td>Kampanya duyurusu</td>
+                            <td>Dikkatli kullan</td>
+                        </tr>
+                        <tr>
+                            <td><strong>X Dakikada Bir</strong></td>
+                            <td>Her 30-60 dakikada</td>
+                            <td>Genel bilgilendirme</td>
+                            <td><span class="check">✓</span> Dengeli</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sarki Sonunda</strong></td>
+                            <td>Sarki bitince, yenisi baslamadan</td>
+                            <td>Dogal gecis</td>
+                            <td><span class="check">✓</span> En iyi UX</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Manuel Tetikleme</strong></td>
+                            <td>Calisan butona basar</td>
+                            <td>Ozel duyurular</td>
+                            <td>Esneklik icin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>X Sarkida Anons - Dikkat Edilecekler</h3>
+
+            <div class="card card-danger">
+                <h4>Potansiyel Problemler</h4>
+                <ul>
+                    <li><strong>Muzik Akisi Bozulur:</strong> Sarki ortasinda anons rahatsiz edici</li>
+                    <li><strong>Tahmin Edilemezlik:</strong> Ne zaman gelecegi belli degil</li>
+                    <li><strong>Mood Uyumsuzlugu:</strong> Huzunlu sarki + enerjik anons = kotu deneyim</li>
+                </ul>
+            </div>
+
+            <div class="card card-success">
+                <h4>Cozum: Akilli Anons Sistemi</h4>
+                <ul>
+                    <li><strong>Sarki Sonu Bekle:</strong> Anons sirasi geldiyse, sarki bitsin bekle</li>
+                    <li><strong>Mood Eslesme:</strong> Anons tonunu mevcut playlist mood'una uyarla</li>
+                    <li><strong>Fade Gecis:</strong> Muzik yavaşca kisılsın, anons calsin, geri acılsın</li>
+                    <li><strong>Sessizlik Buferi:</strong> Anons oncesi/sonrasi 1-2 saniye sessizlik</li>
+                </ul>
+            </div>
+
+            <h3>Anons Olusturma Yontemleri</h3>
+
+            <div class="comparison">
+                <div class="comparison-col left">
+                    <h5>Manuel Kayit</h5>
+                    <ul>
+                        <li>Profesyonel seslendirme</li>
+                        <li>Marka sesi tutarliligi</li>
+                        <li>Yuksek kalite</li>
+                        <li>Degisiklik icin yeniden kayit</li>
+                    </ul>
+                </div>
+                <div class="comparison-col right">
+                    <h5>AI Text-to-Speech</h5>
+                    <ul>
+                        <li>Aninda olusturma</li>
+                        <li>Dinamik icerik</li>
+                        <li>Dusuk maliyet</li>
+                        <li>ElevenLabs, Google TTS</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Anons Icerik Ornekleri</h3>
+
+            <div class="card">
+                <h4>Restoran/Kafe</h4>
+                <ul>
+                    <li>"Degerli misafirlerimiz, happy hour baslamistir. Tum iceceklerde %20 indirim."</li>
+                    <li>"Kapatma saatimiz yaklasıyor. Son siparislerinizi alabilir miyiz?"</li>
+                    <li>"Bugun ozel menumuz: Izgara somon, sebze garniturlü..."</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h4>Magaza</h4>
+                <ul>
+                    <li>"Sezon sonu indirimi baslamistir. Tum urunlerde %50'ye varan firsatlar."</li>
+                    <li>"Kapanis saatimize 30 dakika kaldi."</li>
+                    <li>"Yeni koleksiyonumuzu 2. katta inceleyebilirsiniz."</li>
+                </ul>
+            </div>
+
+            <h3>Teknik Uygulama</h3>
+
+            <div class="flow-diagram">
+                <div class="flow-step">Anons Sirasi<br><small>Tetiklendi</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Sarki Sonu<br><small>Bekle</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Fade Out<br><small>Muzik</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Anons<br><small>Cal</small></div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">Fade In<br><small>Muzik</small></div>
+            </div>
+        </section>
+
+        <!-- PAKET ONERILERI -->
+        <section id="paketler">
+            <h2>Paket & Fiyatlandirma Onerileri</h2>
+
+            <h3>Bireysel Isletmeler</h3>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h4>Starter</h4>
+                    <p>Kucuk isletmeler icin</p>
+                    <div class="pricing-price">149 TL<span>/ay</span></div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><span class="check">✓</span> 1 lokasyon</li>
+                            <li><span class="check">✓</span> Standart kalite (128kbps)</li>
+                            <li><span class="check">✓</span> Hazir playlistler</li>
+                            <li><span class="check">✓</span> Temel raporlar</li>
+                            <li><span class="cross">✗</span> Ozel playlist</li>
+                            <li><span class="cross">✗</span> Anons sistemi</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pricing-card popular">
+                    <h4>Professional</h4>
+                    <p>Buyuyen isletmeler icin</p>
+                    <div class="pricing-price">299 TL<span>/ay</span></div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><span class="check">✓</span> 1-3 lokasyon</li>
+                            <li><span class="check">✓</span> Yuksek kalite (320kbps)</li>
+                            <li><span class="check">✓</span> Sinirsiz playlist</li>
+                            <li><span class="check">✓</span> Detayli raporlar</li>
+                            <li><span class="check">✓</span> 5 anons/gun</li>
+                            <li><span class="check">✓</span> Scheduler</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pricing-card">
+                    <h4>Premium</h4>
+                    <p>Profesyonel isletmeler</p>
+                    <div class="pricing-price">499 TL<span>/ay</span></div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><span class="check">✓</span> 5 lokasyona kadar</li>
+                            <li><span class="check">✓</span> Lossless kalite</li>
+                            <li><span class="check">✓</span> AI playlist onerileri</li>
+                            <li><span class="check">✓</span> Gelismis analitik</li>
+                            <li><span class="check">✓</span> Sinirsiz anons</li>
+                            <li><span class="check">✓</span> API erisimi</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Kurumsal Firmalar</h3>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h4>Business</h4>
+                    <p>10-50 sube</p>
+                    <div class="pricing-price">79 TL<span>/sube/ay</span></div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><span class="check">✓</span> Merkezi yonetim</li>
+                            <li><span class="check">✓</span> Sube raporlari</li>
+                            <li><span class="check">✓</span> Toplu playlist dagitimi</li>
+                            <li><span class="check">✓</span> %20 toplu indirim</li>
+                            <li><span class="check">✓</span> Oncelikli destek</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pricing-card popular">
+                    <h4>Enterprise</h4>
+                    <p>50-200 sube</p>
+                    <div class="pricing-price">59 TL<span>/sube/ay</span></div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><span class="check">✓</span> Tum Business ozellikleri</li>
+                            <li><span class="check">✓</span> %40 toplu indirim</li>
+                            <li><span class="check">✓</span> Ozel hesap yoneticisi</li>
+                            <li><span class="check">✓</span> SLA garantisi</li>
+                            <li><span class="check">✓</span> White-label secenek</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pricing-card">
+                    <h4>Unlimited</h4>
+                    <p>200+ sube</p>
+                    <div class="pricing-price">Ozel<span>Teklif</span></div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><span class="check">✓</span> Sinirsiz sube</li>
+                            <li><span class="check">✓</span> Ozel entegrasyon</li>
+                            <li><span class="check">✓</span> On-premise secenek</li>
+                            <li><span class="check">✓</span> 7/24 destek</li>
+                            <li><span class="check">✓</span> Ozel gelistirme</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Ek Hizmetler</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hizmet</th>
+                            <th>Aciklama</th>
+                            <th>Fiyat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Profesyonel Anons Kaydı</td>
+                            <td>Studyo kaydi, profesyonel seslendirme</td>
+                            <td>250 TL/adet</td>
+                        </tr>
+                        <tr>
+                            <td>Ozel Playlist Hazirlama</td>
+                            <td>Marka kimligine ozel playlist kurulum</td>
+                            <td>500 TL (tek seferlik)</td>
+                        </tr>
+                        <tr>
+                            <td>Entegrasyon Destegi</td>
+                            <td>POS, CRM entegrasyonu</td>
+                            <td>Projeye gore</td>
+                        </tr>
+                        <tr>
+                            <td>Egitim</td>
+                            <td>Personel egitimi (online/yerinde)</td>
+                            <td>1000 TL/saat</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SOSYAL OZELLIKLER -->
+        <section id="sosyal">
+            <h2>Sosyal & Etkilesim Ozellikleri</h2>
+
+            <div class="alert alert-success">
+                <span class="alert-icon">💡</span>
+                <div>
+                    <strong>Mevcut Sistemde Var:</strong> Playlist, favoriler, yorum ve puan sistemi
+                    zaten mevcut. Bu ozellikleri nasil daha iyi kullanabiliriz?
+                </div>
+            </div>
+
+            <h3>Mevcut Ozellikler</h3>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">❤️</div>
+                    <div class="stat-label">Favorilere Ekleme</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">⭐</div>
+                    <div class="stat-label">Puan Verme (1-5)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">💬</div>
+                    <div class="stat-label">Yorum Yapma</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">📋</div>
+                    <div class="stat-label">Playlist Olusturma</div>
+                </div>
+            </div>
+
+            <h3>B2B Icin Sosyal Kullanim</h3>
+
+            <div class="card card-info">
+                <h4>Isletme Icin Faydalar</h4>
+                <ul>
+                    <li><strong>Populer Sarkilar:</strong> Musterilerin en cok begendigi sarkilar otomatik one cikar</li>
+                    <li><strong>Feedback Loop:</strong> Dusuk puanli sarkilar otomatik listeden cikar</li>
+                    <li><strong>Mood Analizi:</strong> Yorumlardan musteri memnuniyeti olc</li>
+                    <li><strong>Trend Takibi:</strong> Hangi turler yukeliste, hangileri dususte</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h4>Onerilen Yeni Ozellikler</h4>
+                <ul>
+                    <li><strong>Sarki Istegi:</strong> Musteriler QR kod ile sarki isteyebilsin</li>
+                    <li><strong>Anlik Oylama:</strong> "Bu sarki hoşunuza gitti mi?" popup</li>
+                    <li><strong>Playlist Paylasimi:</strong> Isletme playlistini sosyal medyada paylas</li>
+                    <li><strong>Haftalik Ozet:</strong> "Bu hafta en cok dinlenenler" email</li>
+                </ul>
+            </div>
+
+            <h3>Gamification (Oyunlastirma)</h3>
+
+            <div class="card card-pink">
+                <h4>Musteri Baglilik Sistemi</h4>
+                <ul>
+                    <li><strong>Dinleme Rozetleri:</strong> "100 sarki dinledin", "Jazz Sever" vb.</li>
+                    <li><strong>Puan Toplama:</strong> Her etkilesim puan kazandirir</li>
+                    <li><strong>Seviye Sistemi:</strong> Bronze, Silver, Gold, Platinum uye</li>
+                    <li><strong>Oduller:</strong> Indirim kuponu, ucretsiz ay, ozel playlist</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- GUVENLIK -->
+        <section id="guvenlik">
+            <h2>Guvenlik & Premium Koruma</h2>
+
+            <div class="card card-danger">
+                <h4>5 Katmanli Guvenlik (Ozet)</h4>
+                <ol>
+                    <li><strong>Rate Limiting:</strong> API isteklerini sinirla</li>
+                    <li><strong>Auth Check:</strong> Sanctum token dogrulama</li>
+                    <li><strong>Subscription:</strong> Premium uyelik kontrolu</li>
+                    <li><strong>Signed URL:</strong> Stream tokenları sureli</li>
+                    <li><strong>HLS + AES:</strong> Icerik sifreleme</li>
+                </ol>
+            </div>
+
+            <div class="card card-success">
+                <h4>Kurumsal Guvenlik Ekleri</h4>
+                <ul>
+                    <li><strong>IP Whitelist:</strong> Sadece sube IP'lerinden erisim</li>
+                    <li><strong>Device Lock:</strong> Kayitli cihazlar disinda erisim yok</li>
+                    <li><strong>Audit Log:</strong> Tum islemler kayit altinda</li>
+                    <li><strong>2FA:</strong> Yonetici girisleri icin iki faktorlu dogrulama</li>
+                    <li><strong>SSO:</strong> Kurumsal tek giris (SAML, OAuth)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- YOL HARITASI -->
+        <section id="roadmap">
+            <h2>Uygulama Yol Haritasi</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>FAZ 1: Temel Altyapi <span class="priority priority-critical">Kritik</span></h4>
+                    <ul>
+                        <li>☐ SPA mimarisi (Livewire @persist)</li>
+                        <li>☐ Premium koruma sistemi (5 katman)</li>
+                        <li>☐ Dinlenme sayaci kurallari</li>
+                        <li>☐ Log sistemi genisletme</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>FAZ 2: AI Entegrasyonu <span class="priority priority-ai">AI</span></h4>
+                    <ul>
+                        <li>☐ 26K sarkiya metadata analizi</li>
+                        <li>☐ AI gorsel uretimi altyapisi</li>
+                        <li>☐ Akilli playlist motoru</li>
+                        <li>☐ Mood bazli oneri sistemi</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>FAZ 3: Kurumsal Ozellikler <span class="priority priority-high">Yuksek</span></h4>
+                    <ul>
+                        <li>☐ Multi-tenant sube yonetimi</li>
+                        <li>☐ Merkezi faturalama</li>
+                        <li>☐ Rol/yetki matrisi</li>
+                        <li>☐ Sube raporlari</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>FAZ 4: Anons & Iletisim <span class="priority priority-medium">Orta</span></h4>
+                    <ul>
+                        <li>☐ Anons sistemi</li>
+                        <li>☐ Scheduler (zamanlama)</li>
+                        <li>☐ AI Text-to-Speech</li>
+                        <li>☐ Merkezi anons dagitimi</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>FAZ 5: Gelismis Ozellikler <span class="priority priority-low">Dusuk</span></h4>
+                    <ul>
+                        <li>☐ PWA & mobil optimizasyon</li>
+                        <li>☐ Gamification sistemi</li>
+                        <li>☐ API dokumentasyonu</li>
+                        <li>☐ White-label secenek</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="verdict">
+                <h4>Sonuc</h4>
+                <p>
+                    Bu kapsamli plan, Muzibu'yu profesyonel bir B2B muzik platformuna donusturecek.
+                    26.000 eski sarkiya AI ile hayat verilecek, kurumsal firmalar 200+ subeyi
+                    tek panelden yonetebilecek, anons sistemi ile profesyonel isletme iletisimi
+                    saglanacak.
+                </p>
+                <p style="margin-top: 15px;">
+                    <strong>Oncelik Sirasi:</strong> SPA → Guvenlik → AI Metadata → Kurumsal → Anons
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            <p>Claude AI tarafindan olusturuldu | 26 Kasim 2025</p>
+            <p>Muzibu B2B Premium Sistem Planlama Dokumani v4</p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">
+                Kapsamli B2B Muzik Platformu | Kurumsal Cozumler | AI Entegrasyonu
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

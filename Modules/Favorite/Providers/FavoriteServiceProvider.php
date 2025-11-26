@@ -21,6 +21,17 @@ class FavoriteServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(module_path($this->moduleName, 'routes/web.php'));
         $this->loadRoutesFrom(module_path($this->moduleName, 'routes/admin.php'));
 
+        // API Route'ları yükle (api + session middleware)
+        \Illuminate\Support\Facades\Route::middleware([
+                'api',
+                \Illuminate\Cookie\Middleware\EncryptCookies::class,
+                \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+                \Illuminate\Session\Middleware\StartSession::class,
+            ])
+            ->prefix('api')
+            ->name('api.')
+            ->group(module_path($this->moduleName, 'routes/api.php'));
+
         // Views'ları yükle
         $this->loadViewsFrom(module_path($this->moduleName, 'resources/views'), $this->moduleNameLower);
 

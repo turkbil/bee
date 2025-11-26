@@ -400,13 +400,14 @@ Route::prefix('v1')->group(function () {
     // Auth routes (public)
     Route::post('/auth/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
     Route::post('/auth/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
-    
+    // Logout - public endpoint, controller session kontrolü yapar
+    Route::post('/auth/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
+
     // Protected routes
     Route::middleware(['auth:sanctum'])->group(function () {
-        
+
         // Auth management
         Route::get('/auth/me', [App\Http\Controllers\Api\AuthController::class, 'me']);
-        Route::post('/auth/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
         
         // User profile management
         Route::get('/profile', [App\Http\Controllers\Api\UserProfileController::class, 'getProfile']);
@@ -426,7 +427,7 @@ Route::prefix('v1')->group(function () {
         // Tenant info
         Route::get('/tenant', [App\Http\Controllers\Api\TenantController::class, 'getCurrentTenant']);
         Route::get('/tenant/details', [App\Http\Controllers\Api\TenantController::class, 'getTenantDetails']);
-        
+
     });
-    
+
 });

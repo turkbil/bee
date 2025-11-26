@@ -49,6 +49,8 @@ Route::prefix('muzibu')->group(function () {
             ->name('api.muzibu.songs.conversion-status');
         Route::post('{songId}/play', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'incrementPlayCount'])
             ->name('api.muzibu.songs.play');
+        Route::post('{songId}/track-progress', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackProgress'])
+            ->name('api.muzibu.songs.track-progress');
     });
 
     // Genres

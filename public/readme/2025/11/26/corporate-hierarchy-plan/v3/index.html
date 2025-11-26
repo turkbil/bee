@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Corporate - Doğru Mimari & UI Taslakları</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f0f1a;
+            --bg-card: rgba(30, 30, 50, 0.6);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.1));
+            border-radius: 24px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+        
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .badge-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .badge-green { background: linear-gradient(135deg, #10b981, #059669); }
+        .badge-orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .badge-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        
+        /* Section */
+        section {
+            margin-bottom: 80px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .section-header .icon {
+            font-size: 2.5rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card h3 {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .card h4 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin: 25px 0 15px 0;
+        }
+        
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        .card ul {
+            list-style: none;
+            margin: 15px 0;
+        }
+        
+        .card li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .card li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 25px;
+            border-radius: 16px;
+            margin: 25px 0;
+            border-left: 5px solid;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--success);
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--warning);
+        }
+        
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--danger);
+        }
+        
+        .alert-info {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: #3b82f6;
+        }
+        
+        /* Table */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        th, td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        
+        tr:hover td {
+            background: rgba(139, 92, 246, 0.05);
+        }
+        
+        /* Code Block */
+        .code-block {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .code-block .comment { color: #6b7280; }
+        .code-block .keyword { color: #8b5cf6; font-weight: bold; }
+        .code-block .string { color: #10b981; }
+        
+        /* Hierarchy */
+        .hierarchy {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.95rem;
+            line-height: 2;
+        }
+        
+        .hierarchy .level-1 { color: #8b5cf6; font-weight: bold; }
+        .hierarchy .level-2 { color: #06b6d4; padding-left: 30px; }
+        .hierarchy .level-3 { color: #10b981; padding-left: 60px; }
+        .hierarchy .level-4 { color: #f59e0b; padding-left: 90px; }
+        
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+        
+        /* Mockup */
+        .mockup {
+            background: #1e1e30;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .mockup-header {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .mockup-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .mockup-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-mock {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+        
+        /* Tree View */
+        .tree-view {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .tree-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .tree-item:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+        
+        .tree-company {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .tree-branch {
+            color: var(--accent);
+            padding-left: 30px;
+        }
+        
+        .tree-employee {
+            color: var(--text-muted);
+            padding-left: 60px;
+            font-size: 0.85rem;
+        }
+        
+        .tree-icon {
+            margin-right: 8px;
+        }
+        
+        .tree-expand {
+            color: var(--warning);
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        
+        /* Form */
+        .mock-form {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin: 30px 0;
+        }
+        
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary), var(--accent), var(--success));
+            border-radius: 4px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 35px;
+            padding: 30px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -47px;
+            top: 35px;
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 4px solid var(--bg-dark);
+        }
+        
+        .timeline-phase {
+            display: inline-block;
+            background: var(--primary);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 80px;
+            border-top: 2px solid rgba(139, 92, 246, 0.2);
+            color: var(--text-muted);
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- HERO -->
+        <div class="hero">
+            <h1>🏢 Muzibu Corporate System</h1>
+            <p class="hero-subtitle">Doğru Mimari: User-Based Hierarchy + UI Taslakları</p>
+            <div class="badge-row">
+                <span class="badge badge-red">v3 - DÜZELTME</span>
+                <span class="badge badge-green">User = Firma/Şube/Çalışan</span>
+                <span class="badge badge-orange">26 Kasım 2025</span>
+            </div>
+        </div>
+
+        <!-- CURRENT UNDERSTANDING -->
+        <section>
+            <div class="section-header">
+                <span class="icon">🎯</span>
+                <h2>Doğru Mimari Anlayışı</h2>
+            </div>
+
+            <div class="alert alert-danger">
+                <strong>❌ ÖNCEKİ PLAN HATALI İDİ:</strong> "Firma için ayrı tablo" yaklaşımı yanlıştı!<br>
+                <strong>✅ DOĞRU MANTIK:</strong> Her user = bir kayıt. Firma da user, şube de user, çalışan da user!
+            </div>
+
+            <div class="card">
+                <h3>🔍 Muzibu Sisteminin Gerçek Yapısı</h3>
+                
+                <h4>Temel Prensipler:</h4>
+                <ul>
+                    <li><strong>Muzibu = Tek tenant (1001)</strong></li>
+                    <li><strong>Her kayıt (firma/şube/çalışan) = users tablosunda 1 satır</strong></li>
+                    <li><strong>muzibu_corporate_accounts = Hiyerarşi ve rol bilgisi</strong></li>
+                    <li><strong>parent_id = İlişki kurucu</strong></li>
+                </ul>
+
+                <h4>Örnek Veri Yapısı:</h4>
+                <div class="hierarchy">
+<div class="level-1">📊 users tablosu:</div>
+<div class="level-2">├── id: 100 | email: starbucks@firma.com | name: "Starbucks Türkiye"</div>
+<div class="level-2">├── id: 101 | email: kadikoy@starbucks.com | name: "Kadıköy Şubesi"</div>
+<div class="level-2">├── id: 102 | email: ahmet@starbucks.com | name: "Ahmet Yılmaz"</div>
+<div class="level-2">└── id: 103 | email: ayse@starbucks.com | name: "Ayşe Demir"</div>
+<div style="height: 15px;"></div>
+<div class="level-1">📊 muzibu_corporate_accounts tablosu:</div>
+<div class="level-2">├── id: 1 | user_id: 100 | parent_id: NULL | role: owner | company_name: "Starbucks"</div>
+<div class="level-2">├── id: 2 | user_id: 101 | parent_id: 1 | role: manager | branch_name: "Kadıköy"</div>
+<div class="level-2">├── id: 3 | user_id: 102 | parent_id: 2 | role: employee</div>
+<div class="level-2">└── id: 4 | user_id: 103 | parent_id: 2 | role: employee</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🏗️ Görsel Hiyerarşi</h3>
+                <div class="hierarchy">
+<div class="level-1">🏢 Starbucks (user_id: 100, parent_id: NULL, role: owner)</div>
+<div class="level-2">│</div>
+<div class="level-2">├── 🏪 Kadıköy Şubesi (user_id: 101, parent_id: 100, role: manager)</div>
+<div class="level-3">│   ├── 👤 Ahmet Yılmaz (user_id: 102, parent_id: 101, role: employee)</div>
+<div class="level-3">│   └── 👤 Ayşe Demir (user_id: 103, parent_id: 101, role: employee)</div>
+<div class="level-2">│</div>
+<div class="level-2">├── 🏪 Beşiktaş Şubesi (user_id: 104, parent_id: 100, role: manager)</div>
+<div class="level-3">│   ├── 👤 Mehmet Kaya (user_id: 105, parent_id: 104, role: employee)</div>
+<div class="level-3">│   └── 👤 Zeynep Çelik (user_id: 106, parent_id: 104, role: employee)</div>
+<div class="level-2">│</div>
+<div class="level-2">└── 🏪 Ankara Kızılay (user_id: 107, parent_id: 100, role: manager)</div>
+<div class="level-3">    └── 👤 Can Öztürk (user_id: 108, parent_id: 107, role: employee)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DATABASE CHANGES -->
+        <section>
+            <div class="section-header">
+                <span class="icon">📊</span>
+                <h2>Yapılacak Değişiklikler</h2>
+            </div>
+
+            <div class="card">
+                <h3>1️⃣ Migration: 3 Alan Ekle</h3>
+                <p>Mevcut <code>muzibu_corporate_accounts</code> tablosuna sadece 3 alan eklenecek:</p>
+                
+                <div class="table-wrap">
+                    <table>
+                        <tr>
+                            <th>Alan</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                            <th>Örnek</th>
+                        </tr>
+                        <tr>
+                            <td><strong>branch_name</strong></td>
+                            <td>string nullable</td>
+                            <td>Şube adı (sadece manager için)</td>
+                            <td>"Kadıköy Şubesi"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>role</strong></td>
+                            <td>enum</td>
+                            <td>owner, manager, employee</td>
+                            <td>"manager"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>settings</strong></td>
+                            <td>json nullable</td>
+                            <td>Esnek ayarlar (şehir, adres vb.)</td>
+                            <td>{"city": "İstanbul", "address": "..."}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h4>Migration Kodu:</h4>
+                <div class="code-block">
+<span class="comment">// database/migrations/tenant/2025_11_26_add_hierarchy_fields.php</span>
+
+<span class="keyword">public function</span> up()
+{
+    Schema::table(<span class="string">'muzibu_corporate_accounts'</span>, <span class="keyword">function</span> (Blueprint $table) {
+        $table->string(<span class="string">'branch_name'</span>)->nullable()->after(<span class="string">'company_name'</span>);
+        $table->enum(<span class="string">'role'</span>, [<span class="string">'owner', 'manager', 'employee'</span>])
+              ->default(<span class="string">'employee'</span>)->after(<span class="string">'is_active'</span>);
+        $table->json(<span class="string">'settings'</span>)->nullable()->after(<span class="string">'role'</span>);
+        
+        $table->index(<span class="string">'role'</span>);
+    });
+}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>2️⃣ Model Güncelleme</h3>
+                <p><code>MuzibuCorporateAccount.php</code> modelinde küçük eklemeler:</p>
+                
+                <div class="code-block">
+<span class="comment">// Modules/Muzibu/app/Models/MuzibuCorporateAccount.php</span>
+
+<span class="keyword">protected</span> $fillable = [
+    ..., <span class="comment">// Mevcut alanlar</span>
+    <span class="string">'branch_name'</span>,
+    <span class="string">'role'</span>,
+    <span class="string">'settings'</span>,
+];
+
+<span class="keyword">protected</span> $casts = [
+    <span class="string">'is_active'</span> => <span class="string">'boolean'</span>,
+    <span class="string">'settings'</span> => <span class="string">'array'</span>, <span class="comment">// JSON cast</span>
+];
+
+<span class="comment">// Yeni helper metodlar</span>
+<span class="keyword">public function</span> isOwner(): <span class="keyword">bool</span>
+{
+    <span class="keyword">return</span> $this->role === <span class="string">'owner'</span>;
+}
+
+<span class="keyword">public function</span> isManager(): <span class="keyword">bool</span>
+{
+    <span class="keyword">return</span> $this->role === <span class="string">'manager'</span>;
+}
+
+<span class="keyword">public function</span> isEmployee(): <span class="keyword">bool</span>
+{
+    <span class="keyword">return</span> $this->role === <span class="string">'employee'</span>;
+}
+
+<span class="comment">// Şubeleri getir (sadece owner için)</span>
+<span class="keyword">public function</span> getBranches()
+{
+    <span class="keyword">return</span> $this->children()->where(<span class="string">'role', 'manager'</span>)->get();
+}
+
+<span class="comment">// Çalışanları getir (manager için)</span>
+<span class="keyword">public function</span> getEmployees()
+{
+    <span class="keyword">return</span> $this->children()->where(<span class="string">'role', 'employee'</span>)->get();
+}
+
+<span class="comment">// Firma adını getir (hiyerarşide yukarı git)</span>
+<span class="keyword">public function</span> getCompanyName(): ?<span class="keyword">string</span>
+{
+    <span class="keyword">if</span> ($this->isOwner()) {
+        <span class="keyword">return</span> $this->company_name;
+    }
+    
+    $root = $this;
+    <span class="keyword">while</span> ($root->parent) {
+        $root = $root->parent;
+    }
+    
+    <span class="keyword">return</span> $root->company_name ?? <span class="keyword">null</span>;
+}
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>3️⃣ Kullanım Örnekleri</h3>
+                
+                <h4>Firma Oluştur (Owner):</h4>
+                <div class="code-block">
+<span class="comment">// 1. Users tablosuna firma kaydı ekle</span>
+$firmaUser = User::create([
+    <span class="string">'name'</span> => <span class="string">'Starbucks Türkiye'</span>,
+    <span class="string">'email'</span> => <span class="string">'starbucks@firma.com'</span>,
+    <span class="string">'password'</span> => Hash::make(<span class="string">'password'</span>),
+]);
+
+<span class="comment">// 2. Corporate account oluştur</span>
+$corporate = MuzibuCorporateAccount::create([
+    <span class="string">'user_id'</span> => $firmaUser->id,
+    <span class="string">'parent_id'</span> => <span class="keyword">null</span>,
+    <span class="string">'company_name'</span> => <span class="string">'Starbucks Türkiye'</span>,
+    <span class="string">'corporate_code'</span> => MuzibuCorporateAccount::generateCode(),
+    <span class="string">'role'</span> => <span class="string">'owner'</span>,
+    <span class="string">'settings'</span> => [
+        <span class="string">'max_branches'</span> => 200,
+        <span class="string">'subscription_plan'</span> => <span class="string">'enterprise'</span>,
+    ],
+]);
+                </div>
+
+                <h4>Şube Ekle (Manager):</h4>
+                <div class="code-block">
+<span class="comment">// 1. Users tablosuna şube kaydı ekle</span>
+$subeUser = User::create([
+    <span class="string">'name'</span> => <span class="string">'Kadıköy Şubesi'</span>,
+    <span class="string">'email'</span> => <span class="string">'kadikoy@starbucks.com'</span>,
+    <span class="string">'password'</span> => Hash::make(<span class="string">'password'</span>),
+]);
+
+<span class="comment">// 2. Corporate account oluştur</span>
+$sube = MuzibuCorporateAccount::create([
+    <span class="string">'user_id'</span> => $subeUser->id,
+    <span class="string">'parent_id'</span> => $corporate->id, <span class="comment">// Firma ID</span>
+    <span class="string">'branch_name'</span> => <span class="string">'Kadıköy Şubesi'</span>,
+    <span class="string">'role'</span> => <span class="string">'manager'</span>,
+    <span class="string">'settings'</span> => [
+        <span class="string">'city'</span> => <span class="string">'İstanbul'</span>,
+        <span class="string">'address'</span> => <span class="string">'Kadıköy Moda Caddesi No: 42'</span>,
+        <span class="string">'phone'</span> => <span class="string">'0216 555 12 34'</span>,
+    ],
+]);
+                </div>
+
+                <h4>Çalışan Ekle (Employee):</h4>
+                <div class="code-block">
+<span class="comment">// 1. Users tablosuna çalışan kaydı ekle</span>
+$calisanUser = User::create([
+    <span class="string">'name'</span> => <span class="string">'Ahmet Yılmaz'</span>,
+    <span class="string">'email'</span> => <span class="string">'ahmet@starbucks.com'</span>,
+    <span class="string">'password'</span> => Hash::make(<span class="string">'password'</span>),
+]);
+
+<span class="comment">// 2. Corporate account oluştur</span>
+MuzibuCorporateAccount::create([
+    <span class="string">'user_id'</span> => $calisanUser->id,
+    <span class="string">'parent_id'</span> => $sube->id, <span class="comment">// Şube ID</span>
+    <span class="string">'role'</span> => <span class="string">'employee'</span>,
+]);
+                </div>
+            </div>
+        </section>
+
+        <!-- UI MOCKUPS -->
+        <section>
+            <div class="section-header">
+                <span class="icon">🎨</span>
+                <h2>Admin Panel UI Taslakları</h2>
+            </div>
+
+            <div class="card">
+                <h3>1️⃣ Kurumsal Hesaplar - Tree View</h3>
+                <p>Mevcut <code>corporate-manage.blade.php</code> üzerinde güncelleme yapılacak.</p>
+                
+                <div class="mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-title">🏢 Kurumsal Hesaplar (User-Based Hierarchy)</div>
+                        <div class="mockup-actions">
+                            <button class="btn-mock btn-secondary">🔍 Ara</button>
+                            <button class="btn-mock btn-primary">➕ Yeni Kayıt</button>
+                        </div>
+                    </div>
+
+                    <div class="tree-view">
+                        <div class="tree-item tree-company">
+                            <span class="tree-expand">▼</span>
+                            <span class="tree-icon">🏢</span>
+                            <strong>Starbucks Türkiye</strong>
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.85rem;">
+                                (user: starbucks@firma.com | role: owner | 28 şube)
+                            </span>
+                        </div>
+
+                        <div class="tree-item tree-branch">
+                            <span class="tree-expand">▼</span>
+                            <span class="tree-icon">🏪</span>
+                            Kadıköy Şubesi
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.8rem;">
+                                (user: kadikoy@starbucks.com | role: manager | 12 çalışan)
+                            </span>
+                        </div>
+
+                        <div class="tree-item tree-employee">
+                            <span class="tree-icon">👤</span>
+                            Ahmet Yılmaz
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.75rem;">
+                                (ahmet@starbucks.com | role: employee)
+                            </span>
+                        </div>
+
+                        <div class="tree-item tree-employee">
+                            <span class="tree-icon">👤</span>
+                            Ayşe Demir
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.75rem;">
+                                (ayse@starbucks.com | role: employee)
+                            </span>
+                        </div>
+
+                        <div class="tree-item tree-branch">
+                            <span class="tree-expand">▶</span>
+                            <span class="tree-icon">🏪</span>
+                            Beşiktaş Şubesi
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.8rem;">
+                                (besiktas@starbucks.com | role: manager | 8 çalışan)
+                            </span>
+                        </div>
+
+                        <div style="height: 15px;"></div>
+
+                        <div class="tree-item tree-company">
+                            <span class="tree-expand">▼</span>
+                            <span class="tree-icon">🏢</span>
+                            <strong>McDonalds</strong>
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.85rem;">
+                                (user: mcdonalds@firma.com | role: owner | 52 şube)
+                            </span>
+                        </div>
+
+                        <div class="tree-item tree-branch">
+                            <span class="tree-expand">▶</span>
+                            <span class="tree-icon">🏪</span>
+                            Ataşehir Şubesi
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.8rem;">
+                                (atasehir@mcdonalds.com | role: manager | 15 çalışan)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>2️⃣ Kayıt Ekleme/Düzenleme Formu</h3>
+                <p>Mevcut forma 3 alan ekleme + user seçimi ile birleştirme</p>
+                
+                <div class="mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-title">✏️ Kurumsal Hesap Ekle</div>
+                    </div>
+
+                    <div class="mock-form">
+                        <div class="alert alert-info">
+                            <strong>💡 İPUCU:</strong> Önce Users tablosuna kayıt ekleyin, sonra buradan corporate account oluşturun!
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Kullanıcı (User) * 
+                                <span style="color: var(--text-muted); font-weight: normal; font-size: 0.85rem;">
+                                    - users tablosundan seçilecek
+                                </span>
+                            </label>
+                            <select class="form-select">
+                                <option value="">Kullanıcı seçin...</option>
+                                <option value="100">Starbucks Türkiye (starbucks@firma.com)</option>
+                                <option value="101">Kadıköy Şubesi (kadikoy@starbucks.com)</option>
+                                <option value="102" selected>Ahmet Yılmaz (ahmet@starbucks.com)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Rol *</label>
+                            <select class="form-select">
+                                <option value="owner">🏢 Owner (Firma Sahibi)</option>
+                                <option value="manager">🏪 Manager (Şube Yöneticisi)</option>
+                                <option value="employee" selected>👤 Employee (Çalışan)</option>
+                            </select>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
+                                Owner = Ana firma, Manager = Şube, Employee = Çalışan
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Üst Kayıt (Parent)</label>
+                            <select class="form-select">
+                                <option value="">-- Ana Firma (Parent Yok) --</option>
+                                <option value="1">🏢 Starbucks Türkiye (owner)</option>
+                                <option value="2" selected>🏪 Kadıköy Şubesi (manager)</option>
+                            </select>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
+                                Employee için şube seçin, Manager için firma seçin
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Firma Adı 
+                                    <span style="color: var(--text-muted); font-weight: normal; font-size: 0.85rem;">
+                                        (sadece owner için)
+                                    </span>
+                                </label>
+                                <input class="form-input" type="text" placeholder="örn: Starbucks Türkiye" value="">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Şube Adı 
+                                    <span style="color: var(--text-muted); font-weight: normal; font-size: 0.85rem;">
+                                        (sadece manager için)
+                                    </span>
+                                </label>
+                                <input class="form-input" type="text" placeholder="örn: Kadıköy Şubesi" value="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ayarlar (JSON) - Opsiyonel</label>
+                            <textarea class="form-input" rows="4" placeholder='{"city": "İstanbul", "address": "Kadıköy...", "phone": "0216 555 12 34"}'></textarea>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
+                                💡 Şehir, adres, telefon, max_branches gibi esnek bilgiler
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Kurumsal Kod 
+                                <span style="color: var(--text-muted); font-weight: normal; font-size: 0.85rem;">
+                                    (otomatik oluşturulur)
+                                </span>
+                            </label>
+                            <input class="form-input" type="text" placeholder="STAR2025" value="" readonly style="background: rgba(0,0,0,0.2);">
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px;">
+                            <button class="btn-mock btn-secondary" style="padding: 12px 24px;">İptal</button>
+                            <button class="btn-mock btn-primary" style="padding: 12px 24px;">💾 Kaydet</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IMPLEMENTATION STEPS -->
+        <section>
+            <div class="section-header">
+                <span class="icon">🚀</span>
+                <h2>Uygulama Adımları</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="timeline-phase">ADIM 1 (15 dk)</span>
+                    <h4>Migration Oluştur & Çalıştır</h4>
+                    <ul>
+                        <li>3 alan ekle: branch_name, role, settings</li>
+                        <li>Index ekle: role</li>
+                        <li>Migration çalıştır (tenant database)</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">ADIM 2 (30 dk)</span>
+                    <h4>Model Güncelle</h4>
+                    <ul>
+                        <li>Fillable ekle: 3 yeni alan</li>
+                        <li>Casts ekle: settings → array</li>
+                        <li>Helper metodlar: isOwner(), isManager(), getBranches()</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">ADIM 3 (1 saat)</span>
+                    <h4>Livewire Component Güncelle</h4>
+                    <ul>
+                        <li>CorporateAccountComponent'e rol seçimi ekle</li>
+                        <li>Form validasyonu: rol bazlı zorunlu alanlar</li>
+                        <li>Tree-view render mantığı ekle</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">ADIM 4 (1 saat)</span>
+                    <h4>Blade View Güncelle</h4>
+                    <ul>
+                        <li>corporate-manage.blade.php → Tree-view ekle</li>
+                        <li>Form'a 3 alan ekle (role, branch_name, settings)</li>
+                        <li>Rol bazlı gösterim (owner → firma, manager → şube)</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">ADIM 5 (30 dk)</span>
+                    <h4>Test</h4>
+                    <ul>
+                        <li>Firma oluştur (owner)</li>
+                        <li>Şube ekle (manager)</li>
+                        <li>Çalışan ekle (employee)</li>
+                        <li>Hiyerarşiyi kontrol et</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>⏱️ TOPLAM SÜRE: ~3 SAAT</strong><br>
+                Minimal değişiklik, düşük risk, aynı gün içinde tamamlanır!
+            </div>
+        </section>
+
+        <!-- EXTRA FEATURES -->
+        <section>
+            <div class="section-header">
+                <span class="icon">💡</span>
+                <h2>İsteğe Bağlı İyileştirmeler</h2>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>🎨 Alpine.js Tree Toggle</h3>
+                    <p>Açılır/kapanır ağaç görünümü için:</p>
+                    <div class="code-block">
+<span class="keyword">&lt;div</span> x-data=<span class="string">"{ expanded: {} }"</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;div</span> @click=<span class="string">"expanded[1] = !expanded[1]"</span><span class="keyword">&gt;</span>
+        <span class="keyword">&lt;span</span> x-text=<span class="string">"expanded[1] ? '▼' : '▶'"</span><span class="keyword">&gt;&lt;/span&gt;</span>
+        Starbucks
+    <span class="keyword">&lt;/div&gt;</span>
+    
+    <span class="keyword">&lt;div</span> x-show=<span class="string">"expanded[1]"</span><span class="keyword">&gt;</span>
+        Şubeler...
+    <span class="keyword">&lt;/div&gt;</span>
+<span class="keyword">&lt;/div&gt;</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔍 Rol Bazlı Filtre</h3>
+                    <p>Sadece owner'ları veya manager'ları göster:</p>
+                    <div class="code-block">
+<span class="comment">// Livewire Component</span>
+<span class="keyword">public</span> $roleFilter = <span class="string">'all'</span>;
+
+<span class="keyword">public function</span> getRecordsProperty()
+{
+    $query = MuzibuCorporateAccount::query();
+    
+    <span class="keyword">if</span> ($this->roleFilter !== <span class="string">'all'</span>) {
+        $query->where(<span class="string">'role', $this->roleFilter</span>);
+    }
+    
+    <span class="keyword">return</span> $query->with(<span class="string">'owner'</span>)->get();
+}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Dashboard İstatistikleri</h3>
+                    <p>Firma/Şube/Çalışan sayıları:</p>
+                    <div class="code-block">
+<span class="comment">// Stats hesaplama</span>
+$stats = [
+    <span class="string">'total_companies'</span> => MuzibuCorporateAccount::where(<span class="string">'role', 'owner'</span>)->count(),
+    <span class="string">'total_branches'</span> => MuzibuCorporateAccount::where(<span class="string">'role', 'manager'</span>)->count(),
+    <span class="string">'total_employees'</span> => MuzibuCorporateAccount::where(<span class="string">'role', 'employee'</span>)->count(),
+];
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔐 Yetki Kontrolü Middleware</h3>
+                    <p>Sadece kendi şubesini düzenleyebilir:</p>
+                    <div class="code-block">
+<span class="comment">// Helper method</span>
+<span class="keyword">public function</span> canManage(User $user, MuzibuCorporateAccount $account)
+{
+    $userAccount = MuzibuCorporateAccount::where(<span class="string">'user_id', $user->id</span>)->first();
+    
+    <span class="keyword">if</span> (!$userAccount) {
+        <span class="keyword">return</span> <span class="keyword">false</span>;
+    }
+    
+    <span class="comment">// Owner kendi altındaki herkesi yönetebilir</span>
+    <span class="keyword">if</span> ($userAccount->isOwner()) {
+        <span class="keyword">return</span> $account->parent_id === $userAccount->id || 
+               $account->id === $userAccount->id;
+    }
+    
+    <span class="comment">// Manager kendi altındaki çalışanları yönetebilir</span>
+    <span class="keyword">if</span> ($userAccount->isManager()) {
+        <span class="keyword">return</span> $account->parent_id === $userAccount->id;
+    }
+    
+    <span class="keyword">return</span> <span class="keyword">false</span>;
+}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUMMARY -->
+        <section>
+            <div class="section-header">
+                <span class="icon">✅</span>
+                <h2>Özet</h2>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Doğru Mimari</h3>
+                <ul>
+                    <li><strong>Her user = bir kayıt</strong> (firma, şube, çalışan hepsi users tablosunda)</li>
+                    <li><strong>muzibu_corporate_accounts = Hiyerarşi tablosu</strong> (parent_id ile ilişki)</li>
+                    <li><strong>role = Ayırt edici</strong> (owner/manager/employee)</li>
+                    <li><strong>Minimal değişiklik</strong> (sadece 3 alan ekle)</li>
+                    <li><strong>Hızlı implementasyon</strong> (~3 saat)</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>📋 Yapılacaklar Listesi</h3>
+                <ol style="list-style: decimal; padding-left: 30px; color: var(--text);">
+                    <li style="margin: 10px 0;">Migration oluştur (3 alan)</li>
+                    <li style="margin: 10px 0;">Model'i güncelle (fillable, casts, helpers)</li>
+                    <li style="margin: 10px 0;">Livewire component'i genişlet</li>
+                    <li style="margin: 10px 0;">Blade view'u güncelle (tree-view)</li>
+                    <li style="margin: 10px 0;">Test et (firma → şube → çalışan)</li>
+                </ol>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>✅ HAZIR!</strong> Artık doğru mimariye göre kodlamaya başlayabiliriz! 🚀
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>🤖 Claude AI tarafından oluşturuldu</p>
+        <p style="margin-top: 10px; font-size: 1.1rem; color: var(--accent);">Muzibu Corporate System - v3 (Doğru Mimari)</p>
+        <p style="margin-top: 8px; font-size: 0.85rem;">✅ PLAN A kaldırıldı (gereksiz tablolar)</p>
+        <p style="margin-top: 8px; font-size: 0.85rem;">✅ User-based hierarchy doğru şekilde açıklandı</p>
+        <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);">26 Kasım 2025 | muzibu.com.tr | Tenant 1001</p>
+    </footer>
+
+</body>
+</html>

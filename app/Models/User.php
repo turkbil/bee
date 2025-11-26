@@ -294,4 +294,89 @@ class User extends Authenticatable implements HasMedia
         }
         return $this->subscription ?? null;
     }
+
+    // ==========================================
+    // PREMIUM MUSIC LISTENING METHODS (Tenant 1001)
+    // ==========================================
+
+    /**
+     * Bugün kaç şarkı dinledi? (60+ saniye dinlenen)
+     * Tenant 1001 (muzibu.com) için
+     */
+    public function getTodayPlayedCount(): int
+    {
+        if (!$this->isMuzibuTenant()) {
+            return 0;
+        }
+
+        return \DB::table('muzibu_song_plays')
+            ->where('user_id', $this->id)
+            ->where('duration_listened', '>=', 60)
+            ->whereDate('created_at', today())
+            ->count();
+    }
+
+    /**
+     * Şarkı çalabilir mi?
+     * Tenant 1001 (muzibu.com) için
+     */
+    public function canPlaySong(): bool
+    {
+        if (!$this->isMuzibuTenant()) {
+            return true; // Diğer tenant'lar etkilenmez
+        }
+
+        // Premium/Trial → Sınırsız
+        if ($this->isPremium() || $this->isTrialActive()) {
+            return true;
+        }
+
+        // Normal üye → Günde 5 şarkı (60+ saniye dinlenen)
+        return $this->getTodayPlayedCount() < 5;
+    }
+
+    /**
+     * Kalan şarkı hakkı
+     * Tenant 1001 (muzibu.com) için
+     */
+    public function getRemainingPlays(): int
+    {
+        if (!$this->isMuzibuTenant()) {
+            return -1; // Diğer tenant'lar sınırsız
+        }
+
+        // Premium/Trial → Sınırsız
+        if ($this->isPremium() || $this->isTrialActive()) {
+            return -1;
+        }
+
+        // Normal üye → Kalan hak
+        return max(0, 5 - $this->getTodayPlayedCount());
+    }
+
+    /**
+     * Premium üye mi? (is_premium veya aktif trial)
+     * Tenant 1001 (muzibu.com) için
+     */
+    public function isPremium(): bool
+    {
+        if (!$this->isMuzibuTenant()) {
+            return false;
+        }
+
+        return $this->is_premium ?? false;
+    }
+
+    /**
+     * Aktif trial var mı?
+     * Tenant 1001 (muzibu.com) için
+     */
+    public function isTrialActive(): bool
+    {
+        if (!$this->isMuzibuTenant()) {
+            return false;
+        }
+
+        return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+    }
 }

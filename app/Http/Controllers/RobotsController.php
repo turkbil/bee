@@ -74,7 +74,7 @@ class RobotsController extends Controller
 
         return response(implode("\n", $lines), 200, [
             'Content-Type' => 'text/plain; charset=utf-8',
-            'X-Robots-Tag' => 'noindex', // robots.txt kendisi indexlenmesin
+            'Cache-Control' => 'public, max-age=86400', // 1 gün cache
         ]);
     }
 }

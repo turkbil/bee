@@ -340,7 +340,7 @@ class CorporateAccountComponent extends Component
                 return;
             }
 
-            $branchName = $branch->company_name;
+            $branchName = $branch->branch_name ?: $branch->company_name;
             $branch->delete();
 
             Log::info('Muzibu: Şube çıkarıldı', [
@@ -364,6 +364,61 @@ class CorporateAccountComponent extends Component
                 'type' => 'error',
                 'title' => 'Hata',
                 'message' => 'Şube çıkarılırken bir hata oluştu'
+            ]);
+        }
+    }
+
+    /**
+     * Şubeyi bağımsızlaştır (ana firma yap)
+     */
+    public function detachBranch(int $accountId): void
+    {
+        try {
+            $branch = MuzibuCorporateAccount::find($accountId);
+
+            if (!$branch || !$branch->parent_id) {
+                $this->dispatch('toast', [
+                    'type' => 'error',
+                    'title' => 'Hata',
+                    'message' => 'Bu zaten bir ana firmadır'
+                ]);
+                return;
+            }
+
+            $oldParent = $branch->parent;
+            $branchName = $branch->branch_name ?: 'İsimsiz Şube';
+
+            // Bağımsızlaştır
+            $branch->update([
+                'parent_id' => null,
+                'company_name' => $branchName, // Şube adını firma adı yap
+                'branch_name' => null,
+                'corporate_code' => MuzibuCorporateAccount::generateCode(),
+            ]);
+
+            Log::info('Muzibu: Şube bağımsızlaştırıldı', [
+                'account_id' => $accountId,
+                'old_parent_id' => $oldParent->id,
+                'new_corporate_code' => $branch->corporate_code,
+                'admin_id' => auth()->id()
+            ]);
+
+            $this->dispatch('toast', [
+                'type' => 'success',
+                'title' => 'Başarılı',
+                'message' => $branchName . ' artık bağımsız bir ana firma!'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Muzibu: Şube bağımsızlaştırma hatası', [
+                'error' => $e->getMessage(),
+                'account_id' => $accountId
+            ]);
+
+            $this->dispatch('toast', [
+                'type' => 'error',
+                'title' => 'Hata',
+                'message' => 'Bağımsızlaştırma sırasında hata oluştu'
             ]);
         }
     }

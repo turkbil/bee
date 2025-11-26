@@ -27,16 +27,7 @@ class TenantCacheProfile implements CacheProfile
             return false;
         }
         
-        // Debug log sadece local/staging'de
-        if (app()->environment(['local', 'staging'])) {
-            \Log::debug('Cache profile check', [
-                'url' => $request->fullUrl(),
-                'method' => $request->method(),
-                'is_ajax' => $request->ajax(),
-                'is_auth' => auth()->check(),
-                'path' => $path
-            ]);
-        }
+        // Debug log kaldırıldı - disk dolmasına neden oluyordu
         
         // Temel kontroller
         if ($request->ajax() || $request->isMethod('get') === false) {
@@ -68,18 +59,7 @@ class TenantCacheProfile implements CacheProfile
         // Cache bypass parametreleri
         $bypassParams = ['_', 'lang_changed', 'cb', 'no_cache'];
         if ($request->hasAny($bypassParams)) {
-            if (app()->environment(['local', 'staging'])) {
-                \Log::debug('Cache bypass params detected', [
-                    'params' => $request->only($bypassParams)
-                ]);
-            }
             return false;
-        }
-
-        if (app()->environment(['local', 'staging'])) {
-            \Log::debug('shouldCacheRequest = TRUE', [
-                'url' => $request->fullUrl()
-            ]);
         }
 
         return true;
@@ -87,16 +67,6 @@ class TenantCacheProfile implements CacheProfile
 
     public function shouldCacheResponse(Response $response): bool
     {
-        // Debug log sadece local/staging'de
-        if (app()->environment(['local', 'staging'])) {
-            \Log::debug('shouldCacheResponse check', [
-                'status' => $response->getStatusCode(),
-                'is_successful' => $response->isSuccessful(),
-                'is_redirection' => $response->isRedirection(),
-                'content_type' => $response->headers->get('Content-Type')
-            ]);
-        }
-
         // Redirect response'ları cache'leme
         if ($response->isRedirection()) {
             return false;
@@ -106,20 +76,7 @@ class TenantCacheProfile implements CacheProfile
             // Cache header'larını düzelt
             $response->setPublic();
             $response->setMaxAge(3600); // 1 saat
-
-            if (app()->environment(['local', 'staging'])) {
-                \Log::debug('Response will be cached', [
-                    'status' => $response->getStatusCode()
-                ]);
-            }
-
             return true;
-        }
-
-        if (app()->environment(['local', 'staging'])) {
-            \Log::debug('Response will NOT be cached', [
-                'status' => $response->getStatusCode()
-            ]);
         }
 
         return false;

@@ -175,8 +175,24 @@ class IndexNowService
 
         // Cache'den al
         $key = Cache::get($cacheKey);
-        if ($key) {
+        if ($key && file_exists(public_path("{$key}.txt"))) {
             return $key;
+        }
+
+        // Mevcut key dosyası var mı kontrol et (cache temizlendiyse)
+        $existingKeys = glob(public_path('*.txt'));
+        foreach ($existingKeys as $file) {
+            $filename = basename($file, '.txt');
+            // 32 karakter hex formatında mı?
+            if (preg_match('/^[a-f0-9]{32}$/', $filename)) {
+                $content = trim(file_get_contents($file));
+                if ($content === $filename) {
+                    // Mevcut key'i cache'e kaydet
+                    Cache::put($cacheKey, $filename, now()->addYear());
+                    Log::info('IndexNow: Mevcut key kullanıldı', ['host' => $host, 'key' => $filename]);
+                    return $filename;
+                }
+            }
         }
 
         // Yeni key oluştur (32 karakter hex)

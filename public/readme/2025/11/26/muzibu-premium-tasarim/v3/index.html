@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Premium - GÜNDE 5 ŞARKI (Final)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-top: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            color: #34d399;
+            padding: 12px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            background: rgba(16, 185, 129, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .mockup-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .mockup-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mockup-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .mockup-title {
+            font-size: 2rem;
+            color: #34d399;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mockup-description {
+            color: #cbd5e1;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .success-box h3 {
+            color: #10b981;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .success-box p, .success-box ul {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .success-box ul {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+
+        .success-box li {
+            margin: 8px 0;
+        }
+
+        .code-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .code-box pre {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        /* MODAL */
+        .modal-demo {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .modal-content h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .modal-content p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #e0e7ff;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1e293b;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* SIDEBAR */
+        .sidebar-demo {
+            background: rgba(15, 23, 42, 0.8);
+            width: 350px;
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .user-details h3 {
+            font-size: 1.2rem;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .song-counter {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            text-align: center;
+        }
+
+        .song-counter-title {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        .song-icons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            font-size: 2rem;
+        }
+
+        .song-icon {
+            transition: all 0.3s ease;
+        }
+
+        .song-icon.played {
+            opacity: 1;
+            filter: grayscale(0);
+        }
+
+        .song-icon.remaining {
+            opacity: 0.3;
+            filter: grayscale(1);
+        }
+
+        .song-counter-text {
+            font-size: 1.5rem;
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 30px 0;
+        }
+
+        .comparison-table th {
+            background: rgba(16, 185, 129, 0.2);
+            padding: 20px;
+            text-align: left;
+            color: #34d399;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 20px;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(100, 116, 139, 0.2);
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .tabs { flex-direction: column; }
+            .demo-grid { grid-template-columns: 1fr; }
+            .sidebar-demo { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Muzibu Premium</h1>
+            <div class="version-badge">v3 FINAL - GÜNDE 5 ŞARKI</div>
+            <h2 style="color: #34d399; font-size: 1.5rem; margin-top: 15px;">Basit, Temiz, Performanslı</h2>
+            <div class="meta">
+                📅 26 Kasım 2025 | 🎯 Tenant 1001 | ✅ Production-Ready
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('overview')">📋 Sistem Özeti</button>
+            <button class="tab-btn" onclick="showTab('modals')">💬 Modaller</button>
+            <button class="tab-btn" onclick="showTab('sidebar')">📱 Sidebar</button>
+            <button class="tab-btn" onclick="showTab('implementation')">⚙️ Implementasyon</button>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div id="overview" class="mockup-section active">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    📋 Basit & Temiz Sistem
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Sistem Kuralları</h3>
+                    <table class="comparison-table">
+                        <tr>
+                            <th>Kullanıcı Tipi</th>
+                            <th>Günlük Limit</th>
+                            <th>Açıklama</th>
+                        </tr>
+                        <tr>
+                            <td><strong>🚫 Guest</strong></td>
+                            <td>Her şarkının <strong>30 saniyesi</strong></td>
+                            <td>Fade-out ile bitiş, kayıt teşviki</td>
+                        </tr>
+                        <tr>
+                            <td><strong>👤 Normal Üye</strong></td>
+                            <td><strong>5 tam şarkı</strong></td>
+                            <td>Her gece 00:00'da reset</td>
+                        </tr>
+                        <tr>
+                            <td><strong>⭐ Premium/Deneme</strong></td>
+                            <td><strong>Sınırsız</strong></td>
+                            <td>Tüm yetkiler</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="success-box">
+                    <h3>🚀 Neden Şarkı Sayısı?</h3>
+                    <ul>
+                        <li>✅ <strong>Süper Basit:</strong> Sadece counter +1 (saat/dakika/saniye tracking yok!)</li>
+                        <li>✅ <strong>Minimal DB Write:</strong> Şarkı bitince tek write (günde 5 write max)</li>
+                        <li>✅ <strong>Anlaşılır UX:</strong> Kullanıcı kolayca anlar "3/5 şarkı kaldı"</li>
+                        <li>✅ <strong>Performans Canavarı:</strong> Redis/cache bile gereksiz, direkt DB yeterli</li>
+                        <li>✅ <strong>Lazy Reset:</strong> Cron job yok, kullanıcı çalarken kontrol</li>
+                    </ul>
+                </div>
+
+                <div class="success-box">
+                    <h3>📊 Database - Minimal Yapı</h3>
+                    <div class="code-box">
+                        <pre>// Users tablosuna SADECE 2 alan ekliyoruz:
+
+daily_songs_played    INT      DEFAULT 0
+last_song_reset       DATE     NULL
+
+// Bu kadar! Basit ve temiz.</pre>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h3>⚡ Performans</h3>
+                    <ul>
+                        <li>🔥 <strong>DB Write:</strong> 5 write/kullanıcı/gün (mükemmel!)</li>
+                        <li>🔥 <strong>Lazy Reset:</strong> Cron yok, 00:00'da DB lock yok</li>
+                        <li>🔥 <strong>Cache:</strong> Opsiyonel (5 dk), zorunlu değil</li>
+                        <li>🔥 <strong>Listening Logs:</strong> Opsiyonel (istatistik için)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODALS -->
+        <div id="modals" class="mockup-section">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    🚫 Guest Modal - 30 Saniye
+                </div>
+
+                <div class="modal-demo">
+                    <div class="modal-content">
+                        <div class="modal-icon">🎵</div>
+                        <h2>Önizleme Süresi Doldu</h2>
+                        <p>Tüm şarkıları tam dinlemek için ücretsiz kayıt olun!</p>
+
+                        <div style="margin: 30px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;">
+                            <p style="font-size: 1rem;">✅ Her şarkının tam halini dinleyin</p>
+                            <p style="font-size: 1rem;">✅ Günde 5 şarkı tam dinleme hakkı</p>
+                            <p style="font-size: 1rem;">✅ Playlist oluşturma</p>
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button class="btn-primary">KAYIT OL</button>
+                            <button class="btn-secondary">Daha Sonra</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mockup-card" style="margin-top: 40px;">
+                <div class="mockup-title">
+                    ⏱️ Normal Üye - 5 Şarkı Doldu
+                </div>
+
+                <div class="modal-demo">
+                    <div class="modal-content" style="background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);">
+                        <div class="modal-icon">🎵</div>
+                        <h2>Günlük Şarkı Limitiniz Doldu</h2>
+                        <p>Bugün <strong>5 şarkı</strong> dinlediniz.</p>
+                        <p style="font-size: 1rem; margin-top: 10px;">Yarın saat <strong>00:00</strong>'da yeni 5 şarkı hakkınız olacak!</p>
+
+                        <div style="margin: 30px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 12px;">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 10px;">🌟 Premium'a geçin, sınırsız dinleyin!</h3>
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button class="btn-primary">PREMİUM OL - 49₺/ay</button>
+                            <button class="btn-secondary">Kapat</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div id="sidebar" class="mockup-section">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    📱 Sidebar - Şarkı Sayacı
+                </div>
+
+                <div class="demo-grid">
+                    <!-- Normal Üye - 3/5 -->
+                    <div class="sidebar-demo">
+                        <div class="user-info">
+                            <div class="user-avatar">👤</div>
+                            <div class="user-details">
+                                <h3>Ahmet Yılmaz</h3>
+                                <p>Normal Üye</p>
+                            </div>
+                        </div>
+
+                        <div class="song-counter">
+                            <div class="song-counter-title">🎵 BUGÜNKÜ DİNLEME</div>
+                            <div class="song-icons">
+                                <span class="song-icon played">🎵</span>
+                                <span class="song-icon played">🎵</span>
+                                <span class="song-icon played">🎵</span>
+                                <span class="song-icon remaining">🎵</span>
+                                <span class="song-icon remaining">🎵</span>
+                            </div>
+                            <div class="song-counter-text">3 / 5 Şarkı</div>
+                            <p style="margin-top: 15px; font-size: 0.9rem; color: #94a3b8;">2 şarkı hakkınız kaldı</p>
+                        </div>
+
+                        <button class="btn-primary" style="width: 100%; margin-top: 20px;">
+                            ⭐ Premium Ol
+                        </button>
+                    </div>
+
+                    <!-- Normal Üye - 5/5 Doldu -->
+                    <div class="sidebar-demo">
+                        <div class="user-info">
+                            <div class="user-avatar" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">⏱️</div>
+                            <div class="user-details">
+                                <h3>Zeynep Şahin</h3>
+                                <p>Normal Üye</p>
+                            </div>
+                        </div>
+
+                        <div class="song-counter" style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(185, 28, 28, 0.2)); border-color: rgba(220, 38, 38, 0.5);">
+                            <div class="song-counter-title">⏱️ LİMİT DOLDU</div>
+                            <div class="song-icons">
+                                <span class="song-icon played">🎵</span>
+                                <span class="song-icon played">🎵</span>
+                                <span class="song-icon played">🎵</span>
+                                <span class="song-icon played">🎵</span>
+                                <span class="song-icon played">🎵</span>
+                            </div>
+                            <div class="song-counter-text" style="color: #ef4444;">5 / 5 Şarkı</div>
+                            <p style="margin-top: 15px; font-size: 0.9rem; color: #fca5a5;">Yarın 00:00'da yenilenecek</p>
+                        </div>
+
+                        <button class="btn-primary" style="width: 100%; margin-top: 20px; background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                            Premium Ol - Sınırsız Dinle
+                        </button>
+                    </div>
+
+                    <!-- Premium Üye -->
+                    <div class="sidebar-demo">
+                        <div class="user-info">
+                            <div class="user-avatar" style="background: linear-gradient(135deg, #fbbf24, #f59e0b);">💎</div>
+                            <div class="user-details">
+                                <h3>Mehmet Demir</h3>
+                                <p>Premium Üye</p>
+                            </div>
+                        </div>
+
+                        <div class="song-counter" style="background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2)); border-color: rgba(251, 191, 36, 0.5);">
+                            <div class="song-counter-title">💎 PREMİUM AKTİF</div>
+                            <div style="font-size: 3rem; margin: 20px 0;">∞</div>
+                            <div class="song-counter-text" style="color: #fbbf24;">Sınırsız Dinleme</div>
+                            <p style="margin-top: 15px; font-size: 0.9rem; color: #fde68a;">15 Ocak 2026'ya kadar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IMPLEMENTATION -->
+        <div id="implementation" class="mockup-section">
+            <div class="mockup-card">
+                <div class="mockup-title">
+                    ⚙️ Basit Implementasyon
+                </div>
+
+                <div class="success-box">
+                    <h3>1️⃣ Migration (2 alan ekle)</h3>
+                    <div class="code-box">
+                        <pre>Schema::table('users', function (Blueprint $table) {
+    $table->integer('daily_songs_played')->default(0);
+    $table->date('last_song_reset')->nullable();
+});</pre>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h3>2️⃣ User Model (2 metod)</h3>
+                    <div class="code-box">
+                        <pre>// Şarkı çalabilir mi?
+public function canPlaySong(): bool
+{
+    // Lazy reset
+    if ($this->last_song_reset < today()) {
+        $this->update([
+            'daily_songs_played' => 0,
+            'last_song_reset' => today()
+        ]);
+    }
+
+    // Premium/Trial unlimited
+    if ($this->isPremium() || $this->isTrialActive()) {
+        return true;
+    }
+
+    // Normal üye: 5 şarkı limiti
+    return $this->daily_songs_played < 5;
+}
+
+// Şarkı dinlendi
+public function incrementSongCount(): void
+{
+    if (!$this->isPremium() && !$this->isTrialActive()) {
+        $this->increment('daily_songs_played');
+    }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h3>3️⃣ API Controller</h3>
+                    <div class="code-box">
+                        <pre>// Şarkı çalmadan önce kontrol
+public function stream($songId)
+{
+    $user = auth()->user();
+
+    if (!$user->canPlaySong()) {
+        return response()->json([
+            'error' => 'daily_limit_exceeded',
+            'message' => 'Günlük 5 şarkı limitiniz doldu',
+            'played' => $user->daily_songs_played,
+            'limit' => 5
+        ], 403);
+    }
+
+    // Stream URL'i dön
+    return response()->json([
+        'stream_url' => $song->getStreamUrl(),
+        'remaining' => 5 - $user->daily_songs_played
+    ]);
+}
+
+// Şarkı bitince
+public function onSongEnd($songId)
+{
+    auth()->user()->incrementSongCount();
+
+    return response()->json(['success' => true]);
+}</pre>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h3>4️⃣ Frontend (Player)</h3>
+                    <div class="code-box">
+                        <pre>// Şarkı çalmadan önce
+async function playSong(songId) {
+    const response = await fetch(`/api/muzibu/songs/${songId}/stream`);
+
+    if (response.status === 403) {
+        // Limit doldu modal göster
+        showLimitModal();
+        return;
+    }
+
+    const data = await response.json();
+    howler.play(data.stream_url);
+
+    // Şarkı bitince API call
+    howler.on('end', () => {
+        fetch(`/api/muzibu/songs/${songId}/track`, { method: 'POST' });
+    });
+}</pre>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Bu Kadar!</h3>
+                    <p>
+                        - Migration: 2 alan<br>
+                        - User Model: 2 method<br>
+                        - API: 2 endpoint<br>
+                        - Frontend: 10 satır kod<br><br>
+                        <strong>Basit, temiz, performanslı! 🚀</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🎵 Muzibu Premium - GÜNDE 5 ŞARKI Sistemi</p>
+            <p style="margin-top: 10px;">✅ Basit | ⚡ Hızlı | 🎯 Etkili</p>
+            <p style="margin-top: 10px; color: #64748b;">Claude AI - 26 Kasım 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.mockup-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Animate song icons
+        document.addEventListener('DOMContentLoaded', function() {
+            const playedIcons = document.querySelectorAll('.song-icon.played');
+            playedIcons.forEach((icon, index) => {
+                setTimeout(() => {
+                    icon.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        icon.style.transform = 'scale(1)';
+                    }, 200);
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -679,12 +679,9 @@ class AICreditService
     public function getTenantCreditBalance(int $tenantId): array
     {
         // Get total purchased credits for tenant
+        // NOT: expires_at kolonu henüz tabloda yok, ileride migration ile eklenecek
         $totalPurchased = AICreditPurchase::where('tenant_id', $tenantId)
             ->where('status', 'completed')
-            ->where(function ($query) {
-                $query->whereNull('expires_at')
-                      ->orWhere('expires_at', '>', now());
-            })
             ->sum('credit_amount');
 
         // Get total used credits for tenant

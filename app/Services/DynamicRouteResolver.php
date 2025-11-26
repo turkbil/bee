@@ -73,12 +73,6 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
                     $config = include $configPath;
                     if (is_array($config) && isset($config['routes'])) {
                         $moduleRoutes[$moduleName] = $config['routes'];
-                        
-                        if (app()->environment(['local', 'staging'])) {
-                            Log::debug("Loaded routes for module: {$moduleName}", [
-                                'actions' => array_keys($config['routes'])
-                            ]);
-                        }
                     }
                 } catch (\Exception $e) {
                     Log::warning("Failed to load route config for module: {$moduleName}", [
@@ -124,11 +118,6 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
             }
         } catch (\Exception $e) {
             // Redis kullanılmıyorsa veya hata varsa sessizce devam et
-            Log::debug('Dynamic route cache clear failed (Redis not available or error): ' . $e->getMessage());
-        }
-
-        if (app()->environment(['local', 'staging'])) {
-            Log::debug('Dynamic route cache cleared');
         }
     }
     
@@ -152,16 +141,7 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
                     }
                     $moduleSlugMap[$action] = $actionSlug;
                 }
-                
-                // Debug log
-                if (app()->environment(['local', 'staging'])) {
-                    Log::debug("Checking module: {$moduleName}", [
-                        'locale' => $locale,
-                        'slug1' => $slug1,
-                        'moduleSlugMap' => $moduleSlugMap
-                    ]);
-                }
-                
+
                 // Single slug pattern - index action için
                 if (!$slug2 && !$slug3) {
                     foreach ($moduleSlugMap as $action => $actionSlug) {
@@ -246,16 +226,6 @@ class DynamicRouteResolver implements DynamicRouteResolverInterface
                             ->first();
 
                         if ($model) {
-                            // Bulundu! Show action'ını döndür
-                            if (app()->environment(['local', 'staging'])) {
-                                Log::debug("✅ Content slug matched (fallback)", [
-                                    'module' => $moduleName,
-                                    'slug' => $slug1,
-                                    'locale' => $locale,
-                                    'model_id' => $model->getKey()
-                                ]);
-                            }
-
                             return [
                                 'controller' => $routes['show']['controller'],
                                 'method' => $routes['show']['method'],

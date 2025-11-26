@@ -352,7 +352,6 @@ td:hover .edit-icon {
 
 /* Tabler Uyumlu Quick Action Hover */
 .quick-action-item {
-    transition: all 0.15s ease-in-out;
     border-radius: var(--tblr-border-radius);
     text-decoration: none;
     color: inherit;
@@ -361,8 +360,6 @@ td:hover .edit-icon {
     background-color: rgba(var(--tblr-body-color-rgb), 0.04);
     text-decoration: none;
     color: inherit;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(var(--tblr-body-color-rgb), 0.08);
 }
 
 /* Mobile Quick Actions - Tabler Style */

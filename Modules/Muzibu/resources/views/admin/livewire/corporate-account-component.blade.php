@@ -105,8 +105,11 @@
                                             <i class="fas fa-building"></i>
                                         </span>
                                         <div>
-                                            <div class="fw-medium">{{ $account->company_name }}</div>
-                                            <small class="text-muted">Ana Firma</small>
+                                            <div class="fw-medium">
+                                                {{ $account->company_name }}
+                                                <span class="badge bg-primary ms-2" style="font-size: 0.7rem;">Ana Şube</span>
+                                            </div>
+                                            <small class="text-muted">{{ $account->children->count() }} alt şube</small>
                                         </div>
                                     </div>
                                 </td>
@@ -163,7 +166,10 @@
                                                 <i class="fas fa-store"></i>
                                             </span>
                                             <div>
-                                                <div class="fw-medium">{{ $branch->company_name }}</div>
+                                                <div class="fw-medium">
+                                                    {{ $branch->branch_name ?: 'İsimsiz Şube' }}
+                                                    <span class="badge bg-azure ms-2" style="font-size: 0.7rem;">Alt Şube</span>
+                                                </div>
                                                 <small class="text-muted">{{ $account->company_name }} şubesi</small>
                                             </div>
                                         </div>
@@ -183,7 +189,17 @@
                                     <td class="text-center align-middle">
                                         <div class="d-flex align-items-center gap-3 justify-content-center">
                                             <a href="javascript:void(0);"
+                                               wire:click="detachBranch({{ $branch->id }})"
+                                               wire:confirm="Bu şubeyi bağımsızlaştırmak istediğinize emin misiniz? Şube kendi başına ana firma olacaktır."
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="top"
+                                               title="Bağımsızlaştır"
+                                               style="min-height: 24px; display: inline-flex; align-items: center; text-decoration: none;">
+                                                <i class="fa-solid fa-rocket link-success fa-lg"></i>
+                                            </a>
+                                            <a href="javascript:void(0);"
                                                wire:click="removeBranch({{ $branch->id }})"
+                                               wire:confirm="Bu şubeyi silmek istediğinize emin misiniz?"
                                                data-bs-toggle="tooltip"
                                                data-bs-placement="top"
                                                title="Şubeden Çıkar"
@@ -315,10 +331,11 @@
                                                 <div class="flex-fill">
                                                     <input type="text"
                                                            class="form-control form-control-sm border-0 p-0 fw-medium"
-                                                           value="{{ $branch->company_name }}"
+                                                           value="{{ $branch->branch_name }}"
                                                            wire:blur="updateBranchName({{ $branch->id }}, $event.target.value)"
+                                                           placeholder="Şube adı girin..."
                                                            style="background: transparent;">
-                                                    <small class="text-muted">{{ $branch->owner->email ?? '' }}</small>
+                                                    <small class="text-muted">{{ $branch->owner->name ?? '' }} ({{ $branch->owner->email ?? '' }})</small>
                                                 </div>
                                             </div>
                                         </div>

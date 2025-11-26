@@ -5,30 +5,33 @@ namespace Modules\MediaManagement\App\Http\Livewire\Admin;
 use Exception;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
-use Modules\AI\App\Services\AIImageGenerationService;
+use App\Services\Media\LeonardoAIService;
 use Modules\AI\App\Services\AIPromptEnhancer;
+use Modules\MediaManagement\App\Models\MediaLibraryItem;
+use Illuminate\Support\Facades\Log;
 
 #[Layout('admin.layout')]
 class AiImageGeneratorComponent extends Component
 {
     public string $prompt = '';
-    public string $size = '1792x1024';
+    public string $size = '1472x832'; // Leonardo destekli boyut (yatay)
     public string $quality = 'hd';
-    public string $style = 'ultra_photorealistic';
+    public string $style = 'cinematic'; // Leonardo style
     public bool $enhanceWithAI = true; // OpenAI GPT-4 yaratıcı enhancement
+    public bool $useSiteSettings = true; // Tenant ayarlarını prompt'a ekle
     public ?string $generatedImageUrl = null;
     public ?int $generatedMediaId = null;
-    public ?string $revisedPrompt = null; // DALL-E GPT-4'ün geliştirdiği prompt
+    public ?string $revisedPrompt = null; // OpenAI'ın geliştirdiği prompt
     public bool $isGenerating = false;
     public ?string $errorMessage = null;
-    public int $availableCredits = 0;
+    public float $availableCredits = 0;
     public $history = [];
 
     protected $rules = [
-        'prompt' => 'required|string|min:10|max:1000',
-        'size' => 'required|in:1024x1024,1024x1792,1792x1024',
+        'prompt' => 'required|string|min:10|max:4000',
+        'size' => 'required|in:1024x1024,832x1472,1472x832',
         'quality' => 'required|in:standard,hd',
-        'style' => 'required|in:ultra_photorealistic,studio_photography,natural_light,cinematic_photography,documentary_style,commercial_photography,portrait_photography,macro_photography,digital_art,illustration,3d_render,minimalist',
+        'style' => 'required|in:cinematic,cinematic_closeup,dynamic,film,hdr,moody,stock_photo,vibrant,neutral',
     ];
 
     public function mount()
@@ -39,13 +42,22 @@ class AiImageGeneratorComponent extends Component
 
     public function loadCredits()
     {
-        $this->availableCredits = ai_get_credit_balance();
+        // Tenant context'i al - önce tenant() helper, sonra auth user'dan
+        $tenantId = tenant('id');
+        if (!$tenantId && auth()->check()) {
+            $tenantId = auth()->user()->tenant_id;
+        }
+
+        $this->availableCredits = ai_get_credit_balance($tenantId ? (string) $tenantId : null);
     }
 
     public function loadHistory()
     {
-        $service = app(AIImageGenerationService::class);
-        $this->history = $service->getHistory(10);
+        $this->history = MediaLibraryItem::where('generation_source', 'ai_generated')
+            ->where('created_by', auth()->id())
+            ->latest()
+            ->limit(10)
+            ->get();
     }
 
     public function generate()
@@ -58,43 +70,188 @@ class AiImageGeneratorComponent extends Component
         $this->revisedPrompt = null;
 
         try {
-            $service = app(AIImageGenerationService::class);
-
-            // İKİ MOD:
-            // 1. Yaratıcı Mod (enhanceWithAI = true): OpenAI GPT-4 ile ultra detaylı, yaratıcı promptlar
-            // 2. Basit Mod (enhanceWithAI = false): AA.pdf kurallarına göre basit builder
-            if ($this->enhanceWithAI) {
-                // YARATICI MOD: OpenAI GPT-4 ile ultra detaylı enhancement
-                $enhancer = app(AIPromptEnhancer::class);
-                $finalPrompt = $enhancer->enhancePrompt($this->prompt, $this->style, $this->size);
-            } else {
-                // BASİT MOD: AA.pdf kurallarına göre basit builder
-                $finalPrompt = $this->buildPromptFromAAPDF($this->prompt, $this->style);
+            // Credit kontrolü
+            $creditCost = $this->quality === 'standard' ? 0.5 : 1;
+            if (!ai_can_use_credits($creditCost)) {
+                throw new Exception('Yetersiz kredi. Gerekli: ' . $creditCost);
             }
 
-            $imageData = $service->generateWithRevision($finalPrompt, [
-                'size' => $this->size,
-                'quality' => $this->quality,
+            // ADIM 1: OpenAI GPT-4 ile prompt geliştirme
+            if ($this->enhanceWithAI) {
+                $enhancer = app(AIPromptEnhancer::class);
+
+                // Tenant context'i al (useSiteSettings açıksa)
+                $tenantContext = $this->useSiteSettings ? $this->getTenantContext() : null;
+
+                $finalPrompt = $enhancer->enhancePrompt($this->prompt, $this->style, $this->size, $tenantContext);
+                $this->revisedPrompt = $finalPrompt; // Kullanıcıya göster
+            } else {
+                $finalPrompt = $this->buildBasicPrompt($this->prompt, $this->style);
+            }
+
+            Log::info('🎨 AI Generator: Prompt ready', [
+                'original' => $this->prompt,
+                'enhanced' => substr($finalPrompt, 0, 200) . '...',
+                'style' => $this->style,
             ]);
 
-            // Get generated image URL and revised prompt
-            $mediaItem = $imageData['mediaItem'];
-            $media = $mediaItem->getFirstMedia('library');
-            $this->generatedImageUrl = $media ? $media->getUrl() : null;
+            // ADIM 2: Leonardo AI ile görsel üretme
+            $leonardo = app(LeonardoAIService::class);
+
+            // Boyut parse
+            [$width, $height] = explode('x', $this->size);
+
+            $imageData = $leonardo->generateFromPrompt($finalPrompt, [
+                'width' => (int) $width,
+                'height' => (int) $height,
+                'style' => $this->style,
+            ]);
+
+            if (!$imageData) {
+                throw new Exception('Leonardo AI görsel üretemedi. Lütfen tekrar deneyin.');
+            }
+
+            // ADIM 3: MediaLibraryItem oluştur
+            $mediaItem = $this->createMediaItem($imageData, $finalPrompt);
+
+            $this->generatedImageUrl = $imageData['url'];
             $this->generatedMediaId = $mediaItem->id;
-            $this->revisedPrompt = $imageData['revised_prompt'] ?? null; // DALL-E GPT-4'ün geliştirdiği
+
+            // ADIM 4: Kredi düş
+            ai_use_credits($creditCost, null, [
+                'usage_type' => 'image_generation',
+                'provider_name' => 'leonardo',
+                'model' => 'lucid-origin',
+                'prompt' => $this->prompt,
+                'enhanced_prompt' => $finalPrompt,
+                'operation_type' => 'manual',
+                'media_id' => $mediaItem->id,
+                'quality' => $this->quality,
+                'credit_cost' => $creditCost,
+            ]);
 
             // Reload credits and history
             $this->loadCredits();
             $this->loadHistory();
 
-            session()->flash('success', 'Görsel başarıyla oluşturuldu!');
+            session()->flash('success', 'Görsel başarıyla oluşturuldu! (Leonardo AI)');
 
         } catch (Exception $e) {
+            Log::error('AI Generator Error', ['error' => $e->getMessage()]);
             $this->errorMessage = $e->getMessage();
         } finally {
             $this->isGenerating = false;
         }
+    }
+
+    /**
+     * MediaLibraryItem oluştur
+     */
+    protected function createMediaItem(array $imageData, string $prompt): MediaLibraryItem
+    {
+        $tenantId = tenant('id');
+
+        $mediaItem = MediaLibraryItem::create([
+            'name' => 'AI Generated - ' . substr($this->prompt, 0, 50),
+            'type' => 'image',
+            'created_by' => auth()->id(),
+            'generation_source' => 'ai_generated',
+            'generation_prompt' => $prompt,
+            'generation_params' => [
+                'model' => 'leonardo-lucid-origin',
+                'size' => $this->size,
+                'quality' => $this->quality,
+                'style' => $this->style,
+                'provider' => 'leonardo',
+                'generation_id' => $imageData['generation_id'] ?? null,
+                'tenant_id' => $tenantId,
+            ],
+        ]);
+
+        // Görseli URL'den ekle
+        if (!empty($imageData['url'])) {
+            $mediaItem->addMediaFromUrl($imageData['url'])
+                ->toMediaCollection('library');
+        }
+
+        return $mediaItem;
+    }
+
+    /**
+     * Basit prompt builder (OpenAI enhancement olmadan)
+     */
+    protected function buildBasicPrompt(string $userPrompt, string $style): string
+    {
+        $styleDescriptions = [
+            'cinematic' => 'cinematic photography, dramatic lighting, movie still quality',
+            'cinematic_closeup' => 'cinematic close-up shot, shallow depth of field, dramatic',
+            'dynamic' => 'dynamic action shot, motion blur, energetic composition',
+            'film' => 'film photography aesthetic, natural grain, analog look',
+            'hdr' => 'HDR photography, high dynamic range, vivid details',
+            'moody' => 'moody atmosphere, dramatic shadows, emotional lighting',
+            'stock_photo' => 'professional stock photography, clean composition, commercial quality',
+            'vibrant' => 'vibrant colors, saturated, eye-catching',
+            'neutral' => 'neutral tones, balanced exposure, professional',
+        ];
+
+        $styleDesc = $styleDescriptions[$style] ?? $styleDescriptions['cinematic'];
+
+        return "Professional photograph of {$userPrompt}. {$styleDesc}. High resolution, sharp details, no text or labels.";
+    }
+
+    /**
+     * Tenant context'ini al (Site ayarları)
+     */
+    protected function getTenantContext(): array
+    {
+        $context = [];
+
+        try {
+            // Site adı
+            $siteName = setting('site_name');
+            if ($siteName) {
+                $context['site_name'] = $siteName;
+            }
+
+            // Site sektörü (AI için özel ayar)
+            $sector = setting('ai_image_sector') ?? setting('site_sector');
+            if ($sector) {
+                $context['sector'] = $sector;
+            }
+
+            // Tenant'a özel prompt enhancement
+            $enhancement = setting('ai_image_prompt_enhancement');
+            if ($enhancement) {
+                $context['prompt_enhancement'] = $enhancement;
+            }
+
+            // Tenant ID'ye göre varsayılan sektör ayarları
+            $tenantId = tenant('id');
+            if ($tenantId && empty($context['sector'])) {
+                $context['sector'] = $this->getDefaultSectorByTenant($tenantId);
+            }
+
+            // Dil/kültür context'i
+            $context['locale'] = app()->getLocale();
+            $context['country'] = 'Turkey';
+
+        } catch (\Exception $e) {
+            Log::warning('Tenant context alınamadı', ['error' => $e->getMessage()]);
+        }
+
+        return $context;
+    }
+
+    /**
+     * Tenant ID'ye göre varsayılan sektör
+     */
+    protected function getDefaultSectorByTenant(?int $tenantId): string
+    {
+        return match ($tenantId) {
+            2, 3 => 'industrial_equipment', // ixtif.com
+            1001 => 'music_platform', // muzibu.com
+            default => 'general_business',
+        };
     }
 
     public function resetForm()
@@ -113,91 +270,6 @@ class AiImageGeneratorComponent extends Component
         }
 
         return redirect($this->generatedImageUrl);
-    }
-
-    /**
-     * AA.pdf kurallarına göre basit prompt builder
-     * DALL-E 3 zaten GPT-4 ile otomatik enhance ediyor, biz sadece doğru yapıyı kuruyoruz
-     */
-    protected function buildPromptFromAAPDF(string $userPrompt, string $style): string
-    {
-        // AA.pdf formülü: Photo of + Subject + View/Framing + Background + Lighting + Camera + Lens + Natural Texture
-
-        // ÇEKİM AÇISI (KRİTİK!) - DALL-E 3 eğitiminde fotoğraf ALT metinlerinden öğrenmiş
-        $viewAngles = [
-            'side view',
-            'front view',
-            '3/4 angle view',
-            'wide shot showing full subject',
-            'medium shot',
-            'full equipment view',
-            'complete view from all sides',
-            'environmental shot',
-        ];
-
-        // Kamera ve lens çeşitleri (AA.pdf'den)
-        $cameras = [
-            'Canon EOS R5 with 85mm f/1.4 lens',
-            'Sony A7 III with 50mm f/1.8 lens',
-            'Nikon D810 with 24-70mm f/2.8 lens',
-            'Fujifilm GFX 100 with 63mm f/2.8 lens',
-            'Leica M10 with 50mm f/1.4 lens',
-        ];
-
-        // Işıklandırma teknikleri (AA.pdf'den)
-        $lightings = [
-            'golden hour natural lighting',
-            'soft window light',
-            'professional studio lighting with softbox',
-            'Rembrandt lighting setup',
-            'natural ambient lighting',
-        ];
-
-        // MEKÂN/BACKGROUND
-        $backgrounds = [
-            'clean white background',
-            'industrial warehouse background',
-            'modern studio environment',
-            'neutral gray background',
-            'outdoor natural setting',
-            'professional showroom background',
-        ];
-
-        // Style'a göre ek özellikler
-        $styleAdditions = [
-            'ultra_photorealistic' => 'professional photography, 8K resolution, RAW photo quality, hyper-realistic textures, natural imperfections, visible pores and weathered surfaces',
-            'studio_photography' => 'controlled studio environment, clean background, commercial photography quality, professional color grading',
-            'natural_light' => 'outdoor scene, authentic atmosphere, shallow depth of field, bokeh background',
-            'cinematic_photography' => 'cinematic color grading, movie still quality, dramatic composition, film grain texture',
-            'documentary_style' => 'authentic moment, candid shot, photojournalism style, editorial photography',
-            'commercial_photography' => 'advertising quality, perfect composition, luxury brand standards, premium retouching',
-            'portrait_photography' => 'environmental portrait, subject focus, natural expression, perfect skin tones',
-            'macro_photography' => 'extreme close-up, highly detailed textures, ultra sharp details, focus stacking',
-            'digital_art' => 'modern digital art, contemporary design, professional illustration, vibrant colors',
-            'illustration' => 'editorial illustration style, clean design, professional graphic design',
-            '3d_render' => 'Unreal Engine 5, ray tracing, PBR materials, architectural visualization quality',
-            'minimalist' => 'minimalist composition, negative space, clean design, simple elegant aesthetic',
-        ];
-
-        // Random seçimler (çeşitlilik için)
-        $viewAngle = $viewAngles[array_rand($viewAngles)];
-        $camera = $cameras[array_rand($cameras)];
-        $lighting = $lightings[array_rand($lightings)];
-        $background = $backgrounds[array_rand($backgrounds)];
-        $addition = $styleAdditions[$style] ?? $styleAdditions['ultra_photorealistic'];
-
-        // AA.pdf CRITICAL RULE: "photo of" kullan, "photorealistic" kelimesini ASLA kullanma!
-        $photoPrefix = 'Photo of';
-
-        // DOĞAL DOKU (gerçekçilik için kritik)
-        $naturalTexture = 'natural imperfections, visible surface texture, authentic material finish, realistic wear patterns';
-
-        // 🚨 ABSOLUTE TEXT BAN (AA.pdf kuralı)
-        $textBan = 'ABSOLUTELY NO text, NO labels, NO captions, NO annotations, NO blue boxes, NO text overlays, NO UI elements, NO numbered labels, NO arrows with text, NO infographics, NO presentation elements, NO diagrams, NO charts, NO brand names, NO trademarks, NO written words of any kind. Pure photograph only, clean product catalog style without any text elements whatsoever';
-
-        // 🔥 Final prompt assembly (AA.pdf %100 doğru formül)
-        // Photo of → Subject → View Angle → Background → Lighting → Camera → Lens → Natural Texture + Text Ban
-        return "{$photoPrefix} {$userPrompt}, {$viewAngle}, {$background}, {$addition}, {$lighting}, shot on {$camera}, {$naturalTexture}. {$textBan}";
     }
 
     public function render()

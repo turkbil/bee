@@ -15,11 +15,28 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware('module.permission:usermanagement,view')
                     ->name('index');
 
+                // =============================================
+                // KENDİ PROFİL & AKTİVİTE - Middleware yok!
+                // Tüm kullanıcılar kendi profilini görebilir
+                // =============================================
+
+                // Kendi profilim (middleware yok - herkes erişebilir)
+                Route::get('/my-profile', [UserManagementController::class, 'myProfile'])
+                    ->name('my.profile');
+
+                // Kendi aktivitelerim (middleware yok - herkes erişebilir)
+                Route::get('/my-activities', [UserManagementController::class, 'myActivities'])
+                    ->name('my.activities');
+
+                // =============================================
+                // DİĞER KULLANICI YÖNETİMİ - Yetki gerekli!
+                // =============================================
+
                 // Kullanıcı yönetimi - id parametresi opsiyonel
                 Route::get('/manage/{id?}', [UserManagementController::class, 'manage'])
                     ->middleware('module.permission:usermanagement,update')
                     ->name('manage');
-                
+
                 // Modül bazlı izinler
                 Route::get('/module-permissions', [UserManagementController::class, 'modulePermissions'])
                     ->middleware('module.permission:usermanagement,update')

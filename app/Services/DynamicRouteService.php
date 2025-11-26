@@ -45,15 +45,6 @@ class DynamicRouteService
                 return redirect($alternativeUrl, 301);
             }
             
-            if (app()->environment(['local', 'staging'])) {
-                Log::debug('Dynamic route not found', [
-                    'slug1' => $slug1,
-                    'slug2' => $slug2,
-                    'slug3' => $slug3,
-                    'locale' => $locale,
-                    'tenant' => tenant()?->id ?? 'central'
-                ]);
-            }
             abort(404, 'Page not found');
         }
         
@@ -87,25 +78,20 @@ class DynamicRouteService
             $method = $routeInfo['method'];
             $params = $routeInfo['params'] ?? [];
             
-            if (app()->environment(['local', 'staging'])) {
-                Log::debug('Executing dynamic route', [
-                    'controller' => $routeInfo['controller'],
-                    'method' => $method,
-                    'module' => $moduleName,
-                    'params' => $params,
-                    'locale' => $routeInfo['locale'] ?? app()->getLocale(),
-                    'app_locale' => app()->getLocale()
-                ]);
-            }
             
             return $controller->$method(...$params);
             
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            // HttpException'ları (abort() çağrıları) yeniden fırlat
+            throw $e;
         } catch (\Exception $e) {
             Log::error('Dynamic route execution error', [
                 'route_info' => $routeInfo,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ]);
-            
+
             abort(500, 'Internal server error');
         }
     }

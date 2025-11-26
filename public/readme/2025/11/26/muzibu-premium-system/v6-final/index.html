@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu B2B Premium System - Final Master Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f0f1a;
+            --bg-card: rgba(30, 30, 50, 0.6);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.1) 100%);
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .hero .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 60px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .toc h2 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .toc-item:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: translateX(5px);
+        }
+
+        .toc-number {
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 60px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .section-header .icon {
+            font-size: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            color: var(--accent);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h4 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: var(--text-muted);
+        }
+
+        .card li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        /* Priority Badges */
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #3b82f6; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        tr:hover td {
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        /* Comparison Box */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-side {
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .comparison-winner {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--success);
+        }
+
+        .comparison-loser {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Flow Chart */
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .flow-item {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .flow-arrow {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 20px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 12px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .alert-critical {
+            background: rgba(220, 38, 38, 0.15);
+            border-left: 4px solid #dc2626;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid #f59e0b;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.15);
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid #10b981;
+        }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+        }
+
+        .pricing-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pricing-features li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary), var(--accent));
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--bg-card);
+            border-radius: 12px;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -36px;
+            top: 25px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 3px solid var(--bg-dark);
+        }
+
+        .timeline-phase {
+            display: inline-block;
+            background: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Feature Box */
+        .feature-box {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 25px;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h4 {
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        /* WOW Factor */
+        .wow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .wow-item {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.05));
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .wow-item:hover {
+            transform: scale(1.02);
+            border-color: var(--accent);
+        }
+
+        .wow-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .wow-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .comparison { grid-template-columns: 1fr; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .flow { flex-direction: column; }
+            .flow-arrow { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>🎵 Muzibu B2B Premium System</h1>
+        <p class="subtitle">Kurumsal Müzik Streaming Platformu - Master Plan</p>
+        <span class="badge">v6 Final - Tüm Özellikler Birleştirildi</span>
+        <div style="margin-top: 20px; color: var(--text-muted);">
+            📅 26 Kasım 2025 | 🎯 muzibu.com.tr | 🏢 B2B Platform
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- TABLE OF CONTENTS -->
+        <div class="toc">
+            <h2>📑 İçindekiler</h2>
+            <div class="toc-grid">
+                <a href="#security" class="toc-item">
+                    <span class="toc-number">1</span>
+                    <span>🔐 Güvenlik Sistemi (6 Katman)</span>
+                </a>
+                <a href="#audio-library" class="toc-item">
+                    <span class="toc-number">2</span>
+                    <span>🎧 Ses Kütüphanesi (Howler.js)</span>
+                </a>
+                <a href="#crossfade" class="toc-item">
+                    <span class="toc-number">3</span>
+                    <span>🔀 Crossfade & Geçişler</span>
+                </a>
+                <a href="#wavesurfer" class="toc-item">
+                    <span class="toc-number">4</span>
+                    <span>📊 WaveSurfer.js Dalga Formu</span>
+                </a>
+                <a href="#theming" class="toc-item">
+                    <span class="toc-number">5</span>
+                    <span>🎨 Dinamik Player Teması</span>
+                </a>
+                <a href="#plyr" class="toc-item">
+                    <span class="toc-number">6</span>
+                    <span>🎬 Plyr Analizi</span>
+                </a>
+                <a href="#equalizer" class="toc-item">
+                    <span class="toc-number">7</span>
+                    <span>🎚️ Equalizer Sistemi</span>
+                </a>
+                <a href="#audio-quality" class="toc-item">
+                    <span class="toc-number">8</span>
+                    <span>💎 Ses Kalitesi Seviyeleri</span>
+                </a>
+                <a href="#spa" class="toc-item">
+                    <span class="toc-number">9</span>
+                    <span>⚡ SPA Mimarisi</span>
+                </a>
+                <a href="#ai-metadata" class="toc-item">
+                    <span class="toc-number">10</span>
+                    <span>🤖 AI Metadata (26K Şarkı)</span>
+                </a>
+                <a href="#ai-images" class="toc-item">
+                    <span class="toc-number">11</span>
+                    <span>🖼️ AI Görsel Üretimi</span>
+                </a>
+                <a href="#corporate" class="toc-item">
+                    <span class="toc-number">12</span>
+                    <span>🏢 Kurumsal Çoklu Şube</span>
+                </a>
+                <a href="#announcements" class="toc-item">
+                    <span class="toc-number">13</span>
+                    <span>📢 Anons Sistemi</span>
+                </a>
+                <a href="#pricing" class="toc-item">
+                    <span class="toc-number">14</span>
+                    <span>💰 Fiyatlandırma Paketleri</span>
+                </a>
+                <a href="#preview" class="toc-item">
+                    <span class="toc-number">15</span>
+                    <span>⏱️ 30 Saniyelik Önizleme</span>
+                </a>
+                <a href="#playcount" class="toc-item">
+                    <span class="toc-number">16</span>
+                    <span>📈 Dinlenme Sayacı</span>
+                </a>
+                <a href="#logging" class="toc-item">
+                    <span class="toc-number">17</span>
+                    <span>📋 Loglama Sistemi</span>
+                </a>
+                <a href="#playlists" class="toc-item">
+                    <span class="toc-number">18</span>
+                    <span>🎯 Akıllı Playlistler</span>
+                </a>
+                <a href="#social" class="toc-item">
+                    <span class="toc-number">19</span>
+                    <span>💬 Sosyal Özellikler</span>
+                </a>
+                <a href="#wow" class="toc-item">
+                    <span class="toc-number">20</span>
+                    <span>✨ WOW Faktörleri</span>
+                </a>
+                <a href="#roadmap" class="toc-item">
+                    <span class="toc-number">21</span>
+                    <span>🗺️ Yol Haritası</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- SECTION 1: SECURITY -->
+        <section id="security">
+            <div class="section-header">
+                <span class="icon">🔐</span>
+                <h2>Güvenlik Sistemi</h2>
+                <span class="priority priority-critical">KRİTİK</span>
+            </div>
+
+            <div class="alert alert-critical">
+                <strong>⚠️ Mevcut Sorun:</strong> /api/muzibu/songs/2/serve endpoint'i konsoldan erişilebilir durumda. Bu ciddi bir güvenlik açığı!
+            </div>
+
+            <div class="card">
+                <h3>🛡️ 6 Katmanlı Güvenlik Mimarisi</h3>
+
+                <div class="flow">
+                    <div class="flow-item">1️⃣ Rate Limiting</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">2️⃣ Auth Token</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">3️⃣ Subscription</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">4️⃣ Signed URL</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">5️⃣ HLS+AES-128</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">6️⃣ Device Fingerprint</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>1️⃣ Rate Limiting</h3>
+                    <ul>
+                        <li>IP başına: 60 istek/dakika</li>
+                        <li>Token başına: 100 istek/dakika</li>
+                        <li>Şüpheli davranış tespiti</li>
+                        <li>Redis tabanlı sayaç</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>2️⃣ Bearer Token Authentication</h3>
+                    <ul>
+                        <li>Laravel Sanctum entegrasyonu</li>
+                        <li>Token süre limiti: 24 saat</li>
+                        <li>Her oturumda yeni token</li>
+                        <li>Çoklu cihaz desteği</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>3️⃣ Subscription Kontrolü</h3>
+                    <ul>
+                        <li>Aktif abonelik zorunluluğu</li>
+                        <li>Paket özellik kontrolü</li>
+                        <li>Kullanım limiti takibi</li>
+                        <li>Deneme süresi yönetimi</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>4️⃣ Signed URL Sistemi</h3>
+                    <ul>
+                        <li>Tek kullanımlık URL'ler</li>
+                        <li>5 dakika geçerlilik süresi</li>
+                        <li>IP + UserAgent bağlama</li>
+                        <li>HMAC-SHA256 imzalama</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>5️⃣ HLS + AES-128 Şifreleme</h3>
+                    <ul>
+                        <li>Segmentli streaming (.ts dosyaları)</li>
+                        <li>Her segment AES-128 şifreli</li>
+                        <li>Dinamik key rotasyonu</li>
+                        <li>İndirilen dosyalar çalışmaz!</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>6️⃣ Device Fingerprinting</h3>
+                    <ul>
+                        <li>FingerprintJS Pro entegrasyonu</li>
+                        <li>Maksimum 3 cihaz limiti</li>
+                        <li>Cihaz yönetim paneli</li>
+                        <li>Şüpheli cihaz uyarısı</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 Apple Music Sorunu Çözümü:</strong> Apple Music'ten indirilen içerik oynatılabiliyor çünkü HLS şifresiz. AES-128 şifreleme ile indirilen .ts segmentleri şifreli kalacak ve oynatılamayacak.
+            </div>
+        </section>
+
+        <!-- SECTION 2: AUDIO LIBRARY -->
+        <section id="audio-library">
+            <div class="section-header">
+                <span class="icon">🎧</span>
+                <h2>Ses Kütüphanesi Seçimi</h2>
+            </div>
+
+            <div class="card">
+                <h3>⚖️ Howler.js vs AmplitudeJS Karşılaştırması</h3>
+
+                <div class="comparison">
+                    <div class="comparison-side comparison-winner">
+                        <h4 style="color: var(--success);">✅ Howler.js (Kazanan)</h4>
+                        <ul>
+                            <li>Web Audio API desteği</li>
+                            <li>Daha büyük topluluk (GitHub: 22k+ ⭐)</li>
+                            <li>Sprite desteği (ses efektleri)</li>
+                            <li>3D audio / spatial sound</li>
+                            <li>Daha iyi belgeleme</li>
+                            <li>Profesyonel projeler için ideal</li>
+                            <li>HLS.js ile mükemmel entegrasyon</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-side comparison-loser">
+                        <h4 style="color: var(--danger);">❌ AmplitudeJS</h4>
+                        <ul>
+                            <li>Görsel odaklı (UI ağırlıklı)</li>
+                            <li>Daha küçük topluluk</li>
+                            <li>Sınırlı API kontrolü</li>
+                            <li>HTML5 Audio bağımlılığı</li>
+                            <li>Streaming için zayıf</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>🎯 Karar:</strong> Howler.js v2.2.4 zaten sistemde mevcut ve doğru seçim. Değişiklik yapılmasına gerek yok.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🔧 Mevcut Howler.js Yapılandırması</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Durum</th>
+                            <th>Açıklama</th>
+                        </tr>
+                        <tr>
+                            <td>Web Audio API</td>
+                            <td>✅ Aktif</td>
+                            <td>Yüksek kalite ses işleme</td>
+                        </tr>
+                        <tr>
+                            <td>HTML5 Fallback</td>
+                            <td>✅ Aktif</td>
+                            <td>Eski tarayıcı desteği</td>
+                        </tr>
+                        <tr>
+                            <td>Preload</td>
+                            <td>✅ Metadata</td>
+                            <td>Hızlı başlatma</td>
+                        </tr>
+                        <tr>
+                            <td>Pool Size</td>
+                            <td>5</td>
+                            <td>Crossfade için yeterli</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CROSSFADE -->
+        <section id="crossfade">
+            <div class="section-header">
+                <span class="icon">🔀</span>
+                <h2>Crossfade & Geçişler</h2>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>✅ Mevcut Durum:</strong> Crossfade fonksiyonları zaten sistemde mevcut! createNextHowlerPlayer(), createNextHlsPlayer(), completeCrossfade(), fadeAudioElement() fonksiyonları aktif.
+            </div>
+
+            <div class="card">
+                <h3>⏱️ Türe Göre Crossfade Süreleri</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Tür</th>
+                            <th>Süre</th>
+                            <th>Neden?</th>
+                        </tr>
+                        <tr>
+                            <td>🎸 Rock / Metal</td>
+                            <td>2-3 saniye</td>
+                            <td>Keskin geçişler, enerji kaybı olmasın</td>
+                        </tr>
+                        <tr>
+                            <td>🎹 Caz / Blues</td>
+                            <td>4-6 saniye</td>
+                            <td>Yumuşak, doğal geçiş</td>
+                        </tr>
+                        <tr>
+                            <td>🎧 Elektronik</td>
+                            <td>6-10 saniye</td>
+                            <td>Beat matching, DJ tarzı mix</td>
+                        </tr>
+                        <tr>
+                            <td>🎻 Klasik</td>
+                            <td>5-8 saniye</td>
+                            <td>Sessiz finaller, zarif geçiş</td>
+                        </tr>
+                        <tr>
+                            <td>🎤 Pop</td>
+                            <td>3-4 saniye</td>
+                            <td>Dengeli, standart geçiş</td>
+                        </tr>
+                        <tr>
+                            <td>☕ Ambient / Chill</td>
+                            <td>8-12 saniye</td>
+                            <td>Atmosfer koruma, fark edilmeyen geçiş</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🔊 Volume Normalization (Ses Dengeleme)</h3>
+                <p>Şarkılar arası ses farkını ortadan kaldırmak için kritik özellik!</p>
+
+                <div class="feature-box">
+                    <span class="feature-icon">📊</span>
+                    <div class="feature-content">
+                        <h4>ReplayGain Standardı</h4>
+                        <p>Her şarkının loudness değerini analiz edip normalize eden endüstri standardı. Spotify -14 LUFS kullanıyor.</p>
+                    </div>
+                </div>
+
+                <h4>Uygulama Adımları:</h4>
+                <ul>
+                    <li>Şarkı yüklenirken loudness_db değerini oku</li>
+                    <li>Target: -14 LUFS (Spotify standardı)</li>
+                    <li>Gain hesapla: target - actual_loudness</li>
+                    <li>Howler.js volume() ile uygula</li>
+                    <li>Maksimum gain: +6dB (clipping önleme)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 4: WAVESURFER -->
+        <section id="wavesurfer">
+            <div class="section-header">
+                <span class="icon">📊</span>
+                <h2>WaveSurfer.js Dalga Formu</h2>
+                <span class="priority priority-high">ÖNERİLEN</span>
+            </div>
+
+            <div class="card">
+                <h3>🌊 Neden WaveSurfer.js?</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">8K+</div>
+                        <div class="stat-label">GitHub Stars</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">9+</div>
+                        <div class="stat-label">Yıllık Geçmiş</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">40+</div>
+                        <div class="stat-label">Plugin</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">MIT</div>
+                        <div class="stat-label">Lisans</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>✅ Avantajları</h3>
+                    <ul>
+                        <li>Gerçek zamanlı dalga formu görselleştirme</li>
+                        <li>Seek için görsel tıklama desteği</li>
+                        <li>Zoom in/out özelliği</li>
+                        <li>Regions plugin (bölüm işaretleme)</li>
+                        <li>Spectogram plugin (frekans analizi)</li>
+                        <li>Canvas tabanlı, performanslı</li>
+                        <li>Responsive tasarım</li>
+                        <li>Howler.js ile entegre edilebilir</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>🎯 B2B Kullanım Senaryoları</h3>
+                    <ul>
+                        <li><strong>Görsel çekicilik:</strong> Premium hissi artırır</li>
+                        <li><strong>Kolay navigasyon:</strong> Şarkı içinde hızlı gezinme</li>
+                        <li><strong>Drop noktaları:</strong> Hype anlarını görsel gösterme</li>
+                        <li><strong>Intro/Outro:</strong> Sessiz kısımları gösterme</li>
+                        <li><strong>Anons entegrasyonu:</strong> Anons bölümlerini işaretleme</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>⚙️ Entegrasyon Yaklaşımı</h3>
+                <p>WaveSurfer.js görselleştirme için, Howler.js ses kontrolü için kullanılacak:</p>
+                <ul>
+                    <li>WaveSurfer sadece dalga çizimi yapar (ses çalmaz)</li>
+                    <li>Howler.js ana ses kaynağı olarak kalır</li>
+                    <li>İki kütüphane senkronize çalışır</li>
+                    <li>Time update event'leri ile pozisyon eşleştirilir</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 5: DYNAMIC THEMING -->
+        <section id="theming">
+            <div class="section-header">
+                <span class="icon">🎨</span>
+                <h2>Dinamik Player Teması</h2>
+                <span class="priority priority-high">ÇOK ÖNERİLEN</span>
+            </div>
+
+            <div class="card">
+                <h3>🌈 Albüm Kapağından Renk Çıkarma</h3>
+                <p>Spotify, Apple Music, YouTube Music gibi büyük platformların kullandığı etkileyici özellik!</p>
+
+                <div class="grid-2">
+                    <div class="feature-box">
+                        <span class="feature-icon">🎨</span>
+                        <div class="feature-content">
+                            <h4>Color Thief</h4>
+                            <p>Basit ve hızlı. Dominant rengi ve paletini çıkarır. ~8KB boyut.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">✨</span>
+                        <div class="feature-content">
+                            <h4>Vibrant.js</h4>
+                            <p>Daha gelişmiş. Vibrant, Muted, Dark, Light varyantları üretir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Uygulama Alanları</h3>
+                <ul>
+                    <li><strong>Player arka planı:</strong> Gradient efekt</li>
+                    <li><strong>Progress bar rengi:</strong> Dominant renkle eşleşme</li>
+                    <li><strong>Dalga formu rengi:</strong> WaveSurfer ile senkron</li>
+                    <li><strong>Now Playing ekranı:</strong> Full-screen deneyim</li>
+                    <li><strong>Playlist vurgulama:</strong> Aktif şarkı renklendirme</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 Performans İpucu:</strong> Renk çıkarma işlemi ağır olabilir. Backend'de önceden hesaplayıp veritabanına kaydet (dominant_color, secondary_color alanları).
+            </div>
+        </section>
+
+        <!-- SECTION 6: PLYR ANALYSIS -->
+        <section id="plyr">
+            <div class="section-header">
+                <span class="icon">🎬</span>
+                <h2>Plyr Analizi</h2>
+            </div>
+
+            <div class="card">
+                <h3>❓ Plyr Nedir?</h3>
+                <p>Modern, erişilebilir HTML5 media player. Video ve audio için hazır UI bileşenleri sunar.</p>
+
+                <div class="comparison">
+                    <div class="comparison-side comparison-loser">
+                        <h4>🎬 Plyr</h4>
+                        <ul>
+                            <li>Hazır UI bileşenleri</li>
+                            <li>Video odaklı tasarım</li>
+                            <li>YouTube/Vimeo embed</li>
+                            <li>Sınırlı ses kontrolü</li>
+                            <li>Kendi event sistemi</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-side comparison-winner">
+                        <h4>🎧 Howler.js (Mevcut)</h4>
+                        <ul>
+                            <li>Ses odaklı, derin kontrol</li>
+                            <li>Web Audio API tam destek</li>
+                            <li>Crossfade, spatial audio</li>
+                            <li>HLS streaming entegrasyonu</li>
+                            <li>Özelleştirilebilir UI</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>🎯 Sonuç:</strong> Plyr eklemek gereksiz karmaşıklık yaratır. Howler.js + custom UI ile devam edilmeli. Plyr daha çok video oynatıcı ihtiyaçları için uygundur.
+            </div>
+        </section>
+
+        <!-- SECTION 7: EQUALIZER -->
+        <section id="equalizer">
+            <div class="section-header">
+                <span class="icon">🎚️</span>
+                <h2>Equalizer Sistemi</h2>
+                <span class="priority priority-medium">PREMIUM ÖZELLİK</span>
+            </div>
+
+            <div class="card">
+                <h3>🔊 Web Audio API ile Equalizer</h3>
+                <p>Howler.js zaten Web Audio API kullandığı için EQ eklemek mümkün!</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Frekans Bandı</th>
+                            <th>Değer</th>
+                            <th>Etki</th>
+                        </tr>
+                        <tr>
+                            <td>32 Hz</td>
+                            <td>Sub Bass</td>
+                            <td>Derin bas, hissedilen titreşim</td>
+                        </tr>
+                        <tr>
+                            <td>64 Hz</td>
+                            <td>Bass</td>
+                            <td>Davul kick, bas gitar temeli</td>
+                        </tr>
+                        <tr>
+                            <td>125 Hz</td>
+                            <td>Low Mid</td>
+                            <td>Vokal sıcaklığı, dolgunluk</td>
+                        </tr>
+                        <tr>
+                            <td>250 Hz</td>
+                            <td>Mid</td>
+                            <td>Enstrüman gövdesi</td>
+                        </tr>
+                        <tr>
+                            <td>500 Hz</td>
+                            <td>Mid</td>
+                            <td>Vokal netliği</td>
+                        </tr>
+                        <tr>
+                            <td>1 kHz</td>
+                            <td>Upper Mid</td>
+                            <td>Ses presence</td>
+                        </tr>
+                        <tr>
+                            <td>2 kHz</td>
+                            <td>Upper Mid</td>
+                            <td>Vokal artikülasyonu</td>
+                        </tr>
+                        <tr>
+                            <td>4 kHz</td>
+                            <td>Presence</td>
+                            <td>Clarity, detay</td>
+                        </tr>
+                        <tr>
+                            <td>8 kHz</td>
+                            <td>Brilliance</td>
+                            <td>Parlaklık, hava</td>
+                        </tr>
+                        <tr>
+                            <td>16 kHz</td>
+                            <td>Air</td>
+                            <td>Ultra high, sparkle</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎛️ Hazır Preset'ler</h3>
+                <div class="grid-3">
+                    <div class="feature-box">
+                        <span class="feature-icon">🎸</span>
+                        <div class="feature-content">
+                            <h4>Rock</h4>
+                            <p>Bass +3, Mid +1, Treble +2</p>
+                        </div>
+                    </div>
+                    <div class="feature-box">
+                        <span class="feature-icon">🎹</span>
+                        <div class="feature-content">
+                            <h4>Jazz</h4>
+                            <p>Bass +2, Mid +3, Treble +1</p>
+                        </div>
+                    </div>
+                    <div class="feature-box">
+                        <span class="feature-icon">🎤</span>
+                        <div class="feature-content">
+                            <h4>Vocal</h4>
+                            <p>Mid +4, Presence +2</p>
+                        </div>
+                    </div>
+                    <div class="feature-box">
+                        <span class="feature-icon">🔊</span>
+                        <div class="feature-content">
+                            <h4>Bass Boost</h4>
+                            <p>Sub +5, Bass +4</p>
+                        </div>
+                    </div>
+                    <div class="feature-box">
+                        <span class="feature-icon">📻</span>
+                        <div class="feature-content">
+                            <h4>Podcast</h4>
+                            <p>Bass -2, Voice +3</p>
+                        </div>
+                    </div>
+                    <div class="feature-box">
+                        <span class="feature-icon">🎧</span>
+                        <div class="feature-content">
+                            <h4>Flat</h4>
+                            <p>Tüm bantlar 0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>💎 Premium Özellik:</strong> EQ sadece Premium ve üzeri paketlerde aktif olabilir. Temel paketler flat (düz) ses alır.
+            </div>
+        </section>
+
+        <!-- SECTION 8: AUDIO QUALITY -->
+        <section id="audio-quality">
+            <div class="section-header">
+                <span class="icon">💎</span>
+                <h2>Ses Kalitesi Seviyeleri</h2>
+            </div>
+
+            <div class="card">
+                <h3>🎵 Bitrate Katmanları</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Kalite</th>
+                            <th>Bitrate</th>
+                            <th>Paket</th>
+                            <th>Kullanım</th>
+                        </tr>
+                        <tr>
+                            <td>📱 Normal</td>
+                            <td>96 kbps AAC</td>
+                            <td>Ücretsiz / Önizleme</td>
+                            <td>Mobil veri tasarrufu</td>
+                        </tr>
+                        <tr>
+                            <td>🎧 Yüksek</td>
+                            <td>192 kbps AAC</td>
+                            <td>Starter</td>
+                            <td>Günlük dinleme</td>
+                        </tr>
+                        <tr>
+                            <td>🔊 Çok Yüksek</td>
+                            <td>320 kbps AAC</td>
+                            <td>Professional</td>
+                            <td>Kaliteli hoparlör/kulaklık</td>
+                        </tr>
+                        <tr>
+                            <td>💎 Lossless</td>
+                            <td>FLAC 16-bit/44.1kHz</td>
+                            <td>Premium</td>
+                            <td>Audiophile, Hi-Fi sistem</td>
+                        </tr>
+                        <tr>
+                            <td>👑 Hi-Res</td>
+                            <td>FLAC 24-bit/96kHz</td>
+                            <td>Enterprise</td>
+                            <td>Stüdyo kalitesi</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📦 HLS Adaptive Streaming</h3>
+                <p>Bant genişliğine göre otomatik kalite ayarlama:</p>
+                <ul>
+                    <li>Hızlı internet → 320 kbps otomatik seçilir</li>
+                    <li>Yavaş internet → 96 kbps'e düşer</li>
+                    <li>WiFi → En yüksek izin verilen kalite</li>
+                    <li>4G → Orta kalite tercih edilir</li>
+                    <li>Kullanıcı manuel override yapabilir</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 9: SPA ARCHITECTURE -->
+        <section id="spa">
+            <div class="section-header">
+                <span class="icon">⚡</span>
+                <h2>SPA Mimarisi</h2>
+                <span class="priority priority-critical">KRİTİK</span>
+            </div>
+
+            <div class="alert alert-critical">
+                <strong>🎯 Ana Gereksinim:</strong> Müzik SAYFA DEĞİŞİMİNDE KESİLMEMELİ! Bu B2B müzik platformunun en kritik özelliği.
+            </div>
+
+            <div class="card">
+                <h3>🔧 Livewire 3 + @persist Yaklaşımı</h3>
+                <p>Laravel Livewire 3'ün @persist direktifi ile sayfa geçişlerinde state korunur:</p>
+
+                <div class="feature-box">
+                    <span class="feature-icon">⚡</span>
+                    <div class="feature-content">
+                        <h4>wire:navigate</h4>
+                        <p>SPA benzeri navigasyon. Tam sayfa yenilemesi yerine sadece içerik değişir.</p>
+                    </div>
+                </div>
+
+                <div class="feature-box">
+                    <span class="feature-icon">💾</span>
+                    <div class="feature-content">
+                        <h4>@persist('player')</h4>
+                        <p>Player component'i sayfa geçişlerinde korunur. Audio elementi ve state kaybolmaz.</p>
+                    </div>
+                </div>
+
+                <ul>
+                    <li>Player component sayfanın dışında, layout seviyesinde</li>
+                    <li>Alpine.js ile state yönetimi</li>
+                    <li>Howler instance global scope'ta</li>
+                    <li>URL değişse bile audio context korunur</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🏗️ Mimari Yapı</h3>
+                <div class="flow">
+                    <div class="flow-item">Layout (app.blade.php)</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">@persist('player')</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">Player Component</div>
+                </div>
+                <br>
+                <div class="flow">
+                    <div class="flow-item">wire:navigate</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">İçerik Değişir</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">Player Kalır</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 10: AI METADATA -->
+        <section id="ai-metadata">
+            <div class="section-header">
+                <span class="icon">🤖</span>
+                <h2>AI Metadata Sistemi</h2>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">26K+</div>
+                    <div class="stat-label">Eski Şarkı</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">~8</div>
+                    <div class="stat-label">Metadata/Şarkı</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">%95+</div>
+                    <div class="stat-label">Doğruluk Hedefi</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Otomatik Tespit Edilecek Metadata</h3>
+                <div class="grid-2">
+                    <ul>
+                        <li><strong>Mood:</strong> Mutlu, Hüzünlü, Enerjik, Sakin...</li>
+                        <li><strong>Genre:</strong> Rock, Pop, Caz, Elektronik...</li>
+                        <li><strong>Sub-genre:</strong> Anadolu Rock, Hard Rock...</li>
+                        <li><strong>Tempo (BPM):</strong> 60-200 arası değer</li>
+                    </ul>
+                    <ul>
+                        <li><strong>Energy Level:</strong> 1-10 skala</li>
+                        <li><strong>Danceability:</strong> Dans edilebilirlik</li>
+                        <li><strong>Acousticness:</strong> Akustik oranı</li>
+                        <li><strong>Instrumentalness:</strong> Vokal/enstrüman</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🛠️ AI Servis Seçenekleri</h3>
+                <div class="grid-2">
+                    <div class="feature-box">
+                        <span class="feature-icon">🔍</span>
+                        <div class="feature-content">
+                            <h4>AcoustID + MusicBrainz</h4>
+                            <p>Ses parmak izi ile şarkı tanıma. Ücretsiz, açık kaynak. Var olan şarkılar için mükemmel.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🎵</span>
+                        <div class="feature-content">
+                            <h4>Essentia (MTG)</h4>
+                            <p>Açık kaynak ses analizi. BPM, key, mood, genre tespiti. Self-hosted çalışabilir.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🌊</span>
+                        <div class="feature-content">
+                            <h4>Cyanite.ai</h4>
+                            <p>Ticari API. Çok detaylı analiz, yüksek doğruluk. Per-track ücretlendirme.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🎼</span>
+                        <div class="feature-content">
+                            <h4>Spotify Audio Features</h4>
+                            <p>Eğer şarkılar Spotify'da varsa, API ile metadata çekilebilir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 Önerilen Yaklaşım:</strong> Essentia (ücretsiz) + AcoustID (tanıma) kombinasyonu. 26K şarkı için Cyanite.ai maliyetli olabilir.
+            </div>
+        </section>
+
+        <!-- SECTION 11: AI IMAGES -->
+        <section id="ai-images">
+            <div class="section-header">
+                <span class="icon">🖼️</span>
+                <h2>AI Görsel Üretimi</h2>
+            </div>
+
+            <div class="card">
+                <h3>🎨 Her Şarkıya Özgün Kapak</h3>
+                <p>26.000 şarkı için otomatik, mood'a uygun kapak görseli üretimi</p>
+
+                <div class="grid-2">
+                    <div class="feature-box">
+                        <span class="feature-icon">🎨</span>
+                        <div class="feature-content">
+                            <h4>DALL-E 3 (OpenAI)</h4>
+                            <p>En yüksek kalite, yaratıcı çıktılar. $0.04/görsel (1024x1024).</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🌟</span>
+                        <div class="feature-content">
+                            <h4>Midjourney</h4>
+                            <p>Sanatsal, estetik görseller. API yok, Discord üzerinden. Aylık $30.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🖌️</span>
+                        <div class="feature-content">
+                            <h4>Stable Diffusion</h4>
+                            <p>Self-hosted, sınırsız üretim. GPU gerekli. Ücretsiz model.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🎭</span>
+                        <div class="feature-content">
+                            <h4>Leonardo.ai</h4>
+                            <p>API mevcut, düşük maliyet. $0.01/görsel. Sistem zaten entegre!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📝 Prompt Stratejisi</h3>
+                <p>AI metadata'dan prompt oluşturma:</p>
+                <ul>
+                    <li><strong>Mood → Renk paleti:</strong> "Mutlu" → Canlı, sıcak renkler</li>
+                    <li><strong>Genre → Stil:</strong> "Rock" → Grunge, karanlık tonlar</li>
+                    <li><strong>Tempo → Hareket:</strong> "Hızlı" → Dinamik, akışkan şekiller</li>
+                    <li><strong>Era → Estetik:</strong> "80s" → Neon, retro-futuristik</li>
+                </ul>
+
+                <div class="alert alert-warning">
+                    <strong>💰 Maliyet Hesabı:</strong> 26K şarkı × $0.01 = $260 (Leonardo.ai ile). DALL-E 3 ile $1,040. Stable Diffusion ile ~$0 (GPU elektrik hariç).
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 12: CORPORATE SYSTEM -->
+        <section id="corporate">
+            <div class="section-header">
+                <span class="icon">🏢</span>
+                <h2>Kurumsal Çoklu Şube Sistemi</h2>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">200+</div>
+                    <div class="stat-label">Şube Desteği</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Yetki Seviyesi</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Ödeme Modeli</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>👥 Kurumsal Hiyerarşi</h3>
+                <div class="flow">
+                    <div class="flow-item">👑 Super Admin (Muzibu)</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">🏢 Firma Admin</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">🏪 Şube Yöneticisi</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-item">👤 Şube Çalışan</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>🏢 Firma Admin Yetkileri</h3>
+                    <ul>
+                        <li>Tüm şubeleri yönetme</li>
+                        <li>Yeni şube ekleme/kaldırma</li>
+                        <li>Toplu playlist atama</li>
+                        <li>Kullanım raporları görme</li>
+                        <li>Fatura ve ödeme yönetimi</li>
+                        <li>Şube yöneticisi atama</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>🏪 Şube Yöneticisi Yetkileri</h3>
+                    <ul>
+                        <li>Kendi şubesi için playlist</li>
+                        <li>Çalışan ekleme/çıkarma</li>
+                        <li>Günlük program ayarlama</li>
+                        <li>Anons yönetimi</li>
+                        <li>Şube kullanım raporu</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💳 Ödeme Modelleri</h3>
+                <div class="grid-3">
+                    <div class="feature-box">
+                        <span class="feature-icon">🏦</span>
+                        <div class="feature-content">
+                            <h4>Merkezi Ödeme</h4>
+                            <p>Ana firma tüm şubelerin ödemesini yapar. Toplu fatura.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🏪</span>
+                        <div class="feature-content">
+                            <h4>Şube Bazlı</h4>
+                            <p>Her şube kendi ödemesini yapar. Bağımsız faturalar.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🔀</span>
+                        <div class="feature-content">
+                            <h4>Hibrit</h4>
+                            <p>Ana firma temel, şubeler ek özellikler için öder.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 13: ANNOUNCEMENTS -->
+        <section id="announcements">
+            <div class="section-header">
+                <span class="icon">📢</span>
+                <h2>Anons Sistemi</h2>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Anons Tetikleme Yöntemleri</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Yöntem</th>
+                            <th>Açıklama</th>
+                            <th>Öneri</th>
+                        </tr>
+                        <tr>
+                            <td>⏰ Sabit Saat</td>
+                            <td>Belirlenen saatlerde (09:00, 12:00, 18:00)</td>
+                            <td>Önemli duyurular için</td>
+                        </tr>
+                        <tr>
+                            <td>🎵 X Şarkı Sonra</td>
+                            <td>Her 5 şarkıda bir anons</td>
+                            <td>Reklam için uygun</td>
+                        </tr>
+                        <tr>
+                            <td>⏱️ X Dakika Sonra</td>
+                            <td>Her 30 dakikada bir</td>
+                            <td>Düzenli hatırlatmalar</td>
+                        </tr>
+                        <tr>
+                            <td style="background: rgba(16, 185, 129, 0.2);">🎼 Şarkı Bitiminde</td>
+                            <td>Şarkı doğal bitişinde anons</td>
+                            <td>✅ EN İYİ UX!</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🔊 Anons Özellikleri</h3>
+                <ul>
+                    <li><strong>Ses dosyası yükleme:</strong> MP3/WAV format</li>
+                    <li><strong>TTS entegrasyonu:</strong> Metin → Ses dönüşümü</li>
+                    <li><strong>Zamanlama:</strong> Başlangıç/bitiş tarihi</li>
+                    <li><strong>Şube hedefleme:</strong> Belirli şubelere özel</li>
+                    <li><strong>Öncelik sırası:</strong> Acil duyurular önce</li>
+                    <li><strong>Crossfade:</strong> Müzikle yumuşak geçiş</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>💡 UX İpucu:</strong> "Şarkı Bitiminde" tetikleme en iyi kullanıcı deneyimini sağlar. Müziği kesmez, doğal geçiş yapar.
+            </div>
+        </section>
+
+        <!-- SECTION 14: PRICING -->
+        <section id="pricing">
+            <div class="section-header">
+                <span class="icon">💰</span>
+                <h2>Fiyatlandırma Paketleri</h2>
+            </div>
+
+            <h3 style="text-align: center; margin-bottom: 30px; color: var(--text-muted);">🏪 Tekil İşletmeler İçin</h3>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-name">Starter</div>
+                    <div class="pricing-price">₺149<span>/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>192 kbps ses kalitesi</li>
+                        <li>Temel playlistler</li>
+                        <li>1 lokasyon</li>
+                        <li>Email destek</li>
+                        <li>Temel raporlama</li>
+                    </ul>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="pricing-name">Professional</div>
+                    <div class="pricing-price">₺299<span>/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>320 kbps ses kalitesi</li>
+                        <li>Sınırsız playlist</li>
+                        <li>3 lokasyon</li>
+                        <li>Öncelikli destek</li>
+                        <li>Anons sistemi</li>
+                        <li>Zamanlama</li>
+                        <li>Detaylı analitik</li>
+                    </ul>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-name">Premium</div>
+                    <div class="pricing-price">₺499<span>/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>Lossless FLAC kalite</li>
+                        <li>Equalizer</li>
+                        <li>5 lokasyon</li>
+                        <li>7/24 destek</li>
+                        <li>Özel playlist küratörü</li>
+                        <li>API erişimi</li>
+                        <li>White-label seçeneği</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 50px 0 30px; color: var(--text-muted);">🏢 Kurumsal (Çoklu Şube)</h3>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-name">Business</div>
+                    <div class="pricing-price">₺79<span>/şube/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>10-50 şube</li>
+                        <li>Merkezi yönetim</li>
+                        <li>Toplu playlist dağıtımı</li>
+                        <li>Şube bazlı raporlar</li>
+                        <li>Dedicated account manager</li>
+                    </ul>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="pricing-name">Enterprise</div>
+                    <div class="pricing-price">₺59<span>/şube/ay</span></div>
+                    <ul class="pricing-features">
+                        <li>50+ şube</li>
+                        <li>Tüm Premium özellikler</li>
+                        <li>Özel API entegrasyonu</li>
+                        <li>SLA garantisi</li>
+                        <li>On-site eğitim</li>
+                        <li>Özel geliştirme</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 15: PREVIEW -->
+        <section id="preview">
+            <div class="section-header">
+                <span class="icon">⏱️</span>
+                <h2>30 Saniyelik Önizleme</h2>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Önizleme Mantığı</h3>
+                <ul>
+                    <li><strong>Varsayılan süre:</strong> 30 saniye</li>
+                    <li><strong>Başlangıç noktası:</strong> Şarkının %20'sinden başla (intro'yu atla)</li>
+                    <li><strong>Admin ayarlanabilir:</strong> 15-60 saniye arası</li>
+                    <li><strong>Fade out:</strong> Son 3 saniyede ses azalır</li>
+                    <li><strong>Premium teşvik:</strong> "Devamını dinlemek için Premium'a geç"</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🔒 Önizleme Güvenliği</h3>
+                <ul>
+                    <li>Önizleme dosyası ayrı (preview_url)</li>
+                    <li>Full şarkıya erişim premium zorunlu</li>
+                    <li>Önizleme bile signed URL ile</li>
+                    <li>Günlük önizleme limiti (ücretsiz kullanıcı)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 16: PLAY COUNT -->
+        <section id="playcount">
+            <div class="section-header">
+                <span class="icon">📈</span>
+                <h2>Dinlenme Sayacı</h2>
+            </div>
+
+            <div class="card">
+                <h3>🎯 Spotify Kuralı</h3>
+                <p>Bir dinlenme sayılması için:</p>
+
+                <div class="feature-box">
+                    <span class="feature-icon">⏱️</span>
+                    <div class="feature-content">
+                        <h4>30 Saniye Kuralı</h4>
+                        <p>Şarkı en az 30 saniye dinlenmeli. Skip edilirse sayılmaz.</p>
+                    </div>
+                </div>
+
+                <h4>Ek Kurallar:</h4>
+                <ul>
+                    <li>Aynı IP'den 5 dakikada 1 play (spam önleme)</li>
+                    <li>Bot detection (şüpheli davranış engelleme)</li>
+                    <li>Unique listener tracking</li>
+                    <li>Peak time analizi</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 17: LOGGING -->
+        <section id="logging">
+            <div class="section-header">
+                <span class="icon">📋</span>
+                <h2>Loglama Sistemi</h2>
+            </div>
+
+            <div class="card">
+                <h3>📊 Kaydedilecek Veriler</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>Alan</th>
+                            <th>Açıklama</th>
+                            <th>Kullanım</th>
+                        </tr>
+                        <tr>
+                            <td>user_id</td>
+                            <td>Dinleyici kimliği</td>
+                            <td>Kişisel öneri</td>
+                        </tr>
+                        <tr>
+                            <td>song_id</td>
+                            <td>Şarkı kimliği</td>
+                            <td>Popülerlik analizi</td>
+                        </tr>
+                        <tr>
+                            <td>branch_id</td>
+                            <td>Şube kimliği</td>
+                            <td>Şube raporları</td>
+                        </tr>
+                        <tr>
+                            <td>duration_seconds</td>
+                            <td>Dinleme süresi</td>
+                            <td>Engagement ölçümü</td>
+                        </tr>
+                        <tr>
+                            <td>completed</td>
+                            <td>Şarkı bitti mi?</td>
+                            <td>Skip analizi</td>
+                        </tr>
+                        <tr>
+                            <td>ip_address</td>
+                            <td>IP adresi (hashed)</td>
+                            <td>Güvenlik</td>
+                        </tr>
+                        <tr>
+                            <td>device_type</td>
+                            <td>Cihaz türü</td>
+                            <td>Platform analizi</td>
+                        </tr>
+                        <tr>
+                            <td>quality</td>
+                            <td>Ses kalitesi</td>
+                            <td>Bandwidth analizi</td>
+                        </tr>
+                        <tr>
+                            <td>timestamp</td>
+                            <td>Zaman damgası</td>
+                            <td>Zaman serisi analizi</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 18: PLAYLISTS -->
+        <section id="playlists">
+            <div class="section-header">
+                <span class="icon">🎯</span>
+                <h2>Akıllı Playlistler</h2>
+            </div>
+
+            <div class="card">
+                <h3>🤖 Otomatik Playlist Önerileri</h3>
+                <div class="grid-2">
+                    <div class="feature-box">
+                        <span class="feature-icon">☀️</span>
+                        <div class="feature-content">
+                            <h4>Zamana Göre</h4>
+                            <p>Sabah enerjik, öğlen sakin, akşam romantik</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🏪</span>
+                        <div class="feature-content">
+                            <h4>Mekana Göre</h4>
+                            <p>Kafe → Jazz, Gym → Upbeat, Restoran → Ambient</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">📊</span>
+                        <div class="feature-content">
+                            <h4>Dinleme Geçmişine Göre</h4>
+                            <p>Kullanıcının beğendiği türlerden öneri</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <span class="feature-icon">🔥</span>
+                        <div class="feature-content">
+                            <h4>Trend</h4>
+                            <p>En çok dinlenenler, yükselen şarkılar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🎛️ Playlist Türleri</h3>
+                <ul>
+                    <li><strong>Editör Seçimi:</strong> Muzibu ekibi tarafından küratörlü</li>
+                    <li><strong>Algoritmik:</strong> AI tarafından oluşturulan</li>
+                    <li><strong>Kullanıcı Oluşturmalı:</strong> İşletme özel playlistleri</li>
+                    <li><strong>Collaborative:</strong> Çoklu kullanıcı katkılı</li>
+                    <li><strong>Radio Mode:</strong> Sonsuz benzer şarkı akışı</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECTION 19: SOCIAL -->
+        <section id="social">
+            <div class="section-header">
+                <span class="icon">💬</span>
+                <h2>Sosyal Özellikler</h2>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>❤️ Beğeni & Kaydetme</h3>
+                    <ul>
+                        <li>Şarkı beğenme (kalp)</li>
+                        <li>Playlist kaydetme</li>
+                        <li>Albüm takip etme</li>
+                        <li>"Beğendiklerim" otomatik playlist</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>📤 Paylaşım</h3>
+                    <ul>
+                        <li>Şarkı linki kopyalama</li>
+                        <li>Sosyal medya paylaşımı</li>
+                        <li>QR kod ile paylaşım</li>
+                        <li>"Şu an dinliyorum" durumu</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 20: WOW FACTORS -->
+        <section id="wow">
+            <div class="section-header">
+                <span class="icon">✨</span>
+                <h2>WOW Faktörleri</h2>
+            </div>
+
+            <p style="text-align: center; margin-bottom: 30px; color: var(--text-muted);">
+                Müşteriyi etkileyecek, rakiplerden ayıracak özellikler
+            </p>
+
+            <div class="wow-grid">
+                <div class="wow-item">
+                    <div class="wow-icon">🌊</div>
+                    <div class="wow-title">WaveSurfer Dalga</div>
+                    <p>Gerçek zamanlı ses dalgası görselleştirme</p>
+                </div>
+
+                <div class="wow-item">
+                    <div class="wow-icon">🎨</div>
+                    <div class="wow-title">Dinamik Tema</div>
+                    <p>Kapak rengine göre UI değişimi</p>
+                </div>
+
+                <div class="wow-item">
+                    <div class="wow-icon">🎚️</div>
+                    <div class="wow-title">10-Band EQ</div>
+                    <p>Profesyonel ses eşitleme</p>
+                </div>
+
+                <div class="wow-item">
+                    <div class="wow-icon">💎</div>
+                    <div class="wow-title">Hi-Res Audio</div>
+                    <p>24-bit/96kHz Lossless</p>
+                </div>
+
+                <div class="wow-item">
+                    <div class="wow-icon">🤖</div>
+                    <div class="wow-title">AI Metadata</div>
+                    <p>Otomatik mood/genre tespiti</p>
+                </div>
+
+                <div class="wow-item">
+                    <div class="wow-icon">🖼️</div>
+                    <div class="wow-title">AI Kapaklar</div>
+                    <p>Her şarkıya özgün görsel</p>
+                </div>
+
+                <div class="wow-item">
+                    <div class="wow-icon">🔀</div>
+                    <div class="wow-title">Smart Crossfade</div>
+                    <p>Türe göre geçiş süresi</p>
+                </div>
+
+                <div class="wow-item">
+                    <div class="wow-icon">📊</div>
+                    <div class="wow-title">Volume Normalize</div>
+                    <p>Şarkılar arası ses dengesi</p>
+                </div>
+
+                <div class="wow-item">
+                    <div class="wow-icon">🏢</div>
+                    <div class="wow-title">200+ Şube</div>
+                    <p>Kurumsal çoklu lokasyon</p>
+                </div>
+
+                <div class="wow-item">
+                    <div class="wow-icon">📢</div>
+                    <div class="wow-title">Akıllı Anons</div>
+                    <p>Şarkı bitişinde yumuşak geçiş</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 21: ROADMAP -->
+        <section id="roadmap">
+            <div class="section-header">
+                <span class="icon">🗺️</span>
+                <h2>Yol Haritası</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <span class="timeline-phase">Faz 1 - Temel</span>
+                    <h4>🛡️ Güvenlik & Altyapı</h4>
+                    <ul>
+                        <li>6 katmanlı güvenlik sistemi</li>
+                        <li>HLS + AES-128 şifreleme</li>
+                        <li>Signed URL implementasyonu</li>
+                        <li>Rate limiting & device fingerprint</li>
+                        <li>30 saniyelik önizleme sistemi</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">Faz 2 - Player</span>
+                    <h4>🎧 Player Geliştirmeleri</h4>
+                    <ul>
+                        <li>SPA mimarisi (Livewire @persist)</li>
+                        <li>WaveSurfer.js entegrasyonu</li>
+                        <li>Dinamik tema (Color Thief)</li>
+                        <li>Equalizer sistemi</li>
+                        <li>Volume normalization</li>
+                        <li>Türe göre crossfade</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">Faz 3 - AI</span>
+                    <h4>🤖 AI Entegrasyonu</h4>
+                    <ul>
+                        <li>26K şarkı metadata analizi</li>
+                        <li>Mood/genre/tempo tespiti</li>
+                        <li>AI kapak görseli üretimi</li>
+                        <li>Akıllı playlist önerileri</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">Faz 4 - Kurumsal</span>
+                    <h4>🏢 B2B Özellikler</h4>
+                    <ul>
+                        <li>Çoklu şube yönetimi</li>
+                        <li>Kurumsal hiyerarşi</li>
+                        <li>Anons sistemi</li>
+                        <li>Şube raporları</li>
+                        <li>Toplu playlist dağıtımı</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <span class="timeline-phase">Faz 5 - Premium</span>
+                    <h4>💎 Premium Özellikler</h4>
+                    <ul>
+                        <li>Hi-Res audio (FLAC 24-bit)</li>
+                        <li>Adaptive bitrate streaming</li>
+                        <li>Offline mode (mobil)</li>
+                        <li>API erişimi</li>
+                        <li>White-label seçeneği</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>🤖 Claude AI tarafından oluşturuldu</p>
+        <p style="margin-top: 10px;">Muzibu B2B Premium System - v6 Final Master Plan</p>
+        <p style="margin-top: 5px; font-size: 0.8rem;">v1 + v2 + v3 + v4 + v5 = Final Birleştirilmiş Versiyon</p>
+    </footer>
+
+</body>
+</html>

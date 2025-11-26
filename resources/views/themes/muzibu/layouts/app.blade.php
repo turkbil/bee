@@ -1,3 +1,62 @@
+@php
+    // 🔐 Şifre Koruması - Cookie tabanlı (route bağımsız)
+    $constructionPassword = 'nn';
+    $cookieName = 'mzb_auth_' . tenant('id');
+    $cookieValue = md5($constructionPassword . 'salt2024');
+
+    // $_COOKIE kullan (Laravel encrypt etmeden)
+    $isAuthenticated = isset($_COOKIE[$cookieName]) && $_COOKIE[$cookieName] === $cookieValue;
+@endphp
+
+@if(!$isAuthenticated)
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Erişim Gerekli</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:system-ui,sans-serif;background:linear-gradient(135deg,#1DB954,#121212);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+        .box{background:#fff;padding:50px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:420px;width:100%;text-align:center}
+        .icon{font-size:60px;color:#1DB954;margin-bottom:10px}
+        h1{font-size:28px;color:#121212;margin-bottom:10px}
+        p{color:#666;font-size:15px;margin-bottom:25px}
+        input{width:100%;padding:16px;border:2px solid #e0e0e0;border-radius:50px;font-size:16px;outline:none;margin-bottom:15px}
+        input:focus{border-color:#1DB954}
+        button{width:100%;padding:16px;background:#1DB954;color:#fff;border:none;border-radius:50px;font-size:17px;font-weight:600;cursor:pointer}
+        button:hover{background:#1ed760}
+        .err{background:#fee;color:#c33;padding:12px;border-radius:10px;margin-bottom:15px;font-size:14px}
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="icon">🎵</div>
+        <h1>Muzibu</h1>
+        <p>Platform yapım aşamasında<br><small>Erişim için şifre gereklidir</small></p>
+        @if(request()->has('_mzb_pwd') && request()->input('_mzb_pwd') !== $constructionPassword)
+        <div class="err">Şifre hatalı!</div>
+        @endif
+        <form method="GET" id="authForm">
+            <input type="password" name="_mzb_pwd" id="pwdInput" placeholder="Erişim şifresi..." autofocus required>
+            <button type="submit"><i class="fas fa-unlock-alt"></i> Giriş</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('authForm').addEventListener('submit', function(e) {
+            const pwd = document.getElementById('pwdInput').value;
+            if (pwd === '{{ $constructionPassword }}') {
+                // Cookie set et (7 gün)
+                document.cookie = '{{ $cookieName }}={{ md5($constructionPassword . "salt2024") }}; path=/; max-age=' + (7*24*60*60) + '; secure; samesite=lax';
+                e.preventDefault();
+                window.location.href = window.location.pathname;
+            }
+        });
+    </script>
+</body>
+</html>
+@else
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" class="h-full" x-data="muzibuApp()" x-init="init()">
 <head>
@@ -9,7 +68,12 @@
     <!-- Tenant-Aware Tailwind CSS -->
     <link rel="stylesheet" href="{{ asset('css/tenant-' . tenant('id') . '.css') }}?v=25112024-02">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    {{-- Play Limits System - CSS --}}
+    <link rel="stylesheet" href="{{ asset('assets/themes/muzibu/css/play-limits.css') }}?v={{ time() }}">
+
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
     <!-- Alpine.js Livewire tarafından otomatik yükleniyor, CDN'den tekrar yükleme! -->
 
     <style>
@@ -88,10 +152,19 @@
                     </button>
 
                     <div class="relative" x-data="{ userMenuOpen: false }">
-                        <button @click="userMenuOpen = !userMenuOpen" class="w-8 h-8 rounded-full bg-spotify-gray flex items-center justify-center hover:bg-spotify-gray/80 transition-all">
-                            <i class="fas fa-user text-white text-xs"></i>
-                        </button>
-                        <div x-show="userMenuOpen" @click.away="userMenuOpen = false" x-transition class="absolute top-full right-0 mt-2 w-48 bg-spotify-gray rounded-md shadow-2xl overflow-hidden">
+                        <!-- Normal State -->
+                        <template x-if="!isLoggingOut">
+                            <button @click="userMenuOpen = !userMenuOpen" class="w-8 h-8 rounded-full bg-spotify-gray flex items-center justify-center hover:bg-spotify-gray/80 transition-all">
+                                <i class="fas fa-user text-white text-xs"></i>
+                            </button>
+                        </template>
+                        <!-- Logging Out State -->
+                        <template x-if="isLoggingOut">
+                            <div class="w-8 h-8 rounded-full bg-spotify-gray flex items-center justify-center">
+                                <i class="fas fa-spinner fa-spin text-spotify-green text-xs"></i>
+                            </div>
+                        </template>
+                        <div x-show="userMenuOpen && !isLoggingOut" @click.away="userMenuOpen = false" x-transition class="absolute top-full right-0 mt-2 w-48 bg-spotify-gray rounded-md shadow-2xl overflow-hidden">
                             <div class="p-1">
                                 <button class="w-full flex items-center gap-3 px-3 py-2 rounded-sm hover:bg-white/10 transition-all text-left text-sm">
                                     <i class="fas fa-user-circle text-gray-400"></i><span>Profil</span>
@@ -117,10 +190,18 @@
     @include('themes.muzibu.components.footer')
     @include('themes.muzibu.components.player')
 
+    {{-- Play Limits System - Modals --}}
+    @include('themes.muzibu.components.play-limits-modals')
+
     @livewireScripts
+
+    {{-- Play Limits System - JS --}}
+    <script src="{{ asset('assets/themes/muzibu/js/play-limits.js') }}?v={{ time() }}"></script>
+
     @yield('scripts')
 
     <!-- instant.page for faster page transitions -->
     <script src="//instant.page/5.2.0" type="module" data-instant-intensity="viewport-all"></script>
 </body>
 </html>
+@endif

@@ -31,6 +31,15 @@ $cachedTenantData = compact('tenantId', 'isCentral');
 
 extract($cachedTenantData);
 
+// Kullanıcı rol kontrolü
+$isAdminOrRoot = false;
+$isEditor = false;
+if ($cachedUser) {
+    $userRole = $cachedUser->roles->first()->name ?? '';
+    $isAdminOrRoot = in_array(strtolower($userRole), ['root', 'admin', 'super-admin', 'superadmin']);
+    $isEditor = strtolower($userRole) === 'editor';
+}
+
 // Tenant domainde mysql bağlantısı kullanması için
 if (!$isCentral && app()->has('tenancy') && app('tenancy')->initialized) {
 config(['database.connections.tenant.driver' => 'mysql']);
@@ -170,11 +179,18 @@ app()->setLocale($originalLocale);
                         <i class="fa-solid fa-bell" style="font-size: 18px;"></i>
                         @php
                         // PERFORMANCE: Cache activity count to avoid expensive queries
+                        // Editor kullanıcılar sadece kendi aktivitelerini sayar
                         static $cachedActivityData = null;
                         if ($cachedActivityData === null) {
                         $lastReadTime = $_COOKIE['last_activity_read'] ?? 0;
-                        $unreadActivitiesCount = \Spatie\Activitylog\Models\Activity::where('created_at', '>',
-                        date('Y-m-d H:i:s', $lastReadTime))->count();
+                        $activityQuery = \Spatie\Activitylog\Models\Activity::where('created_at', '>', date('Y-m-d H:i:s', $lastReadTime));
+
+                        // Admin/Root değilse sadece kendi aktivitelerini say
+                        if (!$isAdminOrRoot && $cachedUser) {
+                            $activityQuery->where('causer_id', $cachedUser->id);
+                        }
+
+                        $unreadActivitiesCount = $activityQuery->count();
                         $cachedActivityData = compact('lastReadTime', 'unreadActivitiesCount');
                         }
                         extract($cachedActivityData);
@@ -193,14 +209,19 @@ app()->setLocale($originalLocale);
                             <div class="list-group list-group-flush list-group-hoverable">
                                 @php
                                 // PERFORMANCE: Cache activities with Redis (5 dakika) + Static cache
+                                // Editor kullanıcılar sadece kendi aktivitelerini görür
                                 static $cachedActivities = null;
                                 if ($cachedActivities === null) {
-                                $cacheKey = 'admin_nav_activities_' . ($cachedUser ? $cachedUser->id : 'guest');
-                                $cachedActivities = cache()->remember($cacheKey, 300, function () {
-                                return \Spatie\Activitylog\Models\Activity::with('causer')
-                                ->latest()
-                                ->take(6)
-                                ->get();
+                                $cacheKey = 'admin_nav_activities_' . ($cachedUser ? $cachedUser->id : 'guest') . '_' . ($isAdminOrRoot ? 'admin' : 'user');
+                                $cachedActivities = cache()->remember($cacheKey, 300, function () use ($cachedUser, $isAdminOrRoot) {
+                                    $query = \Spatie\Activitylog\Models\Activity::with('causer')->latest();
+
+                                    // Admin/Root değilse sadece kendi aktivitelerini göster
+                                    if (!$isAdminOrRoot && $cachedUser) {
+                                        $query->where('causer_id', $cachedUser->id);
+                                    }
+
+                                    return $query->take(6)->get();
                                 });
                                 }
                                 $activities = $cachedActivities;
@@ -241,10 +262,17 @@ app()->setLocale($originalLocale);
                                 @endforelse
                             </div>
                             <div class="card-body">
+                                @if($isAdminOrRoot)
                                 <a href="{{ route('admin.usermanagement.activity.logs') }}"
                                     class="btn btn-outline-primary w-100">
                                     {{ __('admin.view_all_activities') }}
                                 </a>
+                                @else
+                                <a href="{{ route('admin.usermanagement.my.activities') }}"
+                                    class="btn btn-outline-primary w-100">
+                                    {{ __('admin.my_activities') }}
+                                </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -269,21 +297,21 @@ app()->setLocale($originalLocale);
                                 <div class="row g-3">
                                     @if($isCentral)
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item"
+                                        <a href="#" class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item"
                                             data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
                                             <i class="fa-solid fa-brush mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.theme_settings') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item"
+                                        <a href="#" class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item"
                                             onclick="clearCache(this); return false;">
                                             <i class="fa-solid fa-broom mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">Cache Temizle</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item"
+                                        <a href="#" class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item"
                                             onclick="clearSystemCache(this); return false;">
                                             <i class="fa-solid fa-trash-can mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">Sistem Cache</span>
@@ -291,14 +319,14 @@ app()->setLocale($originalLocale);
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ route('admin.modulemanagement.index') }}"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.modules') }}</span>
                                         </a>
                                     </div>
                                     @else
                                     <div class="col-4">
-                                        <a href="#" class="d-flex flex-column text-center py-3 px-2 quick-action-item"
+                                        <a href="#" class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item"
                                             data-bs-toggle="offcanvas" data-bs-target="#offcanvasTheme">
                                             <i class="fa-solid fa-brush mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.theme_settings') }}</span>
@@ -307,56 +335,60 @@ app()->setLocale($originalLocale);
                                     <div class="col-4">
                                         @livewire('admin.cache-clear-buttons')
                                     </div>
+                                    @if($isAdminOrRoot)
                                     <div class="col-4">
                                         <a href="{{ route('admin.modulemanagement.index') }}"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-puzzle-piece mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.modules') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ route('admin.usermanagement.index') }}"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-users mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.users') }}</span>
                                         </a>
                                     </div>
                                     @endif
+                                    @endif
+                                    @if($isAdminOrRoot)
                                     <div class="col-4">
                                         <a href="{{ route('admin.studio.index') }}"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-palette mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">Studio</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ route('admin.settingmanagement.index') }}"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-sliders mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">{{ __('admin.settings') }}</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ url('/horizon') }}" target="_blank"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-tasks mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">Horizon</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ url('/telescope') }}" target="_blank"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-telescope mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">Telescope</span>
                                         </a>
                                     </div>
                                     <div class="col-4">
                                         <a href="{{ url('/pulse') }}" target="_blank"
-                                            class="d-flex flex-column text-center py-3 px-2 quick-action-item">
+                                            class="d-flex flex-column align-items-center justify-content-center text-center py-3 px-2 quick-action-item">
                                             <i class="fa-solid fa-heartbeat mb-2" style="font-size: 28px;"></i>
                                             <span class="nav-link-title">Pulse</span>
                                         </a>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -423,6 +455,7 @@ app()->setLocale($originalLocale);
                                         <small class="fw-bold">{{ __('admin.recent_activities') }}</small>
                                     </a>
                                 </div>
+                                @if($isAdminOrRoot)
                                 <!-- Modüller -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.modulemanagement.index') }}"
@@ -441,6 +474,8 @@ app()->setLocale($originalLocale);
                                     </a>
                                 </div>
                                 @endif
+                                @endif
+                                @if($isAdminOrRoot)
                                 <!-- Studio -->
                                 <div class="col-6">
                                     <a href="{{ route('admin.studio.index') }}"
@@ -457,6 +492,7 @@ app()->setLocale($originalLocale);
                                         <small class="fw-bold">{{ __('admin.system_settings') }}</small>
                                     </a>
                                 </div>
+                                @endif
                                 <!-- Dil Seçimi (Mobil) -->
                                 <div class="col-6">
                                     <div class="dropdown">
@@ -524,9 +560,9 @@ app()->setLocale($originalLocale);
                     <div class="dropdown-divider"></div>
                     @endif
                     
-                    <a href="{{ route('admin.usermanagement.user.activity.logs', ['id' => $cachedUser->id]) }}"
+                    <a href="{{ route('admin.usermanagement.my.activities') }}"
                         class="dropdown-item">{{ __('admin.my_activities') }}</a>
-                    <a href="{{ route('admin.usermanagement.manage', ['id' => $cachedUser->id]) }}"
+                    <a href="{{ route('admin.usermanagement.my.profile') }}"
                         class="dropdown-item">{{ __('admin.my_profile') }}</a>
                     <div class="dropdown-divider"></div>
                     <form method="POST" action="{{ route('logout') }}">

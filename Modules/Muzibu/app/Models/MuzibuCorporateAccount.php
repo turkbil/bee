@@ -16,6 +16,7 @@ class MuzibuCorporateAccount extends Model
         'parent_id',
         'corporate_code',
         'company_name',
+        'branch_name',
         'is_active',
     ];
 
@@ -53,6 +54,34 @@ class MuzibuCorporateAccount extends Model
     public function isParent(): bool
     {
         return $this->parent_id === null;
+    }
+
+    /**
+     * Ana şube mi?
+     */
+    public function isMainBranch(): bool
+    {
+        return $this->parent_id === null;
+    }
+
+    /**
+     * Alt şubeleri getir
+     */
+    public function getSubBranches()
+    {
+        return $this->children()->get();
+    }
+
+    /**
+     * Şirket adını getir (ana şubeyse kendi, alt şubeyse parent'ın)
+     */
+    public function getCompanyName(): ?string
+    {
+        if ($this->isMainBranch()) {
+            return $this->company_name;
+        }
+
+        return $this->parent ? $this->parent->company_name : null;
     }
 
     /**

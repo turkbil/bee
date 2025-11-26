@@ -3,6 +3,7 @@
 namespace Modules\UserManagement\App\Http\Controllers\Admin;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class UserManagementController extends Controller
 {
@@ -12,6 +13,24 @@ class UserManagementController extends Controller
     public function index()
     {
         return view('usermanagement::admin.index');
+    }
+
+    /**
+     * Kendi profilim - Tüm kullanıcılar erişebilir
+     */
+    public function myProfile()
+    {
+        $id = Auth::id();
+        return view('usermanagement::admin.manage', compact('id'));
+    }
+
+    /**
+     * Kendi aktivitelerim - Tüm kullanıcılar erişebilir
+     */
+    public function myActivities()
+    {
+        $id = Auth::id();
+        return view('usermanagement::admin.user-activity-logs', compact('id'));
     }
 
     /**

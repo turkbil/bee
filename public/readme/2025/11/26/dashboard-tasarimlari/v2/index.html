@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard V2 - Data-Focused Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --tblr-primary: #206bc4;
+            --tblr-bg-surface: #1a1d21;
+            --tblr-body-bg: #141619;
+            --card-bg: rgba(26, 29, 33, 0.95);
+        }
+        body {
+            background: var(--tblr-body-bg);
+            min-height: 100vh;
+        }
+        .page-header {
+            background: var(--card-bg);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+        }
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .header-subtitle {
+            color: #6c7a89;
+            font-size: 0.875rem;
+        }
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+        .metric-card.credit::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .metric-card.pages::before { background: linear-gradient(90deg, #10b981, #059669); }
+        .metric-card.users::before { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
+        .metric-card.visits::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1;
+        }
+        .metric-label {
+            color: #6c7a89;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .metric-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+        }
+        .metric-change.up {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+        .metric-change.down {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        .chart-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .chart-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .chart-title {
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .chart-body {
+            padding: 1.5rem;
+        }
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+        .chart-container-sm {
+            position: relative;
+            height: 180px;
+        }
+        .time-filter {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .time-filter-btn {
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: transparent;
+            color: #6c7a89;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .time-filter-btn:hover,
+        .time-filter-btn.active {
+            background: var(--tblr-primary);
+            border-color: var(--tblr-primary);
+            color: #fff;
+        }
+        .data-table {
+            width: 100%;
+        }
+        .data-table th {
+            color: #6c7a89;
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .data-table td {
+            padding: 1rem;
+            color: #fff;
+            font-size: 0.875rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        .data-table tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-dot.online { background: #10b981; }
+        .status-dot.offline { background: #6c7a89; }
+        .progress-mini {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            width: 100px;
+        }
+        .progress-mini-bar {
+            height: 100%;
+            border-radius: 3px;
+        }
+        .quick-stat {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+        }
+        .quick-stat:last-child {
+            margin-bottom: 0;
+        }
+        .quick-stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .quick-stat-content {
+            flex: 1;
+        }
+        .quick-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .quick-stat-label {
+            font-size: 0.75rem;
+            color: #6c7a89;
+        }
+        .ai-assistant-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .ai-input-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .ai-input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            color: #fff;
+            font-size: 0.875rem;
+        }
+        .ai-input::placeholder {
+            color: #6c7a89;
+        }
+        .ai-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+        .ai-send-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            color: #fff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ai-send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+    </style>
+</head>
+<body class="theme-dark">
+    <div class="page-wrapper">
+        <!-- Header -->
+        <div class="page-header">
+            <div class="container-xl">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="header-title">Dashboard</div>
+                        <div class="header-subtitle">Son 30 gundeki performans ozeti</div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-download me-1"></i> Rapor Indir
+                            </button>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i> Yeni Icerik
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <!-- Metric Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="metric-card credit">
+                            <div class="metric-value">24.5</div>
+                            <div class="metric-label">AI Kredisi</div>
+                            <div class="metric-change up">
+                                <i class="fas fa-arrow-up"></i> +2.5 bu hafta
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="metric-card pages">
+                            <div class="metric-value">48</div>
+                            <div class="metric-label">Toplam Sayfa</div>
+                            <div class="metric-change up">
+                                <i class="fas fa-arrow-up"></i> +5 bu ay
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="metric-card users">
+                            <div class="metric-value">1,247</div>
+                            <div class="metric-label">Kullanicilar</div>
+                            <div class="metric-change up">
+                                <i class="fas fa-arrow-up"></i> +12% bu ay
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="metric-card visits">
+                            <div class="metric-value">8.2K</div>
+                            <div class="metric-label">Ziyaret</div>
+                            <div class="metric-change down">
+                                <i class="fas fa-arrow-down"></i> -3% bu hafta
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Main Chart -->
+                    <div class="col-lg-8">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">
+                                    <i class="fas fa-chart-line text-primary"></i> Ziyaretci Analizi
+                                </div>
+                                <div class="time-filter">
+                                    <button class="time-filter-btn">7G</button>
+                                    <button class="time-filter-btn active">30G</button>
+                                    <button class="time-filter-btn">90G</button>
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <div class="chart-container">
+                                    <canvas id="visitorsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Side Stats -->
+                    <div class="col-lg-4">
+                        <div class="chart-card h-100">
+                            <div class="chart-header">
+                                <div class="chart-title">
+                                    <i class="fas fa-pie-chart text-success"></i> Icerik Dagilimi
+                                </div>
+                            </div>
+                            <div class="chart-body">
+                                <div class="chart-container-sm">
+                                    <canvas id="contentChart"></canvas>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="quick-stat">
+                                        <div class="quick-stat-icon" style="background: rgba(59, 130, 246, 0.2);">
+                                            <i class="fas fa-file-alt text-primary"></i>
+                                        </div>
+                                        <div class="quick-stat-content">
+                                            <div class="quick-stat-value">32</div>
+                                            <div class="quick-stat-label">Sayfalar</div>
+                                        </div>
+                                    </div>
+                                    <div class="quick-stat">
+                                        <div class="quick-stat-icon" style="background: rgba(16, 185, 129, 0.2);">
+                                            <i class="fas fa-briefcase text-success"></i>
+                                        </div>
+                                        <div class="quick-stat-content">
+                                            <div class="quick-stat-value">12</div>
+                                            <div class="quick-stat-label">Portfolio</div>
+                                        </div>
+                                    </div>
+                                    <div class="quick-stat">
+                                        <div class="quick-stat-icon" style="background: rgba(245, 158, 11, 0.2);">
+                                            <i class="fas fa-bullhorn text-warning"></i>
+                                        </div>
+                                        <div class="quick-stat-content">
+                                            <div class="quick-stat-value">4</div>
+                                            <div class="quick-stat-label">Duyurular</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mt-1">
+                    <!-- Recent Pages Table -->
+                    <div class="col-lg-8">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <div class="chart-title">
+                                    <i class="fas fa-file-alt text-info"></i> Son Eklenen Sayfalar
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary">Tumunu Gor</a>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sayfa Adi</th>
+                                        <th>Durum</th>
+                                        <th>Goruntuleme</th>
+                                        <th>Tarih</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class="status-dot online"></span>
+                                            Hakkimizda
+                                        </td>
+                                        <td><span class="badge bg-success-lt text-success">Yayinda</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="progress-mini">
+                                                    <div class="progress-mini-bar" style="width: 85%; background: #10b981;"></div>
+                                                </div>
+                                                <span class="text-muted small">1,240</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted">2 saat once</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="status-dot online"></span>
+                                            Iletisim
+                                        </td>
+                                        <td><span class="badge bg-success-lt text-success">Yayinda</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="progress-mini">
+                                                    <div class="progress-mini-bar" style="width: 65%; background: #3b82f6;"></div>
+                                                </div>
+                                                <span class="text-muted small">890</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted">5 saat once</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="status-dot offline"></span>
+                                            Blog Yazisi
+                                        </td>
+                                        <td><span class="badge bg-secondary-lt text-secondary">Taslak</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="progress-mini">
+                                                    <div class="progress-mini-bar" style="width: 0%; background: #6c7a89;"></div>
+                                                </div>
+                                                <span class="text-muted small">0</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted">1 gun once</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <span class="status-dot online"></span>
+                                            Hizmetlerimiz
+                                        </td>
+                                        <td><span class="badge bg-success-lt text-success">Yayinda</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="progress-mini">
+                                                    <div class="progress-mini-bar" style="width: 45%; background: #f59e0b;"></div>
+                                                </div>
+                                                <span class="text-muted small">567</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted">2 gun once</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- AI Assistant -->
+                    <div class="col-lg-4">
+                        <div class="chart-card ai-assistant-card h-100">
+                            <div class="chart-header">
+                                <div class="chart-title">
+                                    <i class="fas fa-robot text-purple"></i> AI Asistan
+                                </div>
+                                <span class="badge bg-purple-lt text-purple">24.5 Kredi</span>
+                            </div>
+                            <div class="chart-body">
+                                <p class="text-muted mb-3">
+                                    Merhaba! Size nasil yardimci olabilirim? SEO analizi, icerik onerisi veya sistem durumu hakkinda sorularinizi yanıtlayabilirim.
+                                </p>
+                                <div class="ai-input-group">
+                                    <input type="text" class="ai-input" placeholder="Mesajinizi yazin...">
+                                    <button class="ai-send-btn">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+
+                                <div class="mt-4">
+                                    <div class="text-muted small mb-2">Hizli Sorular:</div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge bg-dark cursor-pointer">Sistem durumu?</span>
+                                        <span class="badge bg-dark cursor-pointer">SEO analizi</span>
+                                        <span class="badge bg-dark cursor-pointer">Performans</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
+    <script>
+        // Visitors Chart
+        const visitorsCtx = document.getElementById('visitorsChart').getContext('2d');
+        new Chart(visitorsCtx, {
+            type: 'line',
+            data: {
+                labels: ['1', '5', '10', '15', '20', '25', '30'],
+                datasets: [{
+                    label: 'Ziyaretciler',
+                    data: [150, 230, 180, 290, 340, 280, 320],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#3b82f6',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }, {
+                    label: 'Sayfa Goruntuleme',
+                    data: [320, 450, 380, 520, 680, 590, 640],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#6c7a89',
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255,255,255,0.05)'
+                        },
+                        ticks: {
+                            color: '#6c7a89'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(255,255,255,0.05)'
+                        },
+                        ticks: {
+                            color: '#6c7a89'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Content Distribution Chart
+        const contentCtx = document.getElementById('contentChart').getContext('2d');
+        new Chart(contentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sayfalar', 'Portfolio', 'Duyurular'],
+                datasets: [{
+                    data: [32, 12, 4],
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+    </script>
+</body>
+</html>

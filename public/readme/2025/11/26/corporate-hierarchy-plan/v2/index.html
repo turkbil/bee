@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Corporate Hierarchy - Plan + UI Tasarım Taslakları</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f0f1a;
+            --bg-card: rgba(30, 30, 50, 0.6);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.1));
+            border-radius: 24px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+        
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .badge-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .badge-green { background: linear-gradient(135deg, #10b981, #059669); }
+        .badge-orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        
+        /* Section */
+        section {
+            margin-bottom: 80px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .section-header .icon {
+            font-size: 2.5rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card h3 {
+            color: var(--accent);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .card h4 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin: 25px 0 15px 0;
+        }
+        
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        
+        .card ul {
+            list-style: none;
+            margin: 15px 0;
+        }
+        
+        .card li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .card li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* UI Mockup */
+        .mockup {
+            background: #1e1e30;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .mockup-header {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .mockup-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .mockup-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-mock {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+        
+        /* Table Mockup */
+        .mock-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .mock-table thead {
+            background: rgba(139, 92, 246, 0.2);
+        }
+        
+        .mock-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .mock-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+        
+        .mock-table tr:hover {
+            background: rgba(139, 92, 246, 0.05);
+        }
+        
+        /* Card Grid Mockup */
+        .mock-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .mock-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .mock-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .mock-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .mock-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        .mock-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge-active {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .badge-inactive {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+        
+        .mock-card-body {
+            margin: 15px 0;
+        }
+        
+        .mock-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+        
+        .mock-info-label {
+            color: var(--text-muted);
+        }
+        
+        .mock-info-value {
+            color: var(--text);
+            font-weight: 600;
+        }
+        
+        .mock-card-footer {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .btn-icon {
+            flex: 1;
+            padding: 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+        
+        .btn-icon:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+        
+        /* Form Mockup */
+        .mock-form {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Hierarchy Tree Mockup */
+        .tree-view {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .tree-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .tree-item:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+        
+        .tree-company {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .tree-branch {
+            color: var(--accent);
+            padding-left: 30px;
+        }
+        
+        .tree-employee {
+            color: var(--text-muted);
+            padding-left: 60px;
+            font-size: 0.85rem;
+        }
+        
+        .tree-icon {
+            margin-right: 8px;
+        }
+        
+        .tree-expand {
+            color: var(--warning);
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.05));
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        /* Alert */
+        .alert {
+            padding: 25px;
+            border-radius: 16px;
+            margin: 25px 0;
+            border-left: 5px solid;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: var(--success);
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--warning);
+        }
+        
+        .alert-info {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: #3b82f6;
+        }
+        
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+        
+        /* Tab System */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+        }
+        
+        .tab.active {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--primary);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 80px;
+            border-top: 2px solid rgba(139, 92, 246, 0.2);
+            color: var(--text-muted);
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .mock-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- HERO -->
+        <div class="hero">
+            <h1>🏢 Muzibu Corporate Hierarchy</h1>
+            <p class="hero-subtitle">Plan + Admin Panel UI Tasarım Taslakları</p>
+            <div class="badge-row">
+                <span class="badge badge-purple">v2 - UI Mockups Eklendi</span>
+                <span class="badge badge-green">Admin Panel Tasarımları</span>
+                <span class="badge badge-orange">26 Kasım 2025</span>
+            </div>
+        </div>
+
+        <!-- PLAN A UI MOCKUPS -->
+        <section>
+            <div class="section-header">
+                <span class="icon">🎨</span>
+                <h2>PLAN A - UI Tasarım Taslakları</h2>
+            </div>
+
+            <div class="card">
+                <h3>1️⃣ Firma Listesi Sayfası (/admin/muzibu/companies)</h3>
+                <p>Tüm kayıtlı firmaları gösterir. Firma admin bu sayfadan yeni firma ekler, mevcut firmaları düzenler.</p>
+                
+                <div class="mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-title">🏢 Kurumsal Firmalar</div>
+                        <div class="mockup-actions">
+                            <button class="btn-mock btn-secondary">🔍 Filtrele</button>
+                            <button class="btn-mock btn-primary">➕ Yeni Firma Ekle</button>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">47</div>
+                            <div class="stat-label">Toplam Firma</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">312</div>
+                            <div class="stat-label">Toplam Şube</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">1,428</div>
+                            <div class="stat-label">Toplam Kullanıcı</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">₺89.4K</div>
+                            <div class="stat-label">Aylık Gelir</div>
+                        </div>
+                    </div>
+
+                    <table class="mock-table">
+                        <thead>
+                            <tr>
+                                <th>Firma Adı</th>
+                                <th>Firma Admin</th>
+                                <th>Şube Sayısı</th>
+                                <th>Paket</th>
+                                <th>Ödeme Modeli</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>☕ Starbucks Türkiye</strong></td>
+                                <td>Ahmet Yılmaz</td>
+                                <td><span style="color: var(--accent); font-weight: 600;">28 Şube</span></td>
+                                <td>Enterprise</td>
+                                <td>Merkezi</td>
+                                <td><span class="mock-badge badge-active">✓ Aktif</span></td>
+                                <td>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">👁️ Görüntüle</button>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">✏️ Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>🍔 McDonalds</strong></td>
+                                <td>Mehmet Kaya</td>
+                                <td><span style="color: var(--accent); font-weight: 600;">52 Şube</span></td>
+                                <td>Enterprise</td>
+                                <td>Merkezi</td>
+                                <td><span class="mock-badge badge-active">✓ Aktif</span></td>
+                                <td>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">👁️ Görüntüle</button>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">✏️ Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>🛠️ Koçtaş</strong></td>
+                                <td>Ayşe Demir</td>
+                                <td><span style="color: var(--accent); font-weight: 600;">14 Şube</span></td>
+                                <td>Business</td>
+                                <td>Şube Bazlı</td>
+                                <td><span class="mock-badge badge-active">✓ Aktif</span></td>
+                                <td>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">👁️ Görüntüle</button>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">✏️ Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>💈 Berbertolia</strong></td>
+                                <td>Can Öztürk</td>
+                                <td><span style="color: var(--accent); font-weight: 600;">8 Şube</span></td>
+                                <td>Business</td>
+                                <td>Merkezi</td>
+                                <td><span class="mock-badge badge-inactive">⏸ Beklemede</span></td>
+                                <td>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">👁️ Görüntüle</button>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">✏️ Düzenle</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>2️⃣ Firma Detay & Şube Yönetimi (/admin/muzibu/companies/1/manage)</h3>
+                <p>Firma admin seçtiği firmayı detaylı görür, şubelerini yönetir.</p>
+                
+                <div class="mockup">
+                    <div class="mockup-header">
+                        <div>
+                            <div class="mockup-title">☕ Starbucks Türkiye</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">
+                                Firma Kodu: STAR2025 | Admin: Ahmet Yılmaz
+                            </div>
+                        </div>
+                        <div class="mockup-actions">
+                            <button class="btn-mock btn-secondary">📊 Raporlar</button>
+                            <button class="btn-mock btn-secondary">⚙️ Ayarlar</button>
+                            <button class="btn-mock btn-primary">➕ Yeni Şube Ekle</button>
+                        </div>
+                    </div>
+
+                    <div class="tabs">
+                        <div class="tab active">🏪 Şubeler (28)</div>
+                        <div class="tab">👥 Tüm Kullanıcılar (142)</div>
+                        <div class="tab">💳 Fatura & Ödeme</div>
+                        <div class="tab">📈 İstatistikler</div>
+                    </div>
+
+                    <div class="mock-grid">
+                        <div class="mock-card">
+                            <div class="mock-card-header">
+                                <div class="mock-card-title">🏪 Kadıköy Şubesi</div>
+                                <span class="mock-badge badge-active">✓ Aktif</span>
+                            </div>
+                            <div class="mock-card-body">
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Şube Kodu</span>
+                                    <span class="mock-info-value">KDK-001</span>
+                                </div>
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Yönetici</span>
+                                    <span class="mock-info-value">Zeynep Aydın</span>
+                                </div>
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Çalışan Sayısı</span>
+                                    <span class="mock-info-value">12 Kişi</span>
+                                </div>
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Şehir</span>
+                                    <span class="mock-info-value">İstanbul</span>
+                                </div>
+                            </div>
+                            <div class="mock-card-footer">
+                                <div class="btn-icon">👁️ Detay</div>
+                                <div class="btn-icon">✏️ Düzenle</div>
+                                <div class="btn-icon">🗑️ Sil</div>
+                            </div>
+                        </div>
+
+                        <div class="mock-card">
+                            <div class="mock-card-header">
+                                <div class="mock-card-title">🏪 Beşiktaş Şubesi</div>
+                                <span class="mock-badge badge-active">✓ Aktif</span>
+                            </div>
+                            <div class="mock-card-body">
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Şube Kodu</span>
+                                    <span class="mock-info-value">BSK-002</span>
+                                </div>
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Yönetici</span>
+                                    <span class="mock-info-value">Ali Çelik</span>
+                                </div>
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Çalışan Sayısı</span>
+                                    <span class="mock-info-value">8 Kişi</span>
+                                </div>
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Şehir</span>
+                                    <span class="mock-info-value">İstanbul</span>
+                                </div>
+                            </div>
+                            <div class="mock-card-footer">
+                                <div class="btn-icon">👁️ Detay</div>
+                                <div class="btn-icon">✏️ Düzenle</div>
+                                <div class="btn-icon">🗑️ Sil</div>
+                            </div>
+                        </div>
+
+                        <div class="mock-card">
+                            <div class="mock-card-header">
+                                <div class="mock-card-title">🏪 Ankara Kızılay</div>
+                                <span class="mock-badge badge-active">✓ Aktif</span>
+                            </div>
+                            <div class="mock-card-body">
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Şube Kodu</span>
+                                    <span class="mock-info-value">ANK-003</span>
+                                </div>
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Yönetici</span>
+                                    <span class="mock-info-value">Deniz Kara</span>
+                                </div>
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Çalışan Sayısı</span>
+                                    <span class="mock-info-value">6 Kişi</span>
+                                </div>
+                                <div class="mock-info-row">
+                                    <span class="mock-info-label">Şehir</span>
+                                    <span class="mock-info-value">Ankara</span>
+                                </div>
+                            </div>
+                            <div class="mock-card-footer">
+                                <div class="btn-icon">👁️ Detay</div>
+                                <div class="btn-icon">✏️ Düzenle</div>
+                                <div class="btn-icon">🗑️ Sil</div>
+                            </div>
+                        </div>
+
+                        <div class="mock-card" style="border: 2px dashed rgba(139, 92, 246, 0.3); display: flex; align-items: center; justify-content: center; min-height: 200px;">
+                            <div style="text-align: center; color: var(--text-muted);">
+                                <div style="font-size: 3rem; margin-bottom: 10px;">➕</div>
+                                <div style="font-weight: 600;">Yeni Şube Ekle</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>3️⃣ Şube Detay & Çalışan Yönetimi (/admin/muzibu/branches/1/users)</h3>
+                <p>Şube yöneticisi kendi şubesinin çalışanlarını yönetir.</p>
+                
+                <div class="mockup">
+                    <div class="mockup-header">
+                        <div>
+                            <div class="mockup-title">🏪 Kadıköy Şubesi</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">
+                                Starbucks Türkiye / Kadıköy | Yönetici: Zeynep Aydın
+                            </div>
+                        </div>
+                        <div class="mockup-actions">
+                            <button class="btn-mock btn-secondary">🎵 Playlist Yönet</button>
+                            <button class="btn-mock btn-secondary">📢 Anonslar</button>
+                            <button class="btn-mock btn-primary">➕ Çalışan Ekle</button>
+                        </div>
+                    </div>
+
+                    <table class="mock-table">
+                        <thead>
+                            <tr>
+                                <th>Ad Soyad</th>
+                                <th>E-posta</th>
+                                <th>Rol</th>
+                                <th>Kayıt Tarihi</th>
+                                <th>Son Giriş</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Zeynep Aydın</strong></td>
+                                <td>zeynep@starbucks.com.tr</td>
+                                <td><span style="color: var(--warning); font-weight: 600;">👑 Yönetici</span></td>
+                                <td>15 Oca 2025</td>
+                                <td>Bugün, 09:45</td>
+                                <td><span class="mock-badge badge-active">✓ Aktif</span></td>
+                                <td>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">✏️ Düzenle</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Emre Yılmaz</td>
+                                <td>emre.y@starbucks.com.tr</td>
+                                <td>👤 Çalışan</td>
+                                <td>18 Oca 2025</td>
+                                <td>Bugün, 10:12</td>
+                                <td><span class="mock-badge badge-active">✓ Aktif</span></td>
+                                <td>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">✏️ Düzenle</button>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px; background: rgba(239, 68, 68, 0.2);">🗑️ Çıkar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Selin Kaya</td>
+                                <td>selin.k@starbucks.com.tr</td>
+                                <td>👤 Çalışan</td>
+                                <td>20 Oca 2025</td>
+                                <td>Dün, 18:30</td>
+                                <td><span class="mock-badge badge-active">✓ Aktif</span></td>
+                                <td>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;">✏️ Düzenle</button>
+                                    <button class="btn-mock btn-secondary" style="font-size: 0.75rem; padding: 4px 10px; background: rgba(239, 68, 68, 0.2);">🗑️ Çıkar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>4️⃣ Yeni Firma Ekleme Formu (Modal)</h3>
+                <p>Admin panel'de "Yeni Firma Ekle" butonuna tıklandığında açılır.</p>
+                
+                <div class="mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-title">➕ Yeni Firma Ekle</div>
+                    </div>
+
+                    <div class="mock-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Firma Adı *</label>
+                                <input class="form-input" type="text" placeholder="örn: Starbucks Türkiye" value="">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Firma Admin (User ID) *</label>
+                                <input class="form-input" type="number" placeholder="User ID girin" value="">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Abonelik Paketi *</label>
+                                <select class="form-select">
+                                    <option>Business (10-50 şube)</option>
+                                    <option selected>Enterprise (50+ şube)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ödeme Modeli *</label>
+                                <select class="form-select">
+                                    <option selected>Merkezi (Ana firma öder)</option>
+                                    <option>Şube Bazlı (Her şube öder)</option>
+                                    <option>Hibrit (Karma model)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Maksimum Şube Sayısı *</label>
+                                <input class="form-input" type="number" placeholder="örn: 200" value="200">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Durum *</label>
+                                <select class="form-select">
+                                    <option selected>Aktif</option>
+                                    <option>Pasif</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px;">
+                            <button class="btn-mock btn-secondary" style="padding: 12px 24px;">İptal</button>
+                            <button class="btn-mock btn-primary" style="padding: 12px 24px;">💾 Firmayı Kaydet</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLAN B UI MOCKUPS -->
+        <section>
+            <div class="section-header">
+                <span class="icon">🎨</span>
+                <h2>PLAN B - Minimal UI Tasarım Taslakları</h2>
+            </div>
+
+            <div class="card">
+                <h3>1️⃣ Kurumsal Hesaplar - Hiyerarşik Görünüm</h3>
+                <p>Mevcut <code>corporate-manage.blade.php</code> üzerinde güncelleme. Tree-view ile hiyerarşi gösterir.</p>
+                
+                <div class="mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-title">🏢 Kurumsal Hesaplar</div>
+                        <div class="mockup-actions">
+                            <button class="btn-mock btn-secondary">🔍 Ara</button>
+                            <button class="btn-mock btn-primary">➕ Yeni Kayıt</button>
+                        </div>
+                    </div>
+
+                    <div class="tree-view">
+                        <div class="tree-item tree-company">
+                            <span class="tree-expand">▼</span>
+                            <span class="tree-icon">🏢</span>
+                            <strong>Starbucks Türkiye</strong>
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.85rem;">(role: owner | 28 şube)</span>
+                        </div>
+
+                        <div class="tree-item tree-branch">
+                            <span class="tree-expand">▼</span>
+                            <span class="tree-icon">🏪</span>
+                            Kadıköy Şubesi
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.8rem;">(role: manager | 12 çalışan)</span>
+                        </div>
+
+                        <div class="tree-item tree-employee">
+                            <span class="tree-icon">👤</span>
+                            Emre Yılmaz (emre.y@starbucks.com.tr)
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.75rem;">(role: employee)</span>
+                        </div>
+
+                        <div class="tree-item tree-employee">
+                            <span class="tree-icon">👤</span>
+                            Selin Kaya (selin.k@starbucks.com.tr)
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.75rem;">(role: employee)</span>
+                        </div>
+
+                        <div class="tree-item tree-branch">
+                            <span class="tree-expand">▶</span>
+                            <span class="tree-icon">🏪</span>
+                            Beşiktaş Şubesi
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.8rem;">(role: manager | 8 çalışan)</span>
+                        </div>
+
+                        <div class="tree-item tree-branch">
+                            <span class="tree-expand">▶</span>
+                            <span class="tree-icon">🏪</span>
+                            Ankara Kızılay
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.8rem;">(role: manager | 6 çalışan)</span>
+                        </div>
+
+                        <div style="height: 10px;"></div>
+
+                        <div class="tree-item tree-company">
+                            <span class="tree-expand">▼</span>
+                            <span class="tree-icon">🏢</span>
+                            <strong>McDonalds</strong>
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.85rem;">(role: owner | 52 şube)</span>
+                        </div>
+
+                        <div class="tree-item tree-branch">
+                            <span class="tree-expand">▶</span>
+                            <span class="tree-icon">🏪</span>
+                            Ataşehir Şubesi
+                            <span style="color: var(--text-muted); margin-left: 10px; font-size: 0.8rem;">(role: manager | 15 çalışan)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>2️⃣ Kayıt Ekleme/Düzenleme Formu</h3>
+                <p>Mevcut form'a sadece 3 alan eklenecek: <code>branch_name</code>, <code>role</code>, <code>settings (JSON)</code></p>
+                
+                <div class="mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-title">✏️ Kurumsal Hesap Ekle/Düzenle</div>
+                    </div>
+
+                    <div class="mock-form">
+                        <div class="form-group">
+                            <label class="form-label">Kullanıcı (User) *</label>
+                            <select class="form-select">
+                                <option>Kullanıcı seçin...</option>
+                                <option selected>Ahmet Yılmaz (ahmet@example.com)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Üst Kurum/Şube (Parent)</label>
+                            <select class="form-select">
+                                <option value="">-- Ana Firma (Parent Yok) --</option>
+                                <option selected>🏢 Starbucks Türkiye</option>
+                                <option>🏪 Kadıköy Şubesi</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Rol * <span style="color: var(--warning); font-size: 0.8rem;">(YENİ)</span></label>
+                                <select class="form-select">
+                                    <option>owner (Firma Sahibi)</option>
+                                    <option selected>manager (Şube Yöneticisi)</option>
+                                    <option>employee (Çalışan)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Şube Adı <span style="color: var(--warning); font-size: 0.8rem;">(YENİ)</span></label>
+                                <input class="form-input" type="text" placeholder="örn: Kadıköy Şubesi" value="Kadıköy Şubesi">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Firma/Şirket Adı</label>
+                            <input class="form-input" type="text" placeholder="örn: Starbucks Türkiye" value="">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ayarlar (JSON) <span style="color: var(--warning); font-size: 0.8rem;">(YENİ)</span></label>
+                            <textarea class="form-input" rows="4" placeholder='{"city": "İstanbul", "address": "Kadıköy...", "max_branches": 200}'></textarea>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">
+                                💡 Şehir, adres, maksimum şube sayısı gibi esnek bilgiler JSON formatında
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 30px;">
+                            <button class="btn-mock btn-secondary" style="padding: 12px 24px;">İptal</button>
+                            <button class="btn-mock btn-primary" style="padding: 12px 24px;">💾 Kaydet</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>✅ PLAN B AVANTAJI:</strong> Mevcut <code>CorporateAccountComponent</code> ve <code>corporate-manage.blade.php</code> dosyalarına minimal değişiklik! Sadece 3 alan eklenecek, UI biraz güncellenecek.
+            </div>
+        </section>
+
+        <!-- COMPARISON -->
+        <section>
+            <div class="section-header">
+                <span class="icon">⚖️</span>
+                <h2>UI Karşılaştırması</h2>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>PLAN A - UI Özellikleri</h3>
+                    <ul>
+                        <li><strong>3 ayrı sayfa:</strong> Firmalar, Şubeler, Kullanıcılar</li>
+                        <li><strong>Dashboard:</strong> İstatistik kartları, grafikler</li>
+                        <li><strong>Tabbed Interface:</strong> Şubeler/Kullanıcılar/Fatura sekmeleri</li>
+                        <li><strong>Card Grid:</strong> Şubeler görsel kartlar halinde</li>
+                        <li><strong>Detaylı Tablolar:</strong> Filtreleme, sıralama, sayfalama</li>
+                        <li><strong>Modal Forms:</strong> Modern popup formlar</li>
+                        <li><strong>Tahmini Kod:</strong> ~1500 satır Blade + Livewire</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>PLAN B - UI Özellikleri</h3>
+                    <ul>
+                        <li><strong>1 sayfa:</strong> Hiyerarşik tree-view</li>
+                        <li><strong>Basit Liste:</strong> Açılır/kapanır ağaç yapısı</li>
+                        <li><strong>Minimal Form:</strong> Mevcut forma 3 alan ekle</li>
+                        <li><strong>JSON Editor:</strong> Textarea ile settings</li>
+                        <li><strong>Dropdown Role:</strong> owner/manager/employee seçimi</li>
+                        <li><strong>Inline Edit:</strong> Aynı sayfada düzenleme</li>
+                        <li><strong>Tahmini Kod:</strong> ~300 satır Blade güncelleme</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 TAVSİYE:</strong> Eğer <strong>hızlı sonuç</strong> istiyorsan → <strong>PLAN B</strong> tree-view yeterli!<br>
+                Eğer <strong>profesyonel, detaylı admin panel</strong> istiyorsan → <strong>PLAN A</strong> şart!
+            </div>
+        </section>
+
+        <!-- NEXT STEPS -->
+        <section>
+            <div class="section-header">
+                <span class="icon">🚀</span>
+                <h2>Şimdi Ne Yapmalıyız?</h2>
+            </div>
+
+            <div class="card">
+                <h3>Seçenekler</h3>
+                <div class="grid-2">
+                    <div class="alert alert-success">
+                        <strong>Seçenek 1: PLAN B ile Başla (ÖNERİ)</strong><br><br>
+                        ✅ 3-4 saat içinde hazır<br>
+                        ✅ Minimal risk<br>
+                        ✅ Bugün test edebilirsin<br>
+                        ✅ Gerekirse sonra PLAN A'ya geç
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>Seçenek 2: PLAN A ile Başla</strong><br><br>
+                        ✅ Profesyonel B2B çözüm<br>
+                        ✅ 200+ şube desteği<br>
+                        ✅ Detaylı raporlama<br>
+                        ⏱️ 1-2 hafta sürer
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Hangisini tercih ediyorsun?</h3>
+                <p style="font-size: 1.1rem; line-height: 2;">
+                    Ben <strong style="color: var(--success);">PLAN B ile başlayıp</strong>, müşteri geribildirimlerine göre <strong>PLAN A'ya geçmeyi</strong> öneriyorum. <br><br>
+                    Hangi planla devam edelim?
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>🤖 Claude AI tarafından oluşturuldu</p>
+        <p style="margin-top: 10px; font-size: 1.1rem; color: var(--accent);">Muzibu Corporate Hierarchy - v2 (UI Mockups Eklendi)</p>
+        <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);">26 Kasım 2025 | muzibu.com.tr | Tenant 1001</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Layout V3 - Minimal</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #0f1115; min-height: 100vh; }
+        .dashboard-header {
+            padding: 2rem 0 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 2rem;
+        }
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .greeting-text {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #fff;
+        }
+        .greeting-text strong { font-weight: 600; }
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .header-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+        }
+        .header-btn.secondary {
+            background: rgba(255,255,255,0.06);
+            color: #9ca3af;
+        }
+        .header-btn.secondary:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .header-btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        .header-btn.primary:hover {
+            opacity: 0.9;
+        }
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+        }
+        @media (max-width: 1400px) { .action-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 992px) { .action-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 576px) { .action-grid { grid-template-columns: repeat(2, 1fr); } }
+        .action-card {
+            background: #1a1d21;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 1.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .action-card:hover {
+            background: #1f2329;
+            transform: translateY(-4px);
+            border-color: transparent;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+        .action-card:hover::before { opacity: 1; }
+        .action-card.red::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .action-card.green::before { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .action-card.purple::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+        .action-card.orange::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .action-card.blue::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        .action-card.cyan::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+        .action-card.indigo::before { background: linear-gradient(90deg, #6366f1, #4f46e5); }
+        .action-card.gray::before { background: linear-gradient(90deg, #6b7280, #4b5563); }
+        .action-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+        .action-title {
+            font-weight: 600;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 0.35rem;
+        }
+        .action-subtitle {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        .action-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .info-bar {
+            background: #1a1d21;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .info-item i { color: #22c55e; }
+        .info-item span { color: #9ca3af; font-size: 0.875rem; }
+        .info-item strong { color: #fff; }
+    </style>
+</head>
+<body class="theme-dark">
+    <div class="container-xl">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="header-row">
+                <div class="greeting-text">
+                    Hos geldin, <strong>Nurullah</strong>
+                </div>
+                <div class="header-actions">
+                    <button class="header-btn secondary">
+                        <i class="fas fa-sync"></i> Cache
+                    </button>
+                    <button class="header-btn secondary">
+                        <i class="fas fa-robot"></i> AI
+                    </button>
+                    <button class="header-btn primary">
+                        <i class="fas fa-plus"></i> Yeni Icerik
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Grid -->
+        <div class="action-grid">
+            <a href="#" class="action-card red">
+                <span class="action-badge" style="background: rgba(239,68,68,0.2); color: #ef4444;">25</span>
+                <div class="action-icon" style="background: rgba(239, 68, 68, 0.1);">
+                    <i class="fas fa-file-alt" style="color: #ef4444;"></i>
+                </div>
+                <div class="action-title">Sayfalar</div>
+                <div class="action-subtitle">Sayfa yonetimi</div>
+            </a>
+
+            <a href="#" class="action-card green">
+                <span class="action-badge" style="background: rgba(34,197,94,0.2); color: #22c55e;">163</span>
+                <div class="action-icon" style="background: rgba(34, 197, 94, 0.1);">
+                    <i class="fas fa-pen-fancy" style="color: #22c55e;"></i>
+                </div>
+                <div class="action-title">Blog</div>
+                <div class="action-subtitle">Yazilar & Icerik</div>
+            </a>
+
+            <a href="#" class="action-card purple">
+                <span class="action-badge" style="background: rgba(139,92,246,0.2); color: #8b5cf6;">61</span>
+                <div class="action-icon" style="background: rgba(139, 92, 246, 0.1);">
+                    <i class="fas fa-music" style="color: #8b5cf6;"></i>
+                </div>
+                <div class="action-title">Sarkilar</div>
+                <div class="action-subtitle">Muzik kutuphanesi</div>
+            </a>
+
+            <a href="#" class="action-card indigo">
+                <span class="action-badge" style="background: rgba(99,102,241,0.2); color: #6366f1;">3</span>
+                <div class="action-icon" style="background: rgba(99, 102, 241, 0.1);">
+                    <i class="fas fa-compact-disc" style="color: #6366f1;"></i>
+                </div>
+                <div class="action-title">Albumler</div>
+                <div class="action-subtitle">Album yonetimi</div>
+            </a>
+
+            <a href="#" class="action-card orange">
+                <span class="action-badge" style="background: rgba(245,158,11,0.2); color: #f59e0b;">0</span>
+                <div class="action-icon" style="background: rgba(245, 158, 11, 0.1);">
+                    <i class="fas fa-briefcase" style="color: #f59e0b;"></i>
+                </div>
+                <div class="action-title">Portfolio</div>
+                <div class="action-subtitle">Projeler</div>
+            </a>
+
+            <a href="#" class="action-card cyan">
+                <span class="action-badge" style="background: rgba(6,182,212,0.2); color: #06b6d4;">0</span>
+                <div class="action-icon" style="background: rgba(6, 182, 212, 0.1);">
+                    <i class="fas fa-bullhorn" style="color: #06b6d4;"></i>
+                </div>
+                <div class="action-title">Duyurular</div>
+                <div class="action-subtitle">Bildirimler</div>
+            </a>
+
+            <a href="#" class="action-card blue">
+                <span class="action-badge" style="background: rgba(59,130,246,0.2); color: #3b82f6;">3</span>
+                <div class="action-icon" style="background: rgba(59, 130, 246, 0.1);">
+                    <i class="fas fa-users" style="color: #3b82f6;"></i>
+                </div>
+                <div class="action-title">Kullanicilar</div>
+                <div class="action-subtitle">Uye yonetimi</div>
+            </a>
+
+            <a href="#" class="action-card gray">
+                <div class="action-icon" style="background: rgba(107, 114, 128, 0.1);">
+                    <i class="fas fa-cog" style="color: #6b7280;"></i>
+                </div>
+                <div class="action-title">Ayarlar</div>
+                <div class="action-subtitle">Sistem ayarlari</div>
+            </a>
+        </div>
+
+        <!-- Info Bar -->
+        <div class="info-bar">
+            <div class="info-item">
+                <i class="fas fa-circle"></i>
+                <span>Sistem: <strong>Aktif</strong></span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-circle"></i>
+                <span>PHP: <strong>8.3.28</strong></span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-circle"></i>
+                <span>Laravel: <strong>12.32.5</strong></span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-coins" style="color: #f59e0b;"></i>
+                <span>AI Kredi: <strong style="color: #f59e0b;">174,599</strong></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

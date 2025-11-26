@@ -1,0 +1,629 @@
+@push('styles')
+<style>
+    /* Dashboard için page-header gizle */
+    .page-header { display: none !important; }
+
+    /* Welcome Banner */
+    .welcome-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .welcome-banner h2 {
+        font-size: 1.5rem;
+        margin: 0;
+        color: #fff;
+        font-weight: 600;
+    }
+    .welcome-banner p {
+        margin: 0.25rem 0 0;
+        opacity: 0.85;
+        font-size: 0.9rem;
+        color: #fff;
+    }
+    .stat-pills {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    .stat-pill {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255,255,255,0.15);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        color: #fff;
+        backdrop-filter: blur(10px);
+    }
+    .stat-pill .value { font-weight: 700; font-size: 1.1rem; }
+    .stat-pill .label { font-size: 0.75rem; opacity: 0.85; }
+
+    /* Main Layout */
+    .main-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 1.5rem;
+    }
+    @media (max-width: 1200px) {
+        .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--tblr-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    @media (max-width: 1400px) { .quick-actions { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 992px) { .quick-actions { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 576px) { .quick-actions { grid-template-columns: repeat(2, 1fr); } }
+
+    .quick-btn {
+        background: var(--tblr-bg-surface);
+        border: 1px solid var(--tblr-border-color);
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: block;
+    }
+    .quick-btn:hover {
+        background: var(--tblr-bg-surface-secondary);
+        transform: translateY(-2px);
+        border-color: rgba(102, 126, 234, 0.4);
+    }
+    .quick-btn i {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    .quick-btn span {
+        font-size: 0.8rem;
+        color: var(--tblr-secondary);
+        display: block;
+    }
+
+    /* Module Cards */
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    @media (max-width: 768px) { .module-grid { grid-template-columns: 1fr; } }
+
+    .module-card {
+        background: var(--tblr-bg-surface);
+        border: 1px solid var(--tblr-border-color);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+    .module-header {
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--tblr-border-color);
+    }
+    .module-header .left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .module-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+    .module-title {
+        font-weight: 600;
+        color: var(--tblr-body-color);
+        font-size: 0.95rem;
+    }
+    .module-count {
+        font-size: 0.75rem;
+        color: var(--tblr-secondary);
+    }
+    .module-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .module-actions a {
+        padding: 0.4rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .module-actions .list-btn {
+        background: var(--tblr-bg-surface-secondary);
+        color: var(--tblr-secondary);
+    }
+    .module-actions .list-btn:hover {
+        background: var(--tblr-bg-surface-tertiary);
+        color: var(--tblr-body-color);
+    }
+    .module-actions .add-btn {
+        background: rgba(102, 126, 234, 0.15);
+        color: #667eea;
+    }
+    .module-actions .add-btn:hover {
+        background: rgba(102, 126, 234, 0.25);
+    }
+
+    /* Recent Items */
+    .recent-list { padding: 0; }
+    .recent-item {
+        padding: 0.75rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border-bottom: 1px solid var(--tblr-border-color-translucent);
+        transition: background 0.2s;
+    }
+    .recent-item:last-child { border-bottom: none; }
+    .recent-item:hover { background: var(--tblr-bg-surface-secondary); }
+    .recent-item .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .recent-item .title {
+        flex: 1;
+        color: var(--tblr-body-color);
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .recent-item .time {
+        color: var(--tblr-secondary);
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    /* Sidebar Cards */
+    .sidebar-card {
+        background: var(--tblr-bg-surface);
+        border: 1px solid var(--tblr-border-color);
+        border-radius: 14px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+    .sidebar-card:last-child { margin-bottom: 0; }
+    .sidebar-header {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--tblr-border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .sidebar-header h4 {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--tblr-body-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .sidebar-body { padding: 1.25rem; }
+
+    /* Profile Card */
+    .profile-center { text-align: center; }
+    .profile-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    .profile-name {
+        font-weight: 600;
+        color: var(--tblr-body-color);
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+    .profile-role {
+        color: var(--tblr-secondary);
+        font-size: 0.85rem;
+    }
+    .profile-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--tblr-border-color);
+    }
+    .profile-stat { text-align: center; }
+    .profile-stat .value {
+        font-weight: 700;
+        color: var(--tblr-body-color);
+        font-size: 1.1rem;
+    }
+    .profile-stat .label {
+        font-size: 0.75rem;
+        color: var(--tblr-secondary);
+    }
+
+    /* System Status */
+    .system-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--tblr-border-color-translucent);
+    }
+    .system-item:last-child { border-bottom: none; }
+    .system-item .label {
+        color: var(--tblr-secondary);
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .system-item .label .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #22c55e;
+    }
+    .system-item .value {
+        color: #22c55e;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    /* AI Chat */
+    .ai-badge {
+        background: rgba(139, 92, 246, 0.15);
+        color: #8b5cf6;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .ai-messages {
+        background: var(--tblr-bg-surface-secondary);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        max-height: 160px;
+        overflow-y: auto;
+    }
+    .ai-message {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    .ai-message:last-child { margin-bottom: 0; }
+    .ai-message .avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+    .ai-message .avatar.ai { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+    .ai-message .avatar.user { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+    .ai-message .bubble {
+        background: var(--tblr-bg-surface);
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        color: var(--tblr-body-color);
+    }
+    .ai-input {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .ai-input input {
+        flex: 1;
+        background: var(--tblr-bg-surface-secondary);
+        border: 1px solid var(--tblr-border-color);
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+        color: var(--tblr-body-color);
+        font-size: 0.85rem;
+    }
+    .ai-input input::placeholder { color: var(--tblr-secondary); }
+    .ai-input input:focus {
+        outline: none;
+        border-color: rgba(139, 92, 246, 0.4);
+    }
+    .ai-input button {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        border: none;
+        border-radius: 8px;
+        padding: 0 1rem;
+        color: #fff;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+    .ai-input button:hover { opacity: 0.9; }
+
+    /* Colors */
+    .text-danger { color: #ef4444 !important; }
+    .text-success { color: #22c55e !important; }
+    .text-warning { color: #f59e0b !important; }
+    .text-orange { color: #f97316 !important; }
+    .text-purple { color: #8b5cf6 !important; }
+    .text-indigo { color: #6366f1 !important; }
+    .text-cyan { color: #06b6d4 !important; }
+    .text-blue { color: #3b82f6 !important; }
+    .text-secondary-custom { color: #6b7280 !important; }
+
+    .bg-danger-light { background: rgba(239, 68, 68, 0.15) !important; }
+    .bg-success-light { background: rgba(34, 197, 94, 0.15) !important; }
+    .bg-warning-light { background: rgba(245, 158, 11, 0.15) !important; }
+    .bg-orange-light { background: rgba(249, 115, 22, 0.15) !important; }
+    .bg-purple-light { background: rgba(139, 92, 246, 0.15) !important; }
+    .bg-indigo-light { background: rgba(99, 102, 241, 0.15) !important; }
+    .bg-cyan-light { background: rgba(6, 182, 212, 0.15) !important; }
+    .bg-blue-light { background: rgba(59, 130, 246, 0.15) !important; }
+</style>
+@endpush
+
+<div>
+    {{-- Welcome Banner --}}
+    <div class="welcome-banner">
+        <div>
+            <h2>{{ $welcomeMessage['title'] }}</h2>
+            <p>{{ $welcomeMessage['subtitle'] }}</p>
+        </div>
+        <div class="stat-pills">
+            @if($visibleWidgets['aiChat'] && $aiCredit > 0)
+            <div class="stat-pill">
+                <i class="fas fa-coins"></i>
+                <div>
+                    <div class="value">{{ $aiCreditFormatted }}</div>
+                    <div class="label">AI Kredi</div>
+                </div>
+            </div>
+            @endif
+            @if($isAdminOrRoot && isset($moduleStats['users']))
+            <div class="stat-pill">
+                <i class="fas fa-users"></i>
+                <div>
+                    <div class="value">{{ $moduleStats['users']['value'] }}</div>
+                    <div class="label">Kullanici</div>
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- Quick Actions --}}
+    @if($visibleWidgets['quickActions'] && count($quickActions) > 0)
+    <div class="section-title">Hizli Islemler</div>
+    <div class="quick-actions">
+        @foreach($quickActions as $module => $action)
+        <a href="{{ route($action['route']) }}" class="quick-btn">
+            <i class="{{ $action['icon'] }} text-{{ $action['color'] }}"></i>
+            <span>{{ $action['name'] }}</span>
+        </a>
+        @endforeach
+        @if($isAdminOrRoot)
+        <a href="#" onclick="clearSystemCache(); return false;" class="quick-btn">
+            <i class="fas fa-sync text-blue"></i>
+            <span>Cache Temizle</span>
+        </a>
+        @endif
+    </div>
+    @endif
+
+    {{-- Main Grid --}}
+    <div class="main-grid">
+        {{-- Left: Module Cards --}}
+        <div>
+            @if(count($recentItems) > 0)
+            <div class="section-title">Moduller</div>
+            <div class="module-grid">
+                @foreach($recentItems as $moduleKey => $module)
+                <div class="module-card">
+                    <div class="module-header">
+                        <div class="left">
+                            <div class="module-icon bg-{{ $module['color'] }}-light">
+                                <i class="{{ $module['icon'] }} text-{{ $module['color'] }}"></i>
+                            </div>
+                            <div>
+                                <div class="module-title">{{ $module['title'] }}</div>
+                                <div class="module-count">
+                                    @if(isset($moduleStats[$moduleKey]))
+                                        {{ $moduleStats[$moduleKey]['value'] }} {{ strtolower($module['title']) }}
+                                    @else
+                                        {{ count($module['items']) }} kayit
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-actions">
+                            <a href="{{ route($module['route']) }}" class="list-btn">Listele</a>
+                            @if($this->canCreateModule($moduleKey))
+                            <a href="{{ route($module['manageRoute']) }}" class="add-btn">+ Ekle</a>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="recent-list">
+                        @foreach(array_slice($module['items'], 0, 2) as $item)
+                        <div class="recent-item">
+                            <span class="dot" style="background: {{ $item['status'] ? '#22c55e' : '#f59e0b' }};"></span>
+                            <span class="title">{{ $item['title'] }}</span>
+                            <span class="time">{{ $item['date'] }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @else
+            <div class="section-title">Moduller</div>
+            <div class="module-card" style="padding: 3rem; text-align: center;">
+                <i class="fas fa-inbox fa-3x mb-3" style="color: var(--tblr-secondary);"></i>
+                <p style="color: var(--tblr-secondary); margin: 0;">Henuz icerik bulunmuyor</p>
+            </div>
+            @endif
+        </div>
+
+        {{-- Right: Sidebar --}}
+        <div>
+            {{-- AI Chat --}}
+            @if($visibleWidgets['aiChat'])
+            <div class="sidebar-card">
+                <div class="sidebar-header">
+                    <h4><i class="fas fa-robot" style="color: #8b5cf6;"></i> AI Asistan</h4>
+                    <span class="ai-badge">{{ $aiCreditFormatted }} Kredi</span>
+                </div>
+                <div class="sidebar-body">
+                    <div class="ai-messages" id="aiChatMessages">
+                        <div class="ai-message">
+                            <div class="avatar ai"><i class="fas fa-robot"></i></div>
+                            <div class="bubble">Merhaba! Size nasil yardimci olabilirim?</div>
+                        </div>
+                    </div>
+                    <div class="ai-input">
+                        <input type="text" placeholder="Mesajinizi yazin..."
+                               wire:model.live="aiChatMessage"
+                               wire:keydown.enter.prevent="sendAiMessage">
+                        <button type="button" wire:click="sendAiMessage">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            {{-- Profile --}}
+            @if($visibleWidgets['profile'])
+            <div class="sidebar-card">
+                <div class="sidebar-body">
+                    <div class="profile-center">
+                        <div class="profile-avatar">{{ substr(auth()->user()->name ?? 'U', 0, 1) }}</div>
+                        <div class="profile-name">{{ auth()->user()->name }}</div>
+                        <div class="profile-role">{{ auth()->user()->roles->first()->name ?? 'Kullanici' }}</div>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <div class="value">{{ count($activeModules) }}</div>
+                                <div class="label">Modul</div>
+                            </div>
+                            <div class="profile-stat">
+                                <div class="value">{{ auth()->user()->created_at->diffInDays(now()) }}</div>
+                                <div class="label">Gun</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            {{-- System Status --}}
+            @if($visibleWidgets['systemStatus'])
+            <div class="sidebar-card">
+                <div class="sidebar-header">
+                    <h4><i class="fas fa-server" style="color: #22c55e;"></i> Sistem</h4>
+                </div>
+                <div class="sidebar-body" style="padding-top: 0.5rem;">
+                    <div class="system-item">
+                        <span class="label"><span class="dot"></span> PHP</span>
+                        <span class="value">{{ PHP_VERSION }}</span>
+                    </div>
+                    <div class="system-item">
+                        <span class="label"><span class="dot"></span> Laravel</span>
+                        <span class="value">{{ app()->version() }}</span>
+                    </div>
+                    <div class="system-item">
+                        <span class="label"><span class="dot"></span> Database</span>
+                        <span class="value">Bagli</span>
+                    </div>
+                    <div class="system-item">
+                        <span class="label"><span class="dot"></span> Cache</span>
+                        <span class="value">Aktif</span>
+                    </div>
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+function clearSystemCache() {
+    if (!confirm('Cache temizlensin mi?')) return;
+    fetch('/admin/cache/clear-all', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Basarili', 'Cache temizlendi!', 'success');
+        } else {
+            showToast('Hata', data.message, 'error');
+        }
+    })
+    .catch(error => showToast('Hata', error.message, 'error'));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('aiChatMessages');
+    if (typeof Livewire !== 'undefined') {
+        Livewire.on('message-sent', (data) => {
+            if (!chatMessages) return;
+            addMessage(data[0].userMessage, true);
+            setTimeout(() => addMessage(data[0].aiResponse, false), 500);
+        });
+    }
+    function addMessage(text, isUser) {
+        if (!chatMessages) return;
+        const div = document.createElement('div');
+        div.className = 'ai-message';
+        div.innerHTML = isUser ? `
+            <div style="flex:1;text-align:right;"><div class="bubble" style="display:inline-block;">${text}</div></div>
+            <div class="avatar user"><i class="fas fa-user"></i></div>
+        ` : `
+            <div class="avatar ai"><i class="fas fa-robot"></i></div>
+            <div class="bubble">${text}</div>
+        `;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+});
+</script>
+@endpush

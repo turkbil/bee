@@ -56,12 +56,6 @@ class AIService
             $providerData = $this->providerManager->getProviderServiceWithoutFailover();
             $this->currentProvider = $providerData['provider'];
             $this->currentService = $providerData['service'];
-
-            Log::debug('🔥 AI Provider loaded successfully', [
-                'provider' => $this->currentProvider->name,
-                'model' => $this->currentProvider->default_model
-            ]);
-            
         } catch (\Exception $e) {
             Log::error('❌ AI Provider loading failed - Attempting Silent Fallback', [
                 'error' => $e->getMessage(),

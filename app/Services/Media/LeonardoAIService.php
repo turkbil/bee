@@ -237,224 +237,263 @@ class LeonardoAIService
 
     /**
      * Endüstriyel ekipman için dinamik prompt (Tenant 2)
+     * 11 KURAL FORMÜLÜ uygulanmış versiyon
      */
     protected function buildIndustrialDynamicPrompt(string $title): array
     {
         // Ana ekipmanı tespit et
         $equipment = $this->detectEquipment($title);
 
-        // ========== PROMPT ZİNCİRİ HAVUZLARI ==========
+        // ========== 11 KURAL FORMÜLÜ - PROMPT ZİNCİRİ HAVUZLARI ==========
 
-        // 1. SUBJECT - Ana konu (ekipmanın durumu/aksiyonu)
+        // 1. SUBJECT + ACTION (Kural 2: Mikro-hikaye)
         $subjects = [
-            "a {$equipment} being operated by a worker",
-            "a {$equipment} lifting heavy pallets",
-            "a {$equipment} parked in the corner of a facility",
-            "a {$equipment} undergoing maintenance",
-            "workers inspecting a {$equipment}",
-            "a technician repairing a {$equipment}",
-            "a {$equipment} moving through narrow aisles",
-            "a {$equipment} loading a delivery truck",
-            "multiple {$equipment}s lined up for shift change",
-            "a {$equipment} with its operator taking a break",
-            "a brand new {$equipment} being delivered",
-            "a {$equipment} charging at its station",
-            "a {$equipment} navigating around obstacles",
-            "workers training on a {$equipment}",
-            "a {$equipment} stacking boxes on high shelves",
-            "a supervisor overseeing {$equipment} operations",
-            "a {$equipment} in the middle of inventory counting",
-            "a dusty {$equipment} after a long shift",
-            "a {$equipment} with safety lights flashing",
-            "workers discussing near a parked {$equipment}",
+            "a {$equipment} being operated by a focused worker checking gauges",
+            "a {$equipment} lifting heavy pallets with slight hydraulic strain",
+            "a {$equipment} parked in the corner with keys still in ignition",
+            "a {$equipment} undergoing maintenance with tools scattered around",
+            "workers inspecting a {$equipment} pointing at worn parts",
+            "a technician repairing a {$equipment} with grease-stained hands",
+            "a {$equipment} moving through narrow aisles carefully navigating",
+            "a {$equipment} loading a delivery truck while driver waits",
+            "multiple {$equipment}s lined up with operators chatting during break",
+            "a {$equipment} with its operator wiping sweat during hot shift",
+            "a brand new {$equipment} being unloaded from transport",
+            "a {$equipment} backing into charging station after long use",
+            "a {$equipment} navigating around spilled packaging material",
+            "new employee nervously training on a {$equipment}",
+            "a {$equipment} carefully stacking boxes while supervisor watches",
+            "a senior operator demonstrating {$equipment} technique to trainee",
+            "a {$equipment} mid-turn in the middle of inventory counting",
+            "a dusty {$equipment} engine cooling down after overtime shift",
+            "a {$equipment} with safety lights alerting nearby pedestrians",
+            "workers gathered near a {$equipment} reviewing delivery manifest",
         ];
 
-        // 2. CONTEXT/ACTION - Bağlam ve aksiyon
+        // 2. CONTEXT + TIME/SEASON (Kural 3: Ortam + Zaman/Mevsim)
         $contexts = [
-            "during a busy morning shift",
-            "in the middle of a large shipment arrival",
-            "during routine safety inspection",
-            "at the end of a productive day",
-            "during peak season operations",
-            "while other workers walk by",
-            "as packages move on conveyor belts nearby",
-            "during a training session for new employees",
-            "while rain falls outside the open warehouse door",
-            "during an efficiency audit",
-            "as the facility prepares for a major order",
-            "during shift handover",
-            "while inventory is being reorganized",
-            "during a scheduled maintenance window",
-            "as natural light streams through skylights",
-            "while forklifts pass in the background",
-            "during a quality control check",
-            "as workers sort packages nearby",
-            "during early morning preparations",
-            "while the facility buzzes with activity",
+            "during a busy Monday morning shift in early autumn",
+            "in the middle of holiday season shipment rush",
+            "during routine safety inspection on a quiet Tuesday",
+            "at the end of a productive winter day as sun sets",
+            "during Black Friday peak operations chaos",
+            "while other workers pass by in summer heat",
+            "as packages rush on conveyor belts before Christmas",
+            "during spring training session for seasonal employees",
+            "while cold rain falls outside the open warehouse door",
+            "during year-end efficiency audit in December",
+            "as the facility prepares for massive spring sale order",
+            "during 3pm shift handover in late afternoon light",
+            "while inventory is being reorganized before fiscal year end",
+            "during scheduled weekend maintenance window",
+            "as morning sunlight streams through frosty skylights",
+            "while forklifts pass in the humid summer background",
+            "during pre-dawn quality control check in winter darkness",
+            "as workers sort packages in autumn afternoon glow",
+            "during 5am early morning preparations before store opens",
+            "while the facility buzzes with midday summer activity",
         ];
 
-        // 3. FACTORY TEXTURE - Endüstriyel doku detayları
+        // 3. FACTORY TEXTURE + IMPERFECTIONS (Kural 9: Kusurlar)
         $textures = [
-            "scratched metal surfaces and worn rubber wheels",
-            "oil stains on concrete floor",
-            "industrial grime on machinery",
-            "dust particles visible in light beams",
-            "weathered wooden pallets stacked nearby",
-            "scuffed safety barriers",
-            "peeling warning labels on equipment",
-            "rust spots on older machinery",
-            "tire marks on the polished floor",
-            "condensation on cold metal surfaces",
-            "fingerprints on control panels",
-            "chalk marks on the floor for positioning",
-            "cable management systems showing wear",
-            "patched concrete where equipment was moved",
-            "faded floor markings from years of use",
-            "grease spots near maintenance areas",
-            "worn grip tape on handles",
-            "scratched safety glass on enclosures",
-            "paint chips on metal railings",
-            "subtle vibration blur from running machinery",
+            "scratched metal surfaces, worn rubber wheels, subtle dust on lens",
+            "oil stains on concrete floor, slight motion blur from vibration",
+            "industrial grime on machinery, fingerprints visible on controls",
+            "dust particles floating in light beams, minor lens flare",
+            "weathered wooden pallets, faded safety tape, natural vignetting",
+            "scuffed safety barriers with paint chips, chromatic aberration at edges",
+            "peeling warning labels, rust spots, slight grain visible",
+            "condensation on cold surfaces creating soft focus areas",
+            "fingerprints on control panels, subtle sensor dust spots",
+            "chalk marks on floor, cable wear, natural film grain texture",
+            "patched concrete showing age, minor barrel distortion",
+            "faded floor markings from years of use, authentic wear patterns",
+            "grease spots near maintenance areas, realistic dirt accumulation",
+            "worn grip tape on handles, subtle shadow noise",
+            "scratched safety glass, authentic industrial patina",
+            "paint chips on metal railings revealing layers underneath",
+            "tire marks creating leading lines, dust motes in light",
+            "equipment showing honest wear from daily operations",
+            "authentic scuffs and scratches telling equipment history",
+            "real-world imperfections adding documentary authenticity",
         ];
 
-        // 4. CAMERA ANGLE - Kamera açısı
+        // 4. CAMERA ANGLE
         $angles = [
-            "shot from a low angle emphasizing scale",
-            "captured from eye level for natural perspective",
-            "photographed from above showing the workspace",
-            "taken from a three-quarter view",
-            "shot through warehouse shelving",
-            "captured with slight Dutch angle for dynamism",
-            "photographed from behind the operator",
-            "taken from a distance showing full context",
-            "close-up focusing on operational details",
-            "wide shot encompassing the entire scene",
-            "shot from the side showing profile",
-            "captured looking down an aisle",
-            "photographed through a doorway",
-            "taken from mezzanine level looking down",
-            "shot at operator's shoulder level",
-            "captured from forklift's perspective",
-            "photographed through safety netting",
-            "taken with leading lines of floor markings",
-            "shot emphasizing depth of the facility",
-            "captured with equipment in foreground",
+            "shot from a low angle emphasizing industrial scale",
+            "captured from eye level for natural documentary perspective",
+            "photographed from above showing organized workspace chaos",
+            "taken from a dynamic three-quarter view",
+            "shot through warehouse shelving creating depth layers",
+            "captured with slight Dutch angle adding energy",
+            "photographed from behind the operator for POV feel",
+            "taken from distance showing full environmental context",
+            "close-up focusing on operational details and wear",
+            "wide environmental shot encompassing the scene",
+            "shot from the side showing equipment profile",
+            "captured looking down a long warehouse aisle",
+            "photographed through industrial doorway frame",
+            "taken from mezzanine level looking down at action",
+            "shot at operator's shoulder level for intimate feel",
+            "captured from worker's perspective approaching equipment",
+            "photographed through safety netting adding texture",
+            "taken with floor markings creating strong leading lines",
+            "shot emphasizing vast depth of the facility",
+            "captured with equipment as dominant foreground element",
         ];
 
-        // 5. BACKGROUND - Arka plan
+        // 5. BACKGROUND
         $backgrounds = [
-            "rows of metal pallet racks extending into distance",
-            "loading dock with trucks waiting",
-            "automated conveyor system in motion",
-            "office windows overlooking the warehouse floor",
-            "emergency exits with green signage",
-            "fire extinguisher stations along walls",
-            "electrical panels and industrial controls",
+            "rows of metal pallet racks extending into hazy distance",
+            "loading dock with trucks waiting in morning mist",
+            "automated conveyor system in constant motion",
+            "office windows overlooking the busy warehouse floor",
+            "emergency exits with green signage glowing",
+            "fire extinguisher stations along weathered walls",
+            "electrical panels with indicator lights blinking",
             "stacked cardboard boxes ready for shipping",
-            "empty pallets waiting to be used",
-            "other workers operating different equipment",
-            "industrial fans mounted on walls",
-            "time clocks and safety bulletin boards",
-            "plastic strip curtains between zones",
-            "cold storage doors with frost",
-            "packaging stations with materials",
-            "quality control inspection area",
-            "break room visible through windows",
-            "shipping labels and scanners on tables",
-            "maintenance tool cabinets",
-            "safety equipment storage lockers",
+            "empty pallets waiting with morning dew",
+            "other workers operating equipment in background blur",
+            "industrial fans creating slight motion",
+            "time clocks and faded safety bulletin boards",
+            "plastic strip curtains swaying between zones",
+            "cold storage doors with frost patterns",
+            "packaging stations with scattered materials",
+            "quality control area with inspection lights",
+            "break room visible through smudged windows",
+            "shipping labels and well-used scanners on tables",
+            "maintenance tool cabinets left open",
+            "safety equipment lockers showing daily use",
         ];
 
-        // 6. LIGHTING - Aydınlatma
+        // 6. LIGHTING
         $lightings = [
-            "harsh fluorescent lights casting sharp shadows",
-            "natural daylight from large skylights",
-            "warm evening light through high windows",
-            "mixed lighting from different sources",
-            "dramatic side lighting from dock doors",
-            "soft diffused light on overcast day",
-            "bright LED panels creating even illumination",
-            "spotlights highlighting work areas",
-            "dim lighting in less-used sections",
-            "golden hour light streaming through windows",
-            "blue-tinted light from computer screens",
-            "emergency lighting creating red accents",
-            "motion-sensor lights flickering on",
-            "light rays cutting through dusty air",
-            "reflected light from polished floors",
-            "harsh overhead lights with deep shadows",
-            "backlit scene with equipment silhouettes",
-            "cool white industrial lighting",
-            "warm incandescent from office areas",
-            "strobing safety lights on equipment",
+            "harsh fluorescent lights casting sharp industrial shadows",
+            "natural daylight from skylights creating god rays through dust",
+            "warm golden evening light through high windows",
+            "mixed practical lighting from different sources",
+            "dramatic side lighting from open dock doors",
+            "soft diffused overcast light for even tones",
+            "bright LED panels with subtle flicker",
+            "spotlights highlighting main work areas",
+            "dim atmospheric lighting in background sections",
+            "golden hour light streaming through dirty windows",
+            "cool blue-tinted light from computer screens",
+            "emergency red lighting creating accent color",
+            "motion-sensor lights creating exposure variation",
+            "light rays cutting through dusty industrial air",
+            "reflected light bouncing off polished concrete",
+            "harsh overhead lights with deep contrasty shadows",
+            "backlit silhouette creating dramatic mood",
+            "cool white industrial lighting mix",
+            "warm incandescent spill from office areas",
+            "safety lights creating orange accent highlights",
         ];
 
-        // 7. CAMERA - Kamera tipi
+        // 7. CAMERA
         $cameras = [
             "shot on Canon EOS R5",
             "captured with Sony A7R IV",
             "photographed using Nikon Z9",
-            "taken with Hasselblad medium format",
+            "taken with Hasselblad X2D medium format",
             "shot on Fujifilm GFX 100S",
-            "captured with Leica SL2",
-            "photographed using Phase One",
-            "taken with RED cinema camera",
-            "shot on ARRI Alexa",
-            "captured with Blackmagic Pocket",
-            "photographed using Canon C70",
-            "taken with Sony FX6",
+            "captured with Leica SL2-S",
+            "photographed using Phase One IQ4",
+            "taken with RED V-Raptor cinema camera",
+            "shot on ARRI Alexa Mini LF",
+            "captured with Blackmagic Pocket 6K Pro",
+            "photographed using Canon C500 Mark II",
+            "taken with Sony FX6 cinema camera",
             "shot on Panasonic S1H",
             "captured with Sigma fp L",
-            "photographed using Canon 5D Mark IV",
+            "photographed using Canon 1DX Mark III",
         ];
 
-        // 8. LENS - Lens tipi
+        // 8. LENS
         $lenses = [
-            "with 24mm wide angle lens",
-            "using 35mm prime for natural view",
+            "with 24mm wide angle lens at f/4",
+            "using 35mm prime for natural documentary view",
             "with 50mm lens for standard perspective",
-            "using 85mm for compressed background",
-            "with 16-35mm zoom for flexibility",
-            "using 24-70mm versatile zoom",
-            "with 70-200mm telephoto",
-            "using tilt-shift lens for architecture",
-            "with 14mm ultra-wide for dramatic effect",
-            "using 100mm macro for detail shots",
+            "using 85mm for compressed industrial background",
+            "with 16-35mm zoom capturing wide environment",
+            "using 24-70mm versatile zoom lens",
+            "with 70-200mm telephoto compression",
+            "using tilt-shift lens for architectural control",
+            "with 14mm ultra-wide for dramatic scale",
+            "using vintage Helios 44-2 for character",
             "with 28mm street photography lens",
-            "using 40mm pancake lens",
-            "with anamorphic lens for cinematic look",
-            "using vintage manual focus lens",
-            "with f/1.4 aperture for shallow depth",
+            "using 40mm pancake for discrete shooting",
+            "with anamorphic lens for cinematic oval bokeh",
+            "using adapted vintage Nikkor for organic rendering",
+            "with f/1.4 aperture creating shallow focus",
         ];
 
-        // 9. ATMOSPHERE - Atmosfer ve mood
+        // 9. ATMOSPHERE
         $atmospheres = [
             "conveying industrial efficiency and precision",
             "showing the human element of logistics work",
-            "emphasizing safety and professionalism",
+            "emphasizing safety culture and professionalism",
             "capturing the rhythm of warehouse operations",
-            "highlighting modern supply chain technology",
-            "showing wear and authenticity of daily use",
-            "conveying scale and organization",
+            "highlighting practical supply chain technology",
+            "showing authentic wear from daily operations",
+            "conveying massive scale and organization",
             "emphasizing teamwork and coordination",
             "capturing a moment of focused concentration",
-            "showing the contrast of human and machine",
-            "highlighting the complexity of logistics",
-            "conveying reliability and consistency",
-            "showing pride in skilled equipment operation",
-            "capturing the energy of a working facility",
-            "emphasizing cleanliness despite heavy use",
-            "showing the passage of time through wear",
-            "conveying urgency during busy periods",
-            "highlighting attention to detail",
-            "showing quiet moments between rushes",
-            "capturing the satisfaction of completed work",
+            "showing harmony of human and machine",
+            "highlighting logistics complexity and flow",
+            "conveying reliability through routine",
+            "showing pride in skilled equipment mastery",
+            "capturing kinetic energy of a working facility",
+            "emphasizing maintained order despite heavy use",
+            "showing time's passage through honest wear",
+            "conveying controlled urgency in busy periods",
+            "highlighting professional attention to detail",
+            "showing brief calm moments between rushes",
+            "capturing satisfaction of work well done",
         ];
 
-        // ========== PROMPT BİRLEŞTİRME ==========
+        // 10. FILM STOCK (Kural 8: Film Stoku Referansı) - YENİ!
+        $filmStocks = [
+            "shot on Kodak Portra 400 film stock emulation",
+            "with Fuji Pro 400H color science",
+            "emulating Kodak Ektar 100 vibrant tones",
+            "using Cinestill 800T tungsten balanced look",
+            "with Kodak Vision3 500T cinema film aesthetic",
+            "emulating Fuji Velvia 50 saturated colors",
+            "shot with Kodak Gold 200 warm consumer film look",
+            "using Ilford HP5 Plus black and white tonality converted to color",
+            "with Kodak Tri-X 400 grain structure in color",
+            "emulating Agfa Vista 400 European color palette",
+            "shot on Lomography 800 cross-processed look",
+            "with Kodak Portra 160 smooth skin-tone rendering",
+            "using Fuji Superia 400 everyday film aesthetic",
+            "emulating Kodak E100 slide film saturation",
+            "with CineStill 50D daylight balanced cinema look",
+        ];
+
+        // 11. POST-PROCESSING (Kural 11: Son İşlem) - YENİ!
+        $postProcessing = [
+            "with subtle cinematic color grading",
+            "processed with lifted shadows and muted highlights",
+            "with desaturated industrial film look",
+            "using teal and orange color grade",
+            "with natural documentary color treatment",
+            "processed for magazine editorial quality",
+            "with subtle split-toning in shadows",
+            "using filmic tone curve and faded blacks",
+            "with authentic photojournalistic processing",
+            "processed with slight cross-processing effect",
+            "using muted earth tone color palette",
+            "with commercial photography finish",
+            "processed for industrial catalog aesthetic",
+            "with subtle film halation on highlights",
+            "using practical on-set color science",
+        ];
+
+        // ========== PROMPT BİRLEŞTİRME (11 KURAL FORMÜLÜ) ==========
 
         $prompt = sprintf(
-            "Photograph of %s, %s. Details include %s. %s. Background shows %s. %s. %s %s. The image %s.",
+            "Documentary photograph of %s, %s. Environmental details include %s. %s. Background shows %s. %s. %s %s. %s. %s. The image %s.",
             $subjects[array_rand($subjects)],
             $contexts[array_rand($contexts)],
             $textures[array_rand($textures)],
@@ -463,6 +502,8 @@ class LeonardoAIService
             $lightings[array_rand($lightings)],
             $cameras[array_rand($cameras)],
             $lenses[array_rand($lenses)],
+            $filmStocks[array_rand($filmStocks)],
+            $postProcessing[array_rand($postProcessing)],
             $atmospheres[array_rand($atmospheres)]
         );
 
@@ -483,93 +524,287 @@ class LeonardoAIService
 
     /**
      * Müzik sektörü için dinamik prompt (Tenant 1001)
+     * 11 KURAL FORMÜLÜ uygulanmış versiyon
      */
     protected function buildMusicDynamicPrompt(string $title): array
     {
         // Müzik enstrümanı/konusu tespit et
         $musicSubject = $this->detectMusicSubject($title);
 
+        // ========== 11 KURAL FORMÜLÜ - PROMPT ZİNCİRİ HAVUZLARI ==========
+
+        // 1. SUBJECT + ACTION (Kural 2: Mikro-hikaye)
         $subjects = [
-            "a musician playing {$musicSubject}",
-            "a {$musicSubject} resting on a stand",
-            "hands positioned on {$musicSubject}",
-            "a vintage {$musicSubject} in a studio",
-            "a {$musicSubject} during a recording session",
-            "a collection of instruments including {$musicSubject}",
-            "a {$musicSubject} being tuned",
-            "close-up of {$musicSubject} details",
-            "a {$musicSubject} on stage before a concert",
-            "a {$musicSubject} in a practice room",
+            "a musician deeply focused playing {$musicSubject} with eyes closed",
+            "a worn {$musicSubject} resting on a stand catching dust particles",
+            "weathered hands positioned on {$musicSubject} mid-performance",
+            "a vintage {$musicSubject} with scratches telling its history",
+            "a {$musicSubject} during an intense recording take",
+            "a collection of instruments with {$musicSubject} as centerpiece",
+            "a {$musicSubject} being carefully tuned by experienced hands",
+            "intimate close-up of {$musicSubject} showing wear and character",
+            "a {$musicSubject} waiting on empty stage before performance",
+            "a {$musicSubject} in a practice room with coffee cups nearby",
+            "musician's fingers dancing across {$musicSubject} keys/strings",
+            "a {$musicSubject} reflected in studio glass during late session",
+            "sweat drops on musician playing {$musicSubject} under hot lights",
+            "a {$musicSubject} with sheet music scattered around it",
+            "a {$musicSubject} being passed between generations",
+            "a {$musicSubject} in its open case after a gig",
+            "musician lost in the moment with {$musicSubject}",
+            "a {$musicSubject} with cables trailing across worn floor",
+            "close-up of {$musicSubject} bridge showing rosin dust",
+            "a {$musicSubject} leaning against a vintage amplifier",
         ];
 
+        // 2. CONTEXT + TIME/SEASON (Kural 3: Ortam + Zaman/Mevsim)
         $contexts = [
-            "in a professional recording studio",
-            "during a late night jam session",
-            "at a live concert venue",
-            "in a cozy home studio",
-            "during a music lesson",
-            "at a rehearsal space",
-            "in a vintage music shop",
-            "during soundcheck",
-            "at a music festival backstage",
-            "in an acoustic treatment room",
+            "in a professional recording studio during late night session",
+            "during a 3am jam session with empty coffee cups",
+            "at a live concert venue on a hot summer night",
+            "in a cozy home studio on a rainy autumn afternoon",
+            "during an early morning music lesson in spring light",
+            "at a rehearsal space after midnight practice",
+            "in a vintage music shop on a quiet winter morning",
+            "during soundcheck as afternoon sun streams through",
+            "at a music festival backstage before sunset performance",
+            "in an acoustic treatment room during winter recording session",
+            "during golden hour streaming through studio windows",
+            "in a basement studio during a thunderstorm",
+            "at a jazz club during blue hour",
+            "in a concert hall during empty afternoon rehearsal",
+            "during a cold winter night home recording session",
+            "at an outdoor festival as summer twilight falls",
+            "in a vintage analog studio during humid summer session",
+            "during post-show breakdown at midnight",
+            "in a practice room as autumn leaves fall outside",
+            "during pre-dawn studio session with city lights visible",
         ];
 
+        // 3. TEXTURE + IMPERFECTIONS (Kural 9: Kusurlar)
+        $textures = [
+            "worn leather straps, fret wear, subtle lens dust visible",
+            "fingerprints on polished surfaces, slight motion blur from playing",
+            "vintage patina on hardware, natural film grain texture",
+            "dust particles floating in spotlight, chromatic aberration at edges",
+            "scratched pickguard, worn frets, natural vignetting",
+            "condensation on cold strings, soft focus on background",
+            "cable wear, tape marks on floor, subtle lens flare",
+            "rosin dust on strings, fingerprints on keys, sensor dust spots",
+            "sweat stains on neck, worn tuning pegs, authentic grain",
+            "gaffer tape residue, cable tangles, natural imperfections",
+            "worn volume knobs, faded labels, subtle halation on highlights",
+            "pick scratches near soundhole, dust in fretboard grooves",
+            "oxidized hardware, yellowed ivory keys, vintage character",
+            "stick marks on drum heads, cymbal patina, honest wear",
+            "microphone pop filter showing use, cable coils on floor",
+            "amp tolex showing gig wear, speaker cloth tears",
+            "mixing board faders showing finger oil wear",
+            "headphone cable tangles, coffee ring stains on desk",
+            "patch cable chaos, power strip overload visible",
+            "authentic studio mess adding documentary realism",
+        ];
+
+        // 4. CAMERA ANGLE
+        $angles = [
+            "shot from low angle emphasizing performer's presence",
+            "captured at eye level for intimate connection",
+            "photographed from above showing workspace context",
+            "taken from three-quarter view for dynamic composition",
+            "shot through studio glass creating layers",
+            "captured with slight Dutch angle for energy",
+            "photographed from behind showing performer's posture",
+            "taken from audience perspective looking up at stage",
+            "close-up isolating hands on instrument",
+            "wide shot encompassing full studio environment",
+            "shot from side profile showing concentration",
+            "captured through drum kit creating foreground interest",
+            "photographed through microphone stand forest",
+            "taken from control room looking into live room",
+            "shot at instrument level emphasizing form",
+            "captured looking down guitar neck toward headstock",
+            "photographed through piano strings",
+            "taken with leading lines of cables and cords",
+            "shot emphasizing depth of recording space",
+            "captured with musician as silhouette against lights",
+        ];
+
+        // 5. BACKGROUND
+        $backgrounds = [
+            "acoustic panels and vintage gear in soft focus",
+            "amplifier stacks with glowing tubes",
+            "mixing console with countless lit channels",
+            "other musicians warming up in background blur",
+            "concert audience as bokeh lights",
+            "studio monitors and reference equipment",
+            "vintage posters and gold records on walls",
+            "exposed brick with neon beer signs",
+            "soundproofing foam creating texture pattern",
+            "cable racks and patch bays",
+            "drum kit waiting in shadowy corner",
+            "piano reflecting stage lights",
+            "recording booth through glass",
+            "vintage microphone collection displayed",
+            "tour cases stacked against wall",
+            "audience phones creating light dots",
+            "smoke machine haze diffusing lights",
+            "instrument cases open on floor",
+            "studio clock showing late hour",
+            "coffee maker and takeout containers on desk",
+        ];
+
+        // 6. LIGHTING
         $lightings = [
-            "warm amber stage lighting",
-            "soft studio lighting with diffusers",
-            "dramatic spotlight from above",
-            "neon accent lights in background",
-            "natural window light in studio",
-            "colored LED strips creating mood",
-            "classic incandescent warmth",
-            "blue hour light through windows",
-            "mixed practical and studio lights",
-            "silhouette backlighting",
+            "warm amber stage lighting with dramatic falloff",
+            "soft studio lighting through silk diffusers",
+            "dramatic single spotlight from above",
+            "neon accent lights creating color separation",
+            "natural window light mixing with tungsten practicals",
+            "colored LED strips creating mood wash",
+            "classic incandescent warmth from desk lamps",
+            "blue hour light through rain-streaked windows",
+            "mixed practical and controlled studio lights",
+            "silhouette backlighting with lens flare",
+            "candle-like warmth from tube amplifiers",
+            "harsh stage par can creating hard shadows",
+            "soft bounce from white studio walls",
+            "colored gel creating split lighting",
+            "rim light separating subject from background",
+            "overhead fluorescent mixed with warm spots",
+            "string lights creating bokeh orbs",
+            "gobo patterns on walls from stage lights",
+            "screen glow illuminating face in control room",
+            "practical lamp creating warm accent",
         ];
 
+        // 7. CAMERA
         $cameras = [
             "shot on Canon EOS R5",
             "captured with Sony A7 III",
             "photographed using Leica Q2",
-            "taken with Fujifilm X-T4",
-            "shot on Nikon Z6",
+            "taken with Fujifilm X-T5",
+            "shot on Nikon Z6 II",
+            "captured with Hasselblad X2D",
+            "photographed using Leica M11",
+            "taken with Sony A7R V",
+            "shot on Canon R6 Mark II",
+            "captured with Fujifilm GFX 50S II",
+            "photographed using Nikon Z8",
+            "taken with Leica SL2-S",
+            "shot on Panasonic S5 II",
+            "captured with Sony A7C II",
+            "photographed using Canon R3",
         ];
 
+        // 8. LENS
         $lenses = [
-            "with 35mm prime lens",
-            "using 50mm f/1.2 for bokeh",
-            "with 85mm portrait lens",
-            "using 24mm for environment",
-            "with vintage anamorphic lens",
+            "with 35mm prime lens at f/1.8",
+            "using 50mm f/1.2 for creamy bokeh",
+            "with 85mm portrait lens for compression",
+            "using 24mm capturing environmental context",
+            "with vintage anamorphic lens for oval bokeh",
+            "using Helios 44-2 for swirly background blur",
+            "with 135mm f/1.8 for subject isolation",
+            "using 28mm for intimate environmental shot",
+            "with Voigtlander 40mm for natural perspective",
+            "using vintage Canon FD glass for character",
+            "with Zeiss Batis 25mm for sharpness with soul",
+            "using adapted Minolta Rokkor for warmth",
+            "with Sigma Art 35mm for clinical sharpness",
+            "using Leica Summilux 50mm for rendering",
+            "with tilt-shift for selective focus effect",
         ];
 
+        // 9. ATMOSPHERE
         $atmospheres = [
-            "conveying passion for music",
-            "showing artistic dedication",
-            "capturing creative energy",
-            "emphasizing musical craftsmanship",
+            "conveying deep passion for music",
+            "showing artistic dedication and focus",
+            "capturing raw creative energy",
+            "emphasizing years of musical craftsmanship",
             "showing intimate connection with instrument",
+            "conveying the vulnerability of performance",
+            "capturing the magic of live music",
+            "emphasizing dedication to the craft",
+            "showing music as spiritual practice",
+            "conveying the loneliness of late night creation",
+            "capturing collaborative creative energy",
+            "emphasizing the physical nature of playing",
+            "showing music transcending technical skill",
+            "conveying the passage of time through practice",
+            "capturing a breakthrough creative moment",
+            "emphasizing the tradition of musical heritage",
+            "showing the exhaustion and joy post-performance",
+            "conveying complete absorption in sound",
+            "capturing the anticipation before a show",
+            "emphasizing the sacred ritual of making music",
         ];
+
+        // 10. FILM STOCK (Kural 8: Film Stoku Referansı) - YENİ!
+        $filmStocks = [
+            "shot on Kodak Portra 800 pushed one stop",
+            "with Fuji Pro 400H pastel tones",
+            "emulating Cinestill 800T tungsten halation",
+            "using Kodak Tri-X 400 converted to duotone",
+            "with Ilford Delta 3200 grain structure in color",
+            "emulating Kodak Vision3 500T cinema aesthetic",
+            "shot with Lomography 800 cross-processed",
+            "using Fuji Natura 1600 low light rendering",
+            "with Kodak Portra 160 smooth gradations",
+            "emulating Agfa Scala black and white toned",
+            "shot on expired Kodak Ektachrome look",
+            "with Fuji Velvia 50 saturated tones for contrast",
+            "using Kodak Gold 200 consumer warmth",
+            "emulating Polaroid 600 color palette",
+            "with CineStill 50D daylight balanced clarity",
+        ];
+
+        // 11. POST-PROCESSING (Kural 11: Son İşlem) - YENİ!
+        $postProcessing = [
+            "with moody cinematic color grading",
+            "processed with crushed blacks and lifted shadows",
+            "with vintage analog warmth treatment",
+            "using complementary color split-toning",
+            "with documentary concert photography processing",
+            "processed for album cover aesthetic",
+            "with subtle film halation on highlights",
+            "using muted tones with selective color pop",
+            "with high contrast editorial finish",
+            "processed with cross-processing color shift",
+            "using VSCO film emulation aesthetic",
+            "with natural skin tones preserved",
+            "processed for intimate candid feel",
+            "with subtle vignette drawing eye to subject",
+            "using period-appropriate color science",
+        ];
+
+        // ========== PROMPT BİRLEŞTİRME (11 KURAL FORMÜLÜ) ==========
 
         $prompt = sprintf(
-            "Photograph of %s, %s. %s. %s %s. The image %s.",
+            "Intimate photograph of %s, %s. Environmental details include %s. %s. Background shows %s. %s. %s %s. %s. %s. The image %s.",
             $subjects[array_rand($subjects)],
             $contexts[array_rand($contexts)],
+            $textures[array_rand($textures)],
+            $angles[array_rand($angles)],
+            $backgrounds[array_rand($backgrounds)],
             $lightings[array_rand($lightings)],
             $cameras[array_rand($cameras)],
             $lenses[array_rand($lenses)],
+            $filmStocks[array_rand($filmStocks)],
+            $postProcessing[array_rand($postProcessing)],
             $atmospheres[array_rand($atmospheres)]
         );
 
         $styles = ['cinematic', 'moody', 'film', 'vibrant'];
         $selectedStyle = $styles[array_rand($styles)];
 
+        $contrasts = [3, 3.5, 4];
+        $selectedContrast = $contrasts[array_rand($contrasts)];
+
         return [
             'prompt' => $prompt,
             'style' => $selectedStyle,
             'styleUUID' => $this->styleUUIDs[$selectedStyle],
-            'contrast' => 3.5,
+            'contrast' => $selectedContrast,
         ];
     }
 
@@ -701,6 +936,113 @@ class LeonardoAIService
         }
 
         return 'musical instrument';
+    }
+
+    /**
+     * Direkt prompt'tan görsel üret (Admin Panel için)
+     * OpenAI tarafından enhance edilmiş prompt alır
+     *
+     * @param string $enhancedPrompt Enhance edilmiş prompt
+     * @param array $options ['width' => 1472, 'height' => 832, 'style' => 'cinematic']
+     * @return array|null ['url' => '...', 'content' => '...', 'generation_id' => '...']
+     */
+    public function generateFromPrompt(string $enhancedPrompt, array $options = []): ?array
+    {
+        if (empty($this->apiKey)) {
+            Log::error('Leonardo AI: API key not configured');
+            return null;
+        }
+
+        $width = $options['width'] ?? 1472;
+        $height = $options['height'] ?? 832;
+        $style = $options['style'] ?? 'cinematic';
+        $styleUUID = $this->styleUUIDs[$style] ?? $this->styleUUIDs['cinematic'];
+
+        Log::info('🎨 Leonardo AI: Starting generation from enhanced prompt', [
+            'prompt_length' => strlen($enhancedPrompt),
+            'style' => $style,
+            'dimensions' => "{$width}x{$height}",
+        ]);
+
+        try {
+            // Görsel üretimi başlat
+            $generationId = $this->createGenerationDirect($enhancedPrompt, $width, $height, $styleUUID);
+
+            if (!$generationId) {
+                return null;
+            }
+
+            // Sonucu bekle
+            $imageUrl = $this->waitForGeneration($generationId);
+
+            if (!$imageUrl) {
+                return null;
+            }
+
+            // Görseli indir
+            $imageData = $this->downloadImage($imageUrl);
+
+            if (!$imageData) {
+                return null;
+            }
+
+            Log::info('🎨 Leonardo AI: Generation successful', [
+                'generation_id' => $generationId,
+                'image_size' => strlen($imageData),
+            ]);
+
+            return [
+                'url' => $imageUrl,
+                'content' => $imageData,
+                'generation_id' => $generationId,
+                'provider' => 'leonardo',
+                'prompt' => $enhancedPrompt,
+                'style' => $style,
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('🎨 Leonardo AI: Generation failed', [
+                'error' => $e->getMessage(),
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Direkt prompt ile generation oluştur (enhance edilmiş prompt için)
+     */
+    protected function createGenerationDirect(string $prompt, int $width, int $height, string $styleUUID): ?string
+    {
+        // Negative prompt - yazı ve gereksiz elementleri engelle
+        $negativePrompt = "text, letters, words, numbers, digits, brand names, logos, labels, signs, watermarks, typography, writing, captions, subtitles, titles, stamps, badges, stickers, distorted faces, extra limbs, blurry, low quality";
+
+        $response = Http::withHeaders([
+            'accept' => 'application/json',
+            'content-type' => 'application/json',
+            'authorization' => 'Bearer ' . $this->apiKey,
+        ])->timeout(30)->post($this->baseUrl . '/generations', [
+            'modelId' => $this->defaultModel,
+            'prompt' => $prompt,
+            'negative_prompt' => $negativePrompt,
+            'styleUUID' => $styleUUID,
+            'contrast' => 3.5,
+            'num_images' => 1,
+            'width' => $width,
+            'height' => $height,
+            'alchemy' => false,
+            'ultra' => false,
+        ]);
+
+        if (!$response->successful()) {
+            Log::error('Leonardo AI: Create generation failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            return null;
+        }
+
+        $data = $response->json();
+        return $data['sdGenerationJob']['generationId'] ?? null;
     }
 
     /**

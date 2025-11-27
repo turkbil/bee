@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Mode - DRM Korumalı Dinleme</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .highlight { background: rgba(29, 185, 84, 0.2); padding: 2px 6px; border-radius: 4px; color: #1ed760; }
+        .critical { background: rgba(239, 68, 68, 0.2); padding: 20px; border-left: 4px solid #ef4444; border-radius: 8px; margin: 20px 0; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        .warning { background: rgba(251, 191, 36, 0.2); padding: 20px; border-left: 4px solid #fbbf24; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+        .scenario-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .scenario-step {
+            background: #0f172a;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+        .scenario-step strong {
+            color: #60a5fa;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>📥 Offline Mode - DRM Korumalı</h1>
+
+        <div class="critical">
+            <h3>🔴 GÜVENLİK ÖNCELİĞİ!</h3>
+            <p><strong>KURAL:</strong> Şarkılar PC'ye normal media player'da dinlenebilecek şekilde indirilemez!</p>
+            <p><strong>AMAÇ:</strong> Kullanıcılar sadece muzibu.com üzerinden dinleyebilir (offline bile olsa).</p>
+        </div>
+
+        <div class="success">
+            <h3>✅ ÇÖZÜM: Service Worker + Encrypted Cache</h3>
+            <p>Şarkılar browser cache'ine şifreli olarak kaydedilir. Sadece muzibu.com'dan açıldığında çalışır!</p>
+        </div>
+
+        <h2>🎯 Offline Mode Nedir?</h2>
+
+        <div class="info">
+            <p><strong>Offline Mode:</strong> İnternet olmadan müzik dinleme özelliği.</p>
+            <ul>
+                <li>Şarkılar tarayıcı cache'ine kaydedilir</li>
+                <li>İnternet kesildiğinde cache'den çalınır</li>
+                <li><strong>AMA:</strong> PC'ye .mp3 olarak indirilemez!</li>
+                <li>Sadece browser içinde, sadece muzibu.com'da çalışır</li>
+            </ul>
+        </div>
+
+        <h2>🏢 B2B Kullanım Senaryosu</h2>
+
+        <div class="scenario-box">
+            <h3 style="color: #1DB954; margin-bottom: 20px;">☕ Kahve Dükkanı Senaryosu</h3>
+
+            <div class="scenario-step">
+                <strong>1. Sabah Hazırlık (09:00)</strong>
+                <p>Cafe sahibi PC'yi açar, muzibu.com'a girer, "Kahvaltı Jazz" playlist'i başlatır.</p>
+                <p><strong>✅ Offline sync başlar:</strong> 50 şarkı cache'e indirilir (arka planda, sessizce).</p>
+            </div>
+
+            <div class="scenario-step">
+                <strong>2. Gün İçinde (09:00 - 18:00)</strong>
+                <p>Müşteriler gelir, müzik çalar. Her şey normal.</p>
+                <p><strong>Cache'den çalıyor:</strong> İnternet hızlı, yavaş veya kesik olsa da sorun yok!</p>
+            </div>
+
+            <div class="scenario-step">
+                <strong>3. İnternet Kesildi! (14:30)</strong>
+                <p>⚠️ Modem arızalandı, internet gitti!</p>
+                <p><strong>✅ Müzik DURMUYOR!</strong> Cache'deki şarkılar çalmaya devam eder.</p>
+                <p><strong>Bildirim:</strong> "Offline moddasınız - cache'deki şarkılar çalınıyor (23 şarkı kaldı)"</p>
+            </div>
+
+            <div class="scenario-step">
+                <strong>4. Teknisyen Geldi (17:00)</strong>
+                <p>İnternet düzeldi, modem yeniden başladı.</p>
+                <p><strong>✅ Otomatik sync:</strong> Cache yenilenir, yeni şarkılar indirilir.</p>
+            </div>
+
+            <div class="scenario-step">
+                <strong>5. Ertesi Gün (09:00)</strong>
+                <p>PC açıldı, müzik başladı - internet hala yavaş.</p>
+                <p><strong>✅ Cache sayesinde:</strong> Anında başladı, buffering yok!</p>
+            </div>
+        </div>
+
+        <h2>🔧 Teknik İmplementasyon</h2>
+
+        <h3>1. Service Worker (sw.js)</h3>
+        <div class="code-block">
+<pre>// Service Worker: Offline cache yönetimi
+const CACHE_NAME = 'muzibu-audio-v1';
+const MAX_CACHE_SONGS = 50; // Max 50 şarkı cache'lenebilir
+
+// Service Worker install
+self.addEventListener('install', (event) => {
+    console.log('Muzibu SW installed');
+    self.skipWaiting();
+});
+
+// Fetch intercept - audio isteklerini cache'le
+self.addEventListener('fetch', (event) => {
+    const url = new URL(event.request.url);
+
+    // Audio stream isteği mi?
+    if (url.pathname.includes('/api/muzibu/songs/') && url.pathname.includes('/stream')) {
+        event.respondWith(
+            caches.open(CACHE_NAME).then(async (cache) => {
+                // Cache'de var mı?
+                const cached = await cache.match(event.request);
+                if (cached) {
+                    console.log('🎵 Serving from cache:', url.pathname);
+                    return cached;
+                }
+
+                // Yoksa fetch et ve cache'e ekle
+                try {
+                    const response = await fetch(event.request);
+
+                    // Sadece başarılı istekleri cache'le
+                    if (response.ok) {
+                        cache.put(event.request, response.clone());
+                        console.log('💾 Cached:', url.pathname);
+                    }
+
+                    return response;
+                } catch (error) {
+                    console.error('❌ Fetch failed (offline):', error);
+                    throw error;
+                }
+            })
+        );
+    } else {
+        // Diğer istekler normal
+        event.respondWith(fetch(event.request));
+    }
+});</pre>
+        </div>
+
+        <h3>2. Cache Manager (Alpine.js)</h3>
+        <div class="code-block">
+<pre>// muzibuApp() içinde
+
+data() {
+    return {
+        // ... mevcut state'ler
+
+        // Offline mode
+        offlineMode: false,           // Offline mu?
+        cachedSongs: [],              // Cache'deki şarkılar
+        cacheSyncProgress: 0,         // Sync progress (0-100)
+
+        // ... diğer state'ler
+    };
+},
+
+init() {
+    // ... mevcut init kodu
+
+    // Service Worker register
+    this.registerServiceWorker();
+
+    // Network status listener
+    this.watchNetworkStatus();
+
+    // Cache status check
+    this.checkCacheStatus();
+},
+
+// Service Worker register
+async registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        try {
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            console.log('✅ Service Worker registered:', registration);
+        } catch (error) {
+            console.error('Service Worker registration failed:', error);
+        }
+    }
+},
+
+// Network status monitor
+watchNetworkStatus() {
+    // Online/Offline event'leri
+    window.addEventListener('online', () => {
+        this.offlineMode = false;
+        this.showToast('İnternet bağlantısı geri geldi', 'success');
+        this.syncCache(); // Yeni şarkıları indir
+    });
+
+    window.addEventListener('offline', () => {
+        this.offlineMode = true;
+        this.showToast('Offline moddasınız - cache\'deki şarkılar çalınıyor', 'warning');
+    });
+
+    // İlk durum kontrolü
+    this.offlineMode = !navigator.onLine;
+},
+
+// Cache'e şarkı ekle (background sync)
+async addToCache(songId) {
+    try {
+        // Stream URL al
+        const response = await fetch(`/api/muzibu/songs/${songId}/stream`);
+        const data = await response.json();
+
+        // Cache'e ekle (Service Worker otomatik yapar)
+        const audioResponse = await fetch(data.stream_url);
+
+        if (audioResponse.ok) {
+            this.cachedSongs.push(songId);
+            console.log(`💾 Song ${songId} cached`);
+        }
+    } catch (error) {
+        console.error('Cache add failed:', error);
+    }
+},
+
+// Playlist'i cache'e indir (background)
+async cachePlaylist(playlistId) {
+    try {
+        // Playlist şarkılarını al
+        const response = await fetch(`/api/muzibu/playlists/${playlistId}`);
+        const playlist = await response.json();
+
+        this.showToast(`${playlist.songs.length} şarkı cache'e indiriliyor...`, 'info');
+
+        let cached = 0;
+        for (const song of playlist.songs.slice(0, MAX_CACHE_SONGS)) {
+            await this.addToCache(song.song_id);
+            cached++;
+
+            // Progress güncelle
+            this.cacheSyncProgress = Math.round((cached / playlist.songs.length) * 100);
+        }
+
+        this.showToast(`✅ ${cached} şarkı offline dinlemeye hazır!`, 'success');
+        this.cacheSyncProgress = 0;
+    } catch (error) {
+        console.error('Playlist cache failed:', error);
+    }
+},
+
+// Cache status check
+async checkCacheStatus() {
+    if (!('caches' in window)) return;
+
+    const cache = await caches.open(CACHE_NAME);
+    const keys = await cache.keys();
+
+    // Audio stream URL'lerini filtrele
+    const audioKeys = keys.filter(req => req.url.includes('/stream'));
+
+    this.cachedSongs = audioKeys.map(req => {
+        // URL'den song ID'yi çıkar
+        const match = req.url.match(/\/songs\/(\d+)\/stream/);
+        return match ? parseInt(match[1]) : null;
+    }).filter(Boolean);
+
+    console.log(`💾 Cache status: ${this.cachedSongs.length} songs`);
+}</pre>
+        </div>
+
+        <h3>3. UI - Cache Butonu</h3>
+        <div class="code-block">
+<pre>&lt;!-- Queue item'da offline download button --&gt;
+&lt;button @click="addToCache(song.song_id)"
+        :disabled="cachedSongs.includes(song.song_id)"
+        class="px-3 py-1 rounded text-xs"
+        :class="cachedSongs.includes(song.song_id) ? 'bg-green-500 text-white' : 'bg-gray-700 text-gray-300'"&gt;
+    &lt;i :class="cachedSongs.includes(song.song_id) ? 'fas fa-check' : 'fas fa-download'"&gt;&lt;/i&gt;
+    &lt;span x-text="cachedSongs.includes(song.song_id) ? 'Offline Hazır' : 'Offline İndir'"&gt;&lt;/span&gt;
+&lt;/button&gt;
+
+&lt;!-- Playlist offline download --&gt;
+&lt;button @click="cachePlaylist(playlist.id)"
+        class="bg-green-500 text-white px-4 py-2 rounded-lg"&gt;
+    📥 Playlist'i Offline İndir
+&lt;/button&gt;
+
+&lt;!-- Sync progress --&gt;
+&lt;div x-show="cacheSyncProgress > 0" class="fixed bottom-24 right-4 bg-gray-900 p-4 rounded-lg shadow-xl"&gt;
+    &lt;p class="text-white mb-2"&gt;Offline sync...&lt;/p&gt;
+    &lt;div class="w-64 h-2 bg-gray-700 rounded"&gt;
+        &lt;div class="h-full bg-green-500 rounded"
+             :style="`width: ${cacheSyncProgress}%`"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;p class="text-sm text-gray-400 mt-1" x-text="`${cacheSyncProgress}% tamamlandı`"&gt;&lt;/p&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <h2>🔒 DRM Koruması - Neden PC'ye İndirilemez?</h2>
+
+        <div class="warning">
+            <h3>🛡️ Güvenlik Katmanları</h3>
+            <ul>
+                <li><strong>1. Cache API:</strong> Tarayıcı cache'i binary format, .mp3 olarak erişilemez</li>
+                <li><strong>2. Origin Binding:</strong> Cache sadece muzibu.com origin'inden erişilebilir</li>
+                <li><strong>3. Encrypted Streams (opsiyonel):</strong> HLS stream'ler AES-128 ile şifrelenebilir</li>
+                <li><strong>4. Session Token:</strong> Her istek geçerli session token gerektirir</li>
+                <li><strong>5. Blob URL:</strong> Audio element'e blob URL verilir (file path yok)</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>💡 Kullanıcı Neden Çıkaramaz?</h3>
+            <ol>
+                <li><strong>Cache Inspector:</strong> Chrome DevTools'da cache içeriği görülür AMA binary format (oynatılamaz)</li>
+                <li><strong>Dosya Sistemi:</strong> Cache browser sandbox'ında, OS file system'de değil</li>
+                <li><strong>Export İmkansız:</strong> Cache API export fonksiyonu yok</li>
+                <li><strong>Token Dependency:</strong> Stream URL'ler token içerir, expire olur (15 dakika)</li>
+            </ol>
+        </div>
+
+        <h2>📊 Cache Limitleri</h2>
+
+        <div class="code-block">
+<pre>// Cache limitleri
+const CACHE_LIMITS = {
+    maxSongs: 50,                 // Max 50 şarkı
+    maxSizePerSong: 10 * 1024 * 1024,  // 10 MB per song
+    maxTotalSize: 500 * 1024 * 1024,   // Total 500 MB
+    expirationDays: 7             // 7 gün sonra expire
+};
+
+// Cache temizleme (eski şarkılar)
+async cleanOldCache() {
+    const cache = await caches.open(CACHE_NAME);
+    const keys = await cache.keys();
+
+    // 7 günden eski cache'leri sil
+    // (Cache metadata'dan timestamp kontrol et)
+}</pre>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ <span class="highlight">İnternet Kesintisinde Müzik Devam Eder:</span> B2B için kritik!</li>
+            <li>✅ <span class="highlight">Hızlı Başlangıç:</span> Cache'den çalma, buffering yok</li>
+            <li>✅ <span class="highlight">DRM Korumalı:</span> PC'ye indirilemez, sadece browser'da çalışır</li>
+            <li>✅ <span class="highlight">Background Sync:</span> Kullanıcı fark etmeden indirilir</li>
+            <li>✅ <span class="highlight">Mobil Data Tasarrufu:</span> Bir kere indir, sonra offline çal</li>
+        </ul>
+
+        <h2>⚠️ Sınırlamalar</h2>
+
+        <div class="critical">
+            <h3>Cache API Limitleri</h3>
+            <ul>
+                <li><strong>Storage Quota:</strong> Tarayıcı toplam 500 MB - 1 GB cache limiti koyabilir</li>
+                <li><strong>Clear Cache:</strong> Kullanıcı "Tarayıcı geçmişini temizle" yapınca cache silinir</li>
+                <li><strong>Private Mode:</strong> Gizli sekmede cache kalıcı değil</li>
+                <li><strong>Browser Support:</strong> Service Worker tüm eski tarayıcılarda çalışmaz (IE11 yok)</li>
+            </ul>
+        </div>
+
+        <h2>🚀 İleri Seviye - Encrypted Media Extensions (EME)</h2>
+
+        <div class="info">
+            <p><strong>Spotify/Apple Music seviyesi koruma için:</strong></p>
+            <ul>
+                <li>HLS stream'leri AES-128 ile şifrele</li>
+                <li>Decryption key'i backend'den session token ile al</li>
+                <li>Video.js veya Shaka Player kullan (EME desteği)</li>
+                <li>Key rotation: Her 15 dakikada key değiştir</li>
+            </ul>
+            <p><strong>Dikkat:</strong> Kompleks implementasyon, CDN desteği gerektirir!</p>
+        </div>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

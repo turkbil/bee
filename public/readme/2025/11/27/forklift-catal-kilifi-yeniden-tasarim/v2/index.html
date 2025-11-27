@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forklift Çatal Kılıfı - Landing Page Taslak v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- HEADER -->
+        <header class="mb-12 pb-6 border-b-2 border-gray-200">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                🏗️ Forklift Çatal Kılıfı - Landing Page Taslak v2
+            </h1>
+            <div class="text-gray-600">
+                📅 Tarih: 2025-11-27 |
+                🎯 Tenant: ixtif.com |
+                👤 Talep: FontAwesome + Responsive (2x2) + No Bounce
+            </div>
+        </header>
+
+        <!-- HERO SECTION -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                <i class="fas fa-star"></i> Hero Section
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white rounded-xl shadow-lg p-8">
+                <!-- Sol: Görsel -->
+                <div class="bg-gray-100 rounded-lg p-8 flex items-center justify-center">
+                    <div class="text-center text-gray-500">
+                        <i class="fas fa-image text-6xl mb-4"></i>
+                        <p>Ürün Görseli / Slider</p>
+                    </div>
+                </div>
+
+                <!-- Sağ: İçerik -->
+                <div class="flex flex-col justify-center">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                        Forklift Operasyonlarınızı 3 Metre Uzağa Taşıyın
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-6">
+                        ST37 Kalite Çelik, Emniyet Pimli, Güçlendirilmiş Yapı -
+                        2,5 Tondan 10 Tona Kadar Tüm Forkliftler İçin Özel Üretim
+                    </p>
+
+                    <!-- Trust Badges -->
+                    <div class="flex flex-wrap gap-4 mb-8">
+                        <span class="flex items-center gap-2 text-sm text-gray-700">
+                            <i class="fas fa-certificate text-orange-500"></i> CE Belgeli
+                        </span>
+                        <span class="flex items-center gap-2 text-sm text-gray-700">
+                            <i class="fas fa-shield-alt text-green-500"></i> 1 Yıl Garanti
+                        </span>
+                        <span class="flex items-center gap-2 text-sm text-gray-700">
+                            <i class="fas fa-truck text-blue-500"></i> Hızlı Kargo
+                        </span>
+                        <span class="flex items-center gap-2 text-sm text-gray-700">
+                            <i class="fas fa-users text-purple-500"></i> 1000+ Mutlu Müşteri
+                        </span>
+                    </div>
+
+                    <!-- CTA Button -->
+                    <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all">
+                        <i class="fas fa-phone mr-2"></i> Hemen Teklif Alın
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROBLEM - SOLUTION -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                <i class="fas fa-exclamation-triangle"></i> Problem - Solution
+            </h2>
+
+            <!-- Problemler: 4 Card - 2x2 Grid (PC), 1 Sütun (Mobil) -->
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold text-red-600 mb-4 flex items-center gap-2">
+                    <i class="fas fa-times-circle"></i> Karşılaştığınız Sorunlar
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Problem 1 -->
+                    <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-red-400 transition-all">
+                        <i class="fas fa-times-circle text-red-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-lg mb-2">Uzanamayan Çatallar</h4>
+                        <p class="text-gray-600">
+                            Tırın arka tarafındaki yüklere normal çatallar yetmiyor.
+                            Kamyonun etrafından dönmek zaman ve yakıt kaybı.
+                        </p>
+                    </div>
+
+                    <!-- Problem 2 -->
+                    <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-red-400 transition-all">
+                        <i class="fas fa-box-open text-red-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-lg mb-2">Çift Paletli Yükler</h4>
+                        <p class="text-gray-600">
+                            İki palet yan yana duruyor ama çatallarınız yetişmiyor.
+                            Tek tek almak verimsiz.
+                        </p>
+                    </div>
+
+                    <!-- Problem 3 -->
+                    <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-red-400 transition-all">
+                        <i class="fas fa-warehouse text-red-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-lg mb-2">Dar Alan Manevra</h4>
+                        <p class="text-gray-600">
+                            Uzun çatallar sürekli takılı kaldığında dar alanlarda dönmek
+                            imkansız hale geliyor.
+                        </p>
+                    </div>
+
+                    <!-- Problem 4 -->
+                    <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-red-400 transition-all">
+                        <i class="fas fa-clock text-red-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-lg mb-2">Zaman Kaybı</h4>
+                        <p class="text-gray-600">
+                            Kamyonu sürekli hareket ettirmek zorunda kalmak operasyon
+                            sürenizi uzatıyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Çözüm Highlight -->
+            <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-8 rounded-xl shadow-xl">
+                <h3 class="text-white font-bold text-2xl mb-4 flex items-center gap-3">
+                    <i class="fas fa-check-circle"></i> İXTİF Çözümü
+                </h3>
+                <p class="text-white text-lg">
+                    <strong>Forklift Çatal Uzatma Kılıfı</strong> eldiven gibi takılır,
+                    gerektiğinde uzun çatal, gerektiğinde dar alan manevra kabiliyeti sağlar.
+                    Esnek, güvenli, dayanıklı.
+                </p>
+            </div>
+        </section>
+
+        <!-- ÖZELLİKLER (USP) -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                <i class="fas fa-fire"></i> Özellikler ve Avantajlar (USP)
+            </h2>
+
+            <!-- 6 Card: 3x2 Grid (PC), 2 Sütun (Tablet), 1 Sütun (Mobil) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- USP 1 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                    <i class="fas fa-shield-alt text-orange-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">ST37 Kalite Çelik</h4>
+                    <p class="text-gray-600">
+                        Yekpare büküm imalat. Kaynaksız, çatlamaya karşı dayanıklı,
+                        uzun ömürlü kullanım.
+                    </p>
+                </div>
+
+                <!-- USP 2 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                    <i class="fas fa-lock text-orange-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">Emniyet Pimli Sistem</h4>
+                    <p class="text-gray-600">
+                        Kulaklı değil, konstrüksiyona entegre emniyet pimi.
+                        Çatal kayması riski sıfır.
+                    </p>
+                </div>
+
+                <!-- USP 3 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                    <i class="fas fa-dumbbell text-orange-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">Gizli Güçlendirme</h4>
+                    <p class="text-gray-600">
+                        Çatal harici uç kısmı gizli güçlendirmeyle mukavemetli.
+                        Ağır yüklerde bile dayanıklı.
+                    </p>
+                </div>
+
+                <!-- USP 4 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                    <i class="fas fa-ruler text-orange-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">İnce Burun Tasarımı</h4>
+                    <p class="text-gray-600">
+                        Orijinal çatalınızın uç formunda yuvarlaklık ve incelik.
+                        Yüklere girerken zorluk yaşamadan.
+                    </p>
+                </div>
+
+                <!-- USP 5 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                    <i class="fas fa-cog text-orange-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">Her İhtiyaca Özel</h4>
+                    <p class="text-gray-600">
+                        Sunta taşıma için sivri burun, 3 metreye kadar uzatma,
+                        yat imalatı için özel ölçüler.
+                    </p>
+                </div>
+
+                <!-- USP 6 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                    <i class="fas fa-shipping-fast text-orange-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">Hızlı Teslimat</h4>
+                    <p class="text-gray-600">
+                        Stokta 1.8m ve 2m boylar. Anlaşmalı kargo ile gün içi sevkiyat.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEKNİK ÖZELLİKLER -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                <i class="fas fa-chart-bar"></i> Teknik Özellikler
+            </h2>
+
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-800 text-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left">Forklift Kapasitesi</th>
+                            <th class="px-6 py-4 text-left">Çelik Kalınlığı</th>
+                            <th class="px-6 py-4 text-left">Standart Boy</th>
+                            <th class="px-6 py-4 text-left">Maksimum Boy</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr class="hover:bg-orange-50 transition-colors">
+                            <td class="px-6 py-4">1-2 Ton</td>
+                            <td class="px-6 py-4">5 mm</td>
+                            <td class="px-6 py-4">1.8m</td>
+                            <td class="px-6 py-4">2.5m</td>
+                        </tr>
+                        <tr class="hover:bg-orange-50 transition-colors">
+                            <td class="px-6 py-4">2.5-3.5 Ton</td>
+                            <td class="px-6 py-4">6 mm</td>
+                            <td class="px-6 py-4">1.8m - 2m</td>
+                            <td class="px-6 py-4">3m</td>
+                        </tr>
+                        <tr class="hover:bg-orange-50 transition-colors">
+                            <td class="px-6 py-4">5 Ton</td>
+                            <td class="px-6 py-4">8 mm</td>
+                            <td class="px-6 py-4">2m</td>
+                            <td class="px-6 py-4">3m</td>
+                        </tr>
+                        <tr class="hover:bg-orange-50 transition-colors">
+                            <td class="px-6 py-4">7-10 Ton</td>
+                            <td class="px-6 py-4">10 mm</td>
+                            <td class="px-6 py-4">2m</td>
+                            <td class="px-6 py-4">3m</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 m-4">
+                    <p class="text-blue-900">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <strong>Not:</strong> Özel ölçüler için iletişime geçin.
+                        Forklift çatal ölçülerinizi bize iletin, size özel üretim yapalım.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- KULLANIM ALANLARI -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                <i class="fas fa-briefcase"></i> Kullanım Alanları
+            </h2>
+
+            <!-- 4 Use Case: 2x2 Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Use Case 1 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all">
+                    <i class="fas fa-truck text-blue-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">Tek Taraflı Boşaltım</h4>
+                    <p class="text-gray-600">
+                        Tırın sadece bir yanından yük alınabilen durumlarda çatal uzatma
+                        ile karşı tarafa uzanın. Kamyonu taşımanıza gerek yok.
+                    </p>
+                </div>
+
+                <!-- Use Case 2 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all">
+                    <i class="fas fa-boxes text-blue-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">Çift Paletli Taşıma</h4>
+                    <p class="text-gray-600">
+                        İki palet yan yana mı? Çatal uzatma ile tek seferde her iki paleti
+                        kaldırın. Zaman ve enerji tasarrufu.
+                    </p>
+                </div>
+
+                <!-- Use Case 3 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all">
+                    <i class="fas fa-industry text-blue-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">Kazan ve Dar Alanlara Uzatım</h4>
+                    <p class="text-gray-600">
+                        Kazanlara malzeme uzatımı, erişilemeyen alanlara yük gönderme.
+                        Yat imalatında erişim sorunu çözüldü.
+                    </p>
+                </div>
+
+                <!-- Use Case 4 -->
+                <div class="bg-white p-6 rounded-lg shadow border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all">
+                    <i class="fas fa-tree text-blue-500 text-5xl mb-4 block"></i>
+                    <h4 class="font-bold text-xl mb-2">Sunta ve Uzun Malzeme Taşıma</h4>
+                    <p class="text-gray-600">
+                        Sunta gibi geniş yüzey alanlı malzemeler için sivri burun özel üretim.
+                        Uzun profiller için 3m uzatma.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="mb-16" x-data="{open: null}">
+            <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                <i class="fas fa-question-circle"></i> Sık Sorulan Sorular
+            </h2>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white rounded-lg shadow border-2 border-gray-200">
+                    <div class="p-6 cursor-pointer flex items-center justify-between" @click="open = open === 1 ? null : 1">
+                        <h4 class="font-bold text-lg flex items-center gap-3">
+                            <i class="fas fa-question-circle text-orange-500"></i>
+                            Forklift Çatal Uzatması Nedir?
+                        </h4>
+                        <i :class="open === 1 ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" class="text-gray-400"></i>
+                    </div>
+                    <div x-show="open === 1" x-collapse class="px-6 pb-6">
+                        <p class="text-gray-600">
+                            Forklift çatal kılıfı olarak bilinen bir tür forklift ataşmanıdır.
+                            Forkliftin çatallarına eldiven gibi geçirilerek normal çatalların
+                            uzanamayacağı alanlardaki yükleri kavrayarak normal çatalla rahatça
+                            alınacak mesafeye taşıyan ekipmandır.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white rounded-lg shadow border-2 border-gray-200">
+                    <div class="p-6 cursor-pointer flex items-center justify-between" @click="open = open === 2 ? null : 2">
+                        <h4 class="font-bold text-lg flex items-center gap-3">
+                            <i class="fas fa-lightbulb text-orange-500"></i>
+                            Neden Çatal Uzatması Tercih Edilmeli?
+                        </h4>
+                        <i :class="open === 2 ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" class="text-gray-400"></i>
+                    </div>
+                    <div x-show="open === 2" x-collapse class="px-6 pb-6">
+                        <p class="text-gray-600">
+                            Forklift çatalları kalıcı olarak takılır ve pratik bir şekilde
+                            değiştirilemez. Çatal uzatma kılıfları gerektiğinde dar alanda
+                            dönmeyi sağlayacak, gerektiğinde uzun bıçak olarak kullanılacak
+                            esnek bir yapıya sahiptir.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white rounded-lg shadow border-2 border-gray-200">
+                    <div class="p-6 cursor-pointer flex items-center justify-between" @click="open = open === 3 ? null : 3">
+                        <h4 class="font-bold text-lg flex items-center gap-3">
+                            <i class="fas fa-shield-alt text-orange-500"></i>
+                            Güvenli midir?
+                        </h4>
+                        <i :class="open === 3 ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" class="text-gray-400"></i>
+                    </div>
+                    <div x-show="open === 3" x-collapse class="px-6 pb-6">
+                        <p class="text-gray-600">
+                            Evet, güvenlidir. ST37 kalite çelikten yekpare büküm imalat,
+                            kaynaksız yapı ile maksimum dayanıklılık sağlanır. Emniyet pimi
+                            ile sabitleme yapılır.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Devamı... 7 FAQ olmalı -->
+            </div>
+        </section>
+
+        <!-- HOW-TO -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                <i class="fas fa-list-ol"></i> Nasıl Sipariş Verilir?
+            </h2>
+
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <ol class="space-y-6">
+                    <!-- Adım 1 -->
+                    <li class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            1
+                        </div>
+                        <div class="flex-1">
+                            <h5 class="font-bold text-lg mb-2 flex items-center gap-2">
+                                <i class="fas fa-ruler-combined text-orange-500"></i>
+                                Ölçü Alın
+                            </h5>
+                            <p class="text-gray-600">
+                                Forkliftinizin çatal ölçülerini ölçün (Genişlik, Kalınlık, Mevcut Boy).
+                                Bu bilgiler özel üretim için kritik öneme sahiptir.
+                            </p>
+                        </div>
+                    </li>
+
+                    <!-- Adım 2 -->
+                    <li class="flex items-start gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            2
+                        </div>
+                        <div class="flex-1">
+                            <h5 class="font-bold text-lg mb-2 flex items-center gap-2">
+                                <i class="fas fa-weight-hanging text-orange-500"></i>
+                                Kapasite Belirleyin
+                            </h5>
+                            <p class="text-gray-600">
+                                Forkliftinizin kaldırma kapasitesini belirleyin (Ton).
+                                Bu bilgi doğru çelik kalınlığının seçimi için gereklidir.
+                            </p>
+                        </div>
+                    </li>
+
+                    <!-- Devamı... 7 adım olmalı -->
+                </ol>
+            </div>
+        </section>
+
+        <!-- CTA VE İLETİŞİM -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-2xl p-8 text-white">
+                <h3 class="text-3xl font-bold mb-4 flex items-center gap-3">
+                    <i class="fas fa-rocket"></i>
+                    Şimdi Sipariş Verin, Avantajları Yakalayın
+                </h3>
+                <ul class="space-y-2 mb-6 text-lg">
+                    <li><i class="fas fa-check-circle mr-2"></i> Ücretsiz Kargo (Türkiye Geneli)</li>
+                    <li><i class="fas fa-check-circle mr-2"></i> 14 Gün İade Garantisi</li>
+                    <li><i class="fas fa-check-circle mr-2"></i> Teknik Destek (Kurulum ve Kullanım)</li>
+                    <li><i class="fas fa-check-circle mr-2"></i> Emniyet Pimi Hediye</li>
+                </ul>
+                <button class="bg-white text-green-600 font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-2xl transition-all">
+                    <i class="fas fa-phone mr-2"></i> Hemen Teklif Alın
+                </button>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="mt-16 pt-8 border-t-2 border-gray-200 text-center text-gray-600">
+            <p>🤖 Modern Landing Page Taslak v2 - FontAwesome + Responsive + No Bounce</p>
+            <p class="text-sm mt-2">Tailwind CSS + Alpine.js + FontAwesome 6</p>
+        </footer>
+
+    </div>
+</body>
+</html>

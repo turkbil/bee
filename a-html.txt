@@ -1,1 +1,6 @@
 
+muzibu-player-v2.js?v=1764211058:150 Muzibu initialized with Howler.js
+muzibu-player-v2.js?v=1764211058:153 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
+muzibu-player-v2.js?v=1764211058:145 Muzibu already initialized, skipping...
+(index):1 [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) <input :type=​"showPassword ? 'text' :​ 'password'" x-model=​"registerForm.password" @input=​"validatePassword()​" placeholder=​"En az 8 karakter" required type=​"password">​
+muzibu-player-v2.js?v=1764211058:192 Featured playlists loaded: 10

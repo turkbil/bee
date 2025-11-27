@@ -1,0 +1,29 @@
+{
+    "version": "1.0.0",
+    "tenant_id": "2",
+    "created_at": "2025-11-27T13:34:38.840904Z",
+    "updated_at": "2025-11-27T13:34:38.841285Z",
+    "synonyms": {
+        "trans palet": "transpalet",
+        "palet jack": "transpalet",
+        "fork lift": "forklift",
+        "portif": "forklift",
+        "istif makinası": "istif makinesi",
+        "reach truck": "istif makinesi"
+    },
+    "promoted_products": [
+        {
+            "keyword": "transpalet",
+            "product_pattern": "F4",
+            "tonnage": "1.5",
+            "priority": 1,
+            "reason": "En önemli ürün - kullanıcı talebi",
+            "added_at": "2025-11-27T13:34:38.841138Z"
+        }
+    ],
+    "popular_searches": [],
+    "common_questions": [],
+    "category_preferences": [],
+    "blacklist": [],
+    "learning_history": []
+}

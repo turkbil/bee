@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Shortcuts - Klavye Kısayolları</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .shortcut-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 25px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .shortcut-card:hover {
+            transform: translateY(-5px);
+            border-color: #1DB954;
+            box-shadow: 0 10px 30px rgba(29, 185, 84, 0.2);
+        }
+        .key {
+            display: inline-block;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1DB954;
+            box-shadow: 0 4px 0 #334155;
+            margin: 5px;
+        }
+        .shortcut-title {
+            color: #60a5fa;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .shortcut-desc {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>⌨️ Keyboard Shortcuts</h1>
+
+        <div class="success">
+            <h3>✅ Spotify Tarzı Klavye Kontrolleri</h3>
+            <p>Profesyonel müzik uygulamalarındaki standart kısayollar. Fare kullanmadan tam kontrol!</p>
+        </div>
+
+        <h2>🎯 Tüm Kısayollar</h2>
+
+        <div class="shortcuts-grid">
+            <div class="shortcut-card">
+                <div class="shortcut-title">Oynat/Duraklat</div>
+                <div><span class="key">Space</span></div>
+                <div class="shortcut-desc">Müziği oynat veya duraklat. En temel kontrol.</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Sonraki Şarkı</div>
+                <div><span class="key">N</span> veya <span class="key">→</span></div>
+                <div class="shortcut-desc">Queue'daki bir sonraki şarkıya geç.</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Önceki Şarkı</div>
+                <div><span class="key">P</span> veya <span class="key">←</span></div>
+                <div class="shortcut-desc">Önceki şarkıya dön.</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">İleri Sar (10 sn)</div>
+                <div><span class="key">Shift</span> + <span class="key">→</span></div>
+                <div class="shortcut-desc">Şarkıda 10 saniye ileri git.</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Geri Sar (10 sn)</div>
+                <div><span class="key">Shift</span> + <span class="key">←</span></div>
+                <div class="shortcut-desc">Şarkıda 10 saniye geri git.</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Ses Aç</div>
+                <div><span class="key">↑</span></div>
+                <div class="shortcut-desc">Ses seviyesini %10 artır (max 100%).</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Ses Kıs</div>
+                <div><span class="key">↓</span></div>
+                <div class="shortcut-desc">Ses seviyesini %10 azalt (min 0%).</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Sessiz (Mute)</div>
+                <div><span class="key">M</span></div>
+                <div class="shortcut-desc">Sesi kapat/aç (toggle).</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Karışık Çalma</div>
+                <div><span class="key">S</span></div>
+                <div class="shortcut-desc">Shuffle'ı aç/kapat (toggle).</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Tekrar Modu</div>
+                <div><span class="key">R</span></div>
+                <div class="shortcut-desc">Repeat: off → all → one → off döngüsü.</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Queue Aç/Kapat</div>
+                <div><span class="key">Q</span></div>
+                <div class="shortcut-desc">Sıra panelini aç veya kapat.</div>
+            </div>
+
+            <div class="shortcut-card">
+                <div class="shortcut-title">Favorilere Ekle</div>
+                <div><span class="key">L</span> (Like)</div>
+                <div class="shortcut-desc">Çalan şarkıyı favorilere ekle/çıkar.</div>
+            </div>
+        </div>
+
+        <h2>💻 İmplementasyon</h2>
+
+        <h3>1. Keyboard Event Listener</h3>
+        <div class="code-block">
+<pre>// Alpine.js init() içinde
+init() {
+    // ... mevcut init kodu
+
+    // Keyboard shortcuts listener
+    this.initKeyboardShortcuts();
+},
+
+initKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        // Input/textarea içinde ise klavye kısayollarını devre dışı bırak
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            return;
+        }
+
+        // Modifier keys
+        const isShift = e.shiftKey;
+        const isCtrl = e.ctrlKey || e.metaKey;
+
+        switch(e.key.toLowerCase()) {
+            case ' ': // Space
+                e.preventDefault();
+                this.togglePlayPause();
+                break;
+
+            case 'n': // Next
+                e.preventDefault();
+                this.nextTrack();
+                break;
+
+            case 'p': // Previous
+                e.preventDefault();
+                this.previousTrack();
+                break;
+
+            case 'arrowright': // Right arrow
+                if (isShift) {
+                    e.preventDefault();
+                    this.seek(10); // 10 saniye ileri
+                } else {
+                    e.preventDefault();
+                    this.nextTrack();
+                }
+                break;
+
+            case 'arrowleft': // Left arrow
+                if (isShift) {
+                    e.preventDefault();
+                    this.seek(-10); // 10 saniye geri
+                } else {
+                    e.preventDefault();
+                    this.previousTrack();
+                }
+                break;
+
+            case 'arrowup': // Up arrow
+                e.preventDefault();
+                this.setVolume(Math.min(100, this.volume + 10));
+                break;
+
+            case 'arrowdown': // Down arrow
+                e.preventDefault();
+                this.setVolume(Math.max(0, this.volume - 10));
+                break;
+
+            case 'm': // Mute
+                e.preventDefault();
+                this.toggleMute();
+                break;
+
+            case 's': // Shuffle
+                e.preventDefault();
+                this.toggleShuffle();
+                break;
+
+            case 'r': // Repeat
+                e.preventDefault();
+                this.cycleRepeat();
+                break;
+
+            case 'q': // Queue
+                e.preventDefault();
+                this.showQueue = !this.showQueue;
+                break;
+
+            case 'l': // Like (favorite)
+                e.preventDefault();
+                if (this.currentSong) {
+                    this.toggleFavorite(this.currentSong.song_id);
+                }
+                break;
+        }
+    });
+
+    console.log('⌨️ Keyboard shortcuts initialized');
+},
+
+// Seek fonksiyonu (ileri/geri sar)
+seek(seconds) {
+    if (!this.currentSong) return;
+
+    const newTime = this.currentTime + seconds;
+
+    if (this.isHlsStream && this.hlsAudio) {
+        // HLS için
+        const hlsAudio = this.getActiveHlsAudio();
+        if (hlsAudio) {
+            hlsAudio.currentTime = Math.max(0, Math.min(newTime, this.duration));
+        }
+    } else if (this.howl) {
+        // Howler için
+        this.howl.seek(Math.max(0, Math.min(newTime, this.duration)));
+    }
+
+    console.log(`⏩ Seeked: ${seconds > 0 ? '+' : ''}${seconds}s`);
+}</pre>
+        </div>
+
+        <h3>2. Visual Feedback (Toast)</h3>
+        <div class="code-block">
+<pre>// Kısayol kullanıldığında toast göster
+showShortcutToast(action, key) {
+    this.showToast(`${action} (${key})`, 'info', 1500); // 1.5 saniye
+}
+
+// Örnek kullanım:
+togglePlayPause() {
+    if (this.isPlaying) {
+        this.pause();
+        this.showShortcutToast('⏸️ Duraklatıldı', 'Space');
+    } else {
+        this.play();
+        this.showShortcutToast('▶️ Oynatılıyor', 'Space');
+    }
+}</pre>
+        </div>
+
+        <h3>3. Kısayol Listesi Modal (Yardım)</h3>
+        <div class="code-block">
+<pre>&lt;!-- Keyboard shortcuts help modal --&gt;
+&lt;div x-show="showShortcutsHelp"
+     x-transition
+     class="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+     @click.self="showShortcutsHelp = false"&gt;
+
+    &lt;div class="bg-gray-900 rounded-xl p-6 w-full max-w-3xl"&gt;
+        &lt;div class="flex items-center justify-between mb-6"&gt;
+            &lt;h3 class="text-2xl font-bold text-white"&gt;⌨️ Klavye Kısayolları&lt;/h3&gt;
+            &lt;button @click="showShortcutsHelp = false"&gt;
+                &lt;i class="fas fa-times text-gray-400"&gt;&lt;/i&gt;
+            &lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;div class="grid grid-cols-2 gap-4"&gt;
+            &lt;!-- Oynatma Kontrolleri --&gt;
+            &lt;div class="bg-gray-950 p-4 rounded-lg"&gt;
+                &lt;h4 class="text-blue-400 font-bold mb-3"&gt;Oynatma&lt;/h4&gt;
+                &lt;div class="space-y-2 text-sm"&gt;
+                    &lt;div class="flex justify-between"&gt;
+                        &lt;span class="text-gray-400"&gt;Oynat/Duraklat&lt;/span&gt;
+                        &lt;kbd class="bg-gray-800 px-2 py-1 rounded text-green-400"&gt;Space&lt;/kbd&gt;
+                    &lt;/div&gt;
+                    &lt;div class="flex justify-between"&gt;
+                        &lt;span class="text-gray-400"&gt;Sonraki Şarkı&lt;/span&gt;
+                        &lt;kbd class="bg-gray-800 px-2 py-1 rounded text-green-400"&gt;N&lt;/kbd&gt;
+                    &lt;/div&gt;
+                    &lt;div class="flex justify-between"&gt;
+                        &lt;span class="text-gray-400"&gt;Önceki Şarkı&lt;/span&gt;
+                        &lt;kbd class="bg-gray-800 px-2 py-1 rounded text-green-400"&gt;P&lt;/kbd&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;!-- Ses Kontrolleri --&gt;
+            &lt;div class="bg-gray-950 p-4 rounded-lg"&gt;
+                &lt;h4 class="text-blue-400 font-bold mb-3"&gt;Ses&lt;/h4&gt;
+                &lt;div class="space-y-2 text-sm"&gt;
+                    &lt;div class="flex justify-between"&gt;
+                        &lt;span class="text-gray-400"&gt;Ses Aç&lt;/span&gt;
+                        &lt;kbd class="bg-gray-800 px-2 py-1 rounded text-green-400"&gt;↑&lt;/kbd&gt;
+                    &lt;/div&gt;
+                    &lt;div class="flex justify-between"&gt;
+                        &lt;span class="text-gray-400"&gt;Ses Kıs&lt;/span&gt;
+                        &lt;kbd class="bg-gray-800 px-2 py-1 rounded text-green-400"&gt;↓&lt;/kbd&gt;
+                    &lt;/div&gt;
+                    &lt;div class="flex justify-between"&gt;
+                        &lt;span class="text-gray-400"&gt;Sessiz&lt;/span&gt;
+                        &lt;kbd class="bg-gray-800 px-2 py-1 rounded text-green-400"&gt;M&lt;/kbd&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;p class="text-gray-500 text-sm mt-4 text-center"&gt;
+            💡 Kısayol listesini açmak için: &lt;kbd class="bg-gray-800 px-2 py-1 rounded"&gt;?&lt;/kbd&gt; tuşuna basın
+        &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Help button (player bar'da) --&gt;
+&lt;button @click="showShortcutsHelp = true"
+        class="text-gray-400 hover:text-white"
+        title="Klavye Kısayolları"&gt;
+    &lt;i class="fas fa-keyboard"&gt;&lt;/i&gt;
+&lt;/button&gt;</pre>
+        </div>
+
+        <h2>🎯 Kullanıcı Senaryoları</h2>
+
+        <div class="info">
+            <h3>Senaryo 1: Hızlı Kontrol</h3>
+            <p><strong>Durum:</strong> Müzik çalıyor, telefon çaldı</p>
+            <p><strong>Eylem:</strong> <span class="key">Space</span> bas → Müzik anında durur</p>
+            <p><strong>Sonuç:</strong> Fare kullanmadan 1 saniyede duraklattın!</p>
+        </div>
+
+        <div class="info">
+            <h3>Senaryo 2: Favorilere Ekleme</h3>
+            <p><strong>Durum:</strong> Harika bir şarkı çalıyor</p>
+            <p><strong>Eylem:</strong> <span class="key">L</span> bas → Favorilere eklendi!</p>
+            <p><strong>Sonuç:</strong> Player'a bakmadan favoriye ekledin</p>
+        </div>
+
+        <div class="info">
+            <h3>Senaryo 3: B2B (Cafe)</h3>
+            <p><strong>Durum:</strong> Müşteri "şarkıyı atlayabilir misiniz?" dedi</p>
+            <p><strong>Eylem:</strong> <span class="key">N</span> bas → Sonraki şarkı</p>
+            <p><strong>Sonuç:</strong> Player'a gitmeden anında atladın!</p>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ <strong>Hızlı Kontrol:</strong> Fare kullanmadan tam kontrol</li>
+            <li>✅ <strong>Spotify Standardı:</strong> Kullanıcılar bildiği kısayolları kullanır</li>
+            <li>✅ <strong>B2B Uyumlu:</strong> Cafe/restoran için pratik</li>
+            <li>✅ <strong>Erişilebilirlik:</strong> Görme engelliler için klavye navigasyonu</li>
+            <li>✅ <strong>Power User:</strong> Profesyonel kullanıcı deneyimi</li>
+        </ul>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyrics - Senkronize Şarkı Sözleri</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+        .lyrics-demo {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .lyrics-container {
+            max-width: 600px;
+            margin: 0 auto;
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #0f172a;
+            border-radius: 12px;
+        }
+        .lyric-line {
+            padding: 12px 20px;
+            margin: 5px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: #64748b;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .lyric-line.active {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: rgba(29, 185, 84, 0.1);
+            border-left: 4px solid #1DB954;
+            transform: translateX(10px);
+        }
+        .lyric-line.past {
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>🎤 Lyrics - Senkronize Sözler</h1>
+
+        <div class="success">
+            <h3>✅ Spotify/Apple Music Tarzı Sözler</h3>
+            <p>Şarkı ilerledikçe sözler otomatik scroll olur, aktif satır vurgulanır!</p>
+        </div>
+
+        <h2>🎯 Senkronize Sözler Nedir?</h2>
+
+        <div class="info">
+            <p><strong>Senkronize Lyrics:</strong> Şarkının hangi saniyesinde hangi söz söylendiğini gösteren sistem.</p>
+            <ul>
+                <li><strong>Auto Scroll:</strong> Şarkı ilerledikçe otomatik kaydırma</li>
+                <li><strong>Highlight:</strong> Aktif satır vurgulanır</li>
+                <li><strong>Click to Seek:</strong> Satıra tıklayınca o noktaya git</li>
+                <li><strong>Format:</strong> LRC (Lyric) formatı (standart)</li>
+            </ul>
+        </div>
+
+        <h2>🎨 Görsel Demo</h2>
+
+        <div class="lyrics-demo">
+            <h3 style="text-align: center; margin-bottom: 30px; color: #60a5fa;">
+                🎵 Smooth Jazz Morning - Jazz Ensemble
+            </h3>
+
+            <div class="lyrics-container">
+                <div class="lyric-line past">[00:15.00] Wake up to the sound</div>
+                <div class="lyric-line past">[00:18.50] Of morning light around</div>
+                <div class="lyric-line active">[00:22.00] Smooth jazz fills the air</div>
+                <div class="lyric-line">[00:25.50] Without a single care</div>
+                <div class="lyric-line">[00:29.00]</div>
+                <div class="lyric-line">[00:32.00] Coffee brewing slow</div>
+                <div class="lyric-line">[00:35.50] Let the music flow</div>
+                <div class="lyric-line">[00:39.00] Piano keys so sweet</div>
+                <div class="lyric-line">[00:42.50] Makes the day complete</div>
+            </div>
+
+            <p style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 0.9rem;">
+                ☝️ Aktif satır yeşil vurgulanır ve otomatik scroll olur
+            </p>
+        </div>
+
+        <h2>📄 LRC Format</h2>
+
+        <div class="code-block">
+<pre>[ar:Jazz Ensemble]
+[ti:Smooth Jazz Morning]
+[al:Morning Vibes]
+[by:Muzibu]
+[length:04:32]
+
+[00:15.00]Wake up to the sound
+[00:18.50]Of morning light around
+[00:22.00]Smooth jazz fills the air
+[00:25.50]Without a single care
+[00:29.00]
+[00:32.00]Coffee brewing slow
+[00:35.50]Let the music flow
+[00:39.00]Piano keys so sweet
+[00:42.50]Makes the day complete
+
+[01:00.00]Saxophone plays on
+[01:03.50]From dusk until the dawn
+[01:07.00]Rhythm in my soul
+[01:10.50]Music makes me whole</pre>
+        </div>
+
+        <div class="info">
+            <h3>LRC Format Açıklama:</h3>
+            <ul>
+                <li><code>[mm:ss.xx]</code>: Zaman damgası (dakika:saniye.centisaniye)</li>
+                <li><code>[ar:]</code>: Artist (sanatçı)</li>
+                <li><code>[ti:]</code>: Title (başlık)</li>
+                <li><code>[al:]</code>: Album</li>
+                <li>Boş satır: <code>[00:29.00]</code> (müzik arası)</li>
+            </ul>
+        </div>
+
+        <h2>💻 İmplementasyon</h2>
+
+        <h3>1. LRC Parser</h3>
+        <div class="code-block">
+<pre>// LRC dosyasını parse et
+parseLRC(lrcText) {
+    const lines = lrcText.split('\n');
+    const lyrics = [];
+
+    lines.forEach(line => {
+        // Timestamp regex: [mm:ss.xx]
+        const match = line.match(/\[(\d{2}):(\d{2})\.(\d{2})\](.*)/);
+
+        if (match) {
+            const minutes = parseInt(match[1]);
+            const seconds = parseInt(match[2]);
+            const centiseconds = parseInt(match[3]);
+            const text = match[4].trim();
+
+            // Toplam saniye
+            const time = minutes * 60 + seconds + centiseconds / 100;
+
+            lyrics.push({ time, text });
+        }
+    });
+
+    // Zamana göre sırala
+    return lyrics.sort((a, b) => a.time - b.time);
+}</pre>
+        </div>
+
+        <h3>2. Alpine.js State</h3>
+        <div class="code-block">
+<pre>data() {
+    return {
+        // ... mevcut state'ler
+
+        // Lyrics
+        showLyrics: false,           // Lyrics paneli açık mı?
+        lyrics: [],                  // Parse edilmiş lyrics array
+        currentLyricIndex: -1,       // Aktif satır index
+
+        // ... diğer state'ler
+    };
+},
+
+// Şarkı değiştiğinde lyrics yükle
+async playSong(songId) {
+    // ... mevcut play logic
+
+    // Lyrics yükle
+    await this.loadLyrics(songId);
+},
+
+// Lyrics API'den yükle
+async loadLyrics(songId) {
+    try {
+        const response = await fetch(`/api/muzibu/songs/${songId}/lyrics`);
+
+        if (response.ok) {
+            const data = await response.json();
+
+            if (data.lyrics_lrc) {
+                // LRC formatı varsa parse et
+                this.lyrics = this.parseLRC(data.lyrics_lrc);
+                console.log(`🎤 Lyrics loaded: ${this.lyrics.length} lines`);
+            } else if (data.lyrics_text) {
+                // Plain text varsa (senkronize değil)
+                this.lyrics = [{ time: 0, text: data.lyrics_text }];
+            } else {
+                this.lyrics = [];
+            }
+        } else {
+            this.lyrics = [];
+        }
+    } catch (error) {
+        console.error('Lyrics load failed:', error);
+        this.lyrics = [];
+    }
+}</pre>
+        </div>
+
+        <h3>3. Progress Tracking ile Senkronizasyon</h3>
+        <div class="code-block">
+<pre>// Progress tracking'de aktif lyric satırını bul
+startProgressTracking() {
+    this.progressInterval = setInterval(() => {
+        // ... progress update logic
+
+        // Lyrics güncelle
+        this.updateCurrentLyric();
+    }, 250); // 250ms
+}
+
+// Aktif lyric satırını bul
+updateCurrentLyric() {
+    if (this.lyrics.length === 0) return;
+
+    // Şu anki zaman
+    const currentTime = this.currentTime;
+
+    // İlk satır henüz gelmedi
+    if (currentTime < this.lyrics[0].time) {
+        this.currentLyricIndex = -1;
+        return;
+    }
+
+    // Son satırı geçti
+    if (currentTime >= this.lyrics[this.lyrics.length - 1].time) {
+        this.currentLyricIndex = this.lyrics.length - 1;
+        return;
+    }
+
+    // Aktif satırı bul
+    for (let i = 0; i < this.lyrics.length - 1; i++) {
+        if (currentTime >= this.lyrics[i].time && currentTime < this.lyrics[i + 1].time) {
+            if (this.currentLyricIndex !== i) {
+                this.currentLyricIndex = i;
+                this.scrollToActiveLyric();
+            }
+            break;
+        }
+    }
+}
+
+// Aktif satıra scroll
+scrollToActiveLyric() {
+    this.$nextTick(() => {
+        const activeElement = document.querySelector('.lyric-line.active');
+        if (activeElement) {
+            activeElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+    });
+}</pre>
+        </div>
+
+        <h3>4. Blade Template - Lyrics Panel</h3>
+        <div class="code-block">
+<pre>&lt;!-- Lyrics Panel (sağ taraftan slide-in) --&gt;
+&lt;div x-show="showLyrics"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="transform translate-x-full"
+     x-transition:enter-end="transform translate-x-0"
+     x-transition:leave="transition ease-in duration-300"
+     x-transition:leave-start="transform translate-x-0"
+     x-transition:leave-end="transform translate-x-full"
+     class="fixed right-0 top-0 bottom-88px w-96 bg-gray-900 border-l border-gray-700 z-30"&gt;
+
+    &lt;!-- Header --&gt;
+    &lt;div class="p-4 border-b border-gray-700 flex items-center justify-between"&gt;
+        &lt;h3 class="text-lg font-bold text-white"&gt;🎤 Şarkı Sözleri&lt;/h3&gt;
+        &lt;button @click="showLyrics = false" class="text-gray-400 hover:text-white"&gt;
+            &lt;i class="fas fa-times"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;!-- Lyrics Container --&gt;
+    &lt;div class="lyrics-scroll-area h-full overflow-y-auto p-6"&gt;
+        &lt;template x-if="lyrics.length === 0"&gt;
+            &lt;div class="text-center text-gray-500 mt-20"&gt;
+                &lt;i class="fas fa-music text-4xl mb-4"&gt;&lt;/i&gt;
+                &lt;p&gt;Bu şarkı için sözler mevcut değil&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/template&gt;
+
+        &lt;template x-if="lyrics.length > 0"&gt;
+            &lt;div class="space-y-2"&gt;
+                &lt;template x-for="(lyric, index) in lyrics" :key="index"&gt;
+                    &lt;div @click="seekTo(lyric.time)"
+                         class="lyric-line cursor-pointer"
+                         :class="{
+                             'active': index === currentLyricIndex,
+                             'past': index < currentLyricIndex
+                         }"&gt;
+                        &lt;span x-text="lyric.text || '♪'"&gt;&lt;/span&gt;
+                    &lt;/div&gt;
+                &lt;/template&gt;
+            &lt;/div&gt;
+        &lt;/template&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Lyrics Toggle Button (player bar'da) --&gt;
+&lt;button @click="showLyrics = !showLyrics"
+        :class="lyrics.length > 0 ? 'text-white' : 'text-gray-600 cursor-not-allowed'"
+        :disabled="lyrics.length === 0"
+        class="hover:text-green-400 transition"
+        title="Şarkı Sözleri"&gt;
+    &lt;i class="fas fa-align-left"&gt;&lt;/i&gt;
+&lt;/button&gt;</pre>
+        </div>
+
+        <h3>5. Click to Seek</h3>
+        <div class="code-block">
+<pre>// Lyric satırına tıklayınca o noktaya git
+seekTo(time) {
+    if (this.isHlsStream && this.hlsAudio) {
+        const audio = this.getActiveHlsAudio();
+        if (audio) {
+            audio.currentTime = time;
+        }
+    } else if (this.howl) {
+        this.howl.seek(time);
+    }
+
+    console.log(`🎤 Seeked to lyric: ${time}s`);
+}</pre>
+        </div>
+
+        <h2>🗄️ Database Schema</h2>
+
+        <div class="code-block">
+<pre>// songs tablosuna eklenecek field'lar
+ALTER TABLE songs ADD COLUMN lyrics_text TEXT NULL;       -- Plain text lyrics
+ALTER TABLE songs ADD COLUMN lyrics_lrc TEXT NULL;        -- LRC format lyrics
+ALTER TABLE songs ADD COLUMN lyrics_language VARCHAR(5) DEFAULT 'tr';  -- tr, en, ...
+ALTER TABLE songs ADD COLUMN has_lyrics BOOLEAN DEFAULT FALSE;  -- Index için</pre>
+        </div>
+
+        <h2>🎯 API Endpoint</h2>
+
+        <div class="code-block">
+<pre>// GET /api/muzibu/songs/{id}/lyrics
+{
+    "song_id": 123,
+    "has_lyrics": true,
+    "lyrics_lrc": "[00:15.00]Wake up to the sound\n[00:18.50]Of morning...",
+    "lyrics_text": "Wake up to the sound\nOf morning light around...",
+    "lyrics_language": "tr"
+}</pre>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ <strong>Professional Feel:</strong> Spotify/Apple Music deneyimi</li>
+            <li>✅ <strong>Karaoke Mode:</strong> Şarkı sözlerini takip et</li>
+            <li>✅ <strong>Click to Seek:</strong> İstediğin kısma anında git</li>
+            <li>✅ <strong>Auto Scroll:</strong> El ile scroll gerekmez</li>
+            <li>✅ <strong>Multi-language:</strong> Türkçe, İngilizce, diğer diller</li>
+        </ul>
+
+        <h2>🚀 İleri Seviye Özellikler</h2>
+
+        <div class="info">
+            <h3>Line-by-Line Translation</h3>
+            <p>Her satırın altında çeviri göster (İngilizce şarkı → Türkçe çeviri)</p>
+            <div class="code-block">
+<pre>[00:15.00]Wake up to the sound
+[00:15.00:tr]Sesin uyanmasına
+[00:18.50]Of morning light around
+[00:18.50:tr]Etrafındaki sabah ışığının</pre>
+            </div>
+        </div>
+
+        <div class="info">
+            <h3>Word-by-Word Highlight</h3>
+            <p>Satır değil, kelime kelime vurgula (daha hassas senkronizasyon)</p>
+            <p><strong>Format:</strong> Enhanced LRC (ELRC)</p>
+        </div>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

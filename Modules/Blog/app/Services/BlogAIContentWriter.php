@@ -88,7 +88,10 @@ class BlogAIContentWriter
 
             // 1. Draft'ta category_suggestions varsa kullan
             if (!empty($draft->category_suggestions)) {
-                $categoryId = $draft->category_suggestions[0];
+                // 🔧 FIX: Array'den ilk elemanı al, integer'a çevir
+                $categoryId = is_array($draft->category_suggestions)
+                    ? (int) $draft->category_suggestions[0]
+                    : (int) $draft->category_suggestions;
             }
 
             // 2. Yoksa AI ile dinamik kategori seç
@@ -104,6 +107,9 @@ class BlogAIContentWriter
                     'category_id' => $categoryId,
                 ]);
             }
+
+            // 🔧 FIX: MUTLAKA integer olduğundan emin ol
+            $categoryId = (int) $categoryId;
 
             $blog->update(['blog_category_id' => $categoryId]);
 

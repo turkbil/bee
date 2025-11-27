@@ -1,7 +1,7 @@
-{{-- Session Check Component - Sadece Tenant 1001 (Muzibu) için --}}
-{{-- Arka planda session kontrolü yapar, session kesildiğinde müziği durdurur --}}
-{{-- SADECE FRONTEND'DE ÇALIŞIR (admin değil) --}}
-@if(tenant() && tenant()->id == 1001 && auth()->check() && !request()->is('admin/*'))
+{{-- Session Check Component - GEÇİCİ OLARAK DEVRE DIŞI --}}
+{{-- Problem: Session garbage collection nedeniyle yanlış tetikleniyor --}}
+{{-- Device limit kontrolü zaten middleware ile yapılıyor --}}
+@if(false && tenant() && tenant()->id == 1001 && auth()->check() && !request()->is('admin/*'))
 <div x-data="sessionCheckComponent()" x-init="startSessionCheck()">
     <!-- Session Terminated Modal - Spotify-Like Modern Design -->
     <div

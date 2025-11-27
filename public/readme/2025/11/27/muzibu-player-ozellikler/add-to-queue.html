@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Queue - Queue'ya Şarkı/Albüm/Playlist Ekleme</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .critical { background: rgba(239, 68, 68, 0.2); padding: 20px; border-left: 4px solid #ef4444; border-radius: 8px; margin: 20px 0; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>➕ Add to Queue</h1>
+
+        <div class="critical">
+            <h3>🔴 MEVCUT SORUN</h3>
+            <p>Kod satır 1310-1313: <code>addToQueue()</code> sadece toast gösteriyor!</p>
+            <div class="code-block">
+<pre>// ❌ PLACEHOLDER
+addToQueue(type, id) {
+    this.showToast('Queue\'ya eklendi!', 'success');
+    // TODO: Gerçek implementasyon
+}</pre>
+            </div>
+        </div>
+
+        <div class="success">
+            <h3>✅ ÇÖZÜM</h3>
+            <p>API'den şarkı/albüm/playlist fetch et ve queue'ya ekle!</p>
+        </div>
+
+        <h2>💻 İmplementasyon</h2>
+
+        <h3>1. Add to Queue (Tek Şarkı)</h3>
+        <div class="code-block">
+<pre>async addToQueue(type, id) {
+    try {
+        if (type === 'song') {
+            // Tek şarkı ekle
+            const response = await fetch(`/api/muzibu/songs/${id}`);
+            const song = await response.json();
+
+            this.queue.push(song);
+            this.showToast(`"${song.song_title.tr}" queue'ya eklendi`, 'success');
+
+            console.log('➕ Song added to queue:', song.song_title);
+        }
+        else if (type === 'album') {
+            // Albümdeki tüm şarkıları ekle
+            await this.addAlbumToQueue(id);
+        }
+        else if (type === 'playlist') {
+            // Playlist'teki tüm şarkıları ekle
+            await this.addPlaylistToQueue(id);
+        }
+    } catch (error) {
+        console.error('Add to queue failed:', error);
+        this.showToast('Queue\'ya eklenemedi', 'error');
+    }
+}</pre>
+        </div>
+
+        <h3>2. Add Album to Queue</h3>
+        <div class="code-block">
+<pre>async addAlbumToQueue(albumId) {
+    try {
+        const response = await fetch(`/api/muzibu/albums/${albumId}`);
+        const album = await response.json();
+
+        // Albümdeki şarkıları queue'ya ekle
+        album.songs.forEach(song => {
+            this.queue.push(song);
+        });
+
+        this.showToast(
+            `${album.songs.length} şarkı queue'ya eklendi (${album.album_title.tr})`,
+            'success'
+        );
+
+        console.log('➕ Album added to queue:', album.album_title, album.songs.length, 'songs');
+    } catch (error) {
+        console.error('Add album to queue failed:', error);
+        this.showToast('Albüm eklenemedi', 'error');
+    }
+}</pre>
+        </div>
+
+        <h3>3. Add Playlist to Queue</h3>
+        <div class="code-block">
+<pre>async addPlaylistToQueue(playlistId) {
+    try {
+        const response = await fetch(`/api/muzibu/playlists/${playlistId}`);
+        const playlist = await response.json();
+
+        // Playlist'teki şarkıları queue'ya ekle
+        playlist.songs.forEach(song => {
+            this.queue.push(song);
+        });
+
+        this.showToast(
+            `${playlist.songs.length} şarkı queue'ya eklendi (${playlist.playlist_title.tr})`,
+            'success'
+        );
+
+        console.log('➕ Playlist added to queue:', playlist.playlist_title, playlist.songs.length, 'songs');
+    } catch (error) {
+        console.error('Add playlist to queue failed:', error);
+        this.showToast('Playlist eklenemedi', 'error');
+    }
+}</pre>
+        </div>
+
+        <h3>4. UI - Add to Queue Butonu</h3>
+        <div class="code-block">
+<pre>&lt;!-- Şarkı kartında --&gt;
+&lt;button @click="addToQueue('song', song.song_id)"
+        class="text-gray-400 hover:text-white"
+        title="Queue'ya Ekle"&gt;
+    &lt;i class="fas fa-plus"&gt;&lt;/i&gt;
+&lt;/button&gt;
+
+&lt;!-- Albüm sayfasında --&gt;
+&lt;button @click="addToQueue('album', album.album_id)"
+        class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg"&gt;
+    &lt;i class="fas fa-plus"&gt;&lt;/i&gt; Queue'ya Ekle
+&lt;/button&gt;
+
+&lt;!-- Playlist sayfasında --&gt;
+&lt;button @click="addToQueue('playlist', playlist.playlist_id)"
+        class="bg-green-500 hover:bg-green-600 text-black px-4 py-2 rounded-lg font-bold"&gt;
+    &lt;i class="fas fa-plus"&gt;&lt;/i&gt; Tümünü Queue'ya Ekle
+&lt;/button&gt;</pre>
+        </div>
+
+        <h3>5. Context Menu (Right Click)</h3>
+        <div class="code-block">
+<pre>&lt;!-- Şarkı kartı üzerine sağ tık --&gt;
+&lt;div @contextmenu.prevent="showContextMenu($event, song)"
+     class="song-card"&gt;
+    &lt;!-- ... song card içeriği --&gt;
+&lt;/div&gt;
+
+&lt;!-- Context menu --&gt;
+&lt;div x-show="contextMenuVisible"
+     x-transition
+     :style="`left: ${contextMenuX}px; top: ${contextMenuY}px`"
+     class="fixed bg-gray-900 rounded-lg shadow-xl border border-gray-700 py-2 z-50"&gt;
+
+    &lt;button @click="addToQueue('song', contextMenuSong.song_id); contextMenuVisible = false"
+            class="w-full text-left px-4 py-2 hover:bg-gray-800"&gt;
+        &lt;i class="fas fa-plus mr-2"&gt;&lt;/i&gt; Queue'ya Ekle
+    &lt;/button&gt;
+
+    &lt;button @click="playSong(contextMenuSong.song_id); contextMenuVisible = false"
+            class="w-full text-left px-4 py-2 hover:bg-gray-800"&gt;
+        &lt;i class="fas fa-play mr-2"&gt;&lt;/i&gt; Şimdi Çal
+    &lt;/button&gt;
+
+    &lt;button @click="toggleFavorite(contextMenuSong.song_id); contextMenuVisible = false"
+            class="w-full text-left px-4 py-2 hover:bg-gray-800"&gt;
+        &lt;i class="fas fa-heart mr-2"&gt;&lt;/i&gt; Favorilere Ekle
+    &lt;/button&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <h2>🎯 Kullanım Senaryoları</h2>
+
+        <div class="info">
+            <h3>Senaryo 1: Albüm Keşfi</h3>
+            <ul>
+                <li>Kullanıcı yeni bir albüm buldu</li>
+                <li>"Queue'ya Ekle" butonuna tıkladı</li>
+                <li>15 şarkı queue'nun sonuna eklendi</li>
+                <li>Mevcut şarkı bitmeden devam ediyor</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>Senaryo 2: Playlist Mix</h3>
+            <ul>
+                <li>Queue'da 5 şarkı var (Rock)</li>
+                <li>Kullanıcı "Jazz Classics" playlist'ini queue'ya ekledi</li>
+                <li>Queue: 5 Rock + 30 Jazz</li>
+                <li>Müzik atmosferi değişmeden devam ediyor</li>
+            </ul>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ Tek tıkla albüm/playlist ekleme</li>
+            <li>✅ Kesintisiz müzik akışı</li>
+            <li>✅ Kullanıcı kontrolü (manuel queue yönetimi)</li>
+            <li>✅ B2B uyumlu (çalmaya devam eder)</li>
+        </ul>
+
+        <h2>🚀 İleri Seviye: Play Next</h2>
+        <div class="code-block">
+<pre>// Queue'nun başına ekle (sonraki çalacak)
+addToQueueNext(type, id) {
+    // ... şarkıyı/albümü fetch et
+
+    // Queue'nun başına ekle (currentIndex + 1)
+    this.queue.splice(this.queueIndex + 1, 0, ...songs);
+
+    this.showToast('Sonraki sırada çalınacak', 'success');
+}</pre>
+        </div>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

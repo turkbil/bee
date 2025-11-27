@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Product Body İçerik - Taslak v3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- INFO BANNER -->
+        <div class="bg-blue-100 border-l-4 border-blue-500 p-6 mb-8 rounded-lg">
+            <h1 class="text-2xl font-bold text-blue-900 mb-2">
+                <i class="fas fa-info-circle"></i> Shop Product Body İçerik Taslağı (v3)
+            </h1>
+            <p class="text-blue-800 mb-2">
+                <strong>NOT:</strong> Bu taslak sadece <code>body</code> alanına girecek HTML içeriğini gösteriyor.
+            </p>
+            <ul class="text-blue-800 text-sm list-disc list-inside">
+                <li>Hero Section, Fiyat, CTA Butonları → SAYFA ZATEN İÇERİYOR</li>
+                <li>FAQ → Ayrı <code>faq_data</code> field'dan geliyor</li>
+                <li>Bu taslak → Sadece ürün detay içeriği (Problem, USP, Teknik, Use Cases)</li>
+            </ul>
+        </div>
+
+        <!-- BODY İÇERİK BAŞLANGIÇ -->
+        <div class="bg-white rounded-xl shadow-xl p-8">
+
+            <!-- PROBLEM - SOLUTION -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                    <i class="fas fa-exclamation-triangle"></i> Karşılaştığınız Sorunlar
+                </h2>
+
+                <!-- 4 Problem: 2x2 Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Problem 1 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-red-400 transition-all">
+                        <i class="fas fa-times-circle text-red-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-lg mb-2">Manuel Taşıma Yorgunluğu</h4>
+                        <p class="text-gray-600">
+                            Ağır yükleri sürekli manuel olarak taşımak sırt ve bel ağrılarına yol açar.
+                            Çalışan verimliliği düşer, iş gücü kaybı yaşanır.
+                        </p>
+                    </div>
+
+                    <!-- Problem 2 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-red-400 transition-all">
+                        <i class="fas fa-weight-hanging text-red-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-lg mb-2">Ağır Yüklerde Zorlanma</h4>
+                        <p class="text-gray-600">
+                            1.5 ton gibi ağır paletleri kaldırmak için birden fazla çalışan gerekiyor.
+                            Güvenlik riski ve zaman kaybı.
+                        </p>
+                    </div>
+
+                    <!-- Problem 3 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-red-400 transition-all">
+                        <i class="fas fa-arrows-alt-h text-red-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-lg mb-2">Dar Alanlarda Manevra Zorluğu</h4>
+                        <p class="text-gray-600">
+                            Büyük ve hantal transpaletler dar koridorlara ve depo alanlarına giremez.
+                            Operasyon kısıtlanır.
+                        </p>
+                    </div>
+
+                    <!-- Problem 4 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-red-400 transition-all">
+                        <i class="fas fa-battery-quarter text-red-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-lg mb-2">Batarya Değişim Sıkıntısı</h4>
+                        <p class="text-gray-600">
+                            Geleneksel bataryalı transpaletlerde batarya bittiğinde operasyon duruyor.
+                            Yedek batarya değişimi zaman alıyor.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Çözüm Highlight -->
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-8 rounded-xl text-white shadow-xl">
+                    <h3 class="font-bold text-2xl mb-4 flex items-center gap-3">
+                        <i class="fas fa-check-circle text-3xl"></i> İXTİF Çözümü
+                    </h3>
+                    <p class="text-lg leading-relaxed">
+                        <strong>İXTİF F4 Elektrikli Transpalet</strong> ile eforsuz palet taşıma gerçekleştirin.
+                        1.5 ton kapasiteyle ağır yükler güvende, 120 kg hafif gövde ile kolay manevra,
+                        400mm kompakt şasi ile dar alanlara kolayca giriş.
+                        <strong>Çift batarya seçeneği</strong> ile kesintisiz tam gün operasyon sağlayın.
+                    </p>
+                </div>
+            </section>
+
+            <!-- ÖZELLİKLER (USP) -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                    <i class="fas fa-fire"></i> Neden Bu Ürünü Tercih Etmelisiniz?
+                </h2>
+
+                <!-- 6 Card: 3x2 Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- USP 1 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                        <i class="fas fa-battery-full text-orange-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">Modüler Li-Ion Batarya</h4>
+                        <p class="text-gray-600">
+                            24V 20Ah Li-Ion batarya ile uzun çalışma süresi.
+                            Çift batarya seçeneği sayesinde kesintisiz operasyon.
+                            Hızlı şarj, uzun ömür.
+                        </p>
+                    </div>
+
+                    <!-- USP 2 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                        <i class="fas fa-compress-arrows-alt text-orange-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">Kompakt Tasarım</h4>
+                        <p class="text-gray-600">
+                            Sadece 400mm şasi genişliği ile dar koridorlara rahatlıkla girer.
+                            Küçük depo alanlarında maksimum verimlilik.
+                        </p>
+                    </div>
+
+                    <!-- USP 3 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                        <i class="fas fa-feather-alt text-orange-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">Hafif ve Güçlü</h4>
+                        <p class="text-gray-600">
+                            Sadece 120 kg ağırlığında olmasına rağmen 1.5 ton taşıma kapasitesi.
+                            Kolay manevra, düşük enerji tüketimi.
+                        </p>
+                    </div>
+
+                    <!-- USP 4 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                        <i class="fas fa-shield-alt text-orange-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">Güvenlik ve Sertifikalar</h4>
+                        <p class="text-gray-600">
+                            CE belgeli üretim. Acil durum fren sistemi. Operatör güvenliği için
+                            anti-slip platform ve ergonomik kumanda.
+                        </p>
+                    </div>
+
+                    <!-- USP 5 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                        <i class="fas fa-piggy-bank text-orange-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">Ekonomik İşletme</h4>
+                        <p class="text-gray-600">
+                            Düşük enerji tüketimi, minimal bakım gereksinimi.
+                            Li-Ion batarya teknolojisi ile uzun ömür ve tasarruf.
+                        </p>
+                    </div>
+
+                    <!-- USP 6 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all">
+                        <i class="fas fa-cogs text-orange-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">Esnek Kullanım</h4>
+                        <p class="text-gray-600">
+                            Sökülebilir saklama gözü, farklı çatal ölçüleri seçenekleri.
+                            Çeşitli operasyon ihtiyaçlarına uyum sağlar.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TEKNİK ÖZELLİKLER -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                    <i class="fas fa-cog"></i> Teknik Özellikler
+                </h2>
+
+                <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+                    <table class="w-full">
+                        <thead class="bg-gray-800 text-white">
+                            <tr>
+                                <th class="px-6 py-4 text-left">Özellik</th>
+                                <th class="px-6 py-4 text-left">Değer</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr class="hover:bg-orange-50 transition-colors">
+                                <td class="px-6 py-4 font-medium">Taşıma Kapasitesi</td>
+                                <td class="px-6 py-4">1.5 ton</td>
+                            </tr>
+                            <tr class="hover:bg-orange-50 transition-colors">
+                                <td class="px-6 py-4 font-medium">Batarya</td>
+                                <td class="px-6 py-4">24V 20Ah Li-Ion (Modüler)</td>
+                            </tr>
+                            <tr class="hover:bg-orange-50 transition-colors">
+                                <td class="px-6 py-4 font-medium">Ağırlık</td>
+                                <td class="px-6 py-4">120 kg</td>
+                            </tr>
+                            <tr class="hover:bg-orange-50 transition-colors">
+                                <td class="px-6 py-4 font-medium">Şasi Genişliği (l2)</td>
+                                <td class="px-6 py-4">400 mm</td>
+                            </tr>
+                            <tr class="hover:bg-orange-50 transition-colors">
+                                <td class="px-6 py-4 font-medium">Çift Batarya Seçeneği</td>
+                                <td class="px-6 py-4">Mevcut</td>
+                            </tr>
+                            <tr class="hover:bg-orange-50 transition-colors">
+                                <td class="px-6 py-4 font-medium">Saklama Gözü</td>
+                                <td class="px-6 py-4">Sökülebilir</td>
+                            </tr>
+                            <tr class="hover:bg-orange-50 transition-colors">
+                                <td class="px-6 py-4 font-medium">Sertifikalar</td>
+                                <td class="px-6 py-4">CE Belgeli</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 m-4">
+                        <p class="text-blue-900 text-sm">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Not:</strong> Farklı çatal ölçüleri ve özel konfigürasyonlar için
+                            bizimle iletişime geçin.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- KULLANIM ALANLARI -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                    <i class="fas fa-briefcase"></i> Hangi Alanlarda Kullanılır?
+                </h2>
+
+                <!-- 4 Use Case: 2x2 Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Use Case 1 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all">
+                        <i class="fas fa-warehouse text-blue-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">Depo ve Lojistik Merkezleri</h4>
+                        <p class="text-gray-600">
+                            Palet taşıma, raf yükleme ve depo içi malzeme hareketi için ideal.
+                            Dar koridorlarda bile rahat hareket eder.
+                        </p>
+                    </div>
+
+                    <!-- Use Case 2 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all">
+                        <i class="fas fa-industry text-blue-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">Üretim Hatları</h4>
+                        <p class="text-gray-600">
+                            Üretim hattına malzeme besleme, yarı mamul taşıma ve bitmiş ürün nakli.
+                            Kesintisiz operasyon için çift batarya avantajı.
+                        </p>
+                    </div>
+
+                    <!-- Use Case 3 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all">
+                        <i class="fas fa-shopping-cart text-blue-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">Perakende ve Süpermarketler</h4>
+                        <p class="text-gray-600">
+                            Mağaza deposundan satış alanına mal transferi. Kompakt yapısı sayesinde
+                            müşteri alanlarını rahatsız etmez.
+                        </p>
+                    </div>
+
+                    <!-- Use Case 4 -->
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all">
+                        <i class="fas fa-box text-blue-500 text-5xl mb-4 block"></i>
+                        <h4 class="font-bold text-xl mb-2">E-ticaret Depoları</h4>
+                        <p class="text-gray-600">
+                            Hızlı sipariş hazırlama (picking), paketleme alanına malzeme taşıma.
+                            Yüksek operasyon hızı gereksinimlerini karşılar.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COMPETITIVE ADVANTAGES -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                    <i class="fas fa-trophy"></i> Rakiplerden Farkımız
+                </h2>
+
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-xl shadow-lg">
+                    <ul class="space-y-6">
+                        <!-- Avantaj 1 -->
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-check-circle text-green-500 text-3xl flex-shrink-0 mt-1"></i>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">Modüler Batarya Sistemi</h5>
+                                <p class="text-gray-700">
+                                    Batarya değiştirmek yerine ikinci bataryayı ekleyebilme imkanı.
+                                    Operasyon durmadan devam eder. Rakiplerde bu esneklik yok.
+                                </p>
+                            </div>
+                        </li>
+
+                        <!-- Avantaj 2 -->
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-check-circle text-green-500 text-3xl flex-shrink-0 mt-1"></i>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">Kompakt Ama Güçlü</h5>
+                                <p class="text-gray-700">
+                                    400mm şasi genişliği ile piyasadaki en kompakt modellerden biri.
+                                    Ancak 1.5 ton kapasiteyi koruyor. Boyut feda etmeden güç alıyorsunuz.
+                                </p>
+                            </div>
+                        </li>
+
+                        <!-- Avantaj 3 -->
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-check-circle text-green-500 text-3xl flex-shrink-0 mt-1"></i>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">Hafif Gövde Yapısı</h5>
+                                <p class="text-gray-700">
+                                    120 kg ile benzer kapasiteli ürünlerden %20 daha hafif.
+                                    Kolay manevra, düşük enerji tüketimi, uzun batarya ömrü.
+                                </p>
+                            </div>
+                        </li>
+
+                        <!-- Avantaj 4 -->
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-check-circle text-green-500 text-3xl flex-shrink-0 mt-1"></i>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">Türkiye'de Üretim ve Hızlı Servis</h5>
+                                <p class="text-gray-700">
+                                    İthal ürünlerde yedek parça bekleme süresi uzun. İXTİF olarak
+                                    Türkiye'de üretim yapıyoruz, hızlı teknik destek ve yedek parça
+                                    temini sağlıyoruz.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+        <!-- BODY İÇERİK BİTİŞ -->
+
+        <!-- FOOTER INFO -->
+        <div class="mt-8 bg-gray-200 p-6 rounded-lg">
+            <h3 class="font-bold text-lg mb-2">
+                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                Taslak Notları
+            </h3>
+            <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside">
+                <li><strong>Problem-Solution:</strong> 4 problem + 1 çözüm highlight (2x2 grid)</li>
+                <li><strong>USP:</strong> 6 özellik card (3x2 grid, responsive)</li>
+                <li><strong>Teknik Özellikler:</strong> Tablo formatında, hover efekti</li>
+                <li><strong>Kullanım Alanları:</strong> 4 use case (2x2 grid)</li>
+                <li><strong>Competitive Advantages:</strong> 4 avantaj listesi</li>
+                <li><strong>Leonardo AI:</strong> 3-4 endüstriyel görsel eklenebilir (bölümler arası)</li>
+            </ul>
+        </div>
+
+    </div>
+</body>
+</html>

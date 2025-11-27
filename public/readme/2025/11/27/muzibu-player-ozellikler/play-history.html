@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play History - Çalma Geçmişi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        ul { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        <h1>📜 Play History</h1>
+        <div class="info">
+            <h2>Son 50 Dinlenen Şarkı</h2>
+            <p>Kullanıcının dinleme geçmişini takip et. Tekrar dinleme ve keşif için ideal.</p>
+        </div>
+        <h2>Database</h2>
+        <div class="code-block">
+<pre>CREATE TABLE play_history (
+    id BIGINT PRIMARY KEY,
+    user_id BIGINT,
+    song_id BIGINT,
+    played_at TIMESTAMP,
+    duration_listened INT, -- saniye
+    INDEX(user_id, played_at)
+);</pre>
+        </div>
+        <h2>API</h2>
+        <div class="code-block">
+<pre>// POST /api/muzibu/play-history
+{
+    "song_id": 123,
+    "duration_listened": 180 // 3 dakika dinledi
+}
+
+// GET /api/muzibu/play-history?limit=50
+// Son 50 şarkı döner</pre>
+        </div>
+        <h2>Frontend</h2>
+        <div class="code-block">
+<pre>// Şarkı çalınca log'la
+async logPlayHistory(songId, duration) {
+    await fetch('/api/muzibu/play-history', {
+        method: 'POST',
+        body: JSON.stringify({ song_id: songId, duration_listened: duration })
+    });
+}</pre>
+        </div>
+        <p style="margin-top: 40px; text-align: center;"><a href="index.html" class="back">← Dön</a></p>
+    </div>
+</body>
+</html>

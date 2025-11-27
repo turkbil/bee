@@ -1,0 +1,524 @@
+    /* Player Bar Blur Background Overlay */
+    #muzibu-player-bar::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(2px);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    /* Player içeriği overlay üstünde */
+    #muzibu-player-bar > * {
+        position: relative;
+        z-index: 10;
+    }
+
+    @media (max-width: 768px) {
+        /* Player mobilde full width */
+        #muzibu-player-bar {
+            left: 0 !important;
+            padding: 12px 16px !important;
+        }
+
+        /* Queue mobilde full width */
+        div[style*="width: 384px"] {
+            width: 100% !important;
+        }
+    }
+
+
+    /* Pulse animation for playing indicator */
+    @keyframes pulse-slow {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+
+    /* Play button pulse animation */
+    @keyframes pulse-play {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(0.9); }
+    }
+
+    /* ============================================
+       PLAYER PROGRESS & VOLUME BARS
+       ============================================ */
+
+    /* Progress Bar */
+    .player-progress-bar {
+        flex: 1;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 6px 0;
+    }
+
+    .player-progress-track {
+        position: relative;
+        width: 100%;
+        height: 6px;
+        background: #4b5563;
+        border-radius: 3px;
+        overflow: visible;
+    }
+
+    .player-progress-bar:hover .player-progress-track {
+        height: 8px;
+    }
+
+    .player-progress-fill {
+        height: 100%;
+        background: #1DB954;
+        border-radius: 3px;
+        transition: width 0.05s linear;
+    }
+
+    .player-progress-bar:hover .player-progress-fill {
+        background: #22c55e;
+    }
+
+    .player-progress-thumb {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 14px;
+        height: 14px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        opacity: 0;
+        transition: opacity 0.15s ease;
+        pointer-events: none;
+    }
+
+    .player-progress-bar:hover .player-progress-thumb {
+        opacity: 1;
+    }
+
+    /* Volume Bar */
+    .player-volume-bar {
+        width: 100px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 6px 0;
+    }
+
+    .player-volume-track {
+        position: relative;
+        width: 100%;
+        height: 6px;
+        background: #4b5563;
+        border-radius: 3px;
+        overflow: visible;
+    }
+
+    .player-volume-bar:hover .player-volume-track {
+        height: 8px;
+    }
+
+    .player-volume-fill {
+        height: 100%;
+        background: #1DB954;
+        border-radius: 3px;
+        transition: width 0.05s linear;
+    }
+
+    .player-volume-bar:hover .player-volume-fill {
+        background: #22c55e;
+    }
+
+    .player-volume-thumb {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 14px;
+        height: 14px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        opacity: 0;
+        transition: opacity 0.15s ease;
+        pointer-events: none;
+    }
+
+    .player-volume-bar:hover .player-volume-thumb {
+        opacity: 1;
+    }
+
+    /* Repeat Button */
+    .player-repeat-btn {
+        position: relative;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        color: #9ca3af;
+        transition: color 0.2s ease;
+    }
+
+    .player-repeat-btn.active {
+        color: #1DB954;
+    }
+
+    .player-repeat-btn:hover {
+        color: white;
+    }
+
+    .player-repeat-btn.active:hover {
+        color: #22c55e;
+    }
+
+    .repeat-one-badge {
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 12px;
+        height: 12px;
+        background: #1DB954;
+        color: white;
+        font-size: 8px;
+        font-weight: 700;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+
+    /* ============================================
+       QUEUE PANEL STYLES - Clean Professional Design
+       ============================================ */
+
+    /* Queue Panel Container */
+    .queue-panel {
+        position: fixed !important;
+        right: 0 !important;
+        bottom: 88px !important;
+        top: 0 !important;
+        width: 380px !important;
+        background: #181818 !important;
+        border-left: 1px solid rgba(255,255,255,0.1) !important;
+        z-index: 30 !important;
+        flex-direction: column !important;
+    }
+
+    /* Alpine.js x-show ile birlikte çalışması için */
+    .queue-panel:not([style*="display: none"]) {
+        display: flex !important;
+    }
+
+    /* Queue Panel Header */
+    .queue-panel-header {
+        position: sticky !important;
+        top: 0 !important;
+        background: #181818 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+        padding: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        z-index: 10 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .queue-panel-header h3 {
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        color: white !important;
+        margin: 0 !important;
+    }
+
+    .queue-close-btn {
+        background: none !important;
+        border: none !important;
+        color: #9ca3af !important;
+        cursor: pointer !important;
+        padding: 8px !important;
+        border-radius: 50% !important;
+        width: 32px !important;
+        height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .queue-close-btn:hover {
+        background: rgba(255,255,255,0.1) !important;
+        color: white !important;
+    }
+
+    .queue-close-btn i {
+        font-size: 16px !important;
+    }
+
+    /* Queue Scroll Area */
+    .queue-scroll-area {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        padding: 16px !important;
+        padding-bottom: 120px !important;
+    }
+
+    /* Queue Section Header */
+    .queue-header {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        font-size: 12px;
+        color: #9ca3af;
+        font-weight: 700;
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    .queue-count {
+        font-size: 11px;
+        color: #6b7280;
+    }
+
+    /* Queue List Container */
+    .queue-list {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+    }
+
+    /* Queue Item - MAIN FLEXBOX - Compact & Professional */
+    .queue-item {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 8px !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        transition: background 0.15s ease !important;
+        background: transparent !important;
+        position: relative !important;
+    }
+
+    .queue-item:hover {
+        background: rgba(255,255,255,0.05) !important;
+    }
+
+    .queue-item:hover .queue-remove-btn {
+        opacity: 1 !important;
+    }
+
+    /* Active (Currently Playing) Item */
+    .queue-item-active {
+        background: rgba(29,185,84,0.1) !important;
+        border-left: 2px solid #1DB954 !important;
+        padding-left: 6px !important;
+    }
+
+    .queue-item-active:hover {
+        background: rgba(29,185,84,0.15) !important;
+    }
+
+    /* Dragging State */
+    .queue-item-dragging {
+        opacity: 0.5 !important;
+    }
+
+    /* Drop Target State */
+    .queue-item-drop-target {
+        border-top: 2px solid #1DB954 !important;
+    }
+
+    /* Drag Handle */
+    .queue-drag-handle {
+        width: 20px !important;
+        min-width: 20px !important;
+        text-align: center !important;
+        cursor: grab !important;
+        flex-shrink: 0 !important;
+    }
+
+    .queue-drag-handle i {
+        font-size: 12px !important;
+        color: #4b5563 !important;
+    }
+
+    .queue-item:hover .queue-drag-handle i {
+        color: #6b7280 !important;
+    }
+
+    /* Queue Index Number */
+    .queue-index {
+        width: 24px !important;
+        min-width: 24px !important;
+        text-align: center !important;
+        font-weight: 500 !important;
+        color: #6b7280 !important;
+        font-size: 12px !important;
+        flex-shrink: 0 !important;
+    }
+
+    .queue-playing-icon {
+        color: #1DB954 !important;
+        font-size: 10px !important;
+    }
+
+    /* Album Cover - Smaller */
+    .queue-cover {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        border-radius: 4px !important;
+        flex-shrink: 0 !important;
+        object-fit: cover !important;
+    }
+
+    .queue-cover-active {
+        box-shadow: 0 0 0 1px #1DB954 !important;
+    }
+
+    /* Song Info Container */
+    .queue-info {
+        flex: 1 !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
+
+    .queue-title {
+        font-weight: 500 !important;
+        color: white !important;
+        font-size: 13px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .queue-title-active {
+        color: #1DB954 !important;
+    }
+
+    .queue-artist {
+        font-size: 11px !important;
+        color: #9ca3af !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        margin-top: 1px !important;
+    }
+
+    /* Remove Button */
+    .queue-remove-btn {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        background: transparent !important;
+        border: none !important;
+        color: #6b7280 !important;
+        cursor: pointer !important;
+        padding: 4px !important;
+        opacity: 0 !important;
+        transition: opacity 0.15s ease, color 0.15s ease !important;
+        border-radius: 4px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+    }
+
+    .queue-remove-btn:hover {
+        color: #ef4444 !important;
+    }
+
+    .queue-remove-btn i {
+        font-size: 10px !important;
+    }
+
+    /* Now Playing Section */
+    .now-playing-section {
+        margin-bottom: 20px !important;
+    }
+
+    .now-playing-label {
+        font-size: 11px !important;
+        color: #9ca3af !important;
+        font-weight: 700 !important;
+        margin-bottom: 8px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .now-playing-card {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        padding: 10px !important;
+        background: #282828 !important;
+        border-radius: 6px !important;
+    }
+
+    .now-playing-cover {
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 4px !important;
+        flex-shrink: 0 !important;
+        object-fit: cover !important;
+    }
+
+    .now-playing-info {
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+
+    .now-playing-title {
+        font-weight: 500 !important;
+        color: white !important;
+        font-size: 13px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .now-playing-artist {
+        font-size: 11px !important;
+        color: #9ca3af !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        margin-top: 1px !important;
+    }
+
+    .now-playing-indicator {
+        color: #1DB954 !important;
+        font-size: 14px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* ============================================
+       END QUEUE STYLES
+       ============================================ */
+
+    /* Scrollbar styling for queue */
+    .queue-scroll-area::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .queue-scroll-area::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .queue-scroll-area::-webkit-scrollbar-thumb {
+        background: #3f3f46;
+        border-radius: 3px;
+    }
+
+    .queue-scroll-area::-webkit-scrollbar-thumb:hover {
+        background: #52525b;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 480px) {
+        .queue-panel {
+            width: 100% !important;
+        }
+    }

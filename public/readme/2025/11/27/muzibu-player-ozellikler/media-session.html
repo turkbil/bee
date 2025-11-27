@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Session API - OS Native Kontroller</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+        .demo-mockup {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .phone-mockup {
+            max-width: 350px;
+            margin: 0 auto;
+            background: #000;
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .lock-screen {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .album-art {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #1DB954, #60a5fa);
+            border-radius: 20px;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .song-info-mockup {
+            margin: 20px 0;
+        }
+        .song-title-mockup {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+        }
+        .song-artist-mockup {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+        .media-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 25px;
+        }
+        .media-btn {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+        .media-btn.play {
+            width: 70px;
+            height: 70px;
+            background: white;
+            color: #000;
+            font-size: 1.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>📱 Media Session API</h1>
+
+        <div class="success">
+            <h3>✅ OS Native Kontroller</h3>
+            <p>Lock screen, notification, klavye medya tuşları, akıllı saat - her yerden kontrol!</p>
+        </div>
+
+        <h2>🎯 Media Session API Nedir?</h2>
+
+        <div class="info">
+            <p><strong>Media Session API:</strong> Tarayıcı müzik çalma bilgilerini işletim sistemine bildirir.</p>
+            <ul>
+                <li><strong>Lock Screen:</strong> Telefon kilitliyken müzik kontrolü</li>
+                <li><strong>Notification:</strong> Bildirim panelinde now playing widget</li>
+                <li><strong>Keyboard Media Keys:</strong> F7/F8/F9 (Oynat/Duraklat, Geri, İleri)</li>
+                <li><strong>Smartwatch:</strong> Apple Watch, Galaxy Watch'tan kontrol</li>
+                <li><strong>Car Play / Android Auto:</strong> Araç ekranında kontrol</li>
+            </ul>
+        </div>
+
+        <h2>📱 Görsel Demo - Lock Screen</h2>
+
+        <div class="demo-mockup">
+            <div class="phone-mockup">
+                <div class="lock-screen">
+                    <div style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 20px;">14:32</div>
+
+                    <div class="album-art"></div>
+
+                    <div class="song-info-mockup">
+                        <div class="song-title-mockup">Smooth Jazz Morning</div>
+                        <div class="song-artist-mockup">Jazz Ensemble</div>
+                        <div style="color: #60a5fa; font-size: 0.75rem; margin-top: 5px;">muzibu.com.tr</div>
+                    </div>
+
+                    <div class="media-controls">
+                        <div class="media-btn">
+                            <i class="fas fa-backward"></i>
+                        </div>
+                        <div class="media-btn play">
+                            <i class="fas fa-pause"></i>
+                        </div>
+                        <div class="media-btn">
+                            <i class="fas fa-forward"></i>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; color: #94a3b8; font-size: 0.7rem;">
+                        2:15 / 4:32
+                    </div>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 20px; color: #60a5fa;">
+                ☝️ iOS/Android lock screen görünümü
+            </p>
+        </div>
+
+        <h2>💻 İmplementasyon</h2>
+
+        <h3>1. Media Session Update</h3>
+        <div class="code-block">
+<pre>// Şarkı değiştiğinde metadata güncelle
+updateMediaSession(song) {
+    if ('mediaSession' in navigator) {
+        // Metadata ayarla
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: song.song_title?.tr || song.song_title,
+            artist: song.artist_title?.tr || song.artist_title,
+            album: song.album_title?.tr || song.album_title,
+            artwork: [
+                { src: song.album_cover, sizes: '96x96',   type: 'image/jpeg' },
+                { src: song.album_cover, sizes: '128x128', type: 'image/jpeg' },
+                { src: song.album_cover, sizes: '192x192', type: 'image/jpeg' },
+                { src: song.album_cover, sizes: '256x256', type: 'image/jpeg' },
+                { src: song.album_cover, sizes: '384x384', type: 'image/jpeg' },
+                { src: song.album_cover, sizes: '512x512', type: 'image/jpeg' }
+            ]
+        });
+
+        console.log('🎵 Media Session updated:', song.song_title);
+    }
+}</pre>
+        </div>
+
+        <h3>2. Action Handlers</h3>
+        <div class="code-block">
+<pre>// Alpine.js init() içinde
+init() {
+    // ... mevcut init kodu
+
+    // Media Session action handlers
+    this.initMediaSession();
+},
+
+initMediaSession() {
+    if (!('mediaSession' in navigator)) {
+        console.warn('Media Session API not supported');
+        return;
+    }
+
+    // Play/Pause
+    navigator.mediaSession.setActionHandler('play', () => {
+        console.log('Media Session: Play');
+        this.play();
+    });
+
+    navigator.mediaSession.setActionHandler('pause', () => {
+        console.log('Media Session: Pause');
+        this.pause();
+    });
+
+    // Next/Previous Track
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+        console.log('Media Session: Next track');
+        this.nextTrack();
+    });
+
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+        console.log('Media Session: Previous track');
+        this.previousTrack();
+    });
+
+    // Seek (ileri/geri sar)
+    navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+        console.log('Media Session: Seek backward');
+        const skipTime = details.seekOffset || 10;
+        this.seek(-skipTime);
+    });
+
+    navigator.mediaSession.setActionHandler('seekforward', (details) => {
+        console.log('Media Session: Seek forward');
+        const skipTime = details.seekOffset || 10;
+        this.seek(skipTime);
+    });
+
+    // Seek to specific position
+    navigator.mediaSession.setActionHandler('seekto', (details) => {
+        if (details.fastSeek && ('fastSeek' in HTMLMediaElement.prototype)) {
+            // Fast seek (tarayıcı destekliyorsa)
+            this.fastSeek(details.seekTime);
+        } else {
+            // Normal seek
+            this.seekTo(details.seekTime);
+        }
+    });
+
+    // Stop
+    navigator.mediaSession.setActionHandler('stop', () => {
+        console.log('Media Session: Stop');
+        this.stop();
+    });
+
+    console.log('✅ Media Session handlers initialized');
+}</pre>
+        </div>
+
+        <h3>3. Playback State Update</h3>
+        <div class="code-block">
+<pre>// Oynatma durumu değiştiğinde
+updatePlaybackState() {
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = this.isPlaying ? 'playing' : 'paused';
+    }
+}
+
+// Play fonksiyonu içinde
+play() {
+    // ... play logic
+
+    this.updatePlaybackState();
+    this.updateMediaSession(this.currentSong);
+}
+
+// Pause fonksiyonu içinde
+pause() {
+    // ... pause logic
+
+    this.updatePlaybackState();
+}</pre>
+        </div>
+
+        <h3>4. Position State (Progress)</h3>
+        <div class="code-block">
+<pre>// Progress tracking'de position state güncelle
+startProgressTracking() {
+    this.progressInterval = setInterval(() => {
+        // ... progress update logic
+
+        // Media Session position güncelle
+        if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
+            try {
+                navigator.mediaSession.setPositionState({
+                    duration: this.duration,
+                    playbackRate: 1.0,
+                    position: this.currentTime
+                });
+            } catch (error) {
+                // Ignore errors (bazı tarayıcılarda desteklenmeyebilir)
+            }
+        }
+    }, 250); // 250ms
+}</pre>
+        </div>
+
+        <h2>🎛️ Desteklenen Actions</h2>
+
+        <div class="info">
+            <h3>Temel Actions:</h3>
+            <ul>
+                <li><code>play</code>: Oynatmaya başla</li>
+                <li><code>pause</code>: Duraklat</li>
+                <li><code>stop</code>: Tamamen durdur</li>
+                <li><code>nexttrack</code>: Sonraki şarkı</li>
+                <li><code>previoustrack</code>: Önceki şarkı</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>İleri Seviye Actions:</h3>
+            <ul>
+                <li><code>seekbackward</code>: 10 saniye geri sar</li>
+                <li><code>seekforward</code>: 10 saniye ileri sar</li>
+                <li><code>seekto</code>: Belirli pozisyona git</li>
+                <li><code>skipad</code>: Reklamı atla (YouTube Music tarzı)</li>
+            </ul>
+        </div>
+
+        <h2>📊 Platform Desteği</h2>
+
+        <div class="code-block">
+<pre>// Tarayıcı desteği kontrolü
+if ('mediaSession' in navigator) {
+    console.log('✅ Media Session destekleniyor');
+
+    // Position State desteği (daha yeni)
+    if ('setPositionState' in navigator.mediaSession) {
+        console.log('✅ Position State destekleniyor');
+    }
+} else {
+    console.warn('❌ Media Session desteklenmiyor');
+    // Fallback yok, sadece log
+}</pre>
+        </div>
+
+        <div class="info">
+            <h3>Destekleyen Platformlar:</h3>
+            <ul>
+                <li>✅ <strong>Chrome/Edge 73+:</strong> Full destek</li>
+                <li>✅ <strong>Firefox 82+:</strong> Full destek</li>
+                <li>✅ <strong>Safari 15+:</strong> Full destek (iOS 15+)</li>
+                <li>✅ <strong>Android Chrome:</strong> Lock screen + notification</li>
+                <li>✅ <strong>iOS Safari:</strong> Lock screen (iOS 15+)</li>
+                <li>❌ <strong>IE11:</strong> Desteklenmez</li>
+            </ul>
+        </div>
+
+        <h2>🎯 Kullanıcı Senaryoları</h2>
+
+        <div class="info">
+            <h3>Senaryo 1: Spor Salonu</h3>
+            <p><strong>Durum:</strong> Koşu bandında koşuyorsun, telefon cebinde</p>
+            <p><strong>Eylem:</strong> Bluetooth kulaklıktaki next track butonuna bas</p>
+            <p><strong>Sonuç:</strong> Telefonu çıkarmadan sonraki şarkıya geçtin!</p>
+        </div>
+
+        <div class="info">
+            <h3>Senaryo 2: Araba</h3>
+            <p><strong>Durum:</strong> Arabada sürüyorsun, muzibu.com.tr açık</p>
+            <p><strong>Eylem:</strong> Direksiyon üstü medya tuşlarına bas</p>
+            <p><strong>Sonuç:</strong> Telefona dokunmadan kontrol! (Güvenli sürüş)</p>
+        </div>
+
+        <div class="info">
+            <h3>Senaryo 3: Bildirim Paneli</h3>
+            <p><strong>Durum:</strong> Başka uygulamada geziniyorsun</p>
+            <p><strong>Eylem:</strong> Bildirim panelini aç, now playing widget'ından oynat/duraklat bas</p>
+            <p><strong>Sonuç:</strong> Tarayıcıya geri dönmeden kontrol!</p>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ <strong>Lock Screen Control:</strong> Telefon kilitliyken kontrol</li>
+            <li>✅ <strong>Keyboard Media Keys:</strong> F7/F8/F9 çalışır</li>
+            <li>✅ <strong>Bluetooth Kulaklık:</strong> Next/Previous butonları çalışır</li>
+            <li>✅ <strong>Smartwatch:</strong> Apple Watch/Galaxy Watch uyumlu</li>
+            <li>✅ <strong>Car Play:</strong> Araç entegrasyonu</li>
+            <li>✅ <strong>Native Feel:</strong> Spotify gibi profesyonel deneyim</li>
+        </ul>
+
+        <h2>🔧 Debug & Test</h2>
+
+        <div class="code-block">
+<pre>// Media Session state kontrolü (Console'da)
+console.log('Metadata:', navigator.mediaSession.metadata);
+console.log('Playback State:', navigator.mediaSession.playbackState);
+
+// Position state kontrolü
+try {
+    const position = await navigator.mediaSession.getPositionState?.();
+    console.log('Position:', position);
+} catch (e) {
+    console.log('Position state desteklenmiyor');
+}
+
+// Artwork test (görseller yükleniyor mu?)
+navigator.mediaSession.metadata.artwork.forEach(art => {
+    console.log(`Artwork ${art.sizes}:`, art.src);
+});</pre>
+        </div>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

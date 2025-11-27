@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playback Speed - Oynatma Hızı Kontrolü</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        .warning { background: rgba(251, 191, 36, 0.2); padding: 20px; border-left: 4px solid #fbbf24; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+        .speed-demo {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .speed-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .speed-btn {
+            background: #0f172a;
+            border: 2px solid #334155;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            min-width: 80px;
+        }
+        .speed-btn:hover {
+            border-color: #1DB954;
+            transform: translateY(-2px);
+        }
+        .speed-btn.active {
+            background: #1DB954;
+            border-color: #1DB954;
+            color: #000;
+        }
+        .speed-slider-demo {
+            margin: 30px 0;
+            text-align: center;
+        }
+        .slider-container {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #334155;
+            border-radius: 3px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>⚡ Playback Speed</h1>
+
+        <div class="success">
+            <h3>✅ YouTube Tarzı Hız Kontrolü</h3>
+            <p>0.5x (yavaş) - 2x (hızlı) arası oynatma hızı. Podcast ve audiobook için ideal!</p>
+        </div>
+
+        <h2>🎯 Playback Speed Nedir?</h2>
+
+        <div class="info">
+            <p><strong>Playback Speed:</strong> Müziği/ses dosyasını farklı hızlarda oynatma.</p>
+            <ul>
+                <li><strong>0.5x:</strong> Yarı hızda (öğrenme için)</li>
+                <li><strong>0.75x:</strong> Biraz yavaş</li>
+                <li><strong>1x:</strong> Normal hız (varsayılan)</li>
+                <li><strong>1.25x:</strong> Biraz hızlı</li>
+                <li><strong>1.5x:</strong> 1.5 kat hızlı (podcast için popüler)</li>
+                <li><strong>2x:</strong> 2 kat hızlı (maksimum)</li>
+            </ul>
+        </div>
+
+        <h2>🎨 UI Demo</h2>
+
+        <div class="speed-demo">
+            <h3 style="text-align: center; margin-bottom: 30px; color: #60a5fa;">Hız Seçenekleri</h3>
+
+            <div class="speed-buttons">
+                <button class="speed-btn">0.5x</button>
+                <button class="speed-btn">0.75x</button>
+                <button class="speed-btn active">1x</button>
+                <button class="speed-btn">1.25x</button>
+                <button class="speed-btn">1.5x</button>
+                <button class="speed-btn">2x</button>
+            </div>
+
+            <div class="speed-slider-demo">
+                <p style="color: #94a3b8; margin-bottom: 10px;">veya slider ile:</p>
+                <div class="slider-container">
+                    <input type="range" min="0.5" max="2" step="0.25" value="1">
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px; color: #60a5fa; font-size: 0.9rem;">
+                        <span>0.5x</span>
+                        <span style="color: #1DB954; font-weight: 700;">1x Normal</span>
+                        <span>2x</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>💻 İmplementasyon</h2>
+
+        <h3>1. State & Fonksiyonlar</h3>
+        <div class="code-block">
+<pre>// Alpine.js data()
+data() {
+    return {
+        // ... mevcut state'ler
+
+        playbackRate: 1.0,           // Oynatma hızı (1.0 = normal)
+        showSpeedMenu: false,        // Hız menüsü açık mı?
+
+        // ... diğer state'ler
+    };
+},
+
+// Hız değiştir
+setPlaybackRate(rate) {
+    this.playbackRate = rate;
+
+    // HLS için
+    if (this.isHlsStream && this.hlsAudio) {
+        const audio = this.getActiveHlsAudio();
+        if (audio) {
+            audio.playbackRate = rate;
+        }
+    }
+
+    // Howler için
+    if (this.howl) {
+        this.howl.rate(rate);
+    }
+
+    // LocalStorage'a kaydet
+    localStorage.setItem('muzibu_playback_rate', rate);
+
+    // Media Session güncelle (varsa)
+    if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
+        try {
+            navigator.mediaSession.setPositionState({
+                duration: this.duration,
+                playbackRate: rate,
+                position: this.currentTime
+            });
+        } catch (e) {}
+    }
+
+    console.log(`⚡ Playback rate: ${rate}x`);
+    this.showToast(`Hız: ${rate}x`, 'info');
+}</pre>
+        </div>
+
+        <h3>2. Howler.js ile Kullanım</h3>
+        <div class="code-block">
+<pre>// Howler.js - rate() metodu
+playWithHowler(url) {
+    this.howl = new Howl({
+        src: [url],
+        html5: true,
+        rate: this.playbackRate,  // ← Başlangıç hızı
+        onload: () => {
+            this.howl.play();
+            this.howl.rate(this.playbackRate);  // ← Güncelle
+        }
+    });
+}
+
+// Hız değiştir (Howler için)
+this.howl.rate(1.5);  // 1.5x hız</pre>
+        </div>
+
+        <h3>3. HLS için (HTML5 Audio Element)</h3>
+        <div class="code-block">
+<pre>// HLS - HTML5 Audio element
+playHlsStream(url) {
+    // ... HLS setup
+
+    const audio = this.getActiveHlsAudio();
+    if (audio) {
+        audio.playbackRate = this.playbackRate;  // ← HTML5 native
+    }
+}
+
+// Hız değiştir (HLS için)
+audio.playbackRate = 1.5;  // 1.5x hız</pre>
+        </div>
+
+        <h3>4. UI - Speed Menu (Dropdown)</h3>
+        <div class="code-block">
+<pre>&lt;!-- Player bar'da hız butonu --&gt;
+&lt;div class="relative"&gt;
+    &lt;button @click="showSpeedMenu = !showSpeedMenu"
+            class="text-gray-400 hover:text-white px-2 py-1 rounded"
+            :class="playbackRate !== 1.0 ? 'text-green-400' : ''"&gt;
+        &lt;span class="text-sm font-bold" x-text="playbackRate + 'x'"&gt;&lt;/span&gt;
+    &lt;/button&gt;
+
+    &lt;!-- Speed dropdown --&gt;
+    &lt;div x-show="showSpeedMenu"
+         @click.away="showSpeedMenu = false"
+         x-transition
+         class="absolute bottom-full right-0 mb-2 bg-gray-900 rounded-lg shadow-xl border border-gray-700 p-2 min-w-[120px]"&gt;
+
+        &lt;div class="text-xs text-gray-400 px-3 py-1 mb-1"&gt;Oynatma Hızı&lt;/div&gt;
+
+        &lt;template x-for="speed in [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]" :key="speed"&gt;
+            &lt;button @click="setPlaybackRate(speed); showSpeedMenu = false"
+                    class="w-full text-left px-3 py-2 rounded hover:bg-gray-800 transition"
+                    :class="playbackRate === speed ? 'bg-green-500 text-black font-bold' : 'text-white'"&gt;
+                &lt;span x-text="speed + 'x'"&gt;&lt;/span&gt;
+                &lt;span x-show="speed === 1.0" class="text-xs ml-2"&gt;(Normal)&lt;/span&gt;
+            &lt;/button&gt;
+        &lt;/template&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <h3>5. Alternatif - Slider UI</h3>
+        <div class="code-block">
+<pre>&lt;!-- Slider control --&gt;
+&lt;div class="flex items-center gap-3"&gt;
+    &lt;span class="text-xs text-gray-400"&gt;Hız:&lt;/span&gt;
+
+    &lt;input type="range"
+           min="0.5" max="2" step="0.25"
+           x-model="playbackRate"
+           @input="setPlaybackRate(parseFloat($event.target.value))"
+           class="w-24 h-1 bg-gray-700 rounded"&gt;
+
+    &lt;span class="text-xs font-bold"
+          :class="playbackRate !== 1.0 ? 'text-green-400' : 'text-gray-400'"
+          x-text="playbackRate + 'x'"&gt;&lt;/span&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <h3>6. LocalStorage Persistence</h3>
+        <div class="code-block">
+<pre>// Init'te geri yükle
+init() {
+    // ... mevcut init kodu
+
+    // Playback rate geri yükle
+    const savedRate = localStorage.getItem('muzibu_playback_rate');
+    if (savedRate) {
+        this.playbackRate = parseFloat(savedRate);
+        console.log(`🔄 Playback rate restored: ${this.playbackRate}x`);
+    }
+}</pre>
+        </div>
+
+        <h2>🎯 Kullanım Senaryoları</h2>
+
+        <div class="info">
+            <h3>Senaryo 1: Podcast Dinleme</h3>
+            <p><strong>Durum:</strong> 2 saatlik podcast, zamanın yok</p>
+            <p><strong>Eylem:</strong> 1.5x hıza geçir</p>
+            <p><strong>Sonuç:</strong> 2 saat → 1.33 saat (80 dakika), %25 zaman tasarrufu!</p>
+        </div>
+
+        <div class="info">
+            <h3>Senaryo 2: Müzik Eğitimi</h3>
+            <p><strong>Durum:</strong> Gitar solosunu öğreniyorsun, çok hızlı</p>
+            <p><strong>Eylem:</strong> 0.75x'e düşür</p>
+            <p><strong>Sonuç:</strong> Notaları yavaşça takip edebiliyorsun!</p>
+        </div>
+
+        <div class="info">
+            <h3>Senaryo 3: Audiobook</h3>
+            <p><strong>Durum:</strong> Kitap okuma, narrator yavaş konuşuyor</p>
+            <p><strong>Eylem:</strong> 1.25x hızlandır</p>
+            <p><strong>Sonuç:</strong> Doğal ses, ama daha hızlı ilerleme!</p>
+        </div>
+
+        <h2>⚙️ Teknik Detaylar</h2>
+
+        <div class="info">
+            <h3>Ses Kalitesi:</h3>
+            <ul>
+                <li><strong>Pitch Preservation:</strong> HTML5 ve Howler.js otomatik olarak pitch'i korur</li>
+                <li><strong>2x hızda:</strong> Sesin tonu değişmez (chipmunk sesi yok!)</li>
+                <li><strong>0.5x hızda:</strong> Doğal, yavaş ses</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Müzik için Dikkat!</h3>
+            <ul>
+                <li><strong>Müzik hız değişimi:</strong> Bazı kullanıcılar beğenmeyebilir</li>
+                <li><strong>Öneri:</strong> Podcast/audiobook için vurgula, müzik için opsiyonel</li>
+                <li><strong>Default 1x:</strong> Her yeni şarkıda 1x'e dön (müzik için)</li>
+            </ul>
+        </div>
+
+        <h2>🎛️ Gelişmiş Özellikler</h2>
+
+        <div class="code-block">
+<pre>// Hız değiştiğinde duration'ı güncelle (gösterge için)
+get effectiveDuration() {
+    return this.duration / this.playbackRate;
+}
+
+// Örnek: 240 saniye şarkı, 1.5x hızda → 160 saniye sürer
+
+// Progress bar'da göster
+&lt;span x-text="formatTime(effectiveDuration)"&gt;&lt;/span&gt;</pre>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ <strong>Zaman Tasarrufu:</strong> Podcast/audiobook için kritik</li>
+            <li>✅ <strong>Öğrenme:</strong> Müzik eğitimi için yavaşlatma</li>
+            <li>✅ <strong>Esnek:</strong> Kullanıcı kontrol eder</li>
+            <li>✅ <strong>Pitch Preservation:</strong> Ses tonu korunur</li>
+            <li>✅ <strong>Persistent:</strong> Tercih kaydedilir</li>
+        </ul>
+
+        <h2>🚀 İleri Seviye - Smart Speed</h2>
+
+        <div class="code-block">
+<pre>// Sessiz kısımları otomatik hızlandır (podcast için)
+// YouTube Premium'daki "Smart Speed" özelliği gibi
+
+// Örnek: 0.5 saniye sessizlik → 0.1 saniyeye düşür
+// (Kompleks, Web Audio API + AudioWorklet gerektirir)</pre>
+        </div>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

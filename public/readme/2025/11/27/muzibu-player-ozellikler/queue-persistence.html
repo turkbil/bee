@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue Persistence + B2B Sonsuz Döngü Sistemi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .highlight { background: rgba(29, 185, 84, 0.2); padding: 2px 6px; border-radius: 4px; color: #1ed760; }
+        .critical { background: rgba(239, 68, 68, 0.2); padding: 20px; border-left: 4px solid #ef4444; border-radius: 8px; margin: 20px 0; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>💾 Queue Persistence + B2B Sonsuz Döngü</h1>
+
+        <div class="critical">
+            <h3>🔴 MEVCUT DURUM: Queue Kaybolur!</h3>
+            <p>Sayfa yenilenince queue sıfırlanır. LocalStorage kullanımı YOK!</p>
+        </div>
+
+        <div class="success">
+            <h3>✅ HEDEF: Kalıcı Queue + B2B Sonsuz Döngü</h3>
+            <ul>
+                <li>Queue localStorage'a kaydedilir</li>
+                <li>Sayfa yenilenince queue geri yüklenir</li>
+                <li>Queue index (hangi şarkıda kaldı) kaydedilir</li>
+                <li><strong>B2B Sonsuz Döngü:</strong> Queue bittiğinde son şarkının türünden yeni şarkılar yükle!</li>
+            </ul>
+        </div>
+
+        <h2>🏢 B2B Kullanım Senaryosu</h2>
+
+        <div class="info">
+            <h3>📖 Senaryo:</h3>
+            <ol>
+                <li><strong>Sabah 08:00:</strong> Cafe/restoran PC'sini açar</li>
+                <li><strong>08:05:</strong> muzibu.com'a girer, login olur</li>
+                <li><strong>08:10:</strong> Bir playlist başlatır (örn: "Kahvaltı Jazz" - 50 şarkı)</li>
+                <li><strong>08:10 - 23:00:</strong> Hiçbir müdahale YAPILMADAN müzik çalmaya devam eder!</li>
+                <li><strong>Liste Bittiğinde (örn: 12:00):</strong> Sistem otomatik olarak son şarkının türünden (Jazz) yeni şarkılar yükler</li>
+                <li><strong>Sonsuz Döngü:</strong> Bu şekilde gün boyu müzik hiç kesilmez!</li>
+            </ol>
+        </div>
+
+        <h2>🔧 İmplementasyon</h2>
+
+        <h3>1. Queue Storage Class</h3>
+        <div class="code-block">
+<pre>// storage.js
+class QueueStorage {
+    constructor(store) {
+        this.store = store;
+        this.STORAGE_KEY = 'muzibu_queue_state';
+    }
+
+    // Queue + state'i kaydet
+    save() {
+        const state = {
+            queue: this.store.queue,
+            queueIndex: this.store.queueIndex,
+            currentSong: this.store.currentSong,
+            currentTime: this.store.currentTime, // Nerede kaldı
+            volume: this.store.volume,
+            repeatMode: this.store.repeatMode,
+            isShuffled: this.store.isShuffled,
+            lastUpdated: Date.now()
+        };
+
+        try {
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(state));
+            console.log('Queue saved:', state.queue.length, 'songs');
+        } catch (e) {
+            console.error('Failed to save queue:', e);
+        }
+    }
+
+    // Queue'yu geri yükle
+    restore() {
+        try {
+            const saved = localStorage.getItem(this.STORAGE_KEY);
+            if (!saved) return false;
+
+            const state = JSON.parse(saved);
+
+            // 7 günden eski ise sil
+            const AGE_LIMIT = 7 * 24 * 60 * 60 * 1000; // 7 gün
+            if (Date.now() - state.lastUpdated > AGE_LIMIT) {
+                this.clear();
+                return false;
+            }
+
+            // State'i restore et
+            Object.assign(this.store, state);
+
+            console.log('Queue restored:', state.queue.length, 'songs');
+            return true;
+        } catch (e) {
+            console.error('Failed to restore queue:', e);
+            return false;
+        }
+    }
+
+    clear() {
+        localStorage.removeItem(this.STORAGE_KEY);
+    }
+}</pre>
+        </div>
+
+        <h3>2. Auto-Save (Her Değişiklikte)</h3>
+        <div class="code-block">
+<pre>// Alpine.js watch ile otomatik kaydet
+Alpine.effect(() => {
+    // Queue değiştiğinde kaydet
+    const queue = this.queue;
+    const queueIndex = this.queueIndex;
+
+    // Debounce ile 1 saniye sonra kaydet (çok sık kaydetme)
+    clearTimeout(this._saveTimeout);
+    this._saveTimeout = setTimeout(() => {
+        queueStorage.save();
+    }, 1000);
+});</pre>
+        </div>
+
+        <h3>3. B2B Sonsuz Döngü - Genre-Based Auto Continue</h3>
+        <div class="code-block">
+<pre>// Şarkı bittiğinde kontrol et
+async onTrackEnded() {
+    // Normal repeat logic
+    if (this.repeatMode === 'one') {
+        this.playSongFromQueue(this.queueIndex);
+        return;
+    }
+
+    // Queue'da sonraki şarkı var mı?
+    if (this.queueIndex < this.queue.length - 1) {
+        this.nextTrack();
+        return;
+    }
+
+    // QUEUE BİTTİ!
+    if (this.repeatMode === 'all') {
+        // Repeat all ise başa dön
+        this.queueIndex = 0;
+        this.playSongFromQueue(0);
+    } else {
+        // B2B SONSUZ DÖNGÜ - Son şarkının türünden yeni şarkılar yükle!
+        await this.loadMoreByGenre();
+    }
+}
+
+// Son şarkının türünden yeni şarkılar yükle
+async loadMoreByGenre() {
+    const lastSong = this.queue[this.queue.length - 1];
+    if (!lastSong) return;
+
+    // Son şarkının genre'sini al
+    const genre = lastSong.genre || lastSong.genre_id;
+
+    console.log('🔄 Queue bitti! Genre bazlı devam:', genre);
+
+    try {
+        // Genre'ye göre yeni şarkılar yükle (50 şarkı)
+        const response = await fetch(`/api/muzibu/songs/by-genre/${genre}?limit=50`);
+        const newSongs = await response.json();
+
+        if (newSongs.length > 0) {
+            // Mevcut queue'ya ekle (shuffle yaparak)
+            const shuffled = this.shuffleArray(newSongs);
+            this.queue.push(...shuffled);
+
+            // Devam et
+            this.queueIndex++;
+            await this.playSongFromQueue(this.queueIndex);
+
+            // Queue'yu kaydet
+            queueStorage.save();
+
+            console.log(`✅ ${shuffled.length} yeni ${genre} şarkısı eklendi!`);
+            this.showToast(`${shuffled.length} yeni şarkı yüklendi - müzik devam ediyor!`, 'success');
+        } else {
+            // Genre'den şarkı bulunamadı, rastgele popüler şarkılar yükle
+            await this.loadRandomPopular();
+        }
+    } catch (error) {
+        console.error('Genre-based load failed:', error);
+        // Fallback: Rastgele popüler şarkılar
+        await this.loadRandomPopular();
+    }
+}
+
+// Fallback: Rastgele popüler şarkılar
+async loadRandomPopular() {
+    const response = await fetch('/api/muzibu/songs/popular?limit=50');
+    const songs = await response.json();
+    const shuffled = this.shuffleArray(songs);
+    this.queue.push(...shuffled);
+    this.queueIndex++;
+    await this.playSongFromQueue(this.queueIndex);
+    queueStorage.save();
+}
+
+// Fisher-Yates shuffle
+shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}</pre>
+        </div>
+
+        <h3>4. Sayfa Yüklendiğinde Restore</h3>
+        <div class="code-block">
+<pre>// Alpine.js init
+init() {
+    console.log('Muzibu Player initializing...');
+
+    // Queue'yu geri yükle
+    const restored = queueStorage.restore();
+
+    if (restored && this.queue.length > 0) {
+        console.log('✅ Queue restored:', this.queue.length, 'songs');
+
+        // Kullanıcıya bildir
+        this.showToast(`Kaldığınız yerden devam ediliyor (${this.queue.length} şarkı)`, 'info');
+
+        // Otomatik çalmaya devam et (opsiyonel)
+        // setTimeout(() => {
+        //     this.playSongFromQueue(this.queueIndex);
+        // }, 1000);
+    } else {
+        console.log('ℹ️ No saved queue, starting fresh');
+    }
+}</pre>
+        </div>
+
+        <h2>📊 Veri Yapısı (localStorage)</h2>
+        <div class="code-block">
+<pre>{
+    "queue": [
+        {
+            "song_id": 123,
+            "song_title": { "tr": "Smooth Jazz Morning" },
+            "artist_title": { "tr": "Jazz Ensemble" },
+            "album_cover": "https://...",
+            "genre": "Jazz", // ← GENRE ÖNEMLI!
+            "genre_id": 5,
+            "duration": 240
+        },
+        // ... 49 şarkı daha
+    ],
+    "queueIndex": 12,  // ← 12. şarkıda kaldı
+    "currentSong": { /* ... */ },
+    "currentTime": 45,  // ← 45. saniyede kaldı
+    "volume": 100,
+    "repeatMode": "off",
+    "isShuffled": false,
+    "lastUpdated": 1732708123000
+}</pre>
+        </div>
+
+        <h2>🎯 B2B Scenario Flow</h2>
+        <div class="info">
+            <h3>📈 Zaman Çizelgesi:</h3>
+            <ul>
+                <li><strong>08:10:</strong> 50 şarkılık "Kahvaltı Jazz" playlist başlatıldı</li>
+                <li><strong>11:30:</strong> Queue bitti (50 şarkı tamamlandı)</li>
+                <li><strong>11:30:</strong> Sistem otomatik olarak "Jazz" genre'sinden 50 yeni şarkı yükledi</li>
+                <li><strong>15:00:</strong> 2. queue bitti</li>
+                <li><strong>15:00:</strong> Yine "Jazz" türünden 50 yeni şarkı yüklendi</li>
+                <li><strong>18:30:</strong> 3. queue bitti</li>
+                <li><strong>18:30:</strong> Döngü devam ediyor...</li>
+                <li><strong>23:00:</strong> Restoran kapandı, PC kapatıldı</li>
+                <li><strong>SONRAKI GÜN 08:10:</strong> Sayfa açıldı → Queue restore edildi → Kaldığı yerden devam!</li>
+            </ul>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ <span class="highlight">Müdahale Gerektirmez:</span> Gün boyu hiç dokunmana gerek yok!</li>
+            <li>✅ <span class="highlight">Genre Tutarlılığı:</span> Müzik atmosferi bozulmaz (Jazz devam eder)</li>
+            <li>✅ <span class="highlight">Sayfa Yenilenirse:</span> Queue kaybolmaz, kaldığı yerden devam!</li>
+            <li>✅ <span class="highlight">Elektrik Kesintisi:</strong> PC yeniden açıldığında queue geri yüklenir</li>
+            <li>✅ <span class="highlight">7 Gün Geçerli:</span> Eski queue'lar otomatik temizlenir</li>
+        </ul>
+
+        <h2>⚙️ Kullanıcı Kontrolleri</h2>
+        <div class="code-block">
+<pre>// Kullanıcı ayarları (localStorage)
+const b2bSettings = {
+    autoLoadMore: true,          // Queue bitince otomatik yükle
+    genreBasedContinue: true,    // Genre bazlı devam et
+    autoPlayOnRestore: false     // Restore sonrası otomatik çal (opsiyonel)
+};</pre>
+        </div>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

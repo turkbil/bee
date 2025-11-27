@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equalizer (Ekolayzer) - Premium Özellik</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #fbbf24; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .highlight { background: rgba(251, 191, 36, 0.2); padding: 2px 6px; border-radius: 4px; color: #fbbf24; }
+        .critical { background: rgba(239, 68, 68, 0.2); padding: 20px; border-left: 4px solid #ef4444; border-radius: 8px; margin: 20px 0; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        .premium { background: rgba(251, 191, 36, 0.2); padding: 20px; border-left: 4px solid #fbbf24; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+        .demo-eq {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .eq-bars {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 250px;
+            padding: 20px;
+            background: #0f172a;
+            border-radius: 8px;
+        }
+        .eq-band {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            max-width: 80px;
+        }
+        .eq-slider-container {
+            position: relative;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .eq-bar {
+            width: 40px;
+            background: linear-gradient(to top, #1DB954, #fbbf24);
+            border-radius: 4px;
+            transition: height 0.2s ease;
+            position: relative;
+        }
+        .eq-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        .eq-value {
+            font-size: 0.75rem;
+            color: #60a5fa;
+            font-weight: 700;
+        }
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .preset-btn {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .preset-btn:hover {
+            background: #1e293b;
+            border-color: #1DB954;
+            transform: translateY(-2px);
+        }
+        .preset-btn.active {
+            background: #1DB954;
+            color: #000;
+            border-color: #1DB954;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>🎚️ Equalizer (Ekolayzer) - PREMIUM</h1>
+
+        <div class="premium">
+            <h3>👑 PREMIUM ÖZELLİK</h3>
+            <p>Equalizer sadece premium üyeler için aktif olacak!</p>
+            <p><strong>Free kullanıcılar:</strong> "Premium üyeliğe geçerek equalizer kullanabilirsiniz" mesajı görecek.</p>
+        </div>
+
+        <div class="critical">
+            <h3>🔴 MEVCUT DURUM: Equalizer Yok!</h3>
+            <p>Kodda equalizer implementasyonu bulunmuyor. Sıfırdan tasarlanacak.</p>
+        </div>
+
+        <h2>🎯 Equalizer Nedir?</h2>
+
+        <div class="info">
+            <p><strong>Equalizer (Ekolayzer):</strong> Ses frekanslarını ayarlayarak müzik deneyimini özelleştirme aracı.</p>
+            <ul>
+                <li><strong>Bass (Bas):</strong> Düşük frekanslar (60-250 Hz) - Vuruşlar, davul</li>
+                <li><strong>Mid (Orta):</strong> Orta frekanslar (250-4000 Hz) - Vokal, gitar</li>
+                <li><strong>Treble (Tiz):</strong> Yüksek frekanslar (4000-16000 Hz) - Symbal, detaylar</li>
+            </ul>
+        </div>
+
+        <h2>🎨 Görsel Demo - 10 Band Equalizer</h2>
+
+        <div class="demo-eq">
+            <h3 style="text-align: center; margin-bottom: 30px; color: #fbbf24;">10 Band Parametric Equalizer</h3>
+
+            <div class="eq-bars">
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 90px;"></div>
+                    </div>
+                    <div class="eq-value">0 dB</div>
+                    <div class="eq-label">32 Hz</div>
+                </div>
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 110px;"></div>
+                    </div>
+                    <div class="eq-value">+3 dB</div>
+                    <div class="eq-label">64 Hz</div>
+                </div>
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 130px;"></div>
+                    </div>
+                    <div class="eq-value">+6 dB</div>
+                    <div class="eq-label">125 Hz</div>
+                </div>
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 100px;"></div>
+                    </div>
+                    <div class="eq-value">+1 dB</div>
+                    <div class="eq-label">250 Hz</div>
+                </div>
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 90px;"></div>
+                    </div>
+                    <div class="eq-value">0 dB</div>
+                    <div class="eq-label">500 Hz</div>
+                </div>
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 70px;"></div>
+                    </div>
+                    <div class="eq-value">-3 dB</div>
+                    <div class="eq-label">1 kHz</div>
+                </div>
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 80px;"></div>
+                    </div>
+                    <div class="eq-value">-1 dB</div>
+                    <div class="eq-label">2 kHz</div>
+                </div>
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 100px;"></div>
+                    </div>
+                    <div class="eq-value">+1 dB</div>
+                    <div class="eq-label">4 kHz</div>
+                </div>
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 120px;"></div>
+                    </div>
+                    <div class="eq-value">+4 dB</div>
+                    <div class="eq-label">8 kHz</div>
+                </div>
+                <div class="eq-band">
+                    <div class="eq-slider-container">
+                        <div class="eq-bar" style="height: 140px;"></div>
+                    </div>
+                    <div class="eq-value">+7 dB</div>
+                    <div class="eq-label">16 kHz</div>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 30px 0 20px 0; color: #60a5fa;">Preset'ler</h3>
+            <div class="preset-buttons">
+                <button class="preset-btn active">Flat (Düz)</button>
+                <button class="preset-btn">Rock</button>
+                <button class="preset-btn">Pop</button>
+                <button class="preset-btn">Jazz</button>
+                <button class="preset-btn">Classical</button>
+                <button class="preset-btn">Electronic</button>
+                <button class="preset-btn">Hip-Hop</button>
+                <button class="preset-btn">Vocal Boost</button>
+            </div>
+        </div>
+
+        <h2>💻 İmplementasyon - Web Audio API</h2>
+
+        <h3>1. Equalizer Class</h3>
+        <div class="code-block">
+<pre>class MuzibuEqualizer {
+    constructor(audioContext) {
+        this.audioContext = audioContext;
+        this.bands = [];
+        this.frequencies = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
+
+        // 10 band filter oluştur
+        this.frequencies.forEach(freq => {
+            const filter = this.audioContext.createBiquadFilter();
+            filter.type = 'peaking'; // Parametric EQ
+            filter.frequency.value = freq;
+            filter.Q.value = 1.0; // Bandwidth (keskinlik)
+            filter.gain.value = 0; // Başlangıç: 0 dB (flat)
+
+            this.bands.push({ frequency: freq, filter });
+        });
+
+        // Filter chain oluştur (band'ları sırayla bağla)
+        for (let i = 0; i < this.bands.length - 1; i++) {
+            this.bands[i].filter.connect(this.bands[i + 1].filter);
+        }
+    }
+
+    // Input node (audio source bağlanır)
+    get input() {
+        return this.bands[0].filter;
+    }
+
+    // Output node (destination'a bağlanır)
+    get output() {
+        return this.bands[this.bands.length - 1].filter;
+    }
+
+    // Tek bir band'ı ayarla
+    setBand(index, gainDB) {
+        if (index >= 0 && index < this.bands.length) {
+            this.bands[index].filter.gain.value = gainDB;
+        }
+    }
+
+    // Tüm band'ları ayarla (preset için)
+    setAllBands(gainsArray) {
+        gainsArray.forEach((gain, index) => {
+            this.setBand(index, gain);
+        });
+    }
+
+    // Reset (flat)
+    reset() {
+        this.bands.forEach(band => {
+            band.filter.gain.value = 0;
+        });
+    }
+}</pre>
+        </div>
+
+        <h3>2. Alpine.js Integration</h3>
+        <div class="code-block">
+<pre>// muzibuApp() fonksiyonu içinde
+
+data() {
+    return {
+        // ... mevcut state'ler
+
+        // Equalizer state
+        equalizerEnabled: false,        // EQ açık mı?
+        equalizerPreset: 'flat',        // Aktif preset
+        equalizerBands: [0,0,0,0,0,0,0,0,0,0],  // 10 band gain değerleri
+        audioContext: null,             // Web Audio Context
+        equalizer: null,                // MuzibuEqualizer instance
+
+        // ... diğer state'ler
+    };
+},
+
+init() {
+    // ... mevcut init kodu
+
+    // Premium kullanıcı için EQ init
+    if (this.isPremium) {
+        this.initEqualizer();
+    }
+},
+
+initEqualizer() {
+    try {
+        // AudioContext oluştur
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Equalizer oluştur
+        this.equalizer = new MuzibuEqualizer(this.audioContext);
+
+        console.log('✅ Equalizer initialized');
+    } catch (error) {
+        console.error('Equalizer init failed:', error);
+    }
+},
+
+// Equalizer toggle
+toggleEqualizer() {
+    if (!this.isPremium) {
+        this.showPremiumModal('Equalizer');
+        return;
+    }
+
+    this.equalizerEnabled = !this.equalizerEnabled;
+
+    if (this.equalizerEnabled) {
+        this.connectEqualizer();
+    } else {
+        this.disconnectEqualizer();
+    }
+},
+
+// EQ'yu audio chain'e bağla
+connectEqualizer() {
+    if (!this.equalizer || !this.audioContext) return;
+
+    // Howler.js için manuel bağlantı gerekli
+    // (Howler internal audio node'a erişim zor olabilir)
+
+    // HLS için:
+    if (this.hls && this.hlsAudio) {
+        const source = this.audioContext.createMediaElementSource(this.hlsAudio);
+        source.connect(this.equalizer.input);
+        this.equalizer.output.connect(this.audioContext.destination);
+    }
+
+    console.log('🎚️ Equalizer connected');
+},
+
+// EQ preset uygula
+applyEQPreset(presetName) {
+    const presets = {
+        flat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        rock: [4, 3, -2, -3, -1, 1, 2, 3, 3, 4],
+        pop: [-1, -1, 0, 2, 4, 4, 2, 0, -1, -1],
+        jazz: [3, 2, 1, 1, 0, 0, 0, 1, 2, 3],
+        classical: [4, 3, 2, 0, 0, 0, 0, 2, 3, 4],
+        electronic: [4, 3, 1, 0, -2, 2, 1, 2, 3, 4],
+        hiphop: [5, 4, 2, 1, -1, -1, 1, 2, 3, 4],
+        vocal: [-2, -1, 0, 1, 3, 3, 2, 1, 0, -1]
+    };
+
+    const gains = presets[presetName] || presets.flat;
+
+    this.equalizerBands = gains;
+    this.equalizerPreset = presetName;
+
+    if (this.equalizer) {
+        this.equalizer.setAllBands(gains);
+    }
+
+    console.log(`🎚️ Preset applied: ${presetName}`);
+}</pre>
+        </div>
+
+        <h3>3. Blade Template (Modal)</h3>
+        <div class="code-block">
+<pre>&lt;!-- Equalizer Modal --&gt;
+&lt;div x-show="showEqualizerModal"
+     x-transition
+     class="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+     @click.self="showEqualizerModal = false"&gt;
+
+    &lt;div class="bg-gray-900 rounded-xl p-6 w-full max-w-2xl"&gt;
+        &lt;!-- Header --&gt;
+        &lt;div class="flex items-center justify-between mb-6"&gt;
+            &lt;h3 class="text-2xl font-bold text-white"&gt;🎚️ Equalizer&lt;/h3&gt;
+            &lt;button @click="showEqualizerModal = false"&gt;
+                &lt;i class="fas fa-times text-gray-400"&gt;&lt;/i&gt;
+            &lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Preset Buttons --&gt;
+        &lt;div class="grid grid-cols-4 gap-2 mb-6"&gt;
+            &lt;template x-for="preset in ['flat', 'rock', 'pop', 'jazz', 'classical', 'electronic', 'hiphop', 'vocal']"&gt;
+                &lt;button @click="applyEQPreset(preset)"
+                        :class="equalizerPreset === preset ? 'bg-green-500 text-black' : 'bg-gray-800 text-white'"
+                        class="px-4 py-2 rounded-lg font-semibold capitalize"
+                        x-text="preset"&gt;
+                &lt;/button&gt;
+            &lt;/template&gt;
+        &lt;/div&gt;
+
+        &lt;!-- EQ Sliders --&gt;
+        &lt;div class="flex justify-around items-end h-64 bg-gray-950 rounded-lg p-4"&gt;
+            &lt;template x-for="(band, index) in equalizerBands" :key="index"&gt;
+                &lt;div class="flex flex-col items-center gap-2"&gt;
+                    &lt;input type="range"
+                           min="-12" max="12" step="1"
+                           x-model="equalizerBands[index]"
+                           @input="equalizer?.setBand(index, equalizerBands[index])"
+                           class="slider-vertical h-48"
+                           orient="vertical"&gt;
+                    &lt;span class="text-xs text-blue-400" x-text="equalizerBands[index] + ' dB'"&gt;&lt;/span&gt;
+                    &lt;span class="text-xs text-gray-500" x-text="[32,64,125,250,500,1000,2000,4000,8000,16000][index] + ' Hz'"&gt;&lt;/span&gt;
+                &lt;/div&gt;
+            &lt;/template&gt;
+        &lt;/div&gt;
+
+        &lt;!-- Reset Button --&gt;
+        &lt;button @click="applyEQPreset('flat')"
+                class="w-full mt-4 bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-semibold"&gt;
+            Reset (Flat)
+        &lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <h2>📊 EQ Preset'leri</h2>
+
+        <div class="info">
+            <h3>Rock:</h3>
+            <ul>
+                <li>32 Hz: +4 dB (güçlü bas davul)</li>
+                <li>64 Hz: +3 dB (bas gitar)</li>
+                <li>125-250 Hz: -2 dB (muddy ses temizliği)</li>
+                <li>2-8 kHz: +2/+3 dB (gitar ve vokal netliği)</li>
+                <li>16 kHz: +4 dB (symbal parlaklığı)</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>Pop:</h3>
+            <ul>
+                <li>Düşük frekanslar: -1 dB (bas temiz)</li>
+                <li>250-1 kHz: +2/+4 dB (vokal öne çıkar)</li>
+                <li>Yüksek frekanslar: dengeli</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>Jazz:</h3>
+            <ul>
+                <li>32-64 Hz: +3/+2 dB (kontrbas warmth)</li>
+                <li>Orta: dengeli (enstrümanlar doğal)</li>
+                <li>8-16 kHz: +2/+3 dB (symbal detayı)</li>
+            </ul>
+        </div>
+
+        <h2>👑 Premium Kontrolü</h2>
+
+        <div class="code-block">
+<pre>// Premium modal göster
+showPremiumModal(feature) {
+    this.showAuthModal = 'premium';
+    this.premiumFeature = feature;
+
+    // Modal içeriği:
+    // "Equalizer sadece premium üyeler için!"
+    // "Premium üyelik ile:"
+    // - 10 band equalizer
+    // - 8 hazır preset
+    // - Özel preset kaydetme
+    // - Reklamsız deneyim
+}</pre>
+        </div>
+
+        <h2>💾 Kullanıcı Tercihlerini Kaydetme</h2>
+
+        <div class="code-block">
+<pre>// LocalStorage'a kaydet
+saveEQSettings() {
+    const settings = {
+        enabled: this.equalizerEnabled,
+        preset: this.equalizerPreset,
+        bands: this.equalizerBands
+    };
+
+    localStorage.setItem('muzibu_eq_settings', JSON.stringify(settings));
+}
+
+// Sayfa yüklendiğinde geri yükle
+restoreEQSettings() {
+    const saved = localStorage.getItem('muzibu_eq_settings');
+    if (!saved) return;
+
+    const settings = JSON.parse(saved);
+    this.equalizerEnabled = settings.enabled;
+    this.equalizerPreset = settings.preset;
+    this.equalizerBands = settings.bands;
+
+    if (this.equalizer) {
+        this.equalizer.setAllBands(settings.bands);
+    }
+}</pre>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ <span class="highlight">10 Band Precision:</span> 32 Hz - 16 kHz kapsamlı kontrol</li>
+            <li>✅ <span class="highlight">8 Preset:</span> Farklı müzik türleri için hazır ayarlar</li>
+            <li>✅ <span class="highlight">Premium Lock:</span> Free kullanıcılar göremez, premium teşvik</li>
+            <li>✅ <span class="highlight">Web Audio API:</span> Tarayıcı native, eklenti gerektirmez</li>
+            <li>✅ <span class="highlight">Persistent:</span> Kullanıcı tercihleri kaydedilir</li>
+        </ul>
+
+        <h2>⚠️ Dikkat Edilmesi Gerekenler</h2>
+
+        <div class="critical">
+            <h3>Howler.js Uyumluluk Sorunu</h3>
+            <p>Howler.js internal audio node'ları expose etmez. Web Audio API bağlantısı için:</p>
+            <ul>
+                <li><strong>Çözüm 1:</strong> Sadece HLS stream'ler için EQ (HLS audio element erişilebilir)</li>
+                <li><strong>Çözüm 2:</strong> Howler.js yerine native Audio + Web Audio API kullan (büyük refactor)</li>
+                <li><strong>Çözüm 3:</strong> Howler.js fork et ve internal node expose et</li>
+            </ul>
+        </div>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

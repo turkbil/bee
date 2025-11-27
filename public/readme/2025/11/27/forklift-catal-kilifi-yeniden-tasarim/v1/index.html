@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forklift Çatal Kılıfı - Modern Landing Tasarım Taslağı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #fb923c;
+            margin: 50px 0 30px 0;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #334155;
+        }
+        h3 {
+            font-size: 1.5rem;
+            color: #fbbf24;
+            margin: 30px 0 20px 0;
+        }
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        .section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 40px;
+            margin-bottom: 30px;
+            border-radius: 16px;
+            border-left: 4px solid #f97316;
+            backdrop-filter: blur(10px);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid #334155;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #f97316;
+            box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
+        }
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .card h4 {
+            color: #fb923c;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        .card p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+        .highlight {
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            padding: 30px;
+            border-radius: 16px;
+            margin: 30px 0;
+        }
+        .highlight h3 {
+            color: #000;
+            margin-top: 0;
+        }
+        .highlight p {
+            color: #1e293b;
+            font-weight: 500;
+        }
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(249, 115, 22, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #f97316;
+        }
+        .feature-list li::before {
+            content: "✓ ";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .cta {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: inline-block;
+            margin: 20px 0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+        .spec-table th,
+        .spec-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        .spec-table th {
+            background: #1e293b;
+            color: #fb923c;
+            font-weight: 600;
+        }
+        .spec-table tr:hover {
+            background: rgba(249, 115, 22, 0.1);
+        }
+        code {
+            background: #0f172a;
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #fbbf24;
+            font-family: monospace;
+        }
+        .warning {
+            background: rgba(239, 68, 68, 0.2);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .info {
+            background: rgba(59, 130, 246, 0.2);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏗️ Forklift Çatal Kılıfı - Modern Landing Sayfası Tasarım Taslağı</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-27 |
+                🎯 Tenant: ixtif.com |
+                👤 Talep: Landing havasında, snippet/howto/FAQ ile kusursuz tasarım
+            </div>
+        </header>
+
+        <div class="section">
+            <h2>🎨 Sayfa Yapısı ve Bölümler</h2>
+            <p>Modern, pazarlama odaklı, dönüşüm optimize edilmiş bir landing sayfası tasarımı.</p>
+        </div>
+
+        <h2>📐 Hero Section (Yukarı Bölüm)</h2>
+        <div class="highlight">
+            <h3>💪 Güçlü Başlık ve Alt Başlık</h3>
+            <p><strong>Başlık:</strong> "Forklift Operasyonlarınızı 3 Metre Uzağa Taşıyın"</p>
+            <p><strong>Alt Başlık:</strong> "ST37 Kalite Çelik, Emniyet Pimli, Güçlendirilmiş Yapı - 2,5 Tondan 10 Tona Kadar Tüm Forkliftler İçin Özel Üretim"</p>
+            <p><strong>CTA Buton:</strong> "Hemen Teklif Alın" / "Ücretsiz Danışmanlık"</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">🖼️</div>
+                <h4>Görsel Kullanımı</h4>
+                <p><strong>Sol:</strong> Büyük ürün görseli (slider veya lightbox)<br>
+                <strong>Sağ:</strong> Hero metinleri ve CTA buton<br>
+                <strong>Arka plan:</strong> Hafif gradient veya depo/forklift görseli (blur)</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h4>Trust Badges</h4>
+                <p>✓ CE Belgeli Üretim<br>
+                ✓ 10+ Yıl Sektör Tecrübesi<br>
+                ✓ 1000+ Mutlu Müşteri<br>
+                ✓ Türkiye Geneli Hızlı Kargo</p>
+            </div>
+        </div>
+
+        <h2>💼 Problem - Solution Section</h2>
+        <div class="section">
+            <h3>⚠️ Karşılaştığınız Sorunlar</h3>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">❌</div>
+                    <h4>Uzanamayan Çatallar</h4>
+                    <p>Tırın arka tarafındaki yüklere normal çatallar yetmiyor. Kamyonun etrafından dönmek zaman ve yakıt kaybı.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">❌</div>
+                    <h4>Çift Paletli Yükler</h4>
+                    <p>İki palet yan yana duruyor ama çatallarınız yetişmiyor. Tek tek almak verimsiz.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">❌</div>
+                    <h4>Dar Alan Manevra</h4>
+                    <p>Uzun çatallar sürekli takılı kaldığında dar alanlarda dönmek imkansız hale geliyor.</p>
+                </div>
+            </div>
+
+            <h3>✅ İXTİF Çözümü</h3>
+            <div class="highlight">
+                <h3>🎯 Forklift Çatal Uzatma Kılıfı</h3>
+                <p>Eldiven gibi takılır, gerektiğinde uzun çatal, gerektiğinde dar alan manevra kabiliyeti. Esnek, güvenli, dayanıklı.</p>
+            </div>
+        </div>
+
+        <h2>🔥 Özellikler ve Avantajlar (USP - Unique Selling Points)</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">🛡️</div>
+                <h4>ST37 Kalite Çelik</h4>
+                <p>Yekpare büküm imalat. Kaynaksız, çatlamaya karşı dayanıklı, uzun ömürlü kullanım.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔒</div>
+                <h4>Emniyet Pimli Sistem</h4>
+                <p>Kulaklı değil, konstrüksiyona entegre emniyet pimi. Çatal kayması riski sıfır.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">💪</div>
+                <h4>Gizli Güçlendirme</h4>
+                <p>Çatal harici uç kısmı gizli güçlendirmeyle mukavemetli hale getirilmiş. Ağır yüklerde bile dayanıklı.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📏</div>
+                <h4>İnce Burun Tasarımı</h4>
+                <p>Orijinal çatalınızın uç formunda yuvarlaklık ve incelik. Yüklere girerken zorluk yaşamadan.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚙️</div>
+                <h4>Her İhtiyaca Özel</h4>
+                <p>Sunta taşıma için sivri burun, 3 metreye kadar uzatma, yat imalatı için özel ölçüler.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🚚</div>
+                <h4>Hızlı Teslimat</h4>
+                <p>Stokta 1.8m ve 2m boylar. Anlaşmalı kargo ile gün içi sevkiyat.</p>
+            </div>
+        </div>
+
+        <h2>📊 Teknik Özellikler (Spec Table)</h2>
+        <div class="section">
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Forklift Kapasitesi</th>
+                        <th>Çelik Kalınlığı</th>
+                        <th>Standart Boy</th>
+                        <th>Maksimum Boy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1-2 Ton</td>
+                        <td>5 mm</td>
+                        <td>1.8m</td>
+                        <td>2.5m</td>
+                    </tr>
+                    <tr>
+                        <td>2.5-3.5 Ton</td>
+                        <td>6 mm</td>
+                        <td>1.8m - 2m</td>
+                        <td>3m</td>
+                    </tr>
+                    <tr>
+                        <td>5 Ton</td>
+                        <td>8 mm</td>
+                        <td>2m</td>
+                        <td>3m</td>
+                    </tr>
+                    <tr>
+                        <td>7-10 Ton</td>
+                        <td>10 mm</td>
+                        <td>2m</td>
+                        <td>3m</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="info">
+                <p><strong>Not:</strong> Özel ölçüler için iletişime geçin. Forklift çatal ölçülerinizi bize iletin, size özel üretim yapalım.</p>
+            </div>
+        </div>
+
+        <h2>🎬 Kullanım Alanları (Use Cases)</h2>
+        <div class="grid">
+            <div class="card">
+                <h4>🚛 Tek Taraflı Boşaltım</h4>
+                <p>Tırın sadece bir yanından yük alınabilen durumlarda çatal uzatma ile karşı tarafa uzanın. Kamyonu taşımanıza gerek yok.</p>
+            </div>
+            <div class="card">
+                <h4>📦 Çift Paletli Taşıma</h4>
+                <p>İki palet yan yana mı? Çatal uzatma ile tek seferde her iki paleti kaldırın. Zaman ve enerji tasarrufu.</p>
+            </div>
+            <div class="card">
+                <h4>🏗️ Kazan ve Dar Alanlara Uzatım</h4>
+                <p>Kazanlara malzeme uzatımı, erişilemeyen alanlara yük gönderme. Yat imalatında erişim sorunu çözüldü.</p>
+            </div>
+            <div class="card">
+                <h4>🪵 Sunta ve Uzun Malzeme Taşıma</h4>
+                <p>Sunta gibi geniş yüzey alanlı malzemeler için sivri burun özel üretim. Uzun profiller için 3m uzatma.</p>
+            </div>
+        </div>
+
+        <h2>❓ Sık Sorulan Sorular (FAQ)</h2>
+        <div class="section">
+            <h3>1. Forklift Çatal Uzatması Nedir?</h3>
+            <p>Forklift çatal kılıfı olarak bilinen bir tür forklift ataşmanıdır. Forkliftin çatallarına eldiven gibi geçirilerek normal çatalların uzanamayacağı alanlardaki yükleri kavrayarak normal çatalla rahatça alınacak mesafeye taşıyan ekipmandır.</p>
+
+            <h3>2. Forklift Çatalı Varken Neden Çatal Uzatması Tercih Edilmeli?</h3>
+            <p>Forklift çatalları kalıcı olarak takılır ve pratik bir şekilde değiştirilemez. Bir forkliftin çatal boyu ne kadar fazla ise manevra kabiliyeti o kadar az olur. Çatal uzatma kılıfları gerektiğinde dar alanda dönmeyi sağlayacak, gerektiğinde uzun bıçak olarak kullanılacak esnek bir yapıya sahiptir.</p>
+
+            <h3>3. Forklift Çatal Uzatmaları Güvenli midir?</h3>
+            <p>Evet, güvenlidir. Forklift çatal uzatmaları maruz kalacağı yükleme koşullarına bağlı olarak gerekli mukavemeti sağlar. Her kapasite için uygun çelik kalınlığı kullanılır ve emniyet pimi ile sabitleme yapılır. ST37 kalite çelikten yekpare büküm imalat, kaynaksız yapı ile maksimum dayanıklılık sağlanır.</p>
+
+            <h3>4. Çatal Kılıfı İmalatı Nasıl Yaptırabilirim?</h3>
+            <p>Forklift çatal uzatma kılıfı almaya karar verdiğinizde mutlaka forkliftinizin çatal ölçülerini bize iletmeniz gerekiyor. İşinizden bahsetmeniz ve gerekli boy uzunluğunu belirtmeniz yeterli. Sizin tanımladığınız ölçülere göre çatal uzatma kılıfları özel olarak üretilir.</p>
+
+            <h3>5. Teslimat Süresi Ne Kadar?</h3>
+            <p>Stoklarımızda bulunan standart ölçüler (1.8m ve 2m boy, 2.5-3.5 ton kapasiteli forkliftler için) anlaşmalı kargo ile gün içerisinde sevk edilir. Özel ölçüler için üretim süresi 3-7 iş günüdür.</p>
+
+            <h3>6. Hangi Forklift Modellerine Uyumlu?</h3>
+            <p>Tüm forklift ve istif makinası modellerine uyumludur. Özel ölçülerinizi bize iletin, size özel üretim yapalım. 1 tondan 10 tona kadar tüm kapasiteler için çözümümüz var.</p>
+
+            <h3>7. Garanti Var mı?</h3>
+            <p>Evet. İmalat hatalarına karşı 1 yıl garantimiz bulunmaktadır. Kaliteli çelik ve doğru imalat tekniği ile uzun ömürlü kullanım sağlanır.</p>
+        </div>
+
+        <h2>📝 Nasıl Sipariş Verilir? (How-To)</h2>
+        <div class="section">
+            <ul class="feature-list">
+                <li><strong>Adım 1:</strong> Forkliftinizin çatal ölçülerini ölçün (Genişlik, Kalınlık, Mevcut Boy)</li>
+                <li><strong>Adım 2:</strong> Forkliftinizin kaldırma kapasitesini belirleyin (Ton)</li>
+                <li><strong>Adım 3:</strong> İhtiyacınız olan çatal uzatma boyunu hesaplayın (1.8m, 2m, 2.5m, 3m...)</li>
+                <li><strong>Adım 4:</strong> İletişim formu üzerinden veya telefon ile bize ulaşın</li>
+                <li><strong>Adım 5:</strong> Teklifinizi alın ve onaylayın</li>
+                <li><strong>Adım 6:</strong> Üretim başlasın (stokta varsa anında kargoya)</li>
+                <li><strong>Adım 7:</strong> Kargo ile ürününüzü teslim alın ve kullanmaya başlayın</li>
+            </ul>
+
+            <div class="warning">
+                <h3>⚠️ Ölçü Alırken Dikkat Edilmesi Gerekenler</h3>
+                <p>• Çatal genişliğini milimetre cinsinden ölçün<br>
+                • Çatal kalınlığını doğru ölçün (kılıf içine geçecek şekilde)<br>
+                • Forklift çatal boyunu tam olarak belirtin<br>
+                • Kullanım amacınızı ve taşınacak yük tipini belirtin</p>
+            </div>
+        </div>
+
+        <h2>🎁 Şimdi Sipariş Verin, Avantajları Yakalayın</h2>
+        <div class="highlight">
+            <h3>🚀 Özel Kampanya</h3>
+            <p>✓ Ücretsiz Kargo (Türkiye Geneli)<br>
+            ✓ Emniyet Pimi Hediye<br>
+            ✓ 14 Gün İade Garantisi<br>
+            ✓ Teknik Destek (Kurulum ve Kullanım)</p>
+            <a href="#" class="cta">Hemen Teklif Alın</a>
+        </div>
+
+        <h2>📞 İletişim ve Teklif Formu</h2>
+        <div class="section">
+            <div class="info">
+                <h3>Hızlı Teklif İçin Bize Ulaşın</h3>
+                <p><strong>Telefon:</strong> +90 XXX XXX XX XX<br>
+                <strong>E-posta:</strong> info@ixtif.com<br>
+                <strong>Adres:</strong> İstanbul, Türkiye</p>
+            </div>
+
+            <div class="card">
+                <h4>📋 Teklif Formu Alanları</h4>
+                <p>• Ad Soyad<br>
+                • Telefon<br>
+                • E-posta<br>
+                • Forklift Kapasitesi (Ton)<br>
+                • Mevcut Çatal Ölçüleri (Genişlik x Kalınlık x Boy)<br>
+                • İhtiyaç Duyulan Uzatma Boyu<br>
+                • Kullanım Amacı (Opsiyonel)<br>
+                • Mesajınız</p>
+            </div>
+        </div>
+
+        <h2>✅ Tasarım Notları ve Uygulama Detayları</h2>
+        <div class="section">
+            <h3>🎨 Tailwind Sınıfları ve Bileşenler</h3>
+            <ul class="feature-list">
+                <li><strong>Hero Section:</strong> <code>bg-gradient-to-br from-orange-500 to-orange-600</code> gradient arkaplan, büyük başlık ve CTA buton</li>
+                <li><strong>Card Grid:</strong> <code>grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8</code> responsive grid yapı</li>
+                <li><strong>Card Component:</strong> <code>bg-gray-800 rounded-2xl border-2 border-gray-700 hover:border-orange-500 transition-all duration-300 hover:-translate-y-2</code></li>
+                <li><strong>CTA Button:</strong> <code>bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-2xl transition-all</code></li>
+                <li><strong>Trust Badge:</strong> Icon + Text, <code>flex items-center gap-2</code>, yeşil checkmark</li>
+                <li><strong>FAQ Accordion:</strong> Alpine.js ile açılır/kapanır yapı, <code>x-data</code> ve <code>x-show</code></li>
+                <li><strong>Spec Table:</strong> <code>table-auto w-full</code>, zebra striping ile okunabilirlik</li>
+            </ul>
+
+            <h3>📱 Responsive Tasarım</h3>
+            <ul class="feature-list">
+                <li>Mobil: Tek sütun, büyük CTA butonlar, touch-friendly</li>
+                <li>Tablet: 2 sütun grid, hero section yan yana</li>
+                <li>Desktop: 3 sütun grid, geniş görsel kullanımı</li>
+            </ul>
+
+            <h3>🔍 SEO ve Schema.org</h3>
+            <ul class="feature-list">
+                <li><strong>Product Schema:</strong> Ürün adı, açıklama, fiyat, stok durumu, marka</li>
+                <li><strong>FAQ Schema:</strong> Tüm sorular ve cevaplar yapılandırılmış veri olarak</li>
+                <li><strong>HowTo Schema:</strong> Sipariş adımları yapılandırılmış veri</li>
+                <li><strong>BreadcrumbList:</strong> Ana Sayfa > Ürünler > Forklift Çatal Kılıfı</li>
+            </ul>
+
+            <h3>🚀 Performans ve Hız</h3>
+            <ul class="feature-list">
+                <li>Lazy loading görseller (<code>loading="lazy"</code>)</li>
+                <li>WebP format kullanımı</li>
+                <li>Inline critical CSS</li>
+                <li>Defer edilmiş JavaScript</li>
+                <li>CDN kullanımı (görseller için)</li>
+            </ul>
+
+            <h3>🎯 Conversion Optimization (Dönüşüm İyileştirme)</h3>
+            <ul class="feature-list">
+                <li><strong>Above the Fold:</strong> Hero section, ana CTA ve trust badges ilk ekranda</li>
+                <li><strong>Social Proof:</strong> "1000+ Mutlu Müşteri", müşteri yorumları (testimonial)</li>
+                <li><strong>Urgency:</strong> "Stokta son 5 adet" gibi aciliyet mesajları</li>
+                <li><strong>Garantiler:</strong> "14 Gün İade", "1 Yıl Garanti" ön planda</li>
+                <li><strong>Multiple CTAs:</strong> Sayfa boyunca 3-4 farklı noktada CTA buton</li>
+                <li><strong>WhatsApp Button:</strong> Sabit sağ alt köşe, hızlı iletişim</li>
+            </ul>
+        </div>
+
+        <h2>📸 Görsel Önerileri</h2>
+        <div class="grid">
+            <div class="card">
+                <h4>Hero Görseli</h4>
+                <p>Forklift çatal uzatma kılıfı takılı halde, profesyonel ürün fotoğrafı. Beyaz veya endüstriyel arka plan.</p>
+            </div>
+            <div class="card">
+                <h4>Kullanım Görselleri</h4>
+                <p>Çatal uzatma kullanımda: Tırdan yük alma, çift palet taşıma, dar alanda manevra.</p>
+            </div>
+            <div class="card">
+                <h4>Detay Görselleri</h4>
+                <p>Emniyet pimi close-up, güçlendirilmiş uç detayı, ST37 çelik damgası, ölçü referansları.</p>
+            </div>
+            <div class="card">
+                <h4>Before/After</h4>
+                <p>Çatal uzatma ile/olmadan karşılaştırma görselleri. Erişim mesafesi farkı gösterimi.</p>
+            </div>
+        </div>
+
+        <footer>
+            🤖 Modern Landing Sayfası Tasarım Taslağı - Claude AI tarafından oluşturuldu
+        </footer>
+    </div>
+</body>
+</html>

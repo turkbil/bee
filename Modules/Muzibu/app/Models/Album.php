@@ -142,6 +142,23 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Player blur background (album kapağından blur arka plan)
+     * Orta kısımdan ince şerit alıp çok blur yapar
+     */
+    public function getBlurBackgroundAttribute(): ?string
+    {
+        if (!$this->media_id || !$this->coverMedia) {
+            return null;
+        }
+
+        // 1200x200 ince şerit, orta kısımdan crop, çok blur
+        return thumb($this->coverMedia, 1200, 200, [
+            'fit' => 'crop',
+            'blur' => 80
+        ]);
+    }
+
+    /**
      * HasSeo trait fallback implementations
      */
     public function getSeoFallbackTitle(): ?string

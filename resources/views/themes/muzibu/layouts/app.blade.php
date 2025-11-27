@@ -179,8 +179,10 @@
     @include('themes.muzibu.components.footer')
     @include('themes.muzibu.components.player')
 
-    {{-- Session Check System - Tenant 1001 only --}}
-    @include('themes.muzibu.components.session-check')
+    {{-- Session Check System - GEÇİCİ OLARAK KAPALI --}}
+    {{-- Problem: Yanlış tetikleniyor ve kullanıcıları dışarı atıyor --}}
+    {{-- Device limit zaten middleware ile kontrol ediliyor --}}
+    {{-- @include('themes.muzibu.components.session-check') --}}
 
     {{-- Play Limits System - Modals --}}
     @include('themes.muzibu.components.play-limits-modals')
@@ -192,8 +194,8 @@
 
     @yield('scripts')
 
-    <!-- instant.page for faster page transitions -->
-    <script src="//instant.page/5.2.0" type="module" data-instant-intensity="viewport-all"></script>
+    <!-- instant.page for faster page transitions (self-hosted) -->
+    <script src="{{ asset('assets/libs/instant.page.js') }}" type="module" data-instant-intensity="viewport-all"></script>
 </body>
 </html>
 @endif

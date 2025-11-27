@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chromecast Support - Cast to TV/Speaker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        .critical { background: rgba(239, 68, 68, 0.2); padding: 20px; border-left: 4px solid #ef4444; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+        .demo-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 40px;
+            border-radius: 12px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .cast-icon {
+            font-size: 4rem;
+            color: #1DB954;
+            margin: 20px 0;
+        }
+        .device-list {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        .device-item {
+            background: #1e293b;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .device-item:hover {
+            background: #334155;
+            border-left: 3px solid #1DB954;
+        }
+        .scenario-box {
+            background: #0f172a;
+            border-left: 4px solid #60a5fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>📺 Chromecast Support</h1>
+
+        <div class="success">
+            <h3>✅ TV'ye ve Hoparlöre Cast Et!</h3>
+            <p>Chromecast, Google TV, Chromecast Audio - tek tıkla müziği büyük ekranlara veya kaliteli hoparlörlere gönder!</p>
+        </div>
+
+        <div class="critical">
+            <h3>🔥 B2B İÇİN KRİTİK!</h3>
+            <p><strong>Cafe/Restoran Senaryosu:</strong> PC'de muzibu.com.tr açık, müzik Chromecast Audio ile profesyonel ses sistemine cast ediliyor!</p>
+            <ul>
+                <li>✅ PC monitörü kapanabilir (müzik devam eder)</li>
+                <li>✅ Kaliteli ses sistemi (cafe hoparlörleri)</li>
+                <li>✅ Uzaktan kontrol (telefon/tablet'ten)</li>
+                <li>✅ Çoklu cihaz desteği (birden fazla alan için)</li>
+            </ul>
+        </div>
+
+        <h2>🎯 Chromecast Nedir?</h2>
+
+        <div class="info">
+            <p><strong>Google Cast (Chromecast):</strong> İçeriği yerel cihazdan (PC/telefon) başka bir cihaza (TV/hoparlör) gönderme teknolojisi.</p>
+            <ul>
+                <li><strong>Chromecast:</strong> TV'ye HDMI ile bağlı cihaz</li>
+                <li><strong>Chromecast Audio:</strong> Hoparlöre bağlı ses cihazı (artık üretilmiyor ama hala kullanılıyor)</li>
+                <li><strong>Google TV:</strong> Built-in Chromecast desteği</li>
+                <li><strong>Android TV:</strong> Built-in Chromecast desteği</li>
+                <li><strong>Smart Speaker:</strong> Google Home, Nest Audio</li>
+            </ul>
+        </div>
+
+        <h2>🎨 Kullanıcı Deneyimi Demo</h2>
+
+        <div class="demo-box">
+            <h3 style="color: #60a5fa; margin-bottom: 30px;">Cast Butonu (Player Bar'da)</h3>
+            <div class="cast-icon">
+                <i class="fas fa-cast"></i>
+            </div>
+            <p style="color: #94a3b8; margin-top: 20px;">
+                Butona tıklayınca cihaz listesi açılır ↓
+            </p>
+        </div>
+
+        <div class="demo-box">
+            <h3 style="color: #60a5fa; margin-bottom: 20px;">Cihaz Seçimi</h3>
+            <div class="device-list">
+                <div class="device-item">
+                    <i class="fas fa-tv" style="font-size: 2rem; color: #60a5fa;"></i>
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: 700; color: white;">Salon TV</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8;">Chromecast Ultra</div>
+                    </div>
+                    <i class="fas fa-check" style="color: #1DB954;"></i>
+                </div>
+                <div class="device-item">
+                    <i class="fas fa-volume-up" style="font-size: 2rem; color: #60a5fa;"></i>
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: 700; color: white;">Cafe Sound System</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8;">Chromecast Audio</div>
+                    </div>
+                </div>
+                <div class="device-item">
+                    <i class="fas fa-home" style="font-size: 2rem; color: #60a5fa;"></i>
+                    <div style="text-align: left; flex: 1;">
+                        <div style="font-weight: 700; color: white;">Google Nest</div>
+                        <div style="font-size: 0.8rem; color: #94a3b8;">Smart Speaker</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2>💻 İmplementasyon</h2>
+
+        <h3>1. Google Cast SDK Kurulumu</h3>
+        <div class="code-block">
+<pre>&lt;!-- HTML head'e ekle --&gt;
+&lt;script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"&gt;&lt;/script&gt;</pre>
+        </div>
+
+        <h3>2. Cast Initialization</h3>
+        <div class="code-block">
+<pre>// Alpine.js init() içinde
+init() {
+    // ... mevcut init kodu
+
+    // Cast SDK yüklenmesini bekle
+    window['__onGCastApiAvailable'] = (isAvailable) => {
+        if (isAvailable) {
+            this.initCastApi();
+        }
+    };
+},
+
+// Cast API initialize
+initCastApi() {
+    const castContext = cast.framework.CastContext.getInstance();
+
+    // Cast options
+    castContext.setOptions({
+        receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+        autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED,
+        language: 'tr',
+        resumeSavedSession: true
+    });
+
+    // Cast state değişikliklerini dinle
+    castContext.addEventListener(
+        cast.framework.CastContextEventType.CAST_STATE_CHANGED,
+        (event) => {
+            this.handleCastStateChange(event.castState);
+        }
+    );
+
+    // Session değişikliklerini dinle
+    castContext.addEventListener(
+        cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+        (event) => {
+            this.handleSessionStateChange(event.sessionState);
+        }
+    );
+
+    console.log('✅ Chromecast initialized');
+},
+
+// Cast state değişiklikleri
+handleCastStateChange(state) {
+    switch(state) {
+        case cast.framework.CastState.NO_DEVICES_AVAILABLE:
+            console.log('📺 No Cast devices available');
+            this.castAvailable = false;
+            break;
+        case cast.framework.CastState.NOT_CONNECTED:
+            console.log('📺 Cast ready but not connected');
+            this.castAvailable = true;
+            this.castConnected = false;
+            break;
+        case cast.framework.CastState.CONNECTING:
+            console.log('📺 Connecting to Cast device...');
+            this.castConnected = false;
+            break;
+        case cast.framework.CastState.CONNECTED:
+            console.log('✅ Cast connected!');
+            this.castConnected = true;
+            break;
+    }
+}</pre>
+        </div>
+
+        <h3>3. Cast Media Loading</h3>
+        <div class="code-block">
+<pre>// Şarkıyı Cast cihazına gönder
+async castCurrentSong() {
+    if (!this.currentSong) return;
+
+    const castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+    if (!castSession) {
+        console.error('No Cast session');
+        return;
+    }
+
+    // Stream URL al
+    const response = await fetch(`/api/muzibu/songs/${this.currentSong.song_id}/stream`);
+    const data = await response.json();
+
+    // Media info oluştur
+    const mediaInfo = new chrome.cast.media.MediaInfo(
+        data.stream_url,
+        data.stream_type === 'hls' ? 'application/x-mpegurl' : 'audio/mpeg'
+    );
+
+    // Metadata
+    const metadata = new chrome.cast.media.MusicTrackMediaMetadata();
+    metadata.title = this.currentSong.song_title?.tr || this.currentSong.song_title;
+    metadata.artist = this.currentSong.artist_title?.tr || this.currentSong.artist_title;
+    metadata.albumName = this.currentSong.album_title?.tr || this.currentSong.album_title;
+    metadata.images = [
+        new chrome.cast.Image(this.currentSong.album_cover)
+    ];
+
+    mediaInfo.metadata = metadata;
+
+    // Load request
+    const request = new chrome.cast.media.LoadRequest(mediaInfo);
+    request.autoplay = true;
+    request.currentTime = this.currentTime || 0;
+
+    try {
+        await castSession.loadMedia(request);
+        console.log('✅ Media loaded to Cast device');
+        this.showToast('Müzik TV/hoparlöre gönderildi', 'success');
+
+        // Local player'ı duraklat
+        this.pause();
+    } catch (error) {
+        console.error('Cast load failed:', error);
+        this.showToast('Cast başarısız', 'error');
+    }
+},
+
+// Cast'ten kontrol et
+getCastRemotePlayer() {
+    if (!this.castConnected) return null;
+
+    const castContext = cast.framework.CastContext.getInstance();
+    const session = castContext.getCurrentSession();
+    if (!session) return null;
+
+    return new cast.framework.RemotePlayer();
+},
+
+// Cast player kontrolü
+castPlay() {
+    const player = this.getCastRemotePlayer();
+    if (player) {
+        const controller = new cast.framework.RemotePlayerController(player);
+        controller.playOrPause();
+    }
+},
+
+castNextTrack() {
+    // Queue'daki sonraki şarkıyı cast et
+    this.nextTrack();
+    setTimeout(() => this.castCurrentSong(), 500);
+}</pre>
+        </div>
+
+        <h3>4. UI - Cast Button</h3>
+        <div class="code-block">
+<pre>&lt;!-- Player bar'da Cast butonu --&gt;
+&lt;div x-show="castAvailable"&gt;
+    &lt;!-- Google Cast button (native) --&gt;
+    &lt;google-cast-launcher id="castbutton"&gt;&lt;/google-cast-launcher&gt;
+
+    &lt;!-- veya Custom button --&gt;
+    &lt;button @click="openCastMenu()"
+            :class="castConnected ? 'text-green-400' : 'text-gray-400'"
+            class="hover:text-white transition"
+            title="Cast to TV/Speaker"&gt;
+        &lt;i class="fas fa-cast"&gt;&lt;/i&gt;
+    &lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- Cast info banner (bağlıyken) --&gt;
+&lt;div x-show="castConnected"
+     class="fixed top-0 left-0 right-0 bg-green-500 text-black py-2 px-4 text-center z-50"&gt;
+    &lt;i class="fas fa-cast"&gt;&lt;/i&gt;
+    &lt;span class="font-bold ml-2"&gt;TV/Hoparlöre cast ediliyor&lt;/span&gt;
+    &lt;button @click="disconnectCast()"
+            class="ml-4 underline hover:no-underline"&gt;
+        Bağlantıyı Kes
+    &lt;/button&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <h3>5. Cast Disconnect</h3>
+        <div class="code-block">
+<pre>disconnectCast() {
+    const castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+    if (castSession) {
+        castSession.endSession(true);
+        console.log('📺 Cast disconnected');
+        this.showToast('Cast bağlantısı kesildi', 'info');
+    }
+}</pre>
+        </div>
+
+        <h2>🏢 B2B Kullanım Senaryoları</h2>
+
+        <div class="scenario-box">
+            <h3 style="color: #1DB954; margin-bottom: 15px;">☕ Cafe/Restoran</h3>
+            <p><strong>Setup:</strong></p>
+            <ul style="text-align: left;">
+                <li>Chromecast Audio → Cafe ses sistemi</li>
+                <li>PC'de muzibu.com.tr açık (ekran kapanabilir)</li>
+                <li>Müzik cast üzerinden çalıyor</li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>Avantaj:</strong> Profesyonel ses kalitesi, PC'ye bağımlı değil!</p>
+        </div>
+
+        <div class="scenario-box">
+            <h3 style="color: #1DB954; margin-bottom: 15px;">🏋️ Spor Salonu</h3>
+            <p><strong>Setup:</strong></p>
+            <ul style="text-align: left;">
+                <li>Google TV → Her alanda farklı ekran</li>
+                <li>Tablet'ten müzik kontrolü</li>
+                <li>Alan 1: Rock, Alan 2: Pop, Alan 3: Elektronik</li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>Avantaj:</strong> Çoklu cihaz, alan bazlı müzik!</p>
+        </div>
+
+        <div class="scenario-box">
+            <h3 style="color: #1DB954; margin-bottom: 15px;">🏠 Ev (Kişisel Kullanım)</h3>
+            <p><strong>Setup:</strong></p>
+            <ul style="text-align: left;">
+                <li>Telefonda muzibu.com.tr aç</li>
+                <li>Salon TV'sine cast et</li>
+                <li>TV'de album cover ve şarkı bilgisi görünsün</li>
+            </ul>
+            <p style="margin-top: 15px;"><strong>Avantaj:</strong> Büyük ekran, oturma odası deneyimi!</p>
+        </div>
+
+        <h2>📊 Platform Desteği</h2>
+
+        <div class="info">
+            <h3>Destekleyen Cihazlar:</h3>
+            <ul>
+                <li>✅ <strong>Chromecast (1/2/3/Ultra):</strong> Full destek</li>
+                <li>✅ <strong>Chromecast Audio:</strong> Full destek (ses)</li>
+                <li>✅ <strong>Google TV/Chromecast with Google TV:</strong> Full destek</li>
+                <li>✅ <strong>Android TV:</strong> Built-in Cast</li>
+                <li>✅ <strong>Google Home/Nest Audio:</strong> Smart speaker</li>
+                <li>✅ <strong>Smart Display (Nest Hub):</strong> Ekran + ses</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>Tarayıcı Desteği:</h3>
+            <ul>
+                <li>✅ <strong>Chrome/Edge:</strong> Native Cast button</li>
+                <li>✅ <strong>Android Chrome:</strong> Full destek</li>
+                <li>⚠️ <strong>Firefox/Safari:</strong> SDK ile kısıtlı destek</li>
+            </ul>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ <strong>B2B Critical:</strong> Profesyonel ses sistemi entegrasyonu</li>
+            <li>✅ <strong>Kaliteli Ses:</strong> Direkt hoparlöre, kayıpsız</li>
+            <li>✅ <strong>Uzaktan Kontrol:</strong> Telefon/tablet'ten kontrol</li>
+            <li>✅ <strong>Büyük Ekran:</strong> TV'de album cover ve bilgi</li>
+            <li>✅ <strong>Çoklu Cihaz:</strong> Birden fazla alan için</li>
+            <li>✅ <strong>Background:</strong> PC'nin ekranı kapanabilir</li>
+        </ul>
+
+        <h2>🔧 Teknik Notlar</h2>
+
+        <div class="info">
+            <h3>HLS Stream Cast:</h3>
+            <p>Chromecast HLS (.m3u8) stream'leri native destekler!</p>
+            <div class="code-block">
+<pre>const mediaInfo = new chrome.cast.media.MediaInfo(
+    'https://muzibu.com.tr/storage/hls/song-123/playlist.m3u8',
+    'application/x-mpegurl'  // HLS MIME type
+);</pre>
+            </div>
+        </div>
+
+        <div class="info">
+            <h3>Queue Yönetimi:</h3>
+            <p>Cast device'a queue gönder:</p>
+            <div class="code-block">
+<pre>// Queue item'ları oluştur
+const queueItems = this.queue.map((song, index) => {
+    const item = new chrome.cast.media.QueueItem();
+    item.media = createMediaInfo(song);
+    item.orderId = index;
+    return item;
+});
+
+// Queue load request
+const request = new chrome.cast.media.QueueLoadRequest(queueItems);
+request.startIndex = this.queueIndex;
+await castSession.loadMedia(request);</pre>
+            </div>
+        </div>
+
+        <h2>⚠️ Dikkat Edilecekler</h2>
+
+        <div class="critical">
+            <h3>Stream URL'leri Public Olmalı!</h3>
+            <p>Chromecast cihazı stream URL'sine direkt erişir. Token-based URL'ler expire olabilir!</p>
+            <ul>
+                <li><strong>Çözüm 1:</strong> Long-lived token (1 saat)</li>
+                <li><strong>Çözüm 2:</strong> Cast-specific URL (token gerekmeyen)</li>
+            </ul>
+        </div>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

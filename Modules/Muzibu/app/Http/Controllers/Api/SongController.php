@@ -64,6 +64,14 @@ class SongController extends Controller
                 $song->artist_title = json_decode($song->artist_title, true);
                 $song->artist_slug = json_decode($song->artist_slug, true);
 
+                // Add blur background for player (album cover blur)
+                if ($song->album_cover) {
+                    $media = \Modules\MediaManagement\App\Models\Media::find($song->album_cover);
+                    if ($media) {
+                        $song->blur_background = thumb($media, 1200, 200, ['fit' => 'crop', 'blur' => 80]);
+                    }
+                }
+
                 $uniqueSongs->push($song);
                 $seenSongIds[] = $song->song_id;
             }
@@ -114,6 +122,15 @@ class SongController extends Controller
             $song->album_slug = json_decode($song->album_slug, true);
             $song->artist_title = json_decode($song->artist_title, true);
             $song->artist_slug = json_decode($song->artist_slug, true);
+
+            // Add blur background for player (album cover blur)
+            if ($song->album_cover) {
+                $media = \Modules\MediaManagement\App\Models\Media::find($song->album_cover);
+                if ($media) {
+                    $song->blur_background = thumb($media, 1200, 200, ['fit' => 'crop', 'blur' => 80]);
+                }
+            }
+
             return $song;
         });
 

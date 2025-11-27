@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuffle (Karışık Çalma) - Fisher-Yates Algoritması</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 3rem; color: #1DB954; margin-bottom: 30px; }
+        h2 { font-size: 2rem; color: #60a5fa; margin: 40px 0 20px 0; }
+        h3 { font-size: 1.5rem; color: #a78bfa; margin: 30px 0 15px 0; }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        pre { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; }
+        .highlight { background: rgba(29, 185, 84, 0.2); padding: 2px 6px; border-radius: 4px; color: #1ed760; }
+        .critical { background: rgba(239, 68, 68, 0.2); padding: 20px; border-left: 4px solid #ef4444; border-radius: 8px; margin: 20px 0; }
+        .success { background: rgba(29, 185, 84, 0.2); padding: 20px; border-left: 4px solid #1DB954; border-radius: 8px; margin: 20px 0; }
+        .info { background: rgba(59, 130, 246, 0.2); padding: 20px; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 20px 0; }
+        ul, ol { margin: 20px 0; padding-left: 30px; }
+        li { margin: 12px 0; }
+        .back { display: inline-block; padding: 12px 24px; background: #1DB954; color: #000; text-decoration: none; border-radius: 8px; font-weight: 700; margin-bottom: 30px; }
+        .back:hover { background: #1ed760; }
+        .demo-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .song-list {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .song-item {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 3px solid #3b82f6;
+        }
+        .song-index {
+            font-weight: 700;
+            color: #60a5fa;
+            font-size: 1.2rem;
+            min-width: 30px;
+        }
+        .song-info { flex: 1; }
+        .song-title { font-weight: 600; color: white; }
+        .song-artist { color: #94a3b8; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+
+        <h1>🔀 Shuffle (Karışık Çalma)</h1>
+
+        <div class="critical">
+            <h3>🔴 MEVCUT DURUM: Shuffle Butonu Çalışmıyor!</h3>
+            <p>Kod satır 98: <code>shuffle: false</code> state var.</p>
+            <p>Kod satır 237: <code>@click="shuffle = !shuffle"</code> butonu var.</p>
+            <p><strong>AMA:</strong> Shuffle toggle olduğunda queue'yu karıştıran FONKSİYON YOK!</p>
+        </div>
+
+        <div class="success">
+            <h3>✅ ÇÖZÜM: Fisher-Yates Shuffle Algoritması</h3>
+            <p>Modern, etkili ve adil karıştırma algoritması. O(n) complexity.</p>
+        </div>
+
+        <h2>🎯 Nasıl Çalışır?</h2>
+
+        <div class="info">
+            <h3>Fisher-Yates Mantığı:</h3>
+            <ol>
+                <li>Queue'nun sonundan başla</li>
+                <li>Rastgele bir index seç (0 ile şu anki index arası)</li>
+                <li>İki elemanın yerini değiştir</li>
+                <li>Bir önceki elemana geç ve tekrarla</li>
+                <li>Queue başına gelene kadar devam et</li>
+            </ol>
+        </div>
+
+        <h2>💻 İmplementasyon</h2>
+
+        <h3>1. Shuffle Fonksiyonu (Fisher-Yates)</h3>
+        <div class="code-block">
+<pre>// Fisher-Yates shuffle algorithm
+shuffleArray(array) {
+    const arr = [...array]; // Shallow copy (orijinali korur)
+
+    for (let i = arr.length - 1; i > 0; i--) {
+        // 0 ile i arasında rastgele index
+        const j = Math.floor(Math.random() * (i + 1));
+
+        // Swap (yer değiştir)
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+    return arr;
+}</pre>
+        </div>
+
+        <h3>2. Toggle Shuffle (Aktif/Pasif)</h3>
+        <div class="code-block">
+<pre>// Shuffle toggle fonksiyonu
+toggleShuffle() {
+    this.shuffle = !this.shuffle;
+
+    if (this.shuffle) {
+        // Shuffle AÇILDI - Queue'yu karıştır
+
+        // 1. Şu an çalan şarkıyı kaydet
+        const currentSong = this.queue[this.queueIndex];
+
+        // 2. Şu an çalan şarkıyı queue'dan çıkar
+        const restOfQueue = [
+            ...this.queue.slice(0, this.queueIndex),
+            ...this.queue.slice(this.queueIndex + 1)
+        ];
+
+        // 3. Geri kalanları karıştır
+        const shuffled = this.shuffleArray(restOfQueue);
+
+        // 4. Şu an çalan şarkıyı başa koy
+        this.queue = [currentSong, ...shuffled];
+
+        // 5. Index'i 0'a çek (çalan şarkı başta)
+        this.queueIndex = 0;
+
+        // 6. Orijinal sırayı sakla (kapatınca geri döner)
+        this.originalQueue = [...this.queue];
+
+        console.log('🔀 Shuffle ON: Queue karıştırıldı');
+        this.showToast('Karışık çalma açık', 'success');
+    } else {
+        // Shuffle KAPANDI - Orijinal sıraya dön
+
+        if (this.originalQueue && this.originalQueue.length > 0) {
+            // Orijinal sıra varsa geri yükle
+            this.queue = [...this.originalQueue];
+            this.originalQueue = null;
+
+            console.log('🔀 Shuffle OFF: Orijinal sıra geri yüklendi');
+            this.showToast('Karışık çalma kapalı', 'info');
+        }
+    }
+}</pre>
+        </div>
+
+        <h3>3. State Eklemeleri</h3>
+        <div class="code-block">
+<pre>// Alpine.js data() içine ekle
+data() {
+    return {
+        // ... mevcut state'ler
+
+        shuffle: false,              // Shuffle aktif mi?
+        originalQueue: null,         // Orijinal queue sırası (shuffle için)
+
+        // ... diğer state'ler
+    };
+}</pre>
+        </div>
+
+        <h2>📊 Görsel Örnek</h2>
+
+        <div class="demo-box">
+            <h3>ÖNCE (Orijinal Sıra):</h3>
+            <div class="song-list">
+                <div class="song-item">
+                    <div class="song-index">1</div>
+                    <div class="song-info">
+                        <div class="song-title">Smooth Jazz Morning</div>
+                        <div class="song-artist">Jazz Ensemble</div>
+                    </div>
+                </div>
+                <div class="song-item">
+                    <div class="song-index">2</div>
+                    <div class="song-info">
+                        <div class="song-title">Coffee Break Blues</div>
+                        <div class="song-artist">Blue Notes</div>
+                    </div>
+                </div>
+                <div class="song-item">
+                    <div class="song-index">3</div>
+                    <div class="song-info">
+                        <div class="song-title">Sunset Serenade</div>
+                        <div class="song-artist">Evening Jazz</div>
+                    </div>
+                </div>
+                <div class="song-item">
+                    <div class="song-index">4</div>
+                    <div class="song-info">
+                        <div class="song-title">Midnight Groove</div>
+                        <div class="song-artist">Late Night Band</div>
+                    </div>
+                </div>
+                <div class="song-item">
+                    <div class="song-index">5</div>
+                    <div class="song-info">
+                        <div class="song-title">Urban Vibes</div>
+                        <div class="song-artist">City Jazz</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-box">
+            <h3>🔀 SONRA (Shuffle Aktif - Şarkı 2 çalıyordu):</h3>
+            <div class="song-list">
+                <div class="song-item" style="border-left-color: #1DB954; background: rgba(29, 185, 84, 0.1);">
+                    <div class="song-index" style="color: #1DB954;">►</div>
+                    <div class="song-info">
+                        <div class="song-title">Coffee Break Blues</div>
+                        <div class="song-artist">Blue Notes</div>
+                    </div>
+                </div>
+                <div class="song-item">
+                    <div class="song-index">2</div>
+                    <div class="song-info">
+                        <div class="song-title">Midnight Groove</div>
+                        <div class="song-artist">Late Night Band</div>
+                    </div>
+                </div>
+                <div class="song-item">
+                    <div class="song-index">3</div>
+                    <div class="song-info">
+                        <div class="song-title">Smooth Jazz Morning</div>
+                        <div class="song-artist">Jazz Ensemble</div>
+                    </div>
+                </div>
+                <div class="song-item">
+                    <div class="song-index">4</div>
+                    <div class="song-info">
+                        <div class="song-title">Urban Vibes</div>
+                        <div class="song-artist">City Jazz</div>
+                    </div>
+                </div>
+                <div class="song-item">
+                    <div class="song-index">5</div>
+                    <div class="song-info">
+                        <div class="song-title">Sunset Serenade</div>
+                        <div class="song-artist">Evening Jazz</div>
+                    </div>
+                </div>
+            </div>
+            <p style="color: #1DB954; margin-top: 15px;">
+                ✅ Çalan şarkı başa alındı, geri kalanlar karıştırıldı!
+            </p>
+        </div>
+
+        <h2>🎛️ Kullanıcı Senaryoları</h2>
+
+        <div class="info">
+            <h3>Senaryo 1: Shuffle Aktif Ederken</h3>
+            <ul>
+                <li><strong>Durum:</strong> Playlist çalıyor, 12. şarkıdasın</li>
+                <li><strong>Eylem:</strong> Shuffle butonuna tıkladın</li>
+                <li><strong>Sonuç:</strong>
+                    <ul>
+                        <li>12. şarkı başa alındı (index 0)</li>
+                        <li>Geri kalan şarkılar karıştırıldı</li>
+                        <li>Çalma kesintisiz devam ediyor</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>Senaryo 2: Shuffle Kapatırken</h3>
+            <ul>
+                <li><strong>Durum:</strong> Shuffle açık, karışık sırada çalıyorsun</li>
+                <li><strong>Eylem:</strong> Shuffle butonuna tekrar tıkladın</li>
+                <li><strong>Sonuç:</strong>
+                    <ul>
+                        <li>Orijinal sıra geri yüklendi</li>
+                        <li>Şu an çalan şarkının orijinal konumu bulundu</li>
+                        <li>Queue orijinal sırasına döndü</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <h2>💡 Gelişmiş Özellikler (Opsiyonel)</h2>
+
+        <div class="code-block">
+<pre>// Smart Shuffle (aynı sanatçı peş peşe gelmez)
+smartShuffle(array) {
+    let shuffled = this.shuffleArray(array);
+
+    // Aynı sanatçı peş peşe gelirse yeniden karıştır
+    for (let i = 0; i < shuffled.length - 1; i++) {
+        if (shuffled[i].artist_id === shuffled[i + 1].artist_id) {
+            // Sonraki farklı sanatçıyı bul
+            for (let j = i + 2; j < shuffled.length; j++) {
+                if (shuffled[j].artist_id !== shuffled[i].artist_id) {
+                    // Swap
+                    [shuffled[i + 1], shuffled[j]] = [shuffled[j], shuffled[i + 1]];
+                    break;
+                }
+            }
+        }
+    }
+
+    return shuffled;
+}</pre>
+        </div>
+
+        <h2>✅ Avantajlar</h2>
+        <ul>
+            <li>✅ <span class="highlight">Adil Karıştırma:</span> Her permütasyon eşit olasılıkla seçilir</li>
+            <li>✅ <span class="highlight">Performanslı:</span> O(n) complexity, hızlı çalışır</li>
+            <li>✅ <span class="highlight">Kesintisiz:</span> Çalan şarkı durmadan shuffle olur</li>
+            <li>✅ <span class="highlight">Geri Dönebilir:</span> Orijinal sıra saklanır</li>
+            <li>✅ <span class="highlight">B2B Uyumlu:</span> Queue persistence ile birlikte çalışır</li>
+        </ul>
+
+        <h2>🔧 Test Senaryosu</h2>
+        <div class="code-block">
+<pre>// Console'da test et
+console.log('Orijinal queue:', this.queue.map(s => s.song_title));
+
+// Shuffle aç
+this.toggleShuffle();
+console.log('Shuffled queue:', this.queue.map(s => s.song_title));
+
+// Shuffle kapat
+this.toggleShuffle();
+console.log('Restored queue:', this.queue.map(s => s.song_title));
+
+// Aynı mı kontrol et
+console.log('Orijinal sıra geri döndü mü?', /* karşılaştırma */);</pre>
+        </div>
+
+        <p style="margin-top: 40px; text-align: center; color: #64748b;">
+            <a href="index.html" class="back">← Tüm Özelliklere Dön</a>
+        </p>
+    </div>
+</body>
+</html>

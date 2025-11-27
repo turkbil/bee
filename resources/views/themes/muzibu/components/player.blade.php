@@ -232,7 +232,7 @@
         <!-- Player Controls -->
         <div style="flex: 1; max-width: 720px; padding: 0 32px;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px;">
-                <button @click="shuffle = !shuffle"
+                <button @click="toggleShuffle()"
                         title="Karışık Çal"
                         style="background: none; border: none; cursor: pointer; padding: 4px; transition: all 0.2s;"
                         :style="shuffle ? 'color: #1DB954;' : 'color: #9ca3af;'">

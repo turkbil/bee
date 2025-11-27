@@ -61,13 +61,21 @@
             @endif
         </label>
         <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-            <input type="checkbox" 
-                id="switch-{{ $elementName }}" 
-                name="{{ $elementName }}" 
-                wire:model.defer="values.{{ $elementName }}"
+            <input type="checkbox"
+                id="switch-{{ $elementName }}"
+                name="{{ $elementName }}"
                 value="1"
                 @if($isRequired) required @endif
-                @if($defaultValue) checked @endif
+                @checked(
+                    isset($values[$elementName])
+                    ? (
+                        is_bool($values[$elementName])
+                        ? $values[$elementName]
+                        : in_array(strtolower(trim((string)$values[$elementName])), ['1', 'true', 'yes', 'on'], true)
+                    )
+                    : $defaultValue
+                )
+                x-on:change="$wire.call('syncSwitchValue', '{{ $elementName }}', $event.target.checked)"
             >
             <div class="state p-success p-on ms-2">
                 <label>{{ $activeLabel }}</label>

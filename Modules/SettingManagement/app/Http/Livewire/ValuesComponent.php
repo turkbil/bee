@@ -45,12 +45,39 @@ class ValuesComponent extends Component
         return SettingValue::class;
     }
 
+    public function syncSwitchValue($key, $value)
+    {
+        $setting = Setting::where('key', $key)->first();
+        if (!$setting) {
+            return;
+        }
+
+        // Switch için normalize
+        if ($setting->type === 'switch' && is_null($value)) {
+            $value = false;
+        }
+
+        // Hem numeric ID hem string key'e kaydet
+        $this->values[$setting->id] = $value;
+        $this->values[$setting->key] = $value;
+
+        $this->checkChanges();
+    }
+
     public function updatedValues($value, $key)
     {
+        // Setting'i bul
+        $setting = null;
+
         // String key ise numeric ID'ye çevir ve sync et
         if (!is_numeric($key)) {
             $setting = Setting::where('key', $key)->first();
             if ($setting) {
+                // Switch type için null değeri normalize et
+                if ($setting->type === 'switch' && is_null($value)) {
+                    $value = false;
+                }
+
                 $numericKey = $setting->id;
                 $this->values[$numericKey] = $value;
                 $this->values[$key] = $value; // String key'i de güncelle
@@ -59,10 +86,16 @@ class ValuesComponent extends Component
             // Numeric key ise string key'i de güncelle
             $setting = Setting::find($key);
             if ($setting) {
+                // Switch type için null değeri normalize et
+                if ($setting->type === 'switch' && is_null($value)) {
+                    $value = false;
+                }
+
                 $this->values[$setting->key] = $value;
+                $this->values[$key] = $value;
             }
         }
-        
+
         if ($key !== 'temp') {
             $this->checkChanges();
         }
@@ -274,6 +307,7 @@ class ValuesComponent extends Component
     {
         // ✅ Save işlemi öncesi switch değerlerini normalize et
         $this->normalizeLayoutSwitchValuesBeforeSave();
+        $this->normalizeAllSwitchValuesBeforeSave();
 
         foreach ($this->values as $settingId => $value) {
             // String key'leri filtrele (sadece numeric ID'leri işle)
@@ -669,5 +703,31 @@ class ValuesComponent extends Component
         }
 
         return false;
+    }
+
+    /**
+     * Tüm switch type ayarlar için değerleri normalize et (save öncesi)
+     */
+    private function normalizeAllSwitchValuesBeforeSave(): void
+    {
+        $settings = Setting::where('group_id', $this->groupId)
+            ->where('type', 'switch')
+            ->get();
+
+        foreach ($settings as $setting) {
+            // Livewire'dan gelen değer (checkbox işaretli değilse null gelir)
+            $liveValue = $this->values[$setting->key] ?? $this->values[$setting->id] ?? null;
+
+            // Checkbox işaretli değilse (null) → "0" yap
+            // Checkbox işaretli ise (true, 1, "1", "true") → "1" yap
+            $normalizedValue = $this->normalizeBooleanValue($liveValue);
+
+            // String olarak sakla (veritabanı için): "1" veya "0"
+            $stringValue = $normalizedValue ? '1' : '0';
+
+            // Hem numeric ID hem string key için güncelle
+            $this->values[$setting->id] = $stringValue;
+            $this->values[$setting->key] = $stringValue;
+        }
     }
 }

@@ -47,13 +47,16 @@ class Tenant2Prompts extends DefaultPrompts
         if (File::exists($promptFile)) {
             $basePrompt = File::get($promptFile);
 
+            // 🗓️ ZAMAN CONTEXT'İ (2026 yılındayız)
+            $timeContext = $this->getTimeContext();
+
             // Firma bilgisi kullanımı kuralını ekle
             $companyRules = $this->getCompanyUsageRules();
 
             // 🛒 ÜRÜN BAHSETME ZORUNLULUĞU (Tenant 2 özel)
             $productRules = $this->getProductMentionRules();
 
-            return $basePrompt . "\n\n" . $companyRules . "\n\n" . $productRules;
+            return $basePrompt . "\n\n" . $timeContext . "\n\n" . $companyRules . "\n\n" . $productRules;
         }
 
         // Fallback: Tam prompt dene
@@ -61,15 +64,190 @@ class Tenant2Prompts extends DefaultPrompts
         if (File::exists($fullPromptFile)) {
             $basePrompt = File::get($fullPromptFile);
 
-            // Firma bilgisi + Ürün bahsetme kuralları
+            // Zaman context + Firma bilgisi + Ürün bahsetme kuralları
+            $timeContext = $this->getTimeContext();
             $companyRules = $this->getCompanyUsageRules();
             $productRules = $this->getProductMentionRules();
 
-            return $basePrompt . "\n\n" . $companyRules . "\n\n" . $productRules;
+            return $basePrompt . "\n\n" . $timeContext . "\n\n" . $companyRules . "\n\n" . $productRules;
         }
 
         // Son fallback
         return $this->getDefaultContentPrompt();
+    }
+
+    /**
+     * 🗓️ Zaman Context'i - 2026 Yılındayız (Fiyat & Yıl Yasakları)
+     */
+    protected function getTimeContext(): string
+    {
+        return <<<'RULES'
+
+---
+
+## 🗓️ ZAMAN CONTEXT'İ - ŞU ANDA 2026 YILINDAYIZ!
+
+### ⚠️ KRİTİK: Zaman ve fiyat kuralları MUTLAKA uyulmalıdır!
+
+---
+
+## 📅 YIL BAHİS YASAĞI - ZORUNLU!
+
+### 🔴 YASAKLAR (ASLA KULLANMA!)
+
+❌ **Spesifik eski yıllar YASAK:**
+- "2023 yılında..."
+- "2024 için en iyi..."
+- "2025 yılı modelleri..."
+- "2022'de..."
+- Geçmiş herhangi bir yıl referansı
+
+❌ **Gelecek yıl tahminleri YASAK:**
+- "2027'de beklentiler..."
+- "2028 trend tahminleri..."
+
+### ✅ DOĞRU KULLANIM (Genel & Zamansız İfadeler)
+
+**Güncel ifadeler kullan:**
+✅ "Güncel forklift modelleri..."
+✅ "Son dönemde popüler olan..."
+✅ "Modern teknolojiler..."
+✅ "Yeni nesil sistemler..."
+✅ "Şu anda piyasada..."
+✅ "Bugünün endüstriyel ihtiyaçları..."
+
+**İSTİSNA: Sadece teknik/tarihsel bilgi verirken:**
+✅ "Forklift teknolojisi 1920'lerde gelişmeye başladı."
+✅ "ISO 9001 standardı 1987'de yayınlandı."
+✅ "Elektrikli transpalet 1930'larda icat edildi."
+
+### 🎯 NEDEN YIL YASAK?
+
+1. **Bloglar hızla eskiyor:** "2023 yılı için" yazmak içeriği anında eskitiyor
+2. **Güncel kalması zor:** Her yıl güncellemek gerekir
+3. **SEO zararı:** Eski tarihler tıklama oranını düşürür
+4. **Genel ifadeler her zaman güncel:** "Modern sistemler" her zaman doğru kalır
+
+---
+
+## 💰 FİYAT KULLANIMI - AKILLI STRATEJİ!
+
+### ⚠️ ÖNEMLİ: Fiyat konusundan bahset ama RAKAM VERME!
+
+**SEO için "fiyat" kelimesi ÇOK ÖNEMLİ** → Başlık ve içerikte kullan!
+
+---
+
+### ✅ DOĞRU KULLANIM (SEO + Kullanıcı Deneyimi)
+
+#### 1️⃣ Başlıklarda "Fiyat" Kelimesi Kullan (SEO için ZORUNLU!)
+
+✅ **Doğru başlık örnekleri:**
+- "Forklift Fiyatları - Güncel Bilgiler"
+- "Elektrikli Transpalet Fiyatları ve Modelleri"
+- "Kiralık Forklift Fiyatları Hakkında"
+- "İstif Makinesi Fiyatını Etkileyen Faktörler"
+
+#### 2️⃣ İçerikte Fiyat Konusunu İşle (Rakam Vermeden!)
+
+✅ **Fiyatı etkileyen faktörlerden bahset:**
+```
+"Elektrikli transpalet fiyatları şu faktörlere göre değişiklik gösterir:
+- Taşıma kapasitesi (1 ton, 2 ton, 3 ton)
+- Marka ve model tercihi
+- Akü kapasitesi ve çalışma süresi
+- Garanti kapsamı ve servis desteği
+- Yeni veya ikinci el olması"
+```
+
+✅ **Segment bazlı genel bilgi ver:**
+```
+"Forklift fiyatları, düşük tonajlı ekonomik modellerden yüksek kapasiteli
+endüstriyel modellere kadar geniş bir yelpazede değişkenlik gösterir.
+Bütçenize uygun modeli seçerken kapasitesi ve kullanım yoğunluğunu göz önünde bulundurun."
+```
+
+✅ **ZORUNLU YÖNLENDIRME (Her Fiyat Konulu Blogda Olmalı!):**
+```
+<h2>Güncel Fiyat Bilgisi ve Teklif Alma</h2>
+
+<p>{company_info.name} olarak, size en uygun fiyat teklifini sunmak için hazırız.
+Güncel fiyat bilgisi için iki yoldan bize ulaşabilirsiniz:</p>
+
+<ul>
+  <li><strong>Ürünler Sayfamızdan:</strong> Sitemizin <a href="/urunler">Ürünler</a>
+      bölümünden ilgilendiğiniz modeli seçerek detaylı fiyat bilgisine ulaşabilirsiniz.</li>
+  <li><strong>Müşteri Hizmetleri:</strong> {company_info.name} müşteri hizmetleri
+      ile iletişime geçerek size özel fiyat teklifi alabilirsiniz.
+      <ul>
+        <li>Telefon: {contact_info.phone}</li>
+        <li>Email: {contact_info.email}</li>
+      </ul>
+  </li>
+</ul>
+
+<p>Uzman ekibimiz, ihtiyaçlarınıza uygun en uygun fiyat teklifini hazırlamak için bekliyor!</p>
+```
+
+---
+
+### 🔴 YASAKLAR (ASLA KULLANMA!)
+
+❌ **Spesifik rakamlar YASAK:**
+- "25.000 TL"
+- "45.000 - 60.000 TRY"
+- "$15,000 USD"
+- "€12,000 EUR"
+- "Fiyatı: 35.000₺"
+- "Yaklaşık 50 bin lira"
+- "Ortalama maliyet 40.000 TL"
+
+❌ **Rakam içeren karşılaştırmalar YASAK:**
+- "X modeli 30.000 TL, Y modeli 45.000 TL"
+- "En ucuz model 25 bin lira"
+- "Premium modeller 100.000₺'den başlıyor"
+
+---
+
+### 🎯 NEDEN BU STRATEJİ?
+
+1. **SEO Kazancı:** "Forklift fiyatları" araması yapan kullanıcılar bulur ✅
+2. **Güncel Kalır:** Rakam yok, içerik her zaman geçerli ✅
+3. **İletişim Artışı:** Kullanıcı Ürünler sayfası veya müşteri hizmetleri ile iletişime geçer ✅
+4. **Enflasyon Sorunu Yok:** Rakam güncellemek gerekmez ✅
+
+---
+
+## 📊 KONTROL LİSTESİ (Blog göndermeden önce kontrol et!)
+
+Yazını göndermeden önce MUTLAKA şunları kontrol et:
+
+✅ **Yıl kontrolü:**
+   - [ ] 2023, 2024, 2025 gibi yıllar YOK mu?
+   - [ ] "Geçen yıl", "bu yıl" gibi ifadeler YOK mu?
+   - [ ] Tarihsel bilgi dışında yıl YOK mu?
+
+✅ **Fiyat kontrolü:**
+   - [ ] Hiçbir rakam + TL/USD/EUR YOK mu?
+   - [ ] Fiyat aralığı (min-max) YOK mu?
+   - [ ] Tablo/listede fiyat kolonu YOK mu?
+
+✅ **Genel ifade kontrolü:**
+   - [ ] "Güncel", "modern", "son dönem" gibi zamansız ifadeler VAR mı?
+   - [ ] Fiyat yerine "iletişime geçin" yönlendirmesi VAR mı?
+
+---
+
+## 🎯 ÖZET: MUTLAKA HATIRLA!
+
+1. **YIL YASAK** → "Güncel", "modern" kullan!
+2. **FİYAT YASAK** → "İletişime geçin" yönlendir!
+3. **GENEL İFADELER** → Her zaman güncel kalır!
+4. **İLETİŞİM VURGUSU** → Fiyat soruları için firma iletişimi!
+
+**Bu kurallara uyulmadığı takdirde içerik REDDEDILIR ve yeniden yazılması istenir!**
+
+RULES;
     }
 
     /**
@@ -246,7 +424,7 @@ RULES;
 - Ürün adını **doğal şekilde** içeriğe entegre et
 - **Teknik özellikleri** kısaca açıkla
 - **Kullanım alanlarını** belirt
-- **Fiyat aralığı** varsa bahset (TRY/USD olarak)
+- ⚠️ **FİYAT YASAK!** Spesifik rakam verme, "iletişime geçin" yönlendir
 
 **✅ DOĞRU KULLANIM ÖRNEKLERİ:**
 
@@ -262,8 +440,8 @@ tercih edilmektedir. Bu modeller, {KULLANIM ALANI} için idealdir."
 ```
 
 ```
-"{ÜRÜN ADI} fiyatı yaklaşık {FİYAT} TRY ({USD EQUIVALENT} USD) civarındadır.
-Premium özellikleri ve garanti süresi göz önünde bulundurulduğunda uygun fiyatlıdır."
+"{ÜRÜN ADI}, premium özellikleri ve garanti süresi ile öne çıkmaktadır.
+Detaylı bilgi ve fiyat teklifi için {company_info.name} ile iletişime geçebilirsiniz."
 ```
 
 **❌ YANLIŞ KULLANIM:**
@@ -303,12 +481,12 @@ Blog içeriğinde **mutlaka** aşağıdaki formatlardan birini kullan:
 
 #### 📊 "En İyi..." Formatı:
 ```
-<h2>En İyi Elektrikli Transpalet Modelleri 2025</h2>
+<h2>En İyi Elektrikli Transpalet Modelleri</h2>
 <p>Piyasadaki en iyi modeller arasında:</p>
 <ul>
-  <li><strong>{ÜRÜN ADI}</strong> - {ÖZELLIK}, {FİYAT} TRY</li>
-  <li><strong>{ÜRÜN ADI 2}</strong> - {ÖZELLIK}, {FİYAT} TRY</li>
-  <li><strong>{ÜRÜN ADI 3}</strong> - {ÖZELLIK}, {FİYAT} TRY</li>
+  <li><strong>{ÜRÜN ADI}</strong> - {ÖZELLIK}, {KAPASITE}</li>
+  <li><strong>{ÜRÜN ADI 2}</strong> - {ÖZELLIK}, {KAPASITE}</li>
+  <li><strong>{ÜRÜN ADI 3}</strong> - {ÖZELLIK}, {KAPASITE}</li>
 </ul>
 ```
 
@@ -331,19 +509,25 @@ Blog içeriğinde **mutlaka** aşağıdaki formatlardan birini kullan:
       <td>{KAPASITE 2}</td>
     </tr>
     <tr>
-      <td>Fiyat (TRY)</td>
-      <td>{FİYAT 1}</td>
-      <td>{FİYAT 2}</td>
+      <td>Çalışma Süresi</td>
+      <td>{SÜRE 1}</td>
+      <td>{SÜRE 2}</td>
+    </tr>
+    <tr>
+      <td>Garanti</td>
+      <td>{GARANT İ 1}</td>
+      <td>{GARANTİ 2}</td>
     </tr>
   </tbody>
 </table>
 
 <p><strong>Sonuç:</strong> {KARŞILAŞTIRMA ÖZETI}</p>
+<p>Detaylı fiyat bilgisi ve teknik danışmanlık için {company_info.name} ile iletişime geçin.</p>
 ```
 
 #### 🔍 "İnceleme" Formatı (is_homepage=1 Ürünler İçin):
 ```
-<h2>{ÜRÜN ADI} İncelemesi: Özellikleri, Avantajları ve Fiyatı</h2>
+<h2>{ÜRÜN ADI} İncelemesi: Özellikleri ve Avantajları</h2>
 
 <h3>Teknik Özellikler</h3>
 <ul>
@@ -355,8 +539,15 @@ Blog içeriğinde **mutlaka** aşağıdaki formatlardan birini kullan:
 <h3>Kullanım Alanları</h3>
 <p>{USE CASE açıklaması}</p>
 
-<h3>Fiyat Bilgisi</h3>
-<p>Güncel fiyat: {FİYAT} TRY ({USD} USD)</p>
+<h3>Avantajları</h3>
+<p>{AVANTAJLARI açıklaması}</p>
+
+<h3>İletişim ve Destek</h3>
+<p>Detaylı bilgi ve fiyat teklifi için {company_info.name} ile iletişime geçin:</p>
+<ul>
+  <li><strong>Telefon:</strong> {contact_info.phone}</li>
+  <li><strong>Email:</strong> {contact_info.email}</li>
+</ul>
 ```
 
 ---
@@ -365,8 +556,9 @@ Blog içeriğinde **mutlaka** aşağıdaki formatlardan birini kullan:
 
 ❌ **Ürün adı OLMADAN bitirme** → Spesifik ürünlerden bahset!
 ❌ **Genel "ürünler", "modeller" ifadeleri** → Ürün adlarını kullan!
-❌ **Fiyat bilgisi OLMADAN inceleme** → Context'teki fiyat bilgisini kullan!
+❌ **Spesifik fiyat rakamları** → Fiyat YASAK! İletişime yönlendir!
 ❌ **Kategori adı kullanmadan içerik** → Ana kategorilerden bahset!
+❌ **Yıl bahsetme (2023, 2024, 2025)** → Genel ifadeler kullan!
 
 ---
 
@@ -375,7 +567,7 @@ Blog içeriğinde **mutlaka** aşağıdaki formatlardan birini kullan:
 ✅ **Minimum 2-3 ürün adı kullanıldı mı?**
    - [ ] is_homepage=1 ürünler öncelikli
    - [ ] Ürün özellikleri belirtildi
-   - [ ] Fiyat bilgisi eklendi (varsa)
+   - [ ] İletişim yönlendirmesi eklendi
 
 ✅ **Kategori bahsi var mı?**
    - [ ] En az 1 ana kategori adı kullanıldı
@@ -391,14 +583,20 @@ Blog içeriğinde **mutlaka** aşağıdaki formatlardan birini kullan:
    - [ ] Teknik özellikler detaylı
    - [ ] Kullanım alanları net
 
+✅ **Fiyat ve Yıl Yasağı Kontrol:**
+   - [ ] HİÇBİR fiyat rakamı YOK
+   - [ ] HİÇBİR yıl (2023, 2024, 2025) YOK
+   - [ ] "Güncel", "modern" gibi zamansız ifadeler VAR
+
 ---
 
 ## 🎯 ÖZET: MUTLAKA HATIRLA!
 
 1. **Minimum 2-3 ÜRÜN ADI** kullanılacak (is_homepage=1 öncelikli)!
-2. **FİYAT BİLGİSİ** eklenecek (TRY ve USD)!
-3. **KATEGORİ ADLARI** kullanılacak!
-4. **"EN İYİ...", "X Mİ Y Mİ"** formatları uygulanacak!
+2. **FİYAT YASAK!** → İletişime yönlendir!
+3. **YIL YASAK!** → "Güncel", "modern" kullan!
+4. **KATEGORİ ADLARI** kullanılacak!
+5. **"EN İYİ...", "X Mİ Y Mİ"** formatları uygulanacak!
 
 **Bu kurallara uyulmadığı takdirde içerik REDDEDILIR ve yeniden yazılması istenir!**
 

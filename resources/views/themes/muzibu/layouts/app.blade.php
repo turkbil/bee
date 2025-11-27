@@ -69,24 +69,13 @@
     <link rel="stylesheet" href="{{ asset('css/tenant-' . tenant('id') . '.css') }}?v=25112024-02">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    {{-- Play Limits System - CSS --}}
-    <link rel="stylesheet" href="{{ asset('assets/themes/muzibu/css/play-limits.css') }}?v={{ time() }}">
+    {{-- Theme CSS --}}
+    <link rel="stylesheet" href="{{ asset('assets/themes/muzibu/css/theme.css') }}?v=1764171131">
+    <link rel="stylesheet" href="{{ asset('assets/themes/muzibu/css/play-limits.css') }}?v=1764171131">
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
     <!-- Alpine.js Livewire tarafından otomatik yükleniyor, CDN'den tekrar yükleme! -->
-
-    <style>
-        body { font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #121212; }
-        ::-webkit-scrollbar { width: 12px; }
-        ::-webkit-scrollbar-track { background: #121212; }
-        ::-webkit-scrollbar-thumb { background: #282828; border-radius: 6px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3e3e3e; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        .slide-in { animation: slideIn 0.4s ease-out; }
-        @keyframes pulse-slow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-        .pulse-play { animation: pulse-slow 2s ease-in-out infinite; }
-    </style>
 
     @livewireStyles
     @yield('styles')
@@ -190,13 +179,16 @@
     @include('themes.muzibu.components.footer')
     @include('themes.muzibu.components.player')
 
+    {{-- Session Check System - Tenant 1001 only --}}
+    @include('themes.muzibu.components.session-check')
+
     {{-- Play Limits System - Modals --}}
     @include('themes.muzibu.components.play-limits-modals')
 
     @livewireScripts
 
     {{-- Play Limits System - JS --}}
-    <script src="{{ asset('assets/themes/muzibu/js/play-limits.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('assets/themes/muzibu/js/play-limits.js') }}?v={{ filemtime(public_path('assets/themes/muzibu/js/play-limits.js')) }}"></script>
 
     @yield('scripts')
 

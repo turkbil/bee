@@ -1,0 +1,80 @@
+/* ============================================
+   WaveSurfer Player CSS - Muzibu Theme
+   Basit waveform görselleştirmesi
+   ============================================ */
+
+/* Waveform Container */
+#waveform-container {
+    flex: 1;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 0;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+/* WaveSurfer Canvas */
+#waveform {
+    width: 100%;
+    height: 40px;
+}
+
+/* Loading State - Skeleton Animation */
+.waveform-loading {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, #4b5563 25%, #6b7280 50%, #4b5563 75%);
+    background-size: 200% 100%;
+    animation: loading-shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes loading-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Error State */
+.waveform-error {
+    color: #ef4444;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+    #waveform-container {
+        height: 20px;
+        padding: 6px 0;
+    }
+
+    #waveform {
+        height: 30px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    #waveform {
+        height: 35px;
+    }
+}
+
+/* Dark Mode Compatibility */
+body.dark #waveform-container {
+    background-color: transparent;
+}
+
+/* Fallback - Eğer WaveSurfer yüklenmezse eski progress bar göster */
+.player-progress-bar.fallback {
+    display: block;
+}
+
+.player-progress-bar.hidden {
+    display: none;
+}

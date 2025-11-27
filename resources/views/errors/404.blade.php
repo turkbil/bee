@@ -1,4 +1,19 @@
-@extends('themes.ixtif.layouts.app')
+@php
+    // Tenant-aware tema seçimi
+    $currentDomain = request()->getHost();
+
+    // Domain'e göre tema belirle
+    if (str_contains($currentDomain, 'muzibu')) {
+        $theme = 'muzibu';
+    } elseif (str_contains($currentDomain, 'ixtif')) {
+        $theme = 'ixtif';
+    } else {
+        // Varsayılan: simple (minimal, bağımsız tema)
+        $theme = 'simple';
+    }
+@endphp
+
+@extends("themes.{$theme}.layouts.app")
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 px-4 py-16">

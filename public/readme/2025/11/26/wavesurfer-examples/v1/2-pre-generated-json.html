@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>2. Pre-Generated JSON</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #1DB954, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        #waveform { margin: 30px 0; }
+        button {
+            background: #1DB954;
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        button:hover { background: #1ed760; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Pre-Generated Waveform JSON</h1>
+        <p>Backend'de önceden oluşturulmuş waveform - Ultra hızlı yükleme!</p>
+        <div id="waveform"></div>
+        <button id="play-btn">▶ Play</button>
+        <button id="pause-btn">⏸ Pause</button>
+    </div>
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
+    <script>
+        function generateMockWaveformData(points) {
+            const data = [];
+            for (let i = 0; i < points; i++) {
+                data.push(Math.random() * 0.8 + 0.2 + Math.sin(i / 20) * 0.3);
+            }
+            return data;
+        }
+        const wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: '#4b5563',
+            progressColor: '#1DB954',
+            height: 80
+        });
+        wavesurfer.load('https://wavesurfer.xyz/example/media/demo.wav', generateMockWaveformData(500));
+        document.getElementById('play-btn').onclick = () => wavesurfer.play();
+        document.getElementById('pause-btn').onclick = () => wavesurfer.pause();
+    </script>
+</body>
+</html>

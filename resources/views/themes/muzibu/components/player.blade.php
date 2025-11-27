@@ -5,7 +5,7 @@
 @endphp
 
 <!-- Hidden Audio Element for HLS streams -->
-<audio x-ref="hlsAudio" style="display: none;"></audio>
+<audio id="hlsAudio" x-ref="hlsAudio" style="display: none;"></audio>
 
 <!-- Auth Modal -->
 <template x-teleport="body">
@@ -395,8 +395,13 @@
             <img :src="currentSong?.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=56&h=56&fit=crop'"
                  style="width: 56px; height: 56px; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
             <div style="flex: 1; min-width: 0;">
-                <div style="font-weight: 600; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                     x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></div>
+                <div style="font-weight: 600; color: white; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px;">
+                    <span x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></span>
+                    <!-- Stream Type Icon -->
+                    <span x-show="currentSong" style="font-size: 12px; opacity: 0.8;" :title="currentStreamType === 'hls' ? 'HLS Stream (Adaptive)' : 'MP3 Dosya'">
+                        <i :class="currentStreamType === 'hls' ? 'fas fa-signal' : 'fas fa-file-audio'" :style="currentStreamType === 'hls' ? 'color: #3b82f6' : 'color: #10b981'"></i>
+                    </span>
+                </div>
                 <div style="font-size: 12px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
                      x-text="currentSong?.artist_title?.tr || ''"></div>
             </div>
@@ -441,11 +446,8 @@
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 12px; color: #9ca3af; min-width: 40px; text-align: right;" x-text="formatTime(currentTime)">0:00</span>
-                <div class="player-progress-bar" @click="seekTo($event)">
-                    <div class="player-progress-track">
-                        <div class="player-progress-fill" :style="'width: ' + progressPercent + '%'"></div>
-                        <div class="player-progress-thumb" :style="'left: ' + progressPercent + '%'"></div>
-                    </div>
+                <div @click="seekTo($event)" style="flex: 1; height: 8px; background: #374151; border-radius: 4px; cursor: pointer; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: 0; left: 0; height: 100%; background: linear-gradient(90deg, #1DB954, #1ed760); border-radius: 4px; transition: width 0.1s linear; box-shadow: 0 0 4px rgba(29, 185, 84, 0.5);" :style="'width: ' + progressPercent + '%'"></div>
                 </div>
                 <span style="font-size: 12px; color: #9ca3af; min-width: 40px;" x-text="formatTime(duration)">0:00</span>
             </div>
@@ -483,6 +485,7 @@
      x-transition:leave="transition ease-in duration-200"
      x-transition:leave-start="transform translate-x-0"
      x-transition:leave-end="transform translate-x-full"
+     style="display: none;"
      class="queue-panel">
 
     <div class="queue-panel-header">
@@ -500,7 +503,13 @@
                 <img :src="currentSong?.album_cover || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=48&h=48&fit=crop'"
                      class="now-playing-cover">
                 <div class="now-playing-info">
-                    <div class="now-playing-title" x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></div>
+                    <div class="now-playing-title" style="display: flex; align-items: center; gap: 6px;">
+                        <span x-text="currentSong?.song_title?.tr || 'Şarkı seçilmedi'"></span>
+                        <!-- Stream Type Icon -->
+                        <span x-show="currentSong" style="font-size: 11px; opacity: 0.8;" :title="currentStreamType === 'hls' ? 'HLS Stream (Adaptive)' : 'MP3 Dosya'">
+                            <i :class="currentStreamType === 'hls' ? 'fas fa-signal' : 'fas fa-file-audio'" :style="currentStreamType === 'hls' ? 'color: #3b82f6' : 'color: #10b981'"></i>
+                        </span>
+                    </div>
                     <div class="now-playing-artist" x-text="currentSong?.artist_title?.tr || ''"></div>
                 </div>
                 <div class="now-playing-indicator">
@@ -1084,6 +1093,32 @@
 </style>
 
 <script>
+// 🔒 Safe Storage Wrapper - Prevents "Access to storage is not allowed" errors
+const safeStorage = {
+    getItem(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            console.warn('localStorage access denied:', e.message);
+            return null;
+        }
+    },
+    setItem(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (e) {
+            console.warn('localStorage access denied:', e.message);
+        }
+    },
+    removeItem(key) {
+        try {
+            localStorage.removeItem(key);
+        } catch (e) {
+            console.warn('localStorage access denied:', e.message);
+        }
+    }
+};
+
 function muzibuApp() {
     return {
         // Tenant-specific translations
@@ -1094,10 +1129,11 @@ function muzibuApp() {
         currentUser: @json(auth()->check() ? ['id' => auth()->user()->id, 'name' => auth()->user()->name, 'email' => auth()->user()->email] : null),
         showAuthModal: null,
         showQueue: false,
+        progressPercent: 0,
         loginForm: {
-            email: localStorage.getItem('remembered_email') || '',
+            email: safeStorage.getItem('remembered_email') || '',
             password: '',
-            remember: localStorage.getItem('remembered_email') ? true : false
+            remember: safeStorage.getItem('remembered_email') ? true : false
         },
         registerForm: { firstName: '', lastName: '', name: '', email: '', password: '', phone: '' },
         forgotForm: { email: '' },
@@ -1164,7 +1200,7 @@ function muzibuApp() {
         isLoggingOut: false,
         currentPath: window.location.pathname,
         _initialized: false,
-        isDarkMode: localStorage.getItem('theme') === 'light' ? false : true,
+        isDarkMode: safeStorage.getItem('theme') === 'light' ? false : true,
         draggedIndex: null,
         dropTargetIndex: null,
 
@@ -1181,6 +1217,11 @@ function muzibuApp() {
         activeHlsAudioId: 'hlsAudio', // Which HLS audio element is active ('hlsAudio' or 'hlsAudioNext')
         progressInterval: null, // Interval for updating progress
         _fadeAnimation: null, // For requestAnimationFrame fade
+
+        // Computed: Current stream type
+        get currentStreamType() {
+            return this.isHlsStream ? 'hls' : 'mp3';
+        },
 
         // Get the currently active HLS audio element
         getActiveHlsAudio() {
@@ -1278,6 +1319,7 @@ function muzibuApp() {
                     this.howl.once('fade', () => {
                         this.howl.pause();
                         this.isPlaying = false;
+                        window.dispatchEvent(new CustomEvent('player:pause'));
                     });
                 } else if (this.hls) {
                     const audio = this.getActiveHlsAudio();
@@ -1285,6 +1327,7 @@ function muzibuApp() {
                         await this.fadeAudioElement(audio, audio.volume, 0, this.fadeOutDuration);
                         audio.pause();
                         this.isPlaying = false;
+                        window.dispatchEvent(new CustomEvent('player:pause'));
                     }
                 }
             } else {
@@ -1707,6 +1750,9 @@ function muzibuApp() {
         // Metadata is handled by Howler.js onload callback
 
         onTrackEnded() {
+            // Dispatch stop event (track ended naturally)
+            window.dispatchEvent(new CustomEvent('player:stop'));
+
             if (this.repeatMode === 'one') {
                 // Repeat current song
                 if (this.howl) {
@@ -1791,7 +1837,36 @@ function muzibuApp() {
 
                     // Get stream URL
                     const streamResponse = await fetch(`/api/muzibu/songs/${id}/stream`);
+
+                    // 🔐 403/401 Check: Backend auth/limit hatası
+                    if (!streamResponse.ok) {
+                        // Play limits component'ine bildir (modal aç!)
+                        const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
+                        if (playLimitsComponent) {
+                            playLimitsComponent.limitExceeded = true;
+                            playLimitsComponent.showLimitModal = true;
+                            playLimitsComponent.remainingPlays = 0;
+                        }
+
+                        this.showToast('Günlük limit doldu', 'error');
+                        return; // Şarkıyı çalma!
+                    }
+
                     const streamData = await streamResponse.json();
+
+                    // 🔐 LIMIT CHECK: Üye limit aştıysa çalma!
+                    if (streamData.status === 'limit_exceeded') {
+                        // Play limits component'ine bildir
+                        const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
+                        if (playLimitsComponent) {
+                            playLimitsComponent.limitExceeded = true;
+                            playLimitsComponent.showLimitModal = true;
+                            playLimitsComponent.remainingPlays = 0;
+                        }
+
+                        this.showToast('Günlük limit doldu', 'error');
+                        return; // Şarkıyı çalma!
+                    }
 
                     await this.loadAndPlaySong(streamData.stream_url);
                     this.showToast('Şarkı çalınıyor', 'success');
@@ -1818,7 +1893,36 @@ function muzibuApp() {
 
             try {
                 const response = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
+
+                // 🔐 403/401 Check: Backend auth/limit hatası
+                if (!response.ok) {
+                    // Play limits component'ine bildir (modal aç!)
+                    const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
+                    if (playLimitsComponent) {
+                        playLimitsComponent.limitExceeded = true;
+                        playLimitsComponent.showLimitModal = true;
+                        playLimitsComponent.remainingPlays = 0;
+                    }
+
+                    this.showToast('Günlük limit doldu', 'error');
+                    return; // Şarkıyı çalma!
+                }
+
                 const data = await response.json();
+
+                // 🔐 LIMIT CHECK: Üye limit aştıysa çalma!
+                if (data.status === 'limit_exceeded') {
+                    // Play limits component'ine bildir
+                    const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
+                    if (playLimitsComponent) {
+                        playLimitsComponent.limitExceeded = true;
+                        playLimitsComponent.showLimitModal = true;
+                        playLimitsComponent.remainingPlays = 0;
+                    }
+
+                    this.showToast('Günlük limit doldu', 'error');
+                    return; // Şarkıyı çalma!
+                }
 
                 // Pass stream type from API response ('hls' or 'mp3')
                 const streamType = data.stream_type || 'mp3';
@@ -1917,10 +2021,12 @@ function muzibuApp() {
         // Stop current playback with fade out
         async stopCurrentPlayback() {
             const targetVolume = this.volume / 100;
+            let wasStopped = false;
 
             // Stop Howler if playing
             if (this.howl) {
                 if (this.howl.playing()) {
+                    wasStopped = true;
                     await new Promise(resolve => {
                         const currentVolume = this.howl.volume();
                         this.howl.fade(currentVolume, 0, this.fadeOutDuration);
@@ -1941,6 +2047,7 @@ function muzibuApp() {
             if (this.hls) {
                 const audio = this.getActiveHlsAudio();
                 if (audio && !audio.paused) {
+                    wasStopped = true;
                     await this.fadeAudioElement(audio, audio.volume, 0, this.fadeOutDuration);
                     audio.pause();
                 }
@@ -1957,6 +2064,11 @@ function muzibuApp() {
 
             // Reset active HLS audio to default
             this.activeHlsAudioId = 'hlsAudio';
+
+            // Dispatch stop event if something was actually stopped
+            if (wasStopped) {
+                window.dispatchEvent(new CustomEvent('player:stop'));
+            }
         },
 
         // Play using Howler.js (for MP3, etc.)
@@ -1981,6 +2093,14 @@ function muzibuApp() {
                 onplay: function() {
                     self.isPlaying = true;
                     self.startProgressTracking('howler');
+
+                    // Dispatch event for play-limits
+                    window.dispatchEvent(new CustomEvent('player:play', {
+                        detail: {
+                            songId: self.currentSong?.song_id,
+                            isLoggedIn: self.isLoggedIn
+                        }
+                    }));
                 },
                 onend: function() {
                     if (!self.isCrossfading) {
@@ -1989,9 +2109,14 @@ function muzibuApp() {
                 },
                 onloaderror: function(id, error) {
                     console.error('Howler load error:', error);
-                    // Fallback to HLS.js if Howler fails
-                    console.log('Trying HLS.js fallback...');
-                    self.playHlsStream(url, targetVolume);
+                    console.error('❌ MP3 playback failed, cannot fallback (already in fallback mode)');
+                    self.showToast('Şarkı yüklenemedi', 'error');
+                    self.isPlaying = false;
+
+                    // Bir sonraki şarkıya geç
+                    setTimeout(() => {
+                        self.nextTrack();
+                    }, 1500);
                 },
                 onplayerror: function(id, error) {
                     console.error('Howler play error:', error);
@@ -2031,6 +2156,14 @@ function muzibuApp() {
                         self.isPlaying = true;
                         self.fadeAudioElement(audio, 0, targetVolume, self.fadeOutDuration);
                         self.startProgressTracking('hls');
+
+                        // Dispatch event for play-limits (HLS)
+                        window.dispatchEvent(new CustomEvent('player:play', {
+                            detail: {
+                                songId: self.currentSong?.song_id,
+                                isLoggedIn: self.isLoggedIn
+                            }
+                        }));
                     }).catch(e => {
                         console.error('HLS play error:', e);
                         self.showToast('Çalma hatası', 'error');
@@ -2040,8 +2173,27 @@ function muzibuApp() {
                 this.hls.on(Hls.Events.ERROR, function(event, data) {
                     if (data.fatal) {
                         console.error('HLS fatal error:', data);
-                        self.showToast('Şarkı yüklenemedi', 'error');
-                        self.isPlaying = false;
+
+                        // HLS yüklenemezse MP3'e fallback
+                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR && self.currentSong) {
+                            console.log('🔄 HLS failed, falling back to MP3...');
+                            const mp3Url = `/api/muzibu/songs/${self.currentSong.song_id}/serve`;
+
+                            // Cleanup HLS
+                            if (self.hls) {
+                                self.hls.destroy();
+                                self.hls = null;
+                            }
+
+                            // Queue'ye MP3 conversion job ekle (background)
+                            self.showToast('MP3 ile çalıyor, HLS hazırlanıyor...', 'info');
+
+                            // MP3 ile çal
+                            self.playWithHowler(mp3Url, targetVolume);
+                        } else {
+                            self.showToast('Şarkı yüklenemedi', 'error');
+                            self.isPlaying = false;
+                        }
                     }
                 });
 
@@ -2065,6 +2217,14 @@ function muzibuApp() {
                     self.isPlaying = true;
                     self.fadeAudioElement(audio, 0, targetVolume, self.fadeOutDuration);
                     self.startProgressTracking('hls');
+
+                    // Dispatch event for play-limits (Safari native HLS)
+                    window.dispatchEvent(new CustomEvent('player:play', {
+                        detail: {
+                            songId: self.currentSong?.song_id,
+                            isLoggedIn: self.isLoggedIn
+                        }
+                    }));
                 });
             } else {
                 console.error('HLS not supported');
@@ -2121,6 +2281,17 @@ function muzibuApp() {
                     this.currentTime = currentTime;
                     this.progressPercent = (currentTime / this.duration) * 100;
 
+                    // Dispatch time update event for play-limits (every second, not every 100ms)
+                    if (Math.floor(currentTime) !== self._lastDispatchedSecond) {
+                        self._lastDispatchedSecond = Math.floor(currentTime);
+                        window.dispatchEvent(new CustomEvent('player:timeupdate', {
+                            detail: {
+                                currentTime: Math.floor(currentTime),
+                                isLoggedIn: self.isLoggedIn
+                            }
+                        }));
+                    }
+
                     // Check for crossfade at end of song
                     const timeRemaining = this.duration - currentTime;
                     if (this.crossfadeEnabled && timeRemaining <= (this.crossfadeDuration / 1000) && timeRemaining > 0 && !this.isCrossfading) {
@@ -2139,7 +2310,7 @@ function muzibuApp() {
             this.progressInterval = setInterval(() => {
                 if (!audioElement.paused && this.duration > 0) {
                     this.currentTime = audioElement.currentTime;
-                    this.progressPercent = (this.currentTime / this.duration) * 100;
+                    this.progressPercent = (audioElement.currentTime / this.duration) * 100;
 
                     // Check for crossfade at end of song
                     const timeRemaining = this.duration - this.currentTime;
@@ -2283,9 +2454,9 @@ function muzibuApp() {
                 if (response.ok && data.success) {
                     // Beni Hatırla - email'i kaydet veya sil
                     if (this.loginForm.remember) {
-                        localStorage.setItem('remembered_email', this.loginForm.email);
+                        safeStorage.setItem('remembered_email', this.loginForm.email);
                     } else {
-                        localStorage.removeItem('remembered_email');
+                        safeStorage.removeItem('remembered_email');
                     }
 
                     this.isLoggedIn = true;
@@ -2406,7 +2577,7 @@ function muzibuApp() {
 
         toggleTheme() {
             this.isDarkMode = !this.isDarkMode;
-            localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
+            safeStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
             this.showToast(this.isDarkMode ? 'Koyu tema aktif' : 'Açık tema aktif', 'success');
         },
 
@@ -2679,10 +2850,6 @@ function muzibuApp() {
                 this.forgotValidation.email.valid = true;
                 this.forgotValidation.email.message = '';
             }
-        },
-
-        get progressPercent() {
-            return this.duration ? (this.currentTime / this.duration) * 100 : 0;
         }
     }
 }

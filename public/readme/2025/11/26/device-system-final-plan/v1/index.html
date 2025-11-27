@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Device System - Final Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 40px 20px;
+            line-height: 1.8;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .meta {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        .section {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        h2 {
+            color: #8b5cf6;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        h3 {
+            color: #06b6d4;
+            font-size: 1.3rem;
+            margin: 20px 0 10px 0;
+        }
+        .flow {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .flow-step {
+            padding: 10px 0;
+            border-left: 3px solid #8b5cf6;
+            padding-left: 15px;
+            margin: 5px 0;
+        }
+        .arrow {
+            color: #06b6d4;
+            margin: 5px 0;
+            padding-left: 15px;
+        }
+        .component {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid #8b5cf6;
+        }
+        .component-header {
+            color: #06b6d4;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        .file-path {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #f59e0b;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        li {
+            padding: 5px 0 5px 25px;
+            position: relative;
+        }
+        li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #06b6d4;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid #10b981;
+        }
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid #f59e0b;
+        }
+        .mockup {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 2px solid #334155;
+        }
+        .mockup-title {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .device-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        .btn {
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Muzibu Device System</h1>
+        <div class="meta">Final Implementation Plan | 26 Kasım 2025</div>
+
+        <div class="alert alert-success">
+            <strong>✅ KARAR:</strong><br>
+            • Device limit: 1 (varsayılan) - İleride multi-device abonelik eklenebilir<br>
+            • Login sırasında modal göster: Aktif cihazları listele + Kullanıcı seçsin<br>
+            • Session kesilince müzik otomatik durur<br>
+            • Polling YOK! Sadece login kontrolü
+        </div>
+
+        <!-- SENARYO 1 -->
+        <div class="section">
+            <h2>📱 Senaryo 1: Login Sırasında Kontrol</h2>
+
+            <div class="flow">
+                <div class="flow-step">1. Kullanıcı login yapmaya çalışıyor</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">2. Backend: Active session count kontrol eder</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">3. Eğer count >= device_limit:</div>
+                <div class="arrow">   ↓</div>
+                <div class="flow-step">   → Modal göster: "Aktif cihazlar"</div>
+                <div class="flow-step">   → Kullanıcı seçer: Hangi cihazı kapatacak?</div>
+                <div class="flow-step">   → Backend: O session'ı sil</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">4. Yeni session oluştur → Login başarılı</div>
+            </div>
+
+            <h3>Login Modal Mockup:</h3>
+            <div class="mockup">
+                <div class="mockup-title">Login Screen</div>
+                <h3 style="color: white; font-size: 1.2rem;">Cihaz Limitine Ulaştınız</h3>
+                <p style="color: #94a3b8; margin: 10px 0;">Giriş yapabilmek için bir cihazdan çıkış yapmanız gerekiyor.</p>
+
+                <div class="device-item">
+                    <strong style="color: white;">💻 Windows - Chrome</strong><br>
+                    <span style="color: #94a3b8; font-size: 0.85rem;">IP: 192.168.1.45</span><br>
+                    <span style="color: #94a3b8; font-size: 0.85rem;">Son Erişim: 2 saat önce</span>
+                    <div class="btn">Bu Cihazdan Çıkış Yap</div>
+                </div>
+
+                <div class="device-item">
+                    <strong style="color: white;">📱 Android - Chrome Mobile</strong><br>
+                    <span style="color: #94a3b8; font-size: 0.85rem;">IP: 192.168.1.78</span><br>
+                    <span style="color: #94a3b8; font-size: 0.85rem;">Son Erişim: 5 dakika önce</span>
+                    <div class="btn">Bu Cihazdan Çıkış Yap</div>
+                </div>
+
+                <div class="btn" style="background: #f59e0b; margin-top: 15px;">Tüm Cihazlardan Çıkış Yap</div>
+            </div>
+        </div>
+
+        <!-- SENARYO 2 -->
+        <div class="section">
+            <h2>🔔 Senaryo 2: Çıkış Yapılan Cihazda Ne Olur?</h2>
+
+            <div class="flow">
+                <div class="flow-step">1. Cihaz A'da müzik çalıyor (09:00 - akşama kadar)</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">2. Kullanıcı Cihaz B'den login yaptı</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">3. Cihaz A'nın session'ı silindi</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">4. Cihaz A: Arka planda session check yapıyor (her 30 saniye)</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">5. Session yok → Müzik durdur</div>
+                <div class="arrow">↓</div>
+                <div class="flow-step">6. Modal göster: "Başka cihazdan giriş yapıldı"</div>
+            </div>
+
+            <h3>Çıkış Modal Mockup:</h3>
+            <div class="mockup">
+                <div class="mockup-title">Player Screen</div>
+                <h3 style="color: white; font-size: 1.2rem;">⚠️ Oturumunuz Sonlandırıldı</h3>
+                <p style="color: #94a3b8; margin: 15px 0;">
+                    Başka bir cihazdan giriş yapıldığı için bu cihazdaki oturumunuz sonlandırıldı.
+                </p>
+                <p style="color: #94a3b8; font-size: 0.9rem;">
+                    Müzik otomatik olarak durduruldu.
+                </p>
+                <div class="btn" style="background: #3b82f6; margin-top: 15px;">Tamam</div>
+            </div>
+        </div>
+
+        <!-- DOSYALAR -->
+        <div class="section">
+            <h2>📂 Oluşturulacak Dosyalar</h2>
+
+            <div class="component">
+                <div class="component-header">1. Tenant1001Service</div>
+                <div class="file-path">app/Services/Tenant1001/DeviceService.php</div>
+                <ul>
+                    <li>getActiveDevices(User $user)</li>
+                    <li>getActiveDeviceCount(User $user)</li>
+                    <li>checkDeviceLimit(User $user)</li>
+                    <li>terminateSession(string $sessionId)</li>
+                    <li>terminateAllSessions(User $user)</li>
+                    <li>getDeviceInfo(string $userAgent, string $ip)</li>
+                </ul>
+            </div>
+
+            <div class="component">
+                <div class="component-header">2. Login Controller Güncelleme</div>
+                <div class="file-path">app/Http/Controllers/Auth/LoginController.php</div>
+                <ul>
+                    <li>Login öncesi device limit kontrol et</li>
+                    <li>Eğer limit aşıldıysa → Aktif cihazları döndür</li>
+                    <li>Frontend modal gösterir</li>
+                </ul>
+            </div>
+
+            <div class="component">
+                <div class="component-header">3. Device Management Endpoint</div>
+                <div class="file-path">routes/api.php (Tenant 1001)</div>
+                <ul>
+                    <li>POST /api/devices/check → Limit kontrol</li>
+                    <li>GET /api/devices/active → Aktif cihazlar</li>
+                    <li>DELETE /api/devices/{sessionId} → Session sil</li>
+                    <li>DELETE /api/devices/all → Tüm session'ları sil</li>
+                </ul>
+            </div>
+
+            <div class="component">
+                <div class="component-header">4. Login Modal Component</div>
+                <div class="file-path">resources/views/themes/muzibu/components/device-limit-modal.blade.php</div>
+                <ul>
+                    <li>Aktif cihazları listele (IP, User Agent, Last Activity)</li>
+                    <li>"Bu Cihazdan Çıkış Yap" butonları</li>
+                    <li>"Tüm Cihazlardan Çıkış Yap" butonu</li>
+                </ul>
+            </div>
+
+            <div class="component">
+                <div class="component-header">5. Session Check Component</div>
+                <div class="file-path">resources/views/themes/muzibu/components/session-check.blade.php</div>
+                <ul>
+                    <li>Arka planda session kontrol (her 30 saniye)</li>
+                    <li>Session yoksa → Müziği durdur</li>
+                    <li>Modal göster: "Başka cihazdan giriş yapıldı"</li>
+                </ul>
+            </div>
+
+            <div class="component">
+                <div class="component-header">6. Çıkış Modal Component</div>
+                <div class="file-path">resources/views/themes/muzibu/components/session-terminated-modal.blade.php</div>
+                <ul>
+                    <li>Oturum sonlandırma mesajı</li>
+                    <li>"Tamam" butonu → Logout</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TEKNIK DETAYLAR -->
+        <div class="section">
+            <h2>⚙️ Teknik Detaylar</h2>
+
+            <h3>Session Check (Arka Plan):</h3>
+            <div class="flow">
+setInterval(() => {
+    fetch('/api/session/check')
+        .then(response => {
+            if (response.status === 401) {
+                // Session yok
+                stopMusic();
+                showSessionTerminatedModal();
+            }
+        });
+}, 30000); // Her 30 saniye
+            </div>
+
+            <h3>Device Limit Kontrol:</h3>
+            <div class="flow">
+// Tenant1001Service
+public function checkDeviceLimit(User $user): bool
+{
+    // Sadece Tenant 1001 için
+    if (tenant()->id !== 1001) {
+        return true;
+    }
+
+    $limit = $user->device_limit ?? 1;
+    $activeCount = $this->getActiveDeviceCount($user);
+
+    return $activeCount < $limit;
+}
+            </div>
+
+            <h3>Session Silme:</h3>
+            <div class="flow">
+// Session silme
+DB::table('sessions')
+    ->where('id', $sessionId)
+    ->delete();
+
+// Kullanıcı bir sonraki istekte 401 alır
+// Frontend logout yapar
+            </div>
+        </div>
+
+        <!-- SONRAKI ADIMLAR -->
+        <div class="section">
+            <h2>🚀 Sonraki Adımlar</h2>
+
+            <div class="alert alert-warning">
+                <strong>Sıralama:</strong>
+            </div>
+
+            <ol style="padding-left: 20px;">
+                <li style="padding: 10px 0;"><strong>Tenant1001Service oluştur</strong> (Backend logic)</li>
+                <li style="padding: 10px 0;"><strong>API endpoint'leri ekle</strong> (Device management)</li>
+                <li style="padding: 10px 0;"><strong>Login controller güncelle</strong> (Device limit kontrol)</li>
+                <li style="padding: 10px 0;"><strong>Login modal component</strong> (Aktif cihazlar)</li>
+                <li style="padding: 10px 0;"><strong>Session check component</strong> (Arka plan kontrol)</li>
+                <li style="padding: 10px 0;"><strong>Çıkış modal component</strong> (Oturum sonlandı)</li>
+                <li style="padding: 10px 0;"><strong>Test</strong> (2 cihazdan giriş dene)</li>
+            </ol>
+
+            <div class="alert alert-success" style="margin-top: 20px;">
+                <strong>✅ ONAY:</strong> Bu plan uygun mu? Başlayalım mı?
+            </div>
+        </div>
+
+        <footer>
+            <p>🤖 Claude AI | 26 Kasım 2025</p>
+            <p style="margin-top: 10px;">Onay verirsen hemen kodu yazmaya başlayacağım! 🚀</p>
+        </footer>
+    </div>
+</body>
+</html>

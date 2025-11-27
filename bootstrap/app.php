@@ -126,6 +126,7 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // API middleware grubu
         $middleware->group('api', [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // 🔐 Sanctum session auth
             \App\Http\Middleware\InitializeTenancy::class, // 🔥 Tenant initialization for API
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,

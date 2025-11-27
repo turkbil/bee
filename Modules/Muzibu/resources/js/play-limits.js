@@ -16,14 +16,13 @@ document.addEventListener('alpine:init', () => {
         showGuestModal: false,        // Guest modal
         showLimitModal: false,        // Limit modal
         progressTracker: null,        // Progress interval
+        guestTimeChecker: null,       // Guest 30s checker
         previewStartTime: null,       // Preview başlangıç
         currentSongId: null,          // Şu anki şarkı ID
         isTracking: false,            // Tracking aktif mi
 
         // Init
         init() {
-            console.log('🎵 Play Limits System initialized');
-
             // Global muzibuApp erişimi için
             if (window.muzibuApp) {
                 this.bindToPlayer();
@@ -37,45 +36,28 @@ document.addEventListener('alpine:init', () => {
 
         // Player'a bağlan
         bindToPlayer() {
-            const player = window.muzibuApp || Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
-
-            if (!player) {
-                console.warn('⚠️ Player not found, retrying...');
-                setTimeout(() => this.bindToPlayer(), 1000);
-                return;
-            }
-
-            console.log('✅ Play Limits bound to player');
-
-            // Player event'lerini dinle
-            this.$watch(() => player.isPlaying, (playing) => {
-                if (playing && player.currentSong) {
-                    this.onSongStart(player.currentSong.id, player.isLoggedIn);
-                } else {
-                    this.onSongStop();
-                }
+            // Custom event'leri dinle
+            window.addEventListener('player:play', (e) => {
+                const { songId, isLoggedIn } = e.detail;
+                this.onSongStart(songId, isLoggedIn);
             });
 
-            // Progress izle (her saniye)
-            this.$watch(() => player.currentTime, (time) => {
-                if (player.isPlaying) {
-                    this.onProgress(time, player.isLoggedIn);
-                }
+            window.addEventListener('player:pause', () => {
+                this.onSongStop();
             });
 
-            // Şarkı değişimi
-            this.$watch(() => player.currentSong?.id, (newId) => {
-                if (newId) {
-                    this.currentSongId = newId;
-                    this.previewStartTime = null;
-                }
+            window.addEventListener('player:stop', () => {
+                this.onSongStop();
+            });
+
+            window.addEventListener('player:timeupdate', (e) => {
+                const { currentTime, isLoggedIn } = e.detail;
+                this.onProgress(currentTime, isLoggedIn);
             });
         },
 
         // Şarkı başladı
         onSongStart(songId, isLoggedIn) {
-            console.log('▶️ Song started:', songId, 'Logged:', isLoggedIn);
-
             this.currentSongId = songId;
             this.previewStartTime = Date.now();
 
@@ -83,23 +65,58 @@ document.addEventListener('alpine:init', () => {
                 // Üye: Progress tracking başlat
                 this.startProgressTracking();
             } else {
-                // Guest: Preview mode
+                // Guest: Preview mode + manual time check
                 this.isPreviewMode = true;
-                console.log('👤 Guest mode: 30 second preview');
+                this.startGuestTimeCheck();
             }
         },
 
         // Şarkı durdu
         onSongStop() {
             this.stopProgressTracking();
+            this.stopGuestTimeCheck();
             this.previewStartTime = null;
+        },
+
+        // Guest 30 saniye kontrolü (manuel interval)
+        startGuestTimeCheck() {
+            this.stopGuestTimeCheck();
+
+            this.guestTimeChecker = setInterval(() => {
+                // Alpine $data ile player objesini al
+                const player = Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
+
+                if (!player) {
+                    this.stopGuestTimeCheck();
+                    return;
+                }
+
+                // Howler currentTime al
+                const currentTime = player.howl ? player.howl.seek() : 0;
+
+                // İlk saniyede 0 dönebilir, skip et
+                if (currentTime < 1) {
+                    return;
+                }
+
+                if (currentTime >= 30) {
+                    this.handleGuestLimit();
+                    this.stopGuestTimeCheck();
+                }
+            }, 1000); // Her saniye kontrol
+        },
+
+        stopGuestTimeCheck() {
+            if (this.guestTimeChecker) {
+                clearInterval(this.guestTimeChecker);
+                this.guestTimeChecker = null;
+            }
         },
 
         // Progress kontrolü
         onProgress(currentTime, isLoggedIn) {
             // Guest: 30sn kontrolü
             if (!isLoggedIn && this.isPreviewMode && currentTime >= 30) {
-                console.log('⏱️ Guest 30s limit reached');
                 this.handleGuestLimit();
             }
         },
@@ -111,8 +128,6 @@ document.addEventListener('alpine:init', () => {
             this.stopProgressTracking();
             this.isTracking = true;
 
-            console.log('📊 Progress tracking started');
-
             this.progressTracker = setInterval(() => {
                 this.sendProgressReport();
             }, 5000); // Her 5 saniye
@@ -123,13 +138,12 @@ document.addEventListener('alpine:init', () => {
                 clearInterval(this.progressTracker);
                 this.progressTracker = null;
                 this.isTracking = false;
-                console.log('⏹️ Progress tracking stopped');
             }
         },
 
         // Backend'e progress raporu gönder
         async sendProgressReport() {
-            const player = window.muzibuApp || Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
+            const player = Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
 
             if (!player || !player.isPlaying || !player.currentSong) {
                 return;
@@ -138,12 +152,14 @@ document.addEventListener('alpine:init', () => {
             const duration = Math.floor(player.currentTime);
 
             try {
-                const response = await fetch(`/api/muzibu/songs/${player.currentSong.id}/track-progress`, {
+                const response = await fetch(`/api/muzibu/songs/${player.currentSong.song_id}/track-progress`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'Accept': 'application/json'
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify({ duration })
                 });
 
@@ -151,7 +167,6 @@ document.addEventListener('alpine:init', () => {
 
                 if (data.success) {
                     this.remainingPlays = data.remaining;
-                    console.log('✅ Progress reported:', duration, 's | Remaining:', data.remaining);
 
                     // Limit kontrol
                     if (data.remaining === 0) {
@@ -165,28 +180,49 @@ document.addEventListener('alpine:init', () => {
 
         // Guest limiti aşıldı
         handleGuestLimit() {
-            const player = window.muzibuApp || Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
+            // Alpine $data ile player objesini al
+            const player = Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
 
             if (player) {
                 // Fade out ve durdur
                 if (player.howl) {
-                    player.howl.fade(player.volume / 100, 0, 1000);
-                    setTimeout(() => {
-                        player.howl.pause();
-                        player.isPlaying = false;
-                    }, 1000);
+                    const isPlaying = player.howl.playing();
+
+                    if (isPlaying) {
+                        const currentVolume = player.howl.volume();
+                        // 3 saniye yumuşak fade-out
+                        player.howl.fade(currentVolume, 0, 3000);
+
+                        setTimeout(() => {
+                            if (player.howl) {
+                                player.howl.stop();
+                                player.howl.unload();
+                                player.howl = null;
+                            }
+                            player.isPlaying = false;
+                        }, 3000);
+                    }
                 } else if (player.hls) {
                     const audio = player.getActiveHlsAudio();
-                    if (audio) {
+                    if (audio && !audio.paused) {
+                        const startVolume = audio.volume;
+                        const fadeDuration = 3000; // 3 saniye
+                        const fadeSteps = 30; // 30 adım = her 100ms
+                        const volumeStep = startVolume / fadeSteps;
+                        let currentStep = 0;
+
                         const fadeOut = setInterval(() => {
-                            if (audio.volume > 0.1) {
-                                audio.volume -= 0.1;
-                            } else {
+                            currentStep++;
+                            const newVolume = Math.max(0, startVolume - (volumeStep * currentStep));
+                            audio.volume = newVolume;
+
+                            if (currentStep >= fadeSteps || newVolume <= 0) {
                                 audio.pause();
+                                audio.currentTime = 0;
                                 player.isPlaying = false;
                                 clearInterval(fadeOut);
                             }
-                        }, 100);
+                        }, fadeDuration / fadeSteps); // 3000/30 = 100ms
                     }
                 }
             }
@@ -198,7 +234,7 @@ document.addEventListener('alpine:init', () => {
 
         // Member limiti aşıldı
         handleMemberLimit() {
-            const player = window.muzibuApp || Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
+            const player = Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
 
             if (player) {
                 player.isPlaying = false;
@@ -244,7 +280,7 @@ document.addEventListener('alpine:init', () => {
         // Guest modal'dan kayıt ol
         handleGuestRegister() {
             this.showGuestModal = false;
-            const player = window.muzibuApp || Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
+            const player = Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
             if (player) {
                 player.showAuthModal = 'register';
             }
@@ -253,7 +289,7 @@ document.addEventListener('alpine:init', () => {
         // Guest modal'dan giriş yap
         handleGuestLogin() {
             this.showGuestModal = false;
-            const player = window.muzibuApp || Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
+            const player = Alpine.$data(document.querySelector('[x-data*="muzibuApp"]'));
             if (player) {
                 player.showAuthModal = 'login';
             }
@@ -262,6 +298,7 @@ document.addEventListener('alpine:init', () => {
         // Cleanup
         destroy() {
             this.stopProgressTracking();
+            this.stopGuestTimeCheck();
         }
     }));
 });
@@ -277,4 +314,4 @@ window.playLimitsSystem = {
     }
 };
 
-console.log('✅ Play Limits System loaded');
+// Play Limits System loaded

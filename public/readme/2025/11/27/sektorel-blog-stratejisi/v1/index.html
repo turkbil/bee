@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sektörel Blog Stratejisi - SEO Odaklı İçerik</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #818cf8;
+        }
+
+        .category-box {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .category-box h4 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .blog-item {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 3px solid #10b981;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .blog-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .seo-keyword {
+            color: #fbbf24;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .note {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .note strong {
+            color: #60a5fa;
+        }
+
+        .stat-box {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #10b981;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.7);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        td {
+            color: #cbd5e1;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Sektörel Blog Stratejisi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-27 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                👤 Strateji: Ürün odaklı, SEO optimize içerik
+            </div>
+        </header>
+
+        <section>
+            <h2>📊 Yeni Yaklaşım</h2>
+
+            <div class="stat-box">
+                <strong>❌ Eski Yaklaşım (Kaldırıldı):</strong><br>
+                • Şehir bazlı bloglar (İstanbul Forklift, Ankara Transpalet...)<br>
+                • 7,500+ gereksiz draft<br>
+                • Sürdürülebilir değil
+            </div>
+
+            <div class="stat-box" style="border-left-color: #10b981;">
+                <strong>✅ Yeni Yaklaşım (Sektörel & Ürün Odaklı):</strong><br>
+                • Fiyatlar, kullanım, karşılaştırma, modeller<br>
+                • Sektörel çözümler (otomotiv, lojistik, gıda...)<br>
+                • En iyi, hangisi, nasıl seçilir gibi SEO kelimeler<br>
+                • Evergreen içerik (her zaman güncel)
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Blog Kategorileri</h2>
+
+            <div class="category-box">
+                <h4>1️⃣ Fiyat Odaklı Bloglar (SEO Kritik!)</h4>
+                <div class="blog-grid">
+                    <div class="blog-item">
+                        Elektrikli Forklift Fiyatları
+                        <span class="seo-keyword">SEO: elektrikli forklift fiyatları</span>
+                    </div>
+                    <div class="blog-item">
+                        Akülü Transpalet Fiyatları
+                        <span class="seo-keyword">SEO: akülü transpalet fiyatları</span>
+                    </div>
+                    <div class="blog-item">
+                        Dizel Forklift Fiyatları
+                        <span class="seo-keyword">SEO: dizel forklift fiyatları</span>
+                    </div>
+                    <div class="blog-item">
+                        İstif Makinesi Fiyatları
+                        <span class="seo-keyword">SEO: istif makinesi fiyatları</span>
+                    </div>
+                    <div class="blog-item">
+                        Reach Truck Fiyatları
+                        <span class="seo-keyword">SEO: reach truck fiyatları</span>
+                    </div>
+                    <div class="blog-item">
+                        Manuel Transpalet Fiyatları
+                        <span class="seo-keyword">SEO: manuel transpalet fiyatları</span>
+                    </div>
+                    <div class="blog-item">
+                        LPG Forklift Fiyatları
+                        <span class="seo-keyword">SEO: lpg forklift fiyatları</span>
+                    </div>
+                    <div class="blog-item">
+                        İkinci El Forklift Fiyatları
+                        <span class="seo-keyword">SEO: 2. el forklift fiyatları</span>
+                    </div>
+                </div>
+                <div class="note">
+                    <strong>💰 Fiyat Stratejisi:</strong> Rakam vermeden, fiyatı etkileyen faktörler anlatılacak. Ürünler sayfasına ve İxtif müşteri hizmetlerine yönlendirme yapılacak.
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h4>2️⃣ Karşılaştırma Blogları</h4>
+                <div class="blog-grid">
+                    <div class="blog-item">
+                        Elektrikli vs Dizel Forklift
+                        <span class="seo-keyword">SEO: elektrikli mi dizel forklift mi</span>
+                    </div>
+                    <div class="blog-item">
+                        Akülü vs Manuel Transpalet
+                        <span class="seo-keyword">SEO: akülü transpalet mi manuel mi</span>
+                    </div>
+                    <div class="blog-item">
+                        LPG vs Elektrikli Forklift
+                        <span class="seo-keyword">SEO: lpg mi elektrikli forklift mi</span>
+                    </div>
+                    <div class="blog-item">
+                        Reach Truck vs Forklift
+                        <span class="seo-keyword">SEO: reach truck forklift farkı</span>
+                    </div>
+                    <div class="blog-item">
+                        İstif Makinesi vs Forklift
+                        <span class="seo-keyword">SEO: istif makinesi forklift farkı</span>
+                    </div>
+                    <div class="blog-item">
+                        Yeni vs İkinci El Forklift
+                        <span class="seo-keyword">SEO: yeni mi ikinci el forklift mi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h4>3️⃣ En İyi / Hangisi Blogları (Yüksek SEO)</h4>
+                <div class="blog-grid">
+                    <div class="blog-item">
+                        En İyi Elektrikli Forklift Modelleri
+                        <span class="seo-keyword">SEO: en iyi elektrikli forklift</span>
+                    </div>
+                    <div class="blog-item">
+                        En İyi Akülü Transpalet Markaları
+                        <span class="seo-keyword">SEO: en iyi akülü transpalet</span>
+                    </div>
+                    <div class="blog-item">
+                        Hangi Forklift Markası Daha İyi
+                        <span class="seo-keyword">SEO: hangi forklift markası</span>
+                    </div>
+                    <div class="blog-item">
+                        En Dayanıklı İstif Makinesi
+                        <span class="seo-keyword">SEO: en dayanıklı istif makinesi</span>
+                    </div>
+                    <div class="blog-item">
+                        En Ekonomik Forklift Modeli
+                        <span class="seo-keyword">SEO: en ekonomik forklift</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h4>4️⃣ Nasıl Seçilir / Kullanım Rehberleri</h4>
+                <div class="blog-grid">
+                    <div class="blog-item">
+                        Forklift Nasıl Seçilir
+                        <span class="seo-keyword">SEO: forklift nasıl seçilir</span>
+                    </div>
+                    <div class="blog-item">
+                        Transpalet Nasıl Kullanılır
+                        <span class="seo-keyword">SEO: transpalet nasıl kullanılır</span>
+                    </div>
+                    <div class="blog-item">
+                        Forklift Kapasitesi Nasıl Belirlenir
+                        <span class="seo-keyword">SEO: forklift kapasitesi</span>
+                    </div>
+                    <div class="blog-item">
+                        İstif Makinesi Seçim Kriterleri
+                        <span class="seo-keyword">SEO: istif makinesi seçimi</span>
+                    </div>
+                    <div class="blog-item">
+                        Depo İçin Hangi Ekipman
+                        <span class="seo-keyword">SEO: depo ekipmanı seçimi</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h4>5️⃣ Sektörel Çözümler</h4>
+                <div class="blog-grid">
+                    <div class="blog-item">
+                        Otomotiv Sektörü İçin Forklift Çözümleri
+                        <span class="seo-keyword">SEO: otomotiv forklift</span>
+                    </div>
+                    <div class="blog-item">
+                        Lojistik Depo Ekipmanları
+                        <span class="seo-keyword">SEO: lojistik depo ekipmanı</span>
+                    </div>
+                    <div class="blog-item">
+                        Gıda Sektörü İçin Hijyenik Forklift
+                        <span class="seo-keyword">SEO: gıda sektörü forklift</span>
+                    </div>
+                    <div class="blog-item">
+                        Soğuk Hava Deposu Ekipmanları
+                        <span class="seo-keyword">SEO: soğuk hava deposu forklift</span>
+                    </div>
+                    <div class="blog-item">
+                        Tekstil Fabrikası Depo Çözümleri
+                        <span class="seo-keyword">SEO: tekstil depo ekipmanı</span>
+                    </div>
+                    <div class="blog-item">
+                        E-Ticaret Depo Optimizasyonu
+                        <span class="seo-keyword">SEO: e-ticaret depo ekipmanı</span>
+                    </div>
+                    <div class="blog-item">
+                        İnşaat Sektörü Forklift Kullanımı
+                        <span class="seo-keyword">SEO: inşaat forklift</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h4>6️⃣ Teknik & Bakım</h4>
+                <div class="blog-grid">
+                    <div class="blog-item">
+                        Forklift Bakım Rehberi
+                        <span class="seo-keyword">SEO: forklift bakımı</span>
+                    </div>
+                    <div class="blog-item">
+                        Forklift Akü Bakımı
+                        <span class="seo-keyword">SEO: forklift akü bakımı</span>
+                    </div>
+                    <div class="blog-item">
+                        Transpalet Yedek Parça Rehberi
+                        <span class="seo-keyword">SEO: transpalet yedek parça</span>
+                    </div>
+                    <div class="blog-item">
+                        Forklift Arızaları ve Çözümleri
+                        <span class="seo-keyword">SEO: forklift arızaları</span>
+                    </div>
+                    <div class="blog-item">
+                        Forklift Periyodik Bakım
+                        <span class="seo-keyword">SEO: forklift periyodik bakım</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h4>7️⃣ Eğitim & Belgelendirme</h4>
+                <div class="blog-grid">
+                    <div class="blog-item">
+                        SRC Belgesi Nasıl Alınır
+                        <span class="seo-keyword">SEO: src belgesi nasıl alınır</span>
+                    </div>
+                    <div class="blog-item">
+                        Forklift Ehliyeti (SRC)
+                        <span class="seo-keyword">SEO: forklift ehliyeti</span>
+                    </div>
+                    <div class="blog-item">
+                        Forklift Operatörü Eğitimi
+                        <span class="seo-keyword">SEO: forklift operatörü eğitimi</span>
+                    </div>
+                    <div class="blog-item">
+                        İş Güvenliği Forklift Kullanımı
+                        <span class="seo-keyword">SEO: forklift iş güvenliği</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category-box">
+                <h4>8️⃣ Kiralama vs Satın Alma</h4>
+                <div class="blog-grid">
+                    <div class="blog-item">
+                        Forklift Kiralama mı Satın Alma mı
+                        <span class="seo-keyword">SEO: forklift kiralama mı almak mı</span>
+                    </div>
+                    <div class="blog-item">
+                        Kısa Süreli Forklift Kiralama
+                        <span class="seo-keyword">SEO: kısa süreli forklift kiralama</span>
+                    </div>
+                    <div class="blog-item">
+                        Uzun Süreli Forklift Kiralama Avantajları
+                        <span class="seo-keyword">SEO: uzun süreli forklift kiralama</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 Tahmini Blog Sayısı</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kategori</th>
+                        <th>Blog Sayısı</th>
+                        <th>Öncelik</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fiyat Odaklı</td>
+                        <td>8 blog</td>
+                        <td style="color: #ef4444; font-weight: 600;">Kritik</td>
+                    </tr>
+                    <tr>
+                        <td>Karşılaştırma</td>
+                        <td>6 blog</td>
+                        <td style="color: #f59e0b; font-weight: 600;">Yüksek</td>
+                    </tr>
+                    <tr>
+                        <td>En İyi / Hangisi</td>
+                        <td>5 blog</td>
+                        <td style="color: #ef4444; font-weight: 600;">Kritik</td>
+                    </tr>
+                    <tr>
+                        <td>Nasıl Seçilir / Kullanım</td>
+                        <td>5 blog</td>
+                        <td style="color: #f59e0b; font-weight: 600;">Yüksek</td>
+                    </tr>
+                    <tr>
+                        <td>Sektörel Çözümler</td>
+                        <td>7 blog</td>
+                        <td style="color: #10b981; font-weight: 600;">Orta</td>
+                    </tr>
+                    <tr>
+                        <td>Teknik & Bakım</td>
+                        <td>5 blog</td>
+                        <td style="color: #10b981; font-weight: 600;">Orta</td>
+                    </tr>
+                    <tr>
+                        <td>Eğitim & Belgelendirme</td>
+                        <td>4 blog</td>
+                        <td style="color: #10b981; font-weight: 600;">Orta</td>
+                    </tr>
+                    <tr>
+                        <td>Kiralama vs Satın Alma</td>
+                        <td>3 blog</td>
+                        <td style="color: #f59e0b; font-weight: 600;">Yüksek</td>
+                    </tr>
+                    <tr style="border-top: 2px solid #60a5fa;">
+                        <td><strong>TOPLAM</strong></td>
+                        <td><strong>~43 Blog</strong></td>
+                        <td style="color: #60a5fa; font-weight: 600;">Sürdürülebilir!</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="note">
+                <strong>⏱️ Üretim Süresi:</strong><br>
+                • Günde 4 blog = <strong>11 günde tamamlanır</strong><br>
+                • Aylık 120 blog kapasitesi = <strong>~3 ay içinde genişletilebilir</strong><br>
+                • Evergreen içerik = Her zaman güncel kalır, revizyon gerektirmez
+            </div>
+        </section>
+
+        <section>
+            <h2>🚀 Genişleme Planı</h2>
+
+            <div class="category-box">
+                <h4>Faz 1: Temel SEO Bloglar (İlk 2 Hafta)</h4>
+                <p>Fiyatlar, karşılaştırmalar, "en iyi" blogları - Toplam ~20 blog</p>
+            </div>
+
+            <div class="category-box">
+                <h4>Faz 2: Kullanım & Rehberler (2-4 Hafta)</h4>
+                <p>Nasıl seçilir, kullanım kılavuzları, teknik bilgiler - Toplam ~15 blog</p>
+            </div>
+
+            <div class="category-box">
+                <h4>Faz 3: Sektörel Derinleşme (1-2 Ay)</h4>
+                <p>Her sektör için detaylı çözümler, özel uygulamalar - Toplam ~10 blog</p>
+            </div>
+
+            <div class="category-box">
+                <h4>Faz 4: Niş Konular (Sürekli)</h4>
+                <p>Yeni ürünler, teknolojiler, sektörel trendler - Aylık 4-8 blog</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Avantajlar</h2>
+
+            <div class="stat-box">
+                <strong>✅ Evergreen İçerik:</strong> Şehir bazlı değil, ürün/sektör bazlı olduğu için her zaman güncel kalır
+            </div>
+
+            <div class="stat-box">
+                <strong>✅ Yüksek SEO Değeri:</strong> "Fiyat", "en iyi", "hangisi" gibi yüksek arama hacimli kelimeler
+            </div>
+
+            <div class="stat-box">
+                <strong>✅ Sürdürülebilir:</strong> 43 blog günde 4 ile 11 günde tamamlanır
+            </div>
+
+            <div class="stat-box">
+                <strong>✅ Dönüşüm Odaklı:</strong> Kullanıcı niyetine göre içerik (satın alma, kiralama, karşılaştırma)
+            </div>
+
+            <div class="stat-box">
+                <strong>✅ Genişletilebilir:</strong> Her kategoride kolayca yeni bloglar eklenebilir
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 2025-11-27
+        </footer>
+    </div>
+</body>
+</html>

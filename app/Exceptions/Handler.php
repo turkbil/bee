@@ -28,7 +28,17 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            // Array to string conversion hatalarını özel loglama
+            if (str_contains($e->getMessage(), 'Array to string conversion')) {
+                \Log::error('🔥 ARRAY TO STRING CONVERSION DETECTED!', [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                    'url' => request()->fullUrl(),
+                    'method' => request()->method(),
+                ]);
+            }
         });
 
         $this->renderable(function (TokenMismatchException $e, $request) {

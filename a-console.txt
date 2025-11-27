@@ -1,190 +1,33 @@
-(index):14  GET https://muzibu.com.tr/Modules/Muzibu/resources/css/play-limits.css?v=1764170472 net::ERR_ABORTED 500 (Internal Server Error)
-(index):3670  GET https://muzibu.com.tr/Modules/Muzibu/resources/js/play-limits.js?v=1764170472 net::ERR_ABORTED 500 (Internal Server Error)
-(index):2117 Muzibu initialized with Howler.js
-(index):2120 Muzibu initialized {isLoggedIn: false, user: null}
-(index):2112 Muzibu already initialized, skipping...
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: playLimits is not defined
-
-Expression: "playLimits"
-
- <div x-data=​"playLimits">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3564
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: showGuestModal is not defined
-
-Expression: "showGuestModal"
-
- <div x-show=​"showGuestModal" @click.self=​"showGuestModal = false" class=​"play-limits-overlay" style=​"display:​ none;​" data-teleport-target=​"true">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:3144
-(anonymous) @ livewire.js?id=df3a17f2:1909
-(anonymous) @ livewire.js?id=df3a17f2:3145
-mutateDom @ livewire.js?id=df3a17f2:886
-(anonymous) @ livewire.js?id=df3a17f2:3141
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: showLimitModal is not defined
-
-Expression: "showLimitModal"
-
- <div x-show=​"showLimitModal" @click.self=​"showLimitModal = false" class=​"play-limits-overlay" style=​"display:​ none;​" data-teleport-target=​"true">​…​</div>​
-handleError @ livewire.js?id=df3a17f2:1123
-(anonymous) @ livewire.js?id=df3a17f2:1196
-Promise.catch
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:3144
-(anonymous) @ livewire.js?id=df3a17f2:1909
-(anonymous) @ livewire.js?id=df3a17f2:3145
-mutateDom @ livewire.js?id=df3a17f2:886
-(anonymous) @ livewire.js?id=df3a17f2:3141
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: playLimits is not defined
-    at [Alpine] playLimits (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at evaluate (livewire.js?id=df3a17f2:1140:34)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3564:17)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
-    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
-    at initTree (livewire.js?id=df3a17f2:1479:5)
-    at livewire.js?id=df3a17f2:1428:7
-[Alpine] playLimits @ VM654:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3564
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showGuestModal is not defined
-    at [Alpine] showGuestModal (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showGuestModal @ VM655:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:3144
-(anonymous) @ livewire.js?id=df3a17f2:1909
-(anonymous) @ livewire.js?id=df3a17f2:3145
-mutateDom @ livewire.js?id=df3a17f2:886
-(anonymous) @ livewire.js?id=df3a17f2:3141
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showLimitModal is not defined
-    at [Alpine] showLimitModal (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-[Alpine] showLimitModal @ VM659:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3626
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3626
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:3144
-(anonymous) @ livewire.js?id=df3a17f2:1909
-(anonymous) @ livewire.js?id=df3a17f2:3145
-mutateDom @ livewire.js?id=df3a17f2:886
-(anonymous) @ livewire.js?id=df3a17f2:3141
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
- Featured playlists loaded: 10
+monaco-editor-universal.js?v=1764204039:28 🎯 Monaco Editor Universal System başlatılıyor...
+monaco-editor-universal.js?v=1764204039:324 ✅ Monaco Editor Universal System hazır!
+universal-seo-functions.js?v=1764204039:21 🎯 Universal SEO Functions başlatılıyor...
+universal-seo-functions.js?v=1764204039:372 ✅ Universal SEO Functions yüklendi!
+universal-language-functions.js?v=1764204039:21 🎯 Universal Language Functions başlatılıyor...
+universal-language-functions.js?v=1764204039:145 ✅ Universal Language Functions yüklendi!
+universal-ai-content-functions.js?v=1764204039:21 🎯 Universal AI Content Functions başlatılıyor...
+universal-ai-content-functions.js?v=1764204039:146 ✅ Universal AI Content Functions yüklendi!
+universal-seo-functions.js?v=1764204039:336 ✅ Universal SEO event listeners kuruldu
+universal-language-functions.js?v=1764204039:129 ✅ Universal Language event listeners kuruldu
+manage.js?v=1764204039:115 🔧 Language switching sistemi kuruluyor...
+manage.js?v=1764204039:118 🔍 Bulunan language button sayısı: 0
+manage.js?v=1764204039:443 🔎 RESTORE KONTROL - sayfa başladı
+manage.js?v=1764204039:444 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
+manage.js?v=1764204039:461 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
+manage.js?v=1764204039:1342 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
+manage.js?v=1764204039:1347 🔍 Bulunan seo-no-enter input sayısı: 0
+manage.js?v=1764204039:1407 ✅ 0 SEO input için Enter tuşu engelleme aktif
+manage.js?v=1764204039:662 ℹ️ Language switch buttons bulunamadı - tek dil sistemi aktif
+manage.js?v=1764204039:682 🔧 Tek dil modu aktif - tüm language-content elementleri görünür yapılıyor
+manage.js?v=1764204039:700 ✅ Tek dil modu kurulumu tamamlandı
+monaco-editor-universal.js?v=1764204039:59 ✅ Monaco loader yüklendi
+manage.js?v=1764204039:1469 ✅ Dil değiştirildi: tr
+manage.js?v=1764204039:106 🎯 İlk yükleme - dil içeriği ayarlandı: tr
+1#:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+1#:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+1#:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+monaco-editor-universal.js?v=1764204039:100 ✅ Monaco Editor hazır
+manage.js?v=1764204039:1295 🌍 Slug Normalization - Dinamik diller tespit edildi: []
+manage.js?v=1764204039:586 🌍 SEO Counter - Dinamik diller tespit edildi: []
+manage.js?v=1764204039:877 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
+manage.js?v=1764204039:882 ✅ MANAGE.JS: Loading bar zorla gizlendi
+manage.js?v=1764204039:807 🚨 MANAGE.JS AUTO-HIDE: Loading bar otomatik gizleniyor (2 saniye)

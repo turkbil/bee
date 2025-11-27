@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. Temel WaveSurfer Örneği</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #1DB954, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .player-container {
+            background: #1f2937;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+        }
+
+        .track-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .track-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .track-artist {
+            color: #9ca3af;
+            font-size: 1.1rem;
+        }
+
+        #waveform {
+            margin: 30px 0;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        button {
+            background: #1DB954;
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #1ed760;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            background: #4b5563;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .info-box h3 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            color: #cbd5e1;
+        }
+
+        .info-box li {
+            margin-bottom: 8px;
+        }
+
+        .time-display {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        code {
+            background: #1e293b;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fbbf24;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌊 Temel WaveSurfer Örneği</h1>
+            <p class="subtitle">Gerçek zamanlı dalga formu görselleştirme</p>
+        </header>
+
+        <div class="player-container">
+            <div class="track-info">
+                <div class="track-title">Demo Şarkı</div>
+                <div class="track-artist">WaveSurfer.js Demo</div>
+            </div>
+
+            <!-- WaveSurfer Container -->
+            <div id="waveform"></div>
+
+            <div class="time-display">
+                <span id="current-time">0:00</span> / <span id="duration">0:00</span>
+            </div>
+
+            <div class="controls">
+                <button id="play-btn" disabled>▶ Play</button>
+                <button id="pause-btn" disabled>⏸ Pause</button>
+                <button id="stop-btn" disabled>⏹ Stop</button>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>📊 Bu Örnekte Neler Var?</h3>
+            <ul>
+                <li><strong>Temel Dalga Formu:</strong> Ses dosyasının görsel temsili</li>
+                <li><strong>Renk Kodlaması:</strong> Yeşil (çalınan), Gri (çalınacak)</li>
+                <li><strong>İnteraktif:</strong> Dalga formuna tıklayarak istediğiniz yere atlayabilirsiniz</li>
+                <li><strong>Progress Tracking:</strong> Gerçek zamanlı ilerleme gösterimi</li>
+                <li><strong>Responsive:</strong> Pencere boyutuna uyum sağlar</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background: rgba(34, 197, 94, 0.1); border-left-color: #22c55e;">
+            <h3 style="color: #22c55e;">🎯 Nasıl Çalışıyor?</h3>
+            <ul>
+                <li><code>WaveSurfer.create()</code> - Instance oluşturma</li>
+                <li><code>wavesurfer.load(url)</code> - Ses dosyası yükleme</li>
+                <li><code>wavesurfer.play()</code> - Çalmaya başla</li>
+                <li><code>wavesurfer.on('ready')</code> - Hazır olduğunda event</li>
+                <li><code>wavesurfer.seekTo(progress)</code> - Tıklama ile atlama</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- WaveSurfer.js CDN -->
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
+
+    <script>
+        // WaveSurfer instance oluştur
+        const wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: '#4b5563',      // Gri - henüz çalınmamış
+            progressColor: '#1DB954',   // Yeşil - çalınan kısım
+            cursorColor: '#ffffff',     // Beyaz cursor
+            barWidth: 2,
+            barGap: 1,
+            barRadius: 2,
+            height: 80,
+            normalize: true,
+            backend: 'WebAudio',
+            interact: true,
+            hideScrollbar: true
+        });
+
+        // Demo ses dosyası yükle (WaveSurfer'ın kendi demo dosyası)
+        wavesurfer.load('https://wavesurfer.xyz/example/media/demo.wav');
+
+        // Ready event - waveform hazır olduğunda
+        wavesurfer.on('ready', () => {
+            console.log('✅ Waveform hazır!');
+            document.getElementById('play-btn').disabled = false;
+            document.getElementById('pause-btn').disabled = false;
+            document.getElementById('stop-btn').disabled = false;
+            updateDuration();
+        });
+
+        // Play event
+        wavesurfer.on('play', () => {
+            console.log('▶ Çalmaya başladı');
+        });
+
+        // Pause event
+        wavesurfer.on('pause', () => {
+            console.log('⏸ Durakladı');
+        });
+
+        // Audioprocess - her frame'de çalışır (progress tracking)
+        wavesurfer.on('audioprocess', () => {
+            updateCurrentTime();
+        });
+
+        // Seek event - kullanıcı tıkladığında
+        wavesurfer.on('seek', () => {
+            console.log('⏭ Seek yapıldı');
+            updateCurrentTime();
+        });
+
+        // Finish event - şarkı bittiğinde
+        wavesurfer.on('finish', () => {
+            console.log('✅ Şarkı bitti');
+        });
+
+        // Loading event - yüklenirken
+        wavesurfer.on('loading', (percent) => {
+            console.log('📥 Yükleniyor:', percent + '%');
+        });
+
+        // Buton event'leri
+        document.getElementById('play-btn').addEventListener('click', () => {
+            wavesurfer.play();
+        });
+
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            wavesurfer.pause();
+        });
+
+        document.getElementById('stop-btn').addEventListener('click', () => {
+            wavesurfer.stop();
+        });
+
+        // Zaman gösterimi güncelle
+        function updateCurrentTime() {
+            const currentTime = wavesurfer.getCurrentTime();
+            document.getElementById('current-time').textContent = formatTime(currentTime);
+        }
+
+        function updateDuration() {
+            const duration = wavesurfer.getDuration();
+            document.getElementById('duration').textContent = formatTime(duration);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return minutes + ':' + (secs < 10 ? '0' : '') + secs;
+        }
+    </script>
+</body>
+</html>

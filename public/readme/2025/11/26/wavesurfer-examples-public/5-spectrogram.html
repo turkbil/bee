@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5. Spektrogram - Frekans Analizi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 50px; }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #1DB954, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: #94a3b8; font-size: 1.1rem; }
+        .player-container {
+            background: #1f2937;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+        }
+        #waveform { margin: 30px 0; }
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        button {
+            background: #1DB954;
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover { background: #1ed760; transform: scale(1.05); }
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        .info-box h3 { color: #60a5fa; margin-bottom: 10px; }
+        .info-box ul { margin-left: 20px; color: #cbd5e1; }
+        .info-box li { margin-bottom: 8px; }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .comparison-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid;
+        }
+        .comparison-item.waveform { border-color: #3b82f6; }
+        .comparison-item.spectrogram { border-color: #8b5cf6; }
+        .comparison-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .comparison-item.waveform .comparison-title { color: #60a5fa; }
+        .comparison-item.spectrogram .comparison-title { color: #a78bfa; }
+        .freq-legend {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        .freq-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .freq-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        code {
+            background: #1e293b;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fbbf24;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌈 Spektrogram - Frekans Analizi</h1>
+            <p class="subtitle">Waveform yerine frekans dağılımı - Her renk farklı bir frekansı gösterir</p>
+        </header>
+
+        <div class="player-container">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="font-size: 1.5rem; font-weight: 600; margin-bottom: 8px;">
+                    Demo Şarkı (Spektrogram Modu)
+                </div>
+                <div style="color: #9ca3af;">Renklere dikkat edin - her renk farklı bir frekans</div>
+            </div>
+
+            <div id="waveform"></div>
+
+            <div class="freq-legend">
+                <div class="freq-item">
+                    <div class="freq-color" style="background: #ff0000;"></div>
+                    <span>Alçak Frekans (Bass)</span>
+                </div>
+                <div class="freq-item">
+                    <div class="freq-color" style="background: #ffff00;"></div>
+                    <span>Orta Frekans (Vokal)</span>
+                </div>
+                <div class="freq-item">
+                    <div class="freq-color" style="background: #00ff00;"></div>
+                    <span>Yüksek Frekans (Treble)</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="play-btn">▶ Play</button>
+                <button id="pause-btn">⏸ Pause</button>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <div class="comparison-item waveform">
+                <div class="comparison-title">🌊 Waveform</div>
+                <ul>
+                    <li>Ses seviyesini gösterir (amplitude)</li>
+                    <li>Yüksek bar = Yüksek ses</li>
+                    <li>Zaman bazlı görünüm</li>
+                    <li>Basit ve anlaşılır</li>
+                </ul>
+            </div>
+
+            <div class="comparison-item spectrogram">
+                <div class="comparison-title">🌈 Spektrogram</div>
+                <ul>
+                    <li>Frekans dağılımını gösterir</li>
+                    <li>Renk = Farklı frekans</li>
+                    <li>Bass/treble ayırımı yapılır</li>
+                    <li>Müzik analizi için ideal</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>🎯 Spektrogram Nedir?</h3>
+            <ul>
+                <li><strong>Frekans Analizi:</strong> Sesin hangi frekanslarda olduğunu gösterir</li>
+                <li><strong>Renk Kodlaması:</strong> Kırmızı (bass), Sarı (mid), Yeşil (treble)</li>
+                <li><strong>Müzik Prodüksiyonu:</strong> Müzik yapımcıları frekans dengesini görmek için kullanır</li>
+                <li><strong>Görsel Zenginlik:</strong> Waveform'dan daha renkli ve bilgilendirici</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background: rgba(34, 197, 94, 0.1); border-left-color: #22c55e;">
+            <h3 style="color: #22c55e;">📋 Kullanım Senaryoları</h3>
+            <ul>
+                <li><strong>Müzik Analizi:</strong> "Bu şarkıda bass ağır mı?" sorusunu görebilirsin</li>
+                <li><strong>Eğitim:</strong> Müzik öğrencileri frekans yapısını öğrenir</li>
+                <li><strong>Prodüksiyon:</strong> Mix/mastering sırasında frekans dengesini kontrol et</li>
+                <li><strong>Görsel Çekicilik:</strong> Premium müzik uygulaması hissi</li>
+            </ul>
+        </div>
+
+        <div class="info-box" style="background: rgba(239, 68, 68, 0.1); border-left-color: #ef4444;">
+            <h3 style="color: #ef4444;">⚠️ Dikkat Edilecekler</h3>
+            <ul>
+                <li><strong>Performans:</strong> Spektrogram hesaplaması daha ağır (FFT algoritması)</li>
+                <li><strong>Bellek:</strong> Waveform'a göre daha fazla bellek kullanır</li>
+                <li><strong>Kullanıcı Deneyimi:</strong> Sıradan kullanıcılar için karmaşık olabilir</li>
+                <li><strong>Önerilen:</strong> Sadece "Gelişmiş Görünüm" toggle'ı ile sunun</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
+    <script src="https://unpkg.com/wavesurfer.js@7/dist/plugins/spectrogram.min.js"></script>
+
+    <script>
+        // WaveSurfer oluştur
+        const wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            height: 200,  // Spektrogram için daha yüksek
+            normalize: true
+        });
+
+        // 256 element'lik colormap oluştur (sıcak renkler gradient)
+        function createHotColormap() {
+            const colormap = [];
+            for (let i = 0; i < 256; i++) {
+                const ratio = i / 255;
+                let r, g, b;
+
+                if (ratio < 0.25) {
+                    // Siyah -> Mor (0-64)
+                    const t = ratio / 0.25;
+                    r = Math.floor(128 * t);
+                    g = 0;
+                    b = Math.floor(128 * t);
+                } else if (ratio < 0.5) {
+                    // Mor -> Kırmızı (64-128)
+                    const t = (ratio - 0.25) / 0.25;
+                    r = Math.floor(128 + 127 * t);
+                    g = 0;
+                    b = Math.floor(128 * (1 - t));
+                } else if (ratio < 0.75) {
+                    // Kırmızı -> Sarı (128-192)
+                    const t = (ratio - 0.5) / 0.25;
+                    r = 255;
+                    g = Math.floor(255 * t);
+                    b = 0;
+                } else {
+                    // Sarı -> Beyaz (192-256)
+                    const t = (ratio - 0.75) / 0.25;
+                    r = 255;
+                    g = 255;
+                    b = Math.floor(255 * t);
+                }
+
+                colormap.push([r, g, b, 255]);
+            }
+            return colormap;
+        }
+
+        // Spectrogram plugin ekle
+        const spectrogramPlugin = wavesurfer.registerPlugin(WaveSurfer.Spectrogram.create({
+            labels: true,
+            height: 200,
+            splitChannels: false,
+            colorMap: createHotColormap()  // 256 element'lik gradient
+        }));
+
+        // Ses dosyası yükle
+        wavesurfer.load('https://wavesurfer.xyz/example/media/demo.wav');
+
+        wavesurfer.on('ready', () => {
+            console.log('✅ Spektrogram hazır! FFT analizi tamamlandı.');
+        });
+
+        document.getElementById('play-btn').addEventListener('click', () => {
+            wavesurfer.play();
+        });
+
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            wavesurfer.pause();
+        });
+    </script>
+</body>
+</html>

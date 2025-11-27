@@ -6,6 +6,7 @@ use Modules\Muzibu\app\Http\Controllers\Api\AlbumController;
 use Modules\Muzibu\app\Http\Controllers\Api\SongController;
 use Modules\Muzibu\app\Http\Controllers\Api\GenreController;
 use Modules\Muzibu\app\Http\Controllers\Api\SectorController;
+use Modules\Muzibu\app\Http\Controllers\Api\DeviceController;
 
 /*
  *--------------------------------------------------------------------------
@@ -39,18 +40,17 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/recent', [SongController::class, 'recent'])->name('api.muzibu.songs.recent')->middleware('auth:sanctum');
         Route::get('/popular', [SongController::class, 'popular'])->name('api.muzibu.songs.popular');
         Route::post('/{id}/track-play', [SongController::class, 'trackPlay'])->name('api.muzibu.songs.track-play')->middleware('auth:sanctum');
-        Route::get('/{id}/stream', [SongController::class, 'stream'])->name('api.muzibu.songs.stream');
-        Route::get('/{id}/serve', [SongController::class, 'serve'])->name('api.muzibu.songs.serve');
 
-        // Old streaming routes (compatibility)
-        Route::get('{songId}/stream', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'stream'])
-            ->name('api.muzibu.songs.stream.old');
-        Route::get('{songId}/conversion-status', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'checkConversionStatus'])
+        // Premium Limit System - SongStreamController (HLS conversion logic)
+        Route::get('/{id}/stream', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'stream'])->name('api.muzibu.songs.stream');
+        Route::get('/{id}/serve', [SongController::class, 'serve'])->name('api.muzibu.songs.serve');
+        Route::get('/{id}/conversion-status', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'checkConversionStatus'])
             ->name('api.muzibu.songs.conversion-status');
-        Route::post('{songId}/play', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'incrementPlayCount'])
+        Route::post('/{id}/play', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'incrementPlayCount'])
             ->name('api.muzibu.songs.play');
-        Route::post('{songId}/track-progress', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackProgress'])
-            ->name('api.muzibu.songs.track-progress');
+        Route::post('/{id}/track-progress', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'trackProgress'])
+            ->name('api.muzibu.songs.track-progress')
+            ->middleware('auth:sanctum');
     });
 
     // Genres
@@ -64,4 +64,12 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/', [SectorController::class, 'index'])->name('api.muzibu.sectors.index');
         Route::get('/{id}/playlists', [SectorController::class, 'playlists'])->name('api.muzibu.sectors.playlists');
     });
+});
+
+// Device Management (Tenant 1001 only) - Outside muzibu prefix
+Route::prefix('devices')->middleware('auth:sanctum')->group(function () {
+    Route::post('/check', [DeviceController::class, 'check'])->name('api.devices.check');
+    Route::get('/active', [DeviceController::class, 'index'])->name('api.devices.index');
+    Route::delete('/{sessionId}', [DeviceController::class, 'destroy'])->name('api.devices.destroy');
+    Route::delete('/all', [DeviceController::class, 'destroyAll'])->name('api.devices.destroyAll');
 });

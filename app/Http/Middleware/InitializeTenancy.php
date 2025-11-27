@@ -85,6 +85,10 @@ class InitializeTenancy extends BaseMiddleware
             if ($tenant->central) {
                 // Central tenant için özel başlatma - database'i değiştirmez
                 $this->tenancy->initialize($tenant);
+
+                // 🍪 Session domain'i dinamik set et (logout problemi fix)
+                Config::set('session.domain', '.' . $host);
+
                 return $next($request);
             }
             
@@ -93,6 +97,9 @@ class InitializeTenancy extends BaseMiddleware
 
             // 🔥 Dinamik tenant disk registration
             $this->registerTenantDisk($tenant);
+
+            // 🍪 Session domain'i dinamik set et (logout problemi fix)
+            Config::set('session.domain', '.' . $host);
 
             return $next($request);
             

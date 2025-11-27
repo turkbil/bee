@@ -20,15 +20,37 @@ class SongStreamController extends Controller
     {
         try {
             $song = Song::findOrFail($songId);
+            $song->refresh(); // Fresh data from database
             $user = auth()->user();
 
-            // Guest kullanıcı → 30 saniye preview
+            // Guest kullanıcı → 30 saniye preview + HLS conversion başlat
             if (!$user) {
+                // HLS conversion başlat (eğer gerekiyorsa)
+                if ($song->needsHlsConversion()) {
+                    Log::info('Muzibu Stream: HLS conversion dispatched for guest', [
+                        'song_id' => $songId,
+                        'title' => $song->getTranslated('title', 'en')
+                    ]);
+                    ConvertToHLSJob::dispatch($song);
+                }
+
+                // HLS'e dönüşmüşse HLS URL, yoksa MP3 serve endpoint
+                $song->refresh(); // Ensure fresh data from database
+
+                if ($song->hls_converted && !empty($song->hls_path)) {
+                    $tenantId = tenant() ? tenant()->id : '';
+                    $streamUrl = url("/storage/tenant{$tenantId}/" . $song->hls_path);
+                    $streamType = 'hls';
+                } else {
+                    $streamUrl = "/api/muzibu/songs/{$songId}/serve";
+                    $streamType = 'mp3';
+                }
+
                 return response()->json([
                     'status' => 'preview',
                     'message' => 'Kayıt olun, tam dinleyin',
-                    'stream_url' => $song->needsHlsConversion() ? $song->getAudioUrl() : $song->getHlsUrl(),
-                    'stream_type' => $song->needsHlsConversion() ? 'mp3' : 'hls',
+                    'stream_url' => $streamUrl,
+                    'stream_type' => $streamType,
                     'preview_duration' => 30,
                     'song' => [
                         'id' => $song->song_id,
@@ -43,11 +65,11 @@ class SongStreamController extends Controller
             if (!$user->canPlaySong()) {
                 return response()->json([
                     'status' => 'limit_exceeded',
-                    'message' => 'Günlük 5 şarkı limitiniz doldu',
+                    'message' => 'Günlük 3 şarkı limitiniz doldu',
                     'played_today' => $user->getTodayPlayedCount(),
-                    'limit' => 5,
+                    'limit' => 3,
                     'remaining' => 0
-                ], 403);
+                ], 200); // 200 OK - JSON içinde status var
             }
 
             // Check if song needs HLS conversion
@@ -64,7 +86,7 @@ class SongStreamController extends Controller
                 return response()->json([
                     'status' => 'converting',
                     'message' => 'HLS conversion in progress. Playing original file.',
-                    'stream_url' => $song->getAudioUrl(),
+                    'stream_url' => "/api/muzibu/songs/{$songId}/serve",
                     'stream_type' => 'mp3',
                     'hls_converting' => true,
                     'song' => [
@@ -78,10 +100,11 @@ class SongStreamController extends Controller
             }
 
             // HLS already converted - return HLS URL
+            $tenantId = tenant() ? tenant()->id : '';
             return response()->json([
                 'status' => 'ready',
                 'message' => 'HLS stream ready',
-                'stream_url' => $song->getHlsUrl(),
+                'stream_url' => url("/storage/tenant{$tenantId}/" . $song->hls_path),
                 'stream_type' => 'hls',
                 'hls_converting' => false,
                 'remaining' => $user->getRemainingPlays(),
@@ -179,28 +202,17 @@ class SongStreamController extends Controller
             }
 
             $song = Song::findOrFail($songId);
-            $duration = (int) $request->input('duration', 0);
 
-            // Güvenlik: Max süre kontrolü (şarkı süresi + 10 saniye tolerance)
-            if ($duration > ($song->duration_seconds + 10)) {
-                return response()->json(['error' => 'invalid_duration'], 400);
-            }
-
-            // Insert or Update
-            \DB::table('muzibu_song_plays')->updateOrInsert(
-                [
-                    'user_id' => auth()->id(),
-                    'song_id' => $songId,
-                    'created_at' => now()->format('Y-m-d H:i:s')
-                ],
-                [
-                    'duration_listened' => $duration,
-                    'ip_address' => $request->ip(),
-                    'user_agent' => $request->userAgent(),
-                    'device_type' => $this->detectDevice($request),
-                    'updated_at' => now()
-                ]
-            );
+            // 60+ saniye dinlendi, kayıt ekle (JS zaten kontrol etti)
+            \DB::table('muzibu_song_plays')->insert([
+                'song_id' => $songId,
+                'user_id' => auth()->id(),
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'device_type' => $this->detectDevice($request),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
 
             return response()->json([
                 'success' => true,

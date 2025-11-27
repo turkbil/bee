@@ -72,6 +72,9 @@
         </div>
     </div>
 
+    {{-- Device Limit Modal (Tenant 1001 only) --}}
+    @include('themes.muzibu.components.device-limit-modal')
+
     @livewireScripts
 
     <script>

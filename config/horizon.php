@@ -201,7 +201,7 @@ return [
         // Tenant Isolated Queue
         'tenant-supervisor' => [
             'connection' => 'redis',
-            'queue' => ['tenant_isolated', 'default', 'hls'],
+            'queue' => ['tenant_isolated', 'default', 'hls', 'tenant_1001_default', 'tenant_1001_hls'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 4, // 🚀 Development için artırıldı

@@ -18,6 +18,28 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// 🔐 SESSION CHECK - Tenant 1001 (Muzibu) için session kontrolü
+Route::get('/session/check', function (Request $request) {
+    // Tenant 1001 kontrolü
+    if (!tenant() || tenant()->id != 1001) {
+        return response()->json(['authenticated' => false]);
+    }
+
+    // Auth kontrolü
+    if (!auth()->check()) {
+        return response()->json(['authenticated' => false], 401);
+    }
+
+    return response()->json([
+        'authenticated' => true,
+        'user' => [
+            'id' => auth()->user()->id,
+            'name' => auth()->user()->name,
+            'email' => auth()->user()->email,
+        ]
+    ]);
+})->middleware('web')->name('api.session.check');
+
 // 🔐 AUTH ROUTES - Muzibu Authentication
 Route::prefix('auth')->middleware(['web'])->group(function () {
     Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login'])->name('api.auth.login');

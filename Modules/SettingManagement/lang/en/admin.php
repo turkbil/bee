@@ -55,6 +55,18 @@ return [
     // Helper.blade.php'den eksik anahtar
     'menu' => 'Menu',
 
+    // Actions - For Activity Log
+    'actions' => [
+        'created' => 'Created',
+        'updated' => 'Updated',
+        'deleted' => 'Deleted',
+        'reset_to_default' => 'Reset to default',
+        'value_updated' => 'Value updated',
+        'form_layout_updated' => 'Form layout updated',
+        'group_activated' => 'Group activated',
+        'group_deactivated' => 'Group deactivated',
+    ],
+
     // Messages - Toast notifications
     'messages' => [
         'success' => 'Success',

@@ -3,7 +3,7 @@
     Tema-bağımsız modal componentleri
 
     Guest Modal: 30 saniye preview bittiğinde
-    Limit Modal: Günlük 5 şarkı limiti dolduğunda
+    Limit Modal: Günlük 3 şarkı limiti dolduğunda
 --}}
 
 <div x-data="playLimits">
@@ -23,9 +23,9 @@
                 </div>
 
                 {{-- Content --}}
-                <h3>⏱️ 30 Saniye Önizleme Bitti</h3>
-                <p>Şarkıların tamamını dinlemek için <strong>ücretsiz</strong> kayıt olun!</p>
-                <p class="small">✨ 7 gün ücretsiz deneme ile başlayın</p>
+                <h3>Müziğin Tadını Çıkarın</h3>
+                <p>Sınırsız dinleme ve keşif için kayıt olun.</p>
+                <p class="small">✨ Ücretsiz deneme üyeliğiyle başlayın.</p>
 
                 {{-- Buttons --}}
                 <div class="play-limits-buttons">
@@ -56,9 +56,9 @@
                 </div>
 
                 {{-- Content --}}
-                <h3>⛔ Günlük Limit Doldu</h3>
-                <p>Bugün <strong>5 şarkı</strong> hakkınızı kullandınız.</p>
-                <p class="small">⏰ Yarın saat 00:00'da yeni 5 hakkınız olacak</p>
+                <h3>Günlük Limit Doldu</h3>
+                <p>Bugün <strong>3 şarkı</strong> hakkınızı kullandınız.</p>
+                <p class="small">⏰ Yarın saat 00:00'da yeni 3 hakkınız olacak.</p>
 
                 {{-- Buttons --}}
                 <div class="play-limits-buttons">

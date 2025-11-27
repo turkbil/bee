@@ -167,11 +167,18 @@ class User extends Authenticatable implements HasMedia
     // ==========================================
 
     /**
-     * Get device limit (user-specific or default from settings)
+     * Get device limit - Delegate to DeviceService (Muzibu)
      */
     public function getDeviceLimit(): int
     {
-        return $this->device_limit ?? (int) setting('auth_session_device_limit', 1);
+        // Tenant 1001 (Muzibu) için DeviceService kullan
+        if ($this->isMuzibuTenant()) {
+            $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
+            return $deviceService->getDeviceLimit($this);
+        }
+
+        // Diğer tenant'lar için basit fallback
+        return $this->device_limit ?: (int) setting('auth_session_device_limit', 1);
     }
 
     /**
@@ -309,9 +316,9 @@ class User extends Authenticatable implements HasMedia
             return 0;
         }
 
+        // JS 60sn kontrolü yapıyor, burada sadece kayıt sayısı
         return \DB::table('muzibu_song_plays')
             ->where('user_id', $this->id)
-            ->where('duration_listened', '>=', 60)
             ->whereDate('created_at', today())
             ->count();
     }
@@ -331,8 +338,8 @@ class User extends Authenticatable implements HasMedia
             return true;
         }
 
-        // Normal üye → Günde 5 şarkı (60+ saniye dinlenen)
-        return $this->getTodayPlayedCount() < 5;
+        // Normal üye → Günde 3 şarkı (60+ saniye dinlenen)
+        return $this->getTodayPlayedCount() < 3;
     }
 
     /**
@@ -350,8 +357,8 @@ class User extends Authenticatable implements HasMedia
             return -1;
         }
 
-        // Normal üye → Kalan hak
-        return max(0, 5 - $this->getTodayPlayedCount());
+        // Normal üye → Kalan hak (3 şarkı/gün)
+        return max(0, 3 - $this->getTodayPlayedCount());
     }
 
     /**

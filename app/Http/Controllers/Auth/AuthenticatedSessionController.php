@@ -147,6 +147,19 @@ class AuthenticatedSessionController extends Controller
         // Session regenerate işlemi EN SONDA - user preferences kaydedildikten sonra
         $request->session()->regenerate();
 
+        // 🔐 DEVICE LIMIT - Tenant 1001 (Muzibu) için otomatik eski cihaz çıkışı
+        if (tenant() && tenant()->id == 1001) {
+            try {
+                $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
+                $deviceService->handlePostLoginDeviceLimit($user);
+            } catch (\Exception $e) {
+                \Log::error('🔐 POST-LOGIN: Device limit check failed', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         // Dashboard'a giderken SetLocaleMiddleware halledecek, burada ayarlamıyoruz
         \Log::info('🔄 LOGIN: Session locales loaded, middleware will handle locale', [
             'user_id' => $user->id,

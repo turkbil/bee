@@ -60,6 +60,12 @@ Route::middleware([InitializeTenancy::class, 'auth'])->group(function () {
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
+    // Logout - POST (actual logout)
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    // Logout - GET (redirect to auto-submit form)
+    Route::get('logout', function () {
+        return view('auth.logout-form');
+    })->name('logout.form');
 });

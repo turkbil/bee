@@ -21,7 +21,7 @@
                                         @foreach($availableLanguages as $lang)
                                         <li class="nav-item">
                                             <a class="nav-link {{ $currentLanguage === $lang ? 'active' : '' }}"
-                                               href="#" wire:click.prevent="switchLanguage('{{ $lang }}')">
+                                               href="#" wire:click.prevent="$set('currentLanguage', '{{ $lang }}')">
                                                 {{ strtoupper($lang) }}
                                             </a>
                                         </li>
@@ -38,8 +38,7 @@
                                             {{ __('subscription::admin.plan_name') }} ({{ strtoupper($lang) }})
                                         </label>
                                         <input type="text" class="form-control form-control-lg"
-                                               wire:model="multiLangInputs.{{ $lang }}.title"
-                                               wire:blur="generateSlug"
+                                               wire:model.blur="multiLangInputs.{{ $lang }}.title"
                                                placeholder="Örn: Premium, Starter, Pro">
                                         <small class="text-muted">
                                             <i class="fas fa-info-circle me-1"></i>
@@ -52,7 +51,7 @@
                                             {{ __('admin.description') }} ({{ strtoupper($lang) }})
                                         </label>
                                         <textarea class="form-control" rows="3"
-                                                  wire:model="multiLangInputs.{{ $lang }}.description"
+                                                  wire:model.blur="multiLangInputs.{{ $lang }}.description"
                                                   placeholder="Planın kısa açıklaması..."></textarea>
                                         <small class="text-muted">
                                             <i class="fas fa-info-circle me-1"></i>
@@ -159,30 +158,7 @@
                         </div>
 
                         {{-- Step 3: Özellikler --}}
-                        <div class="card mb-3" x-data="{
-                            features: @entangle('features'),
-                            newIcon: 'check',
-                            newFeature: '',
-                            addFeature() {
-                                if (this.newFeature.trim()) {
-                                    this.features.push({
-                                        icon: this.newIcon.trim() || 'check',
-                                        text: this.newFeature.trim()
-                                    });
-                                    this.newFeature = '';
-                                    this.newIcon = 'check';
-                                }
-                            },
-                            removeFeature(index) {
-                                this.features.splice(index, 1);
-                            },
-                            getFeatureText(feature) {
-                                return typeof feature === 'string' ? feature : feature.text;
-                            },
-                            getFeatureIcon(feature) {
-                                return typeof feature === 'string' ? 'check' : (feature.icon || 'check');
-                            }
-                        }">
+                        <div class="card mb-3">
                             <div class="card-header">
                                 <h3 class="card-title">
                                     <span class="badge bg-primary me-2">3</span>
@@ -195,55 +171,41 @@
                                         <i class="fas fa-plus-circle text-success me-1"></i>
                                         {{ __('subscription::admin.add_feature') }}
                                     </label>
-                                    <div class="row g-2">
-                                        <div class="col-md-3">
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <i :class="'fas fa-' + newIcon"></i>
-                                                </span>
-                                                <input type="text" class="form-control" x-model="newIcon" placeholder="check">
-                                            </div>
-                                            <small class="text-muted">FontAwesome ikon</small>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control"
-                                                       placeholder="Örn: Sınırsız dinleme, HD kalite..."
-                                                       x-model="newFeature"
-                                                       @keydown.enter.prevent="addFeature()">
-                                                <button type="button" class="btn btn-primary" @click="addFeature()">
-                                                    <i class="fas fa-plus me-1"></i> Ekle
-                                                </button>
-                                            </div>
-                                        </div>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control"
+                                               placeholder="Örn: Sınırsız şarkı dinleme, HD kalite, Reklamsız deneyim..."
+                                               wire:model="newFeature"
+                                               wire:keydown.enter="addFeature">
+                                        <button type="button" class="btn btn-primary" wire:click="addFeature">
+                                            <i class="fas fa-plus me-1"></i> Ekle
+                                        </button>
                                     </div>
                                     <small class="text-muted">
                                         <i class="fas fa-info-circle me-1"></i>
-                                        İkon örnekleri: check, star, music, infinity, bolt, shield-alt, ban
+                                        Plan kartında listelenecek özellikler. Enter tuşu ile de ekleyebilirsiniz.
                                     </small>
                                 </div>
 
-                                <template x-if="features.length > 0">
+                                @if(is_array($features) && count($features) > 0)
                                     <ul class="list-group">
-                                        <template x-for="(feature, index) in features" :key="index">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        @foreach($features as $index => $feature)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center" wire:key="feature-{{ $index }}">
                                                 <span>
-                                                    <i :class="'fas fa-' + getFeatureIcon(feature) + ' text-success me-2'"></i>
-                                                    <span x-text="getFeatureText(feature)"></span>
+                                                    <i class="fas fa-check text-success me-2"></i>
+                                                    {{ $feature }}
                                                 </span>
-                                                <button type="button" class="btn btn-sm btn-outline-danger" @click="removeFeature(index)">
+                                                <button type="button" class="btn btn-sm btn-outline-danger" wire:click="removeFeature({{ $index }})">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </li>
-                                        </template>
+                                        @endforeach
                                     </ul>
-                                </template>
-                                <template x-if="features.length === 0">
+                                @else
                                     <div class="alert alert-warning mb-0">
                                         <i class="fas fa-exclamation-triangle me-2"></i>
                                         {{ __('subscription::admin.no_features') }} - En az bir özellik eklemeniz önerilir
                                     </div>
-                                </template>
+                                @endif
                             </div>
                         </div>
                     </div>

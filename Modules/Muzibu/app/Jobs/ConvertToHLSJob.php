@@ -18,14 +18,17 @@ class ConvertToHLSJob implements ShouldQueue
     public $timeout = 600; // 10 minutes
     public $tries = 3;
 
-    protected Song $song;
+    protected $songId;
+    protected $tenantId;
 
     /**
      * Create a new job instance.
      */
     public function __construct(Song $song)
     {
-        $this->song = $song;
+        $this->songId = $song->song_id;
+        $this->tenantId = tenant() ? tenant()->id : null;
+        $this->onQueue('hls'); // HLS conversion queue
     }
 
     /**
@@ -34,24 +37,38 @@ class ConvertToHLSJob implements ShouldQueue
     public function handle(): void
     {
         try {
+            // Initialize tenant context
+            if ($this->tenantId) {
+                $tenant = \App\Models\Tenant::find($this->tenantId);
+                if ($tenant) {
+                    tenancy()->initialize($tenant);
+                }
+            }
+
+            // Get fresh song instance with correct tenant connection
+            $song = Song::findOrFail($this->songId);
+
             Log::info('Muzibu HLS Conversion: Starting', [
-                'song_id' => $this->song->song_id,
-                'title' => $this->song->getTranslated('title', 'en')
+                'song_id' => $song->song_id,
+                'tenant_id' => $this->tenantId,
+                'title' => $song->getTranslated('title', 'en')
             ]);
 
-            // Check if file exists
-            $inputPath = Storage::disk('public')->path($this->song->file_path);
+            // Check if file exists (file_path is already absolute path)
+            $inputPath = $song->file_path;
             if (!file_exists($inputPath)) {
-                throw new \Exception('Audio file not found: ' . $this->song->file_path);
+                throw new \Exception('Audio file not found: ' . $inputPath);
             }
 
             // Create HLS output directory
-            $outputDir = "muzibu/songs/hls/song-{$this->song->song_id}";
-            $outputDirPath = Storage::disk('public')->path($outputDir);
+            $outputDir = "muzibu/songs/hls/song-{$song->song_id}";
 
-            if (!is_dir($outputDirPath)) {
-                mkdir($outputDirPath, 0755, true);
+            // Use Storage facade to create directory (handles permissions correctly)
+            if (!Storage::disk('public')->exists($outputDir)) {
+                Storage::disk('public')->makeDirectory($outputDir, 0755, true);
             }
+
+            $outputDirPath = Storage::disk('public')->path($outputDir);
 
             // HLS segment settings
             $playlistPath = $outputDirPath . '/playlist.m3u8';
@@ -82,20 +99,25 @@ class ConvertToHLSJob implements ShouldQueue
                 throw new \Exception('HLS playlist file was not created');
             }
 
-            // Update song record
-            $this->song->update([
-                'hls_path' => $outputDir . '/playlist.m3u8',
-                'hls_converted' => true
-            ]);
+            // Update song record - use direct DB query to ensure correct tenant database
+            \DB::connection('tenant')->table('muzibu_songs')
+                ->where('song_id', $song->song_id)
+                ->update([
+                    'hls_path' => $outputDir . '/playlist.m3u8',
+                    'hls_converted' => 1,
+                    'updated_at' => now()
+                ]);
 
             Log::info('Muzibu HLS Conversion: Success', [
-                'song_id' => $this->song->song_id,
-                'hls_path' => $this->song->hls_path
+                'song_id' => $song->song_id,
+                'hls_path' => $outputDir . '/playlist.m3u8',
+                'tenant_id' => $this->tenantId
             ]);
 
         } catch (\Exception $e) {
             Log::error('Muzibu HLS Conversion: Failed', [
-                'song_id' => $this->song->song_id,
+                'song_id' => $this->songId,
+                'tenant_id' => $this->tenantId,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -111,7 +133,8 @@ class ConvertToHLSJob implements ShouldQueue
     public function failed(\Throwable $exception): void
     {
         Log::error('Muzibu HLS Conversion: Job Failed Permanently', [
-            'song_id' => $this->song->song_id,
+            'song_id' => $this->songId,
+            'tenant_id' => $this->tenantId,
             'error' => $exception->getMessage()
         ]);
 

@@ -138,64 +138,40 @@
     background: rgba(255, 255, 255, 0.15);
 }
 
-/* Widget (Sidebar) */
-.play-limits-widget {
-    margin-top: 20px;
-    padding: 18px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, rgba(29, 185, 84, 0.1), rgba(22, 163, 74, 0.05));
-    border: 1px solid rgba(29, 185, 84, 0.2);
+/* Widget (Sidebar) - MINIMAL SINGLE LINE */
+.play-limits-widget-mini {
+    margin-top: 16px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.play-limits-widget.premium {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.05));
-    border-color: rgba(139, 92, 246, 0.2);
-}
-
-.play-limits-info {
+.play-limits-mini-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
+    gap: 10px;
 }
 
-.play-limits-label {
-    font-size: 0.875rem;
-    color: #cbd5e1;
-    font-weight: 500;
-}
-
-.play-limits-count {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1DB954;
-}
-
-.play-limits-count.premium {
-    color: #8b5cf6;
-}
-
-/* Progress Bar */
-.play-limits-bar {
-    height: 6px;
+.play-limits-mini-bar {
+    flex: 1;
+    height: 4px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    border-radius: 2px;
     overflow: hidden;
 }
 
-.play-limits-fill {
+.play-limits-mini-fill {
     height: 100%;
-    background: linear-gradient(90deg, #1DB954, #16a34a);
-    border-radius: 3px;
-    transition: width 0.3s ease;
+    border-radius: 2px;
+    transition: all 0.3s ease;
 }
 
-.play-limits-fill.low {
-    background: linear-gradient(90deg, #f59e0b, #d97706);
-}
-
-.play-limits-fill.critical {
-    background: linear-gradient(90deg, #ef4444, #dc2626);
+.play-limits-mini-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 32px;
+    text-align: right;
 }
 
 /* Premium Badge */

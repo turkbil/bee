@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Product - Perfect v6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- INFO -->
+        <div class="bg-green-100 border-l-4 border-green-500 p-6 mb-8 rounded-lg">
+            <h1 class="text-2xl font-bold text-green-900 mb-2">
+                <i class="fas fa-check-double"></i> v6 - PERFECT! Dengeli Görsel Sistemi
+            </h1>
+            <p class="text-green-800 mb-2"><strong>YENİ GÖRSEL SİSTEMİ:</strong></p>
+            <ul class="text-green-800 text-sm list-disc list-inside space-y-1">
+                <li>✅ Tanıtım: 2/3 metin + 1/3 görsel (sticky)</li>
+                <li>✅ Problem sonrası: 1/2 görsel + 1/2 highlight box (yan yana)</li>
+                <li>✅ USP sonrası: 2 görsel yan yana (her biri 1/2)</li>
+                <li>✅ Use Cases sonrası: 1/2 görsel + 1/2 metin özet</li>
+                <li>❌ Büyük tam genişlik görsel yok!</li>
+            </ul>
+        </div>
+
+        <!-- BODY İÇERİK -->
+        <div class="bg-white rounded-xl shadow-xl p-8">
+
+            <!-- 1. TANITIM + GÖRSEL (Grid 2/3 + 1/3) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                <!-- Sol: Tanıtım Metni (2/3) -->
+                <div class="lg:col-span-2">
+                    <div class="prose prose-lg max-w-none">
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            <strong>İXTİF F4 Elektrikli Transpalet</strong>, modern depo ve lojistik
+                            operasyonlarında verimliliği artırmak için tasarlanmış 1.5 ton kapasiteli
+                            profesyonel bir ekipmandır. <strong>Li-Ion batarya teknolojisi</strong>
+                            ile uzun çalışma süresi sunar ve kesintisiz operasyon sağlar.
+                        </p>
+
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            Kompakt tasarımı ve hafif gövdesiyle dar alanlarda bile kolayca manevra
+                            yapabilirsiniz. 400mm şasi genişliği sayesinde standart transpaletlerin
+                            giremediği koridorlara rahatlıkla erişim sağlar.
+                        </p>
+
+                        <p class="text-gray-700 leading-relaxed mb-4">
+                            <strong>Modüler batarya sistemi</strong> ile çift batarya kullanabilme
+                            özelliği, tam gün kesintisiz çalışma imkanı sunar. Ergonomik kumanda,
+                            güvenlik fren sistemi ve CE sertifikalı üretim ile operatör güvenliğini
+                            ön planda tutar.
+                        </p>
+
+                        <p class="text-gray-700 leading-relaxed">
+                            <strong>Elektrikli transpalet</strong> kullanımı, manuel taşıma yorgunluğunu
+                            ortadan kaldırır ve iş güvenliğini artırır. Depo lojistiği, üretim hattı
+                            ve perakende sektöründe yaygın olarak tercih edilmektedir.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Sağ: Görsel (1/3, sticky) -->
+                <div class="lg:col-span-1">
+                    <figure class="sticky top-8 rounded-xl overflow-hidden shadow-lg">
+                        <div class="bg-gradient-to-br from-blue-100 to-blue-200 aspect-[4/3] flex items-center justify-center">
+                            <div class="text-center text-blue-600">
+                                <i class="fas fa-image text-5xl mb-3"></i>
+                                <p class="text-xs font-medium px-4">Leonardo AI<br>Depo Görünümü</p>
+                            </div>
+                        </div>
+                        <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+                            Profesyonel depo ortamı
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+
+            <!-- 2. PROBLEM-SOLUTION -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                    <i class="fas fa-exclamation-triangle"></i> Karşılaştığınız Sorunlar
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-red-400 transition-all text-center">
+                        <i class="fas fa-times-circle text-red-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-lg mb-2">Manuel Taşıma Yorgunluğu</h4>
+                        <p class="text-gray-600">
+                            Ağır yükleri manuel taşımak sırt ve bel ağrılarına yol açar.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-red-400 transition-all text-center">
+                        <i class="fas fa-weight-hanging text-red-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-lg mb-2">Ağır Yüklerde Zorlanma</h4>
+                        <p class="text-gray-600">
+                            1.5 ton paletleri kaldırmak için birden fazla çalışan gerekiyor.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-red-400 transition-all text-center">
+                        <i class="fas fa-arrows-alt-h text-red-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-lg mb-2">Dar Alanlarda Manevra</h4>
+                        <p class="text-gray-600">
+                            Büyük transpaletler dar koridorlara giremez.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-red-400 transition-all text-center">
+                        <i class="fas fa-battery-quarter text-red-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-lg mb-2">Batarya Değişim Sıkıntısı</h4>
+                        <p class="text-gray-600">
+                            Batarya bitince operasyon duruyor.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Çözüm: Görsel + Highlight (1/2 + 1/2) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Sol: Görsel -->
+                    <figure class="rounded-xl overflow-hidden shadow-lg">
+                        <div class="bg-gradient-to-br from-orange-100 to-orange-200 aspect-[4/3] flex items-center justify-center">
+                            <div class="text-center text-orange-600">
+                                <i class="fas fa-image text-5xl mb-3"></i>
+                                <p class="text-xs font-medium">Leonardo AI<br>Problem Çözümü</p>
+                            </div>
+                        </div>
+                        <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+                            İXTİF transpalet ile eforsuz taşıma
+                        </figcaption>
+                    </figure>
+
+                    <!-- Sağ: Çözüm Highlight -->
+                    <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-8 rounded-xl text-white shadow-lg flex flex-col justify-center">
+                        <h3 class="font-bold text-2xl mb-4 flex items-center gap-3">
+                            <i class="fas fa-check-circle text-3xl"></i> İXTİF Çözümü
+                        </h3>
+                        <p class="text-lg leading-relaxed">
+                            <strong>İXTİF F4</strong> ile eforsuz palet taşıma.
+                            1.5 ton kapasiteyle ağır yükler güvende, 120 kg hafif gövde,
+                            400mm kompakt şasi. <strong>Çift batarya</strong> ile kesintisiz operasyon.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. ÖZELLİKLER (USP) -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                    <i class="fas fa-fire"></i> Neden Bu Ürünü Tercih Etmelisiniz?
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all text-center">
+                        <i class="fas fa-battery-full text-orange-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">Modüler Li-Ion Batarya</h4>
+                        <p class="text-gray-600">
+                            24V 20Ah Li-Ion, çift batarya seçeneği, kesintisiz operasyon.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all text-center">
+                        <i class="fas fa-compress-arrows-alt text-orange-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">Kompakt Tasarım</h4>
+                        <p class="text-gray-600">
+                            400mm şasi ile dar koridorlara girer.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all text-center">
+                        <i class="fas fa-feather-alt text-orange-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">Hafif ve Güçlü</h4>
+                        <p class="text-gray-600">
+                            120 kg ağırlık, 1.5 ton kapasite.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all text-center">
+                        <i class="fas fa-shield-alt text-orange-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">Güvenlik</h4>
+                        <p class="text-gray-600">
+                            CE belgeli, acil fren, ergonomik kumanda.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all text-center">
+                        <i class="fas fa-piggy-bank text-orange-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">Ekonomik</h4>
+                        <p class="text-gray-600">
+                            Düşük enerji, minimal bakım.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-orange-500 hover:shadow-xl transition-all text-center">
+                        <i class="fas fa-cogs text-orange-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">Esnek Kullanım</h4>
+                        <p class="text-gray-600">
+                            Farklı çatal seçenekleri.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 2 Görsel Yan Yana -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <figure class="rounded-xl overflow-hidden shadow-lg">
+                        <div class="bg-gradient-to-br from-purple-100 to-purple-200 aspect-[4/3] flex items-center justify-center">
+                            <div class="text-center text-purple-600">
+                                <i class="fas fa-image text-5xl mb-3"></i>
+                                <p class="text-xs font-medium">Leonardo AI<br>Batarya Sistemi</p>
+                            </div>
+                        </div>
+                        <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+                            Li-Ion batarya teknolojisi
+                        </figcaption>
+                    </figure>
+
+                    <figure class="rounded-xl overflow-hidden shadow-lg">
+                        <div class="bg-gradient-to-br from-green-100 to-green-200 aspect-[4/3] flex items-center justify-center">
+                            <div class="text-center text-green-600">
+                                <i class="fas fa-image text-5xl mb-3"></i>
+                                <p class="text-xs font-medium">Leonardo AI<br>Kompakt Tasarım</p>
+                            </div>
+                        </div>
+                        <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+                            Dar alanlarda kolay manevra
+                        </figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <!-- 4. KULLANIM ALANLARI -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                    <i class="fas fa-briefcase"></i> Hangi Alanlarda Kullanılır?
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all text-center">
+                        <i class="fas fa-warehouse text-blue-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">Depo ve Lojistik</h4>
+                        <p class="text-gray-600">
+                            Palet taşıma, raf yükleme, malzeme hareketi.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all text-center">
+                        <i class="fas fa-industry text-blue-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">Üretim Hatları</h4>
+                        <p class="text-gray-600">
+                            Malzeme besleme, yarı mamul taşıma.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all text-center">
+                        <i class="fas fa-shopping-cart text-blue-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">Perakende</h4>
+                        <p class="text-gray-600">
+                            Mağaza deposundan satış alanına.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all text-center">
+                        <i class="fas fa-box text-blue-500 text-5xl mb-4"></i>
+                        <h4 class="font-bold text-xl mb-2">E-ticaret</h4>
+                        <p class="text-gray-600">
+                            Hızlı sipariş hazırlama.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Görsel + Metin Özet (1/2 + 1/2) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <figure class="rounded-xl overflow-hidden shadow-lg">
+                        <div class="bg-gradient-to-br from-blue-100 to-blue-200 aspect-[4/3] flex items-center justify-center">
+                            <div class="text-center text-blue-600">
+                                <i class="fas fa-image text-5xl mb-3"></i>
+                                <p class="text-xs font-medium">Leonardo AI<br>Kullanım Örneği</p>
+                            </div>
+                        </div>
+                        <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+                            Farklı sektörlerde kullanım
+                        </figcaption>
+                    </figure>
+
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-xl border-2 border-blue-200 flex flex-col justify-center">
+                        <h4 class="font-bold text-xl mb-4 text-blue-900">
+                            <i class="fas fa-check-circle text-blue-500 mr-2"></i>
+                            Geniş Kullanım Yelpazesi
+                        </h4>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-arrow-right text-blue-500 mt-1"></i>
+                                <span>Depo ve lojistik merkezlerinde palet taşıma</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-arrow-right text-blue-500 mt-1"></i>
+                                <span>Üretim hatlarında malzeme besleme</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-arrow-right text-blue-500 mt-1"></i>
+                                <span>Perakende mağazalarda stok yönetimi</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-arrow-right text-blue-500 mt-1"></i>
+                                <span>E-ticaret depolarında sipariş hazırlama</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. COMPETITIVE ADVANTAGES -->
+            <section class="mb-16">
+                <h2 class="text-3xl font-bold text-orange-600 mb-6 flex items-center gap-3">
+                    <i class="fas fa-trophy"></i> Rakiplerden Farkımız
+                </h2>
+
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-xl shadow-lg">
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-check-circle text-green-500 text-3xl flex-shrink-0 mt-1"></i>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">Modüler Batarya Sistemi</h5>
+                                <p class="text-gray-700">
+                                    İkinci batarya ekleme imkanı. Operasyon durmaz.
+                                </p>
+                            </div>
+                        </li>
+
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-check-circle text-green-500 text-3xl flex-shrink-0 mt-1"></i>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">Kompakt Ama Güçlü</h5>
+                                <p class="text-gray-700">
+                                    En kompakt model, 1.5 ton kapasiteyi koruyor.
+                                </p>
+                            </div>
+                        </li>
+
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-check-circle text-green-500 text-3xl flex-shrink-0 mt-1"></i>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">Hafif Gövde</h5>
+                                <p class="text-gray-700">
+                                    Benzer ürünlerden %20 daha hafif.
+                                </p>
+                            </div>
+                        </li>
+
+                        <li class="flex items-start gap-4">
+                            <i class="fas fa-check-circle text-green-500 text-3xl flex-shrink-0 mt-1"></i>
+                            <div>
+                                <h5 class="font-bold text-lg mb-1">Türkiye Üretim</h5>
+                                <p class="text-gray-700">
+                                    Hızlı yedek parça, teknik destek.
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="mt-8 bg-green-200 p-6 rounded-lg">
+            <h3 class="font-bold text-lg mb-4 text-green-900">
+                <i class="fas fa-check-double mr-2"></i>
+                v6 - PERFECT! Dengeli Görsel Sistemi
+            </h3>
+            <div class="grid md:grid-cols-3 gap-4 text-sm text-green-900">
+                <div>
+                    <h4 class="font-bold mb-2">📐 Tanıtım:</h4>
+                    <p>2/3 metin + 1/3 görsel (sticky)</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-2">🎯 Bölüm Sonları:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-xs">
+                        <li>1/2 görsel + 1/2 box</li>
+                        <li>2 görsel yan yana (1/2+1/2)</li>
+                        <li>1/2 görsel + 1/2 metin</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-2">✅ Sonuç:</h4>
+                    <p class="text-xs">Büyük görseller yok! Dengeli, okunabilir, modern!</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

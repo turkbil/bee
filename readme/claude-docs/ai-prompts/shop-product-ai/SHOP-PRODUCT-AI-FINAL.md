@@ -193,30 +193,132 @@ Sen **Shop Product Content Writer** yapay zekasısın. Görevin:
 
 ### 🔴 ÖNEMLİ DEĞİŞİKLİKLER:
 
-#### 1. BOYUT: Küçük (col-4, yan sütun)
+#### 1. BOYUT & YERLEŞİM: Dengeli Grid Sistemi
+
+**🎯 ÖNEMLI:** Gerçek ürün görselleri olmayacağı için görselleri fazla ön plana çıkarma!
+
+**❌ YASAKLAR:**
 ```html
-<!-- ❌ YANLIŞ: Tam genişlik -->
+<!-- ❌ YANLIŞ: Tam genişlik (çok büyük!) -->
 <figure class="my-8">
-    <img src="..." class="w-full">
+    <img src="..." class="w-full aspect-video">
 </figure>
 
-<!-- ✅ DOĞRU: col-4 (yan sütun, sağ veya sol) -->
-<figure class="float-right ml-6 mb-6 w-full md:w-1/3 rounded-xl overflow-hidden shadow-lg">
-    <img src="{leonardo_url}" alt="..." loading="lazy" class="w-full h-auto">
-    <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
-        Profesyonel kullanım
-    </figcaption>
-</figure>
-
-<!-- Veya sol tarafa -->
-<figure class="float-left mr-6 mb-6 w-full md:w-1/3 rounded-xl overflow-hidden shadow-lg">
+<!-- ❌ YANLIŞ: Float kullanımı (berbat görünüm!) -->
+<figure class="float-right ml-6 mb-6">
     ...
 </figure>
 ```
 
-**Responsive:**
-- Mobil: `w-full` (tam genişlik)
-- Desktop: `md:w-1/3` (col-4, yaklaşık %33)
+**✅ DOĞRU YERLEŞİMLER:**
+
+**Yerleşim 1: Tanıtım Bölümü (Başta - Sticky Sidebar)**
+```html
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+    <!-- Sol: Yazı (2/3) -->
+    <div class="lg:col-span-2">
+        <div class="prose prose-lg max-w-none">
+            <p>Tanıtım paragrafları...</p>
+        </div>
+    </div>
+
+    <!-- Sağ: Görsel (1/3, sticky) -->
+    <div class="lg:col-span-1">
+        <figure class="sticky top-8 rounded-xl overflow-hidden shadow-lg">
+            <div class="bg-gradient-to-br from-blue-100 to-blue-200 aspect-[4/3] flex items-center justify-center">
+                <span class="text-blue-600 text-sm font-medium">Leonardo AI Image 1</span>
+            </div>
+            <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+                Profesyonel kullanım
+            </figcaption>
+        </figure>
+    </div>
+</div>
+```
+
+**Yerleşim 2: Bölüm Sonu - Görsel + Vurgu Kutusu (1/2 + 1/2)**
+```html
+<!-- Problem-Solution sonunda kullan -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+    <!-- Sol: Görsel -->
+    <figure class="rounded-xl overflow-hidden shadow-lg">
+        <div class="bg-gradient-to-br from-orange-100 to-orange-200 aspect-[4/3] flex items-center justify-center">
+            <span class="text-orange-600 text-sm font-medium">Leonardo AI Image 2</span>
+        </div>
+        <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+            Modern depo çözümü
+        </figcaption>
+    </figure>
+
+    <!-- Sağ: Çözüm Vurgu Kutusu -->
+    <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-8 rounded-xl text-white flex flex-col justify-center">
+        <h3 class="font-bold text-2xl mb-4">
+            <i class="fas fa-check-circle"></i> İXTİF Çözümü
+        </h3>
+        <p class="text-lg">Çözüm açıklaması...</p>
+    </div>
+</div>
+```
+
+**Yerleşim 3: Yan Yana 2 Görsel (1/2 + 1/2)**
+```html
+<!-- USP sonunda kullan -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+    <!-- Sol: Görsel 1 -->
+    <figure class="rounded-xl overflow-hidden shadow-lg">
+        <div class="bg-gradient-to-br from-purple-100 to-purple-200 aspect-[4/3] flex items-center justify-center">
+            <span class="text-purple-600 text-sm font-medium">Leonardo AI Image 3</span>
+        </div>
+        <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+            Li-Ion batarya teknolojisi
+        </figcaption>
+    </figure>
+
+    <!-- Sağ: Görsel 2 -->
+    <figure class="rounded-xl overflow-hidden shadow-lg">
+        <div class="bg-gradient-to-br from-green-100 to-green-200 aspect-[4/3] flex items-center justify-center">
+            <span class="text-green-600 text-sm font-medium">Leonardo AI Image 4</span>
+        </div>
+        <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+            Dar alanlarda kolay manevra
+        </figcaption>
+    </figure>
+</div>
+```
+
+**Yerleşim 4: Görsel + Özet Kutusu (1/2 + 1/2)**
+```html
+<!-- Use Cases sonunda kullan -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+    <!-- Sol: Görsel -->
+    <figure class="rounded-xl overflow-hidden shadow-lg">
+        <div class="bg-gradient-to-br from-indigo-100 to-indigo-200 aspect-[4/3] flex items-center justify-center">
+            <span class="text-indigo-600 text-sm font-medium">Leonardo AI Image 5</span>
+        </div>
+        <figcaption class="bg-gray-100 px-3 py-2 text-xs text-gray-600 text-center">
+            Profesyonel lojistik çözümü
+        </figcaption>
+    </figure>
+
+    <!-- Sağ: Özet Box -->
+    <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-xl border-2 border-gray-200">
+        <h3 class="font-bold text-xl mb-4 text-gray-800">
+            <i class="fas fa-clipboard-check text-orange-500"></i> Neden İXTİF?
+        </h3>
+        <ul class="space-y-2 text-gray-700">
+            <li><i class="fas fa-check text-green-500 mr-2"></i> Özet madde 1</li>
+            <li><i class="fas fa-check text-green-500 mr-2"></i> Özet madde 2</li>
+            <li><i class="fas fa-check text-green-500 mr-2"></i> Özet madde 3</li>
+        </ul>
+    </div>
+</div>
+```
+
+**📏 Responsive Kurallar:**
+- Mobil: `grid-cols-1` (alt alta)
+- Tablet/Desktop: `md:grid-cols-2` veya `lg:grid-cols-3` (yan yana)
+- Görsel oranı: `aspect-[4/3]` (ASLA `aspect-video` kullanma!)
+- Tanıtım görseli: `sticky top-8` (kaydırmada sabit kalır)
 
 #### 2. KUSURSUZ KALİTE - PROMPTLARDAKİ EK TALİMATLAR:
 
@@ -245,29 +347,39 @@ sharp focus, professional lighting,
 
 #### 3. ÖRNEK PROMPTLAR:
 
+**⚠️ UYARI:** Ürün özelliğini çok detaylı yazma! Genel endüstriyel ortam yeterli.
+
 **Transpalet için:**
 ```
-"Professional warehouse interior with modern electric pallet truck,
+"Professional warehouse interior with modern equipment,
 industrial logistics setting, clean organized space,
 HIGH QUALITY PHOTOREALISTIC, perfect composition, no artifacts,
-sharp focus, professional lighting, 16:9 landscape"
+sharp focus, professional lighting, 4:3 aspect ratio"
 ```
 
 **Forklift için:**
 ```
-"Modern warehouse with industrial forklift equipment,
-professional logistics environment, organized storage racks,
+"Modern warehouse with industrial material handling equipment,
+professional logistics environment, organized storage,
 HIGH QUALITY PHOTOREALISTIC, no errors, perfect composition,
-sharp focus, 16:9 landscape"
+sharp focus, 4:3 aspect ratio"
 ```
 
-**Genel Endüstriyel:**
+**Genel Endüstriyel (Yedek Parça için):**
 ```
-"Professional industrial facility interior, modern equipment,
-clean factory floor, organized workspace,
+"Professional industrial facility interior, modern warehouse setting,
+clean organized workspace, industrial equipment environment,
 HIGH QUALITY PHOTOREALISTIC, no artifacts, perfect lighting,
-sharp focus, 16:9 landscape"
+sharp focus, 4:3 aspect ratio"
 ```
+
+**🎯 Prompt Kuralları:**
+- ✅ Genel endüstriyel ortam (warehouse, facility, logistics)
+- ✅ Kalite vurgusu (HIGH QUALITY PHOTOREALISTIC)
+- ✅ Kusursuzluk (no artifacts, no errors, perfect composition)
+- ✅ 4:3 oran (aspect-[4/3] için uygun)
+- ❌ Ürün detayı (transpalet yerine "equipment" kullan)
+- ❌ 16:9 oran (tam genişlik görsel gibi durur)
 
 ---
 
@@ -346,19 +458,24 @@ sharp focus, 16:9 landscape"
   ],
   "leonardo_prompts": [
     {
-      "prompt": "Professional warehouse with electric pallet truck, HIGH QUALITY PHOTOREALISTIC, no artifacts, 16:9",
-      "placement": "after_intro",
-      "float": "right"
+      "prompt": "Professional warehouse interior, modern industrial setting, clean organized space, HIGH QUALITY PHOTOREALISTIC, perfect composition, no artifacts, sharp focus, 4:3 aspect ratio",
+      "placement": "intro_sidebar",
+      "layout": "sticky_1_3"
     },
     {
-      "prompt": "Modern factory floor with Li-Ion equipment, HIGH QUALITY, perfect composition, 16:9",
+      "prompt": "Modern warehouse with material handling equipment, professional logistics environment, HIGH QUALITY PHOTOREALISTIC, no errors, perfect composition, 4:3 aspect ratio",
+      "placement": "after_problem_solution",
+      "layout": "half_image_half_box"
+    },
+    {
+      "prompt": "Industrial facility interior, organized warehouse floor, modern equipment setting, HIGH QUALITY PHOTOREALISTIC, no artifacts, sharp focus, 4:3 aspect ratio",
       "placement": "after_usp",
-      "float": "left"
+      "layout": "two_images_side_by_side"
     },
     {
-      "prompt": "Industrial logistics operation, clean organized, HIGH QUALITY PHOTOREALISTIC, 16:9",
+      "prompt": "Professional logistics operation, clean industrial workspace, organized environment, HIGH QUALITY PHOTOREALISTIC, perfect lighting, no errors, 4:3 aspect ratio",
       "placement": "after_use_cases",
-      "float": "right"
+      "layout": "half_image_half_summary"
     }
   ],
   "seo_keywords": {
@@ -392,8 +509,10 @@ sharp focus, 16:9 landscape"
 - [ ] 3-4 prompt üretildi
 - [ ] "HIGH QUALITY PHOTOREALISTIC" eklendi
 - [ ] "no artifacts, no errors" eklendi
-- [ ] Küçük boyut (col-4, float-left/right)
-- [ ] 16:9 format
+- [ ] Grid layout kullanıldı (float YOK!)
+- [ ] 4:3 oran (aspect-[4/3])
+- [ ] Dengeli yerleşim (sticky sidebar + 1/2 genişlikler)
+- [ ] Ürün detayı az, genel ortam çok
 
 ### FAQ:
 - [ ] 7+ soru var

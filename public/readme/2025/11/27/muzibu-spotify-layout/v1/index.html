@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Spotify Style Layout Taslak</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        /* GRID LAYOUT */
+        .app-container {
+            display: grid;
+            grid-template-rows: 64px 1fr 90px; /* Header | Content | Player */
+            grid-template-columns: 280px 1fr 400px; /* Left Sidebar | Main | Right Sidebar (wider) */
+            height: 100vh;
+        }
+
+        /* HEADER (Row 1, Span 3 columns) */
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #1DB954, #1ed760);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+
+        .search-box {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border: none;
+            border-radius: 24px;
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 24px;
+        }
+
+        .header-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: background 0.2s;
+        }
+
+        .header-nav a:hover { background: rgba(0,0,0,0.2); }
+        .header-nav a.active { background: rgba(0,0,0,0.3); }
+
+        /* LEFT SIDEBAR */
+        .left-sidebar {
+            background: linear-gradient(180deg, #0a4d2e 0%, #082920 100%);
+            padding: 24px 16px;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-section h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(29, 185, 84, 0.3);
+            color: #1DB954;
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            background: #121212;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            margin-bottom: 48px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .section-link {
+            color: #b3b3b3;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .section-link:hover { color: white; }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: #181818;
+            padding: 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            background: #282828;
+            transform: translateY(-4px);
+        }
+
+        .card-image {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: #282828;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: white;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #b3b3b3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* RIGHT SIDEBAR */
+        .right-sidebar {
+            background: linear-gradient(180deg, #0a4d2e 0%, #082920 100%);
+            padding: 24px 16px;
+            overflow-y: auto;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .playlist-item:hover { background: rgba(255,255,255,0.1); }
+
+        .playlist-cover {
+            width: 48px;
+            height: 48px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .playlist-info {
+            flex: 1;
+        }
+
+        .playlist-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .playlist-meta {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* PLAYER BAR */
+        .player-bar {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            align-items: center;
+            padding: 16px 24px;
+            gap: 24px;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Player Left - Song Info */
+        .player-song-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .player-album-cover {
+            width: 56px;
+            height: 56px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .player-song-details h4 {
+            font-size: 14px;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .player-song-details p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .player-like-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .player-like-btn:hover { color: #1DB954; }
+        .player-like-btn.liked { color: #1DB954; }
+
+        /* Player Center - Controls */
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .controls-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover { color: #1DB954; transform: scale(1.1); }
+        .control-btn.active { color: #1DB954; }
+
+        .play-btn {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            font-size: 18px;
+            color: #1e40af;
+        }
+
+        .play-btn:hover {
+            background: #1DB954;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .time { font-size: 12px; color: rgba(255,255,255,0.7); }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-bar:hover { height: 6px; }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .progress-bar:hover .progress-fill::after { opacity: 1; }
+
+        /* Player Right - Volume */
+        .player-volume {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .volume-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .volume-bar {
+            width: 100px;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .volume-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .queue-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .queue-btn:hover { color: #1DB954; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.5); }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-left">
+                <a href="#" class="logo">🎵 MUZIBU</a>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Sanatçılar, şarkılar veya podcast'ler ara">
+                </div>
+                <nav class="header-nav">
+                    <a href="#" class="active">Tümü</a>
+                    <a href="#">Müzik</a>
+                    <a href="#">Podcast'ler</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- LEFT SIDEBAR -->
+        <aside class="left-sidebar">
+            <div class="nav-section">
+                <h3>Menü</h3>
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Ana Sayfa</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-search"></i>
+                    <span>Ara</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>Kitaplığın</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <h3>Koleksiyonlar</h3>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Çalma Listesi Oluştur</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>Beğenilen Şarkılar</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Bölümlerin</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <h3>Playlistlerim</h3>
+                <a href="#" class="nav-item">📱 Günlük Mix</a>
+                <a href="#" class="nav-item">🎸 Rock Klasikleri</a>
+                <a href="#" class="nav-item">🎤 Türkçe Pop</a>
+                <a href="#" class="nav-item">🎧 Çalışma Müziği</a>
+                <a href="#" class="nav-item">💤 Rahatlatıcı</a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Beğenebileceğin bölümler</h2>
+                    <a href="#" class="section-link">Tümünü göster</a>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-image">🎵</div>
+                        <div class="card-title">Fundamentals (2015)</div>
+                        <div class="card-subtitle">May 2024 • 136 dk</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">🎸</div>
+                        <div class="card-title">ramiz dayı-oysa herkes ölüdür...</div>
+                        <div class="card-subtitle">Eki 2020 • 2 dk</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">📚</div>
+                        <div class="card-title">Konuşmanızı Kolaylaştıracak...</div>
+                        <div class="card-subtitle">18 Şub • 114 dk</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">🎮</div>
+                        <div class="card-title">"Rezonans Kanunu" - PART 1 (Sesli...</div>
+                        <div class="card-subtitle">3 Oca • 57 dk</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">🏁</div>
+                        <div class="card-title">Sen Affetsen Ben Affetmem</div>
+                        <div class="card-subtitle">Tem 2022 • 6 dk</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Denemeye değer programlar</h2>
+                    <a href="#" class="section-link">Tümünü göster</a>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-image">👨‍💼</div>
+                        <div class="card-title">Fundamentals</div>
+                        <div class="card-subtitle">Podcast</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">🎭</div>
+                        <div class="card-title">Sesli Kitap</div>
+                        <div class="card-subtitle">Edebiyat</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">🎪</div>
+                        <div class="card-title">Komedi</div>
+                        <div class="card-subtitle">Stand-up</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">🏁</div>
+                        <div class="card-title">Spor</div>
+                        <div class="card-subtitle">Futbol • F1</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-image">📖</div>
+                        <div class="card-title">Tarih</div>
+                        <div class="card-subtitle">Belgesel</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR -->
+        <aside class="right-sidebar">
+            <h3 class="sidebar-title">Öne Çıkan Listeler</h3>
+
+            <div class="playlist-item">
+                <div class="playlist-cover">🇹🇷</div>
+                <div class="playlist-info">
+                    <div class="playlist-name">En iyi 50 - Türkiye</div>
+                    <div class="playlist-meta">Spotify</div>
+                </div>
+            </div>
+
+            <div class="playlist-item">
+                <div class="playlist-cover">🎵</div>
+                <div class="playlist-info">
+                    <div class="playlist-name">Yol Şarkıları</div>
+                    <div class="playlist-meta">150 şarkı</div>
+                </div>
+            </div>
+
+            <div class="playlist-item">
+                <div class="playlist-cover">😢</div>
+                <div class="playlist-info">
+                    <div class="playlist-name">Üzgün Şarkılar</div>
+                    <div class="playlist-meta">Spotify</div>
+                </div>
+            </div>
+
+            <div class="playlist-item">
+                <div class="playlist-cover">👁️</div>
+                <div class="playlist-info">
+                    <div class="playlist-name">Bir Çift Göz</div>
+                    <div class="playlist-meta">Album</div>
+                </div>
+            </div>
+
+            <div class="playlist-item">
+                <div class="playlist-cover">👗</div>
+                <div class="playlist-info">
+                    <div class="playlist-name">Bülent Ersoy</div>
+                    <div class="playlist-meta">Sanatçı</div>
+                </div>
+            </div>
+
+            <div class="playlist-item">
+                <div class="playlist-cover">🎸</div>
+                <div class="playlist-info">
+                    <div class="playlist-name">Türkü</div>
+                    <div class="playlist-meta">Playlist</div>
+                </div>
+            </div>
+
+            <div class="playlist-item">
+                <div class="playlist-cover">🎤</div>
+                <div class="playlist-info">
+                    <div class="playlist-name">Emir Can İğrek</div>
+                    <div class="playlist-meta">Sanatçı</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- PLAYER BAR -->
+        <div class="player-bar">
+            <!-- Left - Song Info -->
+            <div class="player-song-info">
+                <div class="player-album-cover">🎵</div>
+                <div class="player-song-details">
+                    <h4>Şarkı Adı</h4>
+                    <p>Sanatçı Adı</p>
+                </div>
+                <button class="player-like-btn">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Center - Controls -->
+            <div class="player-controls">
+                <div class="controls-buttons">
+                    <button class="control-btn" title="Karışık Çal">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn" title="Önceki">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="play-btn" title="Çal">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn" title="Sonraki">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn" title="Tekrarla">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                <div class="progress-bar-container">
+                    <span class="time">0:00</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 35%;"></div>
+                    </div>
+                    <span class="time">3:45</span>
+                </div>
+            </div>
+
+            <!-- Right - Volume & Queue -->
+            <div class="player-volume">
+                <button class="volume-btn">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <div class="volume-bar">
+                    <div class="volume-fill" style="width: 70%;"></div>
+                </div>
+                <button class="queue-btn" title="Kuyruk">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

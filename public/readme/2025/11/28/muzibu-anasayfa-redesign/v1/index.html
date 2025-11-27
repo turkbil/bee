@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Anasayfa Redesign - Detaylı Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #1DB954, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #1DB954;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #60a5fa;
+        }
+
+        .component-section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #1DB954;
+            backdrop-filter: blur(10px);
+        }
+
+        .improvement-item {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .improvement-item h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .improvement-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .code-snippet {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: #1DB954;
+            margin: 10px 0;
+            border: 1px solid #1e293b;
+        }
+
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 768px) {
+            .before-after {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .before, .after {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .before {
+            border-left: 3px solid #ef4444;
+        }
+
+        .after {
+            border-left: 3px solid #10b981;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tag-critical { background: #dc2626; color: white; }
+        .tag-important { background: #f59e0b; color: white; }
+        .tag-enhancement { background: #10b981; color: white; }
+        .tag-spacing { background: #3b82f6; color: white; }
+        .tag-color { background: #8b5cf6; color: white; }
+        .tag-animation { background: #ec4899; color: white; }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            color: #cbd5e1;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            color: #1DB954;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, rgba(29, 185, 84, 0.1), rgba(30, 215, 96, 0.1));
+            border: 2px solid #1DB954;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .summary-box h3 {
+            color: #1DB954;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Muzibu Anasayfa Redesign Planı</h1>
+            <div class="meta">
+                <div class="meta-item">
+                    <span>📅</span>
+                    <span>2025-11-28</span>
+                </div>
+                <div class="meta-item">
+                    <span>🎯</span>
+                    <span>Tenant: muzibu.com.tr (1001)</span>
+                </div>
+                <div class="meta-item">
+                    <span>👤</span>
+                    <span>Tüm sayfa yeniden tasarım (Player hariç)</span>
+                </div>
+            </div>
+        </header>
+
+        <section>
+            <h2>📊 Genel Analiz</h2>
+            <div class="component-section">
+                <h3>Mevcut Durum</h3>
+                <p>Spotify tarzı modern bir müzik platformu ana sayfası. Grid layout, gradient efektler, hover animasyonları mevcut. Ancak bazı alanlarda:</p>
+                <ul class="checklist">
+                    <li>Spacing tutarsızlıkları var (bazı yerler çok dar, bazı yerler çok geniş)</li>
+                    <li>Typography hiyerarşisi netleştirilmeli (heading boyutları daha belirgin olmalı)</li>
+                    <li>Hover efektleri daha smooth ve profesyonel olabilir</li>
+                    <li>Renk paletleri daha uyumlu hale getirilebilir</li>
+                    <li>Responsive breakpoint'ler optimize edilebilir</li>
+                    <li>Micro-animasyonlar eklenebilir (scroll reveal, stagger, parallax)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 İyileştirme Planı</h2>
+
+            <!-- HEADER SECTION -->
+            <div class="component-section">
+                <h3>1. Header (Üst Bar)</h3>
+                <span class="tag tag-spacing">Spacing</span>
+                <span class="tag tag-enhancement">Enhancement</span>
+                <span class="tag tag-animation">Animation</span>
+
+                <div class="improvement-item">
+                    <h4>1.1 Logo & Branding</h4>
+                    <p><strong>Mevcut:</strong> Basit gradient text logo</p>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Logo'ya glow efekti ekle (text-shadow ile ışıldama)</li>
+                        <li>Logo hover'da pulse animasyonu (scale 1.05)</li>
+                        <li>Gradient daha canlı renkler (yeşil tonları daha parlak)</li>
+                    </ul>
+                    <div class="code-snippet">
+                        class="... drop-shadow-[0_0_15px_rgba(29,185,84,0.5)] hover:scale-105 transition-transform"
+                    </div>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>1.2 Arama Kutusu</h4>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Focus state'de daha belirgin glow (ring-spotify-green)</li>
+                        <li>İkon animasyonu (focus'ta scale büyüme)</li>
+                        <li>Placeholder text daha okunaklı (placeholder-zinc-300)</li>
+                        <li>Search results dropdown ekle (autocomplete için)</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>1.3 Premium Button</h4>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Crown ikonuna rotate animasyonu (hover'da)</li>
+                        <li>Gradient daha zengin (3 renk: yellow-400 → orange-500 → red-500)</li>
+                        <li>Pulse ring efekti (animate-ping ile attention çekici)</li>
+                    </ul>
+                    <div class="code-snippet">
+                        class="relative ... before:absolute before:inset-0 before:rounded-full before:bg-yellow-400/50 before:blur-md before:animate-pulse"
+                    </div>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>1.4 User Avatar</h4>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Avatar etrafında animated gradient border</li>
+                        <li>Dropdown menü açılma animasyonu daha smooth (cubic-bezier)</li>
+                        <li>Dropdown backdrop blur ekle (iOS tarzı)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SIDEBAR LEFT -->
+            <div class="component-section">
+                <h3>2. Sol Sidebar (Navigasyon)</h3>
+                <span class="tag tag-spacing">Spacing</span>
+                <span class="tag tag-color">Color</span>
+                <span class="tag tag-animation">Animation</span>
+
+                <div class="improvement-item">
+                    <h4>2.1 Navigation Items</h4>
+                    <p><strong>Mevcut Sorunlar:</strong></p>
+                    <ul class="checklist">
+                        <li>İkonlar çok küçük (w-6 → w-5 gerçekte)</li>
+                        <li>Hover efekti yeterince belirgin değil</li>
+                        <li>Active state'de gradient çok hafif</li>
+                    </ul>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>İkon boyutu artır (text-xl → text-2xl)</li>
+                        <li>Hover'da border-left animasyonu (border-l-4 border-spotify-green)</li>
+                        <li>Active item'da background gradient daha canlı</li>
+                        <li>Ripple efekti ekle (tıklama animasyonu)</li>
+                    </ul>
+                    <div class="before-after">
+                        <div class="before">
+                            <strong>❌ Önce:</strong>
+                            <div class="code-snippet">
+                                class="... px-4 py-3 hover:bg-spotify-gray"
+                            </div>
+                        </div>
+                        <div class="after">
+                            <strong>✅ Sonra:</strong>
+                            <div class="code-snippet">
+                                class="... px-4 py-3 border-l-4 border-transparent hover:border-spotify-green hover:bg-spotify-gray/50 transition-all duration-300"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>2.2 Premium Card (Kullanıcı Bilgisi)</h4>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Gradient animasyonu daha smooth (background-size: 200% 200%)</li>
+                        <li>Card hover'da scale efekti (transform: scale(1.02))</li>
+                        <li>Kullanıcı ismine truncate ekle (uzun isimler için)</li>
+                        <li>Logout butonu hover'da glow efekti</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>2.3 Cache Temizle Butonu</h4>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Daha belirgin warning rengi (bg-red-500/10 → bg-red-500/20)</li>
+                        <li>Hover'da trash ikonu shake animasyonu</li>
+                        <li>Tooltip ekle ("Tüm cache temizlenir")</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="component-section">
+                <h3>3. Ana İçerik (Home Content)</h3>
+                <span class="tag tag-critical">Critical</span>
+                <span class="tag tag-spacing">Spacing</span>
+                <span class="tag tag-animation">Animation</span>
+
+                <div class="improvement-item">
+                    <h4>3.1 Top Pills (Kategori Butonları)</h4>
+                    <p><strong>Mevcut Sorunlar:</strong></p>
+                    <ul class="checklist">
+                        <li>Sticky header gradient çok hafif (fark edilmiyor)</li>
+                        <li>Active pill'in shadow'u yeterince belirgin değil</li>
+                        <li>Scroll shadow efekti yok</li>
+                    </ul>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Sticky header backdrop-blur artır (backdrop-blur-xl)</li>
+                        <li>Active pill'e animated glow ekle (box-shadow pulsing)</li>
+                        <li>Horizontal scroll'a fade gradient ekle (sağ/sol uçlarda)</li>
+                        <li>Pill hover'da yukarı kayma (translateY(-2px))</li>
+                    </ul>
+                    <div class="code-snippet">
+                        /* Scroll fade gradient */
+                        .pills-container::after {
+                            content: '';
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+                            bottom: 0;
+                            width: 60px;
+                            background: linear-gradient(to left, #121212, transparent);
+                            pointer-events: none;
+                        }
+                    </div>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>3.2 Featured Playlists (Horizontal Scroll)</h4>
+                    <p><strong>Mevcut Sorunlar:</strong></p>
+                    <ul class="checklist">
+                        <li>Kartlar arası spacing tutarsız (gap-4 yeterli değil)</li>
+                        <li>Play button'ın opacity transition'u ani</li>
+                        <li>Gradient kartlar statik (hareket yok)</li>
+                    </ul>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Kartlar arası gap artır (gap-4 → gap-6)</li>
+                        <li>Play button daha smooth opacity (duration-500 ease-out)</li>
+                        <li>Gradient kartlara hover'da rotate efekti (rotate-3)</li>
+                        <li>Kart hover'da shadow büyüme (shadow-xl → shadow-2xl)</li>
+                        <li>Scroll indicator ekle (sağ alta "→" ok)</li>
+                    </ul>
+                    <div class="code-snippet">
+                        /* Hover parallax efekti */
+                        @hover:transform="perspective(1000px) rotateY(5deg)"
+                    </div>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>3.3 Yeni Albümler (Grid)</h4>
+                    <p><strong>Mevcut Sorunlar:</strong></p>
+                    <ul class="checklist">
+                        <li>Grid gap çok dar (6 yeterli ama daha iyi olabilir)</li>
+                        <li>Başlık ve sanatçı ismi truncate'te çok kısa</li>
+                        <li>Kart padding dengesi bozuk (p-4 yetersiz)</li>
+                    </ul>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Grid gap optimize (gap-6 → gap-8)</li>
+                        <li>Kart padding artır (p-4 → p-5)</li>
+                        <li>Başlık font-size artır (text-base → text-lg)</li>
+                        <li>Sanatçı ismi daha okunaklı (text-sm → text-base, opacity artır)</li>
+                        <li>Play button scale animasyonu (hover'da scale-110)</li>
+                        <li>Stagger animation delay optimize (50ms → 80ms daha smooth)</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>3.4 Popüler Şarkılar (Liste)</h4>
+                    <p><strong>Mevcut Sorunlar:</strong></p>
+                    <ul class="checklist">
+                        <li>Liste item'ları çok sıkışık (py-3 yetersiz)</li>
+                        <li>Hover efekti çok hafif (bg-spotify-green/10 fark edilmiyor)</li>
+                        <li>Play icon geçişi ani (smooth değil)</li>
+                        <li>Border-left animation yok</li>
+                    </ul>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Liste item padding artır (py-3 → py-4)</li>
+                        <li>Hover background daha belirgin (bg-spotify-green/10 → bg-spotify-green/15)</li>
+                        <li>Play icon fade+scale transition (opacity + scale animasyonu)</li>
+                        <li>Border-left width animasyonu (border-l-2 → border-l-4)</li>
+                        <li>Sıra numarası daha büyük font (text-sm → text-base)</li>
+                        <li>Album cover hover'da scale (group-hover:scale-105)</li>
+                    </ul>
+                    <div class="before-after">
+                        <div class="before">
+                            <strong>❌ Önce:</strong>
+                            <div class="code-snippet">
+                                class="... py-3 hover:bg-spotify-green/10 border-transparent hover:border-spotify-green"
+                            </div>
+                        </div>
+                        <div class="after">
+                            <strong>✅ Sonra:</strong>
+                            <div class="code-snippet">
+                                class="... py-4 hover:bg-spotify-green/15 border-l-2 border-transparent hover:border-l-4 hover:border-spotify-green transition-all duration-300 ease-out"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>3.5 Türlere Göre Keşfet (Grid)</h4>
+                    <p><strong>Mevcut Sorunlar:</strong></p>
+                    <ul class="checklist">
+                        <li>Kartlar çok kısa (h-32 yetersiz, içerik sıkışık)</li>
+                        <li>Gradient overlay çok koyu (bg-black/20 çok belirgin)</li>
+                        <li>Hover efekti yeterince dinamik değil</li>
+                    </ul>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Kart yüksekliği artır (h-32 → h-40)</li>
+                        <li>Gradient overlay daha hafif (bg-black/20 → bg-black/10)</li>
+                        <li>Hover'da gradient shift efekti (background-position kaydırma)</li>
+                        <li>Başlık font-size artır (text-xl → text-2xl)</li>
+                        <li>Hover'da kart transform (translateY(-4px) scale(1.02))</li>
+                        <li>Shadow daha dramatik (shadow-2xl → shadow-3xl custom)</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>3.6 Section Başlıkları (Typography)</h4>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Font-size daha büyük (text-2xl → text-3xl)</li>
+                        <li>Gradient daha canlı (from-white to-spotify-text-gray → from-white via-zinc-100 to-spotify-text-gray)</li>
+                        <li>"Tümünü göster" linkine arrow animasyonu (hover'da sağa kayma)</li>
+                        <li>Letter-spacing optimize (tracking-tight ekle)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SIDEBAR RIGHT -->
+            <div class="component-section">
+                <h3>4. Sağ Sidebar (Öne Çıkan Listeler)</h3>
+                <span class="tag tag-enhancement">Enhancement</span>
+                <span class="tag tag-spacing">Spacing</span>
+
+                <div class="improvement-item">
+                    <h4>4.1 Playlist Items</h4>
+                    <p><strong>Mevcut Sorunlar:</strong></p>
+                    <ul class="checklist">
+                        <li>Liste itemları çok sıkışık (mb-2 yetersiz)</li>
+                        <li>Icon boyutu tutarsız (w-14 h-14 çok büyük)</li>
+                        <li>Hover efekti hafif</li>
+                    </ul>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Item spacing artır (mb-2 → mb-3)</li>
+                        <li>Icon boyutu optimize (w-14 h-14 → w-12 h-12)</li>
+                        <li>Hover background daha belirgin (hover:bg-spotify-gray → hover:bg-spotify-gray-light)</li>
+                        <li>Icon hover'da pulse efekti</li>
+                        <li>Text truncate daha iyi (max-width kontrolü)</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>4.2 Başlık</h4>
+                    <p><strong>İyileştirme:</strong></p>
+                    <ul class="checklist">
+                        <li>Font-size artır (font-bold → text-lg font-bold)</li>
+                        <li>Gradient daha smooth</li>
+                        <li>Alt çizgi dekoratif element ekle</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- GENEL İYİLEŞTİRMELER -->
+            <div class="component-section">
+                <h3>5. Genel İyileştirmeler (Global)</h3>
+                <span class="tag tag-important">Important</span>
+                <span class="tag tag-spacing">Spacing</span>
+                <span class="tag tag-color">Color</span>
+
+                <div class="improvement-item">
+                    <h4>5.1 Spacing Sistemi</h4>
+                    <p><strong>Tutarlı spacing scale uygulanacak:</strong></p>
+                    <ul class="checklist">
+                        <li>Component arası: py-8 (section spacing)</li>
+                        <li>İçerik padding: px-6 → px-8 (daha geniş)</li>
+                        <li>Kart padding: p-4 → p-5 (daha ferah)</li>
+                        <li>Gap değerleri: gap-4 → gap-6 (grid'lerde)</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>5.2 Typography Scale</h4>
+                    <p><strong>Font boyutları optimize:</strong></p>
+                    <ul class="checklist">
+                        <li>Section başlıkları: text-2xl → text-3xl</li>
+                        <li>Kart başlıkları: text-base → text-lg</li>
+                        <li>Alt metinler: text-sm (değişmez ama opacity artacak)</li>
+                        <li>Body text: text-base (genel)</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>5.3 Renk Paleti Optimizasyonu</h4>
+                    <p><strong>Spotify renk sistemi netleştirilecek:</strong></p>
+                    <ul class="checklist">
+                        <li>Primary green: #1DB954 → #1ed760 (daha canlı)</li>
+                        <li>Text gray: #b3b3b3 → opacity: 0.7 (daha okunaklı)</li>
+                        <li>Card backgrounds: spotify-gray (#181818) + opacity variations</li>
+                        <li>Gradient overlay'ler: daha hafif (opacity azaltılacak)</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>5.4 Animasyon & Transitions</h4>
+                    <p><strong>Tüm animasyonlar optimize:</strong></p>
+                    <ul class="checklist">
+                        <li>Transition duration: 200ms → 300ms (daha smooth)</li>
+                        <li>Easing: ease → ease-out (daha doğal)</li>
+                        <li>Hover scale: 1.05 → 1.02 (daha subtle)</li>
+                        <li>Stagger delay: 50ms → 80ms (daha fark edilir)</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>5.5 Tailwind Advanced Features</h4>
+                    <p><strong>Kullanılacak özellikler:</strong></p>
+                    <ul class="checklist">
+                        <li><strong>Backdrop Blur:</strong> backdrop-blur-md/lg/xl (glassmorphism)</li>
+                        <li><strong>Ring:</strong> ring-2 ring-spotify-green (focus states)</li>
+                        <li><strong>Drop Shadow:</strong> drop-shadow-[...] (glow effects)</li>
+                        <li><strong>Perspective:</strong> perspective-1000 (3D transforms)</li>
+                        <li><strong>Mix Blend Mode:</strong> mix-blend-overlay (gradient layering)</li>
+                        <li><strong>Clip Path:</strong> Custom shapes için</li>
+                    </ul>
+                </div>
+
+                <div class="improvement-item">
+                    <h4>5.6 Responsive Breakpoints</h4>
+                    <p><strong>Grid yapıları optimize:</strong></p>
+                    <div class="code-snippet">
+/* Playlists */
+grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
+
+/* Albums */
+grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5
+
+/* Genres */
+grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📋 Öncelik Sıralaması</h2>
+            <div class="component-section">
+                <h3>🔴 Yüksek Öncelik (Hemen Yapılmalı)</h3>
+                <ul class="checklist">
+                    <li><strong>Spacing Sistemi:</strong> Tüm component'lerde tutarlı spacing (px-6 → px-8, py-8)</li>
+                    <li><strong>Typography Scale:</strong> Başlıklar daha büyük, hiyerarşi net</li>
+                    <li><strong>Popüler Şarkılar Listesi:</strong> Daha geniş padding, hover efekti iyileştirme</li>
+                    <li><strong>Grid Gap'ler:</strong> Tüm grid'lerde gap-6 → gap-8</li>
+                </ul>
+            </div>
+
+            <div class="component-section">
+                <h3>🟡 Orta Öncelik (Estetik İyileştirmeler)</h3>
+                <ul class="checklist">
+                    <li><strong>Animasyon Optimizasyonu:</strong> Daha smooth transitions (300ms ease-out)</li>
+                    <li><strong>Hover Efektleri:</strong> Scale, glow, shadow iyileştirmeleri</li>
+                    <li><strong>Gradient Kartlar:</strong> Daha dinamik renkler</li>
+                    <li><strong>Play Button:</strong> Daha belirgin animasyonlar</li>
+                </ul>
+            </div>
+
+            <div class="component-section">
+                <h3>🟢 Düşük Öncelik (Bonus Özellikler)</h3>
+                <ul class="checklist">
+                    <li><strong>Scroll Indicators:</strong> Horizontal scroll için fade/arrow</li>
+                    <li><strong>Parallax Efektler:</strong> Kart hover'larında 3D</li>
+                    <li><strong>Micro-interactions:</strong> Ripple, pulse, shake efektleri</li>
+                    <li><strong>Tooltip'ler:</strong> Butonlar için açıklayıcı metinler</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="summary-box">
+            <h3>✅ Özet: Ne Yapılacak?</h3>
+            <ul class="checklist">
+                <li><strong>Spacing:</strong> Tüm sayfa px-8, py-8 ile daha ferah hale gelecek</li>
+                <li><strong>Typography:</strong> Başlıklar text-3xl, kartlar text-lg olacak</li>
+                <li><strong>Grid Gap:</strong> gap-6 → gap-8 (daha geniş aralıklar)</li>
+                <li><strong>Hover:</strong> Tüm hover efektleri 300ms ease-out ile smooth</li>
+                <li><strong>Renk:</strong> Spotify green daha parlak (#1ed760)</li>
+                <li><strong>Animasyon:</strong> Stagger 80ms, scale 1.02, glow efektleri</li>
+                <li><strong>Tailwind:</strong> backdrop-blur, ring, drop-shadow, perspective kullanılacak</li>
+            </ul>
+            <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #1DB954;">
+                <strong>Sonuç:</strong> Daha modern, daha ferah, daha profesyonel bir Spotify-tarzı anasayfa!
+            </p>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından hazırlandı | 2025-11-28
+        </footer>
+    </div>
+</body>
+</html>

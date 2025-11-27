@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Product AI Content System - Tam Otomasyon Planı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: #fbbf24;
+            margin-bottom: 15px;
+            margin-top: 30px;
+        }
+
+        .task {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .task h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .task p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .task ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .task li {
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .priority-high {
+            border-left-color: #dc2626;
+        }
+
+        .priority-medium {
+            border-left-color: #f59e0b;
+        }
+
+        .priority-low {
+            border-left-color: #10b981;
+        }
+
+        .code-block {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #334155;
+        }
+
+        .code-block code {
+            color: #86efac;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .warning h4 {
+            color: #fca5a5;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .info h4 {
+            color: #93c5fd;
+            margin-bottom: 10px;
+        }
+
+        .success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .success h4 {
+            color: #86efac;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            font-weight: 600;
+        }
+
+        td {
+            color: #cbd5e1;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tag-api { background: #3b82f6; color: white; }
+        .tag-ai { background: #8b5cf6; color: white; }
+        .tag-db { background: #10b981; color: white; }
+        .tag-ui { background: #f59e0b; color: white; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 Shop Product AI Content System</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-27 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                👤 Hedef: Tam Otomasyonlu Ürün İçerik Üretimi
+            </div>
+        </header>
+
+        <section>
+            <h2><i class="fas fa-bullseye"></i> Sistem Hedefi</h2>
+
+            <div class="success">
+                <h4>🎯 Ana Hedef</h4>
+                <p>Shop modülündeki ürünler için AI ile <strong>tamamen otomatik</strong> bilingual (TR + EN) içerik üretimi:</p>
+                <ul>
+                    <li>✅ Title + Short Description + Long Body</li>
+                    <li>✅ Primary Specs (4 item - hero section)</li>
+                    <li>✅ FAQ Data (5 soru/cevap)</li>
+                    <li>✅ SEO Keywords (tags)</li>
+                    <li>✅ AI Generated Images (2 adet - Leonardo AI)</li>
+                    <li>✅ Görsellere SEO etiketleri (alt, title, loading)</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <h4>💡 Örnek Sonuç</h4>
+                <p>Akson Mili Kapağı - 414 ürünü için üretilen içerik:</p>
+                <ul>
+                    <li>📝 Body TR: 9,000+ karakter (pattern v4)</li>
+                    <li>📝 Body EN: 8,800+ karakter</li>
+                    <li>📊 Primary Specs: 4 item (Malzeme, Uyumluluk, Seri, Kaplama)</li>
+                    <li>❓ FAQ: 5 soru/cevap (bilingual)</li>
+                    <li>🏷️ Tags: 30 keyword (15 TR + 15 EN)</li>
+                    <li>📸 Görseller: 2 adet (montaj + blueprint - 1024x1024)</li>
+                </ul>
+                <p style="margin-top: 10px;">🔗 <a href="https://ixtif.com/shop/akson-mili-kapagi-414" style="color: #93c5fd;">Canlı Örnek</a></p>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-layer-group"></i> Sistem Mimarisi</h2>
+
+            <h3>1. Veri Akışı</h3>
+            <div class="code-block">
+                <code>
+User Input (Ürün Başlık + Kategori)
+    ↓
+OpenAI GPT-4 (Content Generation)
+    ↓
+Content Parsing (Title, Specs, Body, FAQ, Tags)
+    ↓
+Leonardo AI (2 Görsel Üretimi - Async)
+    ↓
+Image Embedding (Body içine otomatik)
+    ↓
+SEO Tag Injection (alt, title, loading)
+    ↓
+Database Save (ShopProduct model)
+    ↓
+Cache Clear + OPcache Reset
+                </code>
+            </div>
+
+            <h3>2. Kullanılacak Teknolojiler</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bileşen</th>
+                        <th>Teknoloji</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="tag tag-ai">AI</span> Content Generation</td>
+                        <td>OpenAI GPT-4</td>
+                        <td>Bilingual content üretimi (TR + EN)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-ai">AI</span> Image Generation</td>
+                        <td>Leonardo AI (Lucid Origin)</td>
+                        <td>2 görsel: montaj + teknik çizim</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-api">API</span> Prompt Enhancement</td>
+                        <td>AIPromptEnhancer Service</td>
+                        <td>Görsel promptları optimize eder</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-db">DB</span> Storage</td>
+                        <td>ShopProduct Model</td>
+                        <td>Tenant-aware database</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-db">DB</span> Media Storage</td>
+                        <td>MediaLibraryItem Model</td>
+                        <td>AI görselleri metadata ile saklar</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-ui">UI</span> Admin Interface</td>
+                        <td>Livewire Component</td>
+                        <td>Tek buton: "Generate AI Content"</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-tasks"></i> Yapılacaklar - Adım Adım</h2>
+
+            <div class="task priority-high">
+                <h4>📝 ADIM 1: AI Content Service Oluştur</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Services/ShopProductAIContentService.php</code></p>
+                <p><strong>Sorumluluk:</strong> Ürün bilgilerinden GPT-4 ile bilingual content üretimi</p>
+                <ul>
+                    <li><code>generateFullContent($title, $category, $options)</code> - Ana metod</li>
+                    <li>Dönen veri: title, short_description, body, primary_specs, faq_data, tags</li>
+                    <li>Pattern v4 kullan (o örnek HTML yapısı)</li>
+                    <li>Tenant context ekle (ixtif.com = industrial_equipment)</li>
+                    <li>SEO-focused keyword integration</li>
+                </ul>
+
+                <div class="code-block">
+                    <code>
+// Örnek prompt
+"Generate bilingual product content for: {$title}
+Category: {$category}
+Sector: Industrial Equipment (Forklift Parts)
+Pattern: Simple paragraphs with strong tags
+Output: JSON with tr/en keys
+Required fields: title, short_description, body, primary_specs(4), faq_data(5), tags(30)"
+                    </code>
+                </div>
+            </div>
+
+            <div class="task priority-high">
+                <h4>🎨 ADIM 2: AI Image Generator Integration</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Services/ShopProductImageGenerator.php</code></p>
+                <p><strong>Sorumluluk:</strong> Leonardo AI ile 2 görsel üret ve body'ye embed et</p>
+                <ul>
+                    <li>Görsel 1: Installation/Usage shot (1024x1024, cinematic_closeup)</li>
+                    <li>Görsel 2: Technical/Blueprint (1024x1024, neutral)</li>
+                    <li>Async generation (queue job kullan)</li>
+                    <li>MediaLibraryItem oluştur + metadata</li>
+                    <li>Lightbox wrapper ekle</li>
+                    <li>SEO tags inject et (alt, title, loading=lazy)</li>
+                </ul>
+
+                <div class="code-block">
+                    <code>
+// Örnek prompt generation
+$prompt1 = "Close-up photo of {$productTitle} being installed,
+           industrial environment, technician hands, professional";
+
+$prompt2 = "Technical blueprint of {$productTitle},
+           engineering drawing, dark blue background, CAD style";
+                    </code>
+                </div>
+            </div>
+
+            <div class="task priority-medium">
+                <h4>🖥️ ADIM 3: Livewire Admin Component</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Http/Livewire/Admin/ProductAIContentGenerator.php</code></p>
+                <p><strong>UI:</strong> Admin > Shop > Products > Manage > "Generate AI Content" button</p>
+                <ul>
+                    <li>Input: Title (otomatik ürün başlığından)</li>
+                    <li>Input: Category (otomatik ürün kategorisinden)</li>
+                    <li>Checkbox: Generate Images (default: true)</li>
+                    <li>Progress indicator (Livewire polling)</li>
+                    <li>Success: Preview + "Apply" button</li>
+                </ul>
+            </div>
+
+            <div class="task priority-medium">
+                <h4>🔄 ADIM 4: Queue Job - Async Image Generation</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Jobs/GenerateProductImagesJob.php</code></p>
+                <p><strong>Neden:</strong> Leonardo AI 20-30 saniye sürebilir, kullanıcı beklemez</p>
+                <ul>
+                    <li>Job parametreleri: product_id, body_placeholder_positions</li>
+                    <li>Leonardo AI görselleri üret</li>
+                    <li>Body'deki placeholder'ları değiştir</li>
+                    <li>SEO tags ekle</li>
+                    <li>Product update + cache clear</li>
+                </ul>
+            </div>
+
+            <div class="task priority-low">
+                <h4>📊 ADIM 5: Analytics & Logging</h4>
+                <p><strong>Dosya:</strong> Mevcut AI credit system kullan</p>
+                <ul>
+                    <li>GPT-4 kullanımı: 5 credit</li>
+                    <li>Leonardo AI (2 görsel): 2 credit</li>
+                    <li>Toplam: 7 credit per product</li>
+                    <li>Log: Generation time, success rate, errors</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-code"></i> Teknik Detaylar</h2>
+
+            <h3>Content Pattern (v4 Yapısı)</h3>
+            <div class="info">
+                <h4>📐 HTML Yapısı</h4>
+                <p>Akson Mili Kapağı örneğindeki pattern:</p>
+                <ul>
+                    <li>Intro Section: 2/3 metin + 1/3 görsel (sticky)</li>
+                    <li>Features Section: "Neden Bu Yedek Parçayı Tercih Etmelisiniz?" - 6 card (grid 3 col)</li>
+                    <li>Use Cases Section: "Hangi Forklift Tiplerinde Kullanılır?" - 3 card</li>
+                    <li>Advantages Box: Gradient kutu, 4 item (grid 2 col)</li>
+                    <li>Image + Text Grid: Görsel + açıklama (2 col)</li>
+                </ul>
+            </div>
+
+            <h3>Primary Specs Yapısı</h3>
+            <div class="code-block">
+                <code>
+[
+    {"label": "Malzeme", "value": "Döküm Çelik"},
+    {"label": "Uyumluluk", "value": "Forklift Arka Dingil"},
+    {"label": "Seri", "value": "414"},
+    {"label": "Kaplama", "value": "Toz Boya Kaplama"}
+]
+
+// NOT: icon field KULLANMA (template parse hatası verir)
+                </code>
+            </div>
+
+            <h3>FAQ Yapısı</h3>
+            <div class="code-block">
+                <code>
+[
+    {
+        "question": {
+            "tr": "414 serisi hangi forklift modellerine uyumludur?",
+            "en": "Which forklift models is the 414 series compatible with?"
+        },
+        "answer": {
+            "tr": "1.5-5 ton kapasiteli standart forklift modellerinde...",
+            "en": "Used in standard forklift models with 1.5-5 ton capacity..."
+        }
+    }
+    // ... 4 soru daha
+]
+                </code>
+            </div>
+
+            <h3>SEO Image Tags</h3>
+            <div class="code-block">
+                <code>
+&lt;a href='{$imageUrl}' class='glightbox block rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-all'&gt;
+    &lt;img
+        src='{$imageUrl}'
+        alt='Forklift Akson Mili Kapağı 414 Serisi Montajı - Arka Dingil Yedek Parça'
+        title='Akson kapağı montaj görseli - OEM kalite forklift yedek parça'
+        class='w-full aspect-square rounded-xl object-cover'
+        loading='lazy'
+    &gt;
+&lt;/a&gt;
+                </code>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-exclamation-triangle"></i> Kritik Noktalar</h2>
+
+            <div class="warning">
+                <h4>⚠️ Tenant Awareness</h4>
+                <p>Sistem multi-tenant! Her tenant farklı sektör:</p>
+                <ul>
+                    <li>Tenant 2 (ixtif.com): industrial_equipment</li>
+                    <li>Tenant 1001 (muzibu.com): music_platform</li>
+                    <li>Content promptunda tenant sektörünü belirt</li>
+                    <li>tenancy()->initialize() unutma!</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Permission Management</h4>
+                <p>Her dosya işleminden sonra:</p>
+                <div class="code-block">
+                    <code>
+sudo chown tuufi.com_:psaserv /path/to/file
+sudo chmod 644 /path/to/file
+                    </code>
+                </div>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Cache Yönetimi</h4>
+                <p>Content update sonrası mutlaka:</p>
+                <div class="code-block">
+                    <code>
+php artisan view:clear
+php artisan responsecache:clear
+curl -s -k https://ixtif.com/opcache-reset.php
+                    </code>
+                </div>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Icon Field Hatası</h4>
+                <p>Primary specs ve FAQ data'da <code>icon</code> field <strong>KULLANMA!</strong></p>
+                <p>Blade template parse hatası verir. Sadece label/value ve question/answer kullan.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-rocket"></i> Uygulama Sırası</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sıra</th>
+                        <th>Dosya/Bileşen</th>
+                        <th>Süre</th>
+                        <th>Bağımlılık</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>ShopProductAIContentService.php</td>
+                        <td>2-3 saat</td>
+                        <td>OpenAI API, AIPromptEnhancer</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>ShopProductImageGenerator.php</td>
+                        <td>2 saat</td>
+                        <td>LeonardoAIService, MediaLibraryItem</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>GenerateProductImagesJob.php</td>
+                        <td>1 saat</td>
+                        <td>Queue, ImageGenerator</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>ProductAIContentGenerator Livewire</td>
+                        <td>3 saat</td>
+                        <td>ContentService, ImageGenerator</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Test + Debug</td>
+                        <td>2 saat</td>
+                        <td>Tüm bileşenler</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 20px; color: #fbbf24;">⏱️ <strong>Toplam Tahmini Süre:</strong> 10-12 saat</p>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-check-circle"></i> Başarı Kriterleri</h2>
+
+            <div class="success">
+                <h4>✅ Sistem Başarılı Sayılır Eğer:</h4>
+                <ul>
+                    <li>Kullanıcı admin panelde tek butona basıyor</li>
+                    <li>30-60 saniye içinde tam içerik hazır (görsellerle)</li>
+                    <li>Content SEO-friendly ve okunabilir</li>
+                    <li>Görseller otomatik embed edilmiş + SEO tagları mevcut</li>
+                    <li>Lightbox çalışıyor</li>
+                    <li>Dark mode uyumlu</li>
+                    <li>Mobil responsive</li>
+                    <li>Bilingual (TR + EN) %100 uyumlu</li>
+                    <li>Cache otomatik temizleniyor</li>
+                    <li>Credit sistemine entegre</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-file-code"></i> Referans Dosyalar</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dosya</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/var/www/vhosts/tuufi.com/httpdocs/public/readme/2025/11/27/product-331-fixed/ai-content-v5.json</code></td>
+                        <td>Akson Mili Kapağı content örneği (final)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modules/MediaManagement/app/Http/Livewire/Admin/AiImageGeneratorComponent.php</code></td>
+                        <td>Leonardo AI entegrasyonu örneği</td>
+                    </tr>
+                    <tr>
+                        <td><code>app/Services/Media/LeonardoAIService.php</code></td>
+                        <td>Leonardo API service</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modules/AI/app/Services/AIPromptEnhancer.php</code></td>
+                        <td>Prompt enhancement (GPT-4)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modules/Shop/resources/views/themes/ixtif/show.blade.php</code></td>
+                        <td>Product detail template (GLightbox mevcut)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından hazırlandı - 2025-11-27<br>
+            📂 Plan Versiyonu: v1
+        </footer>
+    </div>
+</body>
+</html>

@@ -93,8 +93,17 @@ function muzibuApp() {
             { code: '+966', flag: '🇸🇦', name: 'Suudi Arabistan', placeholder: '__ ___ ____', format: 'XX XXX XXXX' }
         ],
         favorites: [],
+
+        // Loading & UI states (KRITIK - bunlar eksikti!)
+        isLoading: true,
+        contentLoaded: false,
+        searchQuery: '',
+        searchResults: [],
+        searchOpen: false,
+        mobileMenuOpen: false,
+
+        // Player states
         isPlaying: false,
-        isLiked: false,
         shuffle: false,
         repeatMode: 'off',
         currentTime: 0,
@@ -104,7 +113,6 @@ function muzibuApp() {
         currentSong: null,
         queue: [],
         queueIndex: 0,
-        isLoading: false,
         isLoggingOut: false,
         currentPath: window.location.pathname,
         _initialized: false,
@@ -154,6 +162,12 @@ function muzibuApp() {
 
             // Load featured playlists on init
             this.loadFeaturedPlaylists();
+
+            // Show content after loading (KRITIK - Alpine.js x-show için)
+            setTimeout(() => {
+                this.isLoading = false;
+                this.contentLoaded = true;
+            }, 500);
 
             // SPA Navigation: Handle browser back/forward
             window.addEventListener('popstate', (e) => {
@@ -208,6 +222,11 @@ function muzibuApp() {
 
         isFavorite(type, id) {
             return this.favorites.includes(`${type}-${id}`);
+        },
+
+        // Alias for compatibility with player bar
+        isLiked(songId) {
+            return this.favorites.includes(`song-${songId}`);
         },
 
         async togglePlayPause() {
@@ -1891,6 +1910,35 @@ function muzibuApp() {
 
             // Reload page to clear all caches
             window.location.reload(true);
+        }
+    }
+}
+
+// Play Limits Component (Guest & Member daily limits)
+function playLimits() {
+    return {
+        showGuestModal: false,
+        showLimitModal: false,
+
+        init() {
+            // Listen for play limit events from muzibuApp
+            window.addEventListener('player:guest-limit', () => {
+                this.showGuestModal = true;
+            });
+
+            window.addEventListener('player:daily-limit', () => {
+                this.showLimitModal = true;
+            });
+        },
+
+        handleGuestRegister() {
+            this.showGuestModal = false;
+            window.location.href = '/register';
+        },
+
+        handleGuestLogin() {
+            this.showGuestModal = false;
+            window.location.href = '/login';
         }
     }
 }

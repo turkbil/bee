@@ -1,124 +1,16 @@
-{{-- Device Limit Modal - Sadece Tenant 1001 (Muzibu) için --}}
+{{-- 
+    Device Limit Modal - Sadece Tenant 1001 (Muzibu) için 
+    
+    ⚠️ ŞU ANDA DEVRE DIŞI ⚠️
+    Backend handlePostLoginDeviceLimit() otomatik eski sessionları temizliyor
+    
+    Açmak için: layouts/app.blade.php'de include satırını uncomment et
+--}}
 @if(tenant() && tenant()->id == 1001)
-<div
-    x-data="{
-        open: false,
-        devices: [],
-        loading: false,
-        errorMessage: '',
+<!-- External CSS -->
+<link rel="stylesheet" href="{{ asset('themes/muzibu/css/components/device-limit-modal.css') }}?v={{ time() }}">
 
-        async checkDeviceLimit() {
-            try {
-                const response = await fetch('/api/devices/check', {
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.limit_exceeded) {
-                    this.devices = data.active_devices;
-                    this.open = true;
-                }
-            } catch (error) {
-                console.error('Device check error:', error);
-            }
-        },
-
-        async terminateDevice(sessionId) {
-            if (!confirm('Bu cihazdan çıkış yapmak istediğinizden emin misiniz?')) {
-                return;
-            }
-
-            this.loading = true;
-            this.errorMessage = '';
-
-            try {
-                const response = await fetch(`/api/devices/${sessionId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Cihazı listeden kaldır
-                    this.devices = this.devices.filter(d => d.id !== sessionId);
-
-                    // Eğer tüm cihazlar kapatıldıysa modal'ı kapat ve login formunu submit et
-                    if (this.devices.length === 0) {
-                        this.open = false;
-                        document.querySelector('form[action=\"{{ route('login') }}\"]').submit();
-                    }
-                } else {
-                    this.errorMessage = data.message || 'Bir hata oluştu';
-                }
-            } catch (error) {
-                this.errorMessage = 'Bağlantı hatası oluştu';
-            } finally {
-                this.loading = false;
-            }
-        },
-
-        async terminateAllDevices() {
-            if (!confirm('Tüm cihazlardan çıkış yapmak istediğinizden emin misiniz?')) {
-                return;
-            }
-
-            this.loading = true;
-            this.errorMessage = '';
-
-            try {
-                const response = await fetch('/api/devices/all', {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    this.open = false;
-                    document.querySelector('form[action=\"{{ route('login') }}\"]').submit();
-                } else {
-                    this.errorMessage = data.message || 'Bir hata oluştu';
-                }
-            } catch (error) {
-                this.errorMessage = 'Bağlantı hatası oluştu';
-            } finally {
-                this.loading = false;
-            }
-        },
-
-        getDeviceIcon(deviceType) {
-            const icons = {
-                'mobile': '📱',
-                'tablet': '💻',
-                'desktop': '🖥️'
-            };
-            return icons[deviceType] || '🖥️';
-        }
-    }"
-    x-init="
-        // Login form submit edildiğinde device limit kontrol et
-        document.querySelector('form[action=\"{{ route('login') }}\"]')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await checkDeviceLimit();
-
-            // Eğer modal açılmadıysa (limit aşılmadıysa) formu submit et
-            if (!open) {
-                e.target.submit();
-            }
-        });
-    "
->
+<div x-data="deviceLimitModal()">
     <!-- Modal Backdrop -->
     <div
         x-show="open"
@@ -129,7 +21,7 @@
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-50"
+        class="device-modal-backdrop"
         @click="open = false"
     ></div>
 
@@ -143,19 +35,19 @@
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        class="device-modal-container"
         @click.away="open = false"
     >
-        <div class="bg-spotify-dark border border-white/10 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden" @click.stop>
+        <div class="device-modal-content" @click.stop>
             <!-- Header -->
-            <div class="px-8 pt-8 pb-4">
+            <div class="device-modal-header">
                 <div class="flex items-start gap-4 mb-4">
-                    <div class="w-14 h-14 bg-spotify-green/20 rounded-full flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-devices text-2xl text-spotify-green"></i>
+                    <div class="device-modal-icon">
+                        <i class="fas fa-devices text-2xl text-green-500"></i>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold text-white mb-1">Cihaz Limiti Aşıldı</h3>
-                        <p class="text-gray-400 text-sm">Giriş yapabilmek için aktif bir cihazdan çıkış yapın</p>
+                        <h3 class="device-modal-title">Cihaz Limiti Aşıldı</h3>
+                        <p class="device-modal-subtitle">Giriş yapabilmek için aktif bir cihazdan çıkış yapın</p>
                     </div>
                 </div>
             </div>
@@ -168,9 +60,9 @@
             </div>
 
             <!-- Device List -->
-            <div class="px-8 py-4 max-h-96 overflow-y-auto">
+            <div class="device-list-container">
                 <template x-for="device in devices" :key="device.id">
-                    <div class="bg-spotify-gray/50 border border-white/5 rounded-xl p-5 mb-3 hover:border-spotify-green/50 hover:bg-spotify-gray/70 transition-all">
+                    <div class="device-item">
                         <div class="flex items-start justify-between">
                             <div class="flex items-start gap-4 flex-1">
                                 <div class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -179,7 +71,7 @@
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 mb-2">
                                         <h4 class="font-semibold text-white" x-text="device.device_name"></h4>
-                                        <span x-show="device.is_current" class="px-2 py-0.5 bg-spotify-green/20 text-spotify-green text-xs rounded-full font-medium">Mevcut</span>
+                                        <span x-show="device.is_current" class="px-2 py-0.5 bg-green-500/20 text-green-500 text-xs rounded-full font-medium">Mevcut</span>
                                     </div>
                                     <div class="flex flex-wrap gap-3 text-xs text-gray-400">
                                         <div class="flex items-center gap-1.5">
@@ -210,7 +102,7 @@
             </div>
 
             <!-- Footer -->
-            <div class="px-8 py-6 bg-spotify-black/50 border-t border-white/5">
+            <div class="device-modal-footer">
                 <div class="flex items-center justify-between gap-3">
                     <button
                         @click="terminateAllDevices()"
@@ -235,7 +127,6 @@
     </div>
 </div>
 
-<style>
-    [x-cloak] { display: none !important; }
-</style>
+<!-- External JavaScript -->
+<script src="{{ asset('themes/muzibu/js/components/device-limit-modal.js') }}?v={{ time() }}"></script>
 @endif

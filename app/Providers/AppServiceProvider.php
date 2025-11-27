@@ -8,6 +8,7 @@ use App\Services\ModuleTenantPermissionService;
 use App\Services\SettingsService;
 use App\Services\TenantCacheManager;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -126,6 +127,10 @@ class AppServiceProvider extends ServiceProvider
             }
         }
         */
+
+        // 🔧 Livewire - Disable bundled Alpine.js (we use CDN)
+        // Livewire 3'te Alpine otomatik inject edilmesini engellemek için
+        // config/livewire.php'de inject_assets = false yapılmalı
 
         // 🔧 Livewire Upload Rules - Runtime override based on authenticated user
         // Must be in boot() to access auth() helper

@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Product AI Content System v2 - Tam Otomasyon Planı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: #fbbf24;
+            margin-bottom: 15px;
+            margin-top: 30px;
+        }
+
+        .task {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .task h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .task p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .task ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .task li {
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .priority-high {
+            border-left-color: #dc2626;
+        }
+
+        .priority-medium {
+            border-left-color: #f59e0b;
+        }
+
+        .priority-low {
+            border-left-color: #10b981;
+        }
+
+        .code-block {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #334155;
+        }
+
+        .code-block code {
+            color: #86efac;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .warning h4 {
+            color: #fca5a5;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .info h4 {
+            color: #93c5fd;
+            margin-bottom: 10px;
+        }
+
+        .success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .success h4 {
+            color: #86efac;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            font-weight: 600;
+        }
+
+        td {
+            color: #cbd5e1;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tag-api { background: #3b82f6; color: white; }
+        .tag-ai { background: #8b5cf6; color: white; }
+        .tag-db { background: #10b981; color: white; }
+        .tag-ui { background: #f59e0b; color: white; }
+
+        .critical {
+            background: rgba(239, 68, 68, 0.2);
+            border: 3px solid #dc2626;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .critical h4 {
+            color: #fca5a5;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 Shop Product AI Content System v2</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-27 (Updated) |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                👤 Hedef: Tam Otomasyonlu + Güvenli İçerik Üretimi
+            </div>
+        </header>
+
+        <section>
+            <h2><i class="fas fa-exclamation-circle"></i> 🚨 KRİTİK KURALLAR (ÖNCE OKU!)</h2>
+
+            <div class="critical">
+                <h4>⚠️ KURAL 1: FİYAT BİLGİSİ ASLA VERİLMEZ</h4>
+                <p><strong>Neden:</strong> Fiyatlar değişkendir, yasal sorumluluk doğurur.</p>
+                <ul>
+                    <li>❌ "Bu ürün 500 TL'dir" - YASAK</li>
+                    <li>❌ "Yaklaşık 1000 TL civarındadır" - YASAK</li>
+                    <li>❌ "Fiyat 100-500 TL arasındadır" - YASAK</li>
+                    <li>✅ "Fiyat bilgisi için bizimle iletişime geçin" - DOĞRU</li>
+                    <li>✅ "Güncel fiyat için arayınız" - DOĞRU</li>
+                </ul>
+            </div>
+
+            <div class="critical">
+                <h4>⚠️ KURAL 2: TEKNİK DETAY VERİLMEZ (Mevcut yoksa)</h4>
+                <p><strong>Neden:</strong> Yanlış teknik bilgi yasal sorumluluk, müşteri memnuniyetsizliği doğurur.</p>
+                <ul>
+                    <li>❌ "Bu ürünün boyutu 50x30 cm'dir" (bilmiyorsan yazma!)</li>
+                    <li>❌ "Ağırlığı 5 kg'dır" (emin değilsen yazma!)</li>
+                    <li>❌ "220V elektrikle çalışır" (spesifikasyon yoksa yazma!)</li>
+                    <li>✅ "Forklift arka dingil sistemlerinde kullanılır" (genel bilgi)</li>
+                    <li>✅ "Endüstriyel ortamlarda yaygın kullanıma sahiptir" (genel)</li>
+                </ul>
+            </div>
+
+            <div class="critical">
+                <h4>⚠️ KURAL 3: MEVCUT İÇERİK VARSA GELİŞTİR, YOKSA GENEL YAZ</h4>
+                <p><strong>İki senaryo:</strong></p>
+
+                <h4 style="margin-top: 20px;">Senaryo A: Mevcut İçerik VAR</h4>
+                <ul>
+                    <li>✅ Mevcut body içeriğini al</li>
+                    <li>✅ Teknik detayları KORU (boyut, ağırlık, voltaj vb.)</li>
+                    <li>✅ Mevcut özellikler üzerinden genişlet</li>
+                    <li>✅ SEO keywords ekle, Google arama terimleri kullan</li>
+                    <li>✅ Pattern v4'e uygun HTML yapısına çevir</li>
+                </ul>
+
+                <h4 style="margin-top: 20px;">Senaryo B: Mevcut İçerik YOK</h4>
+                <ul>
+                    <li>✅ Sadece başlık + kategori bilgisini kullan</li>
+                    <li>✅ Genel tanıtım yap (ne işe yarar, nerede kullanılır)</li>
+                    <li>✅ Spesifik sayı/ölçü VERME</li>
+                    <li>✅ "Detaylı bilgi için iletişime geçin" ifadeleri kullan</li>
+                    <li>✅ SEO-friendly, arama motorlarına uygun yaz</li>
+                </ul>
+            </div>
+
+            <div class="critical">
+                <h4>⚠️ KURAL 4: GOOGLE SEO ÖNCELİKLİ</h4>
+                <ul>
+                    <li>✅ Başlıkta anahtar kelime kullan (örn: "Forklift Akson Kapağı")</li>
+                    <li>✅ Alt başlıklarda long-tail keywords (örn: "Hangi Forklift Tiplerinde Kullanılır?")</li>
+                    <li>✅ İlk paragrafta ana keyword 2-3 kez geçsin</li>
+                    <li>✅ LSI keywords kullan (ilgili terimler: yedek parça, bakım, onarım, servis)</li>
+                    <li>✅ FAQ sorularını Google arama sorguları gibi yaz</li>
+                    <li>✅ İçerikte doğal keyword yoğunluğu (2-3%)</li>
+                </ul>
+            </div>
+
+            <div class="critical">
+                <h4>⚠️ KURAL 5: GÖRSEL STRATEJİSİ</h4>
+                <ul>
+                    <li>❌ Ürünü birebir oluşturmaya ÇALIŞMA!</li>
+                    <li>✅ Foto 1: Genel kullanım ortamı (montaj, atölye, forklift çalışırken)</li>
+                    <li>✅ Foto 2: Sallantılı teknik çizim (blueprint style, schematic)</li>
+                    <li>✅ Görseller "context" sağlar, "exact product" değil</li>
+                    <li>✅ "Professional industrial environment" prompt'ları kullan</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-bullseye"></i> Sistem Hedefi</h2>
+
+            <div class="success">
+                <h4>🎯 Ana Hedef</h4>
+                <p>Shop modülündeki ürünler için AI ile <strong>güvenli ve otomatik</strong> bilingual (TR + EN) içerik üretimi:</p>
+                <ul>
+                    <li>✅ Title + Short Description + Long Body</li>
+                    <li>✅ Primary Specs (4 item - SADECE mevcut bilgilerle)</li>
+                    <li>✅ FAQ Data (5 soru/cevap - genel bilgiler)</li>
+                    <li>✅ SEO Keywords (tags - Google arama terimleri)</li>
+                    <li>✅ AI Generated Images (2 adet - context görselleri)</li>
+                    <li>✅ Görsellere SEO etiketleri (alt, title, loading)</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <h4>💡 Örnek Sonuç</h4>
+                <p>Akson Mili Kapağı - 414 ürünü için üretilen içerik:</p>
+                <ul>
+                    <li>📝 Body TR: 9,000+ karakter (pattern v4)</li>
+                    <li>📝 Body EN: 8,800+ karakter</li>
+                    <li>📊 Primary Specs: 4 item (Malzeme, Uyumluluk, Seri, Kaplama)</li>
+                    <li>❓ FAQ: 5 soru/cevap (bilingual)</li>
+                    <li>🏷️ Tags: 30 keyword (15 TR + 15 EN)</li>
+                    <li>📸 Görseller: 2 adet (montaj + blueprint - 1024x1024)</li>
+                    <li>❌ Fiyat bilgisi: YOK</li>
+                    <li>❌ Spesifik teknik detay: YOK (genel tanıtım)</li>
+                </ul>
+                <p style="margin-top: 10px;">🔗 <a href="https://ixtif.com/shop/akson-mili-kapagi-414" style="color: #93c5fd;">Canlı Örnek</a></p>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-layer-group"></i> Sistem Mimarisi</h2>
+
+            <h3>1. Veri Akışı (Güncellenmiş)</h3>
+            <div class="code-block">
+                <code>
+User Input (Product ID)
+    ↓
+Mevcut İçerik Kontrolü (ShopProduct->body)
+    ↓ VARSA                        ↓ YOKSA
+Mevcut İçeriği Al         Sadece Title+Category Al
+Teknik Detayları Çıkar    Genel Tanıtım Yap
+    ↓                              ↓
+OpenAI GPT-4 (Content Generation)
+    - Fiyat VERİLMEZ
+    - Teknik detay sadece mevcut varsa
+    - Google SEO keywords ekle
+    ↓
+Content Parsing (Title, Specs, Body, FAQ, Tags)
+    ↓
+Leonardo AI (2 Context Görsel - Async)
+    - Görsel 1: Kullanım ortamı
+    - Görsel 2: Teknik çizim (sallantılı)
+    ↓
+Image Embedding (Body içine otomatik)
+    ↓
+SEO Tag Injection (alt, title, loading)
+    ↓
+Database Save (ShopProduct model)
+    ↓
+Cache Clear + OPcache Reset
+                </code>
+            </div>
+
+            <h3>2. Kullanılacak Teknolojiler</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bileşen</th>
+                        <th>Teknoloji</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="tag tag-ai">AI</span> Content Generation</td>
+                        <td>OpenAI GPT-4</td>
+                        <td>Bilingual content (TR + EN), fiyat/teknik detay kuralları</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-ai">AI</span> Image Generation</td>
+                        <td>Leonardo AI (Lucid Origin)</td>
+                        <td>2 context görsel (ortam + çizim)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-api">API</span> Prompt Enhancement</td>
+                        <td>AIPromptEnhancer Service</td>
+                        <td>Görsel promptları optimize eder</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-db">DB</span> Storage</td>
+                        <td>ShopProduct Model</td>
+                        <td>Tenant-aware database</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-db">DB</span> Media Storage</td>
+                        <td>MediaLibraryItem Model</td>
+                        <td>AI görselleri metadata ile saklar</td>
+                    </tr>
+                    <tr>
+                        <td><span class="tag tag-ui">UI</span> Admin Interface</td>
+                        <td>Livewire Component</td>
+                        <td>Tek buton: "Generate AI Content"</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-tasks"></i> Yapılacaklar - Adım Adım</h2>
+
+            <div class="task priority-high">
+                <h4>📝 ADIM 1: AI Content Service Oluştur (GÜNCELLENMİŞ)</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Services/ShopProductAIContentService.php</code></p>
+                <p><strong>Sorumluluk:</strong> Ürün bilgilerinden GPT-4 ile GÜVENLİ bilingual content üretimi</p>
+
+                <h4 style="margin-top: 20px; color: #fbbf24;">Önemli Metodlar:</h4>
+                <ul>
+                    <li><code>generateFullContent($productId, $options)</code> - Ana metod</li>
+                    <li><code>extractExistingContent($product)</code> - Mevcut içerikten teknik detay çıkar</li>
+                    <li><code>buildSafePrompt($data, $hasExistingContent)</code> - Fiyat/teknik detay kuralları</li>
+                    <li><code>validateContent($content)</code> - Fiyat/teknik detay kontrolü</li>
+                </ul>
+
+                <h4 style="margin-top: 20px; color: #fbbf24;">Prompt Kuralları:</h4>
+                <div class="code-block">
+                    <code>
+// EĞER MEVCUT İÇERİK VARSA:
+"Improve and expand this existing content:
+{$existingBody}
+
+RULES:
+- KEEP all technical specifications (dimensions, weight, voltage, etc.)
+- EXPAND general description
+- ADD SEO keywords: {$seoKeywords}
+- Pattern: v4 HTML structure
+- DO NOT mention price
+- Bilingual: TR + EN"
+
+// EĞER MEVCUT İÇERİK YOKSA:
+"Generate product content from title and category:
+Title: {$title}
+Category: {$category}
+
+RULES:
+- General description only (what it is, where it's used)
+- NO specific technical details (no dimensions, weight, voltage)
+- NO price information
+- Use phrases: 'contact us for details', 'call for specifications'
+- SEO keywords: {$seoKeywords}
+- Pattern: v4 HTML structure
+- Bilingual: TR + EN"
+                    </code>
+                </div>
+            </div>
+
+            <div class="task priority-high">
+                <h4>🎨 ADIM 2: AI Image Generator Integration (GÜNCELLENMİŞ)</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Services/ShopProductImageGenerator.php</code></p>
+                <p><strong>Sorumluluk:</strong> Leonardo AI ile 2 CONTEXT görsel üret</p>
+
+                <h4 style="margin-top: 20px; color: #fbbf24;">Görsel Stratejisi:</h4>
+                <ul>
+                    <li>Görsel 1: <strong>Kullanım Ortamı</strong> (genel industrial scene, montaj, atölye)</li>
+                    <li>Görsel 2: <strong>Sallantılı Teknik Çizim</strong> (blueprint style, schematic)</li>
+                    <li>❌ Ürünü birebir oluşturmaya ÇALIŞMA!</li>
+                    <li>✅ Context ve atmosfer sağla</li>
+                </ul>
+
+                <div class="code-block">
+                    <code>
+// Görsel 1: Kullanım Ortamı (GENEL)
+$prompt1 = "Professional industrial environment photo,
+           {$category} being used in workshop setting,
+           technician working, tools and equipment visible,
+           cinematic lighting, professional scene,
+           NO specific product focus, general context";
+
+// Görsel 2: Teknik Çizim (SALLANTI)
+$prompt2 = "Technical blueprint illustration style,
+           {$category} schematic drawing,
+           engineering aesthetic, dark blue background,
+           white and orange lines, CAD style,
+           generic technical diagram, NOT exact product";
+                    </code>
+                </div>
+            </div>
+
+            <div class="task priority-medium">
+                <h4>🖥️ ADIM 3: Livewire Admin Component (GÜNCELLENMİŞ)</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Http/Livewire/Admin/ProductAIContentGenerator.php</code></p>
+                <p><strong>UI:</strong> Admin > Shop > Products > Manage > "Generate AI Content" button</p>
+
+                <h4 style="margin-top: 20px; color: #fbbf24;">Input Options:</h4>
+                <ul>
+                    <li>Checkbox: <strong>Mevcut içeriği kullan</strong> (default: true if content exists)</li>
+                    <li>Checkbox: <strong>Görseller oluştur</strong> (default: true)</li>
+                    <li>Checkbox: <strong>Tüm ürünlere uygula</strong> (batch mode)</li>
+                    <li>Textarea: <strong>Ekstra SEO keywords</strong> (optional)</li>
+                </ul>
+
+                <h4 style="margin-top: 20px; color: #fbbf24;">Validation:</h4>
+                <ul>
+                    <li>Content'te fiyat var mı kontrol et</li>
+                    <li>Mevcut içerik yoksa teknik detay var mı kontrol et</li>
+                    <li>Uyarı göster: "İçerik güvenli görünüyor"</li>
+                </ul>
+            </div>
+
+            <div class="task priority-medium">
+                <h4>🔄 ADIM 4: Queue Job - Async Image Generation</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Jobs/GenerateProductImagesJob.php</code></p>
+                <p><strong>Neden:</strong> Leonardo AI 20-30 saniye sürebilir, kullanıcı beklemez</p>
+                <ul>
+                    <li>Job parametreleri: product_id, body_placeholder_positions</li>
+                    <li>Leonardo AI görselleri üret (context görseller)</li>
+                    <li>Body'deki placeholder'ları değiştir</li>
+                    <li>SEO tags ekle</li>
+                    <li>Product update + cache clear</li>
+                </ul>
+            </div>
+
+            <div class="task priority-high">
+                <h4>✅ ADIM 5: Content Validation System (YENİ!)</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Services/ContentValidator.php</code></p>
+                <p><strong>Sorumluluk:</strong> Üretilen içeriği kurallarla kontrol et</p>
+
+                <h4 style="margin-top: 20px; color: #fbbf24;">Kontroller:</h4>
+                <ul>
+                    <li>✅ Fiyat keywords kontrolü (TL, $, €, fiyat, price, cost)</li>
+                    <li>✅ Teknik detay kontrolü (mevcut içerik yoksa)</li>
+                    <li>✅ SEO keyword yoğunluğu (2-3%)</li>
+                    <li>✅ Alt/title tag varlığı</li>
+                    <li>✅ Bilingual uyumluluk (TR/EN karakter sayısı farkı <%20)</li>
+                </ul>
+
+                <div class="code-block">
+                    <code>
+public function validate($content, $hasExistingContent): array
+{
+    $errors = [];
+
+    // Fiyat kontrolü
+    if ($this->containsPrice($content)) {
+        $errors[] = 'Content contains price information';
+    }
+
+    // Teknik detay kontrolü
+    if (!$hasExistingContent && $this->containsTechnicalSpecs($content)) {
+        $errors[] = 'Content contains specific technical details';
+    }
+
+    return $errors;
+}
+                    </code>
+                </div>
+            </div>
+
+            <div class="task priority-low">
+                <h4>📊 ADIM 6: Analytics & Logging</h4>
+                <p><strong>Dosya:</strong> Mevcut AI credit system kullan</p>
+                <ul>
+                    <li>GPT-4 kullanımı: 5 credit</li>
+                    <li>Leonardo AI (2 görsel): 2 credit</li>
+                    <li>Toplam: 7 credit per product</li>
+                    <li>Log: Generation time, success rate, validation errors</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-code"></i> Teknik Detaylar</h2>
+
+            <h3>Content Pattern (v4 Yapısı)</h3>
+            <div class="info">
+                <h4>📐 HTML Yapısı</h4>
+                <p>Akson Mili Kapağı örneğindeki pattern:</p>
+                <ul>
+                    <li>Intro Section: 2/3 metin + 1/3 görsel (sticky)</li>
+                    <li>Features Section: "Neden Bu Yedek Parçayı Tercih Etmelisiniz?" - 6 card (grid 3 col)</li>
+                    <li>Use Cases Section: "Hangi Forklift Tiplerinde Kullanılır?" - 3 card</li>
+                    <li>Advantages Box: Gradient kutu, 4 item (grid 2 col)</li>
+                    <li>Image + Text Grid: Görsel + açıklama (2 col)</li>
+                </ul>
+            </div>
+
+            <h3>Primary Specs Yapısı (GÜNCELLENMİŞ)</h3>
+            <div class="code-block">
+                <code>
+// MEVCUT İÇERİK VARSA (teknik detay çıkar):
+[
+    {"label": "Malzeme", "value": "Döküm Çelik"},
+    {"label": "Boyut", "value": "150mm"},
+    {"label": "Ağırlık", "value": "2.5 kg"},
+    {"label": "Kaplama", "value": "Toz Boya"}
+]
+
+// MEVCUT İÇERİK YOKSA (genel bilgi):
+[
+    {"label": "Kategori", "value": "Forklift Yedek Parça"},
+    {"label": "Kullanım Alanı", "value": "Endüstriyel Ekipman"},
+    {"label": "Uyumluluk", "value": "Tüm Forklift Tipleri"},
+    {"label": "Bilgi", "value": "Detay için arayın"}
+]
+
+// NOT: icon field KULLANMA (template parse hatası verir)
+                </code>
+            </div>
+
+            <h3>SEO Keywords Strategy</h3>
+            <div class="info">
+                <h4>🔍 Google Arama Terimleri</h4>
+                <p>Her ürün için 30 keyword (15 TR + 15 EN):</p>
+                <ul>
+                    <li><strong>Ana Keyword:</strong> Ürün adı (örn: "forklift akson kapağı")</li>
+                    <li><strong>Long-tail:</strong> Kategori + özellik (örn: "forklift arka dingil yedek parça")</li>
+                    <li><strong>LSI Keywords:</strong> İlgili terimler (bakım, onarım, servis, montaj)</li>
+                    <li><strong>Location:</strong> Türkiye, İstanbul (opsiyonel)</li>
+                    <li><strong>Brand:</strong> İXTİF, OEM kalite</li>
+                </ul>
+            </div>
+
+            <h3>SEO Image Tags (Otomatik)</h3>
+            <div class="code-block">
+                <code>
+&lt;a href='{$imageUrl}' class='glightbox block rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-all'&gt;
+    &lt;img
+        src='{$imageUrl}'
+        alt='Forklift {$productTitle} Kullanım Ortamı - Endüstriyel Ekipman'
+        title='{$productTitle} montaj görseli - {$category}'
+        class='w-full aspect-square rounded-xl object-cover'
+        loading='lazy'
+    &gt;
+&lt;/a&gt;
+                </code>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-exclamation-triangle"></i> Kritik Noktalar</h2>
+
+            <div class="warning">
+                <h4>⚠️ Tenant Awareness</h4>
+                <p>Sistem multi-tenant! Her tenant farklı sektör:</p>
+                <ul>
+                    <li>Tenant 2 (ixtif.com): industrial_equipment</li>
+                    <li>Tenant 1001 (muzibu.com): music_platform</li>
+                    <li>Content promptunda tenant sektörünü belirt</li>
+                    <li>tenancy()->initialize() unutma!</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Permission Management</h4>
+                <p>Her dosya işleminden sonra:</p>
+                <div class="code-block">
+                    <code>
+sudo chown tuufi.com_:psaserv /path/to/file
+sudo chmod 644 /path/to/file
+                    </code>
+                </div>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Cache Yönetimi</h4>
+                <p>Content update sonrası mutlaka:</p>
+                <div class="code-block">
+                    <code>
+php artisan view:clear
+php artisan responsecache:clear
+curl -s -k https://ixtif.com/opcache-reset.php
+                    </code>
+                </div>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Icon Field Hatası</h4>
+                <p>Primary specs ve FAQ data'da <code>icon</code> field <strong>KULLANMA!</strong></p>
+                <p>Blade template parse hatası verir. Sadece label/value ve question/answer kullan.</p>
+            </div>
+
+            <div class="critical">
+                <h4>🚨 BATCH MODE UYARISI</h4>
+                <p>"Tüm ürünlere uygula" seçeneği:</p>
+                <ul>
+                    <li>⚠️ Onay popup göster: "X adet ürün güncellenecek, emin misiniz?"</li>
+                    <li>⚠️ Rate limiting: 1 ürün/5 saniye (Leonardo AI limiti)</li>
+                    <li>⚠️ Progress bar göster</li>
+                    <li>⚠️ Hata olursa devam et, log kaydet</li>
+                    <li>⚠️ Sonuç raporu: X başarılı, Y hatalı</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-rocket"></i> Uygulama Sırası</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sıra</th>
+                        <th>Dosya/Bileşen</th>
+                        <th>Süre</th>
+                        <th>Bağımlılık</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>ContentValidator.php</td>
+                        <td>1 saat</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>ShopProductAIContentService.php</td>
+                        <td>3 saat</td>
+                        <td>OpenAI API, AIPromptEnhancer, Validator</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>ShopProductImageGenerator.php</td>
+                        <td>2 saat</td>
+                        <td>LeonardoAIService, MediaLibraryItem</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>GenerateProductImagesJob.php</td>
+                        <td>1 saat</td>
+                        <td>Queue, ImageGenerator</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>ProductAIContentGenerator Livewire</td>
+                        <td>4 saat</td>
+                        <td>ContentService, ImageGenerator, Validator</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Test + Debug</td>
+                        <td>3 saat</td>
+                        <td>Tüm bileşenler</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 20px; color: #fbbf24;">⏱️ <strong>Toplam Tahmini Süre:</strong> 14-16 saat</p>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-check-circle"></i> Başarı Kriterleri</h2>
+
+            <div class="success">
+                <h4>✅ Sistem Başarılı Sayılır Eğer:</h4>
+                <ul>
+                    <li>✅ Kullanıcı admin panelde tek butona basıyor</li>
+                    <li>✅ 30-60 saniye içinde tam içerik hazır (görsellerle)</li>
+                    <li>✅ <strong>FİYAT BİLGİSİ YOK</strong></li>
+                    <li>✅ <strong>Mevcut içerik yoksa teknik detay YOK</strong></li>
+                    <li>✅ Content SEO-friendly ve okunabilir</li>
+                    <li>✅ Görseller otomatik embed edilmiş + SEO tagları mevcut</li>
+                    <li>✅ Lightbox çalışıyor</li>
+                    <li>✅ Dark mode uyumlu</li>
+                    <li>✅ Mobil responsive</li>
+                    <li>✅ Bilingual (TR + EN) %100 uyumlu</li>
+                    <li>✅ Cache otomatik temizleniyor</li>
+                    <li>✅ Credit sistemine entegre</li>
+                    <li>✅ Validation errors loglaniyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-file-code"></i> Referans Dosyalar</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dosya</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>/var/www/vhosts/tuufi.com/httpdocs/public/readme/2025/11/27/product-331-fixed/ai-content-v5.json</code></td>
+                        <td>Akson Mili Kapağı content örneği (final) - MEVCUT İÇERİK YOKTU</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modules/MediaManagement/app/Http/Livewire/Admin/AiImageGeneratorComponent.php</code></td>
+                        <td>Leonardo AI entegrasyonu örneği</td>
+                    </tr>
+                    <tr>
+                        <td><code>app/Services/Media/LeonardoAIService.php</code></td>
+                        <td>Leonardo API service</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modules/AI/app/Services/AIPromptEnhancer.php</code></td>
+                        <td>Prompt enhancement (GPT-4)</td>
+                    </tr>
+                    <tr>
+                        <td><code>Modules/Shop/resources/views/themes/ixtif/show.blade.php</code></td>
+                        <td>Product detail template (GLightbox mevcut)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-list-check"></i> Test Senaryoları</h2>
+
+            <div class="task">
+                <h4>Test 1: Mevcut İçerik VAR</h4>
+                <ul>
+                    <li>Ürün seç: Body dolu olan</li>
+                    <li>"Generate AI Content" tıkla</li>
+                    <li>Beklenen: Mevcut teknik detaylar korundu mu?</li>
+                    <li>Beklenen: İçerik genişledi mi?</li>
+                    <li>Beklenen: SEO keywords eklendi mi?</li>
+                </ul>
+            </div>
+
+            <div class="task">
+                <h4>Test 2: Mevcut İçerik YOK</h4>
+                <ul>
+                    <li>Ürün seç: Body boş olan</li>
+                    <li>"Generate AI Content" tıkla</li>
+                    <li>Beklenen: Genel tanıtım var mı?</li>
+                    <li>Beklenen: Spesifik sayı/ölçü YOK mu?</li>
+                    <li>Beklenen: "İletişime geçin" ifadeleri var mı?</li>
+                </ul>
+            </div>
+
+            <div class="task">
+                <h4>Test 3: Validation</h4>
+                <ul>
+                    <li>Content'i kontrol et</li>
+                    <li>Beklenen: Fiyat keywords YOK mu? (TL, $, fiyat, price)</li>
+                    <li>Beklenen: Mevcut içerik yoksa teknik detay YOK mu?</li>
+                    <li>Beklenen: SEO keyword yoğunluğu 2-3% arasında mı?</li>
+                </ul>
+            </div>
+
+            <div class="task">
+                <h4>Test 4: Görseller</h4>
+                <ul>
+                    <li>Görseller oluşturuldu mu?</li>
+                    <li>Beklenen: 2 adet context görsel (montaj + blueprint)</li>
+                    <li>Beklenen: Alt/title tags mevcut mu?</li>
+                    <li>Beklenen: Lightbox açılıyor mu?</li>
+                    <li>Beklenen: Görseller ürünü birebir göstermiyor mu?</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından hazırlandı - 2025-11-27<br>
+            📂 Plan Versiyonu: v2 (Updated with safety rules)
+        </footer>
+    </div>
+</body>
+</html>

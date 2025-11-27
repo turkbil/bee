@@ -1,0 +1,156 @@
+# ErrorException - Internal Server Error
+Attempt to read property "uri" on null
+
+PHP 8.3.28
+Laravel 12.32.5
+muzibu.com.tr
+
+## Stack Trace
+
+0 - vendor/livewire/livewire/src/Mechanisms/FrontendAssets/FrontendAssets.php:157
+1 - vendor/livewire/livewire/src/Mechanisms/FrontendAssets/FrontendAssets.php:144
+2 - resources/views/themes/muzibu/layouts/app.blade.php:93
+3 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
+4 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+5 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
+6 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
+7 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
+8 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
+9 - vendor/laravel/framework/src/Illuminate/View/View.php:208
+10 - vendor/laravel/framework/src/Illuminate/View/View.php:191
+11 - vendor/laravel/framework/src/Illuminate/View/View.php:160
+12 - Modules/Muzibu/resources/views/themes/muzibu/home.blade.php:212
+13 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
+14 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+15 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
+16 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:22
+17 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
+18 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:10
+19 - vendor/laravel/framework/src/Illuminate/View/View.php:208
+20 - vendor/laravel/framework/src/Illuminate/View/View.php:191
+21 - vendor/laravel/framework/src/Illuminate/View/View.php:160
+22 - vendor/laravel/framework/src/Illuminate/Http/Response.php:78
+23 - vendor/laravel/framework/src/Illuminate/Http/Response.php:34
+24 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:939
+25 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:906
+26 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+27 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+28 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+29 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+30 - app/Http/Middleware/UnderConstructionProtection.php:20
+31 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+32 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+33 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+34 - app/Http/Middleware/RootOnlyDebugbar.php:35
+35 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+36 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
+37 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+38 - app/Http/Middleware/DatabasePoolMiddleware.php:58
+39 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+40 - app/Http/Middleware/SecurityHeaders.php:18
+41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+42 - app/Http/Middleware/CheckThemeStatus.php:40
+43 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+44 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
+45 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+46 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+47 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+48 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+49 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+50 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+51 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+52 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+53 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+54 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+55 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+56 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+57 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+58 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+59 - app/Http/Middleware/InitializeTenancy.php:104
+60 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+61 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+62 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+63 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+64 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+65 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+66 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+67 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+68 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+69 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+70 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+71 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+72 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+73 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
+74 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+75 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+76 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:51
+77 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+78 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+79 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+80 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+81 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+82 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+83 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+84 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+85 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+86 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+87 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+88 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+89 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+90 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+91 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+92 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+93 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+94 - public/index.php:20
+
+## Request
+
+GET /
+
+## Headers
+
+* **cookie**: siteTextColor=#ffffff; mzb_auth_1001=e115fe262e81e251a6a3d6a41c524be4; last_activity_read=1764129272; mzb_auth_=e115fe262e81e251a6a3d6a41c524be4; XSRF-TOKEN=eyJpdiI6Im91ZjI5RVJ5T3R4RkRFQkowclBDQWc9PSIsInZhbHVlIjoiQWJGL0lhdXk4UElUQ3V6MUt2a0VXa1A5WnVOc0llSi9IaVhvbG13c2lxWW5uWndZLzJOTXRQKzJuaHdmS1QyNUdvQ1YwRWdhcVg2YWZYS2d5TzFjLzQyMk1pNWNjcjhBb3phTmhXcEZEcTVSUE80NXZHTU9aNXJJWUIzL1d1VGsiLCJtYWMiOiJkODY3MGY1MjgwYWFlZThhN2RhNWE1YTcxYjlkZWY5MmJmNzViNmFlZWM0YmVhYmE1ODdjYTFhZGEyZDgzMTYyIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6IkxYVHdkVDhhNTRuSWlHamRoQVJRdnc9PSIsInZhbHVlIjoiaWxxMExXS0hCdDBoT3hWOE0vNDRObzdaZkUvVHcxNnZFTXo5azVHdlgvWlR5d2lvRGlYSC9ZVERNN2g4N1lnVUowN2hxT3QzYnRNMXN3VWp4YVJYV2l3SWZpQnJESFJjeHYxZHR1NXBEMndxcHM3amVHeVluSDhoUzVtQUtYdXUiLCJtYWMiOiIyOGQyNDlkZmNjNTgyOTc4NzZmZjZmMTljNTNlYjEwYTYwNjRlODQ4ZjEzMDk4M2RmNWEwZWMxNmVkNjlhNzM4IiwidGFnIjoiIn0%3D
+* **priority**: u=0, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **referer**: https://muzibu.com.tr/
+* **sec-fetch-dest**: document
+* **sec-fetch-user**: ?1
+* **sec-fetch-mode**: navigate
+* **sec-fetch-site**: same-origin
+* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+* **upgrade-insecure-requests**: 1
+* **dnt**: 1
+* **sec-ch-ua-platform**: "macOS"
+* **sec-ch-ua-mobile**: ?0
+* **sec-ch-ua**: "Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
+* **cache-control**: no-cache
+* **pragma**: no-cache
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 176.40.229.153
+* **host**: muzibu.com.tr
+
+## Route Context
+
+controller: Modules\Muzibu\app\Http\Controllers\Front\HomeController@index
+route name: muzibu.home
+middleware: web, App\Http\Middleware\InitializeTenancy
+
+## Route Parameters
+
+No route parameter data available.
+
+## Database Queries
+
+* mysql - SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'tenant_muzibu_1528d0' (1.74 ms)
+* mysql - select * from `domains` where `domains`.`tenant_id` = 1001 and `domains`.`tenant_id` is not null (0.57 ms)
+* mysql - select * from `sessions` where `id` = 'QWsL7ImtG5bj2BPXwySyR7LNj5QQkoBl7RG9gver' limit 1 (0.45 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 1001 limit 1 (0.44 ms)
+* tenant - select * from `users` where `id` = 7 and `users`.`deleted_at` is null limit 1 (1.14 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (7) and `model_has_roles`.`model_type` = 'App\Models\User' (0.63 ms)
+* tenant - select * from `muzibu_playlists` where `is_active` = 1 and `is_system` = 1 order by `created_at` desc limit 10 (0.67 ms)
+* tenant - select `muzibu_albums`.`album_id`, `muzibu_albums`.`title`, `muzibu_albums`.`slug`, `muzibu_albums`.`media_id`, `muzibu_albums`.`created_at`, `muzibu_artists`.`title` as `artist_title` from `muzibu_albums` inner join `muzibu_artists` on `muzibu_albums`.`artist_id` = `muzibu_artists`.`artist_id` where `muzibu_albums`.`is_active` = 1 order by `muzibu_albums`.`created_at` desc limit 10 (0.54 ms)
+* tenant - select `muzibu_songs`.`song_id`, `muzibu_songs`.`title` as `song_title`, `muzibu_songs`.`slug` as `song_slug`, `muzibu_songs`.`duration`, `muzibu_songs`.`play_count`, `muzibu_albums`.`album_id`, `muzibu_albums`.`title` as `album_title`, `muzibu_albums`.`media_id` as `album_cover`, `muzibu_artists`.`artist_id`, `muzibu_artists`.`title` as `artist_title` from `muzibu_songs` inner join `muzibu_albums` on `muzibu_songs`.`album_id` = `muzibu_albums`.`album_id` inner join `muzibu_artists` on `muzibu_albums`.`artist_id` = `muzibu_artists`.`artist_id` where `muzibu_songs`.`is_active` = 1 order by `muzibu_songs`.`play_count` desc limit 20 (1.68 ms)
+* tenant - select `genre_id`, `title`, `slug` from `muzibu_genres` where `is_active` = 1 (0.38 ms)

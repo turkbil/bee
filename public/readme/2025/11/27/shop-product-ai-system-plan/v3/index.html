@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Product AI Content System v3 - Final Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: #fbbf24;
+            margin-bottom: 15px;
+            margin-top: 30px;
+        }
+
+        .flow-diagram {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 2px solid #3b82f6;
+        }
+
+        .flow-step {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+        }
+
+        .flow-step.conditional {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .flow-step.branch-a {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            margin-left: 40px;
+        }
+
+        .flow-step.branch-b {
+            border-left-color: #dc2626;
+            background: rgba(220, 38, 38, 0.1);
+            margin-left: 40px;
+        }
+
+        .task {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .task h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .task p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .task ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .task li {
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .code-block {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #334155;
+        }
+
+        .code-block code {
+            color: #86efac;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .warning h4 {
+            color: #fca5a5;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .info h4 {
+            color: #93c5fd;
+            margin-bottom: 10px;
+        }
+
+        .success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .success h4 {
+            color: #86efac;
+            margin-bottom: 10px;
+        }
+
+        .critical {
+            background: rgba(239, 68, 68, 0.2);
+            border: 3px solid #dc2626;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .critical h4 {
+            color: #fca5a5;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            font-weight: 600;
+        }
+
+        td {
+            color: #cbd5e1;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 Shop Product AI Content System v3</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-27 (Final) |
+                🎯 Hedef: Sadece Yedek Parça + Variant Olmayan Ana Ürünler |
+                ⚡ Strateji: Mevcut İçerik Kontrolü → Farklı Akış
+            </div>
+        </header>
+
+        <section>
+            <h2><i class="fas fa-filter"></i> 🎯 ÜRÜN FİLTRELEME KURALLARI</h2>
+
+            <div class="critical">
+                <h4>⚠️ SADECE BU ÜRÜNLER İŞLENECEK</h4>
+                <ul>
+                    <li>✅ <strong>Kategori:</strong> Yedek Parça (category_id = 7 veya parent category = 7)</li>
+                    <li>✅ <strong>Variant:</strong> Ana ürün (parent_id IS NULL veya parent_id = 0)</li>
+                    <li>❌ <strong>Variant ürünler:</strong> İŞLENMEZ (child products skip edilir)</li>
+                    <li>❌ <strong>Forklift/Transpalet:</strong> İŞLENMEZ (sadece yedek parça!)</li>
+                </ul>
+
+                <div class="code-block" style="margin-top: 15px;">
+                    <code>
+// Filtreleme sorgusu
+ShopProduct::where('category_id', 7)  // Yedek Parça kategorisi
+    ->orWhereHas('category', fn($q) => $q->where('parent_id', 7))
+    ->where(function($q) {
+        $q->whereNull('parent_id')
+          ->orWhere('parent_id', 0);
+    })
+    ->get();
+
+// Açıklama:
+// - category_id = 7: Direkt yedek parça kategorisinde
+// - parent category = 7: Alt kategoride ama yedek parçaya ait
+// - parent_id IS NULL: Ana ürün (variant değil)
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-sitemap"></i> DOĞRU HİYERARŞİ - KARAR AKIŞI</h2>
+
+            <div class="flow-diagram">
+                <h3 style="color: #93c5fd; margin-top: 0;">📊 Sistem Akış Şeması</h3>
+
+                <div class="flow-step">
+                    <strong>BAŞLANGIÇ:</strong> Kullanıcı "Generate AI Content" butonuna tıklar
+                </div>
+
+                <div class="flow-step">
+                    <strong>ADIM 1:</strong> Ürün filtreleme
+                    <ul style="margin-top: 10px;">
+                        <li>Kategori = Yedek Parça mı? ✅/❌</li>
+                        <li>Variant değil mi? (parent_id IS NULL) ✅/❌</li>
+                        <li>Her ikisi de ✅ ise devam, değilse DURDUR</li>
+                    </ul>
+                </div>
+
+                <div class="flow-step conditional">
+                    <strong>ADIM 2 (KRİTİK):</strong> Mevcut içerik kontrolü
+                    <div class="code-block" style="margin-top: 10px;">
+                        <code>
+$hasContent = !empty($product->body['tr']) && strlen($product->body['tr']) > 100;
+
+if ($hasContent) {
+    // BRANCH A: Mevcut içerik VAR
+} else {
+    // BRANCH B: Mevcut içerik YOK
+}
+                        </code>
+                    </div>
+                </div>
+
+                <h4 style="color: #86efac; margin-top: 30px;">🟢 BRANCH A: Mevcut İçerik VAR</h4>
+
+                <div class="flow-step branch-a">
+                    <strong>A1:</strong> Mevcut içeriği parse et
+                    <ul style="margin-top: 10px;">
+                        <li>Teknik detayları çıkar (boyut, ağırlık, voltaj, malzeme)</li>
+                        <li>Primary specs varsa al</li>
+                        <li>Mevcut FAQ varsa al</li>
+                    </ul>
+                </div>
+
+                <div class="flow-step branch-a">
+                    <strong>A2:</strong> GPT-4 Prompt (Geliştirme Modu)
+                    <div class="code-block" style="margin-top: 10px;">
+                        <code>
+"IMPROVE and EXPAND this existing content:
+{$existingBody}
+
+EXISTING SPECS:
+{$extractedSpecs}
+
+RULES:
+✅ KEEP all technical details
+✅ EXPAND descriptions
+✅ ADD SEO keywords
+✅ Pattern v4 HTML
+❌ NO price information
+Bilingual: TR + EN"
+                        </code>
+                    </div>
+                </div>
+
+                <div class="flow-step branch-a">
+                    <strong>A3:</strong> Content üret + Görseller
+                    <ul style="margin-top: 10px;">
+                        <li>GPT-4 response → Parse</li>
+                        <li>Leonardo AI 2 görsel (context)</li>
+                        <li>Embed images + SEO tags</li>
+                    </ul>
+                </div>
+
+                <h4 style="color: #fca5a5; margin-top: 30px;">🔴 BRANCH B: Mevcut İçerik YOK</h4>
+
+                <div class="flow-step branch-b">
+                    <strong>B1:</strong> Sadece başlık + kategori al
+                    <ul style="margin-top: 10px;">
+                        <li>Title: {$product->title}</li>
+                        <li>Category: {$category->name}</li>
+                        <li>Başka BİLGİ YOK!</li>
+                    </ul>
+                </div>
+
+                <div class="flow-step branch-b">
+                    <strong>B2:</strong> GPT-4 Prompt (Güvenli Mod)
+                    <div class="code-block" style="margin-top: 10px;">
+                        <code>
+"Generate GENERAL product content:
+Title: {$title}
+Category: Forklift Yedek Parça
+
+RULES:
+✅ General description ONLY
+❌ NO specific dimensions/weight/voltage
+❌ NO price information
+✅ Use phrases: 'contact for details'
+✅ SEO keywords
+✅ Pattern v4 HTML
+Bilingual: TR + EN"
+                        </code>
+                    </div>
+                </div>
+
+                <div class="flow-step branch-b">
+                    <strong>B3:</strong> Content üret + Görseller
+                    <ul style="margin-top: 10px;">
+                        <li>GPT-4 response → Parse</li>
+                        <li>Leonardo AI 2 görsel (context)</li>
+                        <li>Embed images + SEO tags</li>
+                    </ul>
+                </div>
+
+                <div class="flow-step" style="margin-top: 30px;">
+                    <strong>SON ADIM:</strong> Validation + Save
+                    <ul style="margin-top: 10px;">
+                        <li>Fiyat keywords kontrolü ❌</li>
+                        <li>Branch B ise teknik detay kontrolü ❌</li>
+                        <li>SEO keyword yoğunluğu ✅</li>
+                        <li>Database save + Cache clear</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-exclamation-circle"></i> 🚨 KRİTİK KURALLAR</h2>
+
+            <div class="critical">
+                <h4>⚠️ KURAL 1: FİYAT BİLGİSİ ASLA VERİLMEZ</h4>
+                <ul>
+                    <li>❌ "500 TL", "1000 $", "fiyat 100-500 TL"</li>
+                    <li>✅ "Fiyat için arayın", "Güncel fiyat için iletişime geçin"</li>
+                </ul>
+            </div>
+
+            <div class="critical">
+                <h4>⚠️ KURAL 2: TEKNİK DETAY (Sadece Mevcut İçerik Varsa)</h4>
+                <ul>
+                    <li><strong>Branch A (Mevcut VAR):</strong> ✅ Teknik detayları KORU ve kullan</li>
+                    <li><strong>Branch B (Mevcut YOK):</strong> ❌ Spesifik sayı/ölçü VERME</li>
+                </ul>
+            </div>
+
+            <div class="critical">
+                <h4>⚠️ KURAL 3: GOOGLE SEO ÖNCELİKLİ</h4>
+                <ul>
+                    <li>✅ Başlıkta keyword (örn: "Forklift Akson Kapağı")</li>
+                    <li>✅ Long-tail keywords (örn: "forklift arka dingil yedek parça")</li>
+                    <li>✅ LSI keywords (bakım, onarım, servis, montaj)</li>
+                    <li>✅ FAQ = Google arama sorguları</li>
+                </ul>
+            </div>
+
+            <div class="critical">
+                <h4>⚠️ KURAL 4: GÖRSEL STRATEJİSİ</h4>
+                <ul>
+                    <li>❌ Ürünü birebir oluşturma!</li>
+                    <li>✅ Foto 1: Kullanım ortamı (montaj, atölye)</li>
+                    <li>✅ Foto 2: Sallantılı teknik çizim (blueprint)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-tasks"></i> Yapılacaklar - Adım Adım</h2>
+
+            <div class="task">
+                <h4>📝 ADIM 1: Product Filter Service</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Services/ProductFilterService.php</code></p>
+                <p><strong>Sorumluluk:</strong> Sadece yedek parça + variant olmayan ürünleri filtrele</p>
+
+                <div class="code-block">
+                    <code>
+class ProductFilterService
+{
+    public function getEligibleProducts(): Collection
+    {
+        return ShopProduct::where('category_id', 7)
+            ->orWhereHas('category', fn($q) => $q->where('parent_id', 7))
+            ->where(function($q) {
+                $q->whereNull('parent_id')
+                  ->orWhere('parent_id', 0);
+            })
+            ->get();
+    }
+
+    public function isEligible(ShopProduct $product): bool
+    {
+        // Yedek parça kategorisi mi?
+        if ($product->category_id != 7 &&
+            $product->category->parent_id != 7) {
+            return false;
+        }
+
+        // Variant ürün mü?
+        if ($product->parent_id && $product->parent_id > 0) {
+            return false;
+        }
+
+        return true;
+    }
+}
+                    </code>
+                </div>
+            </div>
+
+            <div class="task">
+                <h4>📝 ADIM 2: Content Strategy Router</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Services/ContentStrategyRouter.php</code></p>
+                <p><strong>Sorumluluk:</strong> Mevcut içerik kontrolü → Branch A veya B</p>
+
+                <div class="code-block">
+                    <code>
+class ContentStrategyRouter
+{
+    public function route(ShopProduct $product): string
+    {
+        $hasContent = !empty($product->body['tr']) &&
+                      strlen($product->body['tr']) > 100;
+
+        return $hasContent ? 'expand' : 'create';
+    }
+
+    public function extractExistingData(ShopProduct $product): array
+    {
+        // Mevcut içerikten teknik detayları çıkar
+        $body = $product->body['tr'] ?? '';
+
+        return [
+            'specs' => $this->extractSpecs($body),
+            'existing_body' => $body,
+            'primary_specs' => $product->primary_specs,
+            'faq_data' => $product->faq_data,
+        ];
+    }
+
+    protected function extractSpecs(string $body): array
+    {
+        // Regex ile boyut, ağırlık, voltaj vb. çıkar
+        // "150mm", "2.5 kg", "220V" gibi
+    }
+}
+                    </code>
+                </div>
+            </div>
+
+            <div class="task">
+                <h4>📝 ADIM 3: AI Content Service (Updated)</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Services/ShopProductAIContentService.php</code></p>
+                <p><strong>Sorumluluk:</strong> Strategy'ye göre farklı prompt</p>
+
+                <div class="code-block">
+                    <code>
+class ShopProductAIContentService
+{
+    public function generate(ShopProduct $product): array
+    {
+        $strategy = $this->router->route($product);
+
+        if ($strategy === 'expand') {
+            return $this->expandExistingContent($product);
+        } else {
+            return $this->createNewContent($product);
+        }
+    }
+
+    protected function expandExistingContent($product): array
+    {
+        $existing = $this->router->extractExistingData($product);
+
+        $prompt = "IMPROVE this content:
+        {$existing['existing_body']}
+
+        KEEP: {$existing['specs']}
+        ADD: SEO keywords
+        NO PRICE!";
+
+        return $this->callGPT4($prompt);
+    }
+
+    protected function createNewContent($product): array
+    {
+        $prompt = "CREATE general content:
+        Title: {$product->title}
+        Category: Yedek Parça
+
+        NO SPECS! NO PRICE!
+        General description only.";
+
+        return $this->callGPT4($prompt);
+    }
+}
+                    </code>
+                </div>
+            </div>
+
+            <div class="task">
+                <h4>📝 ADIM 4: Content Validator (Updated)</h4>
+                <p><strong>Dosya:</strong> <code>Modules/Shop/app/Services/ContentValidator.php</code></p>
+
+                <div class="code-block">
+                    <code>
+public function validate($content, $strategy): array
+{
+    $errors = [];
+
+    // Fiyat kontrolü (HER ZAMAN)
+    if ($this->containsPrice($content)) {
+        $errors[] = 'Content contains price';
+    }
+
+    // Teknik detay kontrolü (SADECE Branch B)
+    if ($strategy === 'create' &&
+        $this->containsTechnicalSpecs($content)) {
+        $errors[] = 'New content should not have specs';
+    }
+
+    return $errors;
+}
+                    </code>
+                </div>
+            </div>
+
+            <div class="task">
+                <h4>🖥️ ADIM 5: Livewire Admin Component (Updated)</h4>
+                <p><strong>UI Değişiklikleri:</strong></p>
+                <ul>
+                    <li>Sadece yedek parça kategorisinde göster</li>
+                    <li>Variant ürünlerde disable et</li>
+                    <li>Mevcut içerik varsa göster: "✅ Mevcut içerik geliştirilecek"</li>
+                    <li>Mevcut içerik yoksa göster: "⚠️ Yeni içerik oluşturulacak (genel tanıtım)"</li>
+                </ul>
+            </div>
+
+            <div class="task">
+                <h4>📸 ADIM 6: Image Generator (Aynı)</h4>
+                <p>Görsel stratejisi değişmedi - context görseller üretecek</p>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-list-check"></i> Test Senaryoları</h2>
+
+            <div class="task">
+                <h4>Test 1: Ürün Filtreleme</h4>
+                <ul>
+                    <li>Forklift ürünü seç → ❌ "Bu ürün uygun değil (sadece yedek parça)"</li>
+                    <li>Variant ürün seç → ❌ "Bu bir variant ürün (sadece ana ürünler)"</li>
+                    <li>Yedek parça ana ürün seç → ✅ "İşleme devam"</li>
+                </ul>
+            </div>
+
+            <div class="task">
+                <h4>Test 2: Branch A (Mevcut İçerik VAR)</h4>
+                <ul>
+                    <li>Ürün: Body dolu olan yedek parça</li>
+                    <li>Beklenen: Teknik detaylar korundu mu?</li>
+                    <li>Beklenen: İçerik genişledi mi?</li>
+                    <li>Beklenen: Fiyat YOK mu?</li>
+                </ul>
+            </div>
+
+            <div class="task">
+                <h4>Test 3: Branch B (Mevcut İçerik YOK)</h4>
+                <ul>
+                    <li>Ürün: Body boş olan yedek parça</li>
+                    <li>Beklenen: Genel tanıtım var mı?</li>
+                    <li>Beklenen: Spesifik sayı/ölçü YOK mu?</li>
+                    <li>Beklenen: Fiyat YOK mu?</li>
+                </ul>
+            </div>
+
+            <div class="task">
+                <h4>Test 4: Batch Mode</h4>
+                <ul>
+                    <li>100 yedek parça ürünü seç</li>
+                    <li>Variant olanlar otomatik skip edildi mi?</li>
+                    <li>Her ürün doğru branch'e gitti mi?</li>
+                    <li>Rate limiting çalışıyor mu?</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-database"></i> Database Sorguları</h2>
+
+            <h3>Yedek Parça Ana Ürünleri Bul</h3>
+            <div class="code-block">
+                <code>
+-- Direkt yedek parça kategorisinde
+SELECT * FROM shop_products
+WHERE category_id = 7
+AND (parent_id IS NULL OR parent_id = 0);
+
+-- Alt kategori ama yedek parçaya ait
+SELECT p.*
+FROM shop_products p
+JOIN shop_categories c ON p.category_id = c.id
+WHERE c.parent_id = 7
+AND (p.parent_id IS NULL OR p.parent_id = 0);
+
+-- İkisini birleştir (Union)
+SELECT * FROM shop_products
+WHERE category_id = 7
+AND (parent_id IS NULL OR parent_id = 0)
+UNION
+SELECT p.*
+FROM shop_products p
+JOIN shop_categories c ON p.category_id = c.id
+WHERE c.parent_id = 7
+AND (p.parent_id IS NULL OR p.parent_id = 0);
+                </code>
+            </div>
+
+            <h3>Mevcut İçerik Kontrolü</h3>
+            <div class="code-block">
+                <code>
+-- Mevcut içeriği olan yedek parçalar
+SELECT COUNT(*)
+FROM shop_products
+WHERE category_id = 7
+AND (parent_id IS NULL OR parent_id = 0)
+AND JSON_LENGTH(body, '$.tr') > 100;
+
+-- Mevcut içeriği olmayan yedek parçalar
+SELECT COUNT(*)
+FROM shop_products
+WHERE category_id = 7
+AND (parent_id IS NULL OR parent_id = 0)
+AND (body IS NULL OR JSON_LENGTH(body, '$.tr') < 100);
+                </code>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-check-circle"></i> Başarı Kriterleri</h2>
+
+            <div class="success">
+                <h4>✅ Sistem Başarılı Sayılır Eğer:</h4>
+                <ul>
+                    <li>✅ Sadece yedek parça kategorisi işleniyor</li>
+                    <li>✅ Variant ürünler otomatik skip ediliyor</li>
+                    <li>✅ Mevcut içerik varsa teknik detaylar KORUNUYOR</li>
+                    <li>✅ Mevcut içerik yoksa genel tanıtım yapılıyor</li>
+                    <li>✅ HİÇBİR ÜRÜNDE fiyat bilgisi YOK</li>
+                    <li>✅ Branch B ürünlerinde spesifik teknik detay YOK</li>
+                    <li>✅ SEO keywords her üründe mevcut</li>
+                    <li>✅ Görseller context sağlıyor (exact değil)</li>
+                    <li>✅ Lightbox + SEO tags çalışıyor</li>
+                    <li>✅ Batch mode rate limiting ile çalışıyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2><i class="fas fa-rocket"></i> Uygulama Sırası</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sıra</th>
+                        <th>Dosya/Bileşen</th>
+                        <th>Süre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>ProductFilterService.php</td>
+                        <td>1 saat</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>ContentStrategyRouter.php</td>
+                        <td>2 saat</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>ContentValidator.php</td>
+                        <td>1 saat</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>ShopProductAIContentService.php</td>
+                        <td>3 saat</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>ShopProductImageGenerator.php</td>
+                        <td>2 saat</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>GenerateProductImagesJob.php</td>
+                        <td>1 saat</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>ProductAIContentGenerator Livewire</td>
+                        <td>4 saat</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Test + Debug</td>
+                        <td>3 saat</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="margin-top: 20px; color: #fbbf24;">⏱️ <strong>Toplam Tahmini Süre:</strong> 17-19 saat</p>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından hazırlandı - 2025-11-27<br>
+            📂 Plan Versiyonu: v3 (Final - Correct Hierarchy + Filters)
+        </footer>
+    </div>
+</body>
+</html>

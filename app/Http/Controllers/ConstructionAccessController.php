@@ -9,18 +9,20 @@ class ConstructionAccessController extends Controller
     public function verify(Request $request)
     {
         $inputPassword = $request->input('construction_password');
+        $correctPassword = 'nn'; // layouts/app.blade.php ile aynı şifre
 
-        // Verify password hash (SHA-256)
-        $correctPasswordHash = hash('sha256', 'nn');
-        $inputPasswordHash = hash('sha256', $inputPassword);
+        if ($inputPassword === $correctPassword) {
+            // Password correct - Set cookie (same logic as layouts/app.blade.php)
+            $cookieName = 'mzb_auth_' . tenant('id');
+            $cookieValue = md5($correctPassword . 'salt2024');
 
-        if ($inputPasswordHash === $correctPasswordHash) {
-            // Password correct - grant access
-            session(['construction_access_granted' => true]);
+            // Set cookie for 30 days
+            setcookie($cookieName, $cookieValue, time() + (86400 * 30), '/');
+
             return redirect('/');
         }
 
         // Password incorrect
-        return redirect('/')->with('construction_error', 'Incorrect password');
+        return back()->with('error', 'Şifre hatalı!');
     }
 }

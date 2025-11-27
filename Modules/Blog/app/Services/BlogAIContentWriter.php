@@ -1137,7 +1137,12 @@ PROMPT;
         }
 
         // 2. Content kontrolü (min 1000 karakter - kaliteli içerik için)
-        $contentLength = strlen(strip_tags($blogData['content'] ?? ''));
+        $content = $blogData['content'] ?? '';
+        // 🔧 FIX: Array olabilir, string'e çevir
+        if (is_array($content)) {
+            $content = $content['tr'] ?? $content[array_key_first($content)] ?? '';
+        }
+        $contentLength = strlen(strip_tags($content));
         if ($contentLength < 1000) {
             $errors[] = "İçerik çok kısa: {$contentLength} karakter (min 1000)";
         }

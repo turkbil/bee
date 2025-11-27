@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v14 - Notifications</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-black" x-data="{ notifOpen: false }">
+    <header class="fixed top-0 left-0 right-0 bg-zinc-950 border-b border-zinc-800 z-50">
+        <div class="px-8 h-16 flex items-center justify-between gap-6">
+            <a href="/" class="text-white text-xl font-black">muzibu</a>
+            <div class="flex-1 max-w-2xl">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+                    <input type="text" placeholder="Şarkı, sanatçı, albüm ara..." class="w-full pl-12 pr-4 py-3 bg-zinc-900 border border-zinc-700 focus:border-white/30 rounded-lg text-white placeholder-zinc-500 focus:outline-none">
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <button @click="notifOpen = !notifOpen" class="w-10 h-10 bg-zinc-900 hover:bg-zinc-800 rounded-lg flex items-center justify-center text-white/70 relative">
+                        <i class="far fa-bell"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div x-show="notifOpen" @click.away="notifOpen = false" x-transition class="absolute right-0 mt-2 w-80 bg-zinc-900 rounded-xl shadow-2xl border border-zinc-700 py-3">
+                        <div class="px-4 pb-2 border-b border-zinc-700"><h3 class="font-bold text-white">Bildirimler</h3></div>
+                        <a href="#" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-800">
+                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white flex-shrink-0"><i class="fas fa-music"></i></div>
+                            <div>
+                                <p class="text-white text-sm font-medium">Yeni albüm yayınlandı</p>
+                                <p class="text-zinc-400 text-xs">Imagine Dragons - LOOM</p>
+                            </div>
+                        </a>
+                        <a href="#" class="flex items-start gap-3 px-4 py-3 hover:bg-zinc-800">
+                            <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white flex-shrink-0"><i class="fas fa-heart"></i></div>
+                            <div>
+                                <p class="text-white text-sm font-medium">Favori sanatçın canlı</p>
+                                <p class="text-zinc-400 text-xs">Eminem şu an canlı yayında</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <button class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg text-white font-bold text-xs">M</button>
+            </div>
+        </div>
+    </header>
+    <div class="pt-16 min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-black">
+        <div class="text-center"><h1 class="text-5xl font-black text-white mb-3">v14 - Notifications</h1><p class="text-zinc-400">Rich Notification Dropdown</p></div>
+    </div>
+    <div class="fixed bottom-8 right-8 flex flex-col gap-3 z-50">
+        <a href="../v13/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-left"></i></a>
+        <div class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center border border-zinc-700"><span class="text-xs text-white font-bold">14/15</span></div>
+        <a href="../v15/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-right"></i></a>
+    </div>
+</body>
+</html>

@@ -451,26 +451,39 @@
         <nav id="toc-bar" class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-gray-200 dark:border-slate-700 shadow-sm z-40 transition-all duration-300">
             <div class="container mx-auto px-6">
                 <div class="flex items-center gap-2 overflow-x-auto py-1.5 scrollbar-hide">
-                    <a href="#description"
-                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
-                        <i class="fa-solid fa-file-lines mr-2"></i>Ürün Detayı
-                    </a>
-                    <a href="#primary-specs"
-                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
-                        <i class="fa-solid fa-star mr-2"></i>Öne Çıkan Özellikler
-                    </a>
-                    <a href="#features"
-                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
-                        <i class="fa-solid fa-list-check mr-2"></i>Özellikler
-                    </a>
-                    <a href="#faq"
-                       class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
-                        <i class="fa-solid fa-circle-question mr-2"></i>S.S.S
-                    </a>
+                    @if ($longDescription)
+                        <a href="#description"
+                           class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                            <i class="fa-solid fa-file-lines mr-2"></i>Ürün Detayı
+                        </a>
+                    @endif
+
+                    @if (!empty($primarySpecs))
+                        <a href="#primary-specs"
+                           class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                            <i class="fa-solid fa-star mr-2"></i>Öne Çıkan Özellikler
+                        </a>
+                    @endif
+
+                    @if ($highlightedFeatures->isNotEmpty() || !empty($featuresList))
+                        <a href="#features"
+                           class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                            <i class="fa-solid fa-list-check mr-2"></i>Özellikler
+                        </a>
+                    @endif
+
+                    @if ($faqEntries->isNotEmpty())
+                        <a href="#faq"
+                           class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
+                            <i class="fa-solid fa-circle-question mr-2"></i>S.S.S
+                        </a>
+                    @endif
+
                     <a href="#trust-signals"
                        class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
                         <i class="fa-solid fa-shield-halved mr-2"></i>Güvenilirlik
                     </a>
+
                     <a href="#contact"
                        class="toc-link flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all whitespace-nowrap">
                         <i class="fa-solid fa-envelope mr-2"></i>İletişim

@@ -112,20 +112,62 @@ class Kernel extends ConsoleKernel
         // CURRENCY RATES AUTO UPDATE - Artık ShopServiceProvider'da tanımlı
         // Bu satırlar ShopServiceProvider::registerCommandSchedules() metoduna taşındı
 
-        // 📝 BLOG AUTO GENERATION - Tenant-Aware Blog AI Cron (Max 8 blog/day per tenant)
-        // Her saat başı çalışır, tüm tenant'ları tarar, settings'e göre blog üretir
-        // Settings: blog_ai_enabled, blog_ai_daily_count (1-8), calculateActiveHours()
-        $schedule->command('generate:tenant-blogs')
-                 ->hourly() // Production: Her saat başı (00:00, 01:00, 02:00, ...)
-                 ->withoutOverlapping(10) // Maksimum 10 dakika çalışabilir, çakışma önle
-                 ->runInBackground() // Background'da çalıştır
-                 ->appendOutputTo(storage_path('logs/blog-cron.log')) // Log dosyasına ekle
-                 ->onSuccess(function () {
-                     \Log::channel('daily')->info('🎉 Tenant Blog Cron: Successfully completed');
-                 })
-                 ->onFailure(function () {
-                     \Log::channel('daily')->error('❌ Tenant Blog Cron: Failed to complete');
-                 });
+        // 📝 BLOG AUTO GENERATION - TEST MODE (Her 5 dakika)
+        // Production'da hourly() kullan, test için everyFiveMinutes()
+
+        $schedule->call(function () {
+            try {
+                $currentHour = (int) now()->format('H');
+                $currentMinute = (int) now()->format('i');
+
+                // Her tenant için kontrol et
+                $tenants = \App\Models\Tenant::all();
+
+                foreach ($tenants as $tenant) {
+                    try {
+                        tenancy()->initialize($tenant);
+
+                        // Blog AI enabled mi?
+                        $enabled = getTenantSetting('blog_ai_enabled', '0');
+                        $enabled = ($enabled === '1' || $enabled === 1 || $enabled === true || $enabled === 'true');
+
+                        if (!$enabled) {
+                            tenancy()->end();
+                            continue;
+                        }
+
+                        // 🔧 TEST MODE: Her 5 dakikada bir blog üret (saatlik sınırlama YOK!)
+                        // Production'da: activeHours kontrolü ekle
+
+                        // Command dispatch et
+                        \Illuminate\Support\Facades\Artisan::call('generate:tenant-blogs', [
+                            '--tenant-id' => $tenant->id
+                        ]);
+
+                        \Log::channel('daily')->info('🤖 Blog Cron Triggered (TEST MODE - 5min)', [
+                            'tenant_id' => $tenant->id,
+                            'time' => now()->format('H:i'),
+                        ]);
+
+                        tenancy()->end();
+
+                    } catch (\Exception $e) {
+                        \Log::error('Blog cron tenant error', [
+                            'tenant_id' => $tenant->id ?? 'N/A',
+                            'error' => $e->getMessage(),
+                        ]);
+                        tenancy()->end();
+                    }
+                }
+
+            } catch (\Exception $e) {
+                \Log::error('Blog cron scheduler error: ' . $e->getMessage());
+            }
+        })
+        ->hourly() // Production: Saatlik çalışma (Test: everyFiveMinutes)
+        ->name('blog-ai-dynamic-scheduler')
+        ->withoutOverlapping(10)
+        ->appendOutputTo(storage_path('logs/blog-cron.log'));
 
         // 🔐 SUBSCRIPTION MANAGEMENT CRONS
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v2 - YouTube Music</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-black" x-data="{ voiceActive: false, castOpen: false }">
+    <header class="fixed top-0 left-0 right-0 bg-zinc-950 border-b border-zinc-800 z-50">
+        <div class="px-6 h-16 flex items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <button class="w-10 h-10 flex items-center justify-center"><i class="fas fa-bars text-white/70 text-xl"></i></button>
+                <a href="/" class="text-white text-xl font-bold">muzibu</a>
+            </div>
+            <div class="flex-1 max-w-2xl">
+                <div class="relative">
+                    <input type="text" placeholder="Ara..." class="w-full pl-12 pr-28 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 focus:border-white/30 rounded-full text-white placeholder-zinc-500 focus:outline-none">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+                    <button @click="voiceActive = !voiceActive" class="absolute right-14 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full hover:bg-zinc-700 flex items-center justify-center" :class="voiceActive ? 'text-red-500' : 'text-white/70'"><i class="fas fa-microphone"></i></button>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="relative">
+                    <button @click="castOpen = !castOpen" class="w-10 h-10 bg-zinc-900 hover:bg-zinc-800 rounded-full flex items-center justify-center text-white/70"><i class="fas fa-cast"></i></button>
+                    <div x-show="castOpen" @click.away="castOpen = false" x-transition class="absolute right-0 mt-3 w-64 bg-zinc-900 rounded-xl shadow-2xl border border-zinc-700 p-4">
+                        <h3 class="text-white font-bold mb-3 text-sm">Cihaza Gönder</h3>
+                        <button class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-zinc-800 rounded-lg text-white text-sm"><i class="fas fa-tv w-5"></i>Oturma Odası TV</button>
+                        <button class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-zinc-800 rounded-lg text-white text-sm"><i class="fas fa-volume-up w-5"></i>Bluetooth Hoparlör</button>
+                    </div>
+                </div>
+                <button class="w-10 h-10 bg-zinc-900 hover:bg-zinc-800 rounded-full flex items-center justify-center text-white/70"><i class="far fa-bell"></i></button>
+                <button class="w-10 h-10 bg-red-600 rounded-full text-white font-bold">M</button>
+            </div>
+        </div>
+    </header>
+    <div class="pt-16 min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-black">
+        <div class="text-center"><h1 class="text-5xl font-black text-white mb-3">v2 - YouTube Music</h1><p class="text-zinc-400">Voice Search + Cast Device</p></div>
+    </div>
+    <div class="fixed bottom-8 right-8 flex flex-col gap-3 z-50">
+        <a href="../v1/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-left"></i></a>
+        <div class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center border border-zinc-700"><span class="text-xs text-white font-bold">2/15</span></div>
+        <a href="../v3/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-right"></i></a>
+    </div>
+</body>
+</html>

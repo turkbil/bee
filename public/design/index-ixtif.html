@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>ixtif.com - Tasarım Kütüphanesi | iXtif - Türkiye'nin İstif Pazarı</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome Pro 7 CDN -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/sharp-solid.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #2563eb, #7c3aed);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white min-h-screen">
+
+    <!-- Main Container -->
+    <div x-data="{
+        searchQuery: '',
+        activeCategory: 'all',
+        sections: [
+            { id: 1, name: 'Menu Tasarımları', file: 'design-menu.html', category: 'navigation', icon: 'fa-bars', count: 10, color: 'from-blue-500 to-cyan-500' },
+            { id: 2, name: 'Header Tasarımları', file: 'design-header.html', category: 'navigation', icon: 'fa-rectangle-wide', count: 10, color: 'from-purple-500 to-pink-500' },
+            { id: 3, name: 'Hero Sections', file: 'design-hero.html', category: 'landing', icon: 'fa-rocket-launch', count: 10, color: 'from-orange-500 to-red-500' },
+            { id: 4, name: 'CTA Sections', file: 'design-cta.html', category: 'landing', icon: 'fa-bullhorn', count: 10, color: 'from-green-500 to-emerald-500' },
+            { id: 5, name: 'Ürünler', file: 'design-products.html', category: 'ecommerce', icon: 'fa-box-open', count: 10, color: 'from-yellow-500 to-orange-500' },
+            { id: 6, name: 'Kategoriler', file: 'design-categories.html', category: 'ecommerce', icon: 'fa-grid-2', count: 10, color: 'from-teal-500 to-cyan-500' },
+            { id: 7, name: 'Hizmetler', file: 'design-services.html', category: 'ecommerce', icon: 'fa-briefcase', count: 10, color: 'from-indigo-500 to-purple-500' },
+            { id: 8, name: 'Hakkımızda', file: 'design-about.html', category: 'content', icon: 'fa-building', count: 10, color: 'from-pink-500 to-rose-500' },
+            { id: 9, name: 'Özellikler', file: 'design-features.html', category: 'content', icon: 'fa-sparkles', count: 10, color: 'from-violet-500 to-purple-500' },
+            { id: 10, name: 'İstatistikler', file: 'design-stats.html', category: 'content', icon: 'fa-chart-line', count: 10, color: 'from-blue-500 to-indigo-500' },
+            { id: 11, name: 'Testimonials', file: 'design-testimonials.html', category: 'social', icon: 'fa-quote-left', count: 10, color: 'from-cyan-500 to-blue-500' },
+            { id: 12, name: 'Partners', file: 'design-partners.html', category: 'social', icon: 'fa-handshake', count: 10, color: 'from-emerald-500 to-teal-500' },
+            { id: 13, name: 'Galeri', file: 'design-gallery.html', category: 'social', icon: 'fa-images', count: 10, color: 'from-fuchsia-500 to-pink-500' },
+            { id: 14, name: 'Fiyatlandırma', file: 'design-pricing.html', category: 'pricing', icon: 'fa-tag', count: 10, color: 'from-lime-500 to-green-500' },
+            { id: 15, name: 'Kampanyalar', file: 'design-promotions.html', category: 'pricing', icon: 'fa-badge-percent', count: 10, color: 'from-red-500 to-orange-500' },
+            { id: 16, name: 'İletişim', file: 'design-contact.html', category: 'contact', icon: 'fa-envelope', count: 10, color: 'from-sky-500 to-blue-500' },
+            { id: 17, name: 'Newsletter', file: 'design-newsletter.html', category: 'contact', icon: 'fa-paper-plane', count: 10, color: 'from-purple-500 to-violet-500' },
+            { id: 18, name: 'Blog/Haberler', file: 'design-blog.html', category: 'content', icon: 'fa-newspaper', count: 10, color: 'from-amber-500 to-yellow-500' },
+            { id: 19, name: 'SSS / FAQ', file: 'design-faq.html', category: 'support', icon: 'fa-circle-question', count: 10, color: 'from-rose-500 to-pink-500' },
+            { id: 20, name: 'Footer Tasarımları', file: 'design-footer.html', category: 'navigation', icon: 'fa-rectangle-wide', count: 10, color: 'from-slate-500 to-gray-500' },
+            { id: 21, name: 'Chatbot Inline', file: 'design-chatbot-inline.html', category: 'support', icon: 'fa-comment-dots', count: 6, color: 'from-blue-500 to-cyan-500' },
+            { id: 22, name: 'Chatbot Popup', file: 'design-chatbot-popup.html', category: 'support', icon: 'fa-messages', count: 5, color: 'from-purple-500 to-pink-500' },
+            { id: 23, name: 'Shop Index (V1-V10)', file: 'design-shop-index-1.html', category: 'ecommerce', icon: 'fa-store', count: 10, color: 'from-violet-500 to-purple-500' },
+            { id: 24, name: 'Category Pages (C1-C10)', file: 'design-category-1.html', category: 'ecommerce', icon: 'fa-tags', count: 10, color: 'from-amber-500 to-orange-500' },
+            { id: 25, name: 'Product Details (P1-P10)', file: 'design-product-1.html', category: 'ecommerce', icon: 'fa-box', count: 10, color: 'from-emerald-500 to-teal-500' },
+            { id: 26, name: 'Mega Menu Tasarımları (6 Versiyon)', file: 'mega-menu/index.html', category: 'navigation', icon: 'fa-grid-2-plus', count: 25, color: 'from-indigo-500 to-purple-500' },
+            { id: 32, name: 'Cardsız Tasarımlar (15 Section)', file: 'cardless/index.html', category: 'experimental', icon: 'fa-wand-magic-sparkles', count: 15, color: 'from-pink-500 to-purple-500' },
+            { id: 48, name: 'Lazy Loading Demo (4 Yaklaşım)', file: 'design-lazy-loading-demo.html', category: 'experimental', icon: 'fa-image', count: 1, color: 'from-indigo-500 to-purple-500' },
+            { id: 49, name: 'Hakkımızda Alternatifler', file: 'hakkimizda-alternatifler/index.html', category: 'content', icon: 'fa-building', count: 10, color: 'from-blue-500 to-purple-500' },
+            { id: 50, name: 'Product Cards - Premium', file: 'design-product-card-premium-1.html', category: 'ecommerce', icon: 'fa-gem', count: 12, color: 'from-rose-500 to-pink-500' },
+            { id: 51, name: 'Product Cards - Ultra Luxe', file: 'design-product-card-luxe-1.html', category: 'ecommerce', icon: 'fa-sparkles', count: 12, color: 'from-purple-500 to-indigo-500' },
+            { id: 52, name: 'Cookie Consent (GDPR)', file: 'design-cookie-consent.html', category: 'compliance', icon: 'fa-cookie-bite', count: 10, color: 'from-amber-500 to-orange-500' },
+            { id: 53, name: '2 Aşamalı Checkout', file: 'checkout-2step/index.html', category: 'ecommerce', icon: 'fa-cart-shopping', count: 8, color: 'from-green-500 to-blue-500' },
+            { id: 54, name: 'Review & Rating (Blog)', file: 'review-rating/index.html', category: 'content', icon: 'fa-star', count: 5, color: 'from-yellow-500 to-orange-500' },
+            { id: 55, name: 'Blog Meta Info Card', file: 'blog-meta-card/index.html', category: 'content', icon: 'fa-info-circle', count: 10, color: 'from-blue-500 to-purple-500' },
+            { id: 56, name: 'Social Share (Blog)', file: 'social-share/index.html', category: 'social', icon: 'fa-share-nodes', count: 10, color: 'from-blue-500 to-cyan-500' },
+            { id: 57, name: 'Auth Themes - Login', file: 'auth-themes/login/design-1-minimal.html', category: 'auth', icon: 'fa-right-to-bracket', count: 5, color: 'from-blue-500 to-indigo-500' },
+            { id: 58, name: 'Auth Themes - Register', file: 'auth-themes/register/design-1-minimal.html', category: 'auth', icon: 'fa-user-plus', count: 5, color: 'from-green-500 to-emerald-500' },
+            { id: 59, name: 'Auth Themes - Forgot Password', file: 'auth-themes/forgot-password/design-1-minimal.html', category: 'auth', icon: 'fa-unlock-keyhole', count: 5, color: 'from-amber-500 to-orange-500' },
+            { id: 60, name: 'Auth Themes - Reset Password', file: 'auth-themes/reset-password/design-1-minimal.html', category: 'auth', icon: 'fa-key', count: 5, color: 'from-purple-500 to-pink-500' },
+            { id: 61, name: 'Auth Themes - Email Verification', file: 'auth-themes/email-verification/design-1-minimal.html', category: 'auth', icon: 'fa-envelope-circle-check', count: 5, color: 'from-cyan-500 to-blue-500' },
+            { id: 62, name: 'Auth Themes - 2FA Code', file: 'auth-themes/2fa-code/design-1-minimal.html', category: 'auth', icon: 'fa-shield-halved', count: 5, color: 'from-red-500 to-rose-500' },
+            { id: 63, name: 'Auth Themes - Profile', file: 'auth-themes/profile/design-1-minimal.html', category: 'auth', icon: 'fa-user-gear', count: 5, color: 'from-violet-500 to-purple-500' },
+            { id: 64, name: 'Auth Themes - Devices', file: 'auth-themes/devices/design-1-minimal.html', category: 'auth', icon: 'fa-laptop-mobile', count: 5, color: 'from-teal-500 to-cyan-500' }
+        ],
+        categories: [
+            { id: 'all', name: 'Tümü', icon: 'fa-grid-2', color: 'bg-gradient-to-r from-blue-500 to-purple-500' },
+            { id: 'navigation', name: 'Navigasyon', icon: 'fa-compass', color: 'bg-gradient-to-r from-cyan-500 to-blue-500' },
+            { id: 'landing', name: 'Landing', icon: 'fa-rocket', color: 'bg-gradient-to-r from-orange-500 to-red-500' },
+            { id: 'ecommerce', name: 'E-Ticaret', icon: 'fa-cart-shopping', color: 'bg-gradient-to-r from-green-500 to-emerald-500' },
+            { id: 'content', name: 'İçerik', icon: 'fa-file-lines', color: 'bg-gradient-to-r from-purple-500 to-pink-500' },
+            { id: 'social', name: 'Sosyal', icon: 'fa-users', color: 'bg-gradient-to-r from-teal-500 to-cyan-500' },
+            { id: 'pricing', name: 'Fiyat', icon: 'fa-dollar-sign', color: 'bg-gradient-to-r from-yellow-500 to-orange-500' },
+            { id: 'contact', name: 'İletişim', icon: 'fa-phone', color: 'bg-gradient-to-r from-indigo-500 to-purple-500' },
+            { id: 'support', name: 'Destek', icon: 'fa-life-ring', color: 'bg-gradient-to-r from-pink-500 to-rose-500' },
+            { id: 'experimental', name: 'Deneysel', icon: 'fa-flask', color: 'bg-gradient-to-r from-fuchsia-500 to-pink-500' },
+            { id: 'compliance', name: 'Uyumluluk', icon: 'fa-shield-check', color: 'bg-gradient-to-r from-amber-500 to-orange-500' },
+            { id: 'auth', name: 'Auth', icon: 'fa-user-lock', color: 'bg-gradient-to-r from-indigo-500 to-purple-500' }
+        ],
+        get filteredSections() {
+            return this.sections.filter(section => {
+                const matchesCategory = this.activeCategory === 'all' || section.category === this.activeCategory;
+                const matchesSearch = section.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+        }
+    }" class="container mx-auto px-4 py-12">
+
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <div class="inline-block mb-6">
+                <h1 class="text-6xl md:text-8xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2">
+                    ixtif.com
+                </h1>
+                <p class="text-2xl md:text-3xl text-purple-300 font-semibold">
+                    iXtif - Türkiye'nin İstif Pazarı
+                </p>
+            </div>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                354+ Benzersiz Section Tasarımı | Modern, Yaratıcı ve Tamamen Özelleştirilebilir
+            </p>
+
+            <!-- Stats -->
+            <div class="flex flex-wrap justify-center gap-8 mt-10">
+                <div class="text-center">
+                    <div class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
+                        56
+                    </div>
+                    <div class="text-gray-400 mt-2">Section Türü</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400">
+                        354+
+                    </div>
+                    <div class="text-gray-400 mt-2">Tasarım</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
+                        100%
+                    </div>
+                    <div class="text-gray-400 mt-2">Responsive</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="max-w-2xl mx-auto mb-12">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+                <input
+                    type="text"
+                    x-model="searchQuery"
+                    placeholder="Tasarım ara... (örn: menu, hero, footer, card'sız)"
+                    class="w-full bg-white/10 backdrop-blur-lg border-2 border-white/20 rounded-2xl px-16 py-5 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-4 focus:ring-purple-400/20 transition-all duration-300 text-lg"
+                >
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                    <span x-text="filteredSections.length"></span> sonuç
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="flex flex-wrap justify-center gap-4 mb-16">
+            <template x-for="category in categories" :key="category.id">
+                <button
+                    @click="activeCategory = category.id"
+                    :class="activeCategory === category.id ? category.color + ' text-white shadow-2xl scale-110' : 'bg-white/10 text-gray-300 hover:bg-white/20'"
+                    class="px-6 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 backdrop-blur-lg border border-white/10"
+                >
+                    <i :class="'fa-solid ' + category.icon"></i>
+                    <span x-text="category.name"></span>
+                </button>
+            </template>
+        </div>
+
+        <!-- Section Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <template x-for="section in filteredSections" :key="section.id">
+                <a :href="section.file"
+                   class="group relative bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl overflow-hidden"
+                >
+                    <!-- Animated Background Gradient -->
+                    <div :class="'absolute inset-0 bg-gradient-to-br ' + section.color + ' opacity-0 group-hover:opacity-20 transition-opacity duration-500'"></div>
+
+                    <!-- Content -->
+                    <div class="relative z-10">
+                        <!-- Icon -->
+                        <div :class="'w-20 h-20 rounded-2xl bg-gradient-to-br ' + section.color + ' flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500'">
+                            <i :class="'fa-solid ' + section.icon + ' text-3xl text-white'"></i>
+                        </div>
+
+                        <!-- Title -->
+                        <h3 class="text-2xl font-bold mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all duration-300"
+                            x-text="section.name">
+                        </h3>
+
+                        <!-- Badge -->
+                        <div class="flex items-center gap-2 text-sm text-gray-400">
+                            <div :class="'px-4 py-2 rounded-full bg-gradient-to-r ' + section.color + ' bg-opacity-20'">
+                                <span class="font-semibold" x-text="section.count"></span> Tasarım
+                            </div>
+                        </div>
+
+                        <!-- Arrow Icon -->
+                        <div class="mt-6 flex items-center gap-2 text-gray-400 group-hover:text-white group-hover:gap-4 transition-all duration-300">
+                            <span class="font-semibold">Görüntüle</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Hover Effect Particles -->
+                    <div class="absolute -top-20 -right-20 w-40 h-40 bg-purple-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                    <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-blue-500 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+                </a>
+            </template>
+        </div>
+
+        <!-- No Results Message -->
+        <div x-show="filteredSections.length === 0"
+             x-transition
+             class="text-center py-20">
+            <i class="fa-solid fa-magnifying-glass text-8xl text-gray-600 mb-6"></i>
+            <h3 class="text-3xl font-bold text-gray-400 mb-2">Sonuç Bulunamadı</h3>
+            <p class="text-gray-500">Arama kriterlerinizi değiştirerek tekrar deneyin.</p>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="mt-20 text-center">
+            <div class="inline-block bg-white/5 backdrop-blur-lg rounded-3xl px-12 py-8 border border-white/10">
+                <p class="text-gray-400 mb-4">
+                    <i class="fa-solid fa-lightbulb text-yellow-400 mr-2"></i>
+                    <strong class="text-white">İpucu:</strong> Her kategori birden fazla tasarım içerir. Sonraki/Önceki butonları ile gezinebilirsiniz.
+                </p>
+                <p class="text-gray-500 text-sm">
+                    Tailwind CSS + Alpine.js + FontAwesome Pro ile hazırlandı
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

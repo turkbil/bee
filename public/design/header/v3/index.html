@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v3 - Apple Music</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-black" x-data="{ accountOpen: false }">
+    <header class="fixed top-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-white/5 z-50">
+        <div class="px-8 h-14 flex items-center justify-between gap-8">
+            <a href="/" class="text-white text-xl font-bold tracking-tight">muzibu</a>
+            <div class="flex-1 max-w-xl">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm"></i>
+                    <input type="text" placeholder="Ara" class="w-full pl-10 pr-4 py-2 bg-zinc-900/50 hover:bg-zinc-900/70 border border-white/5 focus:border-white/20 rounded-lg text-white text-sm placeholder-zinc-500 focus:outline-none transition-all">
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <button @click="accountOpen = !accountOpen" class="flex items-center gap-2 px-3 py-2 hover:bg-white/5 rounded-lg transition-colors">
+                        <div class="w-7 h-7 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-xs font-bold text-white">M</div>
+                        <i class="fas fa-chevron-down text-white/50 text-xs"></i>
+                    </button>
+                    <div x-show="accountOpen" @click.away="accountOpen = false" x-transition class="absolute right-0 mt-2 w-60 bg-zinc-900 rounded-2xl shadow-2xl border border-white/10 py-2">
+                        <div class="px-4 py-3 border-b border-white/10">
+                            <p class="text-white font-semibold text-sm">Mehmet Yılmaz</p>
+                            <p class="text-zinc-400 text-xs">Premium Üye</p>
+                        </div>
+                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm"><i class="fas fa-user w-5"></i>Hesap</a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm"><i class="fas fa-crown w-5 text-yellow-400"></i>Premium</a>
+                        <div class="h-px bg-white/10 my-1"></div>
+                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-red-400 text-sm"><i class="fas fa-sign-out-alt w-5"></i>Çıkış</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="pt-14 min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-black">
+        <div class="text-center"><h1 class="text-5xl font-black text-white mb-3">v3 - Apple Music</h1><p class="text-zinc-400">Minimalist Clean</p></div>
+    </div>
+    <div class="fixed bottom-8 right-8 flex flex-col gap-3 z-50">
+        <a href="../v2/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-left"></i></a>
+        <div class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center border border-zinc-700"><span class="text-xs text-white font-bold">3/15</span></div>
+        <a href="../v4/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-right"></i></a>
+    </div>
+</body>
+</html>

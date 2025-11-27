@@ -244,6 +244,9 @@ class LeonardoAIService
         // Ana ekipmanı tespit et
         $equipment = $this->detectEquipment($title);
 
+        // 🔧 FIX: Ortam/sektörü tespit et (kapalı depo mu, açık alan mı?)
+        $environment = $this->detectEnvironment($title);
+
         // ========== 11 KURAL FORMÜLÜ - PROMPT ZİNCİRİ HAVUZLARI ==========
 
         // 1. SUBJECT + ACTION (Kural 2: Mikro-hikaye)
@@ -271,28 +274,8 @@ class LeonardoAIService
         ];
 
         // 2. CONTEXT + TIME/SEASON (Kural 3: Ortam + Zaman/Mevsim)
-        $contexts = [
-            "during a busy Monday morning shift in early autumn",
-            "in the middle of holiday season shipment rush",
-            "during routine safety inspection on a quiet Tuesday",
-            "at the end of a productive winter day as sun sets",
-            "during Black Friday peak operations chaos",
-            "while other workers pass by in summer heat",
-            "as packages rush on conveyor belts before Christmas",
-            "during spring training session for seasonal employees",
-            "while cold rain falls outside the open warehouse door",
-            "during year-end efficiency audit in December",
-            "as the facility prepares for massive spring sale order",
-            "during 3pm shift handover in late afternoon light",
-            "while inventory is being reorganized before fiscal year end",
-            "during scheduled weekend maintenance window",
-            "as morning sunlight streams through frosty skylights",
-            "while forklifts pass in the humid summer background",
-            "during pre-dawn quality control check in winter darkness",
-            "as workers sort packages in autumn afternoon glow",
-            "during 5am early morning preparations before store opens",
-            "while the facility buzzes with midday summer activity",
-        ];
+        // 🔧 FIX: Ortama göre farklı context'ler
+        $contexts = $this->getContextsByEnvironment($environment);
 
         // 3. FACTORY TEXTURE + IMPERFECTIONS (Kural 9: Kusurlar)
         $textures = [
@@ -343,28 +326,8 @@ class LeonardoAIService
         ];
 
         // 5. BACKGROUND
-        $backgrounds = [
-            "rows of metal pallet racks extending into hazy distance",
-            "loading dock with trucks waiting in morning mist",
-            "automated conveyor system in constant motion",
-            "office windows overlooking the busy warehouse floor",
-            "emergency exits with green signage glowing",
-            "fire extinguisher stations along weathered walls",
-            "electrical panels with indicator lights blinking",
-            "stacked cardboard boxes ready for shipping",
-            "empty pallets waiting with morning dew",
-            "other workers operating equipment in background blur",
-            "industrial fans creating slight motion",
-            "time clocks and faded safety bulletin boards",
-            "plastic strip curtains swaying between zones",
-            "cold storage doors with frost patterns",
-            "packaging stations with scattered materials",
-            "quality control area with inspection lights",
-            "break room visible through smudged windows",
-            "shipping labels and well-used scanners on tables",
-            "maintenance tool cabinets left open",
-            "safety equipment lockers showing daily use",
-        ];
+        // 🔧 FIX: Ortama göre farklı background'lar
+        $backgrounds = $this->getBackgroundsByEnvironment($environment);
 
         // 6. LIGHTING
         $lightings = [
@@ -821,6 +784,416 @@ class LeonardoAIService
             'styleUUID' => $this->styleUUIDs['stock_photo'],
             'contrast' => 3.5,
         ];
+    }
+
+    /**
+     * Başlıktan ortam/sektörü tespit et (Akıllı keyword matching)
+     *
+     * @return string 'construction'|'port'|'factory'|'farm'|'warehouse'|...
+     */
+    protected function detectEnvironment(string $title): string
+    {
+        // Türkçe normalize et (İ → i düzgün olsun)
+        $normalized = str_replace(['İ', 'I'], ['i', 'ı'], $title);
+        $normalized = mb_strtolower($normalized, 'UTF-8');
+
+        // Öncelik sırası ile kontrol et (En spesifikten → En genele)
+
+        // İnşaat - en yüksek öncelik
+        if (str_contains($normalized, 'inşaat') ||
+            str_contains($normalized, 'şantiye') ||
+            str_contains($normalized, 'construction') ||
+            str_contains($normalized, 'building site')) {
+            return 'construction';
+        }
+
+        // Liman
+        if (str_contains($normalized, 'liman') ||
+            str_contains($normalized, 'port') ||
+            str_contains($normalized, 'konteyner') ||
+            str_contains($normalized, 'container') ||
+            str_contains($normalized, 'rıhtım')) {
+            return 'port';
+        }
+
+        // Fabrika
+        if (str_contains($normalized, 'fabrika') ||
+            str_contains($normalized, 'factory') ||
+            str_contains($normalized, 'üretim') ||
+            str_contains($normalized, 'production') ||
+            str_contains($normalized, 'imalat')) {
+            return 'factory';
+        }
+
+        // Tarım
+        if (str_contains($normalized, 'tarım') ||
+            str_contains($normalized, 'farm') ||
+            str_contains($normalized, 'çiftlik') ||
+            str_contains($normalized, 'hasat')) {
+            return 'farm';
+        }
+
+        // Soğuk hava
+        if (str_contains($normalized, 'soğuk hava') ||
+            str_contains($normalized, 'cold storage') ||
+            str_contains($normalized, 'dondurucu')) {
+            return 'cold_storage';
+        }
+
+        // Tekstil
+        if (str_contains($normalized, 'tekstil') ||
+            str_contains($normalized, 'textile') ||
+            str_contains($normalized, 'giyim') ||
+            str_contains($normalized, 'kumaş')) {
+            return 'textile';
+        }
+
+        // E-ticaret
+        if (str_contains($normalized, 'e-ticaret') ||
+            str_contains($normalized, 'ecommerce') ||
+            str_contains($normalized, 'e-commerce') ||
+            str_contains($normalized, 'hızlı teslimat')) {
+            return 'ecommerce';
+        }
+
+        // 🎲 Varsayılan: AKILLI ortam seçimi
+        // Her ekipman için uygun ortamları seç - ürün-ortam uyumu önemli!
+
+        // Ağırlıklı seçim: %70 gerçekçi ortamlar, %30 yaratıcı ortamlar
+        $realisticEnvironments = [
+            'warehouse',      // ✅ En gerçekçi: Depo içi
+            'factory',        // ✅ Gerçekçi: Fabrika
+            'construction',   // ✅ Gerçekçi: İnşaat/açık alan
+            'port',           // ✅ Gerçekçi: Liman
+            'ecommerce',      // ✅ Gerçekçi: E-ticaret
+        ];
+
+        $creativeEnvironments = [
+            'park',           // 🎨 Yaratıcı: Park/yeşil alan
+            'urban',          // 🎨 Yaratıcı: Şehir/sokak
+            'nature',         // 🎨 Yaratıcı: Doğa/orman
+            'coastal',        // 🎨 Yaratıcı: Sahil/deniz kenarı
+            'mountain',       // 🎨 Yaratıcı: Dağ/tepe
+            'rural',          // 🎨 Yaratıcı: Kırsal alan
+            'modern',         // 🎨 Yaratıcı: Modern şehir merkezi
+        ];
+
+        // %70 gerçekçi, %30 yaratıcı
+        if (rand(1, 100) <= 70) {
+            return $realisticEnvironments[array_rand($realisticEnvironments)];
+        } else {
+            return $creativeEnvironments[array_rand($creativeEnvironments)];
+        }
+    }
+
+    /**
+     * Ortama göre context havuzu getir
+     */
+    protected function getContextsByEnvironment(string $environment): array
+    {
+        $contexts = [
+            'construction' => [
+                "at a busy construction site during morning preparations",
+                "on an active building site during foundation work",
+                "at a high-rise construction zone on a windy day",
+                "during infrastructure project under cloudy skies",
+                "at a bridge construction site spanning river",
+                "on a renovation project in historic district",
+                "during roadwork expansion in summer heat",
+                "at a commercial development site before storm",
+                "on a residential construction project in suburbs",
+                "during demolition phase preparing new foundation",
+                "at a tunnel construction site with mountain background",
+                "on a solar farm installation across open fields",
+                "during pipeline construction through rural area",
+                "at a dam construction project near water",
+                "on a stadium construction site against blue sky",
+            ],
+            'port' => [
+                "at a busy cargo port during container offloading",
+                "on a shipping dock as cargo vessels arrive",
+                "during intermodal transfer operations at harbor",
+                "at container terminal under gantry cranes",
+                "on a wharf during early morning fog",
+                "at maritime logistics hub during shift change",
+                "during port expansion project near water",
+                "at a container yard with ships in background",
+                "on a cargo pier during crane operations",
+                "at a ro-ro terminal with vehicle loading",
+            ],
+            'factory' => [
+                "inside a manufacturing facility during production run",
+                "at an assembly line during quality inspection",
+                "in a factory floor during shift operations",
+                "at a production facility during maintenance window",
+                "inside an automotive plant during parts handling",
+                "at a processing plant during raw material intake",
+                "in a packaging facility during busy season",
+                "at a clean room manufacturing zone",
+                "inside a food processing plant during operations",
+                "at an electronics assembly facility",
+            ],
+            'farm' => [
+                "at a farm during harvest season in golden fields",
+                "on agricultural land moving hay bales",
+                "at a dairy farm during morning operations",
+                "in an orchard during fruit collection",
+                "at a grain storage facility during harvest",
+                "on farmland preparing for planting season",
+                "at a vineyard during grape harvest",
+                "in agricultural warehouse storing produce",
+                "at a poultry farm during operations",
+                "on rural farmland under wide open sky",
+            ],
+            'warehouse' => [
+                "during a busy Monday morning shift in early autumn",
+                "in the middle of holiday season shipment rush",
+                "during routine safety inspection on a quiet Tuesday",
+                "at the end of a productive winter day as sun sets",
+                "during Black Friday peak operations chaos",
+                "while other workers pass by in summer heat",
+                "as packages rush on conveyor belts before Christmas",
+                "during spring training session for seasonal employees",
+                "while cold rain falls outside the open warehouse door",
+                "during year-end efficiency audit in December",
+            ],
+            'park' => [
+                "in a city park during morning exercise hour",
+                "at a public garden on a sunny afternoon",
+                "in a green space during community event",
+                "at a park pathway among autumn trees",
+                "in a botanical garden during spring bloom",
+                "at a riverside park during peaceful evening",
+                "in an urban green area during picnic season",
+                "at a playground area on weekend morning",
+            ],
+            'urban' => [
+                "on a busy city street during rush hour",
+                "in downtown district during business day",
+                "at a shopping street on weekend afternoon",
+                "on a modern boulevard under city lights",
+                "in a pedestrian zone during market day",
+                "at a city square during public gathering",
+                "on an urban avenue during evening commute",
+                "in a commercial district during lunch break",
+            ],
+            'nature' => [
+                "in a forest clearing during golden hour",
+                "at a mountain trail on a crisp morning",
+                "in a meadow during wildflower season",
+                "at a lakeside location during calm evening",
+                "in a woodland area during autumn colors",
+                "at a natural reserve during wildlife activity",
+                "in a countryside setting under open sky",
+                "at a scenic overlook during sunset",
+            ],
+            'coastal' => [
+                "at a beach location during morning tide",
+                "on a seaside promenade during summer day",
+                "at a coastal road with ocean view",
+                "on a pier during gentle breeze",
+                "at a marina during boat activities",
+                "on a beachfront during peaceful evening",
+                "at a coastal park with sea backdrop",
+                "on a waterfront path during sunrise",
+            ],
+            'mountain' => [
+                "at a mountain base during climbing season",
+                "on a hillside trail during clear weather",
+                "at an alpine location during bright day",
+                "on a mountain road with valley views",
+                "at a summit area during perfect visibility",
+                "on a scenic mountain pass during journey",
+                "at a highland plateau during afternoon",
+                "on a mountain slope with panoramic view",
+            ],
+            'rural' => [
+                "in a countryside setting during harvest time",
+                "at a rural road through rolling hills",
+                "in a village area during peaceful day",
+                "at a country lane among green fields",
+                "in a pastoral landscape during morning",
+                "at a rural estate during sunny afternoon",
+                "in an open countryside under wide sky",
+                "at a farm road during golden hour",
+            ],
+            'modern' => [
+                "in a modern business district during workday",
+                "at a contemporary plaza with glass buildings",
+                "in a high-tech zone during peak hours",
+                "at a modern commercial center on busy day",
+                "in an innovation district during conference",
+                "at a sleek office complex during lunch hour",
+                "in a futuristic cityscape setting",
+                "at a modern development area during activity",
+            ],
+        ];
+
+        return $contexts[$environment] ?? $contexts['warehouse'];
+    }
+
+    /**
+     * Ortama göre background havuzu getir
+     */
+    protected function getBackgroundsByEnvironment(string $environment): array
+    {
+        $backgrounds = [
+            'construction' => [
+                // Doğa - Leonardo AI hayal etsin!
+                "mountain landscape",
+                "desert vista",
+                "canyon scenery",
+                "alpine environment",
+                "forest setting",
+                "coastal location",
+                "volcanic terrain",
+                "valley panorama",
+                "riverside area",
+                "hilltop view",
+                // Şehir - sınırsız yorumlama
+                "city skyline",
+                "urban landscape",
+                "rooftop perspective",
+                "metropolitan view",
+                "architectural backdrop",
+                "downtown setting",
+                "suburban area",
+                "neighborhood context",
+                "street level",
+                "elevated viewpoint",
+                // Atmosfer - AI'ın yorumu
+                "dramatic lighting",
+                "golden hour",
+                "stormy weather",
+                "clear sky",
+                "foggy atmosphere",
+                "twilight ambiance",
+                "sunrise scene",
+                "sunset moment",
+                "seasonal change",
+                "natural wonder",
+            ],
+            'port' => [
+                "ocean horizon",
+                "harbor vista",
+                "coastal scene",
+                "maritime setting",
+                "waterfront view",
+                "seascape",
+                "island backdrop",
+                "lighthouse area",
+                "pier environment",
+                "dock surroundings",
+            ],
+            'factory' => [
+                "valley setting",
+                "hillside location",
+                "riverside area",
+                "forest edge",
+                "mountain backdrop",
+                "urban outskirts",
+                "industrial landscape",
+                "park setting",
+                "scenic overlook",
+                "natural surroundings",
+            ],
+            'farm' => [
+                "field landscape",
+                "orchard setting",
+                "meadow vista",
+                "prairie view",
+                "countryside",
+                "rural scene",
+                "agricultural panorama",
+                "pastoral setting",
+                "harvest landscape",
+                "natural farmland",
+            ],
+            'warehouse' => [
+                "city view",
+                "mountain vista",
+                "park setting",
+                "urban landscape",
+                "natural light",
+                "skylight atmosphere",
+                "outdoor connection",
+                "seasonal backdrop",
+                "weather elements",
+                "environmental context",
+            ],
+            'park' => [
+                "flowering gardens",
+                "tree-lined paths",
+                "open meadow",
+                "lake scenery",
+                "fountain area",
+                "botanical beauty",
+                "green landscape",
+                "nature setting",
+            ],
+            'urban' => [
+                "street life",
+                "city architecture",
+                "modern buildings",
+                "busy sidewalks",
+                "urban energy",
+                "metropolitan vibe",
+                "downtown atmosphere",
+                "city lights",
+            ],
+            'nature' => [
+                "forest canopy",
+                "wildflower meadow",
+                "mountain peaks",
+                "flowing streams",
+                "wildlife habitat",
+                "natural beauty",
+                "woodland scenery",
+                "pristine landscape",
+            ],
+            'coastal' => [
+                "ocean waves",
+                "sandy beaches",
+                "seaside cliffs",
+                "maritime horizon",
+                "coastal breeze",
+                "beach scenery",
+                "waterfront views",
+                "sea landscape",
+            ],
+            'mountain' => [
+                "alpine peaks",
+                "valley views",
+                "summit perspective",
+                "mountain ranges",
+                "highland scenery",
+                "scenic overlooks",
+                "elevation views",
+                "mountain majesty",
+            ],
+            'rural' => [
+                "rolling hills",
+                "farmland vista",
+                "country roads",
+                "pastoral scenery",
+                "village backdrop",
+                "countryside charm",
+                "open fields",
+                "rural tranquility",
+            ],
+            'modern' => [
+                "glass facades",
+                "sleek architecture",
+                "contemporary design",
+                "urban innovation",
+                "tech district",
+                "modern skyline",
+                "futuristic setting",
+                "digital age backdrop",
+            ],
+        ];
+
+        return $backgrounds[$environment] ?? $backgrounds['warehouse'];
     }
 
     /**

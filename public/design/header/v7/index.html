@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v7 - Deezer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-zinc-950" x-data="{ filterOpen: false, searchFilter: 'all' }">
+    <header class="fixed top-0 left-0 right-0 bg-gradient-to-r from-purple-900/20 to-pink-900/20 backdrop-blur-xl border-b border-white/10 z-50">
+        <div class="px-8 h-16 flex items-center justify-between gap-6">
+            <div class="flex items-center gap-6">
+                <a href="/" class="text-2xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">muzibu</a>
+                <button class="px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-full text-white font-bold flex items-center gap-2"><i class="fas fa-bolt"></i>Flow</button>
+            </div>
+            <div class="flex-1 max-w-2xl">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/50"></i>
+                    <input type="text" placeholder="Ne aramak istiyorsun?" class="w-full pl-12 pr-32 py-3 bg-white/5 border border-white/10 focus:border-purple-500 rounded-full text-white placeholder-white/50 focus:outline-none backdrop-blur-xl">
+                    <div class="absolute right-2 top-1/2 -translate-y-1/2">
+                        <div class="relative">
+                            <button @click="filterOpen = !filterOpen" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-full text-white text-xs font-semibold flex items-center gap-1">
+                                <span x-text="searchFilter === 'all' ? 'Tümü' : searchFilter === 'songs' ? 'Şarkılar' : searchFilter === 'artists' ? 'Sanatçılar' : 'Albümler'"></span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            <div x-show="filterOpen" @click.away="filterOpen = false" x-transition class="absolute right-0 mt-2 w-40 bg-zinc-900 rounded-xl shadow-2xl border border-zinc-700 py-2">
+                                <button @click="searchFilter = 'all'; filterOpen = false" class="w-full px-4 py-2 hover:bg-zinc-800 text-white text-sm text-left">Tümü</button>
+                                <button @click="searchFilter = 'songs'; filterOpen = false" class="w-full px-4 py-2 hover:bg-zinc-800 text-white text-sm text-left">Şarkılar</button>
+                                <button @click="searchFilter = 'artists'; filterOpen = false" class="w-full px-4 py-2 hover:bg-zinc-800 text-white text-sm text-left">Sanatçılar</button>
+                                <button @click="searchFilter = 'albums'; filterOpen = false" class="w-full px-4 py-2 hover:bg-zinc-800 text-white text-sm text-left">Albümler</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white/70"><i class="far fa-bell"></i></button>
+                <button class="w-9 h-9 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full text-white font-bold text-xs">M</button>
+            </div>
+        </div>
+    </header>
+    <div class="pt-16 min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-black">
+        <div class="text-center"><h1 class="text-5xl font-black text-white mb-3">v7 - Deezer</h1><p class="text-zinc-400">Flow + Smart Search Filters</p></div>
+    </div>
+    <div class="fixed bottom-8 right-8 flex flex-col gap-3 z-50">
+        <a href="../v6/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-left"></i></a>
+        <div class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center border border-zinc-700"><span class="text-xs text-white font-bold">7/15</span></div>
+        <a href="../v8/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-right"></i></a>
+    </div>
+</body>
+</html>

@@ -99,7 +99,7 @@ function muzibuApp() {
         repeatMode: 'off',
         currentTime: 0,
         duration: 240,
-        volume: 70,
+        volume: parseInt(safeStorage.getItem('volume')) || 100, // Load from localStorage, default 100
         isMuted: false,
         currentSong: null,
         queue: [],
@@ -300,6 +300,44 @@ function muzibuApp() {
                 await this.playSongFromQueue(this.queueIndex);
             } else {
                 this.isPlaying = false;
+            }
+        },
+
+        // Fisher-Yates Shuffle Algorithm
+        shuffleArray(array) {
+            const arr = [...array]; // Create a copy
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap
+            }
+            return arr;
+        },
+
+        toggleShuffle() {
+            this.shuffle = !this.shuffle;
+
+            if (this.shuffle) {
+                // Shuffle the queue
+                if (this.queue.length > 0) {
+                    // Save current song
+                    const currentSong = this.queue[this.queueIndex];
+
+                    // Remove current song from queue
+                    const remainingSongs = this.queue.filter((_, index) => index !== this.queueIndex);
+
+                    // Shuffle remaining songs
+                    const shuffled = this.shuffleArray(remainingSongs);
+
+                    // Rebuild queue: current song first, then shuffled
+                    this.queue = [currentSong, ...shuffled];
+                    this.queueIndex = 0;
+
+                    this.showToast('Karışık çalma aktif', 'success');
+                }
+            } else {
+                this.showToast('Karışık çalma kapalı', 'info');
+                // Note: We don't restore original order since we don't track it
+                // Shuffle off just means next songs will play in current order
             }
         },
 
@@ -653,6 +691,9 @@ function muzibuApp() {
                     }
                 }
             }
+
+            // Save volume to localStorage
+            safeStorage.setItem('volume', Math.round(this.volume));
         },
 
         // Metadata is handled by Howler.js onload callback
@@ -1307,9 +1348,73 @@ function muzibuApp() {
             this.showToast('Paylaşım linki kopyalandı', 'success');
         },
 
-        addToQueue(type, id) {
-            console.log('Adding to queue:', type, id);
-            this.showToast('Kuyruğa eklendi', 'success');
+        async addToQueue(type, id) {
+            try {
+                let songs = [];
+
+                if (type === 'song') {
+                    // Single song - fetch details
+                    const response = await fetch(`/api/muzibu/songs/${id}/stream`);
+                    const data = await response.json();
+
+                    if (data.song) {
+                        songs = [{
+                            song_id: data.song.id,
+                            title: data.song.title,
+                            artist_name: data.song.artist?.name || 'Bilinmeyen Sanatçı',
+                            album_name: data.song.album?.title || '',
+                            album_cover: data.song.album?.cover_image || '/placeholder-album.jpg',
+                            duration: data.song.duration || 0
+                        }];
+                    }
+                } else if (type === 'album') {
+                    // Album - fetch all songs
+                    const response = await fetch(`/api/muzibu/albums/${id}`);
+                    const data = await response.json();
+
+                    if (data.album && data.album.songs) {
+                        songs = data.album.songs.map(song => ({
+                            song_id: song.id,
+                            title: song.title,
+                            artist_name: song.artist?.name || data.album.artist?.name || 'Bilinmeyen Sanatçı',
+                            album_name: data.album.title,
+                            album_cover: data.album.cover_image || '/placeholder-album.jpg',
+                            duration: song.duration || 0
+                        }));
+                    }
+                } else if (type === 'playlist') {
+                    // Playlist - fetch all songs
+                    const response = await fetch(`/api/muzibu/playlists/${id}`);
+                    const data = await response.json();
+
+                    if (data.playlist && data.playlist.songs) {
+                        songs = data.playlist.songs.map(song => ({
+                            song_id: song.id,
+                            title: song.title,
+                            artist_name: song.artist?.name || 'Bilinmeyen Sanatçı',
+                            album_name: song.album?.title || '',
+                            album_cover: song.album?.cover_image || '/placeholder-album.jpg',
+                            duration: song.duration || 0
+                        }));
+                    }
+                }
+
+                if (songs.length > 0) {
+                    // Add songs to queue
+                    this.queue.push(...songs);
+
+                    const message = songs.length === 1
+                        ? 'Şarkı kuyruğa eklendi'
+                        : `${songs.length} şarkı kuyruğa eklendi`;
+
+                    this.showToast(message, 'success');
+                } else {
+                    this.showToast('Şarkı bulunamadı', 'error');
+                }
+            } catch (error) {
+                console.error('Add to queue error:', error);
+                this.showToast('Kuyruğa eklenirken hata oluştu', 'error');
+            }
         },
 
         removeFromQueue(index) {
@@ -1765,6 +1870,27 @@ function muzibuApp() {
                 this.forgotValidation.email.valid = true;
                 this.forgotValidation.email.message = '';
             }
+        },
+
+        clearCache() {
+            // Clear localStorage
+            try {
+                localStorage.clear();
+                console.log('LocalStorage cleared');
+            } catch (e) {
+                console.warn('Could not clear localStorage:', e);
+            }
+
+            // Clear sessionStorage
+            try {
+                sessionStorage.clear();
+                console.log('SessionStorage cleared');
+            } catch (e) {
+                console.warn('Could not clear sessionStorage:', e);
+            }
+
+            // Reload page to clear all caches
+            window.location.reload(true);
         }
     }
 }

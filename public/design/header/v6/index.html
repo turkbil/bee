@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v6 - Tidal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-black" x-data="{ moodOpen: false, selectedMood: 'chill' }">
+    <header class="fixed top-0 left-0 right-0 bg-zinc-950 border-b border-zinc-800 z-50">
+        <div class="px-8 h-14 flex items-center justify-between gap-8">
+            <div class="flex items-center gap-6">
+                <a href="/" class="text-white text-2xl font-bold tracking-widest">MUZIBU</a>
+                <div class="relative">
+                    <button @click="moodOpen = !moodOpen" class="flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 rounded-lg border border-zinc-700">
+                        <span class="text-white text-sm font-medium" x-text="selectedMood === 'chill' ? '🎧 Chill' : selectedMood === 'party' ? '🎉 Party' : selectedMood === 'focus' ? '🎯 Focus' : '💪 Workout'"></span>
+                        <i class="fas fa-chevron-down text-white/50 text-xs"></i>
+                    </button>
+                    <div x-show="moodOpen" @click.away="moodOpen = false" x-transition class="absolute left-0 mt-2 w-56 bg-zinc-900 rounded-xl shadow-2xl border border-zinc-700 py-2">
+                        <button @click="selectedMood = 'chill'; moodOpen = false" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 text-white text-sm"><span class="text-lg">🎧</span><span>Chill</span></button>
+                        <button @click="selectedMood = 'party'; moodOpen = false" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 text-white text-sm"><span class="text-lg">🎉</span><span>Party</span></button>
+                        <button @click="selectedMood = 'focus'; moodOpen = false" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 text-white text-sm"><span class="text-lg">🎯</span><span>Focus</span></button>
+                        <button @click="selectedMood = 'workout'; moodOpen = false" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-800 text-white text-sm"><span class="text-lg">💪</span><span>Workout</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 max-w-md">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+                    <input type="text" placeholder="Ara..." class="w-full pl-10 pr-4 py-2 bg-zinc-900 border border-zinc-700 focus:border-white/30 rounded-lg text-white placeholder-zinc-500 focus:outline-none">
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-md"><span class="text-white font-bold text-xs tracking-wider">HiFi</span></div>
+                <button class="w-9 h-9 bg-zinc-900 hover:bg-zinc-800 rounded-lg flex items-center justify-center text-white/70"><i class="far fa-heart"></i></button>
+                <button class="w-9 h-9 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg text-white font-bold text-xs">M</button>
+            </div>
+        </div>
+    </header>
+    <div class="pt-14 min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-black">
+        <div class="text-center"><h1 class="text-5xl font-black text-white mb-3">v6 - Tidal</h1><p class="text-zinc-400">HiFi Badge + Mood Selector</p></div>
+    </div>
+    <div class="fixed bottom-8 right-8 flex flex-col gap-3 z-50">
+        <a href="../v5/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-left"></i></a>
+        <div class="w-12 h-12 bg-zinc-800 rounded-xl flex items-center justify-center border border-zinc-700"><span class="text-xs text-white font-bold">6/15</span></div>
+        <a href="../v7/" class="w-12 h-12 bg-zinc-800 hover:bg-zinc-700 rounded-xl flex items-center justify-center text-white/70 hover:text-white border border-zinc-700"><i class="fas fa-chevron-right"></i></a>
+    </div>
+</body>
+</html>

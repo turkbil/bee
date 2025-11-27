@@ -106,7 +106,8 @@ class User extends Authenticatable implements HasMedia
      */
     public function subscription()
     {
-        return $this->hasOne(Subscription::class)->active();
+        return $this->hasOne(Subscription::class, 'customer_id')
+            ->whereIn('status', ['active', 'trial']);
     }
 
     /**
@@ -114,7 +115,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class);
+        return $this->hasMany(Subscription::class, 'customer_id');
     }
 
     /**
@@ -183,10 +184,17 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Check if user has active subscription
+     * Statüsü 'active' veya 'trial' olan subscription var mı?
      */
     public function hasActiveSubscription(): bool
     {
-        return $this->subscription()->exists();
+        return $this->subscriptions()
+            ->whereIn('status', ['active', 'trial'])
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            })
+            ->exists();
     }
 
     /**
@@ -293,13 +301,32 @@ class User extends Authenticatable implements HasMedia
     public function getEffectiveSubscription()
     {
         if (!$this->isMuzibuTenant()) {
-            return $this->subscription ?? null;
+            return $this->subscriptions()
+                ->whereIn('status', ['active', 'trial'])
+                ->where(function($q) {
+                    $q->whereNull('current_period_end')
+                      ->orWhere('current_period_end', '>', now());
+                })
+                ->first();
         }
 
         if ($this->isCorporateMember() && $this->corporateAccount) {
-            return $this->corporateAccount->owner->subscription ?? null;
+            return $this->corporateAccount->owner->subscriptions()
+                ->whereIn('status', ['active', 'trial'])
+                ->where(function($q) {
+                    $q->whereNull('current_period_end')
+                      ->orWhere('current_period_end', '>', now());
+                })
+                ->first();
         }
-        return $this->subscription ?? null;
+
+        return $this->subscriptions()
+            ->whereIn('status', ['active', 'trial'])
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            })
+            ->first();
     }
 
     // ==========================================
@@ -362,7 +389,7 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
-     * Premium üye mi? (is_premium veya aktif trial)
+     * Premium üye mi? (aktif subscription veya trial)
      * Tenant 1001 (muzibu.com) için
      */
     public function isPremium(): bool
@@ -371,6 +398,20 @@ class User extends Authenticatable implements HasMedia
             return false;
         }
 
+        // Yeni subscription sistemi: subscriptions tablosundan kontrol et
+        $activeSubscription = $this->subscriptions()
+            ->where('status', 'active')
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            })
+            ->first();
+
+        if ($activeSubscription) {
+            return true;
+        }
+
+        // Fallback: Eski sistem (is_premium kolonu)
         return $this->is_premium ?? false;
     }
 
@@ -384,6 +425,18 @@ class User extends Authenticatable implements HasMedia
             return false;
         }
 
+        // Yeni subscription sistemi: subscriptions tablosundan kontrol et
+        $trialSubscription = $this->subscriptions()
+            ->where('status', 'trial')
+            ->whereNotNull('trial_ends_at')
+            ->where('trial_ends_at', '>', now())
+            ->first();
+
+        if ($trialSubscription) {
+            return true;
+        }
+
+        // Fallback: Eski sistem (trial_ends_at kolonu)
         return $this->trial_ends_at && $this->trial_ends_at->isFuture();
     }
 }

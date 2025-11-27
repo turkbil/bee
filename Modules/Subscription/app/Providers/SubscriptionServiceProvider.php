@@ -8,6 +8,7 @@ use Livewire\Livewire;
 use Modules\Subscription\App\Http\Livewire\Admin\SubscriptionPlanComponent;
 use Modules\Subscription\App\Http\Livewire\Admin\SubscriptionPlanManageComponent;
 use Modules\Subscription\App\Http\Livewire\Admin\SubscriptionComponent;
+use Modules\Subscription\App\Http\Livewire\Admin\SubscriptionManageComponent;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -36,6 +37,7 @@ class SubscriptionServiceProvider extends ServiceProvider
         Livewire::component('subscription-plan-component', SubscriptionPlanComponent::class);
         Livewire::component('subscription-plan-manage-component', SubscriptionPlanManageComponent::class);
         Livewire::component('subscription-component', SubscriptionComponent::class);
+        Livewire::component('subscription-manage-component', SubscriptionManageComponent::class);
     }
 
     /**

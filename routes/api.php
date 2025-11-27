@@ -30,6 +30,9 @@ Route::get('/session/check', function (Request $request) {
         return response()->json(['authenticated' => false], 401);
     }
 
+    // ✅ Kullanıcı authenticated ise, session aktif demektir
+    // DB'de session yoksa bile sorun yok (garbage collection olmuş olabilir)
+    // Önemli olan: Laravel'in auth()->check() true dönmesi
     return response()->json([
         'authenticated' => true,
         'user' => [

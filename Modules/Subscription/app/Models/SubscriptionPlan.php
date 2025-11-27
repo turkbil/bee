@@ -79,6 +79,14 @@ class SubscriptionPlan extends BaseModel
 
     protected $translatable = ['title', 'description'];
 
+    /**
+     * Sluggable devre dışı - slug manuel yönetiliyor
+     */
+    public function sluggable(): array
+    {
+        return [];
+    }
+
     // Relationships
     public function subscriptions()
     {

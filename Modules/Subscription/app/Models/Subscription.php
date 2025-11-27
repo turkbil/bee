@@ -14,6 +14,9 @@ class Subscription extends BaseModel
 
     protected $primaryKey = 'subscription_id';
 
+    // BaseModel'den gelen is_active varsayılanını override et
+    protected $attributes = [];
+
     protected $fillable = [
         'customer_id',
         'plan_id',
@@ -76,7 +79,11 @@ class Subscription extends BaseModel
     // Scopes
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('status', 'active')
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            });
     }
 
     public function scopeTrial($query)

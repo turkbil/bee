@@ -51,11 +51,29 @@
                     <template x-if="!isLoggingOut">
                         <div>
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 bg-gradient-to-br from-spotify-green to-green-600 rounded-full flex items-center justify-center shadow-lg">
-                                    <i class="fas fa-user text-white text-sm"></i>
+                                <div class="relative">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-spotify-green to-green-600 rounded-full flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-user text-white text-sm"></i>
+                                    </div>
+                                    @if(auth()->user()->isPremium())
+                                        <div class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg border-2 border-black">
+                                            <i class="fas fa-crown text-yellow-900 text-xs"></i>
+                                        </div>
+                                    @elseif(auth()->user()->isTrialActive())
+                                        <div class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-lg border-2 border-black">
+                                            <i class="fas fa-gift text-purple-900 text-xs"></i>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <div class="font-semibold text-white text-sm truncate">{{ auth()->user()->name }}</div>
+                                    <div class="font-semibold text-white text-sm truncate">
+                                        {{ auth()->user()->name }}
+                                        @if(auth()->user()->isPremium())
+                                            <i class="fas fa-crown text-yellow-400 text-xs ml-1"></i>
+                                        @elseif(auth()->user()->isTrialActive())
+                                            <i class="fas fa-gift text-purple-400 text-xs ml-1"></i>
+                                        @endif
+                                    </div>
                                     @if(auth()->user()->isPremium())
                                         <div class="text-xs text-spotify-green-light">
                                             {{ tenant_trans('front.premium') }}

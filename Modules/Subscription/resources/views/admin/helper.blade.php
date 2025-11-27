@@ -34,6 +34,10 @@
                 <a href="{{ route('admin.subscription.plans.manage') }}" class="dropdown-module-item btn btn-primary">
                     <i class="icon-menu fas fa-plus-circle"></i>{{ __('subscription::admin.new_plan') }}
                 </a>
+
+                <a href="{{ route('admin.subscription.manage') }}" class="dropdown-module-item btn btn-success">
+                    <i class="icon-menu fas fa-user-plus"></i>Yeni Abonelik
+                </a>
             </div>
         </div>
     </div>

@@ -25,6 +25,9 @@
             this.monacoReady = false;
             this.initQueue = [];
 
+            // ÖNCE localStorage hatalarını engelle - Monaco yüklenmeden önce!
+            this.setupStorageFallback();
+
             console.log('🎯 Monaco Editor Universal System başlatılıyor...');
             this.loadMonacoLoader();
         }
@@ -63,6 +66,31 @@
                 console.error('❌ Monaco loader yüklenemedi');
             };
             document.head.appendChild(monacoScript);
+        }
+
+        /**
+         * localStorage hatalarını engelle (Monaco Editor için)
+         */
+        setupStorageFallback() {
+            // 1. Console error filtreleme
+            const originalError = console.error;
+            console.error = function(...args) {
+                const message = args.join(' ');
+                if (message.includes('Access to storage') ||
+                    message.includes('storage is not allowed')) {
+                    return; // Sustur
+                }
+                originalError.apply(console, args);
+            };
+
+            // 2. Unhandled promise rejection filtreleme
+            window.addEventListener('unhandledrejection', function(event) {
+                if (event.reason &&
+                    event.reason.message &&
+                    event.reason.message.includes('Access to storage')) {
+                    event.preventDefault(); // Hatayı sustur
+                }
+            });
         }
 
         /**

@@ -322,11 +322,11 @@
 
 <!-- Son Blog Yazıları Section - 5 Farklı Glass Tasarım -->
 @php
-    // Featured image media kaydı olan blogları çek (N+1 query çözümü: with('media'))
+    // Media kaydı olan blogları çek (hero veya featured_image)
     $latestBlogs = \Modules\Blog\App\Models\Blog::published()
         ->with('media')
         ->whereHas('media', function($query) {
-            $query->where('collection_name', 'featured_image');
+            $query->whereIn('collection_name', ['hero', 'featured_image', 'gallery']);
         })
         ->orderBy('published_at', 'desc')
         ->take(6)
@@ -355,7 +355,9 @@
                     $blogSlug = is_array($blog->slug) ? ($blog->slug['tr'] ?? '') : $blog->slug;
                     $blogExcerpt = is_array($blog->excerpt) ? ($blog->excerpt['tr'] ?? '') : ($blog->excerpt ?? '');
                     $blogUrl = '/blog/' . $blogSlug;
-                    $blogImage = $blog->hasMedia('featured_image') ? thumb($blog->getFirstMedia('featured_image'), 400, 300, ['quality' => 85, 'format' => 'webp']) : null;
+                    // Helper function ile multi-collection fallback
+                    $blogMedia = getFirstMediaWithFallback($blog);
+                    $blogImage = $blogMedia ? thumb($blogMedia, 400, 300, ['quality' => 85, 'format' => 'webp']) : null;
                     $blogDate = $blog->published_at ? $blog->published_at->format('d.m.Y') : '';
 
                     // Okuma süresi - Blog detay sayfasıyla aynı metod

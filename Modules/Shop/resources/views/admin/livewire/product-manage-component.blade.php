@@ -276,7 +276,7 @@
                         <div class="mb-4">
                             <livewire:mediamanagement::universal-media wire:id="product-media-component"
                                 :model-id="$productId" model-type="shop_product"
-                                model-class="Modules\Shop\App\Models\ShopProduct" :collections="['featured_image', 'gallery']" :sortable="true"
+                                model-class="Modules\Shop\App\Models\ShopProduct" :collections="['hero', 'gallery']" :sortable="true"
                                 :set-featured-from-gallery="true" :key="'universal-media-' . ($productId ?? 'new')" />
                         </div>
 

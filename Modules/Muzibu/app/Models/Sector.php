@@ -112,7 +112,7 @@ class Sector extends BaseModel implements HasMedia
      */
     public function iconMedia()
     {
-        return $this->belongsTo(\Modules\MediaManagement\App\Models\Media::class, 'media_id');
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class, 'media_id');
     }
 
     /**

@@ -80,7 +80,7 @@
                                 :model-id="$playlistId"
                                 model-type="playlist"
                                 model-class="Modules\Muzibu\App\Models\Playlist"
-                                :collections="['featured_image']"
+                                :collections="['hero']"
                                 :key="'universal-media-' . ($playlistId ?? 'new')"
                             />
                         </div>

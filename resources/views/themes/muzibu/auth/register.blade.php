@@ -23,7 +23,7 @@
                 required
                 autofocus
                 autocomplete="name"
-                class="w-full px-4 py-3 bg-gray-50 dark:bg-spotify-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-spotify-green focus:border-transparent dark:text-white transition-all @error('name') border-red-500 dark:border-red-500 @enderror"
+                class="w-full px-4 py-3 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all @error('name') border-red-500 dark:border-red-500 @enderror"
                 placeholder="Adınız Soyadınız"
             >
             @error('name')
@@ -43,7 +43,7 @@
                 value="{{ old('email') }}"
                 required
                 autocomplete="username"
-                class="w-full px-4 py-3 bg-gray-50 dark:bg-spotify-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-spotify-green focus:border-transparent dark:text-white transition-all @error('email') border-red-500 dark:border-red-500 @enderror"
+                class="w-full px-4 py-3 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all @error('email') border-red-500 dark:border-red-500 @enderror"
                 placeholder="ornek@email.com"
             >
             @error('email')
@@ -63,7 +63,7 @@
                     name="password"
                     required
                     autocomplete="new-password"
-                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-spotify-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-spotify-green focus:border-transparent dark:text-white transition-all @error('password') border-red-500 dark:border-red-500 @enderror"
+                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all @error('password') border-red-500 dark:border-red-500 @enderror"
                     placeholder="••••••••"
                 >
                 <button
@@ -92,7 +92,7 @@
                     name="password_confirmation"
                     required
                     autocomplete="new-password"
-                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-spotify-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-spotify-green focus:border-transparent dark:text-white transition-all"
+                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all"
                     placeholder="••••••••"
                 >
                 <button
@@ -111,18 +111,18 @@
                 type="checkbox"
                 id="terms"
                 required
-                class="mt-1 w-4 h-4 border-gray-300 rounded text-spotify-green focus:ring-spotify-green focus:ring-offset-0"
+                class="mt-1 w-4 h-4 border-gray-300 rounded text-muzibu-coral focus:ring-muzibu-coral focus:ring-offset-0"
             >
             <label for="terms" class="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                <a href="/terms" class="text-spotify-green hover:text-spotify-green-light transition-colors font-semibold">Kullanım Koşullarını</a> ve
-                <a href="/privacy" class="text-spotify-green hover:text-spotify-green-light transition-colors font-semibold">Gizlilik Politikasını</a> kabul ediyorum
+                <a href="/terms" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Kullanım Koşullarını</a> ve
+                <a href="/privacy" class="text-muzibu-coral hover:text-muzibu-coral-light transition-colors font-semibold">Gizlilik Politikasını</a> kabul ediyorum
             </label>
         </div>
 
         <!-- Submit Button -->
         <button
             type="submit"
-            class="w-full py-3.5 bg-gradient-to-r from-spotify-green to-green-600 hover:from-spotify-green-light hover:to-green-500 text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
+            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-green-600 hover:from-muzibu-coral-light hover:to-green-500 text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
         >
             <i class="fas fa-rocket mr-2"></i>
             Ücretsiz Hesap Oluştur
@@ -133,7 +133,7 @@
 @section('footer-links')
     <div class="text-white/80 dark:text-gray-400">
         Zaten hesabınız var mı?
-        <a href="{{ route('login') }}" class="font-semibold text-white dark:text-spotify-green-light hover:text-white/100 dark:hover:text-spotify-green transition-colors">
+        <a href="{{ route('login') }}" class="font-semibold text-white dark:text-muzibu-coral-light hover:text-white/100 dark:hover:text-muzibu-coral transition-colors">
             Giriş Yapın
         </a>
     </div>

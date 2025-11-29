@@ -117,7 +117,7 @@
                                 :model-id="$albumId"
                                 model-type="album"
                                 model-class="Modules\Muzibu\App\Models\Album"
-                                :collections="['featured_image']"
+                                :collections="['hero']"
                                 :key="'universal-media-' . ($albumId ?? 'new')"
                             />
                         </div>

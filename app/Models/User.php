@@ -399,12 +399,10 @@ class User extends Authenticatable implements HasMedia
         }
 
         // Yeni subscription sistemi: subscriptions tablosundan kontrol et
+        // ✅ FIXED: whereNull kaldırıldı (NULL = sonsuz premium önlendi)
         $activeSubscription = $this->subscriptions()
             ->where('status', 'active')
-            ->where(function($q) {
-                $q->whereNull('current_period_end')
-                  ->orWhere('current_period_end', '>', now());
-            })
+            ->where('current_period_end', '>', now()) // 🔥 Sadece gelecek tarihli subscription'lar
             ->first();
 
         if ($activeSubscription) {

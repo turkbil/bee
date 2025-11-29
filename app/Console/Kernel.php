@@ -12,6 +12,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        // 🔐 Subscription Verification - Her gün sabah 06:00 (Tenant 1001 - Muzibu)
+        $schedule->command('subscriptions:verify')
+                 ->dailyAt('06:00')
+                 ->withoutOverlapping()
+                 ->runInBackground()
+                 ->appendOutputTo(storage_path('logs/subscription-verification.log'));
+
         // Queue Health Check - Her 5 dakikada bir
         $schedule->command('queue:ensure-workers')
                  ->everyFiveMinutes()
@@ -164,7 +171,7 @@ class Kernel extends ConsoleKernel
                 \Log::error('Blog cron scheduler error: ' . $e->getMessage());
             }
         })
-        ->hourly() // Production: Saatlik çalışma (Test: everyFiveMinutes)
+        ->hourly() // Production: Saatlik çalışma
         ->name('blog-ai-dynamic-scheduler')
         ->withoutOverlapping(10)
         ->appendOutputTo(storage_path('logs/blog-cron.log'));

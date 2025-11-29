@@ -5,10 +5,17 @@ namespace Modules\Muzibu\app\Http\Controllers\Api;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
+use Modules\Muzibu\App\Models\Playlist;
+use Modules\Muzibu\App\Services\PlaylistService;
+use Modules\Muzibu\App\Services\MuzibuCacheService;
 
 class PlaylistController extends Controller
 {
+    public function __construct(
+        private PlaylistService $playlistService,
+        private MuzibuCacheService $cacheService
+    ) {
+    }
     /**
      * Get all playlists with pagination
      *
@@ -17,49 +24,44 @@ class PlaylistController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $perPage = $request->input('per_page', 20);
-        $sectorId = $request->input('sector_id');
-        $isFeatured = $request->input('is_featured');
+        try {
+            $perPage = $request->input('per_page', 20);
+            $sectorId = $request->input('sector_id');
 
-        $query = DB::table('muzibu_playlists')
-            ->select([
-                'playlist_id',
-                'title',
-                'slug',
-                'description',
-                'media_id',
-                'is_system',
-                'is_public',
-                'is_active'
-            ])
-            ->where('is_active', 1);
+            //🔒 FIXED: Use Eloquent (tenant-aware)
+            $query = Playlist::where('is_active', 1);
 
-        // Filter by sector
-        if ($sectorId) {
-            $query->join('muzibu_playlist_sector', 'muzibu_playlists.playlist_id', '=', 'muzibu_playlist_sector.playlist_id')
-                ->where('muzibu_playlist_sector.sector_id', $sectorId);
+            // Filter by sector
+            if ($sectorId) {
+                $query->whereHas('sectors', function ($q) use ($sectorId) {
+                    $q->where('sector_id', $sectorId);
+                });
+            }
+
+            $playlists = $query->paginate($perPage);
+
+            // Transform to API format
+            $playlists->getCollection()->transform(function ($playlist) {
+                return [
+                    'playlist_id' => $playlist->playlist_id,
+                    'title' => $playlist->title,
+                    'slug' => $playlist->slug,
+                    'description' => $playlist->description,
+                    'media_id' => $playlist->media_id,
+                    'cover_url' => $playlist->getCoverUrl(200, 200),
+                    'is_system' => $playlist->is_system,
+                    'is_public' => $playlist->is_public,
+                    'is_active' => $playlist->is_active,
+                    'song_count' => $playlist->songs()->count(),
+                ];
+            });
+
+            return response()->json($playlists);
+
+        } catch (\Exception $e) {
+            \Log::error('Playlist index error:', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
         }
-
-        // Get paginated results
-        $playlists = $query->paginate($perPage);
-
-        // Add song count to each playlist
-        $playlists->getCollection()->transform(function ($playlist) {
-            $songCount = DB::table('muzibu_playlist_song')
-                ->where('playlist_id', $playlist->playlist_id)
-                ->count();
-
-            $playlist->song_count = $songCount;
-
-            // Decode JSON fields
-            $playlist->title = json_decode($playlist->title, true);
-            $playlist->slug = json_decode($playlist->slug, true);
-            $playlist->description = json_decode($playlist->description, true);
-
-            return $playlist;
-        });
-
-        return response()->json($playlists);
     }
 
     /**
@@ -70,61 +72,56 @@ class PlaylistController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        // Get playlist
-        $playlist = DB::table('muzibu_playlists')
-            ->where('playlist_id', $id)
-            ->where('is_active', 1)
-            ->first();
+        try {
+            // 🚀 CACHE: Get playlist from Redis (1h TTL)
+            $playlist = $this->cacheService->getPlaylist($id);
 
-        if (!$playlist) {
-            return response()->json(['error' => 'Playlist not found'], 404);
+            if (!$playlist) {
+                return response()->json(['error' => 'Playlist not found'], 404);
+            }
+
+            // Transform songs
+            $songs = $playlist->songs->map(function ($song) {
+                $album = $song->album;
+                $artist = $album?->artist;
+
+                return [
+                    'song_id' => $song->song_id,
+                    'song_title' => $song->title,
+                    'song_slug' => $song->slug,
+                    'duration' => $song->duration,
+                    'file_path' => $song->file_path,
+                    'hls_path' => $song->hls_path,
+                    'hls_converted' => $song->hls_converted,
+                    'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
+                    'album_id' => $album?->album_id,
+                    'album_title' => $album?->title,
+                    'album_slug' => $album?->slug,
+                    'artist_id' => $artist?->artist_id,
+                    'artist_title' => $artist?->title,
+                    'artist_slug' => $artist?->slug,
+                    'position' => $song->pivot->position ?? 0,
+                ];
+            });
+
+            return response()->json([
+                'playlist_id' => $playlist->playlist_id,
+                'title' => $playlist->title,
+                'slug' => $playlist->slug,
+                'description' => $playlist->description,
+                'media_id' => $playlist->media_id,
+                'cover_url' => $playlist->getCoverUrl(200, 200),
+                'is_system' => $playlist->is_system,
+                'is_public' => $playlist->is_public,
+                'is_active' => $playlist->is_active,
+                'songs' => $songs,
+                'song_count' => $songs->count(),
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Playlist show error:', ['playlist_id' => $id, 'message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
         }
-
-        // Decode JSON fields
-        $playlist->title = json_decode($playlist->title, true);
-        $playlist->slug = json_decode($playlist->slug, true);
-        $playlist->description = json_decode($playlist->description, true);
-
-        // Get songs in playlist
-        $songs = DB::table('muzibu_playlist_song')
-            ->join('muzibu_songs', 'muzibu_playlist_song.song_id', '=', 'muzibu_songs.song_id')
-            ->join('muzibu_albums', 'muzibu_songs.album_id', '=', 'muzibu_albums.album_id')
-            ->join('muzibu_artists', 'muzibu_albums.artist_id', '=', 'muzibu_artists.artist_id')
-            ->where('muzibu_playlist_song.playlist_id', $id)
-            ->select([
-                'muzibu_songs.song_id',
-                'muzibu_songs.title as song_title',
-                'muzibu_songs.slug as song_slug',
-                'muzibu_songs.duration',
-                'muzibu_songs.file_path',
-                'muzibu_songs.hls_path',
-                'muzibu_songs.hls_converted',
-                'muzibu_albums.album_id',
-                'muzibu_albums.title as album_title',
-                'muzibu_albums.slug as album_slug',
-                'muzibu_artists.artist_id',
-                'muzibu_artists.title as artist_title',
-                'muzibu_artists.slug as artist_slug',
-                'muzibu_playlist_song.position'
-            ])
-            ->orderBy('muzibu_playlist_song.position')
-            ->get();
-
-        // Decode JSON fields for each song
-        $songs = $songs->map(function ($song) {
-            $song->song_title = json_decode($song->song_title, true);
-            $song->song_slug = json_decode($song->song_slug, true);
-            $song->album_title = json_decode($song->album_title, true);
-            $song->album_slug = json_decode($song->album_slug, true);
-            $song->artist_title = json_decode($song->artist_title, true);
-            $song->artist_slug = json_decode($song->artist_slug, true);
-            return $song;
-        });
-
-        $playlist->songs = $songs;
-        $playlist->song_count = $songs->count();
-
-        return response()->json($playlist);
     }
 
     /**
@@ -134,25 +131,229 @@ class PlaylistController extends Controller
      */
     public function featured(): JsonResponse
     {
-        $playlists = DB::table('muzibu_playlists')
-            ->where('is_active', 1)
-            ->where('is_system', 1)
-            ->limit(10)
-            ->get();
+        try {
+            //🔒 FIXED: Use Eloquent (tenant-aware)
+            $playlists = Playlist::where('is_active', 1)
+                ->where('is_system', 1)
+                ->limit(10)
+                ->get()
+                ->map(function ($playlist) {
+                    return [
+                        'playlist_id' => $playlist->playlist_id,
+                        'title' => $playlist->title,
+                        'slug' => $playlist->slug,
+                        'description' => $playlist->description,
+                        'media_id' => $playlist->media_id,
+                'cover_url' => $playlist->getCoverUrl(200, 200),
+                        'song_count' => $playlist->songs()->count(),
+                    ];
+                });
 
-        $playlists = $playlists->map(function ($playlist) {
-            $songCount = DB::table('muzibu_playlist_song')
-                ->where('playlist_id', $playlist->playlist_id)
-                ->count();
+            return response()->json($playlists);
 
-            $playlist->song_count = $songCount;
-            $playlist->title = json_decode($playlist->title, true);
-            $playlist->slug = json_decode($playlist->slug, true);
-            $playlist->description = json_decode($playlist->description, true);
+        } catch (\Exception $e) {
+            \Log::error('Featured playlists error:', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
+        }
+    }
 
-            return $playlist;
-        });
+    /**
+     * Get user playlists (auth required)
+     */
+    public function myPlaylists(Request $request): JsonResponse
+    {
+        try {
+            $userId = auth('sanctum')->id();
+            $perPage = $request->input('per_page', 15);
 
-        return response()->json($playlists);
+            $playlists = $this->playlistService->getUserPlaylists($userId, $perPage);
+
+            return response()->json($playlists);
+        } catch (\Exception $e) {
+            \Log::error('My playlists error:', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
+        }
+    }
+
+    /**
+     * Clone system playlist to user playlist
+     */
+    public function clone(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'playlist_id' => 'required|integer|exists:muzibu_playlists,playlist_id',
+            ]);
+
+            $userId = auth('sanctum')->id();
+            $result = $this->playlistService->clonePlaylist(
+                $request->input('playlist_id'),
+                $userId
+            );
+
+            return response()->json($result, $result['success'] ? 200 : 400);
+        } catch (\Exception $e) {
+            \Log::error('Playlist clone error:', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Playlist kopyalama başarısız',
+            ], 500);
+        }
+    }
+
+    /**
+     * Quick create playlist with songs
+     */
+    public function quickCreate(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'song_ids' => 'nullable|array',
+                'song_ids.*' => 'integer|exists:muzibu_songs,song_id',
+                'is_public' => 'nullable|boolean',
+            ]);
+
+            $userId = auth('sanctum')->id();
+            $result = $this->playlistService->createPlaylistWithSongs(
+                $request->all(),
+                $userId
+            );
+
+            return response()->json($result, $result['success'] ? 201 : 400);
+        } catch (\Exception $e) {
+            \Log::error('Quick create playlist error:', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Playlist oluşturma başarısız',
+            ], 500);
+        }
+    }
+
+    /**
+     * Add song to playlist
+     */
+    public function addSong(Request $request, int $id): JsonResponse
+    {
+        try {
+            $request->validate([
+                'song_id' => 'required|integer|exists:muzibu_songs,song_id',
+            ]);
+
+            $userId = auth('sanctum')->id();
+            $result = $this->playlistService->addSongToPlaylist(
+                $id,
+                $request->input('song_id'),
+                $userId
+            );
+
+            return response()->json($result, $result['success'] ? 200 : 400);
+        } catch (\Exception $e) {
+            \Log::error('Add song to playlist error:', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Şarkı ekleme başarısız',
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove song from playlist
+     */
+    public function removeSong(int $id, int $songId): JsonResponse
+    {
+        try {
+            $userId = auth('sanctum')->id();
+            $result = $this->playlistService->removeSongFromPlaylist(
+                $id,
+                $songId,
+                $userId
+            );
+
+            return response()->json($result, $result['success'] ? 200 : 400);
+        } catch (\Exception $e) {
+            \Log::error('Remove song from playlist error:', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Şarkı çıkarma başarısız',
+            ], 500);
+        }
+    }
+
+    /**
+     * Reorder songs in playlist
+     */
+    public function reorder(Request $request, int $id): JsonResponse
+    {
+        try {
+            $request->validate([
+                'song_positions' => 'required|array',
+                'song_positions.*.song_id' => 'required|integer',
+                'song_positions.*.position' => 'required|integer',
+            ]);
+
+            $userId = auth('sanctum')->id();
+            $result = $this->playlistService->reorderSongs(
+                $id,
+                $request->input('song_positions'),
+                $userId
+            );
+
+            return response()->json($result, $result['success'] ? 200 : 400);
+        } catch (\Exception $e) {
+            \Log::error('Reorder playlist error:', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Sıralama güncelleme başarısız',
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete user playlist
+     */
+    public function delete(int $id): JsonResponse
+    {
+        try {
+            $userId = auth('sanctum')->id();
+            $playlist = Playlist::find($id);
+
+            if (!$playlist) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Playlist bulunamadı',
+                ], 404);
+            }
+
+            // Sadece playlist sahibi silebilir
+            if ($playlist->user_id !== $userId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bu playlist\'i silemezsiniz',
+                ], 403);
+            }
+
+            // Sistem playlistleri silinemez
+            if ($playlist->is_system) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sistem playlistleri silinemez',
+                ], 403);
+            }
+
+            $playlist->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Playlist silindi',
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Delete playlist error:', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Playlist silme başarısız',
+            ], 500);
+        }
     }
 }

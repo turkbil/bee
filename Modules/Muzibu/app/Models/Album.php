@@ -11,10 +11,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
+use Modules\Favorite\App\Traits\HasFavorites;
 
 class Album extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites;
 
     protected $table = 'muzibu_albums';
     protected $primaryKey = 'album_id';
@@ -127,7 +128,7 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function coverMedia()
     {
-        return $this->belongsTo(\Modules\MediaManagement\App\Models\Media::class, 'media_id');
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class, 'media_id');
     }
 
     /**
@@ -139,6 +140,22 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
             return null;
         }
         return thumb($this->coverMedia, $width, $height);
+    }
+
+    /**
+     * Cover URL accessor (kare, thumbmaker ile)
+     * Frontend için otomatik square cover (200x200, ortadan kırp)
+     */
+    public function getCoverUrlAttribute(): string
+    {
+        $coverUrl = $this->getFirstMediaUrl('cover');
+
+        if (empty($coverUrl)) {
+            return '';
+        }
+
+        // Thumbmaker ile kare cover (200x200, fill/crop mode - ortadan kırpar)
+        return thumb($coverUrl, 200, 200, ['scale' => 1]);
     }
 
     /**

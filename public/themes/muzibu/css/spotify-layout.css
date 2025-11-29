@@ -286,11 +286,13 @@
     padding: 16px;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
-.muzibu-horizontal-card:hover { background: #282828; }
+.muzibu-horizontal-card:hover {
+    background: #282828;
+}
 
 .muzibu-card-image {
     width: 100%;
@@ -388,12 +390,14 @@
     background: #181818;
     padding: 16px;
     border-radius: 8px;
-    transition: background 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     position: relative;
 }
 
-.muzibu-card:hover { background: #282828; }
+.muzibu-card:hover {
+    background: #282828;
+}
 .muzibu-card:hover .muzibu-play-overlay { opacity: 1; }
 
 /* RIGHT SIDEBAR */

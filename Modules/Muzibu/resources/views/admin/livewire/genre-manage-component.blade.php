@@ -79,7 +79,7 @@
                                 :model-id="$genreId"
                                 model-type="genre"
                                 model-class="Modules\Muzibu\App\Models\Genre"
-                                :collections="['featured_image']"
+                                :collections="['hero']"
                                 :key="'universal-media-' . ($genreId ?? 'new')"
                             />
                         </div>

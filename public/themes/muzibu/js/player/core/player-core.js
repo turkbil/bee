@@ -1,70 +1,62 @@
-// 🔒 Safe Storage Wrapper - Prevents "Access to storage is not allowed" errors
-const safeStorage = {
-    getItem(key) {
-        try {
-            return localStorage.getItem(key);
-        } catch (e) {
-            console.warn('localStorage access denied:', e.message);
-            return null;
-        }
-    },
-    setItem(key, value) {
-        try {
-            localStorage.setItem(key, value);
-        } catch (e) {
-            console.warn('localStorage access denied:', e.message);
-        }
-    },
-    removeItem(key) {
-        try {
-            localStorage.removeItem(key);
-        } catch (e) {
-            console.warn('localStorage access denied:', e.message);
-        }
-    }
-};
+/**
+ * Muzibu Player - Core Module
+ * Main Alpine.js component for music player
+ *
+ * Dependencies:
+ * - safeStorage (from core/safe-storage.js)
+ * - muzibuFavorites (from features/favorites.js)
+ * - muzibuAuth (from features/auth.js)
+ * - muzibuKeyboard (from features/keyboard.js)
+ */
 
 function muzibuApp() {
     // Get config from window object (set in blade template)
     const config = window.muzibuPlayerConfig || {};
 
     return {
+        // 🎯 Modular features (spread from separate files)
+        ...muzibuFavorites(),
+        ...muzibuAuth(),
+        ...muzibuKeyboard(),
+
         // Tenant-specific translations
         lang: config.lang || {},
         frontLang: config.frontLang || {},
 
         isLoggedIn: config.isLoggedIn || false,
         currentUser: config.currentUser || null,
+        todayPlayedCount: config.todayPlayedCount || 0,
         showAuthModal: null,
         showQueue: false,
+        showLyrics: false,
         progressPercent: 0,
+        authLoading: false,
+        authError: '',
+        authSuccess: '',
         loginForm: {
             email: safeStorage.getItem('remembered_email') || '',
             password: '',
             remember: safeStorage.getItem('remembered_email') ? true : false
         },
-        registerForm: { firstName: '', lastName: '', name: '', email: '', password: '', phone: '' },
+        registerForm: {
+            name: '',
+            email: '',
+            phone: '',
+            password: '',
+            password_confirmation: ''
+        },
         forgotForm: { email: '' },
         showPassword: false,
         showLoginPassword: false,
         tenantId: config.tenantId || 2,
-        registerValidation: {
-            name: { valid: false, message: '' },
-            email: { valid: false, message: '' },
-            phone: { valid: false, message: '' },
-            password: {
-                valid: false,
-                strength: 0,
-                strengthText: '',
-                checks: { length: false, uppercase: false, lowercase: false, number: false }
-            }
-        },
-        loginValidation: {
-            email: { valid: false, message: '' },
-            password: { valid: false, message: '' }
-        },
-        forgotValidation: {
-            email: { valid: false, message: '' }
+
+        // Modern validation state (real-time blur validation)
+        validation: {
+            name: { valid: false, checked: false, message: '' },
+            email: { valid: false, checked: false, message: '' },
+            phone: { valid: false, checked: false, message: '' },
+            password: { valid: false, checked: false, message: '' },
+            password_confirmation: { valid: false, checked: false, message: '' }
         },
         phoneCountry: {
             code: '+90',
@@ -119,11 +111,16 @@ function muzibuApp() {
         isDarkMode: safeStorage.getItem('theme') === 'light' ? false : true,
         draggedIndex: null,
         dropTargetIndex: null,
+        previewTimer: null, // 🎵 Guest preview timer
+        fadeOutTimer: null, // 🎵 Guest preview fade-out timer
+        isPreviewBlocked: false, // 🎵 Preview ended - next/previous disabled
+        playTracked: false, // 🎵 Track if current song play has been recorded
+        playTrackedAt: 60, // 🎵 Track play after 60 seconds
 
         // Crossfade settings (using Howler.js + HLS.js)
         crossfadeEnabled: true,
-        crossfadeDuration: 6000, // 6 seconds for automatic song transitions
-        fadeOutDuration: 1000, // 1 second for pause/play/manual change fade
+        crossfadeDuration: 5000, // 5 seconds for automatic song transitions
+        fadeOutDuration: 5000, // 5 seconds for pause/play/manual change fade
         isCrossfading: false,
         howl: null, // Current Howler instance (for MP3)
         howlNext: null, // Next song Howler instance for crossfade
@@ -163,6 +160,9 @@ function muzibuApp() {
             // Load featured playlists on init
             this.loadFeaturedPlaylists();
 
+            // Initialize keyboard shortcuts
+            this.initKeyboard();
+
             // Show content after loading (KRITIK - Alpine.js x-show için)
             setTimeout(() => {
                 this.isLoading = false;
@@ -183,17 +183,29 @@ function muzibuApp() {
 
                 const href = link.getAttribute('href');
 
-                // Skip if no href, hash link, external link, or has download/target attribute
+                // Skip if no href, hash link, or has download/target attribute
                 if (!href ||
                     href.startsWith('#') ||
-                    href.startsWith('http') ||
-                    href.startsWith('//') ||
                     link.hasAttribute('download') ||
                     link.hasAttribute('target')) {
                     return;
                 }
 
+                // Check if external link (different domain)
+                if (href.startsWith('http') || href.startsWith('//')) {
+                    try {
+                        const linkUrl = new URL(href, window.location.origin);
+                        // If same domain, use SPA navigation
+                        if (linkUrl.origin !== window.location.origin) {
+                            return; // External link, let it navigate normally
+                        }
+                    } catch (e) {
+                        return; // Invalid URL, let it navigate normally
+                    }
+                }
+
                 // Internal link - use SPA navigation
+                console.log('🚀 SPA Navigation:', href);
                 e.preventDefault();
                 this.navigateTo(href);
             });
@@ -209,25 +221,7 @@ function muzibuApp() {
             }
         },
 
-        toggleFavorite(type, id) {
-            const key = `${type}-${id}`;
-            if (this.favorites.includes(key)) {
-                this.favorites = this.favorites.filter(f => f !== key);
-                this.showToast('Favorilerden kaldırıldı', 'info');
-            } else {
-                this.favorites.push(key);
-                this.showToast('Favorilere eklendi', 'success');
-            }
-        },
-
-        isFavorite(type, id) {
-            return this.favorites.includes(`${type}-${id}`);
-        },
-
-        // Alias for compatibility with player bar
-        isLiked(songId) {
-            return this.favorites.includes(`song-${songId}`);
-        },
+        // 🎯 Favorites functions (toggleFavorite, isFavorite, isLiked) moved to features/favorites.js
 
         async togglePlayPause() {
             // Eğer queue boşsa, rastgele şarkılar yükle
@@ -304,6 +298,12 @@ function muzibuApp() {
         },
 
         async previousTrack() {
+            // 🔒 Preview blocked - next/previous disabled
+            if (this.isPreviewBlocked) {
+                this.showToast('Premium\'a geçin, sınırsız dinleyin!', 'warning');
+                return;
+            }
+
             if (this.queueIndex > 0) {
                 this.queueIndex--;
                 await this.playSongFromQueue(this.queueIndex);
@@ -311,6 +311,12 @@ function muzibuApp() {
         },
 
         async nextTrack() {
+            // 🔒 Preview blocked - next/previous disabled
+            if (this.isPreviewBlocked) {
+                this.showToast('Premium\'a geçin, sınırsız dinleyin!', 'warning');
+                return;
+            }
+
             if (this.queueIndex < this.queue.length - 1) {
                 this.queueIndex++;
                 await this.playSongFromQueue(this.queueIndex);
@@ -366,14 +372,28 @@ function muzibuApp() {
             this.repeatMode = modes[(idx + 1) % modes.length];
         },
 
-        async toggleLike() {
-            if (!this.currentSong) return;
+        async toggleLike(songId = null) {
+            // Eğer songId verilmemişse, mevcut şarkı için çalış (player bar için)
+            if (!songId) {
+                if (!this.currentSong) return;
+                songId = this.currentSong.song_id;
+            }
 
-            const songId = this.currentSong.song_id;
-            const previousState = this.isLiked;
+            const favoriteKey = `song-${songId}`;
+            const previousFavorites = [...this.favorites];
 
             // Optimistic UI update
-            this.isLiked = !this.isLiked;
+            const isCurrentlyLiked = this.favorites.includes(favoriteKey);
+            if (isCurrentlyLiked) {
+                this.favorites = this.favorites.filter(f => f !== favoriteKey);
+            } else {
+                this.favorites.push(favoriteKey);
+            }
+
+            // Eğer mevcut şarkıysa, isLiked state'ini de güncelle
+            if (this.currentSong && this.currentSong.song_id === songId) {
+                this.isLiked = !isCurrentlyLiked;
+            }
 
             try {
                 const response = await fetch('/api/favorites/toggle', {
@@ -392,17 +412,29 @@ function muzibuApp() {
 
                 if (!data.success) {
                     // Başarısız ise eski haline döndür
-                    this.isLiked = previousState;
+                    this.favorites = previousFavorites;
+                    if (this.currentSong && this.currentSong.song_id === songId) {
+                        this.isLiked = isCurrentlyLiked;
+                    }
 
-                    // Eğer unauthorized ise login modali göster
+                    // Eğer unauthorized ise login modali göster (sessizce)
                     if (response.status === 401) {
                         this.showAuthModal = 'login';
+                    } else {
+                        // 401 dışındaki hataları logla
+                        console.warn('Favorite action failed:', response.status);
                     }
                 }
             } catch (error) {
-                console.error('Favorite toggle error:', error);
+                // Network veya diğer kritik hatalar
+                if (!error.message?.includes('401')) {
+                    console.error('Favorite toggle error:', error);
+                }
                 // Hata durumunda eski haline döndür
-                this.isLiked = previousState;
+                this.favorites = previousFavorites;
+                if (this.currentSong && this.currentSong.song_id === songId) {
+                    this.isLiked = isCurrentlyLiked;
+                }
             }
         },
 
@@ -653,6 +685,7 @@ function muzibuApp() {
             // Update queue index and current song
             this.queueIndex = nextIndex;
             this.currentSong = this.queue[nextIndex];
+            this.playTracked = false; // 🎵 Reset play tracking for new song
 
             // Reset crossfade state
             this.isCrossfading = false;
@@ -788,6 +821,9 @@ function muzibuApp() {
 
         async playSong(id) {
             try {
+                // Stop current playback FIRST before loading new song
+                await this.stopCurrentPlayback();
+
                 this.isLoading = true;
 
                 // Get song details first
@@ -802,6 +838,7 @@ function muzibuApp() {
                     this.queue = [song];
                     this.queueIndex = 0;
                     this.currentSong = song;
+                    this.playTracked = false; // 🎵 Reset play tracking for new song
 
                     // Get stream URL
                     const streamResponse = await fetch(`/api/muzibu/songs/${id}/stream`);
@@ -829,21 +866,38 @@ function muzibuApp() {
 
                     const streamData = await streamResponse.json();
 
-                    // 🔐 LIMIT CHECK: Üye limit aştıysa çalma!
-                    if (streamData.status === 'limit_exceeded') {
-                        // Play limits component'ine bildir
-                        const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
-                        if (playLimitsComponent) {
-                            playLimitsComponent.limitExceeded = true;
-                            playLimitsComponent.showLimitModal = true;
-                            playLimitsComponent.remainingPlays = 0;
-                        }
+                    // 🔍 DEBUG: Backend response'u logla
+                    console.log('🎵 Stream API Response:', {
+                        status: streamData.status,
+                        preview_duration: streamData.preview_duration,
+                        is_premium: streamData.is_premium,
+                        message: streamData.message
+                    });
 
-                        this.showToast('Günlük limit doldu', 'error');
-                        return; // Şarkıyı çalma!
+                    // ⚠️ 3/3 KURAL DEVRE DIŞI - limit_exceeded artık kullanılmıyor
+                    // Normal/Guest üyeler 30 saniye preview alacak (status: 'preview')
+                    // Premium üyeler full şarkı alacak (status: 'ready')
+
+                    // if (streamData.status === 'limit_exceeded') {
+                    //     const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
+                    //     if (playLimitsComponent) {
+                    //         playLimitsComponent.showLimitModal = true;
+                    //     }
+                    //     this.showToast('Günlük limit doldu', 'error');
+                    //     return;
+                    // }
+
+                    // 🔄 Her şarkı çalmada premium status güncelle
+                    if (streamData.is_premium !== undefined && this.currentUser) {
+                        this.currentUser.is_premium = streamData.is_premium;
                     }
 
-                    await this.loadAndPlaySong(streamData.stream_url);
+                    // 🎵 Guest preview: Pass preview_duration to enforce 30-second limit
+                    await this.loadAndPlaySong(
+                        streamData.stream_url,
+                        streamData.stream_type,
+                        streamData.preview_duration || null
+                    );
                     this.showToast('Şarkı çalınıyor', 'success');
                 } else {
                     this.showToast('Şarkı bulunamadı', 'error');
@@ -862,6 +916,7 @@ function muzibuApp() {
             const song = this.queue[index];
             this.currentSong = song;
             this.queueIndex = index;
+            this.playTracked = false; // 🎵 Reset play tracking for new song
 
             // Check if song is favorited
             this.checkFavoriteStatus(song.song_id);
@@ -869,40 +924,43 @@ function muzibuApp() {
             try {
                 const response = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
 
-                // 🔐 403/401 Check: Backend auth/limit hatası
+                // ❌ FIX: Generic error handling - response.ok sadece network hatalarını kontrol eder
+                // Backend'den gelen status'ü JSON'dan okuyacağız
                 if (!response.ok) {
-                    // Play limits component'ine bildir (modal aç!)
-                    const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
-                    if (playLimitsComponent) {
-                        playLimitsComponent.limitExceeded = true;
-                        playLimitsComponent.showLimitModal = true;
-                        playLimitsComponent.remainingPlays = 0;
-                    }
-
-                    this.showToast('Günlük limit doldu', 'error');
-                    return; // Şarkıyı çalma!
+                    // Generic error message (network, auth, etc.)
+                    this.showToast('Şarkı yüklenemedi, lütfen tekrar deneyin', 'error');
+                    return;
                 }
 
                 const data = await response.json();
 
-                // 🔐 LIMIT CHECK: Üye limit aştıysa çalma!
-                if (data.status === 'limit_exceeded') {
-                    // Play limits component'ine bildir
-                    const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
-                    if (playLimitsComponent) {
-                        playLimitsComponent.limitExceeded = true;
-                        playLimitsComponent.showLimitModal = true;
-                        playLimitsComponent.remainingPlays = 0;
-                    }
+                // 🔍 DEBUG: Queue song API response
+                console.log('🎵 Queue Song API Response:', {
+                    status: data.status,
+                    preview_duration: data.preview_duration,
+                    is_premium: data.is_premium
+                });
 
-                    this.showToast('Günlük limit doldu', 'error');
-                    return; // Şarkıyı çalma!
+                // ⚠️ 3/3 KURAL DEVRE DIŞI
+                // if (data.status === 'limit_exceeded') {
+                //     const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
+                //     if (playLimitsComponent) {
+                //         playLimitsComponent.showLimitModal = true;
+                //     }
+                //     this.showToast('Günlük limit doldu', 'error');
+                //     return;
+                // }
+
+                // 🔄 Her şarkı çalmada premium status güncelle
+                if (data.is_premium !== undefined && this.currentUser) {
+                    this.currentUser.is_premium = data.is_premium;
                 }
 
-                // Pass stream type from API response ('hls' or 'mp3')
+                // Pass stream type and preview duration from API response
                 const streamType = data.stream_type || 'mp3';
-                console.log('Playing song:', data.stream_url, 'Type:', streamType);
-                await this.loadAndPlaySong(data.stream_url, streamType);
+                const previewDuration = data.preview_duration || null; // 🎵 Guest preview
+                console.log('Playing song:', data.stream_url, 'Type:', streamType, 'Preview:', previewDuration);
+                await this.loadAndPlaySong(data.stream_url, streamType, previewDuration);
 
                 // Prefetch HLS for next songs in queue (background)
                 this.prefetchHlsForQueue(index);
@@ -959,12 +1017,24 @@ function muzibuApp() {
             }
         },
 
-        async loadAndPlaySong(url, streamType = null) {
+        async loadAndPlaySong(url, streamType = null, previewDuration = null) {
             const self = this;
             const targetVolume = this.isMuted ? 0 : this.volume / 100;
 
             // Stop and fade out current playback
             await this.stopCurrentPlayback();
+
+            // 🎵 GUEST PREVIEW: Clear existing preview timers and unblock
+            if (this.previewTimer) {
+                clearTimeout(this.previewTimer);
+                this.previewTimer = null;
+            }
+            if (this.fadeOutTimer) {
+                clearTimeout(this.fadeOutTimer);
+                this.fadeOutTimer = null;
+            }
+            // Unblock next/previous when starting a new song
+            this.isPreviewBlocked = false;
 
             // Clear progress interval
             if (this.progressInterval) {
@@ -990,6 +1060,69 @@ function muzibuApp() {
             } else {
                 this.isHlsStream = false;
                 await this.playWithHowler(url, targetVolume);
+            }
+
+            // 🎵 GUEST PREVIEW: Setup preview duration limits
+            if (previewDuration && previewDuration > 0) {
+                // Wait a bit for audio to load and get duration
+                setTimeout(() => {
+                    const duration = this.duration || 180; // Fallback to 3 minutes
+                    const introSkipSeconds = duration * 0.20; // Skip first 20% (intro)
+                    const fadeStartSeconds = previewDuration - 5; // Start fade-out 5 seconds before end
+
+                    console.log('🎵 Guest Preview Config:', {
+                        totalDuration: duration,
+                        previewDuration: previewDuration,
+                        introSkipAt: introSkipSeconds.toFixed(1) + 's',
+                        fadeStartAt: fadeStartSeconds + 's',
+                        stopAt: previewDuration + 's'
+                    });
+
+                    // INTRO SKIP: Jump to 20% to skip intro
+                    if (this.howl && this.howl.playing()) {
+                        this.howl.seek(introSkipSeconds);
+                        console.log(`🎵 Intro skipped: Jumped to ${introSkipSeconds.toFixed(1)}s (20% of song)`);
+                    } else if (this.hls) {
+                        const audio = this.getActiveHlsAudio();
+                        if (audio && !audio.paused) {
+                            audio.currentTime = introSkipSeconds;
+                            console.log(`🎵 Intro skipped: Jumped to ${introSkipSeconds.toFixed(1)}s (20% of song)`);
+                        }
+                    }
+
+                    // FADE-OUT: Start fade 5 seconds before end (25th second for 30s preview)
+                    this.fadeOutTimer = setTimeout(() => {
+                        console.log('🎵 Guest preview: Fade-out başladı (son 5 saniye)');
+                        const targetVolume = this.isMuted ? 0 : this.volume / 100;
+
+                        if (this.howl && this.howl.playing()) {
+                            this.howl.fade(targetVolume, 0, 5000); // 5 second fade-out
+                        } else if (this.hls) {
+                            const audio = this.getActiveHlsAudio();
+                            if (audio && !audio.paused) {
+                                this.fadeAudioElement(audio, audio.volume, 0, 5000); // 5 second fade-out
+                            }
+                        }
+                    }, fadeStartSeconds * 1000);
+
+                    // STOP: Stop playback at preview duration end
+                    this.previewTimer = setTimeout(() => {
+                        console.log('🛑 Guest preview ended - stopping playback');
+                        this.pause();
+
+                        // 🔒 Block next/previous buttons
+                        this.isPreviewBlocked = true;
+
+                        // Show guest modal
+                        const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
+                        if (playLimitsComponent) {
+                            playLimitsComponent.showGuestModal = true;
+                        }
+
+                        this.showToast('Premium\'a geçin, sınırsız dinleyin!', 'info');
+                    }, previewDuration * 1000);
+
+                }, 500); // Wait 500ms for audio to load
             }
         },
 
@@ -1267,6 +1400,12 @@ function muzibuApp() {
                         }));
                     }
 
+                    // 🎵 Track play after 60 seconds (analytics)
+                    if (!self.playTracked && currentTime >= self.playTrackedAt && self.currentSong && self.isLoggedIn) {
+                        self.playTracked = true;
+                        self.trackSongPlay(self.currentSong.id);
+                    }
+
                     // Check for crossfade at end of song
                     const timeRemaining = this.duration - currentTime;
                     if (this.crossfadeEnabled && timeRemaining <= (this.crossfadeDuration / 1000) && timeRemaining > 0 && !this.isCrossfading) {
@@ -1367,6 +1506,32 @@ function muzibuApp() {
             this.showToast('Paylaşım linki kopyalandı', 'success');
         },
 
+        // 🎵 Track song play (analytics) - Called after 60 seconds of playback
+        async trackSongPlay(songId) {
+            if (!this.isLoggedIn || !songId) return;
+
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                const response = await fetch(`/api/muzibu/songs/${songId}/track-progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        progress: this.currentTime
+                    })
+                });
+
+                if (!response.ok) {
+                    console.warn('Track progress failed:', response.status);
+                }
+            } catch (error) {
+                console.error('Track play error:', error);
+            }
+        },
+
         async addToQueue(type, id) {
             try {
                 let songs = [];
@@ -1464,19 +1629,59 @@ function muzibuApp() {
             this.showToast('Şarkı kuyruktan kaldırıldı', 'info');
         },
 
+        clearQueue() {
+            // Stop playback
+            if (this.howl) {
+                this.howl.stop();
+            }
+
+            // Clear queue
+            this.queue = [];
+            this.queueIndex = 0;
+            this.currentSong = null;
+            this.isPlaying = false;
+
+            this.showToast('Çalma listesi temizlendi', 'info');
+        },
+
+        playFromQueue(index) {
+            if (index < 0 || index >= this.queue.length) {
+                console.error('Invalid queue index:', index);
+                return;
+            }
+
+            this.queueIndex = index;
+            this.playSongFromQueue(index);
+        },
+
         goToArtist(id) {
             console.log('Going to artist:', id);
         },
 
+        // ✅ MODULARIZED: Delegates to Alpine toast store
         showToast(message, type = 'info') {
-            console.log(`Toast [${type}]:`, message);
+            const toastStore = Alpine.store('toast');
+            if (toastStore && toastStore.show) {
+                toastStore.show(message, type);
+            } else {
+                console.warn('Toast store not available:', message);
+            }
         },
 
         // checkAuth() removed - user data now loaded directly from Laravel backend on page load
 
         async handleLogin() {
+            // Form boşluk kontrolü
+            if (!this.loginForm.email || !this.loginForm.password) {
+                this.authError = 'Lütfen tüm alanları doldurun';
+                return;
+            }
+
             try {
-                this.isLoading = true;
+                this.authLoading = true;
+                this.authError = '';
+                this.authSuccess = '';
+
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: {
@@ -1491,6 +1696,12 @@ function muzibuApp() {
                 const data = await response.json();
 
                 if (response.ok && data.success) {
+                    // 🔐 CSRF Token Refresh (Laravel session regenerate sonrası yeni token al)
+                    if (data.csrf_token) {
+                        document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.csrf_token);
+                        console.log('🔐 CSRF token refreshed after login');
+                    }
+
                     // Beni Hatırla - email'i kaydet veya sil
                     if (this.loginForm.remember) {
                         safeStorage.setItem('remembered_email', this.loginForm.email);
@@ -1498,25 +1709,147 @@ function muzibuApp() {
                         safeStorage.removeItem('remembered_email');
                     }
 
+                    // SPA-friendly state update (location.reload() YOK - müzik kesintisiz!)
                     this.isLoggedIn = true;
                     this.currentUser = data.user;
                     this.showAuthModal = null;
-                    this.showToast('Başarıyla giriş yapıldı!', 'success');
-                    location.reload();
+                    this.loginForm.password = ''; // Şifreyi temizle
+
+                    // 🎵 Müzik kesilmeden başarı mesajı göster
+                    this.showToast('Hoş geldin, ' + data.user.name + '! 🎉', 'success');
+
+                    // UI'ı SPA mantığıyla güncelle (Alpine.js reaktif olduğu için otomatik re-render)
+                    console.log('✅ Login successful - SPA mode, no page reload!');
+                    console.log('👤 User logged in:', {
+                        name: data.user.name,
+                        email: data.user.email,
+                        is_premium: data.user.is_premium || false,
+                        isLoggedIn: this.isLoggedIn
+                    });
                 } else {
-                    this.showToast(data.message || 'Giriş başarısız', 'error');
+                    this.authError = data.message || 'E-posta veya şifre hatalı';
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                this.showToast('Giriş hatası', 'error');
+                this.authError = 'Bir hata oluştu, lütfen tekrar deneyin';
             } finally {
-                this.isLoading = false;
+                this.authLoading = false;
+            }
+        },
+
+        // 🎯 Modern Real-time Validation Functions
+        validateName() {
+            const name = this.registerForm.name.trim();
+            this.validation.name.checked = true;
+
+            if (name.length === 0) {
+                this.validation.name.valid = false;
+                this.validation.name.message = 'Ad soyad gereklidir';
+            } else if (name.length < 3) {
+                this.validation.name.valid = false;
+                this.validation.name.message = 'En az 3 karakter olmalıdır';
+            } else if (!/^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/.test(name)) {
+                this.validation.name.valid = false;
+                this.validation.name.message = 'Sadece harf kullanılabilir';
+            } else {
+                this.validation.name.valid = true;
+                this.validation.name.message = '';
+            }
+        },
+
+        validateEmail() {
+            const email = this.registerForm.email.trim();
+            this.validation.email.checked = true;
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email.length === 0) {
+                this.validation.email.valid = false;
+                this.validation.email.message = 'E-posta adresi gereklidir';
+            } else if (!emailRegex.test(email)) {
+                this.validation.email.valid = false;
+                this.validation.email.message = 'Geçerli bir e-posta adresi girin';
+            } else {
+                this.validation.email.valid = true;
+                this.validation.email.message = '';
+            }
+        },
+
+        validatePhone() {
+            const phone = this.registerForm.phone.trim();
+            this.validation.phone.checked = true;
+
+            if (phone.length === 0) {
+                this.validation.phone.valid = false;
+                this.validation.phone.message = 'Telefon numarası gereklidir';
+            } else if (phone.length < 10) {
+                this.validation.phone.valid = false;
+                this.validation.phone.message = 'En az 10 haneli olmalıdır';
+            } else if (!/^5[0-9]{9}$/.test(phone)) {
+                this.validation.phone.valid = false;
+                this.validation.phone.message = '5 ile başlamalı ve 10 haneli olmalıdır';
+            } else {
+                this.validation.phone.valid = true;
+                this.validation.phone.message = '';
+            }
+        },
+
+        validatePassword() {
+            const password = this.registerForm.password;
+            this.validation.password.checked = true;
+
+            if (password.length === 0) {
+                this.validation.password.valid = false;
+                this.validation.password.message = 'Şifre gereklidir';
+            } else if (password.length < 8) {
+                this.validation.password.valid = false;
+                this.validation.password.message = 'En az 8 karakter olmalıdır';
+            } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+                this.validation.password.valid = false;
+                this.validation.password.message = 'Büyük harf, küçük harf ve rakam içermelidir';
+            } else {
+                this.validation.password.valid = true;
+                this.validation.password.message = '';
+            }
+        },
+
+        validatePasswordConfirmation() {
+            const password = this.registerForm.password;
+            const confirmation = this.registerForm.password_confirmation;
+            this.validation.password_confirmation.checked = true;
+
+            if (confirmation.length === 0) {
+                this.validation.password_confirmation.valid = false;
+                this.validation.password_confirmation.message = 'Şifre tekrarı gereklidir';
+            } else if (password !== confirmation) {
+                this.validation.password_confirmation.valid = false;
+                this.validation.password_confirmation.message = 'Şifreler eşleşmiyor';
+            } else {
+                this.validation.password_confirmation.valid = true;
+                this.validation.password_confirmation.message = '';
             }
         },
 
         async handleRegister() {
+            // Tüm validationları kontrol et
+            this.validateName();
+            this.validateEmail();
+            this.validatePhone();
+            this.validatePassword();
+            this.validatePasswordConfirmation();
+
+            // Tüm fieldler valid mi kontrol et
+            const allValid = Object.values(this.validation).every(field => field.valid);
+
+            if (!allValid) {
+                this.authError = 'Lütfen tüm alanları doğru şekilde doldurun';
+                return;
+            }
+
             try {
-                this.isLoading = true;
+                this.authLoading = true;
+                this.authError = '';
+
                 const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: {
@@ -1531,26 +1864,48 @@ function muzibuApp() {
                 const data = await response.json();
 
                 if (response.ok && data.success) {
+                    // 🔐 CSRF Token Refresh (Laravel session regenerate sonrası yeni token al)
+                    if (data.csrf_token) {
+                        document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.csrf_token);
+                        console.log('🔐 CSRF token refreshed after register');
+                    }
+
+                    // SPA-friendly state update (location.reload() YOK - müzik kesintisiz!)
                     this.isLoggedIn = true;
                     this.currentUser = data.user;
                     this.showAuthModal = null;
-                    this.registerForm = { firstName: '', lastName: '', name: '', email: '', password: '', phone: '' };
-                    this.showToast('Hesabınız oluşturuldu! 7 günlük deneme başladı.', 'success');
-                    location.reload(); // Reload to update sidebar
+                    this.registerForm = { name: '', email: '', phone: '', password: '', password_confirmation: '' };
+                    // Reset validation
+                    this.validation = {
+                        name: { valid: false, checked: false, message: '' },
+                        email: { valid: false, checked: false, message: '' },
+                        phone: { valid: false, checked: false, message: '' },
+                        password: { valid: false, checked: false, message: '' },
+                        password_confirmation: { valid: false, checked: false, message: '' }
+                    };
+
+                    // 🎵 Müzik kesilmeden başarı mesajı göster
+                    this.showToast('Hoş geldin, ' + data.user.name + '! 🎉 Premium denemen başladı.', 'success');
+
+                    // UI'ı SPA mantığıyla güncelle (Alpine.js reaktif olduğu için otomatik re-render)
+                    console.log('✅ Register successful - SPA mode, no page reload!');
                 } else {
-                    this.showToast(data.message || 'Kayıt başarısız', 'error');
+                    this.authError = data.message || 'Kayıt başarısız, lütfen bilgilerinizi kontrol edin';
                 }
             } catch (error) {
                 console.error('Register error:', error);
-                this.showToast('Kayıt hatası', 'error');
+                this.authError = 'Bir hata oluştu, lütfen tekrar deneyin';
             } finally {
-                this.isLoading = false;
+                this.authLoading = false;
             }
         },
 
         async handleForgotPassword() {
             try {
-                this.isLoading = true;
+                this.authLoading = true;
+                this.authError = '';
+                this.authSuccess = '';
+
                 const response = await fetch('/api/auth/forgot-password', {
                     method: 'POST',
                     headers: {
@@ -1565,20 +1920,21 @@ function muzibuApp() {
                 const data = await response.json();
 
                 if (response.ok) {
-                    this.showToast('Şifre sıfırlama linki e-postanıza gönderildi!', 'success');
+                    this.authSuccess = 'Şifre sıfırlama linki e-postanıza gönderildi! ✉️';
                     this.forgotForm = { email: '' };
                     // 3 saniye sonra login modalına dön
                     setTimeout(() => {
+                        this.authSuccess = '';
                         this.showAuthModal = 'login';
                     }, 3000);
                 } else {
-                    this.showToast(data.message || 'E-posta gönderilemedi', 'error');
+                    this.authError = data.message || 'E-posta gönderilemedi';
                 }
             } catch (error) {
                 console.error('Forgot password error:', error);
-                this.showToast('Bir hata oluştu', 'error');
+                this.authError = 'Bir hata oluştu, lütfen tekrar deneyin';
             } finally {
-                this.isLoading = false;
+                this.authLoading = false;
             }
         },
 
@@ -1586,7 +1942,9 @@ function muzibuApp() {
             // Çift tıklamayı engelle
             if (this.isLoggingOut) return;
 
-            // Hemen UI'ı güncelle
+            console.log('🚪 Logging out user...');
+
+            // Hemen UI'ı güncelle (SPA-friendly)
             this.isLoggingOut = true;
             this.isLoggedIn = false;
             this.currentUser = null;
@@ -1604,13 +1962,30 @@ function muzibuApp() {
                     credentials: 'same-origin'
                 });
 
-                // Kısa bekle ve sayfayı yenile (cache'siz)
-                setTimeout(() => {
-                    window.location.reload(true);
-                }, 100);
+                console.log('✅ Logout successful - SPA mode maintained!');
+                console.log('👤 User logged out:', {
+                    isLoggedIn: this.isLoggedIn,
+                    currentUser: this.currentUser
+                });
+
+                // Toast mesajı
+                this.showToast('Başarıyla çıkış yaptınız! 👋', 'success');
+
+                // SPA-friendly: Sayfayı YENILEME, sadece state temizle
+                this.isLoggingOut = false;
+
+                // 🔐 CSRF token yenile (logout sonrası session regenerate edilir)
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.csrf_token) {
+                        document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.csrf_token);
+                        console.log('🔐 CSRF token refreshed after logout');
+                    }
+                }
             } catch (error) {
-                console.error('Logout error:', error);
-                window.location.reload(true);
+                console.error('❌ Logout error:', error);
+                this.isLoggingOut = false;
+                this.showToast('Çıkış yapılırken hata oluştu', 'error');
             }
         },
 
@@ -1672,253 +2047,23 @@ function muzibuApp() {
             this.dropTargetIndex = null;
         },
 
-        validateName() {
-            const firstName = this.registerForm.firstName.trim();
-            const lastName = this.registerForm.lastName.trim();
 
-            // Birleşik name'i güncelle (API için)
-            this.registerForm.name = (firstName + ' ' + lastName).trim();
-
-            // Validation
-            if (firstName.length >= 2 && lastName.length >= 2 &&
-                /^[a-zA-ZğüşöçıİĞÜŞÖÇ]+$/.test(firstName) &&
-                /^[a-zA-ZğüşöçıİĞÜŞÖÇ]+$/.test(lastName)) {
-                this.registerValidation.name.valid = true;
-                this.registerValidation.name.message = '';
-            } else {
-                this.registerValidation.name.valid = false;
-                this.registerValidation.name.message = 'Ad ve soyad en az 2 karakter olmalıdır';
-            }
-        },
-
-        async validateEmail() {
-            const email = this.registerForm.email.trim().toLowerCase();
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (!emailRegex.test(email)) {
-                this.registerValidation.email.valid = false;
-                this.registerValidation.email.message = 'Geçerli bir e-posta adresi giriniz';
-                return;
-            }
-
-            if (email.includes('..')) {
-                this.registerValidation.email.valid = false;
-                this.registerValidation.email.message = 'E-posta adresinde ardışık nokta olamaz';
-                return;
-            }
-
-            if (email.startsWith('.') || email.endsWith('.')) {
-                this.registerValidation.email.valid = false;
-                this.registerValidation.email.message = 'E-posta adresi nokta ile başlayamaz veya bitemez';
-                return;
-            }
-
-            // Format valid, check availability via API
-            try {
-                const response = await fetch('/api/auth/check-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
-                    },
-                    body: JSON.stringify({ email })
-                });
-
-                const data = await response.json();
-
-                if (data.exists) {
-                    this.registerValidation.email.valid = false;
-                    this.registerValidation.email.message = 'Bu e-posta adresi zaten kullanılıyor';
-                } else {
-                    this.registerValidation.email.valid = true;
-                    this.registerValidation.email.message = '';
-                }
-            } catch (error) {
-                console.error('Email check failed:', error);
-                // Format is valid, just can't check availability
-                this.registerValidation.email.valid = true;
-                this.registerValidation.email.message = '';
-            }
-        },
-
-        selectCountry(country) {
-            this.phoneCountry = country;
-            this.registerForm.phone = '';
-            this.registerValidation.phone.valid = false;
-        },
-
-        formatPhoneNumber() {
-            let phone = this.registerForm.phone.replace(/\D/g, '');
-
-            // Turkey specific formatting
-            if (this.phoneCountry.code === '+90') {
-                if (phone.length > 0) {
-                    if (phone.length <= 3) {
-                        this.registerForm.phone = phone;
-                    } else if (phone.length <= 6) {
-                        this.registerForm.phone = phone.substring(0, 3) + ' ' + phone.substring(3);
-                    } else if (phone.length <= 8) {
-                        this.registerForm.phone = phone.substring(0, 3) + ' ' + phone.substring(3, 6) + ' ' + phone.substring(6);
-                    } else {
-                        this.registerForm.phone = phone.substring(0, 3) + ' ' + phone.substring(3, 6) + ' ' + phone.substring(6, 8) + ' ' + phone.substring(8, 10);
-                        phone = phone.substring(0, 10);
-                    }
-                }
-
-                // Validate Turkey phone
-                if (phone.length === 0) {
-                    this.registerValidation.phone.valid = false;
-                    this.registerValidation.phone.message = 'Telefon numarası gereklidir';
-                } else if (!phone.startsWith('5')) {
-                    this.registerValidation.phone.valid = false;
-                    this.registerValidation.phone.message = 'Cep telefonu 5 ile başlamalıdır';
-                } else if (phone.length !== 10) {
-                    this.registerValidation.phone.valid = false;
-                    this.registerValidation.phone.message = 'Telefon numarası 10 haneli olmalıdır';
-                } else if (!['50', '51', '52', '53', '54', '55', '56', '58', '59'].includes(phone.substring(0, 2))) {
-                    this.registerValidation.phone.valid = false;
-                    this.registerValidation.phone.message = 'Geçersiz operatör kodu';
-                } else {
-                    this.registerValidation.phone.valid = true;
-                    this.registerValidation.phone.message = '';
-                }
-            } else {
-                // Generic international validation
-                this.registerForm.phone = phone;
-
-                if (phone.length === 0) {
-                    this.registerValidation.phone.valid = false;
-                    this.registerValidation.phone.message = 'Telefon numarası gereklidir';
-                } else if (phone.length < 7) {
-                    this.registerValidation.phone.valid = false;
-                    this.registerValidation.phone.message = 'Telefon numarası çok kısa';
-                } else if (phone.length > 15) {
-                    this.registerValidation.phone.valid = false;
-                    this.registerValidation.phone.message = 'Telefon numarası çok uzun';
-                } else {
-                    this.registerValidation.phone.valid = true;
-                    this.registerValidation.phone.message = '';
-                }
-            }
-        },
-
-        validatePassword() {
-            const password = this.registerForm.password;
-
-            // Check individual requirements
-            this.registerValidation.password.checks.length = password.length >= 8;
-            this.registerValidation.password.checks.uppercase = /[A-Z]/.test(password);
-            this.registerValidation.password.checks.lowercase = /[a-z]/.test(password);
-            this.registerValidation.password.checks.number = /[0-9]/.test(password);
-
-            // Calculate strength
-            let strength = 0;
-            if (this.registerValidation.password.checks.length) strength++;
-            if (this.registerValidation.password.checks.uppercase) strength++;
-            if (this.registerValidation.password.checks.lowercase) strength++;
-            if (this.registerValidation.password.checks.number) strength++;
-            if (password.length >= 12) strength++;
-            if (/[^a-zA-Z0-9]/.test(password)) strength++; // Special char bonus
-
-            // Normalize to 1-4 scale
-            this.registerValidation.password.strength = Math.min(4, Math.ceil(strength / 1.5));
-
-            // Set strength text
-            const strengthTexts = {
-                1: 'Çok Zayıf',
-                2: 'Zayıf',
-                3: 'Orta',
-                4: 'Güçlü'
-            };
-            this.registerValidation.password.strengthText = strengthTexts[this.registerValidation.password.strength] || '';
-
-            // Password is valid if all basic checks pass
-            this.registerValidation.password.valid =
-                this.registerValidation.password.checks.length &&
-                this.registerValidation.password.checks.uppercase &&
-                this.registerValidation.password.checks.lowercase &&
-                this.registerValidation.password.checks.number;
-        },
-
-        isRegisterFormValid() {
-            const basicValid = this.registerValidation.name.valid &&
-                             this.registerValidation.email.valid &&
-                             this.registerValidation.password.valid;
-
-            // If tenant 1001, phone is also required
-            if (this.tenantId === 1001) {
-                return basicValid && this.registerValidation.phone.valid;
-            }
-
-            return basicValid;
-        },
-
-        validateLoginEmail() {
-            const email = this.loginForm.email.trim().toLowerCase();
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (!emailRegex.test(email)) {
-                this.loginValidation.email.valid = false;
-                this.loginValidation.email.message = 'Geçerli bir e-posta adresi giriniz';
-            } else {
-                this.loginValidation.email.valid = true;
-                this.loginValidation.email.message = '';
-            }
-        },
-
-        validateLoginPassword() {
-            const password = this.loginForm.password;
-
-            if (password.length < 1) {
-                this.loginValidation.password.valid = false;
-                this.loginValidation.password.message = 'Şifre gereklidir';
-            } else {
-                this.loginValidation.password.valid = true;
-                this.loginValidation.password.message = '';
-            }
-        },
-
-        validateForgotEmail() {
-            const email = this.forgotForm.email.trim().toLowerCase();
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-            if (!emailRegex.test(email)) {
-                this.forgotValidation.email.valid = false;
-                this.forgotValidation.email.message = 'Geçerli bir e-posta adresi giriniz';
-            } else {
-                this.forgotValidation.email.valid = true;
-                this.forgotValidation.email.message = '';
-            }
-        },
-
-        clearCache() {
-            // Clear localStorage
-            try {
-                localStorage.clear();
-                console.log('LocalStorage cleared');
-            } catch (e) {
-                console.warn('Could not clear localStorage:', e);
-            }
-
-            // Clear sessionStorage
-            try {
-                sessionStorage.clear();
-                console.log('SessionStorage cleared');
-            } catch (e) {
-                console.warn('Could not clear sessionStorage:', e);
-            }
-
-            // Reload page to clear all caches
-            window.location.reload(true);
+        // ✅ MODULARIZED: Moved to muzibu-cache.js
+        async clearCache() {
+            const cacheModule = muzibuCache();
+            await cacheModule.clearAll();
         }
     }
 }
+
+// ✅ Make muzibuApp globally accessible for Alpine.js
+window.muzibuApp = muzibuApp;
 
 // Play Limits Component (Guest & Member daily limits)
 function playLimits() {
     return {
         showGuestModal: false,
-        showLimitModal: false,
+        // showLimitModal: false, // ⚠️ REMOVED - 3/3 daily limit modal removed
 
         init() {
             // Listen for play limit events from muzibuApp
@@ -1926,9 +2071,10 @@ function playLimits() {
                 this.showGuestModal = true;
             });
 
-            window.addEventListener('player:daily-limit', () => {
-                this.showLimitModal = true;
-            });
+            // ⚠️ REMOVED - 3/3 daily limit event listener removed
+            // window.addEventListener('player:daily-limit', () => {
+            //     this.showLimitModal = true;
+            // });
         },
 
         handleGuestRegister() {
@@ -1942,3 +2088,6 @@ function playLimits() {
         }
     }
 }
+
+// ✅ Make playLimits globally accessible for Alpine.js
+window.playLimits = playLimits;

@@ -1,4 +1,4 @@
-<footer class="ml-64 bg-spotify-dark text-white border-t border-white/10 pb-32">
+<footer class="ml-64 bg-muzibu-dark text-white border-t border-white/10 pb-32">
     <div class="max-w-7xl mx-auto px-8 py-12">
         <div class="grid md:grid-cols-2 gap-12">
             <!-- Sol Taraf - İçerik -->
@@ -36,19 +36,19 @@
                 <div class="border-t border-white/10 pt-6 mb-6">
                     <h5 class="font-bold mb-4 text-sm">Bizi Takip Edin</h5>
                     <div class="flex gap-3">
-                        <a href="#" class="w-10 h-10 bg-spotify-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
+                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
                             <i class="fab fa-facebook-f text-white"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-spotify-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
+                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
                             <i class="fab fa-instagram text-white"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-spotify-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
+                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
                             <i class="fab fa-twitter text-white"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-spotify-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
+                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
                             <i class="fab fa-youtube text-white"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-spotify-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
+                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
                             <i class="fab fa-linkedin-in text-white"></i>
                         </a>
                     </div>
@@ -60,7 +60,7 @@
             </div>
 
             <!-- Sağ Taraf - İletişim -->
-            <div class="bg-spotify-gray rounded-2xl p-8">
+            <div class="bg-muzibu-gray rounded-2xl p-8">
                 <h4 class="text-2xl font-bold mb-6">Destek</h4>
 
                 <div class="space-y-4">
@@ -70,21 +70,21 @@
                         </div>
                         <div>
                             <div class="text-sm text-gray-400 mb-1">WhatsApp</div>
-                            <div class="font-semibold text-white group-hover:text-spotify-green transition-colors">Hemen Mesaj Gönder</div>
+                            <div class="font-semibold text-white group-hover:text-muzibu-coral transition-colors">Hemen Mesaj Gönder</div>
                         </div>
                     </a>
 
                     <a href="mailto:destek@muzibu.com" class="flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all group">
-                        <div class="w-12 h-12 bg-spotify-green rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div class="w-12 h-12 bg-muzibu-coral rounded-xl flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-envelope text-white text-xl"></i>
                         </div>
                         <div>
                             <div class="text-sm text-gray-400 mb-1">E-posta</div>
-                            <div class="font-semibold text-white group-hover:text-spotify-green transition-colors">destek@muzibu.com</div>
+                            <div class="font-semibold text-white group-hover:text-muzibu-coral transition-colors">destek@muzibu.com</div>
                         </div>
                     </a>
 
-                    <button class="w-full flex items-center gap-4 p-4 bg-spotify-green hover:bg-spotify-green-light rounded-xl transition-all group">
+                    <button class="w-full flex items-center gap-4 p-4 bg-muzibu-coral hover:bg-muzibu-coral-light rounded-xl transition-all group">
                         <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-comment-dots text-white text-xl"></i>
                         </div>

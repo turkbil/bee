@@ -191,7 +191,7 @@
                                 :model-id="$blogId"
                                 model-type="blog"
                                 model-class="Modules\Blog\App\Models\Blog"
-                                :collections="['featured_image', 'gallery']"
+                                :collections="['hero', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
                                 :key="'universal-media-' . ($blogId ?? 'new')"

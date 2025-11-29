@@ -1,3 +1,99 @@
+# 🏢 MULTI-TENANT SİSTEM MİMARİSİ
+
+## 🚨 ÖNCE BU BÖLÜMÜ OKU - SİSTEM TENANT AWARE!
+
+**⚠️ KRİTİK: Bu sistem MULTI-TENANT mimarisindedir!**
+
+### 📋 Temel Bilgiler
+
+**Her tenant tamamen bağımsız çalışır:**
+- ✅ **Her tenant'ın kendi database'i var** (tenant_ixtif, tenant_muzibu_1528d0 vb.)
+- ✅ **Central database** (tuufi_4ekim) ortak tablolar için kullanılır (users, roles, permissions)
+- ✅ **Tenant 1 (tuufi.com)** = Central tenant (Ana sistem, diğer tenant'ları yönetir)
+- ✅ **Bazı tablolar central'da, bazıları tenant database'lerinde**
+
+### 🗄️ Database Dağılımı
+
+**Central Database (tuufi_4ekim) - Tüm Tenant'lar İçin Ortak:**
+- `tenants`, `domains` - Tenant yönetimi
+- `users`, `roles`, `permissions` - Kullanıcı & yetki sistemi
+- `ai_credits`, `subscriptions`, `invoices` - Faturalandırma
+- `migrations` - Central migration kayıtları
+
+**Tenant Database (tenant_X) - Her Tenant'a Özel:**
+- `pages`, `blogs`, `blog_categories` - İçerik yönetimi
+- `products`, `categories`, `brands` - Ürün sistemi
+- `media` - Medya dosyaları (tenant'a özel)
+- `seo_meta`, `settings` - Tenant ayarları
+- **Muzibu için:** `songs`, `albums`, `artists`, `playlists`, `genres`, `sectors`
+- **İxtif için:** `products` (endüstriyel ekipman - forklift, transpalet)
+
+### 🎯 Aktif Tenant'lar
+
+**📊 Detaylı liste için:** `TENANT_LIST.md` dosyasını oku!
+
+| ID | Domain | Database | Sektör | Premium |
+|----|--------|----------|--------|---------|
+| 1 | tuufi.com | tuufi_4ekim | Central | ✅ |
+| 2 | ixtif.com | tenant_ixtif | Endüstriyel Ekipman | ✅ |
+| 1001 | muzibu.com.tr | tenant_muzibu_1528d0 | Müzik Platformu | ❌ |
+
+### 🚨 KRİTİK KURALLAR - ASLA UNUTMA!
+
+**❌ YAPMA:**
+1. ❌ Tenant'a özel içeriği global kodlara ekleme!
+   - **Forklift/Transpalet** → SADECE Tenant 2 (ixtif.com)!
+   - **Müzik/Song/Album/Artist** → SADECE Tenant 1001 (muzibu.com)!
+
+2. ❌ Central database'e tenant verisi yazma!
+   - Blog, Product, Page → Tenant database'e yazılmalı!
+
+3. ❌ Tenant database'e user bilgisi yazma!
+   - User, Role, Permission → Central database'de!
+
+**✅ YAP:**
+1. ✅ Kod yazmadan önce SOR:
+   - Bu tenant'a özel mi, yoksa tüm tenant'lar için mi?
+   - Hangi database'e yazılacak? (Central mi, Tenant mi?)
+   - Tenant ID kontrolü gerekli mi?
+
+2. ✅ Tenant kontrolü yap:
+   ```php
+   if (tenant()->id === 2) {
+       // Sadece İxtif için
+   }
+
+   if (tenant()->id === 1001) {
+       // Sadece Muzibu için
+   }
+   ```
+
+3. ✅ Database bağlantısını doğru kullan:
+   ```php
+   // Tenant verisi (otomatik tenant DB)
+   Page::all();
+   Blog::all();
+
+   // Central verisi (zorunlu $connection = 'central')
+   User::all();
+   Role::all();
+   ```
+
+4. ✅ Migration oluştururken İKİ YERDE oluştur:
+   ```bash
+   # Central
+   database/migrations/YYYY_MM_DD_create_table.php
+
+   # Tenant
+   database/migrations/tenant/YYYY_MM_DD_create_table.php
+   ```
+
+### 📚 Detaylı Döküman
+
+**Tüm tenant detayları için:** `TENANT_LIST.md` dosyasını oku!
+
+---
+
 ## 🔴 EN KRİTİK KURALLAR - MUTLAKA OKU!
 
 > **⚠️ WRITE/EDIT TOOL KULLANDIKTAN SONRA MUTLAKA:**
@@ -13,25 +109,21 @@
 
 **⚠️⚠️⚠️ BU SİSTEM MULTI-TENANT! HER TENANT FARKLI SEKTÖR! ⚠️⚠️⚠️**
 
-Bu sistem yüzlerce farklı sektörden tenant barındırır!
-
-#### ❌ YAPMAMAN GEREKEN:
-- **Forklift/Transpalet** → SADECE Tenant 2 (ixtif.com)!
-- **Müzik/Muzibu** → SADECE Tenant 1001 (muzibu.com)!
-- **E-ticaret** → SADECE ilgili tenant'lar!
-
 **🔥 KRİTİK: Tenant'a özgü içeriği GLOBAL/UNIVERSAL kodlara ASLA ekleme!**
 
 #### 📊 Tenant Bilgisi:
-- **Tenant 1 (tuufi.com)**: Central sistem
+- **Tenant 1 (tuufi.com)**: Central sistem (Ana tenant, diğerlerini yönetir)
 - **Tenant 2 (ixtif.com)**: Endüstriyel ekipman (forklift, transpalet) - **VARSAYILAN**
-- **Tenant 1001 (muzibu.com)**: Müzik platformu
-- **Tenant 3+**: Diğer sektörler
+- **Tenant 1001 (muzibu.com.tr)**: Müzik platformu (song, album, artist, playlist)
+- **Tenant 3+**: Gelecekte eklenecek diğer sektörler
+
+**Detaylı tenant listesi:** `TENANT_LIST.md`
 
 **Kod yazarken SOR:**
 1. ❓ Bu tenant'a özgü bir özellik mi?
 2. ❓ Tüm tenant'lar için mi yoksa sadece biri için mi?
 3. ❓ Global kod yazıyorsam, tenant-aware mı?
+4. ❓ Hangi database'e yazılacak? (Central mi, Tenant mi?)
 
 #### 🎨 TENANT-AWARE TAİLWİND CSS
 

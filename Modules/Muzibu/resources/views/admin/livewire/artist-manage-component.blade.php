@@ -79,7 +79,7 @@
                                 :model-id="$artistId"
                                 model-type="artist"
                                 model-class="Modules\Muzibu\App\Models\Artist"
-                                :collections="['featured_image']"
+                                :collections="['hero']"
                                 :key="'universal-media-' . ($artistId ?? 'new')"
                             />
                         </div>

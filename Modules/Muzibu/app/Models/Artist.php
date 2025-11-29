@@ -101,7 +101,7 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function photoMedia()
     {
-        return $this->belongsTo(\Modules\MediaManagement\App\Models\Media::class, 'media_id');
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class, 'media_id');
     }
 
     /**
@@ -112,7 +112,27 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
         if (!$this->media_id) {
             return null;
         }
-        return thumb($this->photoMedia, $width, $height);
+        return thumb($this->photoMedia, $width, $height, ['scale' => 1]);
+    }
+
+    /**
+     * Photo URL accessor (kare, thumbmaker ile)
+     * Frontend için otomatik square photo (200x200, ortadan kırp)
+     */
+    public function getPhotoUrlAttribute(): string
+    {
+        $photoUrl = $this->getFirstMediaUrl('photo');
+
+        if (empty($photoUrl)) {
+            // Eğer Spatie photo yoksa, media_id kullan
+            if ($this->media_id && $this->photoMedia) {
+                return thumb($this->photoMedia, 200, 200, ['scale' => 1]);
+            }
+            return '';
+        }
+
+        // Thumbmaker ile kare photo (200x200, fill/crop mode - ortadan kırpar)
+        return thumb($photoUrl, 200, 200, ['scale' => 1]);
     }
 
     /**

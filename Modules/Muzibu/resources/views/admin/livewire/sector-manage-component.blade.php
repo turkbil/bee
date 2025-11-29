@@ -80,7 +80,7 @@
                                 :model-id="$sectorId"
                                 model-type="sector"
                                 model-class="Modules\Muzibu\App\Models\Sector"
-                                :collections="['featured_image']"
+                                :collections="['hero']"
                                 :key="'universal-media-' . ($sectorId ?? 'new')"
                             />
                         </div>

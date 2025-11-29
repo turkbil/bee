@@ -4,68 +4,62 @@ namespace Modules\Muzibu\app\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
+use Modules\Muzibu\App\Models\Genre;
+use Modules\Muzibu\App\Models\Song;
 
 class GenreController extends Controller
 {
-    /**
-     * Get all genres
-     *
-     * @return JsonResponse
-     */
     public function index(): JsonResponse
     {
-        $genres = DB::table('muzibu_genres')
-            ->where('is_active', 1)
-            ->select(['genre_id', 'title', 'slug'])
-            ->get();
-
-        $genres = $genres->map(function ($genre) {
-            $genre->title = json_decode($genre->title, true);
-            $genre->slug = json_decode($genre->slug, true);
-            return $genre;
-        });
-
-        return response()->json($genres);
+        try {
+            $genres = Genre::where('is_active', 1)
+                ->get()
+                ->map(function ($genre) {
+                    return [
+                        'genre_id' => $genre->genre_id,
+                        'title' => $genre->title,
+                        'slug' => $genre->slug,
+                        'song_count' => $genre->songs()->count(),
+                        'cover_url' => $genre->getIconUrl(200, 200),
+                    ];
+                });
+            return response()->json($genres);
+        } catch (\Exception $e) {
+            \Log::error('Genre index error:', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
+        }
     }
 
-    /**
-     * Get songs by genre
-     *
-     * @param int $id
-     * @return JsonResponse
-     */
     public function songs(int $id): JsonResponse
     {
-        $songs = DB::table('muzibu_songs')
-            ->join('muzibu_albums', 'muzibu_songs.album_id', '=', 'muzibu_albums.album_id')
-            ->join('muzibu_artists', 'muzibu_albums.artist_id', '=', 'muzibu_artists.artist_id')
-            ->where('muzibu_songs.genre_id', $id)
-            ->where('muzibu_songs.is_active', 1)
-            ->select([
-                'muzibu_songs.song_id',
-                'muzibu_songs.title as song_title',
-                'muzibu_songs.slug as song_slug',
-                'muzibu_songs.duration',
-                'muzibu_songs.file_path',
-                'muzibu_songs.hls_path',
-                'muzibu_songs.hls_converted',
-                'muzibu_albums.album_id',
-                'muzibu_albums.title as album_title',
-                'muzibu_albums.media_id as album_cover',
-                'muzibu_artists.artist_id',
-                'muzibu_artists.title as artist_title'
-            ])
-            ->get();
+        try {
+            $genre = Genre::find($id);
+            if (!$genre) {
+                return response()->json(['error' => 'Genre not found'], 404);
+            }
 
-        $songs = $songs->map(function ($song) {
-            $song->song_title = json_decode($song->song_title, true);
-            $song->song_slug = json_decode($song->song_slug, true);
-            $song->album_title = json_decode($song->album_title, true);
-            $song->artist_title = json_decode($song->artist_title, true);
-            return $song;
-        });
+            $songs = $genre->songs()->where('is_active', 1)->with('album.artist')->get()->map(function ($song) {
+                $album = $song->album;
+                $artist = $album?->artist;
+                return [
+                    'song_id' => $song->song_id,
+                    'song_title' => $song->title,
+                    'song_slug' => $song->slug,
+                    'duration' => $song->duration,
+                    'file_path' => $song->file_path,
+                    'hls_path' => $song->hls_path,
+                    'hls_converted' => $song->hls_converted,
+                    'album_id' => $album?->album_id,
+                    'album_title' => $album?->title,
+                    'artist_id' => $artist?->artist_id,
+                    'artist_title' => $artist?->title,
+                ];
+            });
 
-        return response()->json($songs);
+            return response()->json($songs);
+        } catch (\Exception $e) {
+            \Log::error('Genre songs error:', ['genre_id' => $id, 'message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
+        }
     }
 }

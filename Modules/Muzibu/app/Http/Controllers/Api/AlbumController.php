@@ -5,10 +5,15 @@ namespace Modules\Muzibu\app\Http\Controllers\Api;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
+use Modules\Muzibu\App\Models\Album;
+use Modules\Muzibu\App\Services\MuzibuCacheService;
 
 class AlbumController extends Controller
 {
+    public function __construct(
+        private MuzibuCacheService $cacheService
+    ) {
+    }
     /**
      * Get all albums with pagination
      *
@@ -17,48 +22,34 @@ class AlbumController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $perPage = $request->input('per_page', 20);
-        $artistId = $request->input('artist_id');
+        try {
+            $perPage = $request->input('per_page', 20);
 
-        $query = DB::table('muzibu_albums')
-            ->join('muzibu_artists', 'muzibu_albums.artist_id', '=', 'muzibu_artists.artist_id')
-            ->select([
-                'muzibu_albums.album_id',
-                'muzibu_albums.title as album_title',
-                'muzibu_albums.slug as album_slug',
-                'muzibu_albums.description',
-                'muzibu_albums.media_id',
-                'muzibu_artists.artist_id',
-                'muzibu_artists.title as artist_title',
-                'muzibu_artists.slug as artist_slug'
-            ])
-            ->where('muzibu_albums.is_active', 1);
+            //🔒 FIXED: Use Eloquent (tenant-aware)
+            $albums = Album::where('is_active', 1)
+                ->with('artist')
+                ->paginate($perPage);
 
-        if ($artistId) {
-            $query->where('muzibu_albums.artist_id', $artistId);
+            $albums->getCollection()->transform(function ($album) {
+                return [
+                    'album_id' => $album->album_id,
+                    'title' => $album->title,
+                    'slug' => $album->slug,
+                    'media_id' => $album->media_id,
+                'cover_url' => $album->getCoverUrl(200, 200),
+                    'artist_id' => $album->artist?->artist_id,
+                    'artist_title' => $album->artist?->title,
+                    'artist_slug' => $album->artist?->slug,
+                    'song_count' => $album->songs()->count(),
+                ];
+            });
+
+            return response()->json($albums);
+
+        } catch (\Exception $e) {
+            \Log::error('Album index error:', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
         }
-
-        $albums = $query->paginate($perPage);
-
-        // Decode JSON and add song count
-        $albums->getCollection()->transform(function ($album) {
-            $album->album_title = json_decode($album->album_title, true);
-            $album->album_slug = json_decode($album->album_slug, true);
-            $album->description = json_decode($album->description, true);
-            $album->artist_title = json_decode($album->artist_title, true);
-            $album->artist_slug = json_decode($album->artist_slug, true);
-
-            $songCount = DB::table('muzibu_songs')
-                ->where('album_id', $album->album_id)
-                ->where('is_active', 1)
-                ->count();
-
-            $album->song_count = $songCount;
-
-            return $album;
-        });
-
-        return response()->json($albums);
     }
 
     /**
@@ -69,109 +60,85 @@ class AlbumController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        // Get album with artist
-        $album = DB::table('muzibu_albums')
-            ->join('muzibu_artists', 'muzibu_albums.artist_id', '=', 'muzibu_artists.artist_id')
-            ->where('muzibu_albums.album_id', $id)
-            ->where('muzibu_albums.is_active', 1)
-            ->select([
-                'muzibu_albums.album_id',
-                'muzibu_albums.title as album_title',
-                'muzibu_albums.slug as album_slug',
-                'muzibu_albums.description',
-                'muzibu_albums.media_id',
-                'muzibu_artists.artist_id',
-                'muzibu_artists.title as artist_title',
-                'muzibu_artists.slug as artist_slug'
-            ])
-            ->first();
+        try {
+            // 🚀 CACHE: Get album from Redis (24h TTL)
+            $album = $this->cacheService->getAlbum($id);
 
-        if (!$album) {
-            return response()->json(['error' => 'Album not found'], 404);
+            if (!$album) {
+                return response()->json(['error' => 'Album not found'], 404);
+            }
+
+            $songs = $album->songs->map(function ($song) use ($album) {
+                return [
+                    'song_id' => $song->song_id,
+                    'song_title' => $song->title,
+                    'song_slug' => $song->slug,
+                    'duration' => $song->duration,
+                    'file_path' => $song->file_path,
+                    'hls_path' => $song->hls_path,
+                    'hls_converted' => $song->hls_converted,
+                    'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
+                    'album_id' => $album->album_id,
+                    'album_title' => $album->title,
+                    'album_slug' => $album->slug,
+                    'artist_id' => $album->artist?->artist_id,
+                    'artist_title' => $album->artist?->title,
+                    'artist_slug' => $album->artist?->slug,
+                ];
+            });
+
+            return response()->json([
+                'album_id' => $album->album_id,
+                'title' => $album->title,
+                'slug' => $album->slug,
+                'media_id' => $album->media_id,
+                'cover_url' => $album->getCoverUrl(200, 200),
+                'artist_id' => $album->artist?->artist_id,
+                'artist_title' => $album->artist?->title,
+                'artist_slug' => $album->artist?->slug,
+                'songs' => $songs,
+                'song_count' => $songs->count(),
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Album show error:', ['album_id' => $id, 'message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
         }
-
-        // Decode JSON
-        $album->album_title = json_decode($album->album_title, true);
-        $album->album_slug = json_decode($album->album_slug, true);
-        $album->description = json_decode($album->description, true);
-        $album->artist_title = json_decode($album->artist_title, true);
-        $album->artist_slug = json_decode($album->artist_slug, true);
-
-        // Get songs
-        $songs = DB::table('muzibu_songs')
-            ->where('album_id', $id)
-            ->where('is_active', 1)
-            ->select([
-                'song_id',
-                'title',
-                'slug',
-                'duration',
-                'file_path',
-                'hls_path',
-                'hls_converted',
-                'play_count'
-            ])
-            ->orderBy('song_id')
-            ->get();
-
-        // Decode JSON for songs
-        $songs = $songs->map(function ($song) {
-            $song->title = json_decode($song->title, true);
-            $song->slug = json_decode($song->slug, true);
-            return $song;
-        });
-
-        $album->songs = $songs;
-        $album->song_count = $songs->count();
-
-        // Calculate total duration
-        $album->total_duration = $songs->sum('duration');
-
-        return response()->json($album);
     }
 
     /**
-     * Get new albums
+     * Get new releases
      *
-     * @param Request $request
      * @return JsonResponse
      */
-    public function newReleases(Request $request): JsonResponse
+    public function newReleases(): JsonResponse
     {
-        $limit = $request->input('limit', 10);
+        try {
+            //🔒 FIXED: Use Eloquent (tenant-aware)
+            $albums = Album::where('is_active', 1)
+                ->with('artist')
+                ->orderBy('created_at', 'desc')
+                ->limit(12)
+                ->get()
+                ->map(function ($album) {
+                    return [
+                        'album_id' => $album->album_id,
+                        'title' => $album->title,
+                        'slug' => $album->slug,
+                        'media_id' => $album->media_id,
+                'cover_url' => $album->getCoverUrl(200, 200),
+                        'artist_id' => $album->artist?->artist_id,
+                        'artist_title' => $album->artist?->title,
+                        'artist_slug' => $album->artist?->slug,
+                        'song_count' => $album->songs()->count(),
+                    ];
+                });
 
-        $albums = DB::table('muzibu_albums')
-            ->join('muzibu_artists', 'muzibu_albums.artist_id', '=', 'muzibu_artists.artist_id')
-            ->where('muzibu_albums.is_active', 1)
-            ->select([
-                'muzibu_albums.album_id',
-                'muzibu_albums.title as album_title',
-                'muzibu_albums.slug as album_slug',
-                'muzibu_albums.media_id',
-                'muzibu_artists.artist_id',
-                'muzibu_artists.title as artist_title',
-                'muzibu_artists.slug as artist_slug'
-            ])
-            ->orderBy('muzibu_albums.created_at', 'desc')
-            ->limit($limit)
-            ->get();
+            return response()->json($albums);
 
-        $albums = $albums->map(function ($album) {
-            $album->album_title = json_decode($album->album_title, true);
-            $album->album_slug = json_decode($album->album_slug, true);
-            $album->artist_title = json_decode($album->artist_title, true);
-            $album->artist_slug = json_decode($album->artist_slug, true);
-
-            $songCount = DB::table('muzibu_songs')
-                ->where('album_id', $album->album_id)
-                ->where('is_active', 1)
-                ->count();
-
-            $album->song_count = $songCount;
-
-            return $album;
-        });
-
-        return response()->json($albums);
+        } catch (\Exception $e) {
+            \Log::error('New releases error:', ['message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
+        }
     }
 }

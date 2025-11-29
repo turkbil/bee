@@ -89,7 +89,7 @@
                                 :model-id="$reviewsystemId"
                                 model-type="reviewsystem"
                                 model-class="Modules\ReviewSystem\App\Models\ReviewSystem"
-                                :collections="['featured_image', 'gallery']"
+                                :collections="['hero', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
                                 :key="'universal-media-' . ($reviewsystemId ?? 'new')"

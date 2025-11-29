@@ -1,74 +1,429 @@
-@extends('themes.muzibu.layouts.app-new')
+@extends('themes.muzibu.layouts.app')
 
 @section('title', 'Muzibu - Ana Sayfa')
 
 @section('content')
-{{-- Top Pills --}}
-<div class="muzibu-top-pills">
-    <button class="muzibu-pill active">Tümü</button>
-    <button class="muzibu-pill">Müzik</button>
-    <button class="muzibu-pill">Podcast'ler</button>
-</div>
+<div class="px-6 py-8">
 
-{{-- Horizontal Scroll Section --}}
-<div class="muzibu-horizontal-section">
-    <div class="muzibu-horizontal-cards">
-        @for($i = 0; $i < 8; $i++)
-        <div class="muzibu-horizontal-card">
-            <div class="muzibu-card-image" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
-                <span style="font-size: 48px;">🎵</span>
-                <div class="muzibu-play-overlay">
-                    <i class="fas fa-play"></i>
-                </div>
+{{-- Quick Access Cards (Spotify Style - 2 rows) --}}
+@if($featuredPlaylists && $featuredPlaylists->count() > 0)
+<div class="mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+        @foreach($featuredPlaylists->take(8) as $playlist)
+        <div class="group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16">
+            <div class="w-16 h-16 flex-shrink-0">
+                @if($playlist->coverMedia)
+                    <img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover">
+                @else
+                    <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-xl">🎵</div>
+                @endif
             </div>
-            <div class="muzibu-card-title">Playlist {{ $i + 1 }}</div>
-            <div class="muzibu-card-subtitle">{{ mt_rand(10, 150) }} şarkı</div>
-        </div>
-        @endfor
-    </div>
-</div>
-
-{{-- Content Section 1 --}}
-<div class="muzibu-content-section">
-    <div class="muzibu-section-header">
-        <h2 class="muzibu-section-title">Beğenebileceğin bölümler</h2>
-        <a href="#" class="muzibu-section-link">Tümünü göster</a>
-    </div>
-    <div class="muzibu-cards-grid">
-        @for($i = 0; $i < 10; $i++)
-        <div class="muzibu-card">
-            <div class="muzibu-card-image" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
-                <span style="font-size: 48px;">{{ ['🎵', '🎸', '🎤', '🎧', '🎹'][mt_rand(0, 4)] }}</span>
-                <div class="muzibu-play-overlay">
-                    <i class="fas fa-play"></i>
-                </div>
+            <div class="flex-1 min-w-0 pr-3">
+                <h3 class="font-semibold text-white text-sm truncate">
+                    {{ getLocaleTitle($playlist->title, 'Playlist') }}
+                </h3>
             </div>
-            <div class="muzibu-card-title">Album {{ $i + 1 }}</div>
-            <div class="muzibu-card-subtitle">Sanatçı • {{ mt_rand(5, 20) }} şarkı</div>
         </div>
-        @endfor
+        @endforeach
     </div>
 </div>
+@endif
 
-{{-- Content Section 2 --}}
-<div class="muzibu-content-section">
-    <div class="muzibu-section-header">
-        <h2 class="muzibu-section-title">Yeni çıkanlar</h2>
-        <a href="#" class="muzibu-section-link">Tümünü göster</a>
-    </div>
-    <div class="muzibu-cards-grid">
-        @for($i = 0; $i < 5; $i++)
-        <div class="muzibu-card">
-            <div class="muzibu-card-image" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
-                <span style="font-size: 48px;">{{ ['🎼', '🎺', '🥁', '🎻', '🎷'][mt_rand(0, 4)] }}</span>
-                <div class="muzibu-play-overlay">
-                    <i class="fas fa-play"></i>
+{{-- Featured Playlists (Spotify Style) --}}
+@if($featuredPlaylists && $featuredPlaylists->count() > 0)
+<div class="mb-6 relative group/scroll" x-data="{
+    scrollContainer: null,
+    scrollInterval: null,
+    startAutoScroll(direction) {
+        this.scrollInterval = setInterval(() => {
+            this.scrollContainer.scrollBy({ left: direction === 'right' ? 20 : -20 });
+        }, 50);
+    },
+    stopAutoScroll() {
+        if (this.scrollInterval) {
+            clearInterval(this.scrollInterval);
+            this.scrollInterval = null;
+        }
+    }
+}" x-init="scrollContainer = $refs.scrollContainer">
+    <h2 class="text-2xl font-bold text-white mb-4">Öne Çıkan Listeler</h2>
+
+    {{-- Left Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('left')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    {{-- Right Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('right')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
+        @foreach($featuredPlaylists as $playlist)
+        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
+            <div class="relative mb-3">
+                <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
+                    @if($playlist->coverMedia)
+                        <img src="{{ thumb($playlist->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" loading="lazy" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-4xl">🎵</div>
+                    @endif
+                </div>
+                {{-- Play button on hover --}}
+                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                    <i class="fas fa-play text-black ml-0.5"></i>
                 </div>
             </div>
-            <div class="muzibu-card-title">Yeni Album {{ $i + 1 }}</div>
-            <div class="muzibu-card-subtitle">{{ date('Y') }} • {{ mt_rand(8, 15) }} şarkı</div>
+            <h3 class="font-semibold text-white truncate mb-1 text-sm">
+                {{ getLocaleTitle($playlist->title, 'Playlist') }}
+            </h3>
+            <p class="text-xs text-muzibu-text-gray truncate">{{ $playlist->songs()->count() }} şarkı</p>
         </div>
-        @endfor
+        @endforeach
     </div>
+</div>
+
+<style>
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+@endif
+
+{{-- New Releases (Horizontal Scroll - Spotify Style) --}}
+@if($newReleases && $newReleases->count() > 0)
+<div class="mb-6 relative group/scroll" x-data="{
+    scrollContainer: null,
+    scrollInterval: null,
+    startAutoScroll(direction) {
+        this.scrollInterval = setInterval(() => {
+            this.scrollContainer.scrollBy({ left: direction === 'right' ? 20 : -20 });
+        }, 50);
+    },
+    stopAutoScroll() {
+        if (this.scrollInterval) {
+            clearInterval(this.scrollInterval);
+            this.scrollInterval = null;
+        }
+    }
+}" x-init="scrollContainer = $refs.scrollContainer">
+    <h2 class="text-2xl font-bold text-white mb-4">Yeni Çıkanlar</h2>
+
+    {{-- Left Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('left')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    {{-- Right Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('right')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
+        @foreach($newReleases as $album)
+        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
+            <div class="relative mb-3">
+                <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
+                    @if($album->coverMedia)
+                        <img src="{{ thumb($album->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($album->title, 'Album') }}" loading="lazy" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-4xl">🎸</div>
+                    @endif
+                </div>
+                {{-- Play button on hover --}}
+                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                    <i class="fas fa-play text-black ml-0.5"></i>
+                </div>
+            </div>
+            <h3 class="font-semibold text-white truncate mb-1 text-sm">
+                {{ getLocaleTitle($album->title, 'Album') }}
+            </h3>
+            <p class="text-xs text-muzibu-text-gray truncate">
+                {{ $album->artist ? (is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}
+            </p>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
+{{-- SONGS GRID - Popüler + Yeni Şarkılar --}}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+    {{-- POPULAR SONGS --}}
+    @if($popularSongs && $popularSongs->count() > 0)
+    <div>
+        <h2 class="text-2xl font-bold text-white mb-4">Popüler Şarkılar</h2>
+
+        <div class="grid grid-cols-1">
+            @foreach($popularSongs->take(10) as $index => $song)
+            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer">
+                {{-- Play Button Overlay --}}
+                <div class="relative" @click="playSong({{ $song->song_id }})">
+                    <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
+                        @if($song->album && $song->album->media_id)
+                            <img src="{{ thumb($song->album->media_id, 56, 56, ['scale' => 1]) }}" alt="{{ getLocaleTitle($song->title, 'Song') }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-xl">
+                                🎵
+                            </div>
+                        @endif
+                    </div>
+                    <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded">
+                        <i class="fas fa-play text-white text-sm"></i>
+                    </div>
+                </div>
+
+                {{-- Song Info --}}
+                <div class="flex-1 min-w-0" @click="playSong({{ $song->song_id }})">
+                    <div class="text-sm font-semibold text-white truncate group-hover:text-muzibu-coral transition-colors">
+                        {{ getLocaleTitle($song->title, 'Song') }}
+                    </div>
+                    <div class="text-xs text-muzibu-text-gray truncate">
+                        {{ $song->album && $song->album->artist ? (is_array($song->album->artist->title) ? ($song->album->artist->title['tr'] ?? $song->album->artist->title['en'] ?? 'Artist') : $song->album->artist->title) : 'Sanatçı' }}
+                    </div>
+                </div>
+
+                {{-- Actions --}}
+                <div class="flex items-center gap-3">
+                    {{-- Favorite Button --}}
+                    <button
+                        @click.stop="toggleFavorite({{ $song->song_id }})"
+                        class="transition-colors text-muzibu-text-gray hover:text-muzibu-coral"
+                        :class="{ 'text-muzibu-coral': favorites.includes({{ $song->song_id }}) }"
+                    >
+                        <i class="fas fa-heart" :class="{ 'fas': favorites.includes({{ $song->song_id }}), 'far': !favorites.includes({{ $song->song_id }}) }"></i>
+                    </button>
+
+                    {{-- Duration --}}
+                    <div class="text-xs text-muzibu-text-gray w-10 text-right">
+                        @if($song->duration)
+                            {{ gmdate('i:s', $song->duration) }}
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    {{-- NEW SONGS --}}
+    @if($popularSongs && $popularSongs->count() > 10)
+    <div>
+        <h2 class="text-2xl font-bold text-white mb-4">Yeni Şarkılar</h2>
+
+        <div class="grid grid-cols-1">
+            @foreach($popularSongs->slice(10)->take(10) as $index => $song)
+            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer">
+                {{-- Play Button Overlay --}}
+                <div class="relative" @click="playSong({{ $song->song_id }})">
+                    <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
+                        @if($song->album && $song->album->media_id)
+                            <img src="{{ thumb($song->album->media_id, 56, 56, ['scale' => 1]) }}" alt="{{ getLocaleTitle($song->title, 'Song') }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-xl">
+                                🎵
+                            </div>
+                        @endif
+                    </div>
+                    <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded">
+                        <i class="fas fa-play text-white text-sm"></i>
+                    </div>
+                </div>
+
+                {{-- Song Info --}}
+                <div class="flex-1 min-w-0" @click="playSong({{ $song->song_id }})">
+                    <div class="text-sm font-semibold text-white truncate group-hover:text-muzibu-coral transition-colors">
+                        {{ getLocaleTitle($song->title, 'Song') }}
+                    </div>
+                    <div class="text-xs text-muzibu-text-gray truncate">
+                        {{ $song->album && $song->album->artist ? (is_array($song->album->artist->title) ? ($song->album->artist->title['tr'] ?? $song->album->artist->title['en'] ?? 'Artist') : $song->album->artist->title) : 'Sanatçı' }}
+                    </div>
+                </div>
+
+                {{-- Actions --}}
+                <div class="flex items-center gap-3">
+                    {{-- Favorite Button --}}
+                    <button
+                        @click.stop="toggleFavorite({{ $song->song_id }})"
+                        class="transition-colors text-muzibu-text-gray hover:text-muzibu-coral"
+                        :class="{ 'text-muzibu-coral': favorites.includes({{ $song->song_id }}) }"
+                    >
+                        <i class="fas fa-heart" :class="{ 'fas': favorites.includes({{ $song->song_id }}), 'far': !favorites.includes({{ $song->song_id }}) }"></i>
+                    </button>
+
+                    {{-- Duration --}}
+                    <div class="text-xs text-muzibu-text-gray w-10 text-right">
+                        @if($song->duration)
+                            {{ gmdate('i:s', $song->duration) }}
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+</div>
+
+{{-- Genres (Horizontal Scroll - Spotify Style) --}}
+@if($genres && $genres->count() > 0)
+<div class="mb-6 relative group/scroll" x-data="{
+    scrollContainer: null,
+    scrollInterval: null,
+    startAutoScroll(direction) {
+        this.scrollInterval = setInterval(() => {
+            this.scrollContainer.scrollBy({ left: direction === 'right' ? 20 : -20 });
+        }, 50);
+    },
+    stopAutoScroll() {
+        if (this.scrollInterval) {
+            clearInterval(this.scrollInterval);
+            this.scrollInterval = null;
+        }
+    }
+}" x-init="scrollContainer = $refs.scrollContainer">
+    <h2 class="text-2xl font-bold text-white mb-4">Kategoriler</h2>
+
+    {{-- Left Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('left')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    {{-- Right Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('right')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
+        @foreach($genres as $genre)
+        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
+            <div class="relative mb-3">
+                <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl"
+                     style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
+                    <div class="absolute inset-0 flex items-center justify-center text-6xl opacity-30">
+                        🎵
+                    </div>
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                        <i class="fas fa-play text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </div>
+                </div>
+                {{-- Play button on hover --}}
+                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                    <i class="fas fa-play text-black ml-0.5"></i>
+                </div>
+            </div>
+            <h3 class="font-semibold text-white truncate mb-1 text-sm">
+                {{ getLocaleTitle($genre->title, 'Genre') }}
+            </h3>
+            <p class="text-xs text-muzibu-text-gray truncate">{{ $genre->songs()->count() }} şarkı</p>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
+{{-- Popüler Sanatçılar (Horizontal Scroll - Spotify Style) --}}
+@if(isset($popularSongs) && $popularSongs->count() > 0)
+@php
+    // Sanatçıları topla ve en çok şarkısı olan 12'sini al
+    $artists = $popularSongs->pluck('album.artist')->filter()->unique('artist_id')->sortByDesc(function($artist) use ($popularSongs) {
+        return $popularSongs->filter(function($song) use ($artist) {
+            return $song->album && $song->album->artist_id === $artist->artist_id;
+        })->count();
+    })->take(12);
+@endphp
+@if($artists->count() > 0)
+<div class="mb-6 relative group/scroll" x-data="{
+    scrollContainer: null,
+    scrollInterval: null,
+    startAutoScroll(direction) {
+        this.scrollInterval = setInterval(() => {
+            this.scrollContainer.scrollBy({ left: direction === 'right' ? 20 : -20 });
+        }, 50);
+    },
+    stopAutoScroll() {
+        if (this.scrollInterval) {
+            clearInterval(this.scrollInterval);
+            this.scrollInterval = null;
+        }
+    }
+}" x-init="scrollContainer = $refs.scrollContainer">
+    <h2 class="text-2xl font-bold text-white mb-4">Popüler Sanatçılar</h2>
+
+    {{-- Left Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('left')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    {{-- Right Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('right')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
+        @foreach($artists as $artist)
+        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
+            <div class="relative mb-3">
+                <div class="w-full aspect-square rounded-full overflow-hidden shadow-xl bg-gradient-to-br from-muzibu-coral to-pink-600">
+                    <div class="w-full h-full flex items-center justify-center text-5xl">
+                        🎤
+                    </div>
+                </div>
+                {{-- Play button on hover --}}
+                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                    <i class="fas fa-play text-black ml-0.5"></i>
+                </div>
+            </div>
+            <h3 class="font-semibold text-white truncate mb-1 text-sm text-center">
+                {{ is_array($artist->title) ? ($artist->title['tr'] ?? $artist->title['en'] ?? 'Artist') : $artist->title }}
+            </h3>
+            <p class="text-xs text-muzibu-text-gray truncate text-center">Sanatçı</p>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+@endif
+
 </div>
 @endsection

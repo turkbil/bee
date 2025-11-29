@@ -117,7 +117,7 @@
                                 :model-id="$portfolioId"
                                 model-type="portfolio"
                                 model-class="Modules\Portfolio\App\Models\Portfolio"
-                                :collections="['featured_image', 'gallery']"
+                                :collections="['hero', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
                                 :key="'universal-media-' . ($portfolioId ?? 'new')"

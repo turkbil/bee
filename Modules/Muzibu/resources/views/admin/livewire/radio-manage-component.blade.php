@@ -80,7 +80,7 @@
                                 :model-id="$radioId"
                                 model-type="radio"
                                 model-class="Modules\Muzibu\App\Models\Radio"
-                                :collections="['featured_image']"
+                                :collections="['hero']"
                                 :key="'universal-media-' . ($radioId ?? 'new')"
                             />
                         </div>

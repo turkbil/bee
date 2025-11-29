@@ -103,7 +103,7 @@
                                     :model-id="$categoryId"
                                     model-type="blog_category"
                                     model-class="Modules\Blog\App\Models\BlogCategory"
-                                    :collections="['featured_image']"
+                                    :collections="['hero']"
                                     :sortable="false"
                                     :key="'universal-media-' . ($categoryId ?? 'new')"
                                 />

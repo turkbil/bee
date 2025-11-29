@@ -102,7 +102,7 @@
                                     :model-id="$categoryId"
                                     model-type="muzibu_category"
                                     model-class="Modules\Muzibu\App\Models\MuzibuCategory"
-                                    :collections="['featured_image']"
+                                    :collections="['hero']"
                                     :sortable="false"
                                     :key="'universal-media-' . ($categoryId ?? 'new')"
                                 />

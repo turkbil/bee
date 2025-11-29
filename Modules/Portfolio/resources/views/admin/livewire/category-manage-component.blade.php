@@ -103,7 +103,7 @@
                                     :model-id="$categoryId"
                                     model-type="portfolio_category"
                                     model-class="Modules\Portfolio\App\Models\PortfolioCategory"
-                                    :collections="['featured_image']"
+                                    :collections="['hero']"
                                     :sortable="false"
                                     :key="'universal-media-' . ($categoryId ?? 'new')"
                                 />

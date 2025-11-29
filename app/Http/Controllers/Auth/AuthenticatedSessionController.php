@@ -179,7 +179,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         $user = Auth::user();
 
@@ -207,8 +207,16 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Login sayfasına redirect - fresh session garantisi
-        // Query parameter ile logout mesajı (session invalidate sonrası with() çalışmaz)
+        // 🎯 SPA-friendly: AJAX request ise JSON döndür
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Çıkış başarılı',
+                'csrf_token' => csrf_token(), // 🔐 Yeni CSRF token
+            ]);
+        }
+
+        // Normal request: Login sayfasına redirect
         return redirect('/login?logged_out=1')
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')

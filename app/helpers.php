@@ -664,3 +664,53 @@ if (!function_exists('tenant_lang')) {
         return [];
     }
 }
+
+/**
+ * ======================================================================
+ * Media Collection Helper (2025)
+ * ======================================================================
+ */
+
+if (!function_exists('getFirstMediaWithFallback')) {
+    /**
+     * Get first media from model with multi-collection fallback
+     *
+     * Priority: hero > featured_image > gallery > product_images > images > default
+     *
+     * @param  mixed  $model  Model with HasMedia trait
+     * @param  string|null  $preferredCollection  Preferred collection (default: hero)
+     * @return \Spatie\MediaLibrary\MediaCollections\Models\Media|null
+     *
+     * Usage:
+     * getFirstMediaWithFallback($product)
+     * getFirstMediaWithFallback($blog, 'featured_image')
+     */
+    function getFirstMediaWithFallback($model, ?string $preferredCollection = 'hero')
+    {
+        if (!$model || !method_exists($model, 'getFirstMedia')) {
+            return null;
+        }
+
+        // Fallback chain
+        $collections = [
+            $preferredCollection,
+            'hero',
+            'featured_image',
+            'gallery',
+            'product_images',
+            'images',
+            'default',
+        ];
+
+        // Remove duplicates
+        $collections = array_unique($collections);
+
+        foreach ($collections as $collection) {
+            if ($model->hasMedia($collection)) {
+                return $model->getFirstMedia($collection);
+            }
+        }
+
+        return null;
+    }
+}

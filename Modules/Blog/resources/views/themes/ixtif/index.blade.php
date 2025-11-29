@@ -31,64 +31,42 @@
                             $hasChildren = $category->children && $category->children->count() > 0;
                         @endphp
 
-                        @if($hasChildren)
-                            {{-- Ana kategori + alt kategoriler dropdown --}}
-                            <div class="relative flex-shrink-0" x-data="{ open: false }">
-                                <button @click="open = !open"
-                                        @click.away="open = false"
-                                        class="px-5 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2 {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
-                                    {{ $category->getTranslated('title', app()->getLocale()) }}
-                                    <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="open ? 'rotate-180' : ''"></i>
-                                </button>
+                        {{-- Tüm kategoriler direkt link (alt kategoriler varsa kategori sayfasında gösterilir) --}}
+                        <a href="{{ url('/blog/category/' . $categorySlug) }}"
+                           class="flex-shrink-0 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
+                            {{ $category->getTranslated('title', app()->getLocale()) }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
 
-                                {{-- Dropdown --}}
-                                <div x-show="open"
-                                     x-transition:enter="transition ease-out duration-200"
-                                     x-transition:enter-start="opacity-0 translate-y-1"
-                                     x-transition:enter-end="opacity-100 translate-y-0"
-                                     x-transition:leave="transition ease-in duration-150"
-                                     x-transition:leave-start="opacity-100 translate-y-0"
-                                     x-transition:leave-end="opacity-0 translate-y-1"
-                                     class="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-white/10 py-2 z-50"
-                                     style="display: none;">
-                                    {{-- Ana kategori linki --}}
-                                    <a href="{{ url('/blog/category/' . $categorySlug) }}"
-                                       class="block px-4 py-2.5 text-sm font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
-                                        <i class="fa-solid fa-folder mr-2 text-blue-500"></i>
-                                        Tümü
-                                        @if($category->blogs_count > 0)
-                                            <span class="text-xs opacity-60 ml-1">({{ $category->blogs_count }})</span>
-                                        @endif
-                                    </a>
-
-                                    <div class="border-t border-gray-200 dark:border-white/10 my-1"></div>
-
-                                    {{-- Alt kategoriler --}}
-                                    @foreach($category->children as $child)
-                                        @php
-                                            $childSlug = $child->getTranslated('slug', app()->getLocale());
-                                            $isChildActive = isset($selectedCategory) && $selectedCategory && $selectedCategory->category_id === $child->category_id;
-                                        @endphp
-                                        <a href="{{ url('/blog/category/' . $childSlug) }}"
-                                           class="block px-4 py-2.5 text-sm {{ $isChildActive ? 'text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10' }} transition-colors">
-                                            {{ $child->getTranslated('title', app()->getLocale()) }}
-                                            @if($child->blogs_count > 0)
-                                                <span class="text-xs opacity-60 ml-1">({{ $child->blogs_count }})</span>
-                                            @endif
-                                        </a>
-                                    @endforeach
-                                </div>
+        {{-- Alt Kategoriler (Sadece kategori seçiliyse ve alt kategorileri varsa) --}}
+        @if(isset($selectedCategory) && $selectedCategory && $selectedCategory->children && $selectedCategory->children->count() > 0)
+        <section class="py-8 border-b border-gray-200 dark:border-white/10">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-folder-tree text-blue-600 dark:text-blue-400"></i>
+                    {{ $selectedCategory->getTranslated('title', app()->getLocale()) }} - Alt Kategoriler
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    @foreach($selectedCategory->children as $child)
+                        @php
+                            $childSlug = $child->getTranslated('slug', app()->getLocale());
+                            $childTitle = $child->getTranslated('title', app()->getLocale());
+                        @endphp
+                        <a href="{{ url('/blog/category/' . $childSlug) }}"
+                           class="group relative overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400 transition-all hover:shadow-lg hover:-translate-y-1">
+                            <div class="relative z-10">
+                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                    {{ $childTitle }}
+                                </h3>
                             </div>
-                        @else
-                            {{-- Alt kategorisi olmayan ana kategori --}}
-                            <a href="{{ url('/blog/category/' . $categorySlug) }}"
-                               class="flex-shrink-0 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
-                                {{ $category->getTranslated('title', app()->getLocale()) }}
-                                @if($category->blogs_count > 0)
-                                    <span class="ml-1.5 text-xs opacity-70">({{ $category->blogs_count }})</span>
-                                @endif
-                            </a>
-                        @endif
+                            <div class="absolute -bottom-4 -right-4 text-6xl text-blue-200 dark:text-white/5 opacity-50 group-hover:opacity-100 transition-opacity">
+                                <i class="fa-solid fa-folder"></i>
+                            </div>
+                        </a>
                     @endforeach
                 </div>
             </div>
@@ -131,8 +109,8 @@
                                 $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
                                 $blogUrl = $localePrefix . '/' . $slugPrefix . '/' . $slug;
 
-                                // Featured image'i al (thumbmaker ile optimize)
-                                $featuredMedia = $item->getFirstMedia('featured_image');
+                                // Helper function ile multi-collection fallback
+                                $featuredMedia = getFirstMediaWithFallback($item);
                                 $featuredImage = $featuredMedia
                                     ? thumb($featuredMedia, 400, 300, ['quality' => 85, 'format' => 'webp'])
                                     : null;
@@ -219,6 +197,7 @@
                 hasMore: {{ $items->hasMorePages() ? 'true' : 'false' }},
                 currentPage: {{ $items->currentPage() }},
                 tag: '{{ $tag ?? '' }}',
+                category: '{{ $selectedCategory ? $selectedCategory->getTranslated("slug", app()->getLocale()) : "" }}',
 
                 init() {
                     if (!this.hasMore) return;
@@ -250,6 +229,9 @@
                         let url = `/api/blog/load-more?page=${this.currentPage}`;
                         if (this.tag) {
                             url += `&tag=${encodeURIComponent(this.tag)}`;
+                        }
+                        if (this.category) {
+                            url += `&category=${encodeURIComponent(this.category)}`;
                         }
 
                         const response = await fetch(url);

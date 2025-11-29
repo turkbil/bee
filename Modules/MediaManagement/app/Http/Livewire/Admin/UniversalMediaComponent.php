@@ -13,12 +13,22 @@ use Modules\MediaManagement\App\Services\MediaService;
  * Tüm modüllerde kullanılabilir evrensel medya yönetimi component'i
  * Image, Video, Audio, Document, Archive desteği
  *
+ * 🎯 MEDIA COLLECTION STANDARTLARI (2025):
+ * - 'hero' → Ana görsel (SEO og:image, card görseli, detay hero)
+ * - 'gallery' → Galeri görselleri (ürün detay, blog içi görseller)
+ *
+ * SEO Öncelik Sırası (SeoMetaTagService):
+ * 1. SEO Settings og_image (manuel)
+ * 2. 'hero' collection (otomatik - EN ÖNEMLİ!)
+ * 3. 'gallery' collection ilk görsel
+ * 4. Legacy: 'featured_image', 'product_images', 'images', 'default'
+ *
  * Usage:
  * <livewire:mediamanagement::universal-media
  *     :model-id="$announcementId"
  *     model-type="announcement"
  *     model-class="Modules\Announcement\App\Models\Announcement"
- *     :collections="['featured_image', 'gallery']"
+ *     :collections="['hero', 'gallery']"
  * />
  */
 class UniversalMediaComponent extends Component
@@ -35,7 +45,8 @@ class UniversalMediaComponent extends Component
     // ========================================
     // CONFIGURATION PROPS
     // ========================================
-    public array $collections = ['featured_image', 'gallery'];
+    // 🎯 STANDART: 'hero' (ana görsel) + 'gallery' (galeri)
+    public array $collections = ['hero', 'gallery'];
     public ?int $maxGalleryItems = null;
     public bool $sortable = true;
     public bool $setFeaturedFromGallery = true;
@@ -171,7 +182,8 @@ class UniversalMediaComponent extends Component
 
         // Map to appropriate property
         switch ($collectionName) {
-            case 'featured_image':
+            case 'hero': // 🎯 STANDART: Ana görsel
+            case 'featured_image': // Legacy uyumluluk
                 $this->existingFeaturedImage = !empty($media) ? $media[0] : [];
                 break;
             case 'seo_og_image':
@@ -236,7 +248,7 @@ class UniversalMediaComponent extends Component
                         );
 
                         // Dynamic collection name (ilk collection'ı kullan)
-                        $collectionName = $this->collections[0] ?? 'featured_image';
+                        $collectionName = $this->collections[0] ?? 'hero';
                         $this->mediaService->uploadMedia($model, $uploadedFile, $collectionName);
                         $this->loadCollection($model, $collectionName);
 
@@ -756,7 +768,7 @@ class UniversalMediaComponent extends Component
 
         try {
             // Dynamic collection name (ilk collection'ı kullan)
-            $collectionName = $this->collections[0] ?? 'featured_image';
+            $collectionName = $this->collections[0] ?? 'hero';
             $model->clearMediaCollection($collectionName);
 
             $this->dispatch('toast', [
@@ -823,7 +835,7 @@ class UniversalMediaComponent extends Component
             ]);
 
             // Dynamic collection name (ilk collection'ı kullan)
-            $collectionName = $this->collections[0] ?? 'featured_image';
+            $collectionName = $this->collections[0] ?? 'hero';
             $this->loadCollection($model, $collectionName);
         } else {
             $this->dispatch('toast', [
@@ -905,7 +917,7 @@ class UniversalMediaComponent extends Component
                     );
 
                     // Dynamic collection name (ilk collection'ı kullan)
-                    $collectionName = $this->collections[0] ?? 'featured_image';
+                    $collectionName = $this->collections[0] ?? 'hero';
                     $this->mediaService->uploadMedia($model, $uploadedFile, $collectionName);
 
                     Log::info('📸 Featured image attached from temp storage', [
@@ -1204,8 +1216,8 @@ class UniversalMediaComponent extends Component
 
             // Sadece ilgili media item'ın custom_properties'ini güncelle
             // loadCollection çağırmıyoruz çünkü tüm component'i render ediyor ve tab durumlarını bozuyor
-            $featuredCollectionName = $this->collections[0] ?? 'featured_image';
-            if ($media->collection_name === $featuredCollectionName || $media->collection_name === 'featured_image') {
+            $featuredCollectionName = $this->collections[0] ?? 'hero';
+            if ($media->collection_name === $featuredCollectionName || $media->collection_name === 'hero' || $media->collection_name === 'featured_image') {
                 if (!empty($this->existingFeaturedImage)) {
                     $this->existingFeaturedImage['custom_properties'] = $media->custom_properties;
                 }
@@ -1387,11 +1399,11 @@ class UniversalMediaComponent extends Component
     {
         // Dynamic collection check (Setting için site_logo, site_favicon vs.)
         $firstCollection = $this->collections[0] ?? null;
-        $knownCollections = ['featured_image', 'seo_og_image', 'gallery', 'videos', 'audio', 'documents'];
+        $knownCollections = ['hero', 'featured_image', 'seo_og_image', 'gallery', 'videos', 'audio', 'documents'];
         $isDynamicSingleFile = $firstCollection && !in_array($firstCollection, $knownCollections);
 
         return view('mediamanagement::admin.livewire.universal-media-component', [
-            'hasFeautredImage' => $this->hasCollection('featured_image') || $isDynamicSingleFile,
+            'hasFeautredImage' => $this->hasCollection('hero') || $this->hasCollection('featured_image') || $isDynamicSingleFile,
             'hasSeoOgImage' => $this->hasCollection('seo_og_image'),
             'hasGallery' => $this->hasCollection('gallery'),
             'hasVideos' => $this->hasCollection('videos'),

@@ -108,12 +108,14 @@ class LeonardoAIService
     protected function createGeneration(array $promptData): ?string
     {
         // Gerçekçilik kısıtlaması + yazı yasağı ekle (ULTRA GÜÇLÜ)
-        $realismConstraint = " CRITICAL ABSOLUTE REQUIREMENTS: 1) Realistic industrial equipment ONLY - real-world designs from Toyota, Linde, Jungheinrich, Crown, Yale. Standard colors: yellow, orange, red, blue, gray. NO futuristic/sci-fi/conceptual designs. 2) ABSOLUTELY ZERO TEXT, LETTERS, NUMBERS, OR SYMBOLS ANYWHERE IN THE IMAGE - no text on equipment, no text on signs, no text on floor, no text on walls, no text on screens, no text on labels, no comparison charts, no graphs with text, no infographics. The image must be 100% text-free. 3) NO comparison charts, tables, graphs, diagrams, or any visual with data/numbers.";
+        // 🔧 FIX: Marka isimleri kaldırıldı - Görsellerde marka yazmasin!
+        $realismConstraint = " CRITICAL ABSOLUTE REQUIREMENTS: 1) Realistic industrial equipment ONLY - real-world professional designs. Standard colors: yellow, orange, red, blue, gray. NO futuristic/sci-fi/conceptual designs. 2) ABSOLUTELY ZERO TEXT, LETTERS, NUMBERS, OR SYMBOLS ANYWHERE IN THE IMAGE - no text on equipment, no text on signs, no text on floor, no text on walls, no text on screens, no text on labels, no brand names, no logos, no comparison charts, no graphs with text, no infographics. The image must be 100% text-free and logo-free. 3) NO comparison charts, tables, graphs, diagrams, or any visual with data/numbers. 4) NO visible brand names or manufacturer logos.";
 
         $finalPrompt = $promptData['prompt'] . $realismConstraint;
 
-        // ULTRA AGGRESSIVE Negative prompt - Yazı ve kıyaslama grafiklerini kesinlikle engelle
-        $negativePrompt = "text, letters, words, numbers, digits, brand names, logos, labels, signs, watermarks, typography, writing, captions, subtitles, titles, stamps, badges, stickers, name plates, serial numbers, model numbers, any written content, illegible text, garbled text, distorted letters, comparison chart, comparison table, comparison graphic, infographic, data visualization, graph, pie chart, bar chart, spreadsheet, checklist, bullet points, price tags, specifications text, technical text, measurement text, warning text, instruction text, any form of alphanumeric characters";
+        // ULTRA AGGRESSIVE Negative prompt - Yazı, marka ve kıyaslama grafiklerini kesinlikle engelle
+        // 🔧 FIX: Marka isimleri (Toyota, Yale, Linde, Crown, Jungheinrich) eklendi
+        $negativePrompt = "text, letters, words, numbers, digits, brand names, logos, labels, signs, watermarks, typography, writing, captions, subtitles, titles, stamps, badges, stickers, name plates, serial numbers, model numbers, Toyota, Yale, Linde, Crown, Jungheinrich, Hyster, Clark, Caterpillar, Mitsubishi, Komatsu, Doosan, TCM, Nissan, Kalmar, Hyundai, any written content, illegible text, garbled text, distorted letters, comparison chart, comparison table, comparison graphic, infographic, data visualization, graph, pie chart, bar chart, spreadsheet, checklist, bullet points, price tags, specifications text, technical text, measurement text, warning text, instruction text, any form of alphanumeric characters, manufacturer names, company names";
 
         $response = Http::withHeaders([
             'accept' => 'application/json',
@@ -246,6 +248,11 @@ class LeonardoAIService
 
         // 🔧 FIX: Ortam/sektörü tespit et (kapalı depo mu, açık alan mı?)
         $environment = $this->detectEnvironment($title);
+
+        // 🌤️ FIX: %50 ihtimalle outdoor yap - Dış mekan fotoğrafları artırsın!
+        if (rand(0, 1) === 1 && !in_array($environment, ['construction', 'port', 'farm'])) {
+            $environment = 'outdoor'; // Yeni outdoor environment!
+        }
 
         // ========== 11 KURAL FORMÜLÜ - PROMPT ZİNCİRİ HAVUZLARI ==========
 
@@ -1120,6 +1127,29 @@ class LeonardoAIService
                 "seasonal backdrop",
                 "weather elements",
                 "environmental context",
+            ],
+            'outdoor' => [
+                // 🌤️ OUTDOOR: Açık hava, dış mekan çekimleri
+                "open sky",
+                "natural sunlight",
+                "outdoor setting",
+                "fresh air environment",
+                "landscape backdrop",
+                "parking lot",
+                "loading dock exterior",
+                "company yard",
+                "outdoor facility",
+                "industrial park",
+                "storage yard",
+                "distribution center exterior",
+                "logistics hub outside",
+                "open warehouse yard",
+                "loading area outdoors",
+                "truck parking zone",
+                "service area outside",
+                "equipment yard",
+                "delivery zone exterior",
+                "operational courtyard",
             ],
             'park' => [
                 "flowering gardens",

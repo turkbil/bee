@@ -5,7 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Exceptions\Handler;
 
-return Application::configure(basePath: dirname(__DIR__))
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
         \App\Providers\JsonResponseServiceProvider::class, // MUST BE FIRST - Override JsonResponse
         \App\Providers\DatabasePoolServiceProvider::class,
@@ -111,6 +111,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'approved' => \App\Http\Middleware\CheckApproval::class,
             // Under construction protection
             'construction' => \App\Http\Middleware\UnderConstructionProtection::class,
+            // Rate limiting by user type (guest/member/premium)
+            'throttle.user' => \App\Http\Middleware\ThrottleByUserType::class,
         ]);
                 
         // Admin middleware grubu
@@ -166,6 +168,12 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->create();
 
+// 🔥 Bind custom Console Kernel for blog-ai scheduler
+$app->singleton(
+    \Illuminate\Contracts\Console\Kernel::class,
+    \App\Console\Kernel::class
+);
+
 // Helper dosylarını doğru sırada yükle
 $helperFiles = [
     app_path('Helpers/LivewireUploadHelper.php'), // 0. Livewire upload helper (Config'den ÖNCE!)
@@ -184,3 +192,5 @@ foreach ($helperFiles as $file) {
         require_once $file;
     }
 }
+
+return $app;

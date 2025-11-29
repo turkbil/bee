@@ -690,7 +690,7 @@ readonly class SeoMetaTagService
                 $data['og_descriptions'] = $data['description'];
             }
             
-            // og:image - 2025 Optimized Priority
+            // og:image - 2025 Optimized Priority with Multi-Collection Fallback
             $featuredImage = null;
             $allImages = []; // Tüm görselleri topla (Schema için)
 
@@ -698,18 +698,32 @@ readonly class SeoMetaTagService
                 // 1. Öncelik: SEO Settings og_image
                 $featuredImage = cdn($seoSetting->og_image);
                 $allImages[] = $featuredImage;
-            } elseif (method_exists($model, 'getFirstMediaUrl') && $mediaImage = $model->getFirstMediaUrl('featured_image')) {
-                // 2. Öncelik: Media Library - featured_image collection
-                $featuredImage = $mediaImage;
-                $allImages[] = $featuredImage;
-            } elseif (method_exists($model, 'getMedia')) {
-                // 3. Öncelik: Media Library - gallery collection (ilk görsel)
-                $galleryMedia = $model->getMedia('gallery');
-                if ($galleryMedia->isNotEmpty()) {
-                    $featuredImage = $galleryMedia->first()->getUrl();
-                    // Tüm galeri görsellerini ekle
-                    foreach ($galleryMedia as $media) {
-                        $allImages[] = $media->getUrl();
+            } elseif (method_exists($model, 'getFirstMediaUrl')) {
+                // 2. Öncelik: Media Library - Collection priority chain
+                // 🎯 STANDART: 'hero' → Ana görsel (SEO, card, detail hero)
+                $collectionPriority = [
+                    'hero',            // 🎯 STANDART: Ana görsel (yeni sistem)
+                    'featured_image',  // Legacy uyumluluk (eski sistem)
+                    'gallery',         // Gallery ilk görsel
+                    'product_images',  // Shop modülü legacy
+                    'images',          // Genel images collection
+                    'default',         // Default collection
+                ];
+
+                foreach ($collectionPriority as $collection) {
+                    $mediaUrl = $model->getFirstMediaUrl($collection);
+                    if (!empty($mediaUrl)) {
+                        $featuredImage = $mediaUrl;
+                        $allImages[] = $featuredImage;
+
+                        // Bu collection'daki diğer görselleri de ekle (Schema için)
+                        if (method_exists($model, 'getMedia')) {
+                            $collectionMedia = $model->getMedia($collection);
+                            foreach ($collectionMedia as $media) {
+                                $allImages[] = $media->getUrl();
+                            }
+                        }
+                        break; // İlk bulunan collection'ı kullan
                     }
                 }
             }

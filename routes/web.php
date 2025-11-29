@@ -52,14 +52,19 @@ Route::middleware([InitializeTenancy::class])
     ->group(function () {
         Route::get('/', [\Modules\Muzibu\app\Http\Controllers\Front\HomeController::class, 'index'])->name('muzibu.home');
         Route::get('/search', [\Modules\Muzibu\app\Http\Controllers\Front\SearchController::class, 'index'])->name('muzibu.search');
+
+        // User Library
+        Route::get('/favorites', [\Modules\Muzibu\app\Http\Controllers\Front\FavoritesController::class, 'index'])->name('muzibu.favorites');
+        Route::get('/my-playlists', [\Modules\Muzibu\app\Http\Controllers\Front\MyPlaylistsController::class, 'index'])->name('muzibu.my-playlists');
+
         Route::get('/playlists', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'index'])->name('muzibu.playlists.index');
-        Route::get('/playlists/{id}', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'show'])->name('muzibu.playlists.show');
+        Route::get('/playlists/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'show'])->name('muzibu.playlists.show');
         Route::get('/albums', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'index'])->name('muzibu.albums.index');
-        Route::get('/albums/{id}', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'show'])->name('muzibu.albums.show');
+        Route::get('/albums/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'show'])->name('muzibu.albums.show');
         Route::get('/genres', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'index'])->name('muzibu.genres.index');
-        Route::get('/genres/{id}', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'show'])->name('muzibu.genres.show');
+        Route::get('/genres/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'show'])->name('muzibu.genres.show');
         Route::get('/sectors', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'index'])->name('muzibu.sectors.index');
-        Route::get('/sectors/{id}', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'show'])->name('muzibu.sectors.show');
+        Route::get('/sectors/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'show'])->name('muzibu.sectors.show');
     });
 
 // 🎵 MUZIBU STREAMING ROUTES - EN ÖNCE TANIMLANMALI (high priority)
@@ -549,7 +554,7 @@ Route::middleware([InitializeTenancy::class, 'site'])
             // ⚠️ AUTH ROUTE FALLBACK - Token/ID içeren auth sayfaları için
             $authRoutes = [
                 'reset-password',      // /reset-password/{token}
-                'verify-email',        // /verify-email/{id}/{hash}
+                'verify-email',        // /verify-email/{slug}/{hash}
                 'password',            // /password/*
                 'confirm-password',    // /confirm-password/*
                 'email'                // /email/*

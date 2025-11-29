@@ -554,7 +554,43 @@ $imageTag1 = "&lt;a href='{$image1['url']}' class='glightbox block rounded-xl ov
                 </div>
 
                 <div class="step">
-                    <strong>6. DATABASE SAVE (Claude Code)</strong>
+                    <strong>6. SEO AYARLARI (Claude Code - KRİTİK!)</strong>
+                    <div class="code">// SEO meta bilgileri üret (HasSeo trait kullanıyor)
+$seo = $product->getOrCreateSeoSetting();
+$seo->update([
+    'titles' => [
+        'tr' => "Forklift {$product->title['tr']} | OEM Kalite Yedek Parça",
+        'en' => "Forklift {$product->title['en']} | OEM Quality Spare Part"
+    ],
+    'descriptions' => [
+        'tr' => "Forklift {$product->title['tr']} yedek parçası. OEM kalite, hızlı teslimat. Detaylı bilgi ve fiyat için iletişime geçin.",
+        'en' => "Forklift {$product->title['en']} spare part. OEM quality, fast delivery. Contact for details and pricing."
+    ],
+    'keywords' => [
+        'tr' => implode(', ', $aiContent['tags']),
+        'en' => implode(', ', array_map(fn($tag) => translateToEn($tag), $aiContent['tags']))
+    ],
+    'og_titles' => [
+        'tr' => $product->title['tr'],
+        'en' => $product->title['en']
+    ],
+    'og_descriptions' => [
+        'tr' => $product->short_description['tr'],
+        'en' => $product->short_description['en']
+    ],
+    'focus_keywords' => [
+        'tr' => ['forklift', 'yedek parça', $product->title['tr']],
+        'en' => ['forklift', 'spare part', $product->title['en']]
+    ],
+    'schema_type' => ['Product'],
+    'robots_meta' => ['index', 'follow'],
+]);
+
+echo "✅ SEO ayarları kaydedildi!";</div>
+                </div>
+
+                <div class="step">
+                    <strong>7. DATABASE SAVE (Claude Code)</strong>
                     <div class="code">$product->update([
     'title' => $aiContent['title'],
     'short_description' => $aiContent['short_description'],
@@ -759,6 +795,7 @@ AND (p.body IS NULL OR LENGTH(JSON_EXTRACT(p.body, '$.tr')) <= 100);</div>
                     <li><strong>Validation:</strong> Fiyat var mı? Teknik detay (Branch B ise) var mı?</li>
                     <li><strong>Leonardo AI:</strong> 2 görsel üret (1024x1024)</li>
                     <li><strong>Embed görseller:</strong> Body içine SEO taglerle yerleştir</li>
+                    <li><strong>SEO ayarları:</strong> updateSeo() ile meta title/description/keywords/og tags (KRİTİK!)</li>
                     <li><strong>Save:</strong> Database'e kaydet + cache temizle</li>
                     <li><strong>Doğrula:</strong> URL'yi test et (https://ixtif.com/shop/...)</li>
                 </ol>
@@ -786,9 +823,163 @@ AND (p.body IS NULL OR LENGTH(JSON_EXTRACT(p.body, '$.tr')) <= 100);</div>
             </div>
         </section>
 
+        <!-- KRİTİK GÖRSEL YÖNETİMİ KURALLARI (2025-11-28 EKLENDİ) -->
+        <section>
+            <h2><i class="fas fa-exclamation-triangle"></i> 🔴 KRİTİK GÖRSEL YÖNETİMİ KURALLARI</h2>
+
+            <div class="block critical">
+                <h3>⚠️ ASLA LEONARDO AI CDN LİNKLERİ KULLANMA!</h3>
+                <p><strong>YANLIŞ:</strong></p>
+                <div class="code">❌ https://cdn.leonardo.ai/users/52776fa4.../image.jpg</div>
+
+                <p><strong>DOĞRU:</strong></p>
+                <div class="code">✅ https://ixtif.com/storage/tenant2/987/akson-kece-kapagi-422-workshop.jpg</div>
+
+                <p><strong>Neden?</strong></p>
+                <ul>
+                    <li>Leonardo AI linkleri harici CDN (dışa bağımlılık)</li>
+                    <li>Görseller sisteme ait değil, silinebilir</li>
+                    <li>SEO ve performans sorunları</li>
+                    <li>Media yönetimi takip edilemez</li>
+                </ul>
+            </div>
+
+            <div class="block critical">
+                <h3>📸 Görsel Yükleme Workflow (ZORUNLU)</h3>
+                <ol>
+                    <li><strong>Görsel Oluştur:</strong> Leonardo AI / Placeholder / Stock photo</li>
+                    <li><strong>Sisteme Yükle:</strong> Spatie Media Library kullan
+                        <div class="code">$product->addMedia("/tmp/image.jpg")
+    ->usingName("Açıklayıcı İsim")
+    ->usingFileName("seo-friendly-name.jpg")
+    ->withCustomProperties([
+        "alt" => "SEO alt text",
+        "title" => "SEO title"
+    ])
+    ->toMediaCollection("gallery");</div>
+                    </li>
+                    <li><strong>Media Tablosuna Kaydet:</strong> Otomatik kaydedilir (media ID alınır)</li>
+                    <li><strong>ixtif.com Linki Al:</strong>
+                        <div class="code">$media->getFullUrl();
+// https://ixtif.com/storage/tenant2/987/akson-kece-kapagi-422-workshop.jpg</div>
+                    </li>
+                    <li><strong>Body HTML Güncelle:</strong> Placeholder URL'lerini gerçek linklerle değiştir</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- HTML YAPISI KRİTİK STANDARTLAR (2025-11-28 EKLENDİ) -->
+        <section>
+            <h2><i class="fas fa-code"></i> HTML YAPISI KRİTİK STANDARTLAR</h2>
+
+            <div class="block critical">
+                <h3>⚡ Primary Specs Format (KRİTİK!)</h3>
+                <p><strong>YANLIŞ (String Array):</strong></p>
+                <div class="code">❌ $product->primary_specs = [
+    "tr" => ["OEM Kalite", "Yüksek Dayanıklılık"]
+];</div>
+
+                <p><strong>DOĞRU (Label/Value Pairs):</strong></p>
+                <div class="code">✅ $product->primary_specs = [
+    ["label" => "Malzeme", "value" => "Yüksek Kalite Keçe"],
+    ["label" => "Uyumluluk", "value" => "Forklift Dingil Sistemleri"],
+    ["label" => "Seri", "value" => "422"]
+];</div>
+            </div>
+
+            <div class="block warning">
+                <h3>📏 Minimum İçerik Gereksinimleri</h3>
+                <table>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>Minimum</th>
+                    </tr>
+                    <tr>
+                        <td>Body Length (TR)</td>
+                        <td>10,000 karakter</td>
+                    </tr>
+                    <tr>
+                        <td>Ana Bölüm Sayısı</td>
+                        <td>6 section</td>
+                    </tr>
+                    <tr>
+                        <td>Feature Kartları</td>
+                        <td>3 kart (grid 3 sütun)</td>
+                    </tr>
+                    <tr>
+                        <td>FAQ</td>
+                        <td>5 soru-cevap (bilingual)</td>
+                    </tr>
+                    <tr>
+                        <td>Görseller</td>
+                        <td>2 görsel (media tablosunda)</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="block">
+                <h3>🖼️ Sticky Sidebar Image Pattern (Zorunlu)</h3>
+                <div class="code">&lt;section class="intro-section mb-20"&gt;
+  &lt;div class="grid grid-cols-1 lg:grid-cols-3 gap-8"&gt;
+    &lt;div class="lg:col-span-2"&gt;
+      &lt;!-- 3 paragraf açıklama --&gt;
+    &lt;/div&gt;
+
+    &lt;div class="lg:col-span-1"&gt;
+      &lt;div class="sticky top-24"&gt;
+        &lt;a href="[ixtif.com IMAGE]" class="glightbox"&gt;
+          &lt;img src="[ixtif.com IMAGE]" alt="..." /&gt;
+        &lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</div>
+            </div>
+        </section>
+
+        <!-- GÜNCEL BAŞARI KRİTERLERİ (2025-11-28 REVİZE) -->
+        <section>
+            <h2><i class="fas fa-trophy"></i> GÜNCEL BAŞARI KRİTERLERİ (2025-11-28 Revize)</h2>
+
+            <div class="block success">
+                <h3>✅ Sistem Başarılı Sayılır Eğer:</h3>
+                <ol>
+                    <li>Sadece yedek parça kategorisi işleniyor</li>
+                    <li>Variant ürünler otomatik reject ediliyor</li>
+                    <li>Mevcut içerik varsa (Branch A) teknik detaylar KORUNUYOR</li>
+                    <li>Mevcut içerik yoksa (Branch B) genel tanıtım yapılıyor</li>
+                    <li>HİÇBİR ÜRÜNDE fiyat bilgisi YOK</li>
+                    <li>Branch B ürünlerinde spesifik teknik detay YOK</li>
+                    <li><strong>🔴 YENİ: Görseller ixtif.com/storage/tenant2/... üzerinden (Leonardo CDN DEĞİL!)</strong></li>
+                    <li><strong>🔴 YENİ: Media tablosunda kayıt VAR (Spatie Media Library)</strong></li>
+                    <li><strong>🔴 YENİ: Primary specs label/value pairs formatında</strong></li>
+                    <li><strong>🔴 YENİ: Body length minimum 10,000 karakter</strong></li>
+                    <li><strong>🔴 YENİ: Sticky sidebar image kullanılıyor</strong></li>
+                    <li><strong>🔴 YENİ: 3 sütun feature grid mevcut</strong></li>
+                    <li>SEO keywords her üründe mevcut</li>
+                    <li>GLightbox + SEO tags çalışıyor</li>
+                    <li>Validation tüm kurallara uyuyor</li>
+                </ol>
+            </div>
+
+            <div class="block critical">
+                <h3>❌ Sistem Başarısız Sayılır Eğer:</h3>
+                <ol>
+                    <li>Leonardo AI CDN linkleri kullanılıyorsa</li>
+                    <li>Görseller media tablosunda yoksa</li>
+                    <li>Primary specs string array formatındaysa</li>
+                    <li>Body length 10,000 karakterden azsa</li>
+                    <li>Sticky sidebar image yoksa</li>
+                    <li>Feature grid 3 sütun değilse</li>
+                    <li>Fiyat bilgisi varsa</li>
+                    <li>Branch B'de spesifik teknik detay varsa</li>
+                </ol>
+            </div>
+        </section>
+
         <footer>
             🤖 Claude Code Implementation Guide<br>
-            📅 2025-11-27 | 🎯 v5 - Claude Code Does Everything (Except Images)
+            📅 2025-11-28 REVIZE | 🎯 v6 - Media Management + Primary Specs Fix + Content Standards
         </footer>
     </div>
 </body>

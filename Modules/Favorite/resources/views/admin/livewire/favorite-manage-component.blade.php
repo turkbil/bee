@@ -89,7 +89,7 @@
                                 :model-id="$favoriteId"
                                 model-type="favorite"
                                 model-class="Modules\Favorite\App\Models\Favorite"
-                                :collections="['featured_image', 'gallery']"
+                                :collections="['hero', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
                                 :key="'universal-media-' . ($favoriteId ?? 'new')"

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Player - Implementation Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ff7f50, #ff6a3d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+
+        .status-progress { background: #f59e0b; color: white; }
+        .status-complete { background: #10b981; color: white; }
+        .status-pending { background: #6b7280; color: white; }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #ff7f50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #60a5fa;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card.pending {
+            border-left-color: #f59e0b;
+        }
+
+        .feature-card.critical {
+            border-left-color: #dc2626;
+        }
+
+        .feature-card h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .feature-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .status-done { background: #10b981; color: white; }
+        .status-todo { background: #f59e0b; color: white; }
+        .status-urgent { background: #dc2626; color: white; }
+
+        .task-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .task-list li {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .task-list li::before {
+            content: "▶";
+            color: #ff7f50;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .priority-high {
+            border-left-color: #dc2626;
+        }
+
+        .priority-medium {
+            border-left-color: #f59e0b;
+        }
+
+        .priority-low {
+            border-left-color: #10b981;
+        }
+
+        .code-block {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #334155;
+        }
+
+        .code-block code {
+            color: #fbbf24;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(30, 41, 59, 0.8);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .warning-box {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #dc2626;
+            margin-bottom: 10px;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .info-box h4 {
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Muzibu Player - Implementation Plan</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-28 |
+                🎯 Tenant: muzibu.com (1001) |
+                👤 Planlama: Claude AI
+            </div>
+            <div>
+                <span class="status-badge status-progress">68% Complete</span>
+                <span class="status-badge status-pending">Player Focus</span>
+            </div>
+        </header>
+
+        <!-- MEVCUT DURUM -->
+        <section>
+            <h2>📊 Mevcut Durum Analizi</h2>
+
+            <div class="info-box">
+                <h4>📁 Player Dosya Yapısı</h4>
+                <p><strong>Konum:</strong> <code>public/themes/muzibu/js/player/muzibu-player.js</code></p>
+                <p><strong>Boyut:</strong> 2,040 satır (81KB)</p>
+                <p><strong>Fonksiyon Sayısı:</strong> 39</p>
+                <p><strong>Sorun:</strong> Monolitik yapı - modülerleştirme gerekiyor</p>
+            </div>
+
+            <h3>✅ Tamamlanmış Özellikler (17/37)</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>🔊 Howler.js 2.2.4</h4>
+                    <p>Web Audio API, MP3/OGG/WAV/WebM desteği, html5: true, pool size: 5</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>📡 HLS.js Streaming</h4>
+                    <p>Adaptive bitrate, enableWorker: true, Safari native fallback aktif</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>🔀 Crossfade Sistemi</h4>
+                    <p>6 saniye otomatik, 1 saniye manuel, dual audio element desteği</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>📋 Queue Yönetimi</h4>
+                    <p>Drag & drop sıralama, sonraki 3 şarkı prefetch</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>🔊 Volume Kontrol</h4>
+                    <p>Slider, mute toggle, Howler+HLS senkronizasyonu</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>🔁 Repeat Modları</h4>
+                    <p>Off, All, One - cycleRepeat() fonksiyonu mevcut</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>🔀 Shuffle</h4>
+                    <p>playRandomSongs() - 50 popüler şarkı rastgele</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>📱 Responsive Design</h4>
+                    <p>Mobil player bar, queue panel, sidebar optimizasyonu</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>🏷️ Album/Playlist/Genre</h4>
+                    <p>playAlbum(), playPlaylist() fonksiyonları aktif</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>🔄 HLS Conversion Jobs</h4>
+                    <p>ConvertToHLSJob, ProcessBulkSongHLSJob arka planda çalışıyor</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>⏱️ 30-Second Preview</h4>
+                    <p>Guest + Non-premium kullanıcılar için 30 saniye preview</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-status status-done">✓ TAMAMLANDI</span>
+                    <h4>💎 Premium System</h4>
+                    <p>Premium üyelik kontrolü, isPremium() backend integration</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- KRİTİK SORUNLAR -->
+        <section>
+            <h2>🔴 Kritik Sorunlar</h2>
+
+            <div class="warning-box">
+                <h4>⚠️ GÜVENLİK AÇIĞI: Stream Endpoint Public Erişilebilir</h4>
+                <p>Kullanıcılar browser console üzerinden direkt stream URL'lerini çıkarabilir!</p>
+                <p><strong>Hedef:</strong> 6-Layer Security System</p>
+            </div>
+
+            <ul class="task-list">
+                <li class="priority-high">
+                    <div>
+                        <strong>Layer 1: Rate Limiting</strong><br>
+                        IP ve token bazlı rate limiting (Sanctum + Laravel Rate Limiter)
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>Layer 2: Bearer Token Auth</strong><br>
+                        Sanctum token authentication, her stream request için zorunlu
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>Layer 3: Subscription Verification</strong><br>
+                        Backend'de premium kontrolü, aktif subscription validasyonu
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>Layer 4: Signed URLs</strong><br>
+                        5 dakika expiry, IP-locked, Laravel Signed URL kullanımı
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>Layer 5: HLS + AES-128 Encryption</strong><br>
+                        HLS stream'leri AES-128 ile şifrelenmiş, key rotation
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>Layer 6: Device Fingerprinting</strong><br>
+                        FingerprintJS Pro, maksimum 3 cihaz sınırı
+                    </div>
+                </li>
+            </ul>
+
+            <div class="warning-box">
+                <h4>🔧 MONOLİTİK PLAYER DOSYASI</h4>
+                <p>2,040 satırlık tek dosya - bakım ve geliştirme zorluğu</p>
+                <p><strong>Hedef:</strong> Modüler yapıya geçiş (8-10 ayrı dosya)</p>
+            </div>
+
+            <div class="warning-box">
+                <h4>❌ isLiked() Fonksiyon Hatası</h4>
+                <p>Alpine.js context'inde isLiked() fonksiyonu erişilemiyor</p>
+                <p><strong>Çözüm:</strong> Global scope'da tanımla veya Alpine.js data'ya ekle</p>
+            </div>
+        </section>
+
+        <!-- YAPILACAKLAR -->
+        <section>
+            <h2>🎯 Yapılacaklar Listesi (Player Odaklı)</h2>
+
+            <h3>Faz 1: Kritik Düzeltmeler (Yüksek Öncelik)</h3>
+            <ul class="task-list">
+                <li class="priority-high">
+                    <div>
+                        <strong>1.1 - isLiked() Fonksiyon Hatası Düzeltme</strong><br>
+                        Alpine.js context'inde erişilebilir hale getir<br>
+                        <span class="tech-term">Dosya:</span> muzibu-player.js<br>
+                        <span class="tech-term">Süre:</span> 15 dakika
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>1.2 - 500 Internal Server Error (Song Stream)</strong><br>
+                        /api/muzibu/songs/{id}/stream endpoint debug<br>
+                        <span class="tech-term">Dosya:</span> SongStreamController.php<br>
+                        <span class="tech-term">Süre:</span> 30 dakika
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Faz 2: Player Modülerleştirme (Orta Öncelik)</h3>
+            <ul class="task-list">
+                <li class="priority-medium">
+                    <div>
+                        <strong>2.1 - Core Player Logic Ayrıştırma</strong><br>
+                        Howler.js ve HLS.js wrapper'larını ayrı dosyalara taşı<br>
+                        <span class="tech-term">Hedef Dosyalar:</span><br>
+                        - <code>player/core/howler-manager.js</code> (~200 satır)<br>
+                        - <code>player/core/hls-manager.js</code> (~150 satır)<br>
+                        - <code>player/core/crossfade.js</code> (~180 satır)
+                    </div>
+                </li>
+                <li class="priority-medium">
+                    <div>
+                        <strong>2.2 - Queue Yönetimi Ayrıştırma</strong><br>
+                        Queue logic ve UI'ı ayrı modül olarak<br>
+                        <span class="tech-term">Hedef Dosya:</span> <code>player/features/queue-manager.js</code> (~250 satır)
+                    </div>
+                </li>
+                <li class="priority-medium">
+                    <div>
+                        <strong>2.3 - Auth Modals Ayrıştırma</strong><br>
+                        Login/Register/Forgot modals ayrı component<br>
+                        <span class="tech-term">Hedef Dosya:</span> <code>player/features/auth-manager.js</code> (~300 satır)
+                    </div>
+                </li>
+                <li class="priority-medium">
+                    <div>
+                        <strong>2.4 - Favorites/Likes Sistem</strong><br>
+                        Like/unlike fonksiyonlarını ayrı modül<br>
+                        <span class="tech-term">Hedef Dosya:</span> <code>player/features/favorites-manager.js</code> (~120 satır)
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Faz 3: Security Katmanları (Kritik Öncelik)</h3>
+            <ul class="task-list">
+                <li class="priority-high">
+                    <div>
+                        <strong>3.1 - Rate Limiting Implementation</strong><br>
+                        Laravel RateLimiter + Redis kullanımı<br>
+                        <span class="tech-term">Dosyalar:</span><br>
+                        - <code>app/Http/Middleware/StreamRateLimit.php</code> (YENİ)<br>
+                        - <code>routes/api.php</code> (GÜNCELLE)<br>
+                        <span class="tech-term">Kurallar:</span> 100 request/hour per IP, 500/hour per user
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>3.2 - Signed URLs + Expiry</strong><br>
+                        Laravel Signed URL kullanımı, 5 dakika TTL<br>
+                        <span class="tech-term">Dosya:</span> SongStreamController.php<br>
+                        <span class="tech-term">Method:</span> URL::temporarySignedRoute()
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>3.3 - Device Fingerprinting</strong><br>
+                        FingerprintJS Pro integration, max 3 cihaz<br>
+                        <span class="tech-term">Frontend:</span> <code>player/security/fingerprint.js</code> (YENİ)<br>
+                        <span class="tech-term">Backend:</span> <code>Modules/Muzibu/app/Services/DeviceFingerprintService.php</code> (YENİ)<br>
+                        <span class="tech-term">Migration:</span> GEREK YOK (mevcut users tablosu yeterli)
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>3.4 - HLS AES-128 Encryption</strong><br>
+                        FFmpeg ile HLS stream'leri şifrele<br>
+                        <span class="tech-term">Dosya:</span> ConvertToHLSJob.php (GÜNCELLE)<br>
+                        <span class="tech-term">Key Storage:</span> Redis (key rotation her 24 saatte)
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Faz 4: Gelişmiş Özellikler (Düşük Öncelik)</h3>
+            <ul class="task-list">
+                <li class="priority-low">
+                    <div>
+                        <strong>4.1 - WaveSurfer.js Waveform Görselleştirme</strong><br>
+                        Şarkı dalga formu görsel, seek interaktif<br>
+                        <span class="tech-term">Library:</span> WaveSurfer.js 7.x<br>
+                        <span class="tech-term">Dosya:</span> <code>player/features/waveform.js</code> (YENİ)
+                    </div>
+                </li>
+                <li class="priority-low">
+                    <div>
+                        <strong>4.2 - 10-Band Equalizer</strong><br>
+                        Web Audio API Equalizer, preset'ler (Rock, Pop, Jazz, vb.)<br>
+                        <span class="tech-term">Dosya:</span> <code>player/features/equalizer.js</code> (YENİ)
+                    </div>
+                </li>
+                <li class="priority-low">
+                    <div>
+                        <strong>4.3 - Volume Normalization (ReplayGain)</strong><br>
+                        -14 LUFS target, automatic gain adjustment<br>
+                        <span class="tech-term">Backend:</span> FFmpeg loudnorm filter<br>
+                        <span class="tech-term">Dosya:</span> ConvertToHLSJob.php (GÜNCELLE)
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- TEKNİK DETAYLAR -->
+        <section>
+            <h2>⚙️ Teknik Detaylar</h2>
+
+            <h3>Önerilen Dosya Yapısı (Modüler)</h3>
+            <div class="code-block">
+                <code>
+public/themes/muzibu/js/
+├── muzibu-store.js (Alpine global store)
+├── player/
+│   ├── core/
+│   │   ├── howler-manager.js      (Howler.js wrapper)
+│   │   ├── hls-manager.js         (HLS.js wrapper)
+│   │   ├── crossfade.js           (Crossfade logic)
+│   │   └── audio-engine.js        (Unified audio interface)
+│   ├── features/
+│   │   ├── queue-manager.js       (Queue + drag&drop)
+│   │   ├── auth-manager.js        (Login/Register modals)
+│   │   ├── favorites-manager.js   (Like/unlike)
+│   │   ├── waveform.js            (WaveSurfer.js)
+│   │   └── equalizer.js           (10-band EQ)
+│   ├── security/
+│   │   ├── fingerprint.js         (FingerprintJS)
+│   │   └── signed-url.js          (URL signing)
+│   └── muzibu-player.js           (Main orchestrator, ~400 satır)
+├── ui/
+│   ├── muzibu-theme.js
+│   └── muzibu-toast.js
+└── utils/
+    └── muzibu-cache.js
+                </code>
+            </div>
+
+            <h3>Backend Dosya Yapısı</h3>
+            <div class="code-block">
+                <code>
+Modules/Muzibu/app/
+├── Http/
+│   ├── Controllers/
+│   │   └── Api/
+│   │       ├── SongStreamController.php (MEVCUT - GÜNCELLE)
+│   │       └── FavoritesController.php  (MEVCUT)
+│   └── Middleware/
+│       ├── StreamRateLimit.php          (YENİ)
+│       └── DeviceLimitCheck.php         (YENİ)
+├── Services/
+│   ├── DeviceFingerprintService.php     (YENİ)
+│   └── StreamSecurityService.php        (YENİ)
+└── Jobs/
+    ├── ConvertToHLSJob.php              (MEVCUT - GÜNCELLE)
+    └── ProcessBulkSongHLSJob.php        (MEVCUT)
+                </code>
+            </div>
+
+            <h3>Migration İhtiyacı</h3>
+            <div class="info-box">
+                <h4>✅ Migration GEREK YOK!</h4>
+                <p>Mevcut <code>users</code> tablosu yeterli.</p>
+                <p>Device fingerprint Redis'te saklanacak (geçici data).</p>
+                <p>Premium kontrolü mevcut <code>subscriptions</code> tablosu ile yapılıyor.</p>
+            </div>
+        </section>
+
+        <!-- ÖNCE­LİK SIRASI -->
+        <section>
+            <h2>🎯 Öncelik Sırası (Execution Order)</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sıra</th>
+                        <th>Görev</th>
+                        <th>Öncelik</th>
+                        <th>Süre</th>
+                        <th>Bağımlılık</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>isLiked() fonksiyon hatası düzeltme</td>
+                        <td><span class="status-urgent">URGENT</span></td>
+                        <td>15 dk</td>
+                        <td>Yok</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>500 Server Error debug (Stream endpoint)</td>
+                        <td><span class="status-urgent">URGENT</span></td>
+                        <td>30 dk</td>
+                        <td>Yok</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Rate Limiting implementation</td>
+                        <td><span class="status-urgent">URGENT</span></td>
+                        <td>1 saat</td>
+                        <td>Yok</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Signed URLs + Expiry</td>
+                        <td><span class="status-urgent">URGENT</span></td>
+                        <td>45 dk</td>
+                        <td>#3</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Player modülerleştirme (Core)</td>
+                        <td><span class="status-todo">HIGH</span></td>
+                        <td>3 saat</td>
+                        <td>Yok</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Queue Manager ayrıştırma</td>
+                        <td><span class="status-todo">MEDIUM</span></td>
+                        <td>1.5 saat</td>
+                        <td>#5</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Device Fingerprinting</td>
+                        <td><span class="status-urgent">URGENT</span></td>
+                        <td>2 saat</td>
+                        <td>Yok</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>HLS AES-128 Encryption</td>
+                        <td><span class="status-urgent">URGENT</span></td>
+                        <td>2 saat</td>
+                        <td>#4</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>WaveSurfer.js integration</td>
+                        <td><span class="status-todo">LOW</span></td>
+                        <td>2 saat</td>
+                        <td>#5</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>10-Band Equalizer</td>
+                        <td><span class="status-todo">LOW</span></td>
+                        <td>3 saat</td>
+                        <td>#5</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- SONUÇ -->
+        <section>
+            <h2>🎬 Sonuç & Sonraki Adımlar</h2>
+
+            <div class="info-box">
+                <h4>📊 Özet</h4>
+                <p><strong>Toplam Görev:</strong> 10</p>
+                <p><strong>Kritik/Urgent:</strong> 5 görev (~6.5 saat)</p>
+                <p><strong>Orta Öncelik:</strong> 3 görev (~4.5 saat)</p>
+                <p><strong>Düşük Öncelik:</strong> 2 görev (~5 saat)</p>
+                <p><strong>Tahmini Toplam Süre:</strong> 16 saat</p>
+            </div>
+
+            <h3>İlk 3 Adım (Hemen Başlanacak)</h3>
+            <ul class="task-list">
+                <li class="priority-high">
+                    <div>
+                        <strong>1. isLiked() Fonksiyon Hatası</strong><br>
+                        Şu anda player çalışıyor ama like butonları hatalı
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>2. Stream Endpoint 500 Error</strong><br>
+                        Şarkı çalma kısmen çalışmıyor, debug gerekli
+                    </div>
+                </li>
+                <li class="priority-high">
+                    <div>
+                        <strong>3. Rate Limiting</strong><br>
+                        Security'nin ilk katmanı, hemen uygulanmalı
+                    </div>
+                </li>
+            </ul>
+
+            <div class="warning-box">
+                <h4>⚠️ Önemli Notlar</h4>
+                <ul>
+                    <li>Migration OLUŞTURMAYACAĞIZ (mevcut tablolar yeterli)</li>
+                    <li>Tenant-Aware: Sadece Tenant 1001 (muzibu.com) için aktif</li>
+                    <li>Users tablosuna DOKUNMAYACAĞIZ</li>
+                    <li>Modülerleştirme AŞAMALI yapılacak (player çalışır durumda kalacak)</li>
+                    <li>Her özellik için TEST yapılacak</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 2025-11-28
+        </footer>
+    </div>
+</body>
+</html>

@@ -2,130 +2,86 @@
 
 namespace Modules\Muzibu\app\Http\Controllers\Front;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
+use Modules\Muzibu\App\Models\{Song, Album, Playlist, Artist};
 
 class SearchController extends Controller
 {
-    public function index(Request $request)
+    public function search(Request $request): JsonResponse
     {
-        $query = $request->input('q', '');
-        $results = [
-            'songs' => [],
-            'albums' => [],
-            'playlists' => [],
-            'artists' => []
-        ];
+        try {
+            $query = $request->input('q');
+            $type = $request->input('type', 'all');
 
-        if (strlen($query) > 0) {
-            // Search songs
-            $songs = DB::table('muzibu_songs')
-                ->join('muzibu_albums', 'muzibu_songs.album_id', '=', 'muzibu_albums.album_id')
-                ->join('muzibu_artists', 'muzibu_albums.artist_id', '=', 'muzibu_artists.artist_id')
-                ->where('muzibu_songs.is_active', 1)
-                ->where(function($q) use ($query) {
-                    $q->where('muzibu_songs.title', 'LIKE', '%' . $query . '%')
-                      ->orWhere('muzibu_albums.title', 'LIKE', '%' . $query . '%')
-                      ->orWhere('muzibu_artists.title', 'LIKE', '%' . $query . '%');
-                })
-                ->select([
-                    'muzibu_songs.song_id',
-                    'muzibu_songs.title as song_title',
-                    'muzibu_songs.slug as song_slug',
-                    'muzibu_songs.duration',
-                    'muzibu_albums.album_id',
-                    'muzibu_albums.title as album_title',
-                    'muzibu_albums.media_id as album_cover',
-                    'muzibu_artists.artist_id',
-                    'muzibu_artists.title as artist_title'
-                ])
-                ->limit(20)
-                ->get();
-
-            foreach ($songs as $song) {
-                $song->song_title = json_decode($song->song_title, true);
-                $song->song_slug = json_decode($song->song_slug, true);
-                $song->album_title = json_decode($song->album_title, true);
-                $song->artist_title = json_decode($song->artist_title, true);
+            if (!$query || strlen($query) < 2) {
+                return response()->json(['error' => 'Query too short'], 400);
             }
 
-            $results['songs'] = $songs;
+            //🔒 FIXED: Use Eloquent (tenant-aware)
+            $results = [];
 
-            // Search albums
-            $albums = DB::table('muzibu_albums')
-                ->join('muzibu_artists', 'muzibu_albums.artist_id', '=', 'muzibu_artists.artist_id')
-                ->where('muzibu_albums.is_active', 1)
-                ->where(function($q) use ($query) {
-                    $q->where('muzibu_albums.title', 'LIKE', '%' . $query . '%')
-                      ->orWhere('muzibu_artists.title', 'LIKE', '%' . $query . '%');
-                })
-                ->select([
-                    'muzibu_albums.album_id',
-                    'muzibu_albums.title as album_title',
-                    'muzibu_albums.slug as album_slug',
-                    'muzibu_albums.media_id as album_cover',
-                    'muzibu_artists.artist_id',
-                    'muzibu_artists.title as artist_title'
-                ])
-                ->limit(10)
-                ->get();
-
-            foreach ($albums as $album) {
-                $album->album_title = json_decode($album->album_title, true);
-                $album->album_slug = json_decode($album->album_slug, true);
-                $album->artist_title = json_decode($album->artist_title, true);
+            if ($type === 'all' || $type === 'songs') {
+                $results['songs'] = Song::where('is_active', 1)
+                    ->where(function ($q) use ($query) {
+                        $q->whereRaw("JSON_EXTRACT(title, '$.tr') LIKE ?", ["%{$query}%"])
+                          ->orWhereRaw("JSON_EXTRACT(title, '$.en') LIKE ?", ["%{$query}%"]);
+                    })
+                    ->with('album.artist')
+                    ->limit(20)
+                    ->get()
+                    ->map(function ($song) {
+                        return [
+                            'song_id' => $song->song_id,
+                            'title' => $song->title,
+                            'slug' => $song->slug,
+                            'duration' => $song->duration,
+                            'file_path' => $song->file_path,
+                            'hls_path' => $song->hls_path,
+                            'hls_converted' => $song->hls_converted,
+                            'album' => ['title' => $song->album?->title],
+                            'artist' => ['title' => $song->album?->artist?->title],
+                        ];
+                    });
             }
 
-            $results['albums'] = $albums;
-
-            // Search playlists
-            $playlists = DB::table('muzibu_playlists')
-                ->where('is_active', 1)
-                ->where('is_public', 1)
-                ->where('title', 'LIKE', '%' . $query . '%')
-                ->select([
-                    'playlist_id',
-                    'title',
-                    'slug',
-                    'description',
-                    'media_id as cover_image'
-                ])
-                ->limit(10)
-                ->get();
-
-            foreach ($playlists as $playlist) {
-                $playlist->title = json_decode($playlist->title, true);
-                $playlist->slug = json_decode($playlist->slug, true);
-                $playlist->description = json_decode($playlist->description, true);
+            if ($type === 'all' || $type === 'albums') {
+                $results['albums'] = Album::where('is_active', 1)
+                    ->where(function ($q) use ($query) {
+                        $q->whereRaw("JSON_EXTRACT(title, '$.tr') LIKE ?", ["%{$query}%"])
+                          ->orWhereRaw("JSON_EXTRACT(title, '$.en') LIKE ?", ["%{$query}%"]);
+                    })
+                    ->with('artist')
+                    ->limit(10)
+                    ->get();
             }
 
-            $results['playlists'] = $playlists;
-
-            // Search artists
-            $artists = DB::table('muzibu_artists')
-                ->where('is_active', 1)
-                ->where('title', 'LIKE', '%' . $query . '%')
-                ->select([
-                    'artist_id',
-                    'title',
-                    'slug',
-                    'media_id as artist_image'
-                ])
-                ->limit(10)
-                ->get();
-
-            foreach ($artists as $artist) {
-                $artist->title = json_decode($artist->title, true);
-                $artist->slug = json_decode($artist->slug, true);
+            if ($type === 'all' || $type === 'playlists') {
+                $results['playlists'] = Playlist::where('is_active', 1)
+                    ->where(function ($q) use ($query) {
+                        $q->whereRaw("JSON_EXTRACT(title, '$.tr') LIKE ?", ["%{$query}%"])
+                          ->orWhereRaw("JSON_EXTRACT(title, '$.en') LIKE ?", ["%{$query}%"]);
+                    })
+                    ->limit(10)
+                    ->get();
             }
 
-            $results['artists'] = $artists;
+            if ($type === 'all' || $type === 'artists') {
+                $results['artists'] = Artist::where('is_active', 1)
+                    ->where(function ($q) use ($query) {
+                        $q->whereRaw("JSON_EXTRACT(title, '$.tr') LIKE ?", ["%{$query}%"])
+                          ->orWhereRaw("JSON_EXTRACT(title, '$.en') LIKE ?", ["%{$query}%"]);
+                    })
+                    ->limit(10)
+                    ->get();
+            }
+
+            return response()->json($results);
+
+        } catch (\Exception $e) {
+            \Log::error('Search error:', ['query' => $request->input('q'), 'message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
         }
-
-        return view('muzibu::themes.muzibu.search.index', [
-            'query' => $query,
-            'results' => $results
-        ]);
     }
 }

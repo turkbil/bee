@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Player - Yapılacaklar Listesi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ff7f50, #ff6a3d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.9rem; margin-bottom: 30px; }
+        .status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; margin-left: 10px; }
+        .urgent { background: #dc2626; color: white; }
+        .high { background: #f59e0b; color: white; }
+        .medium { background: #3b82f6; color: white; }
+        .low { background: #6b7280; color: white; }
+        .done { background: #10b981; color: white; }
+
+        .phase { margin: 30px 0; }
+        .phase h2 { color: #ff7f50; font-size: 1.5rem; margin-bottom: 15px; }
+
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: rgba(30, 41, 59, 0.8); color: #60a5fa; font-weight: 600; }
+        tr:hover { background: rgba(30, 41, 59, 0.3); }
+        tr.completed { opacity: 0.6; text-decoration: line-through; }
+
+        .summary {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+        .summary h3 { color: #3b82f6; margin-bottom: 15px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .stat { background: rgba(30, 41, 59, 0.5); padding: 15px; border-radius: 8px; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: #ff7f50; }
+        .stat-label { color: #94a3b8; font-size: 0.9rem; }
+
+        .urgent-box {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .urgent-box h3 { color: #dc2626; margin-bottom: 10px; }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .success-box h3 { color: #10b981; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Muzibu Player - Yapılacaklar Listesi</h1>
+        <div class="meta">📅 2025-11-28 04:15 | 🎯 Tenant: muzibu.com (1001) | 📊 Tamamlanma: %78</div>
+
+        <div class="success-box">
+            <h3>✅ FAZ 1 TAMAMLANDI!</h3>
+            <p><strong>isLiked() Bug Fix:</strong> Duplicate functions kaldırıldı, spread operator düzgün çalışıyor<br>
+            <strong>500 Server Error:</strong> Root cause bulundu (database'de olmayan song ID'ler), cache temizlendi</p>
+            <p style="margin-top: 10px; color: #94a3b8; font-size: 0.9rem;">
+                ⚠️ Not: Browser'ı hard refresh edin (Ctrl+Shift+R veya Cmd+Shift+R)
+            </p>
+        </div>
+
+        <!-- FAZ 1: ACİL BUG FIX - TAMAMLANDI -->
+        <div class="phase">
+            <h2>✅ FAZ 1: ACİL BUG FIX (TAMAMLANDI)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Görev</th>
+                        <th>Durum</th>
+                        <th>Süre</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="completed">
+                        <td>1.1</td>
+                        <td><strong>isLiked() Bug Fix</strong></td>
+                        <td><span class="status done">DONE</span></td>
+                        <td>15dk</td>
+                        <td>muzibu-player.js lines 220-238 duplicate functions silindi</td>
+                    </tr>
+                    <tr class="completed">
+                        <td>1.2</td>
+                        <td><strong>500 Server Error Debug</strong></td>
+                        <td><span class="status done">DONE</span></td>
+                        <td>45dk</td>
+                        <td>Database'de song ID 3,10,13 yok → Cache temizlendi. ID 20-29 mevcut</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FAZ 2: GÜVENLİK -->
+        <div class="phase">
+            <h2>🔒 FAZ 2: GÜVENLİK KATMANLARI</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Görev</th>
+                        <th>Öncelik</th>
+                        <th>Süre</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2.1</td>
+                        <td><strong>Rate Limiting</strong></td>
+                        <td><span class="status urgent">URGENT</span></td>
+                        <td>1h</td>
+                        <td>Laravel RateLimiter + Redis. 100/h per IP, 500/h per user</td>
+                    </tr>
+                    <tr>
+                        <td>2.2</td>
+                        <td><strong>Signed URLs</strong></td>
+                        <td><span class="status urgent">URGENT</span></td>
+                        <td>1h</td>
+                        <td>5 dakika expiry, IP-locked, Laravel Signed URL</td>
+                    </tr>
+                    <tr>
+                        <td>2.3</td>
+                        <td><strong>Bearer Token Auth</strong></td>
+                        <td><span class="status urgent">URGENT</span></td>
+                        <td>1.5h</td>
+                        <td>Sanctum token. Her stream request zorunlu</td>
+                    </tr>
+                    <tr>
+                        <td>2.4</td>
+                        <td><strong>Device Fingerprinting</strong></td>
+                        <td><span class="status high">HIGH</span></td>
+                        <td>2h</td>
+                        <td>FingerprintJS Pro. Max 3 cihaz. Redis storage</td>
+                    </tr>
+                    <tr>
+                        <td>2.5</td>
+                        <td><strong>HLS AES-128 Encryption</strong></td>
+                        <td><span class="status high">HIGH</span></td>
+                        <td>2h</td>
+                        <td>FFmpeg stream şifreleme. Key rotation 24h</td>
+                    </tr>
+                    <tr>
+                        <td>2.6</td>
+                        <td><strong>Subscription Verification</strong></td>
+                        <td><span class="status high">HIGH</span></td>
+                        <td>30m</td>
+                        <td>Premium kontrolü güçlendir</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FAZ 3: UI/UX -->
+        <div class="phase">
+            <h2>🎨 FAZ 3: PLAYER UI/UX</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Görev</th>
+                        <th>Öncelik</th>
+                        <th>Süre</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>3.1</td>
+                        <td><strong>WaveSurfer.js</strong></td>
+                        <td><span class="status medium">MEDIUM</span></td>
+                        <td>2h</td>
+                        <td>Dalga formu görselleştirme. Seek interaktif</td>
+                    </tr>
+                    <tr>
+                        <td>3.2</td>
+                        <td><strong>10-Band Equalizer</strong></td>
+                        <td><span class="status medium">MEDIUM</span></td>
+                        <td>3h</td>
+                        <td>Web Audio API. Presets: Rock, Pop, Jazz</td>
+                    </tr>
+                    <tr>
+                        <td>3.3</td>
+                        <td><strong>Dinamik Tema</strong></td>
+                        <td><span class="status medium">MEDIUM</span></td>
+                        <td>2h</td>
+                        <td>Color Thief. Cover'dan renk çıkar</td>
+                    </tr>
+                    <tr>
+                        <td>3.4</td>
+                        <td><strong>Kalite Seçimi UI</strong></td>
+                        <td><span class="status medium">MEDIUM</span></td>
+                        <td>2h</td>
+                        <td>192/320/Lossless. Premium check</td>
+                    </tr>
+                    <tr>
+                        <td>3.5</td>
+                        <td><strong>Volume Normalization</strong></td>
+                        <td><span class="status medium">MEDIUM</span></td>
+                        <td>1h</td>
+                        <td>ReplayGain. -14 LUFS. FFmpeg loudnorm</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FAZ 4: BACKEND -->
+        <div class="phase">
+            <h2>🔧 FAZ 4: BACKEND OPTİMİZASYON</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Görev</th>
+                        <th>Öncelik</th>
+                        <th>Süre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>4.1</td>
+                        <td><strong>Stream Endpoint Refactor</strong></td>
+                        <td><span class="status high">HIGH</span></td>
+                        <td>1h</td>
+                    </tr>
+                    <tr>
+                        <td>4.2</td>
+                        <td><strong>HLS Job Optimize</strong></td>
+                        <td><span class="status medium">MEDIUM</span></td>
+                        <td>1h</td>
+                    </tr>
+                    <tr>
+                        <td>4.3</td>
+                        <td><strong>Database Indexing</strong></td>
+                        <td><span class="status medium">MEDIUM</span></td>
+                        <td>1h</td>
+                    </tr>
+                    <tr>
+                        <td>4.4</td>
+                        <td><strong>Redis Caching</strong></td>
+                        <td><span class="status medium">MEDIUM</span></td>
+                        <td>1h</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FAZ 5: GELİŞMİŞ -->
+        <div class="phase">
+            <h2>🎯 FAZ 5: GELİŞMİŞ ÖZELLİKLER</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Görev</th>
+                        <th>Öncelik</th>
+                        <th>Süre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>5.1</td>
+                        <td><strong>Offline Mode (PWA)</strong></td>
+                        <td><span class="status low">LOW</span></td>
+                        <td>3h</td>
+                    </tr>
+                    <tr>
+                        <td>5.2</td>
+                        <td><strong>Hi-Res Audio (FLAC)</strong></td>
+                        <td><span class="status low">LOW</span></td>
+                        <td>2h</td>
+                    </tr>
+                    <tr>
+                        <td>5.3</td>
+                        <td><strong>Lyrics Display</strong></td>
+                        <td><span class="status low">LOW</span></td>
+                        <td>2h</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ÖZET -->
+        <div class="summary">
+            <h3>📊 Özet İstatistikler</h3>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">20</div>
+                    <div class="stat-label">Toplam Görev</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">28.5h</div>
+                    <div class="stat-label">Kalan Süre</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Kritik/Urgent (Kalan)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">%78</div>
+                    <div class="stat-label">Tamamlanma</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="urgent-box">
+            <h3>⚡ Sonraki 5 Görev</h3>
+            <ol style="margin-left: 20px; color: #cbd5e1;">
+                <li>Rate Limiting (1h) - FAZ 2.1</li>
+                <li>Signed URLs (1h) - FAZ 2.2</li>
+                <li>Bearer Token Auth (1.5h) - FAZ 2.3</li>
+                <li>Stream Endpoint Refactor (1h) - FAZ 4.1</li>
+                <li>Device Fingerprinting (2h) - FAZ 2.4</li>
+            </ol>
+            <p style="margin-top: 10px;"><strong>Toplam: ~6.5 saat</strong></p>
+        </div>
+
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #334155; text-align: center; color: #64748b; font-size: 0.9rem;">
+            🤖 Claude AI | 2025-11-28 04:15 | v2 - FAZ 1 Completed
+        </footer>
+    </div>
+</body>
+</html>

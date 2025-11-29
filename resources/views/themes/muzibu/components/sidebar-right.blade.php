@@ -1,19 +1,41 @@
-        {{-- RIGHT SIDEBAR with better styling --}}
-        <aside class="hidden xl:block bg-black p-4 overflow-y-auto border-l border-white/5 animate-slide-up">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold bg-gradient-to-r from-white to-spotify-text-gray bg-clip-text text-transparent">Öne Çıkan Listeler</h3>
-            </div>
+{{-- RIGHT SIDEBAR - FEATURED PLAYLISTS (Responsive Width) --}}
+<aside class="hidden xl:block bg-black p-6 overflow-y-auto border-l border-white/5">
+    <div class="mb-6">
+        <h3 class="text-lg font-bold bg-gradient-to-r from-white via-zinc-100 to-muzibu-text-gray bg-clip-text text-transparent">
+            Sizin İçin
+        </h3>
+    </div>
 
-            @for($i = 0; $i < 8; $i++)
-            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-spotify-gray cursor-pointer mb-2 group  transition-all">
-                <div class="w-14 h-14 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex-shrink-0 flex items-center justify-center text-2xl shadow-lg group-hover:shadow-spotify-green/50  transition-all">
-                    {{ ['🎵', '🎧', '👑', '🎤', '🇹🇷', '💚', '🎸', '📚'][$i] }}
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h4 class="text-sm font-semibold text-white truncate group-hover:text-spotify-green transition-colors">{{ ['Daily Mix 1', 'Türkçe Pop', 'Top Hits', 'Acoustic', 'Turkish 2000s', 'Chill', 'Rock', 'Podcast'][$i] }}</h4>
-                    <p class="text-xs text-spotify-text-gray truncate">Playlist • Spotify</p>
+    {{-- Featured Playlists (Blade Render - same as main) --}}
+    @if(isset($featuredPlaylists) && $featuredPlaylists->count() > 0)
+    <div class="space-y-0">
+        @foreach($featuredPlaylists as $playlist)
+        <div class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer transition-all group">
+            <div class="w-12 h-12 rounded bg-gradient-to-br from-purple-500 to-pink-600 flex-shrink-0 overflow-hidden relative">
+                @if($playlist->coverMedia)
+                    <img src="{{ thumb($playlist->coverMedia, 48, 48, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover" loading="lazy">
+                @else
+                    <div class="w-full h-full flex items-center justify-center text-xl">🎵</div>
+                @endif
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <i class="fas fa-play text-white"></i>
                 </div>
             </div>
-            @endfor
-        </aside>
-
+            <div class="flex-1 min-w-0">
+                <h4 class="text-sm font-semibold text-white truncate group-hover:text-muzibu-coral transition-colors">
+                    {{ getLocaleTitle($playlist->title, 'Playlist') }}
+                </h4>
+                <p class="text-xs text-muzibu-text-gray truncate">
+                    {{ $playlist->songs()->count() }} şarkı
+                </p>
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @else
+    <div class="text-center py-8 text-muzibu-text-gray">
+        <i class="fas fa-music text-2xl mb-2"></i>
+        <p class="text-sm">Henüz playlist yok</p>
+    </div>
+    @endif
+</aside>

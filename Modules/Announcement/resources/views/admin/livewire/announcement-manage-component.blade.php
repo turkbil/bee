@@ -89,7 +89,7 @@
                                 :model-id="$announcementId"
                                 model-type="announcement"
                                 model-class="Modules\Announcement\App\Models\Announcement"
-                                :collections="['featured_image', 'gallery']"
+                                :collections="['hero', 'gallery']"
                                 :sortable="true"
                                 :set-featured-from-gallery="true"
                                 :key="'universal-media-' . ($announcementId ?? 'new')"

@@ -80,8 +80,10 @@
         $productId = $product->product_id;
         $productTitle = $product->getTranslated('title', app()->getLocale());
         $productUrl = \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product);
-        $productImage = $product->hasMedia('featured_image')
-            ? thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp'])
+        // 🎯 Helper function ile multi-collection fallback
+        $productMedia = getFirstMediaWithFallback($product);
+        $productImage = $productMedia
+            ? thumb($productMedia, 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp'])
             : null;
         $productCategory = $product->category ? $product->category->getTranslated('title', app()->getLocale()) : 'Genel';
         $productCategoryIcon = $product->category->icon_class ?? 'fa-light fa-box';

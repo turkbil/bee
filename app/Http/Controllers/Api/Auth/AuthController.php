@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
+use Modules\Muzibu\App\Services\DeviceService;
 
 class AuthController extends Controller
 {
@@ -31,6 +32,12 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
+            // 🔐 DEVICE LIMIT: Limit aşıldıysa eski cihazdan çıkar (Tenant 1001 only)
+            if (tenant() && tenant()->id == 1001) {
+                $deviceService = app(DeviceService::class);
+                $deviceService->handlePostLoginDeviceLimit($user);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Giriş başarılı',
@@ -38,7 +45,9 @@ class AuthController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                ]
+                    'is_premium' => $user->isPremium(), // 👑 Premium status (subscription tablosundan kontrol)
+                ],
+                'csrf_token' => csrf_token(), // 🔐 Yeni CSRF token (session regenerate sonrası)
             ]);
         }
 
@@ -69,6 +78,12 @@ class AuthController extends Controller
         Auth::login($user, true); // Remember me = true
         $request->session()->regenerate();
 
+        // 🔐 DEVICE LIMIT: Limit aşıldıysa eski cihazdan çıkar (Tenant 1001 only)
+        if (tenant() && tenant()->id == 1001) {
+            $deviceService = app(DeviceService::class);
+            $deviceService->handlePostLoginDeviceLimit($user);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Hesabınız oluşturuldu! 7 günlük deneme başladı.',
@@ -76,7 +91,9 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-            ]
+                'is_premium' => $user->isPremium(), // 👑 Premium status (subscription tablosundan kontrol)
+            ],
+            'csrf_token' => csrf_token(), // 🔐 Yeni CSRF token (session regenerate sonrası)
         ]);
     }
 

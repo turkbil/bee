@@ -7,11 +7,25 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Modules\Muzibu\App\Models\Song;
 use Modules\Muzibu\App\Jobs\ConvertToHLSJob;
+use App\Services\SignedUrlService;
+use Modules\Muzibu\App\Services\MuzibuCacheService;
 
 class SongStreamController extends Controller
 {
+    protected $signedUrlService;
+    protected $cacheService;
+
+    public function __construct(
+        SignedUrlService $signedUrlService,
+        MuzibuCacheService $cacheService
+    ) {
+        $this->signedUrlService = $signedUrlService;
+        $this->cacheService = $cacheService;
+    }
+
     /**
      * Get song stream URL (triggers lazy HLS conversion if needed)
+     * 🔐 Returns SIGNED URLs for security
      *
      * @param int $songId
      * @return JsonResponse
@@ -19,11 +33,21 @@ class SongStreamController extends Controller
     public function stream(int $songId): JsonResponse
     {
         try {
-            $song = Song::findOrFail($songId);
-            $song->refresh(); // Fresh data from database
+            // 🚀 CACHE: Get song from Redis (24h TTL)
+            $song = $this->cacheService->getSong($songId);
+
+            if (!$song) {
+                return response()->json(['error' => 'Song not found'], 404);
+            }
+
             $user = auth()->user();
 
-            // Guest kullanıcı → 30 saniye preview + HLS conversion başlat
+            // 🎵 YENİ MANTIK:
+            // - Guest (üye değil) → 30 saniye preview
+            // - Normal üye (premium değil) → 30 saniye preview
+            // - Premium üye → Sınırsız
+
+            // Guest kullanıcı → 30 saniye preview
             if (!$user) {
                 // HLS conversion başlat (eğer gerekiyorsa)
                 if ($song->needsHlsConversion()) {
@@ -35,23 +59,25 @@ class SongStreamController extends Controller
                 }
 
                 // HLS'e dönüşmüşse HLS URL, yoksa MP3 serve endpoint
-                $song->refresh(); // Ensure fresh data from database
+                // 🚀 CACHE: Song already from cache, no need to refresh
 
                 if ($song->hls_converted && !empty($song->hls_path)) {
-                    $tenantId = tenant() ? tenant()->id : '';
-                    $streamUrl = url("/storage/tenant{$tenantId}/" . $song->hls_path);
+                    // 🔐 SIGNED HLS URL (60 dakika - chunked streaming için uzun)
+                    $streamUrl = $this->signedUrlService->generateHlsUrl($songId, 60);
                     $streamType = 'hls';
                 } else {
-                    $streamUrl = "/api/muzibu/songs/{$songId}/serve";
+                    // 🔐 SIGNED MP3 URL (30 dakika)
+                    $streamUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
                     $streamType = 'mp3';
                 }
 
                 return response()->json([
                     'status' => 'preview',
                     'message' => 'Kayıt olun, tam dinleyin',
-                    'stream_url' => $streamUrl,
+                    'stream_url' => $streamUrl, // 🔐 SIGNED URL
                     'stream_type' => $streamType,
                     'preview_duration' => 30,
+                    'is_premium' => false,
                     'song' => [
                         'id' => $song->song_id,
                         'title' => $song->getTranslated('title', app()->getLocale()),
@@ -61,16 +87,58 @@ class SongStreamController extends Controller
                 ]);
             }
 
-            // Premium/Trial limit kontrolü
-            if (!$user->canPlaySong()) {
+            // Normal üye (premium değil) → 30 saniye preview
+            if (!$user->isPremium()) {
+                // HLS conversion başlat (eğer gerekiyorsa)
+                if ($song->needsHlsConversion()) {
+                    Log::info('Muzibu Stream: HLS conversion dispatched for non-premium user', [
+                        'song_id' => $songId,
+                        'user_id' => $user->id,
+                        'title' => $song->getTranslated('title', 'en')
+                    ]);
+                    ConvertToHLSJob::dispatch($song);
+                }
+
+                // HLS'e dönüşmüşse HLS URL, yoksa MP3 serve endpoint
+                // 🚀 CACHE: Song already from cache, no need to refresh
+
+                if ($song->hls_converted && !empty($song->hls_path)) {
+                    // 🔐 SIGNED HLS URL (60 dakika)
+                    $streamUrl = $this->signedUrlService->generateHlsUrl($songId, 60);
+                    $streamType = 'hls';
+                } else {
+                    // 🔐 SIGNED MP3 URL (30 dakika)
+                    $streamUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
+                    $streamType = 'mp3';
+                }
+
                 return response()->json([
-                    'status' => 'limit_exceeded',
-                    'message' => 'Günlük 3 şarkı limitiniz doldu',
-                    'played_today' => $user->getTodayPlayedCount(),
-                    'limit' => 3,
-                    'remaining' => 0
-                ], 200); // 200 OK - JSON içinde status var
+                    'status' => 'preview',
+                    'message' => 'Premium\'a geçin, sınırsız dinleyin',
+                    'stream_url' => $streamUrl, // 🔐 SIGNED URL
+                    'stream_type' => $streamType,
+                    'preview_duration' => 30,
+                    'is_premium' => false,
+                    'song' => [
+                        'id' => $song->song_id,
+                        'title' => $song->getTranslated('title', app()->getLocale()),
+                        'duration' => $song->getFormattedDuration(),
+                        'cover_url' => $song->getCoverUrl(600, 600),
+                    ]
+                ]);
             }
+
+            // ⚠️ 3/3 KURAL DEVRE DIŞI (Disable - Silme!)
+            // if (!$user->canPlaySong()) {
+            //     return response()->json([
+            //         'status' => 'limit_exceeded',
+            //         'message' => 'Günlük 3 şarkı limitiniz doldu',
+            //         'played_today' => $user->getTodayPlayedCount(),
+            //         'limit' => 3,
+            //         'remaining' => 0,
+            //         'is_premium' => $user->isPremium(),
+            //     ], 200);
+            // }
 
             // Check if song needs HLS conversion
             if ($song->needsHlsConversion()) {
@@ -82,13 +150,14 @@ class SongStreamController extends Controller
                 // Dispatch conversion job
                 ConvertToHLSJob::dispatch($song);
 
-                // Return original MP3 URL for now
+                // Return original MP3 URL for now (SIGNED)
                 return response()->json([
                     'status' => 'converting',
                     'message' => 'HLS conversion in progress. Playing original file.',
-                    'stream_url' => "/api/muzibu/songs/{$songId}/serve",
+                    'stream_url' => $this->signedUrlService->generateStreamUrl($songId, 30), // 🔐 SIGNED URL
                     'stream_type' => 'mp3',
                     'hls_converting' => true,
+                    'is_premium' => $user->isPremium(), // 🔄 Frontend sync için güncel durum
                     'song' => [
                         'id' => $song->song_id,
                         'title' => $song->getTranslated('title', app()->getLocale()),
@@ -99,15 +168,15 @@ class SongStreamController extends Controller
                 ]);
             }
 
-            // HLS already converted - return HLS URL
-            $tenantId = tenant() ? tenant()->id : '';
+            // HLS already converted - return HLS URL (SIGNED)
             return response()->json([
                 'status' => 'ready',
                 'message' => 'HLS stream ready',
-                'stream_url' => url("/storage/tenant{$tenantId}/" . $song->hls_path),
+                'stream_url' => $this->signedUrlService->generateHlsUrl($songId, 60), // 🔐 SIGNED HLS URL
                 'stream_type' => 'hls',
                 'hls_converting' => false,
                 'remaining' => $user->getRemainingPlays(),
+                'is_premium' => $user->isPremium(), // 🔄 Frontend sync için güncel durum
                 'song' => [
                     'id' => $song->song_id,
                     'title' => $song->getTranslated('title', app()->getLocale()),
@@ -203,7 +272,7 @@ class SongStreamController extends Controller
 
             $song = Song::findOrFail($songId);
 
-            // 60+ saniye dinlendi, kayıt ekle (JS zaten kontrol etti)
+            // 60+ saniye dinlendi, kayıt ekle (Analytics için)
             \DB::table('muzibu_song_plays')->insert([
                 'song_id' => $songId,
                 'user_id' => auth()->id(),
@@ -214,9 +283,11 @@ class SongStreamController extends Controller
                 'updated_at' => now()
             ]);
 
+            // ⚠️ 3/3 KURAL DEVRE DIŞI - remaining her zaman -1 (sınırsız)
+            // Tracking sadece analytics için yapılıyor
             return response()->json([
                 'success' => true,
-                'remaining' => auth()->user()->getRemainingPlays()
+                'remaining' => -1  // Unlimited (3/3 rule removed)
             ]);
 
         } catch (\Exception $e) {

@@ -16,14 +16,14 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, rgba(29, 185, 84, 0.6), rgba(29, 185, 84, 0.3));
+    background: linear-gradient(180deg, rgba(255, 127, 80, 0.6), rgba(255, 127, 80, 0.3));
     border-radius: 6px;
     border: 2px solid transparent;
     background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, rgba(29, 185, 84, 0.8), rgba(29, 185, 84, 0.5));
+    background: linear-gradient(180deg, rgba(255, 127, 80, 0.8), rgba(255, 127, 80, 0.5));
 }
 
 /* Smooth transitions - NO TRANSFORM/SCALE */
@@ -42,7 +42,7 @@
     content: '';
     position: absolute;
     inset: -2px;
-    background: linear-gradient(45deg, #1DB954, #1ed760, #1DB954);
+    background: linear-gradient(45deg, #ff7f50, #ff9770, #ff7f50);
     border-radius: inherit;
     opacity: 0;
     filter: blur(8px);
@@ -81,7 +81,7 @@
 /* Sadece hover'da animasyon başlat */
 .card-shine:hover::before {
     opacity: 1;
-    animation: shine 0.6s ease-out;
+    animation: shine 1.0s ease-out;
 }
 
 @keyframes shine {
@@ -128,4 +128,135 @@
 .animate-gradient {
     background-size: 200% 200%;
     animation: gradient 3s ease infinite;
+}
+
+/* ========================================
+   KEYBOARD SHORTCUTS FEEDBACK
+   ======================================== */
+
+.keyboard-feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 20px 40px;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(255, 127, 80, 0.3);
+    border: 2px solid rgba(255, 127, 80, 0.5);
+}
+
+.keyboard-feedback.show {
+    opacity: 1;
+}
+
+/* Keyboard Help Modal */
+.keyboard-help-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.keyboard-help-content {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 2px solid rgba(255, 127, 80, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.keyboard-help-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 127, 80, 0.3);
+}
+
+.keyboard-help-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ff7f50;
+}
+
+.keyboard-help-close {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.keyboard-help-close:hover {
+    background: rgba(255, 127, 80, 0.2);
+}
+
+.keyboard-shortcuts-list {
+    display: grid;
+    gap: 15px;
+}
+
+.keyboard-shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: background 0.2s;
+}
+
+.keyboard-shortcut-item:hover {
+    background: rgba(255, 127, 80, 0.1);
+}
+
+.keyboard-shortcut-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    text-align: center;
+}
+
+.keyboard-shortcut-key {
+    background: rgba(255, 127, 80, 0.2);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: #ff7f50;
+    min-width: 80px;
+    text-align: center;
+    border: 1px solid rgba(255, 127, 80, 0.4);
+}
+
+.keyboard-shortcut-action {
+    flex: 1;
+    color: #e0e0e0;
+    font-size: 1rem;
 }

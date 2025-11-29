@@ -13,7 +13,7 @@
         <div class="play-limits-widget-mini">
             {{-- İçerik tek satır: ikon + bar + sayı --}}
             <div class="play-limits-mini-content">
-                <i class="fas fa-music text-spotify-green text-xs"></i>
+                <i class="fas fa-music text-muzibu-coral text-xs"></i>
 
                 {{-- Progress Bar --}}
                 <div class="play-limits-mini-bar">
@@ -22,7 +22,7 @@
                         :class="{
                             'bg-yellow-500': remainingPlays === 1,
                             'bg-red-500': remainingPlays === 0,
-                            'bg-spotify-green': remainingPlays > 1
+                            'bg-muzibu-coral': remainingPlays > 1
                         }"
                         :style="`width: ${((3 - remainingPlays) / 3) * 100}%`"
                     ></div>

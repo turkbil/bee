@@ -248,7 +248,7 @@ if (!function_exists('is_rtl_locale')) {
     function is_rtl_locale(?string $locale = null): bool
     {
         $locale = $locale ?? app()->getLocale();
-        
+
         // Dinamik RTL dil kontrolü TenantLanguageProvider'dan
         try {
             return \App\Services\TenantLanguageProvider::isRtlLanguage($locale);
@@ -257,5 +257,23 @@ if (!function_exists('is_rtl_locale')) {
             $defaultRtlLocales = ['ar', 'he', 'fa', 'ur'];
             return in_array($locale, $defaultRtlLocales);
         }
+    }
+}
+
+if (!function_exists('getLocaleTitle')) {
+    /**
+     * Locale-aware title getir (Muzibu için)
+     * Array veya string title'ı mevcut locale'e göre döndürür
+     */
+    function getLocaleTitle($title, string $default = ''): string
+    {
+        // String ise direkt döndür
+        if (!is_array($title)) {
+            return $title ?: $default;
+        }
+
+        // Array ise mevcut locale'i kullan, fallback tr
+        $locale = app()->getLocale();
+        return $title[$locale] ?? $title['tr'] ?? $default;
     }
 }

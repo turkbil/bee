@@ -60,31 +60,57 @@ class ConvertToHLSJob implements ShouldQueue
                 throw new \Exception('Audio file not found: ' . $inputPath);
             }
 
-            // Create HLS output directory
-            $outputDir = "muzibu/songs/hls/song-{$song->song_id}";
+            // Create HLS output directory (tenant-aware storage structure)
+            // Path: storage/tenant{id}/app/public/muzibu/hls/{song_id}/
+            $tenantStoragePath = storage_path('../tenant' . tenant()->id . '/app/public/muzibu/hls/' . $song->song_id);
 
-            // Use Storage facade to create directory (handles permissions correctly)
-            if (!Storage::disk('public')->exists($outputDir)) {
-                Storage::disk('public')->makeDirectory($outputDir, 0755, true);
+            // Create directory with correct permissions
+            if (!file_exists($tenantStoragePath)) {
+                mkdir($tenantStoragePath, 0755, true);
             }
 
-            $outputDirPath = Storage::disk('public')->path($outputDir);
-
             // HLS segment settings
-            $playlistPath = $outputDirPath . '/playlist.m3u8';
-            $segmentPattern = $outputDirPath . '/segment-%03d.ts';
+            $playlistPath = $tenantStoragePath . '/playlist.m3u8';
+            $segmentPattern = $tenantStoragePath . '/segment-%03d.ts';
 
-            // FFmpeg command for HLS conversion
+            // 🔐 AES-128 Encryption setup
+            $encryptionKey = bin2hex(random_bytes(16)); // 128-bit key
+            $encryptionIV = bin2hex(random_bytes(16));  // 128-bit IV
+
+            // Save encryption key to database
+            \DB::connection('tenant')->table('muzibu_songs')
+                ->where('song_id', $song->song_id)
+                ->update([
+                    'encryption_key' => $encryptionKey,
+                    'encryption_iv' => $encryptionIV,
+                    'updated_at' => now()
+                ]);
+
+            // Create key file for FFmpeg
+            $keyFilePath = $tenantStoragePath . '/enc.key';
+            file_put_contents($keyFilePath, hex2bin($encryptionKey));
+
+            // Create key info file for FFmpeg
+            // Format: key_url\nkey_file_path\niv
+            // Use tenant-specific domain for key URL
+            $tenantDomain = tenant()->domains()->first()->domain;
+            $keyUrl = "https://{$tenantDomain}/api/muzibu/songs/{$song->song_id}/key";
+            $keyInfoPath = $tenantStoragePath . '/enc.keyinfo';
+            file_put_contents($keyInfoPath, "{$keyUrl}\n{$keyFilePath}\n{$encryptionIV}");
+
+            // FFmpeg command for HLS conversion with AES-128 encryption
             // Options:
             // -map 0:a = only audio stream (skip album art/video)
             // -c copy = no re-encoding (fast)
             // -start_number 0 = start segment numbering from 0
             // -hls_time 10 = 10 second segments
             // -hls_list_size 0 = include all segments in playlist
+            // -hls_key_info_file = encryption key info
             // -f hls = output format HLS
             $command = sprintf(
-                'ffmpeg -i %s -map 0:a -c copy -start_number 0 -hls_time 10 -hls_list_size 0 -f hls %s 2>&1',
+                'ffmpeg -i %s -map 0:a -c copy -start_number 0 -hls_time 10 -hls_list_size 0 -hls_key_info_file %s -f hls %s 2>&1',
                 escapeshellarg($inputPath),
+                escapeshellarg($keyInfoPath),
                 escapeshellarg($playlistPath)
             );
 
@@ -100,17 +126,32 @@ class ConvertToHLSJob implements ShouldQueue
             }
 
             // Update song record - use direct DB query to ensure correct tenant database
+            $relativePath = 'muzibu/hls/' . $song->song_id . '/playlist.m3u8';
             \DB::connection('tenant')->table('muzibu_songs')
                 ->where('song_id', $song->song_id)
                 ->update([
-                    'hls_path' => $outputDir . '/playlist.m3u8',
+                    'hls_path' => $relativePath,
                     'hls_converted' => 1,
+                    'is_encrypted' => 1,
                     'updated_at' => now()
                 ]);
 
+            // 🚀 CACHE: Invalidate song cache after HLS conversion
+            try {
+                $cacheService = app(\Modules\Muzibu\App\Services\MuzibuCacheService::class);
+                $cacheService->invalidateSong($song->song_id);
+                Log::info('Muzibu HLS Conversion: Cache invalidated', ['song_id' => $song->song_id]);
+            } catch (\Exception $cacheException) {
+                // Log but don't fail the job if cache invalidation fails
+                Log::warning('Muzibu HLS Conversion: Cache invalidation failed', [
+                    'song_id' => $song->song_id,
+                    'error' => $cacheException->getMessage()
+                ]);
+            }
+
             Log::info('Muzibu HLS Conversion: Success', [
                 'song_id' => $song->song_id,
-                'hls_path' => $outputDir . '/playlist.m3u8',
+                'hls_path' => $relativePath,
                 'tenant_id' => $this->tenantId
             ]);
 

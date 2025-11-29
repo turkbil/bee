@@ -176,13 +176,7 @@ class ThumbmakerController extends Controller
         if (filter_var($src, FILTER_VALIDATE_URL)) {
             // Sadece güvenilir domainlere izin ver
             $parsedUrl = parse_url($src);
-            $allowedHosts = [
-                request()->getHost(), // Mevcut domain
-                'ixtif.com',
-                'ixtif.com.tr',
-                'tuufi.com',
-                'localhost',
-            ];
+            $allowedHosts = $this->getAllowedHosts();
 
             if (!in_array($parsedUrl['host'] ?? '', $allowedHosts)) {
                 return null;
@@ -255,6 +249,54 @@ class ThumbmakerController extends Controller
         }
 
         return 1;
+    }
+
+    /**
+     * Dinamik allowed hosts listesi (tenant domains + localhost)
+     * 30 dakika cache'lenir (performance için)
+     */
+    protected function getAllowedHosts(): array
+    {
+        return Cache::remember('thumbmaker.allowed_hosts', 1800, function () {
+            $hosts = [
+                request()->getHost(), // Mevcut domain
+                'localhost',
+                '127.0.0.1',
+            ];
+
+            try {
+                // Tüm tenant domain'lerini çek (central database)
+                $tenantDomains = \DB::connection('central')
+                    ->table('domains')
+                    ->pluck('domain')
+                    ->toArray();
+
+                $hosts = array_merge($hosts, $tenantDomains);
+
+                // www prefixli versiyonlarını da ekle
+                $wwwDomains = array_map(fn($domain) => 'www.' . $domain, $tenantDomains);
+                $hosts = array_merge($hosts, $wwwDomains);
+
+            } catch (\Exception $e) {
+                // DB hatası olursa fallback (eski liste)
+                \Log::warning('Thumbmaker: Could not fetch tenant domains', [
+                    'error' => $e->getMessage()
+                ]);
+
+                $hosts = array_merge($hosts, [
+                    'ixtif.com',
+                    'www.ixtif.com',
+                    'ixtif.com.tr',
+                    'www.ixtif.com.tr',
+                    'tuufi.com',
+                    'www.tuufi.com',
+                    'muzibu.com.tr',
+                    'www.muzibu.com.tr',
+                ]);
+            }
+
+            return array_unique($hosts);
+        });
     }
 
     /**

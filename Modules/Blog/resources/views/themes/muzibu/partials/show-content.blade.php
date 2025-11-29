@@ -156,7 +156,8 @@
                     <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-2 md:gap-4">
 
                         {{-- Tarih --}}
-                        <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 dark:text-gray-400">
+                        <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 dark:text-gray-400"
+                             title="{{ ($item->published_at ?? $item->created_at)->translatedFormat('d F Y - H:i') }}">
                             <i class="fas fa-calendar text-blue-500 dark:text-blue-400 text-sm md:text-base"></i>
                             <span class="text-xs md:text-sm font-medium hidden sm:inline">{{ $publishedDate }}</span>
                             <span class="text-xs font-medium sm:hidden">{{ ($item->published_at ?? $item->created_at)->format('d.m.Y') }}</span>

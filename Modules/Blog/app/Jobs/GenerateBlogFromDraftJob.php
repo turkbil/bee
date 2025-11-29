@@ -101,8 +101,9 @@ class GenerateBlogFromDraftJob implements ShouldQueue
                 $titleSimilarity
             );
 
-            // %85+ benzerlik varsa → Duplicate!
-            if ($slugSimilarity >= 85 || $titleSimilarity >= 85) {
+            // %95+ benzerlik varsa → Duplicate!
+            // 🔧 FIX: %85 çok strict, çok fazla draft skip ediyordu
+            if ($slugSimilarity >= 95 || $titleSimilarity >= 95) {
                 Log::warning('Similar blog already exists, skipping job', [
                     'draft_id' => $draft->id,
                     'draft_topic' => $draft->topic_keyword,

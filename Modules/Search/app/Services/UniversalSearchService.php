@@ -583,12 +583,17 @@ class UniversalSearchService
         }
 
         if (method_exists($item, 'getFirstMediaUrl')) {
+            // 🎯 2025 STANDART: Multi-collection fallback priority (hero → legacy → specific)
             $collections = [
-                'featured_image',
-                'gallery',
-                'category_image',
-                'brand_logo',
-                'seo_og_image',
+                'hero',            // 🎯 STANDART: Ana görsel (yeni sistem)
+                'featured_image',  // Legacy uyumluluk
+                'gallery',         // Galeri ilk görsel
+                'product_images',  // Shop modülü legacy
+                'images',          // Genel images
+                'category_image',  // Kategori görseli
+                'brand_logo',      // Marka logosu
+                'seo_og_image',    // SEO görseli
+                'default',         // Default collection
             ];
             $conversions = ['thumb', 'medium', 'small'];
 

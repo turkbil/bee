@@ -15,8 +15,17 @@
     
     // Model class ve ID al
     $modelClass = get_class($model);
-    $modelId = $model->blog_id ?? $model->product_id ?? $model->page_id ?? $model->id ?? null;
-    
+    $modelId = $model->blog_id
+        ?? $model->product_id
+        ?? $model->page_id
+        ?? $model->song_id
+        ?? $model->album_id
+        ?? $model->playlist_id
+        ?? $model->genre_id
+        ?? $model->sector_id
+        ?? $model->id
+        ?? null;
+
     if (!$modelId) {
         return; // Model ID yoksa render etme
     }

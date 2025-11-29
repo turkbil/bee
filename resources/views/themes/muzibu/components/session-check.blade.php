@@ -27,11 +27,11 @@
         x-transition:leave-end="opacity-0 scale-95"
         class="fixed inset-0 z-50 flex items-center justify-center p-4"
     >
-        <div class="bg-spotify-dark border border-white/10 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+        <div class="bg-muzibu-dark border border-white/10 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
             <!-- Icon & Title -->
             <div class="px-8 pt-8 pb-4 text-center">
-                <div class="w-16 h-16 bg-spotify-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-sign-out-alt text-3xl text-spotify-green"></i>
+                <div class="w-16 h-16 bg-muzibu-coral/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-sign-out-alt text-3xl text-muzibu-coral"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-white mb-2">Oturumunuz Sonlandırıldı</h3>
                 <p class="text-gray-400 text-sm">Başka bir cihazdan giriş yapıldı</p>
@@ -39,7 +39,7 @@
 
             <!-- Content -->
             <div class="px-8 py-4">
-                <div class="bg-spotify-gray/50 rounded-xl p-4 mb-4">
+                <div class="bg-muzibu-gray/50 rounded-xl p-4 mb-4">
                     <p class="text-gray-300 text-sm leading-relaxed">
                         Hesabınıza başka bir cihazdan giriş yapıldığı için bu cihazdaki oturumunuz otomatik olarak sonlandırıldı.
                     </p>
@@ -51,10 +51,10 @@
             </div>
 
             <!-- Footer -->
-            <div class="px-8 py-6 bg-spotify-black/50">
+            <div class="px-8 py-6 bg-muzibu-black/50">
                 <button
                     @click="logout()"
-                    class="w-full px-6 py-3.5 bg-spotify-green hover:bg-spotify-green-light text-black font-bold rounded-full transition-all hover:scale-105"
+                    class="w-full px-6 py-3.5 bg-muzibu-coral hover:bg-muzibu-coral-light text-black font-bold rounded-full transition-all hover:scale-105"
                 >
                     Yeniden Giriş Yap
                 </button>

@@ -16,11 +16,11 @@
             theme: {
                 extend: {
                     colors: {
-                        'spotify-black': '#121212',
-                        'spotify-dark': '#181818',
-                        'spotify-green': '#1DB954',
-                        'spotify-green-light': '#1ed760',
-                        'spotify-gray': '#282828',
+                        'muzibu-black': '#121212',
+                        'muzibu-dark': '#181818',
+                        'muzibu-coral': '#1DB954',
+                        'muzibu-coral-light': '#1ed760',
+                        'muzibu-gray': '#282828',
                     }
                 }
             }
@@ -35,7 +35,7 @@
 
     @livewireStyles
 </head>
-<body class="min-h-screen bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600 dark:from-spotify-black dark:via-spotify-dark dark:to-black transition-colors duration-300">
+<body class="min-h-screen bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600 dark:from-muzibu-black dark:via-muzibu-dark dark:to-black transition-colors duration-300">
     <!-- Dark/Light Mode Toggle -->
     <div class="fixed top-6 right-6 z-50">
         <button @click="toggleDarkMode()" class="w-12 h-12 rounded-full bg-white/20 dark:bg-white/10 backdrop-blur-lg border border-white/30 flex items-center justify-center hover:scale-110 transition-all shadow-xl">
@@ -48,7 +48,7 @@
             <!-- Logo & Back to Home -->
             <div class="text-center mb-8 slide-in">
                 <a href="/" class="inline-flex items-center justify-center gap-3 mb-6 group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-spotify-green to-green-600 dark:from-spotify-green-light dark:to-green-500 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all">
+                    <div class="w-16 h-16 bg-gradient-to-br from-muzibu-coral to-green-600 dark:from-muzibu-coral-light dark:to-green-500 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all">
                         <i class="fas fa-music text-white text-2xl"></i>
                     </div>
                     <span class="text-4xl font-bold text-white drop-shadow-lg">Muzibu</span>
@@ -57,7 +57,7 @@
             </div>
 
             <!-- Auth Card -->
-            <div class="bg-white dark:bg-spotify-dark rounded-3xl shadow-2xl p-8 slide-in backdrop-blur-xl border border-white/20 dark:border-white/10">
+            <div class="bg-white dark:bg-muzibu-dark rounded-3xl shadow-2xl p-8 slide-in backdrop-blur-xl border border-white/20 dark:border-white/10">
                 @yield('content')
             </div>
 

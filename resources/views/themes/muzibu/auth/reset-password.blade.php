@@ -28,7 +28,7 @@
                 required
                 autofocus
                 autocomplete="username"
-                class="w-full px-4 py-3 bg-gray-50 dark:bg-spotify-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-spotify-green focus:border-transparent dark:text-white transition-all @error('email') border-red-500 dark:border-red-500 @enderror"
+                class="w-full px-4 py-3 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all @error('email') border-red-500 dark:border-red-500 @enderror"
                 placeholder="ornek@email.com"
             >
             @error('email')
@@ -48,7 +48,7 @@
                     name="password"
                     required
                     autocomplete="new-password"
-                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-spotify-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-spotify-green focus:border-transparent dark:text-white transition-all @error('password') border-red-500 dark:border-red-500 @enderror"
+                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all @error('password') border-red-500 dark:border-red-500 @enderror"
                     placeholder="••••••••"
                 >
                 <button
@@ -77,7 +77,7 @@
                     name="password_confirmation"
                     required
                     autocomplete="new-password"
-                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-spotify-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-spotify-green focus:border-transparent dark:text-white transition-all"
+                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all"
                     placeholder="••••••••"
                 >
                 <button
@@ -93,7 +93,7 @@
         <!-- Submit Button -->
         <button
             type="submit"
-            class="w-full py-3.5 bg-gradient-to-r from-spotify-green to-green-600 hover:from-spotify-green-light hover:to-green-500 text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
+            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-green-600 hover:from-muzibu-coral-light hover:to-green-500 text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
         >
             <i class="fas fa-key mr-2"></i>
             Şifreyi Sıfırla
@@ -104,7 +104,7 @@
 @section('footer-links')
     <div class="text-white/80 dark:text-gray-400">
         Şifrenizi hatırladınız mı?
-        <a href="{{ route('login') }}" class="font-semibold text-white dark:text-spotify-green-light hover:text-white/100 dark:hover:text-spotify-green transition-colors">
+        <a href="{{ route('login') }}" class="font-semibold text-white dark:text-muzibu-coral-light hover:text-white/100 dark:hover:text-muzibu-coral transition-colors">
             Giriş Yapın
         </a>
     </div>

@@ -52,7 +52,8 @@
 
     $tags = $item->relationLoaded('tags') ? $item->tags : $item->tags()->get();
 
-    $featuredImage = $item->getFirstMedia('featured_image');
+    // Helper function ile multi-collection fallback
+    $featuredImage = getFirstMediaWithFallback($item);
     $galleryImages = $item->getMedia('gallery') ?? collect();
 
     $shareUrl = method_exists($item, 'getUrl') ? $item->getUrl($currentLocale) : url()->current();
@@ -156,7 +157,8 @@
                     <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-2 md:gap-4">
 
                         {{-- Tarih --}}
-                        <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 dark:text-gray-400">
+                        <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 dark:text-gray-400"
+                             title="{{ ($item->published_at ?? $item->created_at)->translatedFormat('d F Y - H:i') }}">
                             <i class="fas fa-calendar text-blue-500 dark:text-blue-400 text-sm md:text-base"></i>
                             <span class="text-xs md:text-sm font-medium hidden sm:inline">{{ $publishedDate }}</span>
                             <span class="text-xs font-medium sm:hidden">{{ ($item->published_at ?? $item->created_at)->format('d.m.Y') }}</span>
@@ -593,10 +595,8 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             @foreach($relatedBlogs as $relatedBlog)
                                 <article class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-                                    @if($relatedBlog->getFirstMedia('featured_image'))
-                                        @php
-                                            $relatedImage = $relatedBlog->getFirstMedia('featured_image');
-                                        @endphp
+                                    @php $relatedImage = getFirstMediaWithFallback($relatedBlog); @endphp
+                                    @if($relatedImage)
                                         <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block overflow-hidden">
                                             <img src="{{ thumb($relatedImage, 400, 300, ['quality' => 85, 'format' => 'webp']) }}"
                                                  alt="{{ $relatedBlog->getTranslated('title', $currentLocale) }}"

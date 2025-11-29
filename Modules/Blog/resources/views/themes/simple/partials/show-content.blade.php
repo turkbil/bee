@@ -85,7 +85,7 @@
             @endif
 
             <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-500">
-                <span><i class="fas fa-calendar mr-1"></i>{{ $publishedDate }}</span>
+                <span title="{{ ($item->published_at ?? $item->created_at)->translatedFormat('d F Y - H:i') }}"><i class="fas fa-calendar mr-1"></i>{{ $publishedDate }}</span>
                 @if($readingTime)
                     <span class="reading-time-text" data-reading-base="{{ $readingTime }}"><i class="fas fa-clock mr-1"></i>{{ $readingTime }} dk okuma</span>
                 @endif

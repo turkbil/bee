@@ -44,7 +44,7 @@ class BlogController extends Controller
     public function index()
     {
         $query = Blog::query()
-            ->with(['category', 'tags'])
+            ->with(['category', 'tags', 'media'])
             ->published();
 
         $tag = request('tag');
@@ -127,11 +127,26 @@ class BlogController extends Controller
     public function loadMore()
     {
         $query = Blog::query()
-            ->with(['category', 'tags'])
+            ->with(['category', 'tags', 'media'])
             ->published();
 
         $tag = request('tag');
+        $categorySlug = request('category');
 
+        // Category filtering (Shop pattern - includes children)
+        if ($categorySlug) {
+            $currentLocale = app()->getLocale();
+            $selectedCategory = BlogCategory::where('is_active', true)
+                ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"" . $currentLocale . "\"')) = ?", [$categorySlug])
+                ->first();
+
+            if ($selectedCategory) {
+                $categoryIds = $this->getCategoryWithChildren($selectedCategory);
+                $query->whereIn('blog_category_id', $categoryIds);
+            }
+        }
+
+        // Tag filtering
         if ($tag) {
             $slug = Str::slug($tag);
 
@@ -172,8 +187,8 @@ class BlogController extends Controller
             $body = $item->getTranslated('body', $currentLocale);
             $excerpt = $item->getTranslated('excerpt', $currentLocale) ?: Str::limit(strip_tags($body), 150);
 
-            // Featured image'i thumbmaker ile optimize et
-            $featuredMedia = $item->getFirstMedia('featured_image');
+            // Helper function ile multi-collection fallback
+            $featuredMedia = getFirstMediaWithFallback($item);
             $imageUrl = $featuredMedia
                 ? thumb($featuredMedia, 400, 300, ['quality' => 85, 'format' => 'webp'])
                 : null;
@@ -202,20 +217,30 @@ class BlogController extends Controller
     {
         $currentLocale = app()->getLocale();
 
-        // Kategoriyi bul - slug çoklu dil JSON formatında
+        // Kategoriyi bul - slug çoklu dil JSON formatında (children ile birlikte)
         $selectedCategory = BlogCategory::where('is_active', true)
             ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"" . $currentLocale . "\"')) = ?", [$slug])
+            ->with(['children' => function ($q) {
+                $q->where('is_active', true)
+                    ->withCount(['blogs' => function ($q2) {
+                        $q2->published();
+                    }])
+                    ->orderBy('sort_order')
+                    ->orderBy('title');
+            }])
             ->first();
 
         if (!$selectedCategory) {
             abort(404);
         }
 
-        // Bu kategorideki blogları çek
+        // Bu kategori ve alt kategorilerindeki blogları çek (Shop pattern)
+        $categoryIds = $this->getCategoryWithChildren($selectedCategory);
+
         $items = Blog::query()
-            ->with(['category', 'tags'])
+            ->with(['category', 'tags', 'media'])
             ->published()
-            ->where('blog_category_id', $selectedCategory->category_id)
+            ->whereIn('blog_category_id', $categoryIds)
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->orderByDesc('created_at')
             ->simplePaginate(12);
@@ -308,7 +333,7 @@ class BlogController extends Controller
         }
 
         $items = Blog::query()
-            ->with(['category', 'tags'])
+            ->with(['category', 'tags', 'media'])
             ->published()
             ->whereHas('tags', fn ($query) => $query->where('slug', $resolvedTag->slug))
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
@@ -498,5 +523,23 @@ class BlogController extends Controller
         }
 
         return __('blog::front.general.blogs');
+    }
+
+    /**
+     * Get category ID and all its children IDs recursively (Shop pattern)
+     */
+    private function getCategoryWithChildren(BlogCategory $category): array
+    {
+        $ids = [$category->category_id];
+
+        $children = BlogCategory::where('parent_id', $category->category_id)
+            ->where('is_active', true)
+            ->get();
+
+        foreach ($children as $child) {
+            $ids = array_merge($ids, $this->getCategoryWithChildren($child));
+        }
+
+        return $ids;
     }
 }

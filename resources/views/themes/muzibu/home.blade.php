@@ -4,7 +4,7 @@
 
 @section('content')
     {{-- SKELETON LOADING STATE --}}
-    <div x-show="isLoading" x-cloak class="px-6 py-8 space-y-8">
+    <div x-show="isLoading" x-cloak class="px-2 py-4 space-y-8">
         {{-- Skeleton Pills --}}
         <div class="flex gap-3">
             <div class="skeleton w-20 h-10 rounded-full"></div>
@@ -17,7 +17,7 @@
             <div class="skeleton w-48 h-8 rounded"></div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 @for($i = 0; $i < 5; $i++)
-                <div class="space-y-3" x-data="{ delay: {{ $i * 50 }} }" :style="`animation-delay: ${delay}ms`">
+                <div class="space-y-3" class="skeleton-stagger-{{ $i }}">
                     <div class="skeleton w-full aspect-square rounded-lg"></div>
                     <div class="skeleton w-3/4 h-4 rounded"></div>
                     <div class="skeleton w-1/2 h-3 rounded"></div>
@@ -45,7 +45,7 @@
     <div x-show="contentLoaded" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
 
             {{-- CTA Actions - Responsive --}}
-            <div class="px-4 sm:px-8 pt-8 pb-4">
+            <div class="px-2 sm:px-8 pt-2 pb-4">
                 <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <button @click="$dispatch('open-create-playlist-modal')" class="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-r from-muzibu-coral to-pink-600 hover:from-muzibu-coral-light hover:to-pink-700 text-white font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center justify-center gap-2">
                         <i class="fas fa-plus-circle"></i>
@@ -64,7 +64,7 @@
 
             {{-- Horizontal Scroll Cards with parallax --}}
             @if(isset($featuredPlaylists) && $featuredPlaylists->count() > 0)
-            <div class="px-8 pt-6 pb-8 animate-slide-up">
+            <div class="px-2 pt-1 pb-8 animate-slide-up">
                 <div class="flex gap-6 overflow-x-auto pb-2 scrollbar-thin">
                     @foreach($featuredPlaylists as $index => $playlist)
                     @php
@@ -81,7 +81,7 @@
                     @endphp
                     <div
                         class="min-w-[180px] bg-spotify-gray p-5 rounded-lg hover:bg-spotify-gray-light cursor-pointer group transition-all duration-300 shadow-xl hover:shadow-2xl card-shine animate-scale-in"
-                        style="animation-delay: {{ $index * 80 }}ms"
+                        class="item-stagger-{{ $index % 10 }}"
                     >
                         <div class="relative mb-4" @click="playPlaylist({{ $playlist->playlist_id }})">
                             <div class="w-full aspect-square rounded-lg bg-gradient-to-br {{ $gradients[$index % count($gradients)] }} flex items-center justify-center text-5xl animate-gradient shadow-lg group-hover:shadow-2xl transition-all duration-300">
@@ -106,7 +106,7 @@
 
             {{-- Albums Section with stagger animation --}}
             @if(isset($newReleases) && $newReleases->count() > 0)
-            <div class="px-8 py-8 animate-slide-up" style="animation-delay: 100ms">
+            <div class="px-2 py-4 animate-slide-up" class="section-delay-1">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-3xl font-bold tracking-tight bg-gradient-to-r from-white via-zinc-100 to-spotify-text-gray bg-clip-text text-transparent">Yeni Albümler</h2>
                     <a href="/albums" class="text-sm font-bold text-spotify-text-gray hover:text-white hover:underline transition-colors duration-300 group">
@@ -123,7 +123,7 @@
                     @endphp
                     <div
                         class="bg-spotify-gray p-5 rounded-lg hover:bg-spotify-gray-light cursor-pointer group transition-all duration-300 shadow-xl hover:shadow-2xl card-shine animate-scale-in"
-                        style="animation-delay: {{ $index * 80 }}ms"
+                        class="item-stagger-{{ $index % 10 }}"
                     >
                         <div class="relative mb-4" @click="playAlbum({{ $album->album_id }})">
                             <div class="w-full aspect-square rounded-lg bg-gradient-to-br from-blue-500 via-purple-600 to-pink-600 flex items-center justify-center text-5xl animate-gradient shadow-lg group-hover:shadow-2xl transition-all duration-300">
@@ -148,7 +148,7 @@
 
             {{-- Popular Songs with row hover --}}
             @if(isset($popularSongs) && $popularSongs->count() > 0)
-            <div class="px-8 py-8 animate-slide-up" style="animation-delay: 200ms">
+            <div class="px-2 py-4 animate-slide-up" class="section-delay-2">
                 <h2 class="text-3xl font-bold mb-6 tracking-tight bg-gradient-to-r from-white via-zinc-100 to-spotify-text-gray bg-clip-text text-transparent">Popüler Şarkılar</h2>
                 <div class="bg-spotify-gray/30 rounded-lg overflow-hidden backdrop-blur-sm">
                     @foreach($popularSongs->take(10) as $index => $song)
@@ -192,7 +192,7 @@
 
             {{-- Genres with Images --}}
             @if(isset($genres) && $genres->count() > 0)
-            <div class="px-8 py-8 pb-20 animate-slide-up" style="animation-delay: 300ms">
+            <div class="px-2 py-4 pb-20 animate-slide-up" class="section-delay-3">
                 <h2 class="text-3xl font-bold mb-6 tracking-tight bg-gradient-to-r from-white via-zinc-100 to-spotify-text-gray bg-clip-text text-transparent">Türler</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                     @foreach($genres as $index => $genre)
@@ -205,7 +205,7 @@
                     <a
                         href="/genres/{{ $slug }}"
                         class="h-40 rounded-lg overflow-hidden cursor-pointer shadow-2xl hover:shadow-spotify-green/30 transition-all duration-300 ease-out relative group card-shine animate-scale-in"
-                        style="animation-delay: {{ $index * 30 }}ms"
+                        class="card-stagger-{{ $index % 10 }}"
                     >
                         @if($genre->media_id && $genre->iconMedia)
                             {{-- Genre Image Background --}}

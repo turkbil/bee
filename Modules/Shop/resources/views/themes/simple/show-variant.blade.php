@@ -19,7 +19,7 @@
             $localePrefix = $currentLocale !== $defaultLocale ? '/' . $currentLocale : '';
             $shopIndexUrl = $localePrefix . '/' . $indexSlug;
 
-            $featuredImage = $item->getFirstMedia('featured_image');
+            $featuredImage = $item->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
             $galleryImages = $item->getMedia('gallery');
 
             $resolveLocalized = static function ($data) use ($currentLocale, $defaultLocale) {
@@ -311,7 +311,7 @@
                                     $currentLocale,
                                 );
 
-                                $variantImage = $variant->getFirstMedia('featured_image');
+                                $variantImage = $variant->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
                                 $variantImageUrl = $variantImage
                                     ? ($variantImage->hasGeneratedConversion('thumb')
                                         ? $variantImage->getUrl('thumb')

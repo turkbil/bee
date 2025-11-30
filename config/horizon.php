@@ -184,10 +184,10 @@ return [
         'ai-supervisor' => [
             'connection' => 'redis',
             'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis', 'translation', 'ai', 'blog-ai', 'critical'],
-            'balance' => 'simple', // 🔧 FIX: simple balance - her zaman minProcesses kadar worker
-            'processes' => 3, // 🔧 FIX: Sabit 3 worker (auto-scaling değil!)
-            'minProcesses' => 1, // Simple balance için gerekli (kullanılmıyor)
-            'maxProcesses' => 3, // Simple balance için gerekli (kullanılmıyor)
+            'balance' => 'auto', // 🔧 OPTIMIZED: auto balance - job yoksa worker spawn etme!
+            'autoScalingStrategy' => 'time', // 🔧 OPTIMIZED: time-based scaling
+            'minProcesses' => 1, // 🔧 OPTIMIZED: Minimum 1 worker (boş queue için bile)
+            'maxProcesses' => 2, // 🔧 OPTIMIZED: Max 2 worker (CPU tasarrufu)
             'balanceMaxShift' => 1,
             'balanceCooldown' => 3,
             'maxTime' => 1800,
@@ -204,7 +204,8 @@ return [
             'queue' => ['tenant_isolated', 'default', 'hls', 'tenant_1001_default', 'tenant_1001_hls'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 4, // 🚀 Development için artırıldı
+            'minProcesses' => 1, // 🔧 OPTIMIZED: Minimum 1 worker
+            'maxProcesses' => 2, // 🔧 OPTIMIZED: 4 → 2 (CPU tasarrufu)
             'maxTime' => 3600,
             'maxJobs' => 200,
             'memory' => 256,
@@ -219,7 +220,8 @@ return [
             'queue' => ['background', 'maintenance'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 1,
+            'minProcesses' => 1, // 🔧 OPTIMIZED: Minimum 1 worker
+            'maxProcesses' => 1, // 🔧 OPTIMIZED: Max 1 worker (background için yeterli)
             'maxTime' => 0,
             'maxJobs' => 1000,
             'memory' => 128,
@@ -234,22 +236,25 @@ return [
             'ai-supervisor' => [
                 'connection' => 'redis',
                 'queue' => ['ai-translation', 'ai-content', 'ai-file-analysis', 'translation', 'ai', 'blog-ai', 'critical'],
-                'maxProcesses' => 8,
-                'balanceMaxShift' => 2,
-                'balanceCooldown' => 3,
-                'memory' => 1024,
+                'maxProcesses' => 2, // 🔧 OPTIMIZED: 8 → 2 (CPU kullanımını azaltmak için)
+                'minProcesses' => 1, // 🔧 OPTIMIZED: Her zaman en az 1 worker
+                'balanceMaxShift' => 1, // 🔧 OPTIMIZED: Daha yavaş scale
+                'balanceCooldown' => 5, // 🔧 OPTIMIZED: Daha uzun cooldown
+                'memory' => 512, // 🔧 OPTIMIZED: 1024 → 512 (memory tasarrufu)
                 'timeout' => 1200, // 🔧 FIX: 20 dakika - Blog AI generation için artırıldı
                 'tries' => 2,
             ],
             'tenant-supervisor' => [
-                'maxProcesses' => 6,
+                'maxProcesses' => 2, // 🔧 OPTIMIZED: 6 → 2 (CPU kullanımını azaltmak için)
+                'minProcesses' => 1, // 🔧 OPTIMIZED: Her zaman en az 1 worker
                 'balanceMaxShift' => 1,
-                'balanceCooldown' => 2,
-                'memory' => 512,
+                'balanceCooldown' => 5, // 🔧 OPTIMIZED: Daha uzun cooldown
+                'memory' => 256, // 🔧 OPTIMIZED: 512 → 256 (memory tasarrufu)
             ],
             'background-supervisor' => [
-                'maxProcesses' => 2,
-                'memory' => 256,
+                'maxProcesses' => 1, // 🔧 OPTIMIZED: 2 → 1 (background işler için yeterli)
+                'minProcesses' => 1,
+                'memory' => 128, // 🔧 OPTIMIZED: 256 → 128 (background için yeterli)
             ],
         ],
 

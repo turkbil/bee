@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ixtif.com Performans Analizi - Rapor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 2px solid #334155; }
+        h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 12px; background: linear-gradient(135deg, #60a5fa, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        section { margin-bottom: 36px; }
+        h2 { font-size: 1.6rem; margin-bottom: 18px; color: #60a5fa; display: flex; align-items: center; gap: 10px; }
+        .panel { background: rgba(30, 41, 59, 0.6); border: 1px solid #334155; border-radius: 14px; padding: 20px; margin-bottom: 16px; backdrop-filter: blur(10px); }
+        .plan-item { background: rgba(30, 41, 59, 0.6); padding: 22px; margin-bottom: 14px; border-radius: 12px; border-left: 4px solid #3b82f6; transition: all 0.25s ease; }
+        .plan-item:hover { transform: translateX(4px); background: rgba(30, 41, 59, 0.75); }
+        .plan-item h3 { color: #60a5fa; margin-bottom: 10px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .plan-item p { color: #cbd5e1; margin-bottom: 8px; }
+        .priority { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; }
+        .priority-high { background: #dc2626; color: #fff; }
+        .priority-medium { background: #f59e0b; color: #fff; }
+        .priority-low { background: #10b981; color: #fff; }
+        ul { margin-left: 18px; color: #cbd5e1; }
+        li { margin-bottom: 6px; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 10px; font-size: 0.78rem; background: #1f2937; color: #93c5fd; border: 1px solid #334155; }
+        footer { margin-top: 50px; padding-top: 24px; border-top: 1px solid #334155; color: #64748b; font-size: 0.9rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 ixtif.com Performans Analizi</h1>
+            <div class="meta">📅 Tarih: 2025-11-30 03:38 | 🎯 Tenant: ixtif.com | 👤 Talep: Canlı ortam aşırı yavaş, kaynak analiz ve aksiyon planı</div>
+        </header>
+
+        <section>
+            <h2>🚦 Durum Özeti</h2>
+            <div class="panel">
+                <ul>
+                    <li><span class="badge">Sunucu yükü</span> load average 16.95 / 15.14 / 14.92 (yüksek) – çok sayıda PHP/Horizon prosesi CPU tüketiyor.</li>
+                    <li><span class="badge">Horizon</span> birden fazla master ve onlarca worker aynı anda çalışıyor; ps çıktısı 6+ master seti (ZkT3, yZ59, rwGp, 6KJ6, heML, HKPJ, OLr0) gösteriyor.</li>
+                    <li><span class="badge">DB bağlantıları</span> tenant-resource-tracking logunda "Too many connections" hatası; bağlantı şişmesi yaşanıyor.</li>
+                    <li><span class="badge">Debug araçları</span> APP_DEBUG ve APP_DEBUG_TOOLS prod\'da açık; Debugbar storage 1.6 GB, Pulse/Telescope kayıt yapıyor.</li>
+                    <li><span class="badge">Loglar</span> queue health check her dakikada Horizon\'ı nohup ile başlatmaya çalışıyor (tekrarlı "Horizon otomatik başlatıldı" logları); Pulse kayıtları 111 ms yazım ve modül sorgusu 145 ms olarak işaretlenmiş.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Öncelikli Aksiyonlar</h2>
+
+            <div class="plan-item">
+                <h3>1. Horizon süreç patlamasını durdur <span class="priority priority-high">Yüksek</span></h3>
+                <p>Horizon için 6'dan fazla master ve çok sayıda worker aynı anda koşuyor; her biri 10-16% CPU kullanıyor. Bu yoğunluk load average'ı 15+ seviyesine çekiyor ve MySQL bağlantı sınırını zorluyor.</p>
+                <p><strong>Kök neden:</strong> queue:health-check komutu her dakika runInBackground çalışıyor, QueueHealthService içinde nohup ile yeni Horizon başlatıyor; AutoQueueHealthCheck middleware admin trafikte de tetikliyor; mevcut süreçler terminate edilmediği için katlanarak artıyor.</p>
+                <p><strong>Aksiyon:</strong> Tek bir supervisor/systemd ile Horizon'ı yönetecek yapılandırmaya geç; queue:health-check içindeki otomatik Horizon başlatmayı kapat ve tek seferlik horizon:terminate ile fazlalıkları temizle; cron'da queue:ensure-workers/health-check frekansını düşür veya devre dışı bırak.</p>
+                <p><strong>Beklenen sonuç:</strong> CPU yükü ve DB bağlantı sayısı düşer, ixtif.com yanıt süreleri stabil hale gelir.</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>2. Prod ortamda debug araçlarını kapat <span class="priority priority-high">Yüksek</span></h3>
+                <p>APP_DEBUG ve APP_DEBUG_TOOLS üretimde true; Debugbar tüm kolektörlerle aktif ve storage/debugbar klasörü 1.6 GB. Pulse ve Telescope da açık, her istekte veritabanına pulse_entries vb. yazıyor.</p>
+                <p><strong>Risk:</strong> Dosya I/O ve DB yazımları sayfa yanıtlarını geciktiriyor, disk tüketimi artıyor.</p>
+                <p><strong>Aksiyon:</strong> APP_DEBUG ve APP_DEBUG_TOOLS değerlerini prod için false'a çek; Debugbar/Telescope/Pulse'ı sadece lokal için aç; storage/debugbar içeriğini ve Pulse/Telescope kayıtlarını temizle; log seviyesini INFO altına düşür.</p>
+                <p><strong>Beklenen sonuç:</strong> I/O yükünde ve sorgu sayısında belirgin azalma, önbellek hit oranında artış.</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>3. Veritabanı bağlantı sağlığını toparla <span class="priority priority-medium">Orta</span></h3>
+                <p>"Too many connections" hataları merkezi DB'yi kilitlemiş; Horizon süreç fazlalığı bağlantı havuzunu tüketiyor. Pulse ve Debugbar da ek yazımlarla bağlantı süresini uzatıyor.</p>
+                <p><strong>Aksiyon:</strong> Horizon çoğalmasını durdurduktan sonra MySQL max_connections ile PHP-FPM/Horizon worker sayısını hizala; uzun yaşayan işlemleri (AI, HLS) timeout ve maxJobs limitleriyle izleyip erken sonlandır; DB bağlantı reuse/pooling ayarlarını gözden geçir.</p>
+                <p><strong>Beklenen sonuç:</strong> Bağlantı satürasyonu kalkar, 500/1040 hata riski düşer.</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>4. Cron ve health-check yoğunluğunu sadeleştir <span class="priority priority-medium">Orta</span></h3>
+                <p>queue:health-check her dakika runInBackground çalışıyor; queue:ensure-workers komutu her 5 dakikada docker inspect/restart deniyor; AutoQueueHealthCheck middleware her admin trafiğinde job dispatch ediyor.</p>
+                <p><strong>Aksiyon:</strong> Tek bir sağlam Supervisor/Systemd izleme hattı bırakıp diğer otomatik restart mekanizmalarını kapat; middleware tetiklemesini kaldır veya per-request'ten çıkar; docker tabanlı ensure-workers komutunu canlı ortamda devre dışı bırak.</p>
+                <p><strong>Beklenen sonuç:</strong> Gereksiz proses açılışları durur, cron kuyruk yoğunluğu ve log gürültüsü azalır.</p>
+            </div>
+
+            <div class="plan-item">
+                <h3>5. Uygulama katmanı optimizasyonları <span class="priority priority-low">Düşük</span></h3>
+                <p>PULSE slow request kaydı 111 ms (pulse_entries yazımı) ve module_tenants join'i 145 ms görünüyor. Şu anki ana sorun CPU/IO olduğundan, altyapı sakinleştirildikten sonra sorgu planlarını ve index'leri (module_tenants tenant_id/module_id/is_active) gözden geçirmek faydalı.</p>
+                <p><strong>Beklenen sonuç:</strong> Altyapı stabilize olduktan sonra istek başına DB süresi düşer, responsecache etkisi artar.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🧭 Sonraki Adım Notları</h2>
+            <div class="panel">
+                <ul>
+                    <li>Önce Horizon çoğalmasını durdurup tek instance'a düşür; ardından load average ve MySQL bağlantı sayısını takip et.</li>
+                    <li>Debug araçlarını kapattıktan sonra storage/debugbar ve Telescope/Pulse verisini temizleyip disk alanını geri kazan.</li>
+                    <li>Cron ve middleware'lerdeki otomatik queue restart/start kurgusunu sadeleştir; izleme için Supervisor veya systemd yeterli olacak.</li>
+                    <li>Altyapı normale döndüğünde Pulse'ı sadece gözlem aracı olarak düşük örnekleme ile tut veya tamamen kapat.</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | ixtif.com performans analizi
+        </footer>
+    </div>
+</body>
+</html>

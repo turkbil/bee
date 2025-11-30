@@ -208,7 +208,19 @@
                                         </div>
                                     @else
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center gap-3">
+                                                @php
+                                                    $heroImage = $product->getFirstMediaWithFallback();
+                                                @endphp
+                                                @if($heroImage)
+                                                    <img src="{{ $heroImage->getUrl('thumb') }}"
+                                                         alt="Product"
+                                                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                                @else
+                                                    <div style="width: 40px; height: 40px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-image text-muted" style="font-size: 0.9rem;"></i>
+                                                    </div>
+                                                @endif
                                                 <span class="editable-title pr-4">
                                                     {{ $product->getTranslated('title', $currentSiteLocale) ?? $product->getTranslated('title', 'tr') }}
                                                 </span>
@@ -441,7 +453,7 @@
                                         </button>
 
                                         @php
-                                            $hasFeaturedImage = $product->hasMedia('featured_image');
+                                            $hasFeaturedImage = $product->hasMedia('hero');
                                             $galleryCount = $product->getMedia('gallery')->count();
                                         @endphp
 
@@ -1112,13 +1124,9 @@ document.addEventListener('livewire:update', function() {
     setTimeout(initSortable, 100);
 });
 
-// Wire events ile de dinle
-Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
-    succeed(({ snapshot, effect }) => {
-        queueMicrotask(() => {
-            initSortable();
-        });
-    });
+// Livewire v3 - Component initialized event
+Livewire.hook('morph.updated', ({ component }) => {
+    setTimeout(initSortable, 100);
 });
 </script>
 @endpush

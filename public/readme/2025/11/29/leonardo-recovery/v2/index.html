@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI - Eşleştirme Sonuçları</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+        .stat-label { color: #94a3b8; margin-top: 5px; }
+        
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #10b981;
+        }
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+        }
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: #ef4444;
+        }
+        
+        .section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+        }
+        
+        .match-card {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+        }
+        .match-card.no-match {
+            border-left-color: #ef4444;
+        }
+        .match-card h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .match-card .meta-info {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .candidate {
+            background: rgba(30, 41, 59, 0.3);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+        .candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .candidate-number {
+            background: #3b82f6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .candidate-time {
+            color: #60a5fa;
+            font-size: 0.9rem;
+        }
+        .candidate-prompt {
+            color: #cbd5e1;
+            margin: 10px 0;
+            font-size: 0.95rem;
+        }
+        .candidate-url {
+            margin-top: 10px;
+        }
+        .candidate-url a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-size: 0.85rem;
+            word-break: break-all;
+        }
+        .candidate-url a:hover {
+            color: #3b82f6;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #10b981;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        .download-btn:hover {
+            background: #059669;
+        }
+        
+        .timeline {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 8px;
+        }
+        .timeline h4 {
+            color: #f59e0b;
+            margin-bottom: 15px;
+        }
+        .timeline-item {
+            padding: 10px 0;
+            border-left: 2px solid #334155;
+            padding-left: 20px;
+            margin-left: 10px;
+        }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Leonardo AI - Eşleştirme Sonuçları</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-29 | 🔍 2 API Key Tarandı | 📊 100 Generation | 🎯 Öncelik: BLOGLAR
+            </div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">2/4</div>
+                <div class="stat-label">Blog Eşleşme (%50)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">72</div>
+                <div class="stat-label">Aday Görsel (Blog)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0/4</div>
+                <div class="stat-label">Shop Eşleşme (%0)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">27-28 Kas</div>
+                <div class="stat-label">Leonardo Tarih Aralığı</div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning">
+            <strong>⚠️ KRİTİK SORUN: Tarih Uyuşmazlığı</strong><br>
+            Shop product görselleri <strong>27 Ekim - 3 Kasım</strong> tarihlerinde oluşturulmuş.<br>
+            Leonardo generation'ları <strong>27-28 Kasım</strong> tarihlerinde.<br>
+            <strong>1 aylık fark!</strong> → Farklı API key gerekli YA DA yeniden generation.
+        </div>
+
+        <div class="section">
+            <h2>✅ Blog Görselleri - Eşleştirme Başarılı (2/4)</h2>
+
+            <div class="match-card">
+                <h3>Media #998 - Blog #379: Forklift Kapasitesi Nasıl Belirlenir?</h3>
+                <div class="meta-info">
+                    📅 DB Kayıt: 2025-11-28 03:33:26 | 🎯 22 Aday Bulundu | ⏰ Saat Eşleşmesi: ±2h
+                </div>
+
+                <div class="candidate">
+                    <div class="candidate-header">
+                        <span class="candidate-number">ÖNERİLEN #1</span>
+                        <span class="candidate-time">⏰ 01:25:36 (±2h)</span>
+                    </div>
+                    <div class="candidate-prompt">
+                        <strong>Prompt:</strong> Editorial photo of forklift workshop, dusty mechanic organizing parts, golden hour light through windows
+                    </div>
+                    <div class="candidate-url">
+                        <strong>URL:</strong><br>
+                        <a href="https://cdn.leonardo.ai/users/52776fa4-6792-43e8-8a9d-1dcd56674954/generations/78849124-3506-429e-8953-5ac037fa603c/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Editorial_photo_of_forklift__0.jpg" target="_blank">
+                            https://cdn.leonardo.ai/.../Lucid_Origin_a_cinematic_photo_of_Editorial_photo_of_forklift__0.jpg
+                        </a>
+                    </div>
+                    <a href="https://cdn.leonardo.ai/users/52776fa4-6792-43e8-8a9d-1dcd56674954/generations/78849124-3506-429e-8953-5ac037fa603c/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Editorial_photo_of_forklift__0.jpg" target="_blank" class="download-btn">🔗 Görseli Aç</a>
+                </div>
+
+                <div class="candidate">
+                    <div class="candidate-header">
+                        <span class="candidate-number">Aday #2</span>
+                        <span class="candidate-time">⏰ 01:18:20 (±2h)</span>
+                    </div>
+                    <div class="candidate-prompt">
+                        <strong>Prompt:</strong> Editorial photograph of modern forklift service center during early morning hours, skilled technician
+                    </div>
+                    <div class="candidate-url">
+                        <a href="https://cdn.leonardo.ai/users/52776fa4-6792-43e8-8a9d-1dcd56674954/generations/8fee71d5-e7be-45c7-9c43-a4db4d15b4c4/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Editorial_photograph_of_mode_0.jpg" target="_blank">
+                            https://cdn.leonardo.ai/.../Lucid_Origin_a_cinematic_photo_of_Editorial_photograph_of_mode_0.jpg
+                        </a>
+                    </div>
+                    <a href="https://cdn.leonardo.ai/users/52776fa4-6792-43e8-8a9d-1dcd56674954/generations/8fee71d5-e7be-45c7-9c43-a4db4d15b4c4/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Editorial_photograph_of_mode_0.jpg" target="_blank" class="download-btn">🔗 Görseli Aç</a>
+                </div>
+            </div>
+
+            <div class="match-card">
+                <h3>Media #1080 - Blog #384: Depo Ekipmanı Seçimi</h3>
+                <div class="meta-info">
+                    📅 DB Kayıt: 2025-11-28 18:08:20 | 🎯 50 Aday Bulundu | ⏰ Saat Eşleşmesi: ±2h
+                </div>
+
+                <div class="candidate">
+                    <div class="candidate-header">
+                        <span class="candidate-number">ÖNERİLEN #1</span>
+                        <span class="candidate-time">⏰ 20:56:13 (±2h)</span>
+                    </div>
+                    <div class="candidate-prompt">
+                        <strong>Prompt:</strong> Professional product photography of forklift lock ball bearing, industrial component, clean studio lighting
+                    </div>
+                    <div class="candidate-url">
+                        <strong>URL:</strong><br>
+                        <a href="https://cdn.leonardo.ai/users/4ba855b1-f493-4fa6-a153-95e5969c252a/generations/3f206690-a89b-4dc6-bdae-6563ce55dff8/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Professional_product_photogr_0.jpg" target="_blank">
+                            https://cdn.leonardo.ai/.../Lucid_Origin_a_cinematic_photo_of_Professional_product_photogr_0.jpg
+                        </a>
+                    </div>
+                    <a href="https://cdn.leonardo.ai/users/4ba855b1-f493-4fa6-a153-95e5969c252a/generations/3f206690-a89b-4dc6-bdae-6563ce55dff8/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Professional_product_photogr_0.jpg" target="_blank" class="download-btn">🔗 Görseli Aç</a>
+                </div>
+
+                <div class="candidate">
+                    <div class="candidate-header">
+                        <span class="candidate-number">Aday #2</span>
+                        <span class="candidate-time">⏰ 20:55:56 (±2h)</span>
+                    </div>
+                    <div class="candidate-prompt">
+                        <strong>Prompt:</strong> Professional product photography of forklift belt, industrial component, clean studio lighting, 16:9
+                    </div>
+                    <div class="candidate-url">
+                        <a href="https://cdn.leonardo.ai/users/4ba855b1-f493-4fa6-a153-95e5969c252a/generations/4ce9b154-a56b-4033-aa4a-09ef0b704e5a/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Professional_product_photogr_0.jpg" target="_blank">
+                            https://cdn.leonardo.ai/.../Lucid_Origin_a_cinematic_photo_of_Professional_product_photogr_0.jpg
+                        </a>
+                    </div>
+                    <a href="https://cdn.leonardo.ai/users/4ba855b1-f493-4fa6-a153-95e9c252a/generations/4ce9b154-a56b-4033-aa4a-09ef0b704e5a/segments/1:1:1/Lucid_Origin_a_cinematic_photo_of_Professional_product_photogr_0.jpg" target="_blank" class="download-btn">🔗 Görseli Aç</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>❌ Blog Görselleri - Bulunamadı (2/4)</h2>
+
+            <div class="match-card no-match">
+                <h3>Media #1037 - Blog #380: Kısa Süreli Forklift Kiralama</h3>
+                <div class="meta-info">
+                    📅 DB Kayıt: 2025-11-28 06:08:05 | ❌ Eşleşme Yok
+                </div>
+                <p style="color: #94a3b8;">Leonardo'da 06:00-09:00 arası generation bulunamadı.</p>
+                <div class="alert alert-warning" style="margin-top: 15px; font-size: 0.9rem;">
+                    <strong>💡 Çözüm:</strong> Farklı API key dene YA DA 88 product photography'den manuel seç
+                </div>
+            </div>
+
+            <div class="match-card no-match">
+                <h3>Media #1078 - Blog #381: İstif Makinesi Fiyatları</h3>
+                <div class="meta-info">
+                    📅 DB Kayıt: 2025-11-28 09:08:34 | ❌ Eşleşme Yok
+                </div>
+                <p style="color: #94a3b8;">Leonardo'da 09:00-15:00 arası generation bulunamadı.</p>
+                <div class="alert alert-warning" style="margin-top: 15px; font-size: 0.9rem;">
+                    <strong>💡 Çözüm:</strong> Farklı API key dene YA DA 88 product photography'den manuel seç
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>❌ Shop Product Görselleri - Tarih Uyuşmazlığı (0/4)</h2>
+
+            <div class="timeline">
+                <h4>⏰ Zaman Çizelgesi - Sorun Analizi:</h4>
+                <div class="timeline-item">
+                    <strong>27 Ekim 2025:</strong> Media #82, #84, #104 oluşturuldu (Shop Products)
+                </div>
+                <div class="timeline-item">
+                    <strong>3 Kasım 2025:</strong> Media #124 oluşturuldu (Shop Product)
+                </div>
+                <div class="timeline-item" style="border-color: #ef4444;">
+                    <strong>⚠️ 1 AYLIK BOŞ DÖNEM</strong>
+                </div>
+                <div class="timeline-item">
+                    <strong>27-28 Kasım 2025:</strong> Leonardo AI generation'ları (100 adet)
+                </div>
+            </div>
+
+            <div class="alert alert-danger">
+                <strong>🚨 KRİTİK:</strong> Shop product görselleri Leonardo'da YOK!<br><br>
+                <strong>Neden?</strong><br>
+                • Shop ürünleri 27 Ekim - 3 Kasım tarihleri (1 ay önce)<br>
+                • Leonardo generation'ları 27-28 Kasım tarihleri<br>
+                • Bu API key'ler o dönemde kullanılmamış!<br><br>
+                <strong>Çözüm Seçenekleri:</strong><br>
+                1. Ekim-Kasım başı için farklı Leonardo API key'i al<br>
+                2. 88 product photography'den en uygun olanları kullan<br>
+                3. Shop product'ları yeniden AI generation yap
+            </div>
+
+            <div class="match-card no-match">
+                <h3>Media #82 - Product #245: İXTİF F4 - 1.5 Ton Li-Ion Transpalet</h3>
+                <div class="meta-info">📅 DB Kayıt: 2025-10-27 | ❌ Tarih Uyuşmazlığı</div>
+            </div>
+
+            <div class="match-card no-match">
+                <h3>Media #84 - Product #241: İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet</h3>
+                <div class="meta-info">📅 DB Kayıt: 2025-10-27 | ❌ Tarih Uyuşmazlığı</div>
+            </div>
+
+            <div class="match-card no-match">
+                <h3>Media #104 - Product #10: İXTİF CPD18TVL - Li-Ion Forklift</h3>
+                <div class="meta-info">📅 DB Kayıt: 2025-10-27 | ❌ Tarih Uyuşmazlığı</div>
+            </div>
+
+            <div class="match-card no-match">
+                <h3>Media #124 - Product #307: İXTİF TDL162 - 1.6 Ton 80V Li-Ion 3 Teker Forklift</h3>
+                <div class="meta-info">📅 DB Kayıt: 2025-11-03 | ❌ Tarih Uyuşmazlığı</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Sonraki Adımlar</h2>
+            
+            <div class="alert alert-success">
+                <strong>✅ Hemen Yapılabilir (Blog):</strong><br>
+                1. Media #998 için önerilen adayı indir ve yükle<br>
+                2. Media #1080 için önerilen adayı indir ve yükle<br>
+                3. Blog sayfalarında görsel kontrol yap
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Kullanıcıya Sor:</strong><br>
+                1. Ekim-Kasım başı için farklı Leonardo API key'leri var mı?<br>
+                2. Shop product'ları için 88 product photography'den manuel seçim yapayım mı?<br>
+                3. Bulunamayan 2 blog görseli için yeniden generation yapayım mı?
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu<br>
+            📊 100 Leonardo generation tarandı (27-28 Kasım 2025)<br>
+            🎯 2/4 blog eşleşme başarılı, 0/4 shop tarih uyuşmazlığı
+        </footer>
+    </div>
+</body>
+</html>

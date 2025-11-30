@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Performans Analizi Raporu - Analiz & Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        section { margin-bottom: 40px; }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .plan-item:hover { transform: translateY(-2px); background: rgba(30, 41, 59, 0.7); }
+        .plan-item h3 { color: #93c5fd; margin-bottom: 12px; font-size: 1.4rem; }
+        .plan-item p { color: #cbd5e1; line-height: 1.8; margin-bottom: 10px; }
+        .tech-term { color: #fbbf24; font-weight: 600; font-family: 'Fira Code', monospace; }
+        .explanation { display: block; margin-top: 5px; color: #94a3b8; font-size: 0.9rem; border-left: 2px solid #475569; padding-left: 15px; }
+        .priority { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-left: 10px; }
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .recommendation { background: rgba(16, 185, 129, 0.1); border-left-color: #10b981; padding: 20px; margin-top: 20px; border-radius: 8px; }
+        .recommendation h4 { color: #34d399; margin-bottom: 10px; font-size: 1.1rem; }
+        .code-block { background: #020617; padding: 15px; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 0.9rem; margin-top: 10px; border: 1px solid #1e293b; }
+        footer { margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; color: #64748b; font-size: 0.9rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Sistem Performans Analizi Raporu</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-30 |
+                🎯 Tenant: ixtif.com |
+                👤 Talep: Sistem aşırı yavaş, sorunun analizi ve raporlanması.
+            </div>
+        </header>
+
+        <section>
+            <h2>📝 Genel Değerlendirme</h2>
+            <div class="plan-item" style="border-left-color: #fbbf24;">
+                <p>
+                    Yapılan detaylı analiz sonucunda, sistemdeki aşırı yavaşlığın donanımsal bir yetersizlikten değil, birbiriyle ilişkili **iki kritik yazılım mimarisi ve yapılandırma sorunundan** kaynaklandığı tespit edilmiştir. Sorunlar, hem tüm sistemi etkileyen genel bir yavaşlığa hem de özellikle `ixtif.com` gibi tenant'larda yaşanan aşırı yavaşlamalara neden olmaktadır.
+                </p>
+                <p>Aşağıda bu iki ana sorun ve çözüm önerileri detaylandırılmıştır.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Tespit Edilen Sorunlar ve Çözüm Önerileri</h2>
+
+            <div class="plan-item">
+                <h3>1. Arka Plan İşlem Darboğazı <span class="priority priority-critical">Kritik Öncelik</span></h3>
+                <p>
+                    <strong>Bulgu:</strong> `ixtif.com` tenant'ında yaşanan aşırı yavaşlığın **ana nedeni budur**. Arka plan işlemlerini (mail gönderme, rapor oluşturma vb.) yürüten sistemde ciddi bir yapılandırma hatası ve darboğaz mevcuttur.
+                </p>
+                <p>
+                    <span class="tech-term">docker-compose.yml</span> dosyasında, birbiriyle çakışan iki farklı kuyruk (queue) yönetim sistemi aynı anda çalışmaktadır: Hem modern olan <span class="tech-term">Horizon</span> hem de eski tip <span class="tech-term">queue:work</span> container'ları (`queue-general`, `queue-tenant`).
+                </p>
+                <p>
+                    Daha da önemlisi, <span class="tech-term">config/horizon.php</span> dosyasında, tüm tenant'ların işlerini yürüten `tenant-supervisor` için işlem limiti (`maxProcesses`) bilinçli olarak **sadece 2'ye** düşürülmüştür. Bu durum, `ixtif.com`'dan gelen en ufak bir toplu işlem talebinde bile kuyruğun anında şişmesine ve sistemin yanıt veremez hale gelmesine yol açmaktadır.
+                </p>
+                <div class="explanation">
+                    <strong>Etkisi:</strong> Tenant'a özel işlemler (sipariş onayı, mail gönderimi vb.) dakikalarca, hatta saatlerce beklemede kalır. Kullanıcı açısından sistem "donmuş" veya "çökmüş" gibi görünür.
+                </div>
+                <div class="recommendation">
+                    <h4>💡 Çözüm Önerisi</h4>
+                    <p>1. Çakışan kuyruk işçileri temizlenmelidir. `docker-compose.yml` dosyasından `queue-general` ve `queue-tenant` servisleri **tamamen kaldırılmalıdır**.</p>
+                    <p>2. Tüm arka plan işlemleri sadece `horizon` servisi tarafından yönetilmelidir.</p>
+                    <p>3. `config/horizon.php` dosyasındaki `tenant-supervisor` için `maxProcesses` değeri, sunucu kaynakları göz önünde bulundurularak dikkatlice ve kademeli olarak **daha makul bir seviyeye (örneğin, 8 veya 10)** yükseltilmelidir.</p>
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h3>2. Laravel Optimizasyon Hatası <span class="priority priority-high">Yüksek Öncelik</span></h3>
+                <p>
+                    <strong>Bulgu:</strong> Tüm sistemi etkileyen genel bir yavaşlık mevcuttur. Bunun sebebi, Laravel'in en temel performans optimizasyonları olan <span class="tech-term">config:cache</span> ve <span class="tech-term">route:cache</span> komutlarının **başarısız olmasıdır**.
+                </p>
+                <p>
+                    <span class="tech-term">docker-compose.yml</span> dosyasında tanımlanan birden fazla `app` container'ı (`app1`, `app2`, `app3`), aynı anda ve paylaşılmış bir `bootstrap/cache` dizinine yazmaya çalışarak bir "race condition" (yarış durumu) yaratmaktadır. Bu çakışma, cache dosyalarının düzgün oluşturulmasını engellemektedir.
+                </p>
+                <div class="explanation">
+                    <strong>Etkisi:</strong> Cacheleme yapılamadığı için, sistem her bir sayfa isteğinde onlarca yapılandırma ve rota dosyasını yeniden okumak, işlemek ve yorumlamak zorunda kalır. Bu durum, her istekte yüzlerce milisaniyelik ek bir yük bindirerek sitenin genelinde hissedilir bir yavaşlığa neden olur.
+                </div>
+                <div class="recommendation">
+                    <h4>💡 Çözüm Önerisi</h4>
+                    <p>Container başlatma süreci yeniden düzenlenmelidir. Sadece **tek bir ana uygulama container'ı** (`app1` gibi) `config:cache`, `route:cache` ve `migrate` gibi başlangıç işlemlerini çalıştırmaktan sorumlu olmalıdır. Diğer container'lar bu işlemlerin tamamlanmasını bekleyip daha sonra sadece web servisini (PHP-FPM) başlatmalıdır. Bu, `docker-compose.yml` içinde `depends_on` ve özel sağlık kontrolü (healthcheck) script'leri ile sağlanabilir.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Gemini AI tarafından oluşturuldu. Bu rapor, sistemde herhangi bir değişiklik yapmadan, sadece mevcut durumun analizini içermektedir.
+        </footer>
+    </div>
+</body>
+</html>

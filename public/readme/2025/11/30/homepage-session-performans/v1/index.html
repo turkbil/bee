@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 Homepage Performans Krizi - Session Sorunu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .alert {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border-left: 6px solid #fef2f2;
+        }
+
+        .alert h2 {
+            color: #fef2f2;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .alert p {
+            color: #fecaca;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .problem-box {
+            background: rgba(220, 38, 38, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #dc2626;
+            backdrop-filter: blur(10px);
+        }
+
+        .solution-box {
+            background: rgba(34, 197, 94, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #22c55e;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .solution-box:hover {
+            transform: translateX(5px);
+            background: rgba(34, 197, 94, 0.25);
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.15);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-value.bad { color: #ef4444; }
+        .stat-value.warning { color: #f59e0b; }
+        .stat-value.good { color: #22c55e; }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .code-block {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid #334155;
+        }
+
+        .code-block code {
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #3b82f6; color: white; }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-item {
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .comparison-item.before {
+            background: rgba(220, 38, 38, 0.15);
+            border: 2px solid #dc2626;
+        }
+
+        .comparison-item.after {
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid #22c55e;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .explanation {
+            display: inline-block;
+            margin-left: 5px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚨 Homepage Performans Krizi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-30 16:55 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                👤 Kaynak: a-html.txt debug çıktısı |
+                🌐 URL: /
+            </div>
+        </header>
+
+        <div class="alert">
+            <h2>⚠️ KRİTİK DURUM</h2>
+            <p>
+                Homepage <strong>23.3 saniyede</strong> yükleniyor! Hedef 2-3 saniye olmalıydı.
+                Bu <strong>10 kat daha yavaş</strong> demektir. Sorun acilen çözülmeli!
+            </p>
+        </div>
+
+        <section>
+            <h2>📊 Performans Metrikleri</h2>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value bad">23.3s</div>
+                    <div class="stat-label">Toplam Yükleme Süresi</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value bad">21.8s</div>
+                    <div class="stat-label">Query Süresi (Total)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value bad">%93</div>
+                    <div class="stat-label">Query Oranı</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value warning">6</div>
+                    <div class="stat-label">Query Sayısı</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔍 Sorun Analizi</h2>
+
+            <div class="problem-box">
+                <h3>1. Session Delete Sorunu <span class="priority priority-critical">KRİTİK</span></h3>
+                <p>
+                    <span class="tech-term">Session garbage collection</span>
+                    <span class="explanation">(Eski oturum kayıtlarını temizleme işlemi)</span>
+                    her request'te çalışıyor!
+                </p>
+
+                <div class="code-block">
+                    <code>delete from sessions where last_activity <= 1764503683
+Duration: 16806.76ms (16.8 saniye!)</code>
+                </div>
+
+                <ul>
+                    <li><strong>Süre:</strong> 16.8 saniye (toplam sürenin %72'si)</li>
+                    <li><strong>Sebep:</strong> Sessions tablosu çok büyük ve index yok</li>
+                    <li><strong>Sorun:</strong> Her sayfa yüklenişinde temizleme çalışıyor</li>
+                    <li><strong>Etki:</strong> Kullanıcı bekliyor, site donuyor</li>
+                </ul>
+            </div>
+
+            <div class="problem-box">
+                <h3>2. Session Update Sorunu <span class="priority priority-high">YÜKSEK</span></h3>
+                <p>
+                    Her request'te session verisi güncelleniyor ama çok yavaş.
+                </p>
+
+                <div class="code-block">
+                    <code>update sessions set payload = ...
+Duration: 4965.75ms (5 saniye!)</code>
+                </div>
+
+                <ul>
+                    <li><strong>Süre:</strong> 5 saniye (toplam sürenin %21'i)</li>
+                    <li><strong>Sebep:</strong> Payload çok büyük veya tablo index'siz</li>
+                    <li><strong>Sorun:</strong> Database session driver yavaş</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>3. Diğer Query'ler Normal ✅</h3>
+                <ul>
+                    <li>Tenant sorgusu: 24.07ms ✅</li>
+                    <li>Domain sorgusu: 0.59ms ✅</li>
+                    <li>Schema kontrolü: 2.26ms ✅</li>
+                </ul>
+                <p>
+                    Tenant ve domain sorguları gayet hızlı. Sorun sadece <span class="tech-term">session sistemi</span>nde.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>💡 Kök Neden</h2>
+
+            <div class="info-box">
+                <h3>Laravel Session Garbage Collection Mekanizması</h3>
+                <p>
+                    Laravel, <span class="tech-term">session garbage collection</span>
+                    <span class="explanation">(eski session kayıtlarını temizleme)</span>
+                    işlemini varsayılan olarak <strong>lottery sistemi</strong> ile yapar:
+                </p>
+
+                <div class="code-block">
+                    <code>'lottery' => [2, 100]  // %2 ihtimalle temizle</code>
+                </div>
+
+                <p>
+                    Ancak bu ayar <strong>yetersiz</strong> kalabilir:
+                </p>
+
+                <ul>
+                    <li>Sessions tablosu çok büyüdüğünde temizleme çok uzun sürer</li>
+                    <li>Lottery her request'te kontrol edilir (overhead)</li>
+                    <li>Database session driver Redis'e göre 10-20x daha yavaş</li>
+                    <li>Index yoksa DELETE sorgusu tüm tabloyu tarar</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Çözüm Önerileri</h2>
+
+            <div class="solution-box">
+                <h3>1. Session Driver Değiştir (Redis) <span class="priority priority-critical">KRİTİK</span></h3>
+                <p>
+                    <span class="tech-term">Database driver</span> yerine
+                    <span class="tech-term">Redis driver</span> kullan.
+                    Redis bellekte çalıştığı için 10-20x daha hızlıdır.
+                </p>
+
+                <p><strong>Avantajlar:</strong></p>
+                <ul>
+                    <li>Session okuma/yazma milisaniye seviyesine iner</li>
+                    <li>Redis otomatik expire ile eski session'ları temizler</li>
+                    <li>Database'e yük binmez</li>
+                    <li>Garbage collection sorunu ortadan kalkar</li>
+                </ul>
+
+                <p><strong>Yapılacaklar:</strong></p>
+                <ul>
+                    <li>config/session.php → driver = 'redis' yap</li>
+                    <li>Redis bağlantısını test et</li>
+                    <li>Cache temizle ve test et</li>
+                </ul>
+
+                <p><strong>Beklenen Sonuç:</strong></p>
+                <div class="comparison">
+                    <div class="comparison-item before">
+                        <strong>❌ ŞİMDİ (Database):</strong><br>
+                        Session update: 5s<br>
+                        Session delete: 16.8s<br>
+                        <strong>Total: 21.8s</strong>
+                    </div>
+                    <div class="comparison-item after">
+                        <strong>✅ SONRA (Redis):</strong><br>
+                        Session update: ~5ms<br>
+                        Session delete: 0ms<br>
+                        <strong>Total: ~5ms</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-box">
+                <h3>2. Session Garbage Collection Devre Dışı <span class="priority priority-high">YÜKSEK</span></h3>
+                <p>
+                    Eğer database driver kullanmaya devam edeceksen, garbage collection'ı
+                    request-time'dan çıkar, <span class="tech-term">scheduled task</span>
+                    <span class="explanation">(zamanlanmış görev)</span> yap.
+                </p>
+
+                <p><strong>Yapılacaklar:</strong></p>
+                <ul>
+                    <li>config/session.php → lottery = [0, 100] (devre dışı)</li>
+                    <li>app/Console/Kernel.php → Gece 3'te session temizleme task'ı ekle</li>
+                    <li>Cron ile otomatik temizleme</li>
+                </ul>
+
+                <p><strong>Avantaj:</strong></p>
+                <ul>
+                    <li>Kullanıcı request'leri hızlı olur (temizleme yok)</li>
+                    <li>Temizleme gece yapılır (site trafiği azken)</li>
+                </ul>
+
+                <p><strong>Dezavantaj:</strong></p>
+                <ul>
+                    <li>Session tablosu gece temizlenene kadar büyür</li>
+                    <li>Database hala session için kullanılır (Redis kadar hızlı değil)</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>3. Session Tablosu Index Ekle <span class="priority priority-high">YÜKSEK</span></h3>
+                <p>
+                    Eğer database driver kullanmaya devam edeceksen, session tablosuna
+                    <span class="tech-term">index</span> ekle. DELETE sorgusu çok daha hızlı olur.
+                </p>
+
+                <p><strong>Yapılacaklar:</strong></p>
+                <ul>
+                    <li>sessions tablosuna last_activity index'i ekle</li>
+                    <li>Migration oluştur</li>
+                    <li>Test et</li>
+                </ul>
+
+                <p><strong>Beklenen Sonuç:</strong></p>
+                <ul>
+                    <li>DELETE sorgusu 16.8s → ~100-500ms (30-150x hızlanma)</li>
+                    <li>Yine de Redis kadar hızlı olmaz</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>4. Session Lifetime Azalt <span class="priority priority-medium">ORTA</span></h3>
+                <p>
+                    Session ömrünü azaltarak session tablosunun şişmesini önle.
+                </p>
+
+                <p><strong>Yapılacaklar:</strong></p>
+                <ul>
+                    <li>config/session.php → lifetime = 120 (2 saat)</li>
+                    <li>Eski session'lar daha erken expire olur</li>
+                    <li>Tablo daha küçük kalır</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 Önerilen Strateji</h2>
+
+            <div class="info-box">
+                <h3>Çözüm 1: Redis Driver (EN İYİ) ⭐⭐⭐⭐⭐</h3>
+                <p>
+                    <strong>Neden en iyi:</strong>
+                </p>
+                <ul>
+                    <li>Kalıcı çözüm (sorun kökten hallolur)</li>
+                    <li>Çok hızlı (Redis bellekte çalışır)</li>
+                    <li>Database'e yük bindirmez</li>
+                    <li>Garbage collection otomatik (Redis expire)</li>
+                    <li>Uygulama kolay (sadece config değişikliği)</li>
+                </ul>
+
+                <p>
+                    <strong>Risk:</strong> Yok (Redis zaten sistemde var, kullanılıyor)
+                </p>
+
+                <p>
+                    <strong>Tavsiye:</strong> ✅ HEMEN UYGULA!
+                </p>
+            </div>
+
+            <div class="info-box">
+                <h3>Çözüm 2: Garbage Collection + Index (YEDEK) ⭐⭐⭐</h3>
+                <p>
+                    <strong>Ne zaman kullanılır:</strong>
+                </p>
+                <ul>
+                    <li>Redis kullanmak istemiyorsan</li>
+                    <li>Database session zorunluysa</li>
+                </ul>
+
+                <p>
+                    <strong>Dezavantaj:</strong> Redis kadar hızlı olmaz
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>📈 Beklenen Sonuç</h2>
+
+            <div class="comparison">
+                <div class="comparison-item before">
+                    <h3>❌ ŞİMDİ</h3>
+                    <ul>
+                        <li>Toplam: <strong>23.3s</strong></li>
+                        <li>Query: <strong>21.8s</strong></li>
+                        <li>Session delete: <strong>16.8s</strong></li>
+                        <li>Session update: <strong>5s</strong></li>
+                    </ul>
+                </div>
+
+                <div class="comparison-item after">
+                    <h3>✅ REDIS SONRASI</h3>
+                    <ul>
+                        <li>Toplam: <strong>~2-3s</strong></li>
+                        <li>Query: <strong>~50ms</strong></li>
+                        <li>Session delete: <strong>0ms</strong></li>
+                        <li>Session update: <strong>~5ms</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value good">8-10x</div>
+                    <div class="stat-label">Hızlanma Beklentisi</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value good">~21.8s</div>
+                    <div class="stat-label">Kazanılan Süre</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value good">%93</div>
+                    <div class="stat-label">İyileşme Oranı</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚡ Uygulama Adımları</h2>
+
+            <div class="solution-box">
+                <h3>Adım 1: Redis Session Driver Aktif Et</h3>
+                <ul>
+                    <li>config/session.php dosyasını aç</li>
+                    <li>'driver' => 'database' → 'redis' değiştir</li>
+                    <li>Redis bağlantı ayarlarını kontrol et</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>Adım 2: Cache Temizle</h3>
+                <ul>
+                    <li>php artisan config:clear</li>
+                    <li>php artisan cache:clear</li>
+                    <li>php artisan view:clear</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>Adım 3: Test Et</h3>
+                <ul>
+                    <li>Homepage'i yenile</li>
+                    <li>a-html.txt çıktısını kontrol et</li>
+                    <li>Session query'lerinin kaybolduğunu doğrula</li>
+                    <li>Yükleme süresinin 2-3s'ye düştüğünü onayla</li>
+                </ul>
+            </div>
+
+            <div class="solution-box">
+                <h3>Adım 4: Eski Session Kayıtlarını Temizle (Opsiyonel)</h3>
+                <ul>
+                    <li>Artık database session kullanmıyorsun</li>
+                    <li>Eski kayıtlar silinebilir (boş disk kazanırsın)</li>
+                    <li>TRUNCATE sessions (dikkatli ol!)</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 2025-11-30
+        </footer>
+    </div>
+</body>
+</html>

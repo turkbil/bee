@@ -1,5 +1,88 @@
 # 🏢 MULTI-TENANT SİSTEM MİMARİSİ
 
+## 🔴🔴🔴 STORAGE & MEDYA KORUMA - MUTLAK YASAK! 🔴🔴🔴
+
+### ⛔ ASLA, KESİNLİKLE, HİÇBİR ZAMAN YAPMA:
+
+**🚨 STORAGE SİLME YASAK:**
+1. ❌ `storage/` klasörünü SİLME!
+2. ❌ `storage/app/public/` klasörünü SİLME!
+3. ❌ `storage/tenantX/app/public/` klasörünü SİLME!
+4. ❌ Media dosyalarını SİLME!
+5. ❌ Görsel klasörlerini SİLME!
+6. ❌ `public/storage/` içeriğini SİLME!
+
+**🚨 TEHLİKELİ KOMUTLAR YASAK:**
+```bash
+❌ php artisan app:clear-all           # DEVRE DIŞI BIRAKILDI!
+❌ php artisan media-library:clear     # MEDYA SİLER!
+❌ php artisan db:wipe                 # DB SİLER!
+❌ php artisan migrate:fresh           # TABLO SİLER!
+❌ php artisan tenants:migrate-fresh   # TENANT SİLER!
+❌ rm -rf storage/                     # HER ŞEYİ SİLER!
+❌ rm -rf storage/app/public/          # MEDYALARI SİLER!
+```
+
+**✅ GÜVENLİ CACHE TEMİZLEME:**
+```bash
+✅ php artisan cache:clear
+✅ php artisan config:clear
+✅ php artisan route:clear
+✅ php artisan view:clear
+✅ php artisan responsecache:clear
+✅ php artisan optimize:clear
+```
+
+**⚠️ NEDEN YASAK?**
+- Bu komutlar **268 medya dosyası sildi!** (2025-11-30)
+- Backup yoksa **KALICI KAYIP!**
+- Site fotoğrafları 403 Forbidden veriyor
+- Müşteri içeriği geri gelmez!
+
+**🛡️ KORUMA KURALLARI:**
+1. Media silme işlemi → **KULLANICI İZNİ ZORUNLU!**
+2. Storage temizleme → **KULLANICI İZNİ ZORUNLU!**
+3. Migration fresh → **KULLANICI İZNİ ZORUNLU!**
+4. Şüpheli komut → **KULLANICI İZNİ ZORUNLU!**
+
+---
+
+## 🚨🚨🚨 KRİTİK PERFORMANS NOTLARI - ÖNCE BU BÖLÜMÜ OKU! 🚨🚨🚨
+
+### ⚡ PERFORMANS OPTİMİZASYONLARI (2025-11-30)
+
+**❌ ASLA YAPMA:**
+1. **Horizon Auto-Restart Cron İle Yapma!**
+   - `app/Console/Kernel.php` içinde `horizon-auto-restart` DEVRE DIŞI!
+   - Sebep: Her 5 dakikada pkill → Orphan process → CPU %100
+   - Çözüm: Supervisor kullan veya systemd service
+
+2. **Background Process'leri `exec(...&)` İle Başlatma!**
+   - `&` ile başlatılan process'ler orphan olur
+   - Supervisor veya systemd kullan!
+
+3. **maxProcesses'leri Agresif Ayarlama!**
+   - ❌ Yanlış: ai-supervisor maxProcesses=8
+   - ✅ Doğru: ai-supervisor maxProcesses=2
+   - Her process spawn eder, CPU patlama yapar!
+
+**✅ YAPILAN OPTİMİZASYONLAR:**
+- ✅ Currency N+1 fixed (1,440 query → 0 query)
+- ✅ Settings global cache (700+ query → 2 query)
+- ✅ Database indexes: `shop_products_optimized_idx`, `blogs_active_published_deleted_idx`
+- ✅ Horizon maxProcesses: 8→2, 6→2, 2→1
+- ✅ Horizon auto-restart disabled (orphan process sorunu çözüldü)
+
+**📊 SONUÇLAR:**
+- CPU Load: 18.44 → 7.09 (%61 azalma)
+- Horizon Process: 112 → 38 (%66 azalma)
+- Site Hızı: 45s → 2-3s (15-22x hızlanma)
+
+**📄 Detaylı Rapor:**
+https://ixtif.com/readme/2025/11/30/horizon-cpu-sorunu-analiz/
+
+---
+
 ## 🚨 ÖNCE BU BÖLÜMÜ OKU - SİSTEM TENANT AWARE!
 
 **⚠️ KRİTİK: Bu sistem MULTI-TENANT mimarisindedir!**

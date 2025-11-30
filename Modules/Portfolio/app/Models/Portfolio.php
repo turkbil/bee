@@ -259,7 +259,7 @@ class Portfolio extends BaseModel implements TranslatableEntity, HasMedia
     protected function getMediaConfig(): array
     {
         return [
-            'featured_image' => [
+            'hero' => [
                 'type' => 'image',
                 'single_file' => true,
                 'max_items' => config('modules.media.max_items.featured', 1),

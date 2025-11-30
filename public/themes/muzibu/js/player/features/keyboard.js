@@ -68,14 +68,14 @@ function muzibuKeyboard() {
                 case ' ':
                 case 'k':
                     this.togglePlayPause();
-                    this.showKeyboardFeedback('⏯️ Play/Pause');
+                    this.showKeyboardFeedback('⏯️ Çal / Duraklat');
                     break;
 
                 // Seek backward (5 seconds)
                 case 'arrowleft':
                 case 'j':
                     this.seekBackward(shift ? 10 : 5);
-                    this.showKeyboardFeedback(`⏪ -${shift ? 10 : 5}s`);
+                    this.showKeyboardFeedback(`⏪ ${shift ? 10 : 5} saniye geri`);
                     break;
 
                 // Seek forward (5 seconds)
@@ -84,66 +84,66 @@ function muzibuKeyboard() {
                     if (key === 'l' && !shift) {
                         // L key = toggle loop
                         this.toggleLoop();
-                        this.showKeyboardFeedback(this.isLooping ? '🔁 Loop ON' : '➡️ Loop OFF');
+                        this.showKeyboardFeedback(this.isLooping ? '🔁 Tekrar AÇIK' : '➡️ Tekrar KAPALI');
                     } else {
                         this.seekForward(shift ? 10 : 5);
-                        this.showKeyboardFeedback(`⏩ +${shift ? 10 : 5}s`);
+                        this.showKeyboardFeedback(`⏩ ${shift ? 10 : 5} saniye ileri`);
                     }
                     break;
 
                 // Volume up
                 case 'arrowup':
                     this.volumeUp();
-                    this.showKeyboardFeedback(`🔊 Volume ${Math.round(this.volume * 100)}%`);
+                    this.showKeyboardFeedback(`🔊 Ses %${Math.round(this.volume * 100)}`);
                     break;
 
                 // Volume down
                 case 'arrowdown':
                     this.volumeDown();
-                    this.showKeyboardFeedback(`🔉 Volume ${Math.round(this.volume * 100)}%`);
+                    this.showKeyboardFeedback(`🔉 Ses %${Math.round(this.volume * 100)}`);
                     break;
 
                 // Mute/Unmute
                 case 'm':
                     this.toggleMute();
-                    this.showKeyboardFeedback(this.isMuted ? '🔇 Muted' : '🔊 Unmuted');
+                    this.showKeyboardFeedback(this.isMuted ? '🔇 Sessiz' : '🔊 Ses Açık');
                     break;
 
                 // Toggle Shuffle
                 case 's':
                     this.toggleShuffle();
-                    this.showKeyboardFeedback(this.isShuffling ? '🔀 Shuffle ON' : '➡️ Shuffle OFF');
+                    this.showKeyboardFeedback(this.isShuffling ? '🔀 Karıştır AÇIK' : '➡️ Karıştır KAPALI');
                     break;
 
                 // Next song
                 case 'n':
                     this.playNext();
-                    this.showKeyboardFeedback('⏭️ Next Song');
+                    this.showKeyboardFeedback('⏭️ Sonraki Şarkı');
                     break;
 
                 // Previous song
                 case 'p':
                     this.playPrevious();
-                    this.showKeyboardFeedback('⏮️ Previous Song');
+                    this.showKeyboardFeedback('⏮️ Önceki Şarkı');
                     break;
 
                 // Toggle Queue
                 case 'q':
                     this.showQueue = !this.showQueue;
-                    this.showKeyboardFeedback(this.showQueue ? '📋 Queue Open' : '📋 Queue Closed');
+                    this.showKeyboardFeedback(this.showQueue ? '📋 Sıra Açıldı' : '📋 Sıra Kapandı');
                     break;
 
 
                 // Toggle Lyrics
                 case 'y':
                     this.showLyrics = !this.showLyrics;
-                    this.showKeyboardFeedback(this.showLyrics ? '🎤 Lyrics Open' : '🎤 Lyrics Closed');
+                    this.showKeyboardFeedback(this.showLyrics ? '🎤 Şarkı Sözü Açıldı' : '🎤 Şarkı Sözü Kapandı');
                     break;
                 // Toggle Favorites (if song is playing)
                 case 'f':
                     if (this.currentSong) {
                         this.toggleFavorite(this.currentSong.id);
-                        this.showKeyboardFeedback('❤️ Favorite');
+                        this.showKeyboardFeedback('❤️ Favori');
                     }
                     break;
 
@@ -166,7 +166,7 @@ function muzibuKeyboard() {
                     const index = parseInt(key);
                     if (this.queue[index]) {
                         this.playSongFromQueue(index);
-                        this.showKeyboardFeedback(`🎵 Playing #${index + 1}`);
+                        this.showKeyboardFeedback(`🎵 Sıradan Çalıyor #${index + 1}`);
                     }
                     break;
             }

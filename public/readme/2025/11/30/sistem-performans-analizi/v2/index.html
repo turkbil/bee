@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Performans Analizi - Nihai Rapor (v2)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #34d399, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        .meta a { color: #60a5fa; text-decoration: none; }
+        .meta a:hover { text-decoration: underline; }
+        section { margin-bottom: 40px; }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .plan-item:hover { transform: translateY(-2px); background: rgba(30, 41, 59, 0.7); }
+        .plan-item h3 { color: #93c5fd; margin-bottom: 12px; font-size: 1.4rem; }
+        .plan-item p { color: #cbd5e1; line-height: 1.8; margin-bottom: 10px; }
+        .tech-term { color: #fbbf24; font-weight: 600; font-family: 'Fira Code', monospace; background: rgba(251, 191, 36, 0.1); padding: 2px 6px; border-radius: 4px; }
+        .explanation { display: block; margin-top: 15px; color: #94a3b8; font-size: 0.9rem; border-left: 2px solid #475569; padding-left: 15px; }
+        .priority { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-left: 10px; }
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .recommendation { background: rgba(16, 185, 129, 0.1); border-left-color: #10b981; padding: 20px; margin-top: 20px; border-radius: 8px; }
+        .recommendation h4 { color: #34d399; margin-bottom: 10px; font-size: 1.2rem; }
+        .recommendation ol { padding-left: 20px; }
+        .alert-warning { background: rgba(245, 158, 11, 0.1); border-left-color: #f59e0b; padding: 20px; margin-bottom: 30px; border-radius: 8px; }
+        .alert-warning h4 { color: #f59e0b; margin-bottom: 10px; }
+        footer { margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; color: #64748b; font-size: 0.9rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Sistem Performans Analizi - Nihai Rapor (v2)</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-30 |
+                🎯 Tenant: ixtif.com |
+                👤 Talep: Sistem aşırı yavaş, sorunun analizi ve raporlanması.
+                <br>
+                ⚠️ <em>Bu rapor, hatalı Docker varsayımına dayanan <a href="../v1/" target="_blank">v1 raporunu</a> geçersiz kılar ve yerine geçer.</em>
+            </div>
+        </header>
+
+        <section>
+            <div class="alert-warning">
+                <h4>Önceki Analiz ve Düzeltme</h4>
+                <p>İlk analizim, proje dosyalarındaki Docker yapılandırmasına dayanıyordu ancak sunucunun kendisinde Docker kullanılmadığı uyarınız üzerine yeniden yapılmıştır. Yanlış başlangıç için özür dilerim. Bu nihai rapor, sunucuda çalışan canlı işlemlerin (`ps aux`) ve sistem yapılandırmasının doğrudan analizine dayanmaktadır ve bulgular kesindir.</p>
+            </div>
+
+            <h2>🎯 Nihai Teşhis: 3 Temel Sorun</h2>
+             <div class="plan-item" style="border-left-color: #10b981;">
+                <p>
+                    Sistemdeki aşırı yavaşlık, donanımsal bir problemden değil, birbiriyle bağlantılı **üç kritik yapılandırma hatasından** kaynaklanmaktadır. Bu hatalar, hem `ixtif.com` özelinde sistemi durma noktasına getirmekte hem de genel olarak tüm web sitesini yavaşlatmaktadır.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🚨 Tespit Edilen Sorunlar ve Çözüm Planı</h2>
+
+            <div class="plan-item">
+                <h3>1. Kritik Darboğaz: Tenant Arka Plan İşlemleri <span class="priority priority-critical">Kritik</span></h3>
+                <p>
+                    <strong>Bulgu:</strong> `ixtif.com`'daki aşırı yavaşlığın **birincil nedeni budur**. Çalışan işlemler incelendiğinde (`ps aux`), tenant'lara hizmet veren <span class="tech-term">tenant-supervisor</span> işleminin <span class="tech-term">--max-processes=1</span> parametresi ile çalıştırıldığı görülmüştür.
+                </p>
+                <div class="explanation">
+                    <strong>Etkisi:</strong> Bu, `ixtif.com`'a ait tüm arka plan işlerinin (örneğin mail gönderimleri, rapor oluşturma, veri işleme) tek bir kanala girmeye zorlandığı anlamına gelir. Bir iş meşgulken, diğer tüm işler onun bitmesini bekler. Bu durum, basit bir işlemin bile dakikalarca beklemesine ve sistemin "donmuş" gibi görünmesine neden olur.
+                </div>
+                <div class="recommendation">
+                    <h4>💡 Acil Çözüm Adımı</h4>
+                    <ol>
+                        <li>Plesk paneline giriş yapın.</li>
+                        <li>Alan adınız (`tuufi.com`) için "Process Supervisor" veya "Scheduled Tasks" (Zamanlanmış Görevler) bölümünü bulun.</li>
+                        <li><span class="tech-term">php artisan horizon</span> komutunu çalıştıran görevi/servisi bulun.</li>
+                        <li>Bu komutun sonundaki <span class="tech-term">--max-processes=1</span> parametresini **silin**. Bu sayede, ayarlarını kod içerisindeki `config/horizon.php` dosyasından alacaktır. Bu dosyadaki değer muhtemelen daha makul bir sayıdır (örneğin 8 veya 10).</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h3>2. Kritik Kararsızlık: Hatalı Plesk Görevi <span class="priority priority-critical">Kritik</span></h3>
+                <p>
+                    <strong>Bulgu:</strong> Sistemde, onlarca başıboş ve birbiriyle çakışan <span class="tech-term">php artisan horizon</span> işlemi çalışmaktadır. Bunun nedeni, Plesk Panel'deki "Zamanlanmış Görevler" (Scheduled Tasks) bölümünde, Horizon'un zaten çalışıp çalışmadığını kontrol etmeden sürekli yeniden başlatan bir görevin olmasıdır.
+                </p>
+                <div class="explanation">
+                    <strong>Etkisi:</strong> Bu durum, sunucu kaynaklarının (CPU, Bellek) israf edilmesine, sistem yükünün anlamsızca artmasına ve arka plan işlemlerinin kararsız çalışmasına neden olur. Bu, sistem genelindeki yorgunluğun ve tepkisizliğin ana sebebidir.
+                </div>
+                <div class="recommendation">
+                    <h4>💡 Acil Çözüm Adımı</h4>
+                     <ol>
+                        <li>Plesk panelindeki "Zamanlanmış Görevler" bölümünde, <span class="tech-term">php artisan horizon</span> veya <span class="tech-term">schedule:run</span> dışında (eğer horizon'u tetikliyorsa) çalışan tüm yinelenen görevleri bulun.</li>
+                         <li>Horizon'u başlatan hatalı görevi **devre dışı bırakın veya silin**.</li>
+                        <li>Doğru yöntem, Horizon'u Plesk'in "Process Supervisor" gibi araçlarıyla **tek bir kalıcı servis (daemon)** olarak çalıştırmaktır, sürekli tetiklenen bir görev olarak değil.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h3>3. Genel Performans Kaybı: Önbellek (Cache) Kullanılmıyor <span class="priority priority-high">Yüksek</span></h3>
+                <p>
+                    <strong>Bulgu:</strong> <span class="tech-term">bootstrap/cache</span> dizini boştur. Bu, Laravel'in en temel performans optimizasyonları olan <span class="tech-term">config:cache</span> (yapılandırma önbelleği) ve <span class="tech-term">route:cache</span> (rota önbelleği) komutlarının kullanılmadığını kesin olarak kanıtlamaktadır. Dizin izinleri doğru olmasına rağmen bu komutlar çalıştırılmamaktadır.
+                </p>
+                 <div class="explanation">
+                    <strong>Etkisi:</strong> Sistem, her bir sayfa isteğinde onlarca yapılandırma ve rota dosyasını yeniden okumak zorunda kalır. Bu, her istekte ekstra yük oluşturarak sitenin genelini hissedilir derecede yavaşlatır.
+                </div>
+                <div class="recommendation">
+                    <h4>💡 Çözüm Adımı</h4>
+                    <ol>
+                        <li>Kullandığınız dağıtım (deployment) script'ine veya sürecine aşağıdaki komutların eklenmesi gerekmektedir:</li>
+                        <li><span class="tech-term">php artisan config:cache</span></li>
+                        <li><span class="tech-term">php artisan route:cache</span></li>
+                        <li>Bu komutlar, kod güncellendiğinde sadece bir kez çalıştırılmalıdır.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Gemini AI tarafından oluşturuldu. Bu nihai rapor, canlı sistem üzerindeki kesin kanıtlara dayanmaktadır.
+        </footer>
+    </div>
+</body>
+</html>

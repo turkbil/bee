@@ -19,7 +19,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 24px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid #000;
     position: relative;
     z-index: 100;
 }
@@ -56,7 +56,7 @@
 .muzibu-nav-icon {
     width: 40px;
     height: 40px;
-    background: #121212;
+    background: #0a0a0a;
     border: none;
     border-radius: 50%;
     color: #b3b3b3;
@@ -68,7 +68,7 @@
 }
 
 .muzibu-nav-icon:hover {
-    background: #282828;
+    background: #121212;
     color: white;
 }
 
@@ -142,8 +142,9 @@
 
 /* LEFT SIDEBAR */
 .muzibu-left-sidebar {
-    background: #000;
-    padding: 8px;
+    border-radius: 12px 12px 0 0;
+    background: #121212;
+    padding: 24px 4px 12px 4px;
     overflow-y: auto;
     position: relative;
     z-index: 50;
@@ -164,7 +165,7 @@
 }
 
 .muzibu-nav-item:hover {
-    background: #1a1a1a;
+    background: #0a0a0a;
     color: white;
 }
 
@@ -202,7 +203,7 @@
 }
 
 .muzibu-premium-btn {
-    background: #000;
+    background: #0a0a0a;
     color: white;
     border: none;
     padding: 10px 24px;
@@ -215,7 +216,7 @@
 .muzibu-premium-btn:hover { transform: scale(1.05); }
 
 .muzibu-cache-btn {
-    background: #1a1a1a;
+    background: #0a0a0a;
     border: none;
     color: #b3b3b3;
     padding: 12px;
@@ -230,11 +231,12 @@
     gap: 8px;
 }
 
-.muzibu-cache-btn:hover { background: #282828; color: white; }
+.muzibu-cache-btn:hover { background: #121212; color: white; }
 
 /* MAIN CONTENT */
 .muzibu-main {
-    background: linear-gradient(180deg, #3e1f1f 0%, #121212 300px);
+    border-radius: 12px 12px 0 0;
+    background: #121212;
     padding: 0;
     overflow-y: auto;
 }
@@ -282,15 +284,17 @@
 
 .muzibu-horizontal-card {
     min-width: 180px;
-    background: #181818;
+    background: #0a0a0a;
     padding: 16px;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
 }
 
-.muzibu-horizontal-card:hover { background: #282828; }
+.muzibu-horizontal-card:hover {
+    background: #121212;
+}
 
 .muzibu-card-image {
     width: 100%;
@@ -385,23 +389,26 @@
 }
 
 .muzibu-card {
-    background: #181818;
+    background: #0a0a0a;
     padding: 16px;
     border-radius: 8px;
-    transition: background 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     position: relative;
 }
 
-.muzibu-card:hover { background: #282828; }
+.muzibu-card:hover {
+    background: #121212;
+}
 .muzibu-card:hover .muzibu-play-overlay { opacity: 1; }
 
 /* RIGHT SIDEBAR */
 .muzibu-right-sidebar {
-    background: #000;
-    padding: 16px;
+    border-radius: 12px 12px 0 0;
+    background: #121212;
+    padding: 24px 8px 12px 8px;
     overflow-y: auto;
-    border-left: 1px solid rgba(255,255,255,0.05);
+    border-left: 1px solid #000;
 }
 
 .muzibu-sidebar-header {
@@ -429,7 +436,7 @@
     text-decoration: none;
 }
 
-.muzibu-playlist-item:hover { background: #1a1a1a; }
+.muzibu-playlist-item:hover { background: #0a0a0a; }
 
 .muzibu-playlist-cover {
     width: 56px;
@@ -474,13 +481,13 @@
 /* PLAYER BAR */
 .muzibu-player {
     grid-column: 1 / -1;
-    background: #181818;
+    background: #000;
     display: grid;
     grid-template-columns: 300px 1fr 300px;
     align-items: center;
     padding: 16px;
     gap: 16px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid #000;
 }
 
 .muzibu-player-song-info {
@@ -498,7 +505,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    background: #282828;
+    background: #121212;
 }
 
 .muzibu-player-album-cover img {
@@ -672,14 +679,14 @@
 
 .muzibu-volume-bar:hover .muzibu-volume-fill { background: #1DB954; }
 
-/* BOTTOM NAVIGATION (Mobile) - DEVRE DIŞI */
+/* BOTTOM NAVIGATION (Mobile) */
 .muzibu-bottom-nav {
-    display: none !important;
+    display: none;
     position: fixed;
     bottom: 90px;
     left: 0;
     right: 0;
-    background: #000;
+    background: #0a0a0a;
     border-top: 1px solid rgba(255,255,255,0.1);
     padding: 8px 0;
     z-index: 99;
@@ -733,6 +740,7 @@
     }
 
     .muzibu-right-sidebar {
+    border-radius: 0 12px 0 0;
         display: none;
     }
 }
@@ -793,6 +801,8 @@
     }
 
     .muzibu-left-sidebar {
+    border-radius: 12px 0 0 0;
+    background: #121212;
         position: fixed;
         top: 0;
         left: -280px;
@@ -808,6 +818,7 @@
     }
 
     .muzibu-main {
+    border-radius: 12px 12px 0 0;
         grid-column: 1;
         margin-bottom: 50px;
     }
@@ -870,8 +881,9 @@
         font-size: 20px;
     }
 
-    /* Bottom nav devre dışı - sidebar-left kullanıyoruz */
-    /* .muzibu-bottom-nav { display: block; } */
+    .muzibu-bottom-nav {
+        display: block;
+    }
 }
 
 /* SMALL MOBILE (< 480px) */
@@ -942,7 +954,7 @@
     width: 40px;
     height: 40px;
     border-radius: 4px;
-    background: #282828;
+    background: #121212;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1051,14 +1063,14 @@
 .muzibu-gradient-8 { background: linear-gradient(135deg, #ff5722 0%, #bf360c 100%); }
 
 /* GENRE CARD COLORS */
-.muzibu-genre-1 { background: linear-gradient(135deg, #e91e63 0%, #191414 100%); }
-.muzibu-genre-2 { background: linear-gradient(135deg, #9c27b0 0%, #191414 100%); }
-.muzibu-genre-3 { background: linear-gradient(135deg, #3f51b5 0%, #191414 100%); }
-.muzibu-genre-4 { background: linear-gradient(135deg, #00bcd4 0%, #191414 100%); }
-.muzibu-genre-5 { background: linear-gradient(135deg, #009688 0%, #191414 100%); }
-.muzibu-genre-6 { background: linear-gradient(135deg, #4caf50 0%, #191414 100%); }
-.muzibu-genre-7 { background: linear-gradient(135deg, #ff9800 0%, #191414 100%); }
-.muzibu-genre-8 { background: linear-gradient(135deg, #ff5722 0%, #191414 100%); }
+.muzibu-genre-1 { background: linear-gradient(135deg, #e91e63 0%, #121212 100%); }
+.muzibu-genre-2 { background: linear-gradient(135deg, #9c27b0 0%, #121212 100%); }
+.muzibu-genre-3 { background: linear-gradient(135deg, #3f51b5 0%, #121212 100%); }
+.muzibu-genre-4 { background: linear-gradient(135deg, #00bcd4 0%, #121212 100%); }
+.muzibu-genre-5 { background: linear-gradient(135deg, #009688 0%, #121212 100%); }
+.muzibu-genre-6 { background: linear-gradient(135deg, #4caf50 0%, #121212 100%); }
+.muzibu-genre-7 { background: linear-gradient(135deg, #ff9800 0%, #121212 100%); }
+.muzibu-genre-8 { background: linear-gradient(135deg, #ff5722 0%, #121212 100%); }
 
 /* LAYOUT TEST - Farklı renklerle görsel kontrol */
 .layout-test-container {

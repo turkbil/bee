@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI Model Karşılaştırması - Fiyat & Performans Analizi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #818cf8;
+        }
+
+        .winner-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.1));
+            border: 2px solid #10b981;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .winner-card::before {
+            content: "🏆";
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 150px;
+            opacity: 0.1;
+        }
+
+        .winner-card h3 {
+            color: #10b981;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .winner-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            color: #10b981;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .model-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .model-card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .model-card:hover {
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.8);
+            border-left-color: #60a5fa;
+        }
+
+        .model-card.budget {
+            border-left-color: #10b981;
+        }
+
+        .model-card.premium {
+            border-left-color: #f59e0b;
+        }
+
+        .model-card.ultra {
+            border-left-color: #8b5cf6;
+        }
+
+        .model-name {
+            font-size: 1.3rem;
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .model-card.budget .model-name {
+            color: #10b981;
+        }
+
+        .model-card.premium .model-name {
+            color: #f59e0b;
+        }
+
+        .model-card.ultra .model-name {
+            color: #8b5cf6;
+        }
+
+        .model-details {
+            margin-top: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .detail-label {
+            color: #94a3b8;
+        }
+
+        .detail-value {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        .price-tag {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .price-budget {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 2px solid #10b981;
+        }
+
+        .price-standard {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 2px solid #3b82f6;
+        }
+
+        .price-premium {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 2px solid #f59e0b;
+        }
+
+        .price-ultra {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+            border: 2px solid #8b5cf6;
+        }
+
+        .comparison-table {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .comparison-table th {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 15px;
+            text-align: left;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .feature-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-yes {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .badge-no {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .badge-paid {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .image-preview {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .image-preview:hover {
+            border-color: #60a5fa;
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(96, 165, 250, 0.3);
+        }
+
+        .image-container {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .image-cost {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 2px solid;
+            z-index: 10;
+        }
+
+        .image-cost.budget {
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .image-cost.standard {
+            border-color: #60a5fa;
+            color: #60a5fa;
+        }
+
+        .image-cost.premium {
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.1));
+            border: 2px solid #3b82f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .recommendation-box h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .recommendation-list li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #cbd5e1;
+        }
+
+        .recommendation-list li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+
+        .watermark-section {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid #8b5cf6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .watermark-section h3 {
+            color: #8b5cf6;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .test-info {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #818cf8;
+        }
+
+        .test-info p {
+            color: #cbd5e1;
+            margin-bottom: 8px;
+        }
+
+        .test-info strong {
+            color: #818cf8;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .gallery-item {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .gallery-item.budget {
+            border-left-color: #10b981;
+        }
+
+        .gallery-item.premium {
+            border-left-color: #f59e0b;
+        }
+
+        .gallery-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #60a5fa;
+        }
+
+        .gallery-item.budget .gallery-title {
+            color: #10b981;
+        }
+
+        .gallery-item.premium .gallery-title {
+            color: #f59e0b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Leonardo AI Model Karşılaştırması</h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-29 | 
+                🎯 Hedef: Doğal, Gerçekçi Endüstriyel Görseller | 
+                💰 Fiyat/Performans Analizi
+            </div>
+        </header>
+
+        <!-- KAZANAN: EN İYİ FİYAT/PERFORMANS -->
+        <section>
+            <h2>🏆 ÖNERİLEN MODEL: EN İYİ FİYAT/PERFORMANS</h2>
+            
+            <div class="winner-card">
+                <h3>Flux Schnell (Speed)</h3>
+                <p style="color: #cbd5e1; font-size: 1.1rem; margin-bottom: 20px;">
+                    Bütçe dostu, hızlı ve kaliteli görsel üretimi. Endüstriyel görseller için ideal seçim.
+                </p>
+                
+                <div class="winner-stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Ortalama Maliyet</div>
+                        <div class="stat-value">2 credits</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Fiyat Avantajı</div>
+                        <div class="stat-value">%80 ucuz</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Çözünürlük</div>
+                        <div class="stat-value">1472×832</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Hız</div>
+                        <div class="stat-value">⚡ Çok Hızlı</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(16, 185, 129, 0.3);">
+                    <strong style="color: #10b981;">✅ Neden Flux Schnell?</strong>
+                    <ul style="margin-top: 10px; margin-left: 20px; color: #cbd5e1;">
+                        <li>Diğer modellere göre 5 kat daha ucuz (ortalama 2 credit vs 10-11 credit)</li>
+                        <li>Hızlı generation süresi, bulk işlemler için ideal</li>
+                        <li>Endüstriyel forklift/transpalet görselleri için yeterli kalite</li>
+                        <li>Aylık bütçenizle 5 kat daha fazla görsel üretebilirsiniz</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEST GÖRSELLER - YENİ BÖLÜM -->
+        <section>
+            <h2>🖼️ Test Görselleri - Model Karşılaştırması</h2>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">
+                Tüm modeller <strong>aynı prompt</strong> ile test edildi. Görsellerin üzerindeki etiketler ortalama maliyeti gösterir.
+            </p>
+
+            <div class="gallery-grid">
+                <!-- 1. Flux Schnell -->
+                <div class="gallery-item budget">
+                    <div class="gallery-title">⚡ Flux Schnell (Speed)</div>
+                    <div class="image-container">
+                        <div class="image-cost budget">Ortalama: ~2 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/e9f11adc-c500-4ddf-9d88-b2511d1f9bb0/segments/1:1:1/Flux_Schnell_Professional_photograph_of_a_modern_electric_fork_0.jpg" 
+                             alt="Flux Schnell - Electric Forklift" 
+                             class="image-preview"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        ✅ En ekonomik seçenek - Hızlı üretim
+                    </p>
+                </div>
+
+                <!-- 2. Lucid Origin -->
+                <div class="gallery-item">
+                    <div class="gallery-title">🎨 Lucid Origin</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~10 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/60e37060-c219-4026-b153-f0b2e3b5301c/segments/1:1:1/Lucid_Origin_Professional_photograph_of_a_modern_electric_fork_0.jpg" 
+                             alt="Lucid Origin - Electric Forklift" 
+                             class="image-preview"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        🎨 Mevcut model - Dengeli fiyat/kalite
+                    </p>
+                </div>
+
+                <!-- 3. Lucid Realism -->
+                <div class="gallery-item">
+                    <div class="gallery-title">📸 Lucid Realism</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~10 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/b6b8d9a0-30ce-48bb-b780-4cdffe20f9c7/segments/1:1:1/Lucid_Realism_Professional_photograph_of_a_modern_electric_for_0.jpg" 
+                             alt="Lucid Realism - Electric Forklift" 
+                             class="image-preview"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        📸 Gerçekçi fotoğraf tarzı
+                    </p>
+                </div>
+
+                <!-- 4. Phoenix 1.0 -->
+                <div class="gallery-item premium">
+                    <div class="gallery-title">🔥 Phoenix 1.0</div>
+                    <div class="image-container">
+                        <div class="image-cost premium">Ortalama: ~11 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/e4f4c346-5b3d-4e06-aa7e-bee27e3148c1/Phoenix_10_Professional_photograph_of_a_modern_electric_forkli_0.jpg" 
+                             alt="Phoenix 1.0 - Electric Forklift" 
+                             class="image-preview"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        🔥 Yüksek prompt adherence
+                    </p>
+                </div>
+
+                <!-- 5. Flux Dev -->
+                <div class="gallery-item">
+                    <div class="gallery-title">🎯 Flux Dev (Precision)</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~10 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/cf872b96-16f3-4a9e-9d1b-14a9ad47ca80/segments/1:1:1/Flux_Dev_Professional_photograph_of_a_modern_electric_forklift_0.jpg" 
+                             alt="Flux Dev - Electric Forklift" 
+                             class="image-preview"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        🎯 Hassas kontrol ve detay
+                    </p>
+                </div>
+            </div>
+
+            <div class="test-info" style="margin-top: 30px;">
+                <p><strong>Test Prompt:</strong> "Professional photograph of a modern electric forklift in warehouse setting, natural lighting, realistic industrial environment, detailed equipment photography"</p>
+                <p><strong>Test Çözünürlük:</strong> 1472×832 (blog/katalog için ideal)</p>
+                <p><strong>Ortalama Maliyet Hesaplama:</strong> 1472×832 çözünürlük için tipik değerler. Boyut değişikliklerinde maliyet oransal olarak değişir.</p>
+            </div>
+        </section>
+
+        <!-- TÜM MODELLER -->
+        <section>
+            <h2>📊 Tüm Model Karşılaştırması</h2>
+
+            <div class="model-grid">
+                <!-- 1. Flux Schnell -->
+                <div class="model-card budget">
+                    <div class="model-name">⚡ Flux Schnell (Speed)</div>
+                    <div class="price-tag price-budget">Ortalama: ~2 credits</div>
+                    <div class="model-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Model ID</span>
+                            <span class="detail-value">1dd50843...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">API Endpoint</span>
+                            <span class="detail-value">v1/generations</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Çözünürlük</span>
+                            <span class="detail-value">1472×832</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Özellikler</span>
+                            <span class="detail-value">
+                                <span class="feature-badge badge-yes">Hızlı</span>
+                                <span class="feature-badge badge-yes">Ucuz</span>
+                            </span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #cbd5e1; font-size: 0.9rem;">
+                        <strong style="color: #10b981;">İdeal Kullanım:</strong> Bulk görsel üretimi, bütçe öncelikli projeler, endüstriyel katalog görselleri
+                    </p>
+                </div>
+
+                <!-- 2. Lucid Origin -->
+                <div class="model-card">
+                    <div class="model-name">🎨 Lucid Origin</div>
+                    <div class="price-tag price-standard">Ortalama: ~10 credits</div>
+                    <div class="model-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Model ID</span>
+                            <span class="detail-value">7b592283...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">API Endpoint</span>
+                            <span class="detail-value">v1/generations</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Çözünürlük</span>
+                            <span class="detail-value">1472×832</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Özellikler</span>
+                            <span class="detail-value">
+                                <span class="feature-badge badge-yes">Style UUID</span>
+                                <span class="feature-badge badge-yes">Contrast</span>
+                            </span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #cbd5e1; font-size: 0.9rem;">
+                        <strong style="color: #60a5fa;">İdeal Kullanım:</strong> Şu an kullanılan model, dengeli fiyat/kalite
+                    </p>
+                </div>
+
+                <!-- 3. Lucid Realism -->
+                <div class="model-card">
+                    <div class="model-name">📸 Lucid Realism</div>
+                    <div class="price-tag price-standard">Ortalama: ~10 credits</div>
+                    <div class="model-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Model ID</span>
+                            <span class="detail-value">05ce0082...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">API Endpoint</span>
+                            <span class="detail-value">v1/generations</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Çözünürlük</span>
+                            <span class="detail-value">1472×832</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Özellikler</span>
+                            <span class="detail-value">
+                                <span class="feature-badge badge-yes">Gerçekçi Foto</span>
+                                <span class="feature-badge badge-yes">20+ Style</span>
+                            </span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #cbd5e1; font-size: 0.9rem;">
+                        <strong style="color: #60a5fa;">İdeal Kullanım:</strong> Gerçekçi fotoğraf tarzı görseller, product photography
+                    </p>
+                </div>
+
+                <!-- 4. Phoenix 1.0 -->
+                <div class="model-card premium">
+                    <div class="model-name">🔥 Phoenix 1.0</div>
+                    <div class="price-tag price-premium">Ortalama: ~11 credits</div>
+                    <div class="model-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Model ID</span>
+                            <span class="detail-value">de7d3faf...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">API Endpoint</span>
+                            <span class="detail-value">v1/generations</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Çözünürlük</span>
+                            <span class="detail-value">1472×832</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Özellikler</span>
+                            <span class="detail-value">
+                                <span class="feature-badge badge-yes">Prompt Adherence</span>
+                                <span class="feature-badge badge-yes">Text in Image</span>
+                            </span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #cbd5e1; font-size: 0.9rem;">
+                        <strong style="color: #f59e0b;">İdeal Kullanım:</strong> Prompt'a daha sadık sonuçlar, detaylı görseller
+                    </p>
+                </div>
+
+                <!-- 5. Flux Dev -->
+                <div class="model-card">
+                    <div class="model-name">🎯 Flux Dev (Precision)</div>
+                    <div class="price-tag price-standard">Ortalama: ~10 credits</div>
+                    <div class="model-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Model ID</span>
+                            <span class="detail-value">b2614463...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">API Endpoint</span>
+                            <span class="detail-value">v1/generations</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Çözünürlük</span>
+                            <span class="detail-value">1472×832</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Özellikler</span>
+                            <span class="detail-value">
+                                <span class="feature-badge badge-yes">Precision</span>
+                                <span class="feature-badge badge-yes">Elements</span>
+                            </span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #cbd5e1; font-size: 0.9rem;">
+                        <strong style="color: #60a5fa;">İdeal Kullanım:</strong> Daha hassas kontrol, element eğitimi
+                    </p>
+                </div>
+
+                <!-- 6. Phoenix + Alchemy -->
+                <div class="model-card ultra">
+                    <div class="model-name">💎 Phoenix 1.0 + Alchemy</div>
+                    <div class="price-tag price-ultra">Ortalama: ~24 credits</div>
+                    <div class="model-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Model ID</span>
+                            <span class="detail-value">de7d3faf...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">API Endpoint</span>
+                            <span class="detail-value">v1/generations</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Çözünürlük</span>
+                            <span class="detail-value">1472×832</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Özellikler</span>
+                            <span class="detail-value">
+                                <span class="feature-badge badge-yes">Ultra Kalite</span>
+                                <span class="feature-badge badge-yes">Alchemy Pipeline</span>
+                            </span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #cbd5e1; font-size: 0.9rem;">
+                        <strong style="color: #8b5cf6;">İdeal Kullanım:</strong> Premium kalite gerekli projeler, özel müşteri talepleri
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FİYAT KARŞILAŞTIRMA TABLOSU -->
+        <section>
+            <h2>💰 Fiyat Karşılaştırma Tablosu</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Ortalama Maliyet</th>
+                        <th>Maliyet Oranı</th>
+                        <th>1000 Görsel Maliyeti</th>
+                        <th>Hız</th>
+                        <th>Önerilen Kullanım</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: rgba(16, 185, 129, 0.1);">
+                        <td><strong style="color: #10b981;">Flux Schnell</strong></td>
+                        <td><strong style="color: #10b981;">~2 credits</strong></td>
+                        <td>Baseline</td>
+                        <td>~2,000 credits</td>
+                        <td>⚡⚡⚡ Çok Hızlı</td>
+                        <td>Blog, Katalog, Bulk İşlemler</td>
+                    </tr>
+                    <tr>
+                        <td>Lucid Origin</td>
+                        <td>~10 credits</td>
+                        <td>5x daha pahalı</td>
+                        <td>~10,000 credits</td>
+                        <td>⚡⚡ Hızlı</td>
+                        <td>Genel Kullanım (Mevcut)</td>
+                    </tr>
+                    <tr>
+                        <td>Lucid Realism</td>
+                        <td>~10 credits</td>
+                        <td>5x daha pahalı</td>
+                        <td>~10,000 credits</td>
+                        <td>⚡⚡ Hızlı</td>
+                        <td>Gerçekçi Fotoğraflar</td>
+                    </tr>
+                    <tr>
+                        <td>Phoenix 1.0</td>
+                        <td>~11 credits</td>
+                        <td>5.5x daha pahalı</td>
+                        <td>~11,000 credits</td>
+                        <td>⚡⚡ Hızlı</td>
+                        <td>Detaylı Görseller</td>
+                    </tr>
+                    <tr>
+                        <td>Flux Dev</td>
+                        <td>~10 credits</td>
+                        <td>5x daha pahalı</td>
+                        <td>~10,000 credits</td>
+                        <td>⚡⚡ Hızlı</td>
+                        <td>Hassas Kontrol</td>
+                    </tr>
+                    <tr style="background: rgba(139, 92, 246, 0.1);">
+                        <td><strong style="color: #8b5cf6;">Phoenix + Alchemy</strong></td>
+                        <td><strong style="color: #8b5cf6;">~24 credits</strong></td>
+                        <td>12x daha pahalı</td>
+                        <td>~24,000 credits</td>
+                        <td>⚡ Normal</td>
+                        <td>Premium Kalite</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="test-info">
+                <p><strong>Not:</strong> Maliyetler 1472×832 çözünürlük için ortalama değerlerdir. Farklı boyutlarda maliyet oransal olarak değişir.</p>
+                <p><strong>Test Tarihi:</strong> 2025-11-29</p>
+            </div>
+        </section>
+
+        <!-- WATERMARK BİLGİSİ -->
+        <section>
+            <h2>🔖 Watermark (Filigran) Bilgisi</h2>
+            
+            <div class="watermark-section">
+                <h3>Watermark Kaldırma</h3>
+                
+                <p style="color: #cbd5e1; margin-bottom: 20px;">
+                    Leonardo AI'da watermark kaldırma <strong>plan bazlı</strong> bir özelliktir, API fonksiyonu değildir.
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Plan</th>
+                            <th>Aylık Ücret</th>
+                            <th>Watermark Durumu</th>
+                            <th>API Credits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Free Plan</strong></td>
+                            <td>$0</td>
+                            <td><span class="feature-badge badge-no">Watermark VAR</span></td>
+                            <td>150 daily tokens</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Apprentice Plan</strong></td>
+                            <td>$10/ay (yıllık)</td>
+                            <td><span class="feature-badge badge-yes">Watermark YOK</span></td>
+                            <td>8,500/ay</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Artisan Unlimited</strong></td>
+                            <td>$24/ay (yıllık)</td>
+                            <td><span class="feature-badge badge-yes">Watermark YOK</span></td>
+                            <td>25,000/ay + unlimited relaxed</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maestro Unlimited</strong></td>
+                            <td>$48/ay (yıllık)</td>
+                            <td><span class="feature-badge badge-yes">Watermark YOK</span></td>
+                            <td>Daha yüksek token</td>
+                        </tr>
+                        <tr style="background: rgba(59, 130, 246, 0.1);">
+                            <td><strong>API Plans</strong></td>
+                            <td>$9-299/ay</td>
+                            <td><span class="feature-badge badge-yes">Watermark YOK</span></td>
+                            <td>3,500 - 200,000/ay</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 20px; padding: 15px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border-left: 4px solid #3b82f6;">
+                    <strong style="color: #60a5fa;">✅ API Kullanıcıları İçin:</strong>
+                    <p style="color: #cbd5e1; margin-top: 10px;">
+                        API ile oluşturulan tüm görseller watermark içermez. Watermark sadece free web kullanımında (motion/video) eklenir.
+                        API kullanıcıları için ek watermark kaldırma işlemine gerek yoktur.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖNERİLER -->
+        <section>
+            <h2>🎯 Sistem Önerileri</h2>
+
+            <div class="recommendation-box">
+                <h3>Blog & Katalog Görselleri İçin</h3>
+                <ul class="recommendation-list">
+                    <li><strong>Ana Model:</strong> Flux Schnell (ortalama ~2 credits) - %80 maliyet tasarrufu</li>
+                    <li><strong>Yedek Model:</strong> Lucid Origin (ortalama ~10 credits) - Mevcut sistem</li>
+                    <li><strong>Premium İhtiyaçlar:</strong> Phoenix + Alchemy (ortalama ~24 credits) - Özel müşteri talepleri için</li>
+                </ul>
+            </div>
+
+            <div class="recommendation-box" style="border-color: #10b981; margin-top: 20px;">
+                <h3 style="color: #10b981;">💡 Uygulama Stratejisi</h3>
+                <ul class="recommendation-list">
+                    <li>
+                        <strong>İlk Aşama:</strong> Flux Schnell'i test edin (2 hafta boyunca tüm blog/katalog görselleri)
+                        <br>
+                        <span style="color: #94a3b8; font-size: 0.9rem;">→ Kalite kabul edilebilirse büyük maliyet tasarrufu</span>
+                    </li>
+                    <li>
+                        <strong>Kalite Kontrolü:</strong> Müşteri geri bildirimi toplayın
+                        <br>
+                        <span style="color: #94a3b8; font-size: 0.9rem;">→ Eğer yetersizse Lucid Origin'e geri dönün</span>
+                    </li>
+                    <li>
+                        <strong>Hibrit Yaklaşım:</strong> %80 Flux Schnell + %20 Lucid Origin
+                        <br>
+                        <span style="color: #94a3b8; font-size: 0.9rem;">→ Ana sayfalar için premium, diğerleri için ekonomik</span>
+                    </li>
+                    <li>
+                        <strong>Beklenen Tasarruf:</strong> Aylık 25,000 görsel için ~180,000 credit tasarruf
+                        <br>
+                        <span style="color: #94a3b8; font-size: 0.9rem;">→ (250,000 vs 50,000 credit)</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="recommendation-box" style="border-color: #f59e0b; margin-top: 20px;">
+                <h3 style="color: #f59e0b;">⚠️ Dikkat Edilmesi Gerekenler</h3>
+                <ul class="recommendation-list">
+                    <li>Flux Schnell "speed" modeli olduğu için kalite/hız dengesi farklı olabilir</li>
+                    <li>İlk testlerde 50-100 görsel oluşturup kalite kontrolü yapın</li>
+                    <li>Endüstriyel ekipman görselleri için gerçekçilik yeterli mi kontrol edin</li>
+                    <li>Müşteri memnuniyetini izleyin, gerekirse model mix yapın</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Leonardo AI Model Karşılaştırması - Claude AI tarafından oluşturuldu
+            <br>
+            📚 Kaynaklar: <a href="https://docs.leonardo.ai/" target="_blank" style="color: #60a5fa;">Leonardo AI Docs</a> | 
+            <a href="https://leonardo.ai/pricing/" target="_blank" style="color: #60a5fa;">Leonardo AI Pricing</a>
+        </footer>
+    </div>
+</body>
+</html>

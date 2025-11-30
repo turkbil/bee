@@ -113,6 +113,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
             'construction' => \App\Http\Middleware\UnderConstructionProtection::class,
             // Rate limiting by user type (guest/member/premium)
             'throttle.user' => \App\Http\Middleware\ThrottleByUserType::class,
+            // Signed URL validation for protected resources
+            'signed.url' => \App\Http\Middleware\ValidateSignedUrl::class,
         ]);
                 
         // Admin middleware grubu

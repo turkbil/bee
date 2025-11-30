@@ -590,8 +590,8 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackImage(): ?string
     {
-        if ($this->hasMedia('featured_image')) {
-            return $this->getFirstMediaUrl('featured_image');
+        if ($this->hasMedia('hero')) {
+            return $this->getFirstMediaUrl('hero');
         }
 
         return null;
@@ -811,8 +811,8 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
 
         // Image/Gallery (ZORUNLU - Google Search Console hatası için)
         $images = [];
-        if ($this->hasMedia('featured_image')) {
-            $images[] = $this->getFirstMediaUrl('featured_image');
+        if ($this->hasMedia('hero')) {
+            $images[] = $this->getFirstMediaUrl('hero');
         }
         foreach ($this->getMedia('gallery') as $media) {
             $images[] = $media->getUrl();
@@ -1248,7 +1248,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         );
 
         return [
-            'featured_image' => [
+            'hero' => [
                 'type' => 'image',
                 'single_file' => true,
                 'max_items' => config('modules.media.max_items.featured', 1),

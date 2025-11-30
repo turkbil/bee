@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Ses Kalitesi Sistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        muzibu: {
+                            coral: '#ff7f50',
+                            black: '#000000',
+                            dark: '#121212',
+                            gray: '#181818',
+                            'text-gray': '#b3b3b3',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-black text-white">
+    <div class="max-w-7xl mx-auto p-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4">🎵 Muzibu Ses Kalitesi Sistemi</h1>
+            <p class="text-muzibu-text-gray">Premium kullanıcılar için gelişmiş ses kalitesi seçenekleri</p>
+        </div>
+
+        <!-- Quality Cards Grid -->
+        <div class="grid lg:grid-cols-2 gap-6 mb-12">
+
+            <!-- Standard Quality (Free Users) -->
+            <div class="bg-muzibu-gray rounded-xl p-6 border-l-4 border-gray-500">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-400 mb-2">Standard</h2>
+                        <p class="text-sm text-muzibu-text-gray">192kbps AAC | 16 Segment | Şifreli</p>
+                    </div>
+                    <span class="bg-gray-600 text-white text-xs px-3 py-1.5 rounded-full font-semibold">ÜCRETSİZ</span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-music text-gray-400"></i>
+                        <span class="text-sm">Temel ses kalitesi</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-shield-alt text-gray-400"></i>
+                        <span class="text-sm">AES-128 şifreleme</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-clock text-gray-400"></i>
+                        <span class="text-sm">Hızlı yükleme</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 flex-wrap">
+                    <span class="inline-block bg-gray-700 text-xs px-2 py-1 rounded">Parçalı</span>
+                    <span class="inline-block bg-gray-700 text-xs px-2 py-1 rounded">AES-128</span>
+                    <span class="inline-block bg-gray-700 text-xs px-2 py-1 rounded">192kbps</span>
+                </div>
+
+                <button class="w-full mt-4 bg-gray-600 hover:bg-gray-500 text-white py-2 rounded-lg transition-all">
+                    <i class="fas fa-play mr-2"></i>Örnek Dinle
+                </button>
+            </div>
+
+            <!-- Optimized Quality (Members) -->
+            <div class="bg-muzibu-gray rounded-xl p-6 border-l-4 border-green-500">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-green-400 mb-2">Optimized</h2>
+                        <p class="text-sm text-muzibu-text-gray">256kbps AAC | 16 Segment | Şifreli | +1.5dB Boost</p>
+                    </div>
+                    <span class="bg-green-600 text-white text-xs px-3 py-1.5 rounded-full font-semibold">ÜYE</span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-music text-green-400"></i>
+                        <span class="text-sm">Gelişmiş ses kalitesi</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-volume-up text-green-400"></i>
+                        <span class="text-sm">Ses seviyesi optimizasyonu</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-shield-alt text-green-400"></i>
+                        <span class="text-sm">AES-128 şifreleme</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 flex-wrap">
+                    <span class="inline-block bg-gray-700 text-xs px-2 py-1 rounded">Parçalı</span>
+                    <span class="inline-block bg-gray-700 text-xs px-2 py-1 rounded">AES-128</span>
+                    <span class="inline-block bg-green-900 text-xs px-2 py-1 rounded">256kbps</span>
+                    <span class="inline-block bg-green-900 text-xs px-2 py-1 rounded">+1.5dB</span>
+                </div>
+
+                <button class="w-full mt-4 bg-green-600 hover:bg-green-500 text-white py-2 rounded-lg transition-all">
+                    <i class="fas fa-play mr-2"></i>Örnek Dinle
+                </button>
+            </div>
+
+            <!-- EQ Balanced (Premium) -->
+            <div class="bg-muzibu-gray rounded-xl p-6 border-l-4 border-cyan-500">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-cyan-400 mb-2">EQ Balanced</h2>
+                        <p class="text-sm text-muzibu-text-gray">256kbps AAC | Şifreli | Tiz -2dB | Bas +1dB | LP 14kHz</p>
+                    </div>
+                    <span class="bg-cyan-600 text-white text-xs px-3 py-1.5 rounded-full font-semibold">PREMIUM</span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-sliders-h text-cyan-400"></i>
+                        <span class="text-sm">Equalizer optimizasyonu</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-filter text-cyan-400"></i>
+                        <span class="text-sm">Low-pass filtre (14kHz)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-music text-cyan-400"></i>
+                        <span class="text-sm">Dengeli bas/tiz</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 flex-wrap">
+                    <span class="inline-block bg-gray-700 text-xs px-2 py-1 rounded">Parçalı</span>
+                    <span class="inline-block bg-gray-700 text-xs px-2 py-1 rounded">AES-128</span>
+                    <span class="inline-block bg-cyan-900 text-xs px-2 py-1 rounded">EQ</span>
+                    <span class="inline-block bg-cyan-900 text-xs px-2 py-1 rounded">LP 14kHz</span>
+                </div>
+
+                <button class="w-full mt-4 bg-cyan-600 hover:bg-cyan-500 text-white py-2 rounded-lg transition-all">
+                    <i class="fas fa-play mr-2"></i>Örnek Dinle
+                </button>
+            </div>
+
+            <!-- Ultimate Edition (Premium+) -->
+            <div class="bg-gradient-to-br from-rose-900/30 to-pink-900/30 rounded-xl p-6 border-l-4 border-rose-500 shadow-xl shadow-rose-500/20">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-rose-400 mb-2 flex items-center gap-2">
+                            Ultimate Edition
+                            <i class="fas fa-crown text-yellow-400 text-sm"></i>
+                        </h2>
+                        <p class="text-sm text-muzibu-text-gray">256kbps AAC | Loudnorm | Stereo Wide | EQ | LP 14kHz</p>
+                    </div>
+                    <span class="bg-gradient-to-r from-rose-600 to-pink-600 text-white text-xs px-3 py-1.5 rounded-full font-semibold">PREMIUM</span>
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-fire text-rose-400"></i>
+                        <span class="text-sm">Maximum ses kalitesi</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-wave-square text-rose-400"></i>
+                        <span class="text-sm">Loudness normalizasyonu</span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-expand text-rose-400"></i>
+                        <span class="text-sm">Stereo genişletme</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-sliders-h text-rose-400"></i>
+                        <span class="text-sm">EQ + Low-pass filtre</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 flex-wrap">
+                    <span class="inline-block bg-gray-700 text-xs px-2 py-1 rounded">Parçalı</span>
+                    <span class="inline-block bg-gray-700 text-xs px-2 py-1 rounded">AES-128</span>
+                    <span class="inline-block bg-rose-900 text-xs px-2 py-1 rounded">Loudnorm</span>
+                    <span class="inline-block bg-rose-900 text-xs px-2 py-1 rounded">Stereo+</span>
+                    <span class="inline-block bg-rose-900 text-xs px-2 py-1 rounded">EQ+LP</span>
+                </div>
+
+                <button class="w-full mt-4 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white py-2 rounded-lg transition-all shadow-lg shadow-rose-500/30">
+                    <i class="fas fa-play mr-2"></i>Örnek Dinle
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Player Bar with Quality Selector -->
+        <div class="bg-muzibu-gray/95 backdrop-blur-md rounded-xl p-4 border border-white/10">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">Player Bar - Quality Selector</h3>
+                <span class="text-xs text-muzibu-text-gray">Müzik çalarken kalite değiştirme</span>
+            </div>
+
+            <!-- Mock Player Controls -->
+            <div class="grid grid-cols-[1fr_2fr_1fr] items-center gap-4">
+
+                <!-- Song Info -->
+                <div class="flex items-center gap-3">
+                    <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex items-center justify-center text-2xl">
+                        🎵
+                    </div>
+                    <div class="min-w-0">
+                        <h4 class="text-sm font-semibold text-white truncate">Kaybolduğum Yer</h4>
+                        <p class="text-xs text-muzibu-text-gray truncate">Şeyda Erdoğan</p>
+                    </div>
+                </div>
+
+                <!-- Player Controls -->
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center justify-center gap-6">
+                        <button class="text-muzibu-text-gray hover:text-white transition-all">
+                            <i class="fas fa-random"></i>
+                        </button>
+                        <button class="text-muzibu-text-gray hover:text-white transition-all">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">
+                            <i class="fas fa-play ml-0.5"></i>
+                        </button>
+                        <button class="text-muzibu-text-gray hover:text-white transition-all">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                        <button class="text-muzibu-text-gray hover:text-white transition-all">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-muzibu-text-gray w-10 text-right">1:23</span>
+                        <div class="flex-1 h-1.5 bg-muzibu-text-gray/30 rounded-full">
+                            <div class="h-full bg-white rounded-full" style="width: 52%"></div>
+                        </div>
+                        <span class="text-xs text-muzibu-text-gray w-10">2:38</span>
+                    </div>
+                </div>
+
+                <!-- Volume + Quality Selector -->
+                <div class="flex items-center justify-end gap-2">
+
+                    <!-- QUALITY SELECTOR BUTTON -->
+                    <div class="relative group">
+                        <button class="text-muzibu-text-gray hover:text-muzibu-coral transition-all" title="Ses Kalitesi">
+                            <i class="fas fa-cog"></i>
+                        </button>
+
+                        <!-- Quality Dropdown -->
+                        <div class="absolute bottom-full right-0 mb-2 bg-muzibu-gray border border-white/10 rounded-lg shadow-2xl p-2 min-w-[280px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
+                            <div class="text-xs font-semibold text-white mb-2 px-2">Ses Kalitesi</div>
+
+                            <!-- Standard -->
+                            <button class="w-full text-left px-3 py-2 hover:bg-white/5 rounded transition-all text-sm">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-gray-400 font-medium">Standard</span>
+                                    <span class="text-xs bg-gray-600 px-2 py-0.5 rounded">Ücretsiz</span>
+                                </div>
+                                <div class="text-xs text-muzibu-text-gray">192kbps AAC</div>
+                            </button>
+
+                            <!-- Optimized -->
+                            <button class="w-full text-left px-3 py-2 hover:bg-white/5 rounded transition-all text-sm">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-green-400 font-medium">Optimized</span>
+                                    <span class="text-xs bg-green-600 px-2 py-0.5 rounded">Üye</span>
+                                </div>
+                                <div class="text-xs text-muzibu-text-gray">256kbps AAC | +1.5dB</div>
+                            </button>
+
+                            <!-- EQ Balanced -->
+                            <button class="w-full text-left px-3 py-2 hover:bg-white/5 rounded transition-all text-sm">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-cyan-400 font-medium">EQ Balanced</span>
+                                    <span class="text-xs bg-cyan-600 px-2 py-0.5 rounded">Premium</span>
+                                </div>
+                                <div class="text-xs text-muzibu-text-gray">256kbps | EQ | LP 14kHz</div>
+                            </button>
+
+                            <!-- Ultimate -->
+                            <button class="w-full text-left px-3 py-2 bg-rose-900/20 hover:bg-rose-900/30 rounded transition-all text-sm border border-rose-500/30">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-rose-400 font-medium flex items-center gap-1">
+                                        Ultimate
+                                        <i class="fas fa-crown text-yellow-400 text-xs"></i>
+                                    </span>
+                                    <span class="text-xs bg-gradient-to-r from-rose-600 to-pink-600 px-2 py-0.5 rounded">Premium</span>
+                                </div>
+                                <div class="text-xs text-muzibu-text-gray">Loudnorm | Stereo+ | EQ+LP</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button class="text-muzibu-text-gray hover:text-white transition-all">
+                        <i class="fas fa-keyboard"></i>
+                    </button>
+                    <button class="text-muzibu-coral hover:text-white transition-all">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="text-muzibu-text-gray hover:text-white transition-all">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button class="text-muzibu-text-gray hover:text-white transition-all">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <div class="w-20 h-1.5 bg-muzibu-text-gray/30 rounded-full">
+                        <div class="h-full bg-white rounded-full" style="width: 70%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="mt-12 bg-muzibu-gray rounded-xl p-6">
+            <h3 class="text-2xl font-bold text-white mb-6">📊 Kalite Karşılaştırma</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-muzibu-text-gray border-b border-white/10">
+                            <th class="text-left py-3 px-2">Kalite</th>
+                            <th class="text-center py-3 px-2">Bitrate</th>
+                            <th class="text-center py-3 px-2">Boost</th>
+                            <th class="text-center py-3 px-2">EQ</th>
+                            <th class="text-center py-3 px-2">Loudnorm</th>
+                            <th class="text-center py-3 px-2">Stereo+</th>
+                            <th class="text-center py-3 px-2">Erişim</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-300">
+                        <tr class="border-b border-white/10">
+                            <td class="py-3 px-2 text-gray-400">Standard</td>
+                            <td class="text-center py-3 px-2">192k</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2 text-gray-400">Herkes</td>
+                        </tr>
+                        <tr class="border-b border-white/10 bg-green-900/10">
+                            <td class="py-3 px-2 text-green-400 font-bold">Optimized</td>
+                            <td class="text-center py-3 px-2">256k</td>
+                            <td class="text-center py-3 px-2 text-green-400">✅ +1.5dB</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2 text-green-400">Üyeler</td>
+                        </tr>
+                        <tr class="border-b border-white/10">
+                            <td class="py-3 px-2 text-cyan-400">EQ Balanced</td>
+                            <td class="text-center py-3 px-2">256k</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2 text-cyan-400">✅</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2">❌</td>
+                            <td class="text-center py-3 px-2 text-cyan-400">Premium</td>
+                        </tr>
+                        <tr class="bg-rose-900/20">
+                            <td class="py-3 px-2 text-rose-400 font-bold">Ultimate 🏆</td>
+                            <td class="text-center py-3 px-2">256k</td>
+                            <td class="text-center py-3 px-2 text-rose-400">✅</td>
+                            <td class="text-center py-3 px-2 text-rose-400">✅</td>
+                            <td class="text-center py-3 px-2 text-rose-400">✅</td>
+                            <td class="text-center py-3 px-2 text-rose-400">✅</td>
+                            <td class="text-center py-3 px-2 text-rose-400">Premium</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Technical Implementation -->
+        <div class="mt-12 bg-muzibu-dark rounded-xl p-6 border border-white/10">
+            <h3 class="text-xl font-bold text-white mb-4">🔧 Teknik Implementasyon</h3>
+            <div class="space-y-4 text-sm">
+                <div>
+                    <h4 class="text-muzibu-coral font-semibold mb-2">1. Database Migration</h4>
+                    <code class="block bg-black/50 p-3 rounded text-green-400">
+                        ALTER TABLE muzibu_songs ADD COLUMN quality_level ENUM('standard', 'optimized', 'eq_balanced', 'ultimate') DEFAULT 'optimized';
+                    </code>
+                </div>
+                <div>
+                    <h4 class="text-muzibu-coral font-semibold mb-2">2. Song Model</h4>
+                    <code class="block bg-black/50 p-3 rounded text-green-400">
+                        protected $fillable = ['quality_level', ...];<br>
+                        public function getQualityBadge() { ... }
+                    </code>
+                </div>
+                <div>
+                    <h4 class="text-muzibu-coral font-semibold mb-2">3. HLS Streaming</h4>
+                    <code class="block bg-black/50 p-3 rounded text-green-400">
+                        /api/muzibu/songs/{id}/stream?quality=ultimate
+                    </code>
+                </div>
+                <div>
+                    <h4 class="text-muzibu-coral font-semibold mb-2">4. Player UI</h4>
+                    <code class="block bg-black/50 p-3 rounded text-green-400">
+                        Quality selector: Settings icon → Dropdown menu<br>
+                        Auto-select: Premium users → Ultimate, Members → Optimized, Guests → Standard
+                    </code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 text-center text-muzibu-text-gray text-sm">
+            <p>© 2025 Muzibu - Premium Ses Kalitesi Sistemi</p>
+            <p class="mt-2">📊 v1 Taslak - Onay Bekleniyor</p>
+        </div>
+    </div>
+</body>
+</html>

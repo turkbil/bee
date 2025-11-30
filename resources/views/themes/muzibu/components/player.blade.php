@@ -1,5 +1,5 @@
 {{-- PLAYER BAR --}}
-<div class="xl:col-span-3 lg:col-span-2 col-span-1 bg-muzibu-gray/95 backdrop-blur-md grid grid-cols-[1fr_2fr_1fr] items-center px-4 py-3 gap-4 border-t border-white/10 shadow-2xl">
+<div class="muzibu-player xl:col-span-3 lg:col-span-2 col-span-1 grid grid-cols-[1fr_2fr_1fr] items-center px-3 py-1.5 gap-3">
     {{-- Song Info --}}
     <div class="flex items-center gap-3">
         <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex items-center justify-center text-2xl flex-shrink-0 shadow-lg overflow-hidden">

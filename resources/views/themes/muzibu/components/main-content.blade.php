@@ -1,12 +1,12 @@
 {{-- MAIN CONTENT --}}
-<main class="animate-fade-in relative bg-black rounded-t-2xl overflow-hidden">
+<main class="muzibu-main animate-fade-in relative overflow-hidden">
     <div class="overflow-y-auto h-full relative">
         {{-- V3: Turuncu → Kırmızı → Bordo - Yatay Animasyonlu + Dark Altta --}}
         <div class="absolute top-0 left-0 right-0 h-[250px] rounded-t-2xl pointer-events-none overflow-hidden">
             {{-- Animated layer (Soldan sağa renk kayması) --}}
             <div class="absolute top-0 left-0 w-[200%] h-full animate-gradient-horizontal"></div>
             {{-- Dark overlay (Altta sabit) --}}
-            <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent via-black/50 to-black"></div>
+            <div class="absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-transparent via-black/50 to-[#121212]"></div>
         </div>
 
         {{-- Content (Gradient ile birlikte scroll yapar) --}}

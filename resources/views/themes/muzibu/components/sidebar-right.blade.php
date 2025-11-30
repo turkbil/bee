@@ -1,6 +1,6 @@
 {{-- RIGHT SIDEBAR - FEATURED PLAYLISTS (Responsive Width) --}}
-<aside class="hidden xl:block bg-black p-6 overflow-y-auto border-l border-white/5">
-    <div class="mb-6">
+<aside class="muzibu-right-sidebar hidden xl:block">
+    <div class="mb-6 px-3">
         <h3 class="text-lg font-bold bg-gradient-to-r from-white via-zinc-100 to-muzibu-text-gray bg-clip-text text-transparent">
             Sizin İçin
         </h3>

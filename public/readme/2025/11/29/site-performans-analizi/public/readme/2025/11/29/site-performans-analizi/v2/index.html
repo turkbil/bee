@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>İXTİF Performans Analizi v2 - Telescope</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="background: #0f172a; color: #e2e8f0; font-family: system-ui; padding: 40px 20px; line-height: 1.7;">
+<div style="max-width: 1200px; margin: 0 auto;">
+<h1 style="font-size: 2.5rem; background: linear-gradient(135deg, #ef4444, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🔍 İXTİF Site Performans Analizi v2</h1>
+<p style="color: #94a3b8;">📅 Tarih: 2025-11-29 23:46 | 📊 Kaynak: Laravel Telescope Analizi</p>
+
+<div style="background: rgba(239, 68, 68, 0.15); border-left: 5px solid #ef4444; padding: 25px; margin: 30px 0; border-radius: 8px;">
+<h3 style="color: #ef4444; margin-bottom: 15px;">🚨 KRİTİK BULGULAR</h3>
+<ul style="list-style: disc; padding-left: 25px;">
+<li>Homepage Yüklenme: <strong>2.4 saniye</strong> (Hedef: 1s altı)</li>
+<li>Memory Kullanımı: <strong>139.5 MB</strong></li>
+<li><strong>N+1 Query:</strong> Currency 1,440 kez tekrar!</li>
+<li><strong>JSON Query:</strong> 500ms+ süreye neden oluyor</li>
+<li>Settings: 700+ kez sorgulanıyor</li>
+</ul>
+</div>
+
+<h2 style="color: #60a5fa; font-size: 2rem; margin: 40px 0 20px;">📊 Telescope Metrikleri</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+<div style="background: rgba(239, 68, 68, 0.1); padding: 25px; border-radius: 12px; border-left: 4px solid #ef4444;">
+<div style="font-size: 3rem; font-weight: 700; color: #ef4444;">1,440x</div>
+<div style="color: #94a3b8;">Currency Query Tekrarı</div>
+</div>
+<div style="background: rgba(239, 68, 68, 0.1); padding: 25px; border-radius: 12px; border-left: 4px solid #ef4444;">
+<div style="font-size: 3rem; font-weight: 700; color: #ef4444;">700+</div>
+<div style="color: #94a3b8;">Settings Query Tekrarı</div>
+</div>
+<div style="background: rgba(239, 68, 68, 0.1); padding: 25px; border-radius: 12px; border-left: 4px solid #ef4444;">
+<div style="font-size: 3rem; font-weight: 700; color: #ef4444;">11.1s</div>
+<div style="color: #94a3b8;">En Yavaş Query</div>
+</div>
+</div>
+
+<h2 style="color: #60a5fa; margin: 40px 0 20px;">🔥 EN YAVAŞ QUERY'LER</h2>
+
+<div style="background: #0f172a; padding: 20px; border-left: 4px solid #ef4444; border-radius: 8px; margin: 20px 0;">
+<h4 style="color: #ef4444; margin-bottom: 10px;">1. Shop Products - <span style="background: #ef4444; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem;">11,075ms</span></h4>
+<pre style="background: #000; padding: 15px; border-radius: 6px; overflow-x: auto; color: #cbd5e1;">
+SELECT * FROM shop_products
+WHERE category_id = 1 AND is_active = 1
+AND parent_product_id IS NULL
+ORDER BY sort_order ASC LIMIT 4
+</pre>
+<p><strong>Sorun:</strong> Index yok, full table scan</p>
+<p><strong>Çözüm:</strong> Composite index ekle</p>
+</div>
+
+<div style="background: #0f172a; padding: 20px; border-left: 4px solid #ef4444; border-radius: 8px; margin: 20px 0;">
+<h4 style="color: #ef4444; margin-bottom: 10px;">2. JSON Title Search - <span style="background: #ef4444; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem;">6,395ms</span></h4>
+<pre style="background: #000; padding: 15px; border-radius: 6px; overflow-x: auto; color: #cbd5e1;">
+SELECT * FROM shop_products
+WHERE JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) LIKE '%Manuel%'
+</pre>
+<p><strong>Sorun:</strong> JSON field LIKE arama - Index çalışmıyor!</p>
+<p><strong>Çözüm:</strong> Generated column ekle veya Meilisearch kullan</p>
+</div>
+
+<h2 style="color: #60a5fa; margin: 40px 0 20px;">🔁 N+1 QUERY SORUNLARI</h2>
+<table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.3); border-radius: 8px; overflow: hidden;">
+<thead>
+<tr style="background: rgba(30, 41, 59, 0.6);">
+<th style="padding: 15px; text-align: left; color: #60a5fa;">Query</th>
+<th style="padding: 15px; text-align: left; color: #60a5fa;">Tekrar</th>
+<th style="padding: 15px; text-align: left; color: #60a5fa;">Süre</th>
+</tr>
+</thead>
+<tbody>
+<tr><td style="padding: 15px; border-bottom: 1px solid #334155;">Currency (currency_id=2)</td><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong style="color: #fbbf24;">1,440x</strong></td><td style="padding: 15px; border-bottom: 1px solid #334155;">2.17ms</td></tr>
+<tr><td style="padding: 15px; border-bottom: 1px solid #334155;">Settings (site_title)</td><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong style="color: #fbbf24;">687x</strong></td><td style="padding: 15px; border-bottom: 1px solid #334155;">2.90ms</td></tr>
+<tr><td style="padding: 15px; border-bottom: 1px solid #334155;">Settings Values (whatsapp)</td><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong style="color: #fbbf24;">703x</strong></td><td style="padding: 15px; border-bottom: 1px solid #334155;">5.79ms</td></tr>
+<tr><td style="padding: 15px; border-bottom: 1px solid #334155;">Categories (category_id=1)</td><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong style="color: #fbbf24;">402x</strong></td><td style="padding: 15px; border-bottom: 1px solid #334155;">2.38ms</td></tr>
+</tbody>
+</table>
+
+<h2 style="color: #10b981; margin: 40px 0 20px;">✅ ÇÖZÜM ÖNERİLERİ</h2>
+
+<div style="background: rgba(16, 185, 129, 0.1); padding: 25px; border-left: 4px solid #10b981; border-radius: 12px; margin: 20px 0;">
+<h4 style="color: #10b981; margin-bottom: 15px;">1. Settings Cache (15 dk - ~4s kazanç)</h4>
+<pre style="background: #0f172a; padding: 15px; border-radius: 6px; color: #cbd5e1;">
+function setting($key) {
+    static $cache;
+    if (!$cache) {
+        $cache = Cache::remember('settings', 3600, fn() =>
+            Setting::with('values')->get()->keyBy('key')
+        );
+    }
+    return $cache->get($key)?->value;
+}
+</pre>
+</div>
+
+<div style="background: rgba(16, 185, 129, 0.1); padding: 25px; border-left: 4px solid #10b981; border-radius: 12px; margin: 20px 0;">
+<h4 style="color: #10b981; margin-bottom: 15px;">2. Currency Eager Loading (30 dk - ~3s kazanç)</h4>
+<pre style="background: #0f172a; padding: 15px; border-radius: 6px; color: #cbd5e1;">
+// Homepage Controller
+$products = ShopProduct::with('currency', 'category')
+    ->where('show_on_homepage', true)
+    ->get();
+</pre>
+</div>
+
+<div style="background: rgba(16, 185, 129, 0.1); padding: 25px; border-left: 4px solid #10b981; border-radius: 12px; margin: 20px 0;">
+<h4 style="color: #10b981; margin-bottom: 15px;">3. Generated Column (45 dk - 500ms+ kazanç)</h4>
+<pre style="background: #0f172a; padding: 15px; border-radius: 6px; color: #cbd5e1;">
+ALTER TABLE blogs
+ADD COLUMN slug_tr VARCHAR(255)
+AS (JSON_UNQUOTE(JSON_EXTRACT(slug, '$.tr'))) STORED,
+ADD INDEX blogs_slug_tr_idx (slug_tr);
+</pre>
+</div>
+
+<h2 style="color: #60a5fa; margin: 40px 0 20px;">📈 Beklenen Kazanç</h2>
+<table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.3); border-radius: 8px;">
+<tr style="background: rgba(30, 41, 59, 0.6);"><th style="padding: 15px; color: #60a5fa;">Optimizasyon</th><th style="padding: 15px; color: #60a5fa;">Mevcut</th><th style="padding: 15px; color: #60a5fa;">Hedef</th><th style="padding: 15px; color: #60a5fa;">Kazanç</th></tr>
+<tr><td style="padding: 15px; border-bottom: 1px solid #334155;">N+1 (Currency)</td><td style="padding: 15px; border-bottom: 1px solid #334155;">~3s</td><td style="padding: 15px; border-bottom: 1px solid #334155;">~2ms</td><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong style="color: #10b981;">~3s</strong></td></tr>
+<tr><td style="padding: 15px; border-bottom: 1px solid #334155;">Settings Cache</td><td style="padding: 15px; border-bottom: 1px solid #334155;">~4s</td><td style="padding: 15px; border-bottom: 1px solid #334155;">~6ms</td><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong style="color: #10b981;">~4s</strong></td></tr>
+<tr><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong>TOPLAM</strong></td><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong>2.4s</strong></td><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong>~200ms</strong></td><td style="padding: 15px; border-bottom: 1px solid #334155;"><strong style="color: #10b981; font-size: 1.2rem;">12x HIZLANMA</strong></td></tr>
+</table>
+
+<div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; color: #64748b; text-align: center;">
+🤖 Laravel Telescope ile 6,373 query analiz edildi<br>
+📊 v1: <a href="../v1/" style="color: #60a5fa;">Genel Analiz</a> | v2: Telescope Detaylı
+</div>
+</div>
+</body>
+</html>

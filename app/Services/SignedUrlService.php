@@ -18,18 +18,20 @@ class SignedUrlService
     public function generateStreamUrl(int $songId, int $expiresInMinutes = 30): string
     {
         $expiration = Carbon::now()->addMinutes($expiresInMinutes);
+        $expires = $expiration->timestamp;
 
         // Build the URL manually with signature (use current tenant domain)
-        $domain = request()->getSchemeAndHttpHost();
+        // 🔧 Use tenant's primary domain instead of request domain
+        $tenant = tenancy()->tenant;
+        $tenantDomain = $tenant ? $tenant->domains()->where('is_primary', 1)->first()?->domain : null;
+        $domain = $tenantDomain ? 'https://' . $tenantDomain : request()->getSchemeAndHttpHost();
         $baseUrl = $domain . "/api/muzibu/songs/{$songId}/serve";
 
-        // Add expiration timestamp
-        $url = $baseUrl . '?expires=' . $expiration->timestamp;
+        // 🔐 Generate signature (must match ValidateSignedUrl middleware)
+        // Signature: hash(baseUrl + songId + expires + app_key)
+        $signature = hash_hmac('sha256', $baseUrl . $songId . $expires, config('app.key'));
 
-        // Generate signature
-        $signature = hash_hmac('sha256', $url, config('app.key'));
-
-        return $url . '&signature=' . $signature;
+        return $baseUrl . '?expires=' . $expires . '&signature=' . $signature;
     }
 
     /**
@@ -43,18 +45,20 @@ class SignedUrlService
     public function generateHlsUrl(int $songId, int $expiresInMinutes = 60): string
     {
         $expiration = Carbon::now()->addMinutes($expiresInMinutes);
+        $expires = $expiration->timestamp;
 
-        // Build the URL manually with signature (use current tenant domain)
-        $domain = request()->getSchemeAndHttpHost();
-        $baseUrl = $domain . "/api/muzibu/songs/{$songId}/serve";
+        // Build HLS playlist URL (use current tenant domain)
+        // 🔧 Use tenant's primary domain instead of request domain
+        $tenant = tenancy()->tenant;
+        $tenantDomain = $tenant ? $tenant->domains()->where('is_primary', 1)->first()?->domain : null;
+        $domain = $tenantDomain ? 'https://' . $tenantDomain : request()->getSchemeAndHttpHost();
 
-        // Add expiration timestamp
-        $url = $baseUrl . '?expires=' . $expiration->timestamp;
+        // 🎵 HLS uses storage URL, not serve endpoint
+        // HLS playlist: /storage/tenant{id}/muzibu/hls/{songId}/playlist.m3u8
+        $tenantId = $tenant?->id ?? 'unknown';
+        $hlsUrl = $domain . "/storage/tenant{$tenantId}/muzibu/hls/{$songId}/playlist.m3u8";
 
-        // Generate signature
-        $signature = hash_hmac('sha256', $url, config('app.key'));
-
-        return $url . '&signature=' . $signature;
+        return $hlsUrl; // HLS doesn't need signed URL (AES-128 encrypted)
     }
 
     /**

@@ -1,0 +1,1 @@
+Gemini, CLAUDE.md dosyasında belirtilen kurallara göre hareket edecektir.

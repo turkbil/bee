@@ -294,6 +294,34 @@ class Page extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Media collections config
+     * HasMediaManagement trait kullanır
+     */
+    protected function getMediaConfig(): array
+    {
+        return [
+            'hero' => [
+                'type' => 'image',
+                'single_file' => true,
+                'max_items' => config('modules.media.max_items.featured', 1),
+                'max_size' => config('modules.media.max_file_size', 10240),
+                'conversions' => array_keys(config('modules.media.conversions', ['thumb', 'medium', 'large', 'responsive'])),
+                'sortable' => false,
+            ],
+            'gallery' => [
+                'type' => 'image',
+                'single_file' => false,
+                'max_items' => config('modules.media.max_items.gallery', 50),
+                'max_size' => config('modules.media.max_file_size', 10240),
+                'conversions' => array_keys(config('modules.media.conversions', ['thumb', 'medium', 'large', 'responsive'])),
+                'sortable' => true,
+            ],
+        ];
+    }
+
+    protected $mediaConfig;
+
+    /**
      * Create a new factory instance for the model.
      */
     protected static function newFactory()

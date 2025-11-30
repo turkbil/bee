@@ -99,7 +99,7 @@
     @livewireStyles
 
     {{-- Custom Styles --}}
-    <link rel="stylesheet" href="{{ asset('themes/muzibu/css/spotify-layout.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('themes/muzibu/css/muzibu-layout.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('themes/muzibu/css/muzibu-custom.css') }}?v={{ time() }}">
 
     @yield('styles')
@@ -110,7 +110,7 @@
     <audio id="hlsAudioNext" class="hidden"></audio>
 
     {{-- Main App Grid - Responsive Sidebar Width (ONLY right sidebar width changes) --}}
-    <div class="grid grid-rows-[64px_1fr_90px] 2xl:grid-cols-[220px_1fr_480px] xl:grid-cols-[220px_1fr_380px] lg:grid-cols-[220px_1fr] grid-cols-1 h-screen">
+    <div class="grid grid-rows-[56px_1fr_65px] 2xl:grid-cols-[220px_1fr_360px] xl:grid-cols-[220px_1fr_340px] lg:grid-cols-[220px_1fr] grid-cols-1 h-screen gap-3 px-3 pb-3">
         @include('themes.muzibu.components.header')
         @include('themes.muzibu.components.sidebar-left')
         @include('themes.muzibu.components.main-content')

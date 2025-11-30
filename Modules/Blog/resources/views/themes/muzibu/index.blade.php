@@ -132,7 +132,7 @@
                                 $blogUrl = $localePrefix . '/' . $slugPrefix . '/' . $slug;
 
                                 // Featured image'i al (thumbmaker ile optimize)
-                                $featuredMedia = $item->getFirstMedia('featured_image');
+                                $featuredMedia = $item->getFirstMediaWithFallback($item ?? $post ?? $relatedBlog);
                                 $featuredImage = $featuredMedia
                                     ? thumb($featuredMedia, 400, 300, ['quality' => 85, 'format' => 'webp'])
                                     : null;

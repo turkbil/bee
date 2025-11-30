@@ -103,8 +103,10 @@ function muzibuApp() {
         volume: parseInt(safeStorage.getItem('volume')) || 100, // Load from localStorage, default 100
         isMuted: false,
         currentSong: null,
+        currentFallbackUrl: null, // 🔐 MP3 fallback URL (signed)
         queue: [],
         queueIndex: 0,
+        b2bMode: safeStorage.getItem('b2b_mode') === 'true', // 💾 B2B mode: infinite loop
         isLoggingOut: false,
         currentPath: window.location.pathname,
         _initialized: false,
@@ -297,6 +299,61 @@ function muzibuApp() {
             }
         },
 
+        // 💾 Queue Persistence: Save queue state to localStorage
+        saveQueueState() {
+            try {
+                const state = {
+                    queue: this.queue,
+                    queueIndex: this.queueIndex,
+                    currentSong: this.currentSong,
+                    currentTime: this.currentTime,
+                    shuffle: this.shuffle,
+                    repeatMode: this.repeatMode
+                };
+                safeStorage.setItem('queue_state', JSON.stringify(state));
+                console.log('💾 Queue state saved');
+            } catch (error) {
+                console.error('Failed to save queue state:', error);
+            }
+        },
+
+        // 💾 Queue Persistence: Load queue state from localStorage
+        async loadQueueState() {
+            try {
+                const saved = safeStorage.getItem('queue_state');
+                if (!saved) {
+                    console.log('💾 No saved queue state found');
+                    return;
+                }
+
+                const state = JSON.parse(saved);
+
+                // Restore queue and settings
+                this.queue = state.queue || [];
+                this.queueIndex = state.queueIndex || 0;
+                this.currentSong = state.currentSong || null;
+                this.shuffle = state.shuffle || false;
+                this.repeatMode = state.repeatMode || 'off';
+
+                console.log('💾 Queue state restored:', {
+                    queueLength: this.queue.length,
+                    queueIndex: this.queueIndex,
+                    currentSong: this.currentSong?.song_title?.tr
+                });
+
+                // Auto-play from saved position (optional - kullanıcı isterse aktif edilebilir)
+                // if (this.currentSong && this.queue.length > 0) {
+                //     await this.playSongFromQueue(this.queueIndex);
+                //     if (state.currentTime > 0) {
+                //         this.seekTo(state.currentTime);
+                //     }
+                // }
+
+            } catch (error) {
+                console.error('Failed to load queue state:', error);
+            }
+        },
+
         async previousTrack() {
             // 🔒 Preview blocked - next/previous disabled
             if (this.isPreviewBlocked) {
@@ -320,9 +377,13 @@ function muzibuApp() {
             if (this.queueIndex < this.queue.length - 1) {
                 this.queueIndex++;
                 await this.playSongFromQueue(this.queueIndex);
-            } else if (this.repeatMode === 'all') {
+            } else if (this.repeatMode === 'all' || this.b2bMode) {
+                // 💾 B2B mode: infinite loop (auto-restart)
                 this.queueIndex = 0;
                 await this.playSongFromQueue(this.queueIndex);
+                if (this.b2bMode) {
+                    console.log('💼 B2B mode: Queue restarted');
+                }
             } else {
                 this.isPlaying = false;
             }
@@ -956,10 +1017,13 @@ function muzibuApp() {
                     this.currentUser.is_premium = data.is_premium;
                 }
 
+                // 🔐 Save fallback URL for HLS errors (signed MP3)
+                this.currentFallbackUrl = data.fallback_url || null;
+
                 // Pass stream type and preview duration from API response
                 const streamType = data.stream_type || 'mp3';
                 const previewDuration = data.preview_duration || null; // 🎵 Guest preview
-                console.log('Playing song:', data.stream_url, 'Type:', streamType, 'Preview:', previewDuration);
+                console.log('Playing song:', data.stream_url, 'Type:', streamType, 'Preview:', previewDuration, 'Fallback:', this.currentFallbackUrl);
                 await this.loadAndPlaySong(data.stream_url, streamType, previewDuration);
 
                 // Prefetch HLS for next songs in queue (background)
@@ -1282,10 +1346,9 @@ function muzibuApp() {
                     if (data.fatal) {
                         console.error('HLS fatal error:', data);
 
-                        // HLS yüklenemezse MP3'e fallback
-                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR && self.currentSong) {
-                            console.log('🔄 HLS failed, falling back to MP3...');
-                            const mp3Url = `/api/muzibu/songs/${self.currentSong.song_id}/serve`;
+                        // HLS yüklenemezse MP3'e fallback (SIGNED URL)
+                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR && self.currentSong && self.currentFallbackUrl) {
+                            console.log('🔄 HLS failed, falling back to signed MP3...');
 
                             // Cleanup HLS
                             if (self.hls) {
@@ -1293,11 +1356,11 @@ function muzibuApp() {
                                 self.hls = null;
                             }
 
-                            // Queue'ye MP3 conversion job ekle (background)
+                            // 🔐 Use signed fallback URL from API response
                             self.showToast('MP3 ile çalıyor, HLS hazırlanıyor...', 'info');
 
-                            // MP3 ile çal
-                            self.playWithHowler(mp3Url, targetVolume);
+                            // MP3 ile çal (signed URL)
+                            self.playWithHowler(self.currentFallbackUrl, targetVolume);
                         } else {
                             self.showToast('Şarkı yüklenemedi', 'error');
                             self.isPlaying = false;
@@ -1526,6 +1589,9 @@ function muzibuApp() {
 
                 if (!response.ok) {
                     console.warn('Track progress failed:', response.status);
+                } else {
+                    // ✅ Increment today's play count on successful track
+                    this.todayPlayedCount++;
                 }
             } catch (error) {
                 console.error('Track play error:', error);

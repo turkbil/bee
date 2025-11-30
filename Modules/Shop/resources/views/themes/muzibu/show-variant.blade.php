@@ -25,12 +25,12 @@
             $shopIndexUrl = $localePrefix . '/' . $indexSlug;
 
             // ✅ Varyant fotoğrafları - Yoksa parent'tan al
-            $featuredImage = $item->getFirstMedia('featured_image');
+            $featuredImage = $item->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
             $galleryImages = $item->getMedia('gallery');
 
             // ✅ Fallback: Varyant fotoğrafı yoksa parent ürünün fotoğrafını kullan
             if (!$featuredImage && $parentProduct) {
-                $featuredImage = $parentProduct->getFirstMedia('featured_image');
+                $featuredImage = $parentProduct->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
             }
             if ($galleryImages->isEmpty() && $parentProduct) {
                 $galleryImages = $parentProduct->getMedia('gallery');
@@ -333,7 +333,7 @@
                                     $currentLocale,
                                 );
 
-                                $variantImage = $variant->getFirstMedia('featured_image');
+                                $variantImage = $variant->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
                                 $variantImageUrl = $variantImage
                                     ? ($variantImage->hasGeneratedConversion('thumb')
                                         ? $variantImage->getUrl('thumb')

@@ -505,6 +505,9 @@
                                 @php
                                     // İki aşamalı render: Önce widget parse, sonra Blade render
                                     $parsedDescription = parse_widget_shortcodes($longDescription ?? '');
+
+                                    // 🎨 POST-PROCESSING: Görsellere lazy loading + Thumbmaker + Lightbox
+                                    $parsedDescription = process_blog_images($parsedDescription);
                                 @endphp
                                 {!! Blade::render($parsedDescription, [], true) !!}
                             </div>

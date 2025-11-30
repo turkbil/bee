@@ -227,6 +227,11 @@ class AppServiceProvider extends ServiceProvider
 
         // 🔗 OTOMATIK STORAGE LINK DÜZELTME - Migration sonrası
         $this->registerMigrationHooks();
+
+        // 🛡️ STORAGE & MEDYA KORUMA
+        // ClearAll.php → DISABLED (renamed to .DISABLED)
+        // Dangerous commands blocked via CLAUDE.md rules
+        // ⚠️ Migration fresh, db:wipe, storage clear → USER PERMISSION REQUIRED!
     }
     
     protected function registerViewComposers(): void

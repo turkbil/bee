@@ -1,6 +1,6 @@
 {{-- LEFT SIDEBAR - Modern & Clean --}}
 <aside
-    class="bg-black p-4 overflow-y-auto hidden lg:flex lg:flex-col animate-slide-up"
+    class="muzibu-left-sidebar hidden lg:flex lg:flex-col animate-slide-up"
     :class="mobileMenuOpen ? 'flex fixed inset-0 z-50 lg:relative' : 'hidden lg:flex'"
     @click.away="mobileMenuOpen = false"
 >

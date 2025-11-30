@@ -52,7 +52,7 @@
 
     $tags = $item->relationLoaded('tags') ? $item->tags : $item->tags()->get();
 
-    $featuredImage = $item->getFirstMedia('featured_image');
+    $featuredImage = $item->getFirstMediaWithFallback($item ?? $post ?? $relatedBlog);
     $galleryImages = $item->getMedia('gallery') ?? collect();
 
     $shareUrl = method_exists($item, 'getUrl') ? $item->getUrl($currentLocale) : url()->current();
@@ -594,9 +594,9 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             @foreach($relatedBlogs as $relatedBlog)
                                 <article class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
-                                    @if($relatedBlog->getFirstMedia('featured_image'))
+                                    @if($relatedBlog->getFirstMediaWithFallback($item ?? $post ?? $relatedBlog))
                                         @php
-                                            $relatedImage = $relatedBlog->getFirstMedia('featured_image');
+                                            $relatedImage = $relatedBlog->getFirstMediaWithFallback($item ?? $post ?? $relatedBlog);
                                         @endphp
                                         <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block overflow-hidden">
                                             <img src="{{ thumb($relatedImage, 400, 300, ['quality' => 85, 'format' => 'webp']) }}"

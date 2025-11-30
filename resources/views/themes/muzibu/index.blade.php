@@ -31,7 +31,7 @@
 
 {{-- Featured Playlists (Spotify Style) --}}
 @if($featuredPlaylists && $featuredPlaylists->count() > 0)
-<div class="mb-6 relative group/scroll" x-data="{
+<div class="mb-4 relative group/scroll" x-data="{
     scrollContainer: null,
     scrollInterval: null,
     startAutoScroll(direction) {
@@ -46,14 +46,14 @@
         }
     }
 }" x-init="scrollContainer = $refs.scrollContainer">
-    <h2 class="text-2xl font-bold text-white mb-4">Öne Çıkan Listeler</h2>
+    <h2 class="text-2xl font-bold text-white mb-2">Öne Çıkan Listeler</h2>
 
     {{-- Left Arrow --}}
     <button
         @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
         @mouseenter="startAutoScroll('left')"
         @mouseleave="stopAutoScroll()"
-        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+        class="absolute left-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
     >
         <i class="fas fa-chevron-left"></i>
     </button>
@@ -63,7 +63,7 @@
         @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
         @mouseenter="startAutoScroll('right')"
         @mouseleave="stopAutoScroll()"
-        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+        class="absolute right-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
     >
         <i class="fas fa-chevron-right"></i>
     </button>
@@ -116,14 +116,14 @@
         }
     }
 }" x-init="scrollContainer = $refs.scrollContainer">
-    <h2 class="text-2xl font-bold text-white mb-4">Yeni Çıkanlar</h2>
+    <h2 class="text-2xl font-bold text-white mb-2">Yeni Çıkanlar</h2>
 
     {{-- Left Arrow --}}
     <button
         @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
         @mouseenter="startAutoScroll('left')"
         @mouseleave="stopAutoScroll()"
-        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+        class="absolute left-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
     >
         <i class="fas fa-chevron-left"></i>
     </button>
@@ -133,7 +133,7 @@
         @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
         @mouseenter="startAutoScroll('right')"
         @mouseleave="stopAutoScroll()"
-        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+        class="absolute right-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
     >
         <i class="fas fa-chevron-right"></i>
     </button>
@@ -167,17 +167,17 @@
 @endif
 
 {{-- SONGS GRID - Popüler + Yeni Şarkılar --}}
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
     {{-- POPULAR SONGS --}}
     @if($popularSongs && $popularSongs->count() > 0)
     <div>
-        <h2 class="text-2xl font-bold text-white mb-4">Popüler Şarkılar</h2>
+        <h2 class="text-2xl font-bold text-white mb-2">Popüler Şarkılar</h2>
 
         <div class="grid grid-cols-1">
             @foreach($popularSongs->take(10) as $index => $song)
-            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer">
+            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer" @click="playSong({{ $song->song_id }})">
                 {{-- Play Button Overlay --}}
-                <div class="relative" @click="playSong({{ $song->song_id }})">
+                <div class="relative">
                     <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
                         @if($song->album && $song->album->media_id)
                             <img src="{{ thumb($song->album->media_id, 56, 56, ['scale' => 1]) }}" alt="{{ getLocaleTitle($song->title, 'Song') }}" class="w-full h-full object-cover">
@@ -193,7 +193,7 @@
                 </div>
 
                 {{-- Song Info --}}
-                <div class="flex-1 min-w-0" @click="playSong({{ $song->song_id }})">
+                <div class="flex-1 min-w-0">
                     <div class="text-sm font-semibold text-white truncate group-hover:text-muzibu-coral transition-colors">
                         {{ getLocaleTitle($song->title, 'Song') }}
                     </div>
@@ -229,13 +229,13 @@
     {{-- NEW SONGS --}}
     @if($popularSongs && $popularSongs->count() > 10)
     <div>
-        <h2 class="text-2xl font-bold text-white mb-4">Yeni Şarkılar</h2>
+        <h2 class="text-2xl font-bold text-white mb-2">Yeni Şarkılar</h2>
 
         <div class="grid grid-cols-1">
             @foreach($popularSongs->slice(10)->take(10) as $index => $song)
-            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer">
+            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer" @click="playSong({{ $song->song_id }})">
                 {{-- Play Button Overlay --}}
-                <div class="relative" @click="playSong({{ $song->song_id }})">
+                <div class="relative">
                     <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
                         @if($song->album && $song->album->media_id)
                             <img src="{{ thumb($song->album->media_id, 56, 56, ['scale' => 1]) }}" alt="{{ getLocaleTitle($song->title, 'Song') }}" class="w-full h-full object-cover">
@@ -251,7 +251,7 @@
                 </div>
 
                 {{-- Song Info --}}
-                <div class="flex-1 min-w-0" @click="playSong({{ $song->song_id }})">
+                <div class="flex-1 min-w-0">
                     <div class="text-sm font-semibold text-white truncate group-hover:text-muzibu-coral transition-colors">
                         {{ getLocaleTitle($song->title, 'Song') }}
                     </div>
@@ -287,7 +287,7 @@
 
 {{-- Genres (Horizontal Scroll - Spotify Style) --}}
 @if($genres && $genres->count() > 0)
-<div class="mb-6 relative group/scroll" x-data="{
+<div class="mb-3 relative group/scroll" x-data="{
     scrollContainer: null,
     scrollInterval: null,
     startAutoScroll(direction) {
@@ -302,14 +302,14 @@
         }
     }
 }" x-init="scrollContainer = $refs.scrollContainer">
-    <h2 class="text-2xl font-bold text-white mb-4">Kategoriler</h2>
+    <h2 class="text-2xl font-bold text-white mb-2">Kategoriler</h2>
 
     {{-- Left Arrow --}}
     <button
         @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
         @mouseenter="startAutoScroll('left')"
         @mouseleave="stopAutoScroll()"
-        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+        class="absolute left-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
     >
         <i class="fas fa-chevron-left"></i>
     </button>
@@ -319,7 +319,7 @@
         @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
         @mouseenter="startAutoScroll('right')"
         @mouseleave="stopAutoScroll()"
-        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
+        class="absolute right-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
     >
         <i class="fas fa-chevron-right"></i>
     </button>
@@ -352,78 +352,6 @@
 </div>
 @endif
 
-{{-- Popüler Sanatçılar (Horizontal Scroll - Spotify Style) --}}
-@if(isset($popularSongs) && $popularSongs->count() > 0)
-@php
-    // Sanatçıları topla ve en çok şarkısı olan 12'sini al
-    $artists = $popularSongs->pluck('album.artist')->filter()->unique('artist_id')->sortByDesc(function($artist) use ($popularSongs) {
-        return $popularSongs->filter(function($song) use ($artist) {
-            return $song->album && $song->album->artist_id === $artist->artist_id;
-        })->count();
-    })->take(12);
-@endphp
-@if($artists->count() > 0)
-<div class="mb-6 relative group/scroll" x-data="{
-    scrollContainer: null,
-    scrollInterval: null,
-    startAutoScroll(direction) {
-        this.scrollInterval = setInterval(() => {
-            this.scrollContainer.scrollBy({ left: direction === 'right' ? 20 : -20 });
-        }, 50);
-    },
-    stopAutoScroll() {
-        if (this.scrollInterval) {
-            clearInterval(this.scrollInterval);
-            this.scrollInterval = null;
-        }
-    }
-}" x-init="scrollContainer = $refs.scrollContainer">
-    <h2 class="text-2xl font-bold text-white mb-4">Popüler Sanatçılar</h2>
-
-    {{-- Left Arrow --}}
-    <button
-        @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
-        @mouseenter="startAutoScroll('left')"
-        @mouseleave="stopAutoScroll()"
-        class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
-    >
-        <i class="fas fa-chevron-left"></i>
-    </button>
-
-    {{-- Right Arrow --}}
-    <button
-        @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
-        @mouseenter="startAutoScroll('right')"
-        @mouseleave="stopAutoScroll()"
-        class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/scroll:opacity-100 transition-opacity shadow-xl"
-    >
-        <i class="fas fa-chevron-right"></i>
-    </button>
-
-    <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
-        @foreach($artists as $artist)
-        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
-            <div class="relative mb-3">
-                <div class="w-full aspect-square rounded-full overflow-hidden shadow-xl bg-gradient-to-br from-muzibu-coral to-pink-600">
-                    <div class="w-full h-full flex items-center justify-center text-5xl">
-                        🎤
-                    </div>
-                </div>
-                {{-- Play button on hover --}}
-                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                    <i class="fas fa-play text-black ml-0.5"></i>
-                </div>
-            </div>
-            <h3 class="font-semibold text-white truncate mb-1 text-sm text-center">
-                {{ is_array($artist->title) ? ($artist->title['tr'] ?? $artist->title['en'] ?? 'Artist') : $artist->title }}
-            </h3>
-            <p class="text-xs text-muzibu-text-gray truncate text-center">Sanatçı</p>
-        </div>
-        @endforeach
-    </div>
-</div>
-@endif
-@endif
 
 </div>
 @endsection

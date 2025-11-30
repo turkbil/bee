@@ -15,7 +15,7 @@
                     $title = $product->getTranslated('title', $locale);
                     $shortDesc = $product->getTranslated('short_description', $locale);
                     $slug = $product->getTranslated('slug', $locale);
-                    $featuredImage = $product->getFirstMedia('featured_image');
+                    $featuredImage = $product->getFirstMediaWithFallback($item ?? $post ?? $relatedBlog);
 
                     // Fiyat bilgisi
                     $hasDiscount = $product->has_discount;

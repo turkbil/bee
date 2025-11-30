@@ -42,21 +42,23 @@ class QueueHealthService
             // 3. Queue restart signal (worker'lar kendi kendine restart eder)
             Artisan::call('queue:restart');
             $results['actions_taken'][] = 'Queue restart signal sent (workers will auto-restart)';
-            
-            // 4. Horizon status kontrolü ve otomatik başlatma
-            $horizonStatus = self::checkHorizonStatus();
-            if (!$horizonStatus['active']) {
-                try {
-                    // Horizon'u arka planda başlat (nohup ile)
-                    $command = 'nohup php ' . base_path('artisan') . ' horizon > /dev/null 2>&1 &';
-                    shell_exec($command);
-                    $results['actions_taken'][] = 'Horizon monitoring started automatically';
-                    Log::info('🚀 Horizon otomatik başlatıldı');
-                } catch (\Exception $e) {
-                    $results['actions_taken'][] = 'Horizon start failed: ' . $e->getMessage();
-                }
-            }
-            
+
+            // 🔧 HORIZON AUTO-START DISABLED - ORPHAN PROCESS SORUNU!
+            // ⚠️ Bu kod her çağrıda yeni Horizon spawn ediyordu → 234 process patlaması!
+            // Horizon yönetimi Supervisor/Systemd'ye bırakıldı
+            //
+            // $horizonStatus = self::checkHorizonStatus();
+            // if (!$horizonStatus['active']) {
+            //     try {
+            //         $command = 'nohup php ' . base_path('artisan') . ' horizon > /dev/null 2>&1 &';
+            //         shell_exec($command);
+            //         $results['actions_taken'][] = 'Horizon monitoring started automatically';
+            //         Log::info('🚀 Horizon otomatik başlatıldı');
+            //     } catch (\Exception $e) {
+            //         $results['actions_taken'][] = 'Horizon start failed: ' . $e->getMessage();
+            //     }
+            // }
+
             // 4. Health score hesaplama
             $results['health_score'] = 100;
             $results['queue_workers_status'] = 'healthy';

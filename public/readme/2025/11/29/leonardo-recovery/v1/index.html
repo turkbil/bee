@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI - Görsel Kurtarma Raporu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+        .stat-label { color: #94a3b8; margin-top: 5px; }
+        
+        .section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+        }
+        .missing-list {
+            display: grid;
+            gap: 15px;
+        }
+        .missing-item {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ef4444;
+        }
+        .found-item {
+            border-left: 4px solid #10b981;
+        }
+        .priority-high { border-left-color: #ef4444; }
+        .priority-medium { border-left-color: #f59e0b; }
+        .priority-low { border-left-color: #10b981; }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .image-card {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .image-card:hover { transform: translateY(-5px); }
+        .image-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .image-info {
+            padding: 15px;
+        }
+        .image-info h3 {
+            color: #60a5fa;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .image-info p {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .download-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+        }
+        .download-btn:hover { background: #2563eb; }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Leonardo AI - Görsel Kurtarma Raporu</h1>
+            <div class="meta" style="color: #94a3b8;">
+                📅 Tarih: 2025-11-29 | 🔍 2 API Key Tarandı | 🎯 Tenant: ixtif.com
+            </div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">100</div>
+                <div class="stat-label">Generation Tarandı</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">88</div>
+                <div class="stat-label">Product Photography</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">667</div>
+                <div class="stat-label">Kayıp Media (DB)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">153</div>
+                <div class="stat-label">Mevcut Dosya</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>❌ Kayıp Shop Product Görselleri</h2>
+            <div class="missing-list">
+                <div class="missing-item priority-high">
+                    <strong>Media #82</strong> → Product #245: İXTİF F4 - 1.5 Ton Li-Ion Transpalet<br>
+                    <small style="color: #94a3b8;">File: lep4ns74ctsp2gydkwetkw7xs1y01psfss4tf5u6.png</small>
+                </div>
+                <div class="missing-item priority-high">
+                    <strong>Media #84</strong> → Product #241: İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet<br>
+                    <small style="color: #94a3b8;">File: fmrhqn7nkvcoqea8ue2nrwfvydt31wgosx4fiupi.png</small>
+                </div>
+                <div class="missing-item priority-high">
+                    <strong>Media #104</strong> → Product #10: İXTİF CPD18TVL - Li-Ion Forklift<br>
+                    <small style="color: #94a3b8;">File: 1hvj3rib1plnqhlrix1yvafhjz8var7wmap5c4rw.png</small>
+                </div>
+                <div class="missing-item priority-high">
+                    <strong>Media #124</strong> → Product #307: İXTİF TDL162 - 1.6 Ton 80V Li-Ion 3 Teker Forklift<br>
+                    <small style="color: #94a3b8;">File: 3t7bwaltjagdoppsnovbqgymzkc7kbzglzq9fwhj.png</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>❌ Kayıp Blog Görselleri</h2>
+            <div class="missing-list">
+                <div class="missing-item priority-medium">
+                    <strong>Media #998</strong> → Blog #379: Forklift Kapasitesi Nasıl Belirlenir?<br>
+                    <small style="color: #94a3b8;">File: leonardo_6928edd68be2d.jpg</small>
+                </div>
+                <div class="missing-item priority-medium">
+                    <strong>Media #1037</strong> → Blog #380: Kısa Süreli Forklift Kiralama<br>
+                    <small style="color: #94a3b8;">File: leonardo_6929121547b4e.jpg</small>
+                </div>
+                <div class="missing-item priority-medium">
+                    <strong>Media #1078</strong> → Blog #381: İstif Makinesi Fiyatları<br>
+                    <small style="color: #94a3b8;">File: leonardo_69293c6250136.jpg</small>
+                </div>
+                <div class="missing-item priority-medium">
+                    <strong>Media #1080</strong> → Blog #384: Depo Ekipmanı Seçimi<br>
+                    <small style="color: #94a3b8;">File: leonardo_6929bae4d27c8.jpg</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>❌ Kayıp Logo Görselleri</h2>
+            <div class="missing-list">
+                <div class="missing-item priority-high">
+                    <strong>Media #73</strong> → Settings: Site Logo<br>
+                    <small style="color: #94a3b8;">File: 9uzjp677s19spo4zrzua64q7awg0tennk4wpi8sq.png</small>
+                </div>
+                <div class="missing-item priority-high">
+                    <strong>Media #74</strong> → Settings: Site Logo Kontrast<br>
+                    <small style="color: #94a3b8;">File: yfkluxoryl5hklpi1smtib7snsw2avptjybd8795.png</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>✅ Bulunan Leonardo AI Görselleri (88 Adet)</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;">
+                Forklift parçaları için product photography görselleri. 
+                Bu görseller kayıp shop product'lara alternatif olarak kullanılabilir.
+            </p>
+            <div id="images-container"></div>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu<br>
+            📊 2 Leonardo AI hesabı tarandı (GearCogVRStream + nurullahhh)
+        </footer>
+    </div>
+
+    <script>
+        // Leonardo görsellerini yükle
+        const images = IMAGES_DATA_PLACEHOLDER;
+        const container = document.getElementById('images-container');
+        
+        const grid = document.createElement('div');
+        grid.className = 'image-grid';
+        
+        images.slice(0, 88).forEach((img, index) => {
+            const card = document.createElement('div');
+            card.className = 'image-card';
+            card.innerHTML = `
+                <img src="${img.url}" alt="Product ${index + 1}" loading="lazy">
+                <div class="image-info">
+                    <h3>#${index + 1} - ${img.created_at}</h3>
+                    <p>${img.prompt}</p>
+                    <a href="${img.url}" target="_blank" class="download-btn">🔗 Görseli Aç</a>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+        
+        container.appendChild(grid);
+    </script>
+</body>
+</html>

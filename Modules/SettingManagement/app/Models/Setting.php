@@ -90,14 +90,18 @@ class Setting extends Model implements HasMedia
             }
         }
 
-        // SettingValue tenant database'de olduğu için
-        // tenant connection'ı kullanarak sorgu yapmalıyız
-
-        // Tenant context varsa tenant DB'den çek
+        // ⚡ PERFORMANCE FIX: Use eager loaded 'values' relation if available
+        // This prevents N+1 query problem (700+ queries → 0 queries)
         if (tenant()) {
-            $settingValue = SettingValue::on('tenant')
-                ->where('setting_id', $this->id)
-                ->first();
+            // If 'values' relation is already loaded, use it (no extra query)
+            if ($this->relationLoaded('values')) {
+                $settingValue = $this->values->first();
+            } else {
+                // Fallback: Query database (only if not eager loaded)
+                $settingValue = SettingValue::on('tenant')
+                    ->where('setting_id', $this->id)
+                    ->first();
+            }
 
             if ($settingValue && $settingValue->value !== null) {
                 return $settingValue->value;
@@ -296,6 +300,8 @@ class Setting extends Model implements HasMedia
 
     /**
      * Setting'in media URL'sini al
+     *
+     * ⚠️ CRITICAL FIX: Media kayıtlarını tenant DB'den al
      */
     public function getMediaUrl(): ?string
     {
@@ -305,20 +311,20 @@ class Setting extends Model implements HasMedia
 
         $collection = $this->getMediaCollectionName();
 
-        // Try standard Spatie method first
-        try {
-            $url = $this->getFirstMediaUrl($collection);
-            if ($url) {
-                return $url;
+        // ✅ FIX: Media'yı tenant context'te ara
+        return $this->executeMediaOperationInTenantContext(function() use ($collection) {
+            // Try standard Spatie method first
+            try {
+                $url = $this->getFirstMediaUrl($collection);
+                if ($url) {
+                    return $url;
+                }
+            } catch (\Exception $e) {
+                // Ignore and try manual query
             }
-        } catch (\Exception $e) {
-            // Ignore and try manual query
-        }
 
-        // Fallback: Manuel tenant DB query (web request context)
-        try {
-            $tenantConnection = config('database.connections.tenant.database');
-            if ($tenantConnection) {
+            // Fallback: Manuel tenant DB query
+            try {
                 $media = \DB::connection('tenant')
                     ->table('media')
                     ->where('model_type', self::class)
@@ -334,16 +340,20 @@ class Setting extends Model implements HasMedia
                         return $mediaModel->getUrl();
                     }
                 }
+            } catch (\Exception $e) {
+                \Log::debug('getMediaUrl fallback failed', ['error' => $e->getMessage()]);
             }
-        } catch (\Exception $e) {
-            \Log::debug('getMediaUrl fallback failed', ['error' => $e->getMessage()]);
-        }
 
-        return null;
+            return null;
+        });
     }
 
     /**
      * Setting'e media attach et
+     *
+     * ⚠️ CRITICAL FIX: Setting model CentralConnection kullanır ama
+     * media kayıtları TENANT database'de olmalı!
+     * Bu yüzden media'yı tenant context'te ekliyoruz.
      */
     public function attachSettingMedia($file): void
     {
@@ -353,11 +363,49 @@ class Setting extends Model implements HasMedia
 
         $collection = $this->getMediaCollectionName();
 
-        // Eski medyayı temizle (singleFile olduğu için)
-        $this->clearMediaCollection($collection);
+        // ✅ FIX: Media işlemlerini tenant context'te yap
+        $this->executeMediaOperationInTenantContext(function() use ($file, $collection) {
+            // Eski medyayı temizle (singleFile olduğu için)
+            $this->clearMediaCollection($collection);
 
-        // Yeni medyayı ekle
-        $this->addMedia($file)
-            ->toMediaCollection($collection);
+            // Yeni medyayı ekle
+            $this->addMedia($file)
+                ->toMediaCollection($collection);
+        });
+    }
+
+    /**
+     * Media işlemlerini tenant context'te çalıştır
+     *
+     * Setting model central DB kullanır ama media tenant DB'de olmalı.
+     * Bu method media işlemlerini geçici olarak tenant connection'a switch eder.
+     */
+    protected function executeMediaOperationInTenantContext(callable $callback)
+    {
+        // Mevcut connection'ı sakla
+        $originalConnection = $this->getConnectionName();
+
+        // Tenant context varsa tenant connection kullan
+        if (function_exists('tenant') && tenant()) {
+            // Geçici olarak connection'ı değiştir
+            $this->setConnection('tenant');
+
+            try {
+                // Callback'i çalıştır
+                $result = $callback();
+
+                // Connection'ı geri al
+                $this->setConnection($originalConnection);
+
+                return $result;
+            } catch (\Exception $e) {
+                // Hata olursa connection'ı geri al
+                $this->setConnection($originalConnection);
+                throw $e;
+            }
+        }
+
+        // Tenant context yoksa direkt çalıştır (central için)
+        return $callback();
     }
 }

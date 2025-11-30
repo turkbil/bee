@@ -134,28 +134,31 @@
    KEYBOARD SHORTCUTS FEEDBACK
    ======================================== */
 
+/* Modern Keyboard Feedback - Minimal & Professional */
 .keyboard-feedback {
     position: fixed;
-    top: 50%;
+    bottom: 120px;
     left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.9);
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(24, 24, 27, 0.95);
+    backdrop-filter: blur(12px);
     color: #fff;
-    padding: 20px 40px;
+    padding: 12px 24px;
     border-radius: 12px;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 500;
     z-index: 10000;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s ease;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
-                0 0 20px rgba(255, 127, 80, 0.3);
-    border: 2px solid rgba(255, 127, 80, 0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.02em;
 }
 
 .keyboard-feedback.show {
     opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 /* Keyboard Help Modal */
@@ -259,4 +262,93 @@
     flex: 1;
     color: #e0e0e0;
     font-size: 1rem;
+}
+
+/* ==================== STAGGER ANIMATIONS ==================== */
+/* Skeleton cards */
+.skeleton-stagger-1 { animation-delay: 0ms; }
+.skeleton-stagger-2 { animation-delay: 50ms; }
+.skeleton-stagger-3 { animation-delay: 100ms; }
+.skeleton-stagger-4 { animation-delay: 150ms; }
+.skeleton-stagger-5 { animation-delay: 200ms; }
+
+/* Section delays */
+.section-delay-1 { animation-delay: 100ms; }
+.section-delay-2 { animation-delay: 200ms; }
+.section-delay-3 { animation-delay: 300ms; }
+
+/* Card stagger (up to 30 items) */
+.card-stagger-0 { animation-delay: 0ms; }
+.card-stagger-1 { animation-delay: 30ms; }
+.card-stagger-2 { animation-delay: 60ms; }
+.card-stagger-3 { animation-delay: 90ms; }
+.card-stagger-4 { animation-delay: 120ms; }
+.card-stagger-5 { animation-delay: 150ms; }
+.card-stagger-6 { animation-delay: 180ms; }
+.card-stagger-7 { animation-delay: 210ms; }
+.card-stagger-8 { animation-delay: 240ms; }
+.card-stagger-9 { animation-delay: 270ms; }
+
+/* Playlist/Album stagger (up to 20 items) */
+.item-stagger-0 { animation-delay: 0ms; }
+.item-stagger-1 { animation-delay: 80ms; }
+.item-stagger-2 { animation-delay: 160ms; }
+.item-stagger-3 { animation-delay: 240ms; }
+.item-stagger-4 { animation-delay: 320ms; }
+.item-stagger-5 { animation-delay: 400ms; }
+.item-stagger-6 { animation-delay: 480ms; }
+.item-stagger-7 { animation-delay: 560ms; }
+.item-stagger-8 { animation-delay: 640ms; }
+.item-stagger-9 { animation-delay: 720ms; }
+
+/* ==================== CUSTOM SCROLLBAR (TRANSPARAN - HOVER BELIRGIN) ==================== */
+/* Webkit browsers (Chrome, Safari, Edge) */
+.muzibu-left-sidebar::-webkit-scrollbar,
+.muzibu-right-sidebar::-webkit-scrollbar,
+.muzibu-main::-webkit-scrollbar {
+    width: 8px;
+}
+
+.muzibu-left-sidebar::-webkit-scrollbar-track,
+.muzibu-right-sidebar::-webkit-scrollbar-track,
+.muzibu-main::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Her zaman transparan görünür */
+.muzibu-left-sidebar::-webkit-scrollbar-thumb,
+.muzibu-right-sidebar::-webkit-scrollbar-thumb,
+.muzibu-main::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+/* Sadece ilgili section'a hover'da daha belirgin */
+.muzibu-left-sidebar:hover::-webkit-scrollbar-thumb,
+.muzibu-right-sidebar:hover::-webkit-scrollbar-thumb,
+.muzibu-main:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Scrollbar thumb'a direkt hover'da en belirgin */
+.muzibu-left-sidebar::-webkit-scrollbar-thumb:hover,
+.muzibu-right-sidebar::-webkit-scrollbar-thumb:hover,
+.muzibu-main::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Firefox */
+.muzibu-left-sidebar,
+.muzibu-right-sidebar,
+.muzibu-main {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    transition: scrollbar-color 0.2s ease;
+}
+
+.muzibu-left-sidebar:hover,
+.muzibu-right-sidebar:hover,
+.muzibu-main:hover {
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }

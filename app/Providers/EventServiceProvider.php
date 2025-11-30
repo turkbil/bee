@@ -21,7 +21,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        
+
+        // Remember Me cookie duration (tenant-aware)
+        \Illuminate\Auth\Events\Login::class => [
+            \App\Listeners\SetRememberMeCookieDuration::class,
+        ],
+
         // Module management events
         ModuleEnabled::class => [
             LoadModuleRoutes::class,

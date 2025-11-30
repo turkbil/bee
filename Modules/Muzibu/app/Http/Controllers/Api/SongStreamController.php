@@ -65,10 +65,13 @@ class SongStreamController extends Controller
                     // 🔐 SIGNED HLS URL (60 dakika - chunked streaming için uzun)
                     $streamUrl = $this->signedUrlService->generateHlsUrl($songId, 60);
                     $streamType = 'hls';
+                    // 🔐 MP3 fallback (signed URL)
+                    $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
                 } else {
                     // 🔐 SIGNED MP3 URL (30 dakika)
                     $streamUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
                     $streamType = 'mp3';
+                    $fallbackUrl = null; // No fallback for MP3
                 }
 
                 return response()->json([
@@ -76,6 +79,7 @@ class SongStreamController extends Controller
                     'message' => 'Kayıt olun, tam dinleyin',
                     'stream_url' => $streamUrl, // 🔐 SIGNED URL
                     'stream_type' => $streamType,
+                    'fallback_url' => $fallbackUrl, // 🔐 SIGNED MP3 fallback (HLS fails)
                     'preview_duration' => 30,
                     'is_premium' => false,
                     'song' => [
@@ -106,10 +110,13 @@ class SongStreamController extends Controller
                     // 🔐 SIGNED HLS URL (60 dakika)
                     $streamUrl = $this->signedUrlService->generateHlsUrl($songId, 60);
                     $streamType = 'hls';
+                    // 🔐 MP3 fallback (signed URL)
+                    $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
                 } else {
                     // 🔐 SIGNED MP3 URL (30 dakika)
                     $streamUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
                     $streamType = 'mp3';
+                    $fallbackUrl = null; // No fallback for MP3
                 }
 
                 return response()->json([
@@ -117,6 +124,7 @@ class SongStreamController extends Controller
                     'message' => 'Premium\'a geçin, sınırsız dinleyin',
                     'stream_url' => $streamUrl, // 🔐 SIGNED URL
                     'stream_type' => $streamType,
+                    'fallback_url' => $fallbackUrl, // 🔐 SIGNED MP3 fallback (HLS fails)
                     'preview_duration' => 30,
                     'is_premium' => false,
                     'song' => [
@@ -174,6 +182,7 @@ class SongStreamController extends Controller
                 'message' => 'HLS stream ready',
                 'stream_url' => $this->signedUrlService->generateHlsUrl($songId, 60), // 🔐 SIGNED HLS URL
                 'stream_type' => 'hls',
+                'fallback_url' => $this->signedUrlService->generateStreamUrl($songId, 30), // 🔐 SIGNED MP3 fallback
                 'hls_converting' => false,
                 'remaining' => $user->getRemainingPlays(),
                 'is_premium' => $user->isPremium(), // 🔄 Frontend sync için güncel durum

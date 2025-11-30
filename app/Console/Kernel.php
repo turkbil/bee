@@ -68,6 +68,13 @@ class Kernel extends ConsoleKernel
                  ->withoutOverlapping()
                  ->appendOutputTo(storage_path('logs/pruning.log'));
 
+        // Telescope Prune - 1 gün üzeri kayıtları sil (Günlük 04:00)
+        $schedule->command('telescope:prune --hours=24')
+                 ->daily()
+                 ->at('04:00')
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/telescope-prune.log'));
+
         // Plesk Orphan Database Cleanup - Günlük (03:30)
         $schedule->command('plesk:clean-orphan-databases')
                  ->daily()
@@ -88,33 +95,18 @@ class Kernel extends ConsoleKernel
                      ->withoutOverlapping();
         }
 
-        // ENTERPRISE HORIZON MONITORING - Production Ready
-        $schedule->call(function () {
-            try {
-                // Horizon durumunu kontrol et
-                $output = null;
-                $return_var = null;
-                exec('php artisan horizon:status 2>/dev/null', $output, $return_var);
-
-                if ($return_var !== 0 || empty($output)) {
-                    // Horizon durmuş - Otomatik restart
-                    \Log::warning('🚨 HORIZON DOWN DETECTED - Auto restarting...');
-
-                    // Stuck processes'leri temizle
-                    exec('pkill -f "horizon" 2>/dev/null');
-                    sleep(2);
-
-                    // Horizon'u background'da başlat
-                    exec('cd ' . base_path() . ' && php artisan horizon > /dev/null 2>&1 &');
-
-                    \Log::info('✅ HORIZON AUTO-RESTARTED successfully');
-                } else {
-                    \Log::debug('✅ Horizon health check passed');
-                }
-            } catch (\Exception $e) {
-                \Log::error('❌ Horizon monitoring failed: ' . $e->getMessage());
-            }
-        })->everyFiveMinutes()->name('horizon-auto-restart');
+        // 🔧 HORIZON MONITORING - DISABLED (Supervisor handles restart)
+        // ⚠️ BU AUTO-RESTART SORUNLUYDU!
+        // - Her 5 dakikada pkill yapıyordu → Mevcut Horizon'ları öldürüyordu
+        // - Background'da başlatıyordu (&) → Orphan process oluşuyordu
+        // - Supervisor zaten Horizon'u yönetiyor → Çift başlatma problemi
+        //
+        // ÇÖZÜM: Supervisor config kullan (/etc/supervisor/conf.d/)
+        // Eğer Supervisor yoksa, manuel systemd service oluştur
+        //
+        // $schedule->call(function () {
+        //     // DISABLED - See comment above
+        // })->everyFiveMinutes()->name('horizon-auto-restart');
 
         // CURRENCY RATES AUTO UPDATE - Artık ShopServiceProvider'da tanımlı
         // Bu satırlar ShopServiceProvider::registerCommandSchedules() metoduna taşındı

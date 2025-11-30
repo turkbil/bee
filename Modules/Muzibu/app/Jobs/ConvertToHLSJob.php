@@ -98,18 +98,39 @@ class ConvertToHLSJob implements ShouldQueue
             $keyInfoPath = $tenantStoragePath . '/enc.keyinfo';
             file_put_contents($keyInfoPath, "{$keyUrl}\n{$keyFilePath}\n{$encryptionIV}");
 
-            // FFmpeg command for HLS conversion with AES-128 encryption
+            // 🎵 ULTIMATE EDITION: Get original bitrate (preserve quality)
+            // If bitrate not set, default to 256kbps
+            $bitrate = $song->bitrate ?: 256;
+
+            // 🔊 ULTIMATE EDITION Audio Filters:
+            // 1. Loudnorm: Loudness normalization (LUFS-based)
+            // 2. Stereotools: Stereo widening
+            // 3. Equalizer: Bass boost (+1dB @ 100Hz) + Treble cut (-2dB @ 8kHz)
+            // 4. Lowpass: 14kHz filter (remove ultra-high frequencies)
+            $audioFilters = implode(',', [
+                'loudnorm=I=-16:TP=-1.5:LRA=11',           // Loudness normalization
+                'stereotools=mlev=1.2',                    // Stereo widening
+                'equalizer=f=100:t=q:w=1:g=1',             // Bass boost +1dB
+                'equalizer=f=8000:t=q:w=1:g=-2',           // Treble cut -2dB
+                'lowpass=f=14000'                           // Low-pass 14kHz
+            ]);
+
+            // FFmpeg command for HLS conversion with AES-128 encryption + Ultimate Edition filters
             // Options:
             // -map 0:a = only audio stream (skip album art/video)
-            // -c copy = no re-encoding (fast)
+            // -c:a aac = AAC encoding (required for filters)
+            // -b:a {bitrate}k = preserve original bitrate
+            // -af = audio filters (Ultimate Edition)
             // -start_number 0 = start segment numbering from 0
             // -hls_time 10 = 10 second segments
             // -hls_list_size 0 = include all segments in playlist
             // -hls_key_info_file = encryption key info
             // -f hls = output format HLS
             $command = sprintf(
-                'ffmpeg -i %s -map 0:a -c copy -start_number 0 -hls_time 10 -hls_list_size 0 -hls_key_info_file %s -f hls %s 2>&1',
+                'ffmpeg -i %s -map 0:a -c:a aac -b:a %dk -af %s -start_number 0 -hls_time 10 -hls_list_size 0 -hls_key_info_file %s -f hls %s 2>&1',
                 escapeshellarg($inputPath),
+                $bitrate,
+                escapeshellarg($audioFilters),
                 escapeshellarg($keyInfoPath),
                 escapeshellarg($playlistPath)
             );

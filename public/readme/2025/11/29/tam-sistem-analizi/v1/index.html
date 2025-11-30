@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tam Sistem Analizi Raporu - v1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #495057;
+            --border-color: #dee2e6;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --radius: 0.75rem;
+            --accent-blue: #0d6efd;
+            --accent-red: #dc3545;
+            --accent-orange: #fd7e14;
+            --accent-green: #198754;
+        }
+        [data-theme="dark"] {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { font-size: 2.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .header .meta { font-size: 1rem; color: var(--text-secondary); }
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); }
+        .card h2, .card h3 { font-weight: 600; margin-bottom: 1rem; }
+        .card h2 { font-size: 1.75rem; display: flex; align-items: center; gap: 0.75rem; }
+        .card h3 { font-size: 1.25rem; }
+        .summary-card p { font-size: 1.1rem; color: var(--text-secondary); max-width: 800px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .icon { width: 28px; height: 28px; }
+        .finding-card { border-left: 5px solid; padding-left: 1.5rem; }
+        .finding-critical { border-color: var(--accent-red); }
+        .finding-critical h3 { color: var(--accent-red); }
+        .finding-high { border-color: var(--accent-orange); }
+        .finding-high h3 { color: var(--accent-orange); }
+        .finding-medium { border-color: var(--accent-blue); }
+        .finding-medium h3 { color: var(--accent-blue); }
+        .location-tag {
+            display: inline-block;
+            font-size: 0.85em;
+            padding: 0.3em 0.7em;
+            border-radius: 1rem;
+            background-color: var(--border-color);
+            color: var(--text-secondary);
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+        }
+        code {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: var(--accent-blue);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .roadmap ol { list-style: none; padding-left: 0; counter-reset: step-counter; }
+        .roadmap li { counter-increment: step-counter; margin-bottom: 1.5rem; display: flex; align-items: flex-start; }
+        .roadmap li::before {
+            content: counter(step-counter);
+            font-weight: 700;
+            font-size: 1.25rem;
+            background-color: var(--accent-blue);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            margin-right: 1rem;
+        }
+        .theme-toggle { position: fixed; top: 20px; right: 20px; cursor: pointer; padding: 8px; border-radius: 50%; background-color: var(--bg-secondary); border: 1px solid var(--border-color); z-index: 100; }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <svg class="icon" id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.106a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5h2.25a.75.75 0 01.75.75zM17.836 17.836a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.864 6.106a.75.75 0 00-1.06 1.06l1.59 1.591a.75.75 0 101.061-1.06l-1.59-1.591zM4.25 12a.75.75 0 01-.75.75H1.25a.75.75 0 010-1.5h2.25a.75.75 0 01.75.75zM6.106 17.836a.75.75 0 001.06 1.06l1.591-1.59a.75.75 0 10-1.06-1.061l-1.591 1.59z"></path></svg>
+        <svg class="icon" id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 004.463-1.428.75.75 0 01.98.633A10.5 10.5 0 0112 21a10.5 10.5 0 01-10.5-10.5c0-4.306 2.56-8.007 6.3-9.662a.75.75 0 01.696-.62z" clip-rule="evenodd"></path></svg>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Tam Sistem Analizi Raporu</h1>
+            <p class="meta">Versiyon 1.0 | Tarih: 2025-11-29 | Analiz Motoru: Gemini</p>
+        </div>
+
+        <div class="card summary-card" style="border-top: 5px solid var(--accent-red);">
+            <h2>
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                Yönetici Özeti: Acil Durum
+            </h2>
+            <p>
+                Sistem, kararlılık ve güvenlik açısından **acil müdahale gerektiren çok sayıda kritik risk** barındırmaktadır. Proje, henüz yayınlanmamış, **dengesiz bir Laravel sürümü** üzerinde çalışmaktadır. Daha da önemlisi, veritabanından gelen verilerin güvenlik süzgecinden geçirilmeden ekrana yazdırılması nedeniyle, sistem genelinde **yüksek riskli Cross-Site Scripting (XSS) güvenlik açıkları** mevcuttur. Bu rapor, en kritik sorunları ve öncelikli çözüm yol haritasını özetlemektedir.
+            </p>
+        </div>
+
+        <div class="card">
+            <h2 style="color: var(--accent-red);">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a8.25 8.25 0 003.362 4.126zM5.214 15.362L18.97 1.608" /></svg>
+                Kırmızı Alarm: Acil Eylem Gerektiren Riskler
+            </h2>
+            <div class="grid">
+                <div class="finding-card finding-critical">
+                    <h3>1. Dengesiz Altyapı: Geliştirme Sürümü Kullanımı</h3>
+                    <p>Proje, stabil ve uzun dönem destekli bir sürüm yerine, test ve geliştirme için kullanılan, yayınlanmamış <strong>Laravel v12.0</strong> sürümünü kullanmaktadır. Bu, öngörülemeyen hatalara, uyumsuzluklara ve en önemlisi giderilmemiş güvenlik açıklarına davetiye çıkarır.</p>
+                    <span class="location-tag">composer.json</span>
+                </div>
+                <div class="finding-card finding-critical">
+                    <h3>2. Kritik XSS Zafiyeti: Güvensiz Veri Yazdırma</h3>
+                    <p>Sistem genelinde (Sayfa, Blog, Anons, Arama vb. modüllerde) veritabanından gelen içerik, güvenlik kontrolü olmadan doğrudan <code>{!! !!}</code> etiketleriyle ekrana yazdırılmaktadır. Bu durum, saldırganların sisteme zararlı JavaScript kodları enjekte ederek kullanıcıların oturum bilgilerini çalmasına veya siteyi ele geçirmesine olanak tanır.</p>
+                     <span class="location-tag">Tüm *.blade.php dosyaları</span>
+                </div>
+                 <div class="finding-card finding-critical">
+                    <h3>3. Hizmet Reddi (DoS) Riski: Güvensiz Dosya Yükleme</h3>
+                    <p>Dosya yükleme mantığı, dosya boyutu kontrolünü sunucu tarafında yapmamaktadır. Bu, bir saldırganın sisteme gigabaytlarca büyüklükte bir dosya göndererek sunucu diskini doldurmasına ve sistemi tamamen hizmet veremez hale getirmesine olanak tanıyan klasik bir güvenlik açığıdır.</p>
+                     <span class="location-tag">Modules/MediaManagement/.../HasMediaManagement.php</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+             <h2 style="color: var(--accent-orange);">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Turuncu Alarm: Yüksek Öncelikli İyileştirmeler
+            </h2>
+             <div class="grid">
+                <div class="finding-card finding-high">
+                    <h3>1. Mimari Çelişki: "Split-Brain" Kullanıcı Modeli</h3>
+                    <p>Önceki raporda detaylandırıldığı gibi, sistem hem merkezi hem de kiracıya özel kullanıcı tabloları oluşturarak büyük bir kafa karışıklığına ve veri bütünlüğü riskine neden olmaktadır. Bu durum, projenin temel mimarisinin netleştirilmesini gerektiren önemli bir teknik borçtur.</p>
+                    <span class="location-tag">database/migrations/</span>
+                    <span class="location-tag">database/migrations/tenant/</span>
+                </div>
+                <div class="finding-card finding-high">
+                    <h3>2. "Şişman Kontrolcü" ve Riskli Sorgular</h3>
+                    <p><code>DebugDashboardController</code> gibi kontrolcüler, içinde aşırı miktarda iş mantığı ve ham veritabanı sorgusu (<code>DB::raw</code>) barındırmaktadır. Bu, kodun test edilmesini ve bakımını zorlaştırır, ayrıca gelecekte SQL Injection gibi zafiyetlere yol açma potansiyeli taşır.</p>
+                    <span class="location-tag">Modules/AI/.../DebugDashboardController.php</span>
+                </div>
+                 <div class="finding-card finding-high">
+                    <h3>3. Yansıtılmış XSS Zafiyeti: Arama Sonuçları</h3>
+                    <p>Arama sonuçları sayfasında, arama motorundan gelen ve vurgulanan metinler (<code>highlighted_*</code>) de güvenlik kontrolü olmadan ekrana yazdırılmaktadır. Eğer arama motorunun indexlediği içerik kullanıcı girdisiyle manipüle edilebilirse, bu bir "Reflected XSS" zafiyetine yol açabilir.</p>
+                    <span class="location-tag">Modules/Search/resources/views/show.blade.php</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card roadmap">
+             <h2 style="color: var(--accent-green);">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Çözüm Yol Haritası: Öncelikli Adımlar
+            </h2>
+            <ol>
+                <li>
+                    <div>
+                        <h4>ADIM 1: Altyapıyı Stabilize Et</h4>
+                        <p><strong>Hemen yapılmalı.</strong> <code>composer.json</code> dosyasını açın, <code>"laravel/framework": "^12.0"</code> satırını, projenin uyumlu olduğu en güncel stabil sürümle (örneğin, <code>"^11.0"</code>) değiştirin ve <code>composer update</code> komutunu çalıştırarak altyapıyı güvenli ve stabil bir temele oturtun.</p>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <h4>ADIM 2: XSS Zafiyetlerini Kapat</h4>
+                        <p><strong>Hemen yapılmalı.</strong> Sistemdeki tüm <code>{!! !!}</code> kullanımlarını denetleyin. Kullanıcıdan veya veritabanından gelen verileri yazdırırken, güvenli olan <code>{{ }}</code> etiketlerini kullanın. HTML yazdırmanın zorunlu olduğu yerlerde, zararlı kodları temizlemek için <code>HTMLPurifier</code> gibi güvenilir bir kütüphane entegre edin.</p>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <h4>ADIM 3: Dosya Yükleme Güvenliğini Sağla</h4>
+                        <p><strong>Yüksek öncelik.</strong> <code>HasMediaManagement.php</code> trait'i içinde veya bu trait'i çağıran servis katmanında, dosya türü ve boyutu için **sunucu taraflı doğrulama** ekleyin. Asla sadece kullanıcı tarafındaki doğrulamaya güvenmeyin.</p>
+                    </div>
+                </li>
+                 <li>
+                    <div>
+                        <h4>ADIM 4: Mimari Kararını Ver</h4>
+                        <p><strong>Orta öncelik.</strong> "Split-Brain" kullanıcı modelini çözün. Ya merkezi kullanıcı modelini tam olarak benimseyin (Tavsiye Edilen) ya da kiracıya özel kullanıcı modelini resmi olarak kabul edip dökümantasyonu ve kod yapısını buna göre güncelleyin.</p>
+                    </div>
+                </li>
+                 <li>
+                    <div>
+                        <h4>ADIM 5: Kodu Yeniden Yapılandır (Refactor)</h4>
+                        <p><strong>Planlanmalı.</strong> "Şişman Kontrolcü" gibi problemli yapıları, iş mantığını servis katmanlarına taşıyarak yeniden yapılandırın. Ham SQL sorgularını mümkün olduğunca Laravel'in standart veritabanı araçları (Eloquent, Query Builder) ile değiştirin.</p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            document.getElementById('theme-icon-sun').style.display = newTheme === 'dark' ? 'none' : 'block';
+            document.getElementById('theme-icon-moon').style.display = newTheme === 'dark' ? 'block' : 'none';
+        }
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.body.setAttribute('data-theme', savedTheme);
+        } else if (prefersDark) {
+            document.body.setAttribute('data-theme', 'dark');
+        } else {
+             document.body.setAttribute('data-theme', 'light');
+        }
+        toggleTheme(); // Set initial state
+        toggleTheme(); // a bit of a hack to get the icons right on first load
+    </script>
+</body>
+</html>

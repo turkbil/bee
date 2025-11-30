@@ -87,18 +87,24 @@ class FormBuilderComponent extends Component
             if (isset($existingSettings[$key])) {
                 // Mevcut setting'i güncelle
                 $setting = $existingSettings[$key];
-                $setting->update([
+                $updateData = [
                     'label' => $settingData['label'] ?? $setting->label,
                     'type' => $settingData['type'] ?? $setting->type,
                     'default_value' => $settingData['default_value'] ?? $setting->default_value,
                     'is_required' => $settingData['required'] ?? false,
                     'sort_order' => $sortOrder,
-                ]);
+                ];
 
+                // Options varsa ekle (select, radio için)
+                if (isset($settingData['options']) && !empty($settingData['options'])) {
+                    $updateData['options'] = $settingData['options'];
+                }
+
+                $setting->update($updateData);
                 \Log::info("Setting güncellendi: {$key}");
             } else {
                 // Yeni setting oluştur
-                Setting::create([
+                $createData = [
                     'group_id' => $groupId,
                     'key' => $key,
                     'label' => $settingData['label'] ?? ucfirst(str_replace('_', ' ', $key)),
@@ -108,8 +114,14 @@ class FormBuilderComponent extends Component
                     'is_active' => true,
                     'is_system' => false,
                     'sort_order' => $sortOrder,
-                ]);
+                ];
 
+                // Options varsa ekle (select, radio için)
+                if (isset($settingData['options']) && !empty($settingData['options'])) {
+                    $createData['options'] = $settingData['options'];
+                }
+
+                Setting::create($createData);
                 \Log::info("Yeni setting oluşturuldu: {$key}");
             }
 
@@ -139,13 +151,30 @@ class FormBuilderComponent extends Component
                 $name = $props['name'] ?? null;
 
                 if (!empty($name)) {
-                    $result[] = [
+                    $settingData = [
                         'name' => $name,
                         'label' => $props['label'] ?? null,
                         'type' => $type,
                         'default_value' => $props['default_value'] ?? $props['default'] ?? null,
                         'required' => $props['required'] ?? false,
                     ];
+
+                    // Select ve radio için options'ı da al
+                    if (in_array($type, ['select', 'radio']) && isset($props['options'])) {
+                        // JavaScript formatı: [{value, label}] → DB formatı: {value: label}
+                        $options = [];
+                        foreach ($props['options'] as $opt) {
+                            if (is_array($opt) && isset($opt['value']) && isset($opt['label'])) {
+                                $options[$opt['value']] = $opt['label'];
+                            } elseif (is_string($opt)) {
+                                // Eski format: string array
+                                $options[] = $opt;
+                            }
+                        }
+                        $settingData['options'] = $options;
+                    }
+
+                    $result[] = $settingData;
                 }
             }
 

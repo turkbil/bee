@@ -57,7 +57,8 @@ Route::prefix('muzibu')->group(function () {
             ->name('api.muzibu.songs.stream')
             ->middleware('throttle.user:stream'); // 🔥 Guest: 30/min, Member: 120/min, Premium: 300/min
         Route::get('/{id}/serve', [SongController::class, 'serve'])
-            ->name('api.muzibu.songs.serve'); // No middleware for now - debugging
+            ->name('api.muzibu.songs.serve')
+            ->middleware(['signed.url', 'throttle.user:stream']); // 🔐 Signed URL + rate limiting
         Route::get('/{id}/key', [SongController::class, 'serveEncryptionKey'])
             ->name('api.muzibu.songs.encryption-key')
             ->middleware('throttle.user:api'); // Rate limit to prevent key harvesting

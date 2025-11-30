@@ -65,7 +65,7 @@
                                 $description = $metadesc ?? (strip_tags($body) ?? null);
 
                                 $variants = $item->childProducts ?? collect();
-                                $featuredImage = $item->getFirstMedia('featured_image');
+                                $featuredImage = $item->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
                             @endphp
 
                             <!-- Ürün Kartı -->

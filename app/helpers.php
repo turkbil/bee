@@ -143,8 +143,8 @@ if (!function_exists('process_blog_images')) {
         $dom->loadHTML('<?xml encoding="UTF-8">' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
 
-        // Tüm img tag'lerini bul
-        $images = $dom->getElementsByTagName('img');
+        // Tüm img tag'lerini bul (array'e dönüştür - live NodeList sorunu için)
+        $images = iterator_to_array($dom->getElementsByTagName('img'));
 
         foreach ($images as $img) {
             // 1️⃣ Lazy loading ekle (eğer yoksa)
@@ -166,11 +166,14 @@ if (!function_exists('process_blog_images')) {
 
             // Storage URL kontrolü (storage/ içeren URL'ler)
             if (str_contains($src, '/storage/')) {
+                // Orijinal src'yi sakla (lightbox için)
+                $originalSrc = $src;
+
                 // Width/height attribute'larını oku (varsa)
                 $width = $img->hasAttribute('width') ? (int) $img->getAttribute('width') : $defaultWidth;
                 $height = $img->hasAttribute('height') ? (int) $img->getAttribute('height') : $defaultHeight;
 
-                // Thumbmaker URL oluştur
+                // Thumbmaker URL oluştur (küçük versiyon - thumbnail)
                 $thumbUrl = thumb($src, $width, $height, [
                     'quality' => $quality,
                     'format' => 'webp',
@@ -187,6 +190,14 @@ if (!function_exists('process_blog_images')) {
                 }
                 if (!$img->hasAttribute('height')) {
                     $img->setAttribute('height', (string) $height);
+                }
+
+                // 3️⃣ Lightbox için data attribute ekle (JavaScript ile wrapper eklenecek)
+                $img->setAttribute('data-glightbox-src', $originalSrc);
+                $img->setAttribute('data-glightbox-gallery', 'blog-content');
+
+                if ($img->hasAttribute('alt') && !empty($img->getAttribute('alt'))) {
+                    $img->setAttribute('data-glightbox-title', $img->getAttribute('alt'));
                 }
             }
         }

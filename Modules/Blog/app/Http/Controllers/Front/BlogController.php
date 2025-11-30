@@ -393,7 +393,7 @@ class BlogController extends Controller
 
         // SADECE aktif dilde slug ara - locale-aware
         $item = Blog::query()
-            ->with('category')
+            ->with(['category', 'media'])
             ->where('is_active', true)
             ->published()
             ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"" . $currentLocale . "\"')) = ?", [$slug])
@@ -410,7 +410,7 @@ class BlogController extends Controller
                 }
 
                 $item = Blog::query()
-                    ->with('category')
+                    ->with(['category', 'media'])
                     ->where('is_active', true)
                     ->published()
                     ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"" . $locale . "\"')) = ?", [$slug])

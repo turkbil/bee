@@ -84,7 +84,19 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center justify-content-between">
-                                            <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center gap-3">
+                                                @php
+                                                    $heroImage = $product->getFirstMediaWithFallback();
+                                                @endphp
+                                                @if($heroImage)
+                                                    <img src="{{ $heroImage->getUrl('thumb') }}"
+                                                         alt="Product"
+                                                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; flex-shrink: 0;">
+                                                @else
+                                                    <div style="width: 40px; height: 40px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                        <i class="fas fa-image text-muted" style="font-size: 0.9rem;"></i>
+                                                    </div>
+                                                @endif
                                                 <span class="editable-title pr-4">
                                                     {{ $product->getTranslated('title', $currentSiteLocale) ?? $product->getTranslated('title', 'tr') }}
                                                 </span>

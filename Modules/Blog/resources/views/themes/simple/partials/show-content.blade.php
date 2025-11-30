@@ -31,7 +31,7 @@
 
     $tags = $item->relationLoaded('tags') ? $item->tags : $item->tags()->get();
 
-    $featuredImage = $item->getFirstMedia('featured_image');
+    $featuredImage = getFirstMediaWithFallback($item);
     $galleryImages = $item->getMedia('gallery') ?? collect();
 
     $shareUrl = method_exists($item, 'getUrl') ? $item->getUrl($currentLocale) : url()->current();
@@ -272,8 +272,9 @@
                             @foreach($relatedBlogs as $relatedBlog)
                                 <article class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
                                     <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block">
-                                        @if($relatedBlog->getFirstMedia('featured_image'))
-                                            <img src="{{ $relatedBlog->getFirstMedia('featured_image')->getUrl('thumb') }}"
+                                        @php $relatedMedia = getFirstMediaWithFallback($relatedBlog); @endphp
+                                        @if($relatedMedia)
+                                            <img src="{{ $relatedMedia->getUrl('thumb') }}"
                                                  alt="{{ $relatedBlog->getTranslated('title', $currentLocale) }}"
                                                  class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                                         @endif

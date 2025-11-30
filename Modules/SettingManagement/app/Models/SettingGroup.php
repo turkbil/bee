@@ -98,6 +98,126 @@ class SettingGroup extends Model
     }
 
     /**
+     * Layout accessor - Otomatik olarak select options formatını düzeltir
+     * JavaScript beklenen format: [{value, label, is_default}]
+     */
+    public function getLayoutAttribute($value): ?array
+    {
+        $layout = is_string($value) ? json_decode($value, true) : $value;
+
+        if (!$layout || !isset($layout['elements'])) {
+            return $layout;
+        }
+
+        // Options formatını düzelt
+        $layout['elements'] = $this->normalizeOptionsFormat($layout['elements']);
+
+        return $layout;
+    }
+
+    /**
+     * Recursive olarak tüm select elementlerinin options formatını düzeltir
+     */
+    protected function normalizeOptionsFormat(array $elements): array
+    {
+        foreach ($elements as &$el) {
+            // Select veya radio elementi mi?
+            if (isset($el['type']) && in_array($el['type'], ['select', 'radio'])) {
+                $name = $el['properties']['name'] ?? null;
+                $currentOptions = $el['properties']['options'] ?? null;
+
+                // Options yoksa veya yanlış formattaysa settings'ten al
+                if ($name && (!$currentOptions || !$this->isValidOptionsFormat($currentOptions))) {
+                    $setting = Setting::where('key', $name)->first();
+
+                    if ($setting && is_array($setting->options) && count($setting->options) > 0) {
+                        $el['properties']['options'] = $this->convertToJsFormat($setting->options);
+                    }
+                } elseif ($currentOptions && !$this->isValidOptionsFormat($currentOptions)) {
+                    // Mevcut options var ama format yanlış - düzelt
+                    $el['properties']['options'] = $this->convertToJsFormat($currentOptions);
+                }
+            }
+
+            // Row içindeki columns
+            if (isset($el['columns'])) {
+                foreach ($el['columns'] as &$col) {
+                    if (isset($col['elements'])) {
+                        $col['elements'] = $this->normalizeOptionsFormat($col['elements']);
+                    }
+                }
+            }
+
+            // Tab group içindeki tabs
+            if (isset($el['tabs'])) {
+                foreach ($el['tabs'] as &$tab) {
+                    if (isset($tab['elements'])) {
+                        $tab['elements'] = $this->normalizeOptionsFormat($tab['elements']);
+                    }
+                }
+            }
+        }
+
+        return $elements;
+    }
+
+    /**
+     * Options formatının doğru olup olmadığını kontrol eder
+     * Doğru format: [{value: "x", label: "y"}]
+     */
+    protected function isValidOptionsFormat($options): bool
+    {
+        if (!is_array($options) || empty($options)) {
+            return false;
+        }
+
+        $first = reset($options);
+        return is_array($first) && isset($first['value']) && isset($first['label']);
+    }
+
+    /**
+     * Herhangi bir options formatını JavaScript formatına çevirir
+     * Input: {"key": "label"} veya ["string"] veya [{value, label}]
+     * Output: [{value: "key", label: "label", is_default: bool}]
+     */
+    protected function convertToJsFormat($options): array
+    {
+        if (!is_array($options) || empty($options)) {
+            return [];
+        }
+
+        // Zaten doğru formatta mı?
+        $first = reset($options);
+        if (is_array($first) && isset($first['value']) && isset($first['label'])) {
+            return $options;
+        }
+
+        $result = [];
+        $isFirst = true;
+
+        foreach ($options as $key => $value) {
+            if (is_numeric($key)) {
+                // Indexed array: ["string1", "string2"]
+                $result[] = [
+                    'value' => (string)$key,
+                    'label' => $value,
+                    'is_default' => $isFirst
+                ];
+            } else {
+                // Associative array: {"key": "label"}
+                $result[] = [
+                    'value' => $key,
+                    'label' => $value,
+                    'is_default' => $isFirst
+                ];
+            }
+            $isFirst = false;
+        }
+
+        return $result;
+    }
+
+    /**
      * Get count of settings that have values (filled settings)
      * This counts actual SettingValue records, not just Setting definitions
      *

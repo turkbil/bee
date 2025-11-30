@@ -275,7 +275,7 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
     public function getSeoFallbackSchemaMarkup(): ?array
     {
         $currentLocale = app()->getLocale();
-        $featuredImage = $this->getFirstMedia('featured_image');
+        $featuredImage = $this->getFirstMedia('hero');
 
         $schema = [
             '@context' => 'https://schema.org',
@@ -591,7 +591,7 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
     protected function getMediaConfig(): array
     {
         return [
-            'featured_image' => [
+            'hero' => [
                 'type' => 'image',
                 'single_file' => true,
                 'max_items' => config('modules.media.max_items.featured', 1),

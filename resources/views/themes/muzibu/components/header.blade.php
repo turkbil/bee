@@ -1,5 +1,5 @@
-<header class="xl:col-span-3 lg:col-span-2 col-span-1 bg-black/80 backdrop-blur-md border-b border-white/5 px-8 flex items-center justify-between sticky top-0 z-50">
-    <div class="flex items-center gap-6 flex-1">
+<header class="xl:col-span-3 lg:col-span-2 col-span-1 bg-black/80 backdrop-blur-md border-b border-white/5 px-4 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-4 flex-1">
         {{-- Mobile Hamburger --}}
         <button
             @click="mobileMenuOpen = !mobileMenuOpen"
@@ -45,7 +45,7 @@
                      title="{{ $siteTitle }}">
             @else
                 {{-- Fallback: Gradient text logo --}}
-                <span class="bg-gradient-to-r from-muzibu-coral via-muzibu-coral-light to-muzibu-coral bg-clip-text text-transparent animate-gradient">
+                <span class="text-xl font-bold bg-gradient-to-r from-muzibu-coral via-muzibu-coral-light to-muzibu-coral bg-clip-text text-transparent animate-gradient">
                     {{ $siteTitle }}
                 </span>
             @endif
@@ -81,14 +81,14 @@
         </button>
 
         {{-- Search Box - Centered & Modern (Meilisearch) --}}
-        <div class="relative flex-1 max-w-5xl mx-auto hidden md:block group">
-            <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-muzibu-coral group-focus-within:scale-110 transition-all duration-300 text-lg"></i>
+        <div class="relative flex-1 max-w-2xl mx-auto hidden md:block group">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-muzibu-coral group-focus-within:scale-110 transition-all duration-300 text-sm"></i>
             <input
                 type="text"
                 placeholder="Şarkı, sanatçı, albüm ara..."
                 x-model="searchQuery"
                 @focus="searchOpen = true"
-                class="w-full pl-14 pr-6 py-3.5 bg-white/10 hover:bg-white/15 focus:bg-white/20 border-0 rounded-full text-white placeholder-zinc-300 focus:outline-none focus:ring-2 focus:ring-muzibu-coral/50 focus:shadow-lg focus:shadow-muzibu-coral/20 transition-all duration-300 text-base"
+                class="w-full pl-11 pr-5 py-2 bg-white/10 hover:bg-white/15 focus:bg-white/20 border-0 rounded-full text-white placeholder-zinc-300 focus:outline-none focus:ring-2 focus:ring-muzibu-coral/50 focus:shadow-lg focus:shadow-muzibu-coral/20 transition-all duration-300 text-sm"
             >
         </div>
     </div>
@@ -120,7 +120,7 @@
         <div x-show="isLoggedIn" x-cloak class="relative" x-data="{ userMenuOpen: false }">
             <button
                 @click="userMenuOpen = !userMenuOpen"
-                class="relative w-10 h-10 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark hover:from-muzibu-coral-light hover:to-muzibu-coral rounded-full text-white font-bold text-sm transition-all duration-300 shadow-lg hover:shadow-muzibu-coral/30"
+                class="relative w-10 h-10 bg-gradient-to-br from-[#ff6b6b] via-[#ff5252] to-[#e91e63] hover:opacity-90 rounded-full text-white font-bold text-sm transition-all duration-300 shadow-lg hover:shadow-xl"
             >
                 <span x-text="currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'"></span>
             </button>

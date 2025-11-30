@@ -461,20 +461,22 @@ class LeonardoAIService
         ];
 
         // ========== PROMPT BİRLEŞTİRME (11 KURAL FORMÜLÜ) ==========
+        // ⚠️ KRİTİK: Prompt MUTLAKA İngilizce olmalı!
+        // Leonardo API Türkçe anlamaz, sadece İngilizce kabul eder
 
         $prompt = sprintf(
             "Documentary photograph of %s, %s. Environmental details include %s. %s. Background shows %s. %s. %s %s. %s. %s. The image %s.",
-            $subjects[array_rand($subjects)],
-            $contexts[array_rand($contexts)],
-            $textures[array_rand($textures)],
-            $angles[array_rand($angles)],
-            $backgrounds[array_rand($backgrounds)],
-            $lightings[array_rand($lightings)],
-            $cameras[array_rand($cameras)],
-            $lenses[array_rand($lenses)],
-            $filmStocks[array_rand($filmStocks)],
-            $postProcessing[array_rand($postProcessing)],
-            $atmospheres[array_rand($atmospheres)]
+            $subjects[array_rand($subjects)],         // 1. SUBJECT + ACTION (İngilizce)
+            $contexts[array_rand($contexts)],         // 2. CONTEXT + TIME (İngilizce)
+            $textures[array_rand($textures)],         // 3. TEXTURE + IMPERFECTIONS (İngilizce)
+            $angles[array_rand($angles)],             // 4. CAMERA ANGLE (İngilizce)
+            $backgrounds[array_rand($backgrounds)],   // 5. BACKGROUND (İngilizce)
+            $lightings[array_rand($lightings)],       // 6. LIGHTING (İngilizce)
+            $cameras[array_rand($cameras)],           // 7. CAMERA (İngilizce)
+            $lenses[array_rand($lenses)],             // 8. LENS (İngilizce)
+            $filmStocks[array_rand($filmStocks)],     // 9. FILM STOCK (İngilizce)
+            $postProcessing[array_rand($postProcessing)], // 10. POST-PROCESSING (İngilizce)
+            $atmospheres[array_rand($atmospheres)]    // 11. ATMOSPHERE (İngilizce)
         );
 
         // Style ve contrast seçimi

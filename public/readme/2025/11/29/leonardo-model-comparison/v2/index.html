@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leonardo AI Model Karşılaştırması v2 - Kapsamlı Analiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        header { margin-bottom: 50px; padding-bottom: 30px; border-bottom: 2px solid #334155; }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .version-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .lightbox-content {
+            max-width: 95%;
+            max-height: 95%;
+            position: relative;
+            animation: zoomIn 0.3s ease;
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .lightbox-caption {
+            position: absolute;
+            bottom: -70px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px 25px;
+            border-radius: 8px;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            font-size: 32px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 10000;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .lightbox-close:hover {
+            background: #ef4444;
+            transform: rotate(90deg) scale(1.1);
+        }
+        
+        .image-preview {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .image-preview:hover {
+            border-color: #60a5fa;
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(96, 165, 250, 0.4);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .gallery-item {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.8);
+        }
+        .gallery-item.budget { border-left-color: #10b981; }
+        .gallery-item.standard { border-left-color: #3b82f6; }
+        .gallery-item.premium { border-left-color: #f59e0b; }
+        
+        .gallery-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #60a5fa;
+        }
+        .gallery-item.budget .gallery-title { color: #10b981; }
+        .gallery-item.premium .gallery-title { color: #f59e0b; }
+        
+        .image-container { position: relative; margin-top: 15px; }
+        .image-cost {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 2px solid;
+            z-index: 10;
+        }
+        .image-cost.budget { border-color: #10b981; color: #10b981; }
+        .image-cost.standard { border-color: #60a5fa; color: #60a5fa; }
+        .image-cost.premium { border-color: #f59e0b; color: #f59e0b; }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin: 50px 0 25px 0;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h3 { font-size: 1.4rem; margin-bottom: 20px; color: #818cf8; }
+        
+        .comparison-table {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .comparison-table th {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 15px;
+            text-align: left;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+        .comparison-table tr:hover { background: rgba(30, 41, 59, 0.6); }
+        
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .info-box.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+        }
+        .info-box.success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #10b981;
+        }
+        
+        .watermark-section {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid #8b5cf6;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+        .watermark-section h3 { color: #8b5cf6; margin-bottom: 20px; }
+        
+        .service-card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid #8b5cf6;
+        }
+        .service-card h4 {
+            color: #a78bfa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <img id="lightbox-img" class="lightbox-img" src="" alt="">
+            <div id="lightbox-caption" class="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>🎨 Leonardo AI Model Karşılaştırması <span class="version-badge">v2.0 Güncel</span></h1>
+            <div class="meta">
+                📅 Tarih: 2025-11-29 | 
+                🎯 Test Edilen: 9 Model | 
+                💰 Fiyat/Performans + Watermark Removal Analizi
+            </div>
+        </header>
+
+        <!-- Yenilikler -->
+        <section>
+            <div class="info-box success">
+                <h3 style="color: #10b981; margin-bottom: 15px;">✨ v2.0 Yenilikler</h3>
+                <ul style="color: #cbd5e1; margin-left: 25px; line-height: 2;">
+                    <li>🖼️ <strong>Lightbox Özelliği:</strong> Görsellere tıklayarak tam boyutta görüntüleyin</li>
+                    <li>📊 <strong>4 Yeni Model Testleri:</strong> Kino XL, Vision XL, Lightning XL, Diffusion XL</li>
+                    <li>💧 <strong>Watermark Removal:</strong> Mevcut görsellerdeki watermark kaldırma çözümleri</li>
+                    <li>📋 <strong>Toplam 9 Model:</strong> Kapsamlı karşılaştırma ve görsel örnekler</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Test Görselleri -->
+        <section>
+            <h2>🖼️ Test Görselleri - Model Karşılaştırması</h2>
+            <p style="color: #cbd5e1; margin-bottom: 20px;">
+                Tüm modeller <strong>aynı prompt</strong> ile test edildi. <strong style="color: #10b981;">Görsellere tıklayarak tam boyutta görüntüleyin!</strong>
+            </p>
+
+            <div class="gallery-grid">
+
+                <div class="gallery-item budget">
+                    <div class="gallery-title">⚡ Flux Schnell (Speed)</div>
+                    <div class="image-container">
+                        <div class="image-cost budget">Ortalama: ~2 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/e9f11adc-c500-4ddf-9d88-b2511d1f9bb0/segments/1:1:1/Flux_Schnell_Professional_photograph_of_a_modern_electric_fork_0.jpg" 
+                             alt="⚡ Flux Schnell (Speed)" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '⚡ Flux Schnell (Speed) - ~2 credits')"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        En ekonomik seçenek - Hızlı üretim
+                    </p>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">🎨 Lucid Origin</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~10 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/60e37060-c219-4026-b153-f0b2e3b5301c/segments/1:1:1/Lucid_Origin_Professional_photograph_of_a_modern_electric_fork_0.jpg" 
+                             alt="🎨 Lucid Origin" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🎨 Lucid Origin - ~10 credits')"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        Mevcut model - Dengeli fiyat/kalite
+                    </p>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">📸 Lucid Realism</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~10 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/b6b8d9a0-30ce-48bb-b780-4cdffe20f9c7/segments/1:1:1/Lucid_Realism_Professional_photograph_of_a_modern_electric_for_0.jpg" 
+                             alt="📸 Lucid Realism" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '📸 Lucid Realism - ~10 credits')"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        Gerçekçi fotoğraf tarzı
+                    </p>
+                </div>
+
+                <div class="gallery-item premium">
+                    <div class="gallery-title">🔥 Phoenix 1.0</div>
+                    <div class="image-container">
+                        <div class="image-cost premium">Ortalama: ~11 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/e4f4c346-5b3d-4e06-aa7e-bee27e3148c1/Phoenix_10_Professional_photograph_of_a_modern_electric_forkli_0.jpg" 
+                             alt="🔥 Phoenix 1.0" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🔥 Phoenix 1.0 - ~11 credits')"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        Yüksek prompt adherence
+                    </p>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">🎯 Flux Dev (Precision)</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~10 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/cf872b96-16f3-4a9e-9d1b-14a9ad47ca80/segments/1:1:1/Flux_Dev_Professional_photograph_of_a_modern_electric_forklift_0.jpg" 
+                             alt="🎯 Flux Dev (Precision)" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🎯 Flux Dev (Precision) - ~10 credits')"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        Hassas kontrol ve detay
+                    </p>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">🎬 Leonardo Kino XL</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~11 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/cb35193d-7646-430f-81af-54e76d8582b1/Leonardo_Kino_XL_Professional_photograph_of_a_modern_electric_0.jpg" 
+                             alt="🎬 Leonardo Kino XL" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🎬 Leonardo Kino XL - ~11 credits')"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        Sinematik görünüm
+                    </p>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">📷 Leonardo Vision XL</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~11 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/20b34887-8020-4609-b8be-ca9d00f3cb2d/Leonardo_Vision_XL_Professional_photograph_of_a_modern_electri_0.jpg" 
+                             alt="📷 Leonardo Vision XL" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '📷 Leonardo Vision XL - ~11 credits')"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        Fotoğrafçılık odaklı
+                    </p>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">⚡ Leonardo Lightning XL</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~8 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/76b72f38-9ba4-4757-9557-94f99b33da68/Leonardo_Lightning_XL_Professional_photograph_of_a_modern_elec_0.jpg" 
+                             alt="⚡ Leonardo Lightning XL" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '⚡ Leonardo Lightning XL - ~8 credits')"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        Hızlı generalist model
+                    </p>
+                </div>
+
+                <div class="gallery-item standard">
+                    <div class="gallery-title">🎨 Leonardo Diffusion XL</div>
+                    <div class="image-container">
+                        <div class="image-cost standard">Ortalama: ~11 credits</div>
+                        <img src="https://cdn.leonardo.ai/users/5c302e69-8d49-40d2-a1f1-013c97a6279a/generations/75b8181b-d2ca-4bfc-af56-3da66bc5d282/Leonardo_Diffusion_XL_Professional_photograph_of_a_modern_elec_0.jpg" 
+                             alt="🎨 Leonardo Diffusion XL" 
+                             class="image-preview"
+                             onclick="openLightbox(this.src, '🎨 Leonardo Diffusion XL - ~11 credits')"
+                             loading="lazy">
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">
+                        Çekici çıktılar
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fiyat Karşılaştırma Tablosu -->
+        <section>
+            <h2>💰 Fiyat Karşılaştırma Tablosu</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Ortalama Maliyet</th>
+                        <th>Maliyet Oranı</th>
+                        <th>1000 Görsel Maliyeti</th>
+                        <th>Kategori</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: rgba(16, 185, 129, 0.1);">
+                        <td><strong style="color: #10b981;">Flux Schnell</strong></td>
+                        <td><strong style="color: #10b981;">~2 credits</strong></td>
+                        <td>Baseline (EN UCUZ)</td>
+                        <td>~2,000 credits</td>
+                        <td>Speed/Budget</td>
+                    </tr>
+                    <tr>
+                        <td>Leonardo Lightning XL</td>
+                        <td>~8 credits</td>
+                        <td>4x daha pahalı</td>
+                        <td>~8,000 credits</td>
+                        <td>Fast Generalist</td>
+                    </tr>
+                    <tr>
+                        <td>Lucid Origin</td>
+                        <td>~10 credits</td>
+                        <td>5x daha pahalı</td>
+                        <td>~10,000 credits</td>
+                        <td>General (Mevcut)</td>
+                    </tr>
+                    <tr>
+                        <td>Lucid Realism</td>
+                        <td>~10 credits</td>
+                        <td>5x daha pahalı</td>
+                        <td>~10,000 credits</td>
+                        <td>Realistic Photos</td>
+                    </tr>
+                    <tr>
+                        <td>Flux Dev</td>
+                        <td>~10 credits</td>
+                        <td>5x daha pahalı</td>
+                        <td>~10,000 credits</td>
+                        <td>Developer/Precision</td>
+                    </tr>
+                    <tr>
+                        <td>Phoenix 1.0</td>
+                        <td>~11 credits</td>
+                        <td>5.5x daha pahalı</td>
+                        <td>~11,000 credits</td>
+                        <td>High Adherence</td>
+                    </tr>
+                    <tr>
+                        <td>Leonardo Kino XL</td>
+                        <td>~11 credits</td>
+                        <td>5.5x daha pahalı</td>
+                        <td>~11,000 credits</td>
+                        <td>Cinematic</td>
+                    </tr>
+                    <tr>
+                        <td>Leonardo Vision XL</td>
+                        <td>~11 credits</td>
+                        <td>5.5x daha pahalı</td>
+                        <td>~11,000 credits</td>
+                        <td>Photography</td>
+                    </tr>
+                    <tr>
+                        <td>Leonardo Diffusion XL</td>
+                        <td>~11 credits</td>
+                        <td>5.5x daha pahalı</td>
+                        <td>~11,000 credits</td>
+                        <td>Core XL</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box" style="margin-top: 20px;">
+                <p style="color: #cbd5e1;">
+                    <strong style="color: #60a5fa;">📊 Sonuç:</strong> 
+                    Flux Schnell, diğer modellere göre 4-5.5x daha ucuz. Aylık 25,000 görsel için <strong style="color: #10b981;">~180,000 credit tasarruf</strong> sağlar.
+                </p>
+            </div>
+        </section>
+
+        <!-- Nano Banana & Seedream Bilgisi -->
+        <section>
+            <h2>ℹ️ Nano Banana & Seedream Hakkında</h2>
+            
+            <div class="info-box warning">
+                <h3 style="color: #f59e0b; margin-bottom: 15px;">🔍 Önemli Not</h3>
+                <p style="color: #cbd5e1; line-height: 1.8;">
+                    <strong>Nano Banana</strong> (Gemini 2.5 Flash Image - Google) ve <strong>Seedream 4.0</strong> (ByteDance) 
+                    modelleri <strong>Leonardo AI platformunda bulunmamaktadır</strong>.
+                </p>
+                <p style="color: #cbd5e1; margin-top: 15px; line-height: 1.8;">
+                    Bu modeller farklı platformlarda (Google AI Studio, ByteDance ModelArk) kullanılabilir ancak 
+                    Leonardo AI'ın kendi model koleksiyonunda yer almaz.
+                </p>
+                <p style="color: #cbd5e1; margin-top: 15px; line-height: 1.8;">
+                    <strong style="color: #f59e0b;">Leonardo AI'da test edilen toplam 9 model:</strong>
+                    Flux Schnell, Flux Dev, Lucid Origin, Lucid Realism, Phoenix 1.0, 
+                    Leonardo Kino XL, Leonardo Vision XL, Leonardo Lightning XL, Leonardo Diffusion XL
+                </p>
+            </div>
+        </section>
+
+        <!-- WATERMARK REMOVAL -->
+        <section>
+            <h2>💧 Watermark Kaldırma Çözümleri</h2>
+            
+            <div class="watermark-section">
+                <h3>🔧 Mevcut Görsellerden Watermark Kaldırma</h3>
+                
+                <p style="color: #cbd5e1; margin-bottom: 25px; line-height: 1.8;">
+                    Elimizdeki watermark'lı görsellerin watermark'larını kaldırmak için 
+                    <strong>AI-powered watermark removal servisleri</strong> kullanabiliriz.
+                </p>
+
+                <!-- Servis 1: DeWatermark.ai -->
+                <div class="service-card">
+                    <h4>1️⃣ DeWatermark.ai (Önerilen)</h4>
+                    
+                    <p style="color: #cbd5e1; margin-bottom: 15px;">
+                        AI tabanlı deep learning modeli ile watermark tespiti ve kaldırma.
+                    </p>
+                    
+                    <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <p style="color: #a78bfa; font-weight: 600; margin-bottom: 10px;">💰 Fiyatlandırma:</p>
+                        <ul style="color: #cbd5e1; margin-left: 25px; line-height: 1.8;">
+                            <li><strong>Free Tier:</strong> 3 görsel/gün ücretsiz</li>
+                            <li><strong>Pay-per-image:</strong> İhtiyaç kadar öde (subscription gerekmez)</li>
+                            <li><strong>Batch Support:</strong> Toplu işlem desteği</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <p style="color: #a78bfa; font-weight: 600; margin-bottom: 10px;">⚡ API Entegrasyonu:</p>
+                        <pre style="background: #0f172a; padding: 15px; border-radius: 8px; overflow-x: auto; color: #e2e8f0; font-size: 0.9rem;">
+POST https://dewatermark.ai/api/remove
+Headers:
+  Authorization: Bearer YOUR_API_KEY
+  Content-Type: application/json
+
+Body:
+{
+  "image_url": "https://example.com/watermarked.jpg"
+}
+                        </pre>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <p style="color: #cbd5e1;">
+                            <strong style="color: #10b981;">✅ Avantajlar:</strong> 
+                            Yüksek kalite, karmaşık watermark'lar için etkili, batch processing
+                        </p>
+                        <p style="color: #cbd5e1; margin-top: 5px;">
+                            <strong style="color: #cbd5e1;">🔗 Link:</strong> 
+                            <a href="https://dewatermark.ai/" target="_blank" style="color: #60a5fa;">dewatermark.ai</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Servis 2: WatermarkRemover.io -->
+                <div class="service-card">
+                    <h4>2️⃣ WatermarkRemover.io</h4>
+                    
+                    <p style="color: #cbd5e1; margin-bottom: 15px;">
+                        Tek API call ile otomatik watermark kaldırma.
+                    </p>
+                    
+                    <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <p style="color: #a78bfa; font-weight: 600; margin-bottom: 10px;">💰 Fiyatlandırma:</p>
+                        <ul style="color: #cbd5e1; margin-left: 25px; line-height: 1.8;">
+                            <li><strong>Free Credits:</strong> 3 ücretsiz credit (kayıt sonrası)</li>
+                            <li><strong>Subscription:</strong> Aylık paketler mevcut</li>
+                            <li><strong>Pay-as-you-go:</strong> İhtiyaç bazlı ödeme</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <p style="color: #a78bfa; font-weight: 600; margin-bottom: 10px;">⚡ API Entegrasyonu:</p>
+                        <pre style="background: #0f172a; padding: 15px; border-radius: 8px; overflow-x: auto; color: #e2e8f0; font-size: 0.9rem;">
+POST https://api.pixelbin.io/v2/transformations
+Headers:
+  Authorization: Bearer YOUR_TOKEN
+
+Parameters:
+  transformation: ml.watermark_remover()
+  input_image: YOUR_IMAGE_URL
+                        </pre>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <p style="color: #cbd5e1;">
+                            <strong style="color: #10b981;">✅ Avantajlar:</strong> 
+                            Kolay entegrasyon, cross-platform, minimal setup
+                        </p>
+                        <p style="color: #cbd5e1; margin-top: 5px;">
+                            <strong style="color: #cbd5e1;">🔗 Link:</strong> 
+                            <a href="https://www.watermarkremover.io/" target="_blank" style="color: #60a5fa;">watermarkremover.io</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Önerilen Yaklaşım -->
+                <div class="info-box success" style="margin-top: 30px;">
+                    <h3 style="color: #10b981; margin-bottom: 15px;">💡 Önerilen Uygulama Stratejisi</h3>
+                    <ol style="color: #cbd5e1; margin-left: 25px; line-height: 2;">
+                        <li><strong>Küçük Test:</strong> Her iki servisi de 3-5 görsel ile test edin</li>
+                        <li><strong>Kalite Karşılaştırması:</strong> Watermark kaldırma kalitesini karşılaştırın</li>
+                        <li><strong>Seçim Yapın:</strong> En iyi sonuç veren servisi tercih edin</li>
+                        <li><strong>API Entegrasyonu:</strong> Laravel backend'e entegre edin</li>
+                        <li><strong>Batch Processing:</strong> Toplu görseller için batch endpoint kullanın</li>
+                    </ol>
+                </div>
+
+                <div class="info-box warning" style="margin-top: 20px;">
+                    <p style="color: #cbd5e1; line-height: 1.8;">
+                        <strong style="color: #f59e0b;">⚠️ Önemli Not:</strong> 
+                        Watermark kaldırma işlemi <strong>telif haklarına saygı gösterilmesi</strong> gereken bir süreçtir. 
+                        Sadece <strong>kendi sahip olduğunuz veya kullanma hakkınız olan</strong> görsellerde kullanın.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖNERİLER -->
+        <section>
+            <h2>🎯 Sonuç ve Öneriler</h2>
+
+            <div class="info-box success">
+                <h3 style="color: #10b981; margin-bottom: 20px;">✅ Genel Öneriler</h3>
+                
+                <div style="margin-bottom: 25px;">
+                    <h4 style="color: #60a5fa; margin-bottom: 10px;">🏆 En İyi Fiyat/Performans: Flux Schnell</h4>
+                    <ul style="color: #cbd5e1; margin-left: 25px; line-height: 1.8;">
+                        <li>Ortalama ~2 credits - %80 maliyet tasarrufu</li>
+                        <li>Blog ve katalog görselleri için ideal</li>
+                        <li>Hızlı üretim, bulk işlemler için uygun</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <h4 style="color: #60a5fa; margin-bottom: 10px;">⚡ Hızlı Generalist: Leonardo Lightning XL</h4>
+                    <ul style="color: #cbd5e1; margin-left: 25px; line-height: 1.8;">
+                        <li>Ortalama ~8 credits - İyi fiyat/hız dengesi</li>
+                        <li>Genel amaçlı görseller için</li>
+                        <li>Hızlı iterasyon gerektiren projeler</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <h4 style="color: #60a5fa; margin-bottom: 10px;">📸 Gerçekçi Görseller: Lucid Realism & Vision XL</h4>
+                    <ul style="color: #cbd5e1; margin-left: 25px; line-height: 1.8;">
+                        <li>Ortalama ~10-11 credits</li>
+                        <li>Profesyonel fotoğrafçılık tarzı</li>
+                        <li>Ana sayfa ve özel müşteri görselleri</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <h4 style="color: #60a5fa; margin-bottom: 10px;">🎬 Özel Kullanım: Kino XL (Sinematik)</h4>
+                    <ul style="color: #cbd5e1; margin-left: 25px; line-height: 1.8;">
+                        <li>Ortalama ~11 credits</li>
+                        <li>Sinematik, dramatik kompozisyonlar</li>
+                        <li>Marka hikayesi ve tanıtım görselleri</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 style="color: #f59e0b; margin-bottom: 10px;">💧 Watermark Kaldırma</h4>
+                    <ul style="color: #cbd5e1; margin-left: 25px; line-height: 1.8;">
+                        <li>DeWatermark.ai - En iyi kalite, batch support</li>
+                        <li>WatermarkRemover.io - Kolay entegrasyon</li>
+                        <li>Free tier'larla test edilmeli</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Leonardo AI Model Karşılaştırması v2.0 - Claude AI tarafından oluşturuldu
+            <br>
+            📚 Kaynaklar: 
+            <a href="https://docs.leonardo.ai/" target="_blank" style="color: #60a5fa;">Leonardo AI Docs</a> | 
+            <a href="https://dewatermark.ai/" target="_blank" style="color: #60a5fa;">DeWatermark.ai</a> | 
+            <a href="https://www.watermarkremover.io/" target="_blank" style="color: #60a5fa;">WatermarkRemover.io</a>
+        </footer>
+    </div>
+
+    <!-- JavaScript for Lightbox -->
+    <script>
+        function openLightbox(imageSrc, caption) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            
+            lightboxImg.src = imageSrc;
+            lightboxCaption.textContent = caption;
+            lightbox.classList.add('active');
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>

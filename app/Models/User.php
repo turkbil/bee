@@ -390,27 +390,39 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Premium üye mi? (aktif subscription veya trial)
-     * Tenant 1001 (muzibu.com) için
+     *
+     * ⚠️ SADECE TENANT 1001 (muzibu.com.tr) İÇİN!
+     * Diğer tenant'lar için direkt false döner, cache kullanılmaz
+     *
+     * ⚡ PERFORMANCE: 1 saatlik cache ile optimize edildi (sadece Muzibu için)
+     * Her Muzibu stream request'inde çağrılıyor - cache kritik!
      */
     public function isPremium(): bool
     {
+        // ✅ DİĞER TENANT'LAR İÇİN: Direkt false dön (cache yok!)
         if (!$this->isMuzibuTenant()) {
             return false;
         }
 
-        // Yeni subscription sistemi: subscriptions tablosundan kontrol et
-        // ✅ FIXED: whereNull kaldırıldı (NULL = sonsuz premium önlendi)
-        $activeSubscription = $this->subscriptions()
-            ->where('status', 'active')
-            ->where('current_period_end', '>', now()) // 🔥 Sadece gelecek tarihli subscription'lar
-            ->first();
+        // 🚀 SADECE TENANT 1001 İÇİN: 1 saatlik cache
+        // Cache key tenant_id içeriyor ama zaten sadece 1001 buraya gelir
+        $cacheKey = 'user_' . $this->id . '_is_premium_tenant_1001';
 
-        if ($activeSubscription) {
-            return true;
-        }
+        return \Cache::remember($cacheKey, 3600, function () {
+            // Yeni subscription sistemi: subscriptions tablosundan kontrol et
+            // ✅ FIXED: whereNull kaldırıldı (NULL = sonsuz premium önlendi)
+            $activeSubscription = $this->subscriptions()
+                ->where('status', 'active')
+                ->where('current_period_end', '>', now()) // 🔥 Sadece gelecek tarihli subscription'lar
+                ->first();
 
-        // Fallback: Eski sistem (is_premium kolonu)
-        return $this->is_premium ?? false;
+            if ($activeSubscription) {
+                return true;
+            }
+
+            // Fallback: Eski sistem (is_premium kolonu)
+            return $this->is_premium ?? false;
+        });
     }
 
     /**

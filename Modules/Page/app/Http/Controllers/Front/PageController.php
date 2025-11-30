@@ -47,25 +47,25 @@ class PageController extends Controller
         view()->share('currentModel', $page);
 
         // Homepage products'ları çek (homepage_sort_order'a göre sıralı)
+        // ⚡ OPTIMIZED: Currency eager loading eklendi (N+1 çözümü)
         $homepageProductsQuery = \Modules\Shop\App\Models\ShopProduct::where('show_on_homepage', true)
             ->where('is_active', true)
-            ->with(['category', 'brand', 'media'])
+            ->with(['category', 'brand', 'media', 'currency'])
             ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
             ->orderBy('product_id', 'desc')
             ->get();
 
-        // N+1 sorunu çözümü: Tüm currency'leri tek sorguda çek
-        $currencyIds = $homepageProductsQuery->pluck('currency_id')->unique()->filter();
-        $currencies = \Modules\Shop\App\Models\ShopCurrency::whereIn('currency_id', $currencyIds)->get()->keyBy('currency_id');
+        // ⚡ OPTIMIZED: Currency artık eager loading ile yüklü (satır 53)
+        $homepageProducts = $homepageProductsQuery->map(function ($product) {
+                // ⚠️ FIX: 'currency' hem attribute (string: "TRY", "USD") hem relation adı
+                // Relation'a getRelation() ile güvenli eriş
+                $currencyRelation = $product->relationLoaded('currency') ? $product->getRelation('currency') : null;
 
-        $homepageProducts = $homepageProductsQuery->map(function ($product) use ($currencies) {
-                // Currency field (string) ve currency() relation çakışıyor
-                // Önceden yüklenmiş currencies collection'dan al (N+1 çözümü)
-                $currencyRelation = $product->currency_id ? ($currencies[$product->currency_id] ?? null) : null;
-                $currencyCode = $product->getAttribute('currency') ?? 'TRY';
+                // Currency code: attributes array'inden direkt al
+                $currencyCode = $product->attributes['currency'] ?? 'TRY';
 
                 // TRY conversion için exchange rate hesapla
-                $exchangeRate = $currencyRelation ? $currencyRelation->exchange_rate : 1;
+                $exchangeRate = $currencyRelation && is_object($currencyRelation) ? $currencyRelation->exchange_rate : 1;
                 $tryPrice = ($currencyCode !== 'TRY' && $exchangeRate > 0)
                     ? number_format($product->base_price * $exchangeRate, 0, ',', '.')
                     : null;

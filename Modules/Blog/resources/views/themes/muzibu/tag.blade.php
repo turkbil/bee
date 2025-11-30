@@ -68,7 +68,7 @@
                                       \Illuminate\Support\Str::limit(strip_tags($post->getTranslated('body', $currentLocale) ?? ''), 180);
                         $postSlug = $post->getTranslated('slug', $currentLocale);
                         $postUrl = $post->getUrl($currentLocale);
-                        $featuredImage = $post->getFirstMedia('featured_image');
+                        $featuredImage = $post->getFirstMediaWithFallback($item ?? $post ?? $relatedBlog);
                         $publishedDate = $post->published_at
                             ? $post->published_at->translatedFormat('d F Y')
                             : $post->created_at->translatedFormat('d F Y');

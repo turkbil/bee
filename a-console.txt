@@ -1,18 +1,25 @@
-?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
-(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-player-core.js?v=1764381171:154 Muzibu initialized with Howler.js
-player-core.js?v=1764381171:157 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
-keyboard.js?v=1764381171:46 🎹 Keyboard shortcuts initialized
-player-core.js?v=1764381171:149 Muzibu already initialized, skipping...
-(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-(index):123  GET https://muzibu.com.tr/storage/tenant1001/33/bqrbhdjcx1qnp97bewjvlbcq8jfx1q1tjagpsvdq.png 403 (Forbidden)
-(index):119  GET https://muzibu.com.tr/storage/tenant1001/5/km6anergo56lue9tlpvgtg677la1qbpxveeuv58m.png 403 (Forbidden)
-(index):971  GET https://muzibu.com.tr/thumbmaker?src=2003&w=56&h=56&f=webp&c=1 404 (Not Found)
-(index):1047  GET https://muzibu.com.tr/thumbmaker?src=2001&w=56&h=56&f=webp&c=1 404 (Not Found)
-(index):1009  GET https://muzibu.com.tr/thumbmaker?src=2000&w=56&h=56&f=webp&c=1 404 (Not Found)
-(index):1123  GET https://muzibu.com.tr/thumbmaker?src=2004&w=56&h=56&f=webp&c=1 404 (Not Found)
-(index):933  GET https://muzibu.com.tr/thumbmaker?src=2002&w=56&h=56&f=webp&c=1 404 (Not Found)
-player-core.js?v=1764381171:217 Featured playlists loaded: 10
+<div class="form-element selected" data-id="element-6" data-type="select" data-width="12" style="width: 100%;" draggable="false"><div class="element-header">
+            <div class="element-handle">
+                <i class="fas fa-grip-lines"></i>
+            </div>
+            <div class="element-title">
+                Telefon Zorunlu
+            </div>
+            <div class="element-actions">
+                <button type="button" class="btn btn-sm" data-action="duplicate">
+                    <i class="fas fa-clone"></i>
+                </button>
+                <button type="button" class="btn btn-sm text-danger" data-action="remove">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div><div class="element-content">
+              <div class="mb-3 col-12 col-md-12">
+                  <label class="form-label">Telefon Zorunlu</label>
+                  <select class="form-select" onchange="window.updateSelectState(this)">
+                      <option value="" disabled="">Telefon Zorunlu mu?</option>
+                      <!-- Seçenekler JavaScript tarafından eklenecek -->
+                  <option value="undefined"></option><option value="undefined"></option></select>
+                  <div class="form-text text-muted">Kayıt olurken telefon zorunlu mu?</div>
+              </div>
+          </div></div>

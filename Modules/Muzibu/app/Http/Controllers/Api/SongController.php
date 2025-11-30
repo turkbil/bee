@@ -186,10 +186,10 @@ class SongController extends Controller
     }
 
     /**
-     * Serve MP3 file
+     * Serve HLS playlist or MP3 file
      *
      * @param int $id
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function serve(int $id)
     {
@@ -199,8 +199,36 @@ class SongController extends Controller
                 ->where('is_active', 1)
                 ->first();
 
-            if (!$song || !$song->file_path) {
+            if (!$song) {
                 abort(404, 'Song not found');
+            }
+
+            // 🎵 HLS PRIORITY: If HLS converted, serve playlist.m3u8
+            if ($song->hls_converted && !empty($song->hls_path)) {
+                // Build HLS playlist path
+                $hlsPath = storage_path('app/public/' . $song->hls_path);
+
+                if (file_exists($hlsPath)) {
+                    \Log::info('Serving HLS playlist', [
+                        'song_id' => $song->song_id,
+                        'hls_path' => $song->hls_path
+                    ]);
+
+                    return response()->file($hlsPath, [
+                        'Content-Type' => 'application/vnd.apple.mpegurl',
+                        'Cache-Control' => 'public, max-age=3600',
+                    ]);
+                } else {
+                    \Log::warning('HLS playlist not found, falling back to MP3', [
+                        'song_id' => $song->song_id,
+                        'hls_path' => $hlsPath
+                    ]);
+                }
+            }
+
+            // FALLBACK: Serve MP3 if HLS not available
+            if (!$song->file_path) {
+                abort(404, 'File not found');
             }
 
             // Build absolute path
@@ -219,7 +247,7 @@ class SongController extends Controller
                 abort(404, 'File not found');
             }
 
-            // 🎵 AUTO HLS CONVERSION
+            // 🎵 AUTO HLS CONVERSION (if not converted yet)
             if (!$song->hls_converted) {
                 try {
                     \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);

@@ -174,10 +174,10 @@ class BlogAIContentWriter
                     ],
                 ]);
 
-                // Blog'a ekle
+                // Blog'a ekle (hero collection - featured_image DEPRECATED)
                 $media = $blog->addMedia($tempPath)
                     ->usingFileName(uniqid('leonardo_') . '.jpg')
-                    ->toMediaCollection('featured_image', 'tenant');
+                    ->toMediaCollection('hero', 'tenant');
 
                 // SEO ve metadata ekle
                 $blogTitle = $blogData['title'];

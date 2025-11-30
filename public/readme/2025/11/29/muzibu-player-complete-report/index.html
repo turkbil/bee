@@ -186,15 +186,15 @@
                     <div class="stat-label">✅ Tamamlandı</div>
                 </div>
                 <div class="stat-card planned">
-                    <div class="stat-number">10</div>
+                    <div class="stat-number">9</div>
                     <div class="stat-label">📋 Planlanmış</div>
                 </div>
                 <div class="stat-card complete">
-                    <div class="stat-number">44</div>
+                    <div class="stat-number">43</div>
                     <div class="stat-label">📊 Toplam Özellik</div>
                 </div>
                 <div class="stat-card complete">
-                    <div class="stat-number">77%</div>
+                    <div class="stat-number">79%</div>
                     <div class="stat-label">🎯 Completion Rate</div>
                 </div>
             </div>
@@ -895,203 +895,177 @@
         <!-- CATEGORY 6: ADVANCED FEATURES (PLANNED) -->
         <div class="category-header" style="border-left-color: #fbbf24;">
             <div class="category-title" style="color: #fbbf24;">🚀 6. Advanced Features (Planned)</div>
-            <div class="category-count">0/10 Complete (0%)</div>
+            <div class="category-count">0/9 Complete (0%)</div>
         </div>
 
         <div class="features-grid">
             <div class="feature-card planned">
                 <div class="feature-title">
-                    <span>WaveSurfer.js Integration</span>
+                    <span>🎨 Ses Dalgası Görselleştirme</span>
                     <span class="status-badge badge-planned">📋 Planned</span>
                 </div>
                 <div class="feature-desc">
-                    Real-time waveform visualization, canvas rendering, zoom controls.
+                    <strong>Ne işe yarar:</strong> Şarkı çalarken ses dalgalarını gösterir (SoundCloud/YouTube gibi)
                 </div>
                 <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
+                    <div class="feature-tech-title">Basit Açıklama:</div>
                     <ul>
-                        <li>Files exist: wavesurfer-player.js</li>
-                        <li>Not integrated into player</li>
-                        <li>Canvas-based rendering</li>
-                        <li>Zoom & region markers</li>
-                        <li>Spectrogram support</li>
+                        <li>Şarkının hangi kısmında olduğunuzu görsel olarak görürsünüz</li>
+                        <li>Ses yüksek olan yerler dalgada büyük görünür</li>
+                        <li>Tıklayarak istediğiniz yere atlayabilirsiniz</li>
+                        <li>Örnek: YouTube progress bar gibi ama ses dalgalarıyla</li>
                     </ul>
                 </div>
             </div>
 
             <div class="feature-card planned">
                 <div class="feature-title">
-                    <span>Volume Normalization</span>
+                    <span>⚖️ Ses Dengesi (Volume Normalization)</span>
                     <span class="status-badge badge-planned">📋 Planned</span>
                 </div>
                 <div class="feature-desc">
-                    ReplayGain implementation, -14 LUFS target (Spotify standard), +6dB max gain.
+                    <strong>Ne işe yarar:</strong> Tüm şarkıların ses seviyesi aynı olur
                 </div>
                 <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
+                    <div class="feature-tech-title">Basit Açıklama:</div>
                     <ul>
-                        <li>ReplayGain algorithm</li>
-                        <li>Target: -14 LUFS</li>
-                        <li>Max gain: +6dB</li>
-                        <li>FFmpeg integration</li>
-                        <li>Pre-processing required</li>
+                        <li>Bir şarkı çok yavaş, diğeri çok yüksek ses gelmiyor</li>
+                        <li>Hepsi aynı seviyede çalar</li>
+                        <li>Sürekli ses açıp kapatmaya gerek kalmaz</li>
+                        <li>Örnek: Spotify'da şarkı değişince ses seviyesi değişmez</li>
                     </ul>
                 </div>
             </div>
 
             <div class="feature-card planned">
                 <div class="feature-title">
-                    <span>10-Band Equalizer</span>
+                    <span>🎛️ Ses Ayarlayıcı (Equalizer)</span>
                     <span class="status-badge badge-planned">📋 Planned</span>
                 </div>
                 <div class="feature-desc">
-                    32Hz-16kHz frequency bands, presets (rock/jazz/vocal/bass-boost).
+                    <strong>Ne işe yarar:</strong> Bas, tiz, orta sesleri istediğiniz gibi ayarlayabilirsiniz
                 </div>
                 <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
+                    <div class="feature-tech-title">Basit Açıklama:</div>
                     <ul>
-                        <li>Bands: 32Hz, 64Hz, 125Hz, 250Hz, 500Hz, 1kHz, 2kHz, 4kHz, 8kHz, 16kHz</li>
-                        <li>Web Audio API BiquadFilterNode</li>
-                        <li>Presets: Rock, Jazz, Vocal, Bass Boost</li>
-                        <li>Custom user profiles</li>
+                        <li>Müzik setindeki equalizer gibi çalışır</li>
+                        <li>Bass'ı artırabilir, tiz sesi azaltabilirsiniz</li>
+                        <li>Hazır ayarlar var: Rock, Jazz, Vokal, Bass Boost</li>
+                        <li>Örnek: Araba teybi equalizer - bas/tiz düğmeleri</li>
                     </ul>
                 </div>
             </div>
 
             <div class="feature-card planned">
                 <div class="feature-title">
-                    <span>Dynamic Theme Generation</span>
+                    <span>🌈 Otomatik Renk Değişimi</span>
                     <span class="status-badge badge-planned">📋 Planned</span>
                 </div>
                 <div class="feature-desc">
-                    ColorThief color extraction, adaptive UI, album artwork gradients.
+                    <strong>Ne işe yarar:</strong> Albüm kapağındaki renkleri alıp player'ın rengini otomatik değiştirir
                 </div>
                 <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
+                    <div class="feature-tech-title">Basit Açıklama:</div>
                     <ul>
-                        <li>ColorThief.js integration</li>
-                        <li>Album artwork color extraction</li>
-                        <li>Gradient background generation</li>
-                        <li>Accent color adaptation</li>
+                        <li>Her şarkıda player farklı renklere bürünür</li>
+                        <li>Albüm kapağına uygun renkler kullanılır</li>
+                        <li>Görsel olarak daha güzel görünür</li>
+                        <li>Örnek: Spotify'da şarkı değişince arka plan rengi değişir</li>
                     </ul>
                 </div>
             </div>
 
             <div class="feature-card planned">
                 <div class="feature-title">
-                    <span>Dynamic Crossfade Timing</span>
+                    <span>📶 Müzik Kalite Seçenekleri</span>
                     <span class="status-badge badge-planned">📋 Planned</span>
                 </div>
                 <div class="feature-desc">
-                    Genre-aware transitions: Rock 2-3s, Jazz 4-6s, Electronic 6-10s, Ambient 8-12s.
+                    <strong>Ne işe yarar:</strong> Normal/Yüksek/Süper Yüksek kalite seçebilirsiniz
                 </div>
                 <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
+                    <div class="feature-tech-title">Basit Açıklama:</div>
                     <ul>
-                        <li>Genre detection from metadata</li>
-                        <li>Rock: 2-3 seconds</li>
-                        <li>Jazz: 4-6 seconds</li>
-                        <li>Electronic: 6-10 seconds</li>
-                        <li>Ambient: 8-12 seconds</li>
+                        <li>Düşük internet varsa → Düşük kalite seç (az internet harcar)</li>
+                        <li>İyi internet varsa → Yüksek kalite seç (daha iyi ses)</li>
+                        <li>Premium üyeler en yüksek kaliteyi kullanabilir</li>
+                        <li>Örnek: YouTube'da 360p/720p/1080p seçmek gibi</li>
                     </ul>
                 </div>
             </div>
 
             <div class="feature-card planned">
                 <div class="feature-title">
-                    <span>Bitrate Tiers</span>
+                    <span>📊 Kalite İstatistikleri</span>
                     <span class="status-badge badge-planned">📋 Planned</span>
                 </div>
                 <div class="feature-desc">
-                    96kbps (normal), 192kbps (high), 320kbps (very high), FLAC (lossless), 24-bit/96kHz (hi-res).
+                    <strong>Ne işe yarar:</strong> Hangi kalitede dinleme yapıldığını kaydet ve göster
                 </div>
                 <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
+                    <div class="feature-tech-title">Basit Açıklama:</div>
                     <ul>
-                        <li>Normal: 96 kbps MP3</li>
-                        <li>High: 192 kbps MP3</li>
-                        <li>Very High: 320 kbps MP3</li>
-                        <li>Lossless: FLAC 16-bit/44.1kHz</li>
-                        <li>Hi-Res: FLAC 24-bit/96kHz</li>
-                        <li>Premium feature tier</li>
+                        <li>Admin panelde istatistik görürsünüz</li>
+                        <li>"Bugün 1000 kişi yüksek kalite dinledi" gibi</li>
+                        <li>Hangi kalite daha çok kullanılıyor öğrenirsiniz</li>
+                        <li>İnternet harcaması hesaplaması yapılır</li>
                     </ul>
                 </div>
             </div>
 
             <div class="feature-card planned">
                 <div class="feature-title">
-                    <span>Quality Level Tracking</span>
+                    <span>⏱️ Kaldığınız Yerden Devam</span>
                     <span class="status-badge badge-planned">📋 Planned</span>
                 </div>
                 <div class="feature-desc">
-                    SongPlay table'a quality_level field ekleme, bitrate analytics.
+                    <strong>Ne işe yarar:</strong> Şarkının neresinde olduğunuzu her 5 saniyede kaydeder
                 </div>
                 <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
+                    <div class="feature-tech-title">Basit Açıklama:</div>
                     <ul>
-                        <li>Add quality_level to muzibu_song_plays</li>
-                        <li>Values: 96, 192, 320, flac, hires</li>
-                        <li>Analytics: quality distribution</li>
-                        <li>Bandwidth calculation</li>
+                        <li>Sayfa yenilense bile kaldığınız yerden devam eder</li>
+                        <li>Tarayıcı kapansa bile şarkı başa dönmez</li>
+                        <li>Hangi şarkıları ne kadar dinlediğiniz kaydedilir</li>
+                        <li>Örnek: Netflix'te film kapatsanız bile kaldığınız yerden devam eder</li>
                     </ul>
                 </div>
             </div>
 
             <div class="feature-card planned">
                 <div class="feature-title">
-                    <span>Progress Reporting (5s interval)</span>
+                    <span>🏢 Şube Sistemi (B2B)</span>
                     <span class="status-badge badge-planned">📋 Planned</span>
                 </div>
                 <div class="feature-desc">
-                    5 saniyelik backend sync, engagement measurement, accurate limit tracking.
+                    <strong>Ne işe yarar:</strong> Farklı şubeleriniz olabilir (İstanbul, Ankara vb.)
                 </div>
                 <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
+                    <div class="feature-tech-title">Basit Açıklama:</div>
                     <ul>
-                        <li>Current: 60 second threshold</li>
-                        <li>Planned: 5 second interval sync</li>
-                        <li>Backend API endpoint</li>
-                        <li>Engagement analytics</li>
+                        <li>Her şube kendi müziklerini yönetir</li>
+                        <li>Ana merkez tüm şubeleri kontrol eder</li>
+                        <li>200+ şube eklenebilir</li>
+                        <li>Örnek: Starbucks gibi - her şube farklı ama merkezi yönetim var</li>
                     </ul>
                 </div>
             </div>
 
             <div class="feature-card planned">
                 <div class="feature-title">
-                    <span>Multi-Branch Support</span>
+                    <span>🏛️ Holding Yapısı (B2B)</span>
                     <span class="status-badge badge-planned">📋 Planned</span>
                 </div>
                 <div class="feature-desc">
-                    B2B feature: 200+ locations, parent-child hierarchy, centralized/independent payment.
+                    <strong>Ne işe yarar:</strong> Ana şirket → Alt şirket → Şubeler hiyerarşisi
                 </div>
                 <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
+                    <div class="feature-tech-title">Basit Açıklama:</div>
                     <ul>
-                        <li>Parent-child branch structure</li>
-                        <li>200+ location support</li>
-                        <li>Centralized payment option</li>
-                        <li>Independent subsidiary option</li>
-                        <li>B2B enterprise feature</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="feature-card planned">
-                <div class="feature-title">
-                    <span>Corporate Hierarchy</span>
-                    <span class="status-badge badge-planned">📋 Planned</span>
-                </div>
-                <div class="feature-desc">
-                    Dynamic branch management, detach functionality, subsidiary independence.
-                </div>
-                <div class="feature-tech">
-                    <div class="feature-tech-title">Technical Details:</div>
-                    <ul>
-                        <li>Branch management panel</li>
-                        <li>Detach functionality</li>
-                        <li>Subsidiary independence</li>
-                        <li>Hierarchical permissions</li>
-                        <li>B2B enterprise feature</li>
+                        <li>Holding yapısı kurulabilir</li>
+                        <li>Her seviyenin kendi yetkileri var</li>
+                        <li>Alt şirketler bağımsızlaşabilir</li>
+                        <li>Örnek: Koç Holding → Arçelik → İstanbul Mağazası gibi</li>
                     </ul>
                 </div>
             </div>

@@ -50,7 +50,7 @@
             $localePrefix = $currentLocale !== $defaultLocale ? '/' . $currentLocale : '';
             $shopIndexUrl = $localePrefix . '/' . $indexSlug;
 
-            $featuredImage = $item->getFirstMedia('featured_image');
+            $featuredImage = $item->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
             $galleryImages = $item->getMedia('gallery');
 
             $resolveLocalized = static function ($data) use ($currentLocale, $defaultLocale) {
@@ -687,11 +687,11 @@
                                             $variant,
                                             $currentLocale,
                                         );
-                                        $variantImage = $variant->getFirstMedia('featured_image');
+                                        $variantImage = $variant->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
 
                                         // ✅ Fallback: Varyant fotoğrafı yoksa parent ürün (ana ürün) fotoğrafını kullan
                                         if (!$variantImage) {
-                                            $variantImage = $item->getFirstMedia('featured_image');
+                                            $variantImage = $item->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
                                         }
 
                                         $variantImageUrl = $variantImage

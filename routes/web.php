@@ -31,6 +31,11 @@ require __DIR__.'/landing.php';
 Route::get('design', [App\Http\Controllers\DesignLibraryController::class, 'index'])->name('designs.index');
 Route::get('design/{file}', [App\Http\Controllers\DesignLibraryController::class, 'show'])->where('file', '.*')->name('designs.show');
 
+// README STATIC HTML FILES - Serve without database/tenant middleware
+Route::get('readme/{path?}', [\App\Http\Controllers\ReadmeController::class, 'show'])
+    ->where('path', '.*')
+    ->name('readme.show');
+
 // GOOGLE SHOPPING FEED - Needs tenant middleware
 Route::middleware(['web', 'tenant'])->group(function () {
     Route::get('productfeed', [\Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController::class, 'index']);

@@ -79,7 +79,7 @@
             <!-- Right Content - Hero Image -->
             <div class="flex items-center justify-center">
                 <a href="{{ route('shop.index') }}" class="block cursor-pointer">
-                    <img src="https://ixtif.com/storage/tenant2/80/hero.png"
+                    <img src="https://ixtif.com/storage/tenant2/4/hero.png"
                          alt="iXtif İstif Makinesi - Forklift"
                          class="w-full h-auto object-contain"
                          loading="lazy">
@@ -144,7 +144,7 @@
             <div class="flex items-center gap-4">
                 <div class="w-1.5 h-12 bg-gradient-to-b from-blue-600 via-purple-600 to-pink-600 rounded-full"></div>
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-                    Efsane Kasım İndirimleri İXTİF'te Başladı! 🔥
+                    Efsane Yılsonu Fırsatları İXTİF'te Başladı! 🔥
                 </h2>
             </div>
 
@@ -271,7 +271,7 @@
         <div class="grid lg:grid-cols-2 gap-16 items-center">
             {{-- Sol: Görsel (Ken Burns + Parallax Efekt) --}}
             <div class="relative rounded-3xl h-[350px] md:h-[450px] lg:h-[600px] overflow-hidden" id="aboutPhotoContainer">
-                <img src="https://ixtif.com/storage/tenant2/78/super-hero.jpg"
+                <img src="https://ixtif.com/storage/tenant2/5/super-hero.jpg"
                      alt="İxtif - Depoda, Üretimde, Dağıtımda"
                      class="w-full h-full object-cover about-hero-photo"
                      loading="lazy"

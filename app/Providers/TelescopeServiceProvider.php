@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Telescope\Storage\DatabaseEntriesRepository;
 
 class TelescopeServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,39 @@ class TelescopeServiceProvider extends ServiceProvider
 
             $this->hideSensitiveRequestDetails();
 
+            // 🔥 Multi-tenant FIX: Telescope storage'ı HER ZAMAN central DB kullanmalı
+            // Tenant context'inde bile central'a yazması için repository'yi override et
+            $this->app->singleton(
+                \Laravel\Telescope\Contracts\EntriesRepository::class,
+                function ($app) {
+                    return new DatabaseEntriesRepository(
+                        'central', // Her zaman central connection kullan
+                        config('telescope.storage.database.chunk', 1000)
+                    );
+                }
+            );
+
+            // Telescope tag'lerine tenant bilgisi ekle
+            Telescope::tag(function (IncomingEntry $entry) {
+                $tags = [];
+
+                // Tenant bilgisini tag olarak ekle
+                if (function_exists('tenant') && tenant()) {
+                    $tags[] = 'tenant:' . tenant()->id;
+
+                    // Domain bilgisini de ekle
+                    $domains = tenant()->domains ?? [];
+                    if (!empty($domains)) {
+                        $domain = is_object($domains[0]) ? $domains[0]->domain : $domains[0];
+                        $tags[] = 'domain:' . $domain;
+                    }
+                } else {
+                    $tags[] = 'tenant:central';
+                }
+
+                return $tags;
+            });
+
             $isLocal = $this->app->environment('local');
 
             Telescope::filter(function (IncomingEntry $entry) use ($isLocal) {
@@ -28,7 +63,6 @@ class TelescopeServiceProvider extends ServiceProvider
                 }
 
                 // Production'da da her şeyi kaydet (admin kullanıcılar için)
-                // Sadece önemli verileri filtrelemek için ignore_paths kullanacağız
                 return true;
             });
         }

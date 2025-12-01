@@ -67,11 +67,34 @@
         .animation-delay-2000 {
             animation-delay: 2s;
         }
+
+        /* Skeleton Shimmer Effect */
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .skeleton-shimmer {
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Smooth image fade-in */
+        img {
+            transition: opacity 0.3s ease-in-out;
+        }
     </style>
 
     {{-- GLightbox CSS --}}
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css"></noscript>
+
+    {{-- Preload first 8 product images for faster loading --}}
+    @if(isset($homepageProducts) && count($homepageProducts) > 0)
+        @foreach($homepageProducts->take(8) as $product)
+            @if($product['image'] ?? null)
+                <link rel="preload" href="{{ $product['image'] }}" as="image" fetchpriority="high">
+            @endif
+        @endforeach
+    @endif
 </head>
 
 <body class="antialiased overflow-x-hidden"
@@ -212,34 +235,40 @@
                 <template x-for="product in products" :key="product.id">
                     <article class="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
                         <a :href="product.url" class="block">
-                            <!-- Image Section -->
-                            <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100"
-                                 x-data="{ imageLoaded: false }">
-                                <template x-if="product.image">
-                                    <div class="relative w-full h-full">
-                                        {{-- Blur Placeholder - Mini görsel ANINDA --}}
-                                        <img :src="product.image"
-                                             :alt="product.title"
-                                             x-show="!imageLoaded"
-                                             class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110">
+                            <!-- Image Section with Skeleton Loading -->
+                            <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200"
+                                 x-data="{ imageLoaded: false, imageError: false }">
 
-                                        {{-- Actual Image - Net görsel --}}
-                                        <img :src="product.image"
-                                             :alt="product.title"
-                                             x-show="imageLoaded"
-                                             x-transition:enter="transition ease-out duration-300"
-                                             x-transition:enter-start="opacity-0"
-                                             x-transition:enter-end="opacity-100"
-                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 relative z-10"
-                                             @load="imageLoaded = true"
-                                             loading="lazy">
+                                {{-- Skeleton Loader - Görsel yüklenene kadar göster --}}
+                                <div x-show="!imageLoaded && !imageError && product.image"
+                                     class="absolute inset-0 z-10">
+                                    {{-- Animated skeleton --}}
+                                    <div class="w-full h-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse">
+                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
                                     </div>
+                                    {{-- Loading icon --}}
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <i class="fa-solid fa-image text-4xl text-gray-300 animate-pulse"></i>
+                                    </div>
+                                </div>
+
+                                {{-- Actual Image --}}
+                                <template x-if="product.image">
+                                    <img :src="product.image"
+                                         :alt="product.title"
+                                         class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
+                                         :class="{ 'opacity-0': !imageLoaded, 'opacity-100': imageLoaded }"
+                                         @load="imageLoaded = true"
+                                         @error="imageError = true"
+                                         loading="lazy"
+                                         decoding="async">
                                 </template>
-                                <template x-if="!product.image">
-                                    <!-- Category Icon Fallback -->
-                                    <div class="w-full h-full flex items-center justify-center">
+
+                                {{-- Fallback: No image or error --}}
+                                <template x-if="!product.image || imageError">
+                                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
                                         <i :class="product.category_icon || 'fa-light fa-box'"
-                                           class="text-8xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                                           class="text-8xl text-blue-400/50 group-hover:scale-110 transition-transform"></i>
                                     </div>
                                 </template>
 

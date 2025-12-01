@@ -276,6 +276,8 @@ if (!function_exists('getBlogDailyCount')) {
      * - option5 → 5 blog/gün
      * - option6 → 6 blog/gün
      * - option7 → 8 blog/gün (SEO Maximum)
+     * - option8 → 12 blog/gün (Agresif SEO)
+     * - option9 → 24 blog/gün (Maximum Growth)
      *
      * @return int Günlük blog sayısı (varsayılan: 4)
      */
@@ -292,6 +294,8 @@ if (!function_exists('getBlogDailyCount')) {
             'option5' => 5,
             'option6' => 6,
             'option7' => 8,
+            'option8' => 12,
+            'option9' => 24,
         ];
 
         return $mapping[$optionValue] ?? 4; // Fallback: 4 blog/gün

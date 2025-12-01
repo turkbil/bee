@@ -666,10 +666,23 @@
                                         data-gallery="prod"
                                         @if($title) data-title="{{ $title }}" @endif
                                         @if($description) data-description="{{ $description }}" @endif>
-                                        <img src="{{ thumb($image, 400, 400, ['quality' => 85, 'scale' => 1, 'alignment' => 'c']) }}"
-                                             alt="{{ $altText }}"
-                                             class="w-full h-48 object-cover"
-                                             loading="lazy">
+                                        <div class="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200" x-data="{ loaded: false }">
+                                            <div x-show="!loaded" class="absolute inset-0 z-10">
+                                                <div class="w-full h-full relative overflow-hidden">
+                                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
+                                                </div>
+                                                <div class="absolute inset-0 flex items-center justify-center">
+                                                    <i class="fa-solid fa-image text-3xl text-gray-300 animate-pulse"></i>
+                                                </div>
+                                            </div>
+                                            <img src="{{ thumb($image, 400, 400, ['quality' => 85, 'scale' => 1, 'alignment' => 'c']) }}"
+                                                 alt="{{ $altText }}"
+                                                 class="w-full h-full object-cover transition-opacity duration-300"
+                                                 :class="{ 'opacity-0': !loaded, 'opacity-100': loaded }"
+                                                 @load="loaded = true"
+                                                 loading="lazy"
+                                                 decoding="async">
+                                        </div>
                                     </a>
                                 @endforeach
                             </div>
@@ -722,11 +735,22 @@
                                         class="group bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-xl overflow-hidden hover:bg-white/80 dark:hover:bg-white/10 hover:-translate-y-1 transition-all duration-300">
 
                                         @if ($variantImageUrl)
-                                            <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                            <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative" x-data="{ loaded: false }">
+                                                <div x-show="!loaded" class="absolute inset-0 z-10">
+                                                    <div class="w-full h-full relative overflow-hidden">
+                                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
+                                                    </div>
+                                                    <div class="absolute inset-0 flex items-center justify-center">
+                                                        <i class="fa-solid fa-box text-3xl text-gray-300 dark:text-gray-500 animate-pulse"></i>
+                                                    </div>
+                                                </div>
                                                 <img src="{{ $variantImageUrl }}"
                                                      alt="{{ $variantTitle }}"
-                                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                     loading="lazy">
+                                                     class="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
+                                                     :class="{ 'opacity-0': !loaded, 'opacity-100': loaded }"
+                                                     @load="loaded = true"
+                                                     loading="lazy"
+                                                     decoding="async">
                                             </div>
                                         @endif
 

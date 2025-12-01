@@ -69,16 +69,38 @@
                 <option value="">{{ $placeholder }}</option>
                 @foreach($options as $key => $option)
                     @php
-                        // Associative array mı yoksa array of objects mı?
-                        if (is_array($option) && isset($option['value'])) {
-                            // Array of objects format: ['value' => '...', 'label' => '...']
-                            $optionValue = $option['value'];
-                            $optionLabel = isset($option['label']) ? $option['label'] : $option['value'];
-                        } else {
-                            // Associative array format: 'key' => 'label'
-                            $optionValue = $key;
-                            $optionLabel = is_string($option) ? $option : json_encode($option);
+                        // Option'ı array'e çevir (stdClass veya object olabilir)
+                        if (is_object($option)) {
+                            $option = (array) $option;
                         }
+
+                        // Array of objects format: [['value' => '...', 'label' => '...'], ...]
+                        if (is_array($option) && (isset($option['value']) || isset($option['label']))) {
+                            $optionValue = $option['value'] ?? $key;
+                            $optionLabel = $option['label'] ?? $option['value'] ?? $key;
+
+                            // 🔧 FIX: label'ın kendisi de bir obje/array olabilir (iç içe yapı)
+                            // Örn: {"value":"0","label":{"value":"option1","label":"1 blog/gün"}}
+                            if (is_array($optionLabel) || is_object($optionLabel)) {
+                                $labelData = is_object($optionLabel) ? (array)$optionLabel : $optionLabel;
+                                // İç içe label varsa onu kullan
+                                $optionLabel = $labelData['label'] ?? $labelData['value'] ?? json_encode($labelData);
+                            }
+
+                            // Value da iç içe olabilir
+                            if (is_array($optionValue) || is_object($optionValue)) {
+                                $valueData = is_object($optionValue) ? (array)$optionValue : $optionValue;
+                                $optionValue = $valueData['value'] ?? json_encode($valueData);
+                            }
+                        } else {
+                            // Associative array format: 'key' => 'label' veya basit string
+                            $optionValue = $key;
+                            $optionLabel = is_scalar($option) ? (string)$option : json_encode($option);
+                        }
+
+                        // Son güvenlik kontrolü - her durumda string olmalı
+                        $optionLabel = is_scalar($optionLabel) ? (string)$optionLabel : json_encode($optionLabel);
+                        $optionValue = is_scalar($optionValue) ? (string)$optionValue : json_encode($optionValue);
                     @endphp
                     <option
                         value="{{ $optionValue }}"

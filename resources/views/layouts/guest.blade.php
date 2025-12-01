@@ -11,10 +11,3 @@
 </main>
 
 @include("themes.{$themeName}.layouts.footer")
-
-@push('scripts')
-<script>
-    // Auth page global scripts
-    console.log('Guest layout loaded with theme:', '{{ $themeName }}');
-</script>
-@endpush

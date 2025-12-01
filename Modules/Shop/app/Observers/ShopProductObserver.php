@@ -208,5 +208,9 @@ class ShopProductObserver
         if ($productId !== null) {
             Cache::forget("shop_product_detail_{$productId}");
         }
+
+        // Sitemap XML cache temizle (yeni ürün için)
+        $tenantId = tenant()?->id ?? 'central';
+        Cache::forget("sitemap_xml_{$tenantId}");
     }
 }

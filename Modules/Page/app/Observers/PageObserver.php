@@ -356,6 +356,10 @@ class PageObserver
         Cache::forget('pages_sitemap_cache');
         Cache::forget('homepage_data');
 
+        // Sitemap XML cache temizle (yeni eklenen içerik için)
+        $tenantId = tenant()?->id ?? 'central';
+        Cache::forget("sitemap_xml_{$tenantId}");
+
         if ($pageId) {
             Cache::forget("page_detail_{$pageId}");
             Cache::forget("universal_seo_page_{$pageId}");

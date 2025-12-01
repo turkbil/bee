@@ -82,6 +82,10 @@ class BlogObserver
             // Sitemap cache'ini temizle
             \Cache::forget('sitemap_blog');
 
+            // Sitemap XML cache temizle (yeni blog içeriği için)
+            $tenantId = tenant()?->id ?? 'central';
+            \Cache::forget("sitemap_xml_{$tenantId}");
+
             // RSS feed cache'ini temizle
             \Cache::forget('rss_blog');
 

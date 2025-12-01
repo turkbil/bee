@@ -101,7 +101,11 @@ class PageController extends Controller
                     'currency' => $currencyCode,
                     'currency_symbol' => $currencyRelation ? $currencyRelation->symbol : '₺',
                     'formatted_price' => $currencyRelation ? $currencyRelation->formatPrice($product->base_price) : number_format($product->base_price, 0, ',', '.') . ' ₺',
-                    'image' => $product->hasMedia('featured_image') ? thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp']) : null,
+                    'image' => $product->hasMedia('hero')
+                        ? thumb($product->getFirstMedia('hero'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp'])
+                        : ($product->hasMedia('featured_image')
+                            ? thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp'])
+                            : null),
                     'category' => $product->category ? $product->category->getTranslated('title', app()->getLocale()) : null,
                     'category_icon' => $product->category->icon_class ?? 'fa-light fa-box',
                     'featured' => $product->is_featured ?? false,

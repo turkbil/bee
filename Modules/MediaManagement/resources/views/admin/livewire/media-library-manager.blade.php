@@ -547,7 +547,12 @@
     <!-- TOOLBAR -->
     <div class="fm-toolbar">
         <button class="btn btn-primary btn-sm" @click="$refs.uploader.click()" :disabled="isUploading" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Bilgisayardan dosya seç">
-            <i class="fas fa-upload me-1"></i> Yükle
+            <template x-if="!isUploading">
+                <span><i class="fas fa-upload me-1"></i> Yükle</span>
+            </template>
+            <template x-if="isUploading">
+                <span><i class="fas fa-spinner fa-spin me-1"></i> Yükleniyor...</span>
+            </template>
         </button>
         <input type="file" multiple x-ref="uploader" class="d-none" @change="handleUpload($event)" accept="image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.zip,.rar">
 
@@ -603,15 +608,25 @@
 
     <!-- UPLOAD ZONE (Always visible) -->
     <div class="fm-upload-zone mx-2 mt-2"
-         :class="{ 'dropping': isDragging }"
-         @click="$refs.uploader.click()"
+         :class="{ 'dropping': isDragging, 'uploading': isUploading }"
+         @click="!isUploading && $refs.uploader.click()"
          @dragover.prevent="isDragging = true"
          @dragleave.prevent="isDragging = false"
          @drop.prevent="isDragging = false; handleDrop($event)"
-         style="cursor: pointer;">
-        <i class="fas fa-cloud-upload-alt fa-lg text-primary me-2"></i>
-        <span class="small">Dosyaları buraya sürükleyin veya tıklayarak seçin</span>
-        <span class="text-muted ms-2 small">(Çoklu seçim desteklenir)</span>
+         :style="isUploading ? 'cursor: wait; opacity: 0.7;' : 'cursor: pointer;'">
+        <template x-if="!isUploading">
+            <div>
+                <i class="fas fa-cloud-upload-alt fa-lg text-primary me-2"></i>
+                <span class="small">Dosyaları buraya sürükleyin veya tıklayarak seçin</span>
+                <span class="text-muted ms-2 small">(Çoklu seçim desteklenir)</span>
+            </div>
+        </template>
+        <template x-if="isUploading">
+            <div>
+                <i class="fas fa-spinner fa-spin fa-lg text-primary me-2"></i>
+                <span class="small fw-bold">Dosyalar yükleniyor, lütfen bekleyin...</span>
+            </div>
+        </template>
     </div>
 
     <!-- BODY -->
@@ -708,8 +723,11 @@
                  ">
 
                 <!-- Loading Overlay -->
-                <div wire:loading.class="active" wire:target="gotoPage, previousPage, nextPage, setPage, perPage, search, typeFilter, collectionFilter, dateFilter, moduleFilter, diskFilter, sortField, sortDirection" class="fm-loading-overlay">
-                    <div class="fm-loading-spinner"></div>
+                <div wire:loading.class="active" wire:target="gotoPage, previousPage, nextPage, setPage, perPage, search, typeFilter, collectionFilter, dateFilter, moduleFilter, diskFilter, sortField, sortDirection" class="fm-loading-overlay" :class="{ 'active': isUploading }">
+                    <div class="text-center">
+                        <div class="fm-loading-spinner mx-auto mb-3"></div>
+                        <div x-show="isUploading" class="text-muted">Dosyalar yükleniyor...</div>
+                    </div>
                 </div>
 
                 <!-- Content hidden during loading -->

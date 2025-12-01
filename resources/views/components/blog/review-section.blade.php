@@ -24,11 +24,15 @@
         ? $blog->ratings()->where('user_id', auth()->id())->first()?->rating_value
         : null;
 
-    // Puan dağılımı (1-5 yıldız)
+    // Puan dağılımı (1-5 yıldız) - Varsayılan 1 adet 5 yıldız dahil
     $distribution = [];
     if (method_exists($blog, 'ratings')) {
         for ($i = 5; $i >= 1; $i--) {
             $count = $blog->ratings()->where('rating_value', $i)->count();
+            // 5 yıldız için varsayılan +1 ekle
+            if ($i === 5) {
+                $count += 1;
+            }
             $percentage = $ratingsCount > 0 ? ($count / $ratingsCount) * 100 : 0;
             $distribution[$i] = [
                 'count' => $count,

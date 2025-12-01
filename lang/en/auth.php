@@ -52,4 +52,14 @@ return [
     'back_to_login' => 'Login',
     'logged_out_success' => 'You have been logged out successfully.',
 
+    // Login page welcome section
+    'welcome_title' => 'Welcome to :app',
+    'feature_secure_title' => 'Secure Login',
+    'feature_secure_desc' => 'Your data is protected with the highest security standards.',
+    'feature_fast_title' => 'Fast Access',
+    'feature_fast_desc' => 'Access all content and management tools with one click.',
+    'feature_support_title' => '24/7 Support',
+    'feature_support_desc' => 'We are always here for your questions.',
+    'welcome_footer' => 'Log in to your account to access all features.',
+
 ];

@@ -52,4 +52,14 @@ return [
     'back_to_login' => 'Giriş yap',
     'logged_out_success' => 'Başarıyla çıkış yaptınız.',
 
+    // Login page welcome section
+    'welcome_title' => ':app\'e Hoş Geldiniz',
+    'feature_secure_title' => 'Güvenli Giriş',
+    'feature_secure_desc' => 'Verileriniz en yüksek güvenlik standartları ile korunmaktadır.',
+    'feature_fast_title' => 'Hızlı Erişim',
+    'feature_fast_desc' => 'Tüm içerik ve yönetim araçlarına tek tıkla ulaşın.',
+    'feature_support_title' => '7/24 Destek',
+    'feature_support_desc' => 'Sorularınız için her zaman yanınızdayız.',
+    'welcome_footer' => 'Hesabınıza giriş yaparak tüm özelliklere erişebilirsiniz.',
+
 ];

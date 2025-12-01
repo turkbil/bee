@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog CTA Tasarımları v5 - ÇARPICI ARKA PLAN + ANİMASYONLU GRADIENT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+        }
+        .cta-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Animasyonlu Gradient Başlık */
+        @keyframes gradient-slide {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .animated-gradient {
+            background-size: 200% 200%;
+            animation: gradient-slide 3s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Mavi tema gradient - Belirgin renkler */
+        .gradient-blue {
+            background-image: linear-gradient(90deg, #60a5fa, #f472b6, #a78bfa, #60a5fa);
+        }
+
+        /* Yeşil tema gradient */
+        .gradient-green {
+            background-image: linear-gradient(90deg, #34d399, #fbbf24, #22d3ee, #34d399);
+        }
+
+        /* Turuncu tema gradient */
+        .gradient-orange {
+            background-image: linear-gradient(90deg, #fb923c, #f43f5e, #fbbf24, #fb923c);
+        }
+
+        /* Mor tema gradient */
+        .gradient-purple {
+            background-image: linear-gradient(90deg, #a78bfa, #ec4899, #60a5fa, #a78bfa);
+        }
+
+        /* Gold tema gradient */
+        .gradient-gold {
+            background-image: linear-gradient(90deg, #fbbf24, #f97316, #fef08a, #fbbf24);
+        }
+
+        /* Kırmızı tema gradient */
+        .gradient-red {
+            background-image: linear-gradient(90deg, #f87171, #fbbf24, #fb7185, #f87171);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="cta-wrapper">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">Blog CTA v5</h1>
+            <p class="text-gray-400">Çarpıcı arka plan + Animasyonlu gradient başlık + Glass butonlar</p>
+            <p class="text-amber-400 text-sm mt-2">Başlıklardaki renk kaymasını izleyin!</p>
+        </header>
+
+        <!-- CTA 1: MAVİ ARKA PLAN -->
+        <div class="mb-8">
+            <h2 class="text-white text-lg font-semibold mb-3 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm">1</span>
+                Mavi Tema
+            </h2>
+
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 shadow-2xl">
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                </div>
+                <div class="relative p-5 md:p-6">
+                    <div class="flex items-start gap-4 mb-5">
+                        <div class="w-16 h-16 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <img src="https://ixtif.com/storage/tenant2/355/x.png" alt="iXtif" class="w-10 h-10 object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl md:text-2xl font-extrabold mb-1">
+                                <span class="animated-gradient gradient-blue">Forklift mi arıyorsunuz? Hemen arayın!</span>
+                            </h3>
+                            <p class="text-white/80 text-sm">En uygun fiyat garantisi. Yedek parça ve servis desteğiyle her zaman yanınızdayız.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <a href="tel:02167553555" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone"></i>
+                            <span>0216 755 3 555</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="/sizi-arayalim" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone-volume"></i>
+                            <span>Sizi Arayalım</span>
+                        </a>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-4 border-t border-white/20">
+                        <a href="/shop/kategori/forklift" class="inline-flex items-center gap-2 text-white/90 text-sm font-medium hover:text-white transition-colors">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>Forklift Ürünlerini İncele</span>
+                        </a>
+                        <div class="flex items-center gap-4 text-white/60 text-xs">
+                            <span><i class="fas fa-shield-alt mr-1"></i>Garantili</span>
+                            <span><i class="fas fa-truck mr-1"></i>81 İle Teslimat</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA 2: YEŞİL ARKA PLAN -->
+        <div class="mb-8">
+            <h2 class="text-white text-lg font-semibold mb-3 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm">2</span>
+                Yeşil Tema
+            </h2>
+
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 via-green-600 to-teal-700 shadow-2xl">
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                </div>
+                <div class="relative p-5 md:p-6">
+                    <div class="flex items-start gap-4 mb-5">
+                        <div class="w-16 h-16 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <img src="https://ixtif.com/storage/tenant2/355/x.png" alt="iXtif" class="w-10 h-10 object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl md:text-2xl font-extrabold mb-1">
+                                <span class="animated-gradient gradient-green">Forklift fiyatı almadan karar vermeyin!</span>
+                            </h3>
+                            <p class="text-white/80 text-sm">Ücretsiz fiyat teklifi alın. 30 saniyede size dönüş yapalım.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <a href="tel:02167553555" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone"></i>
+                            <span>0216 755 3 555</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="/sizi-arayalim" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone-volume"></i>
+                            <span>Sizi Arayalım</span>
+                        </a>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-4 border-t border-white/20">
+                        <a href="/shop/kategori/forklift" class="inline-flex items-center gap-2 text-white/90 text-sm font-medium hover:text-white transition-colors">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>Forklift Ürünlerini İncele</span>
+                        </a>
+                        <div class="flex items-center gap-4 text-white/60 text-xs">
+                            <span><i class="fas fa-tags mr-1"></i>En İyi Fiyat</span>
+                            <span><i class="fas fa-clock mr-1"></i>Hızlı Teklif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA 3: TURUNCU ARKA PLAN -->
+        <div class="mb-8">
+            <h2 class="text-white text-lg font-semibold mb-3 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center text-white text-sm">3</span>
+                Turuncu Tema
+            </h2>
+
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 via-amber-600 to-yellow-600 shadow-2xl">
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                </div>
+                <div class="relative p-5 md:p-6">
+                    <div class="flex items-start gap-4 mb-5">
+                        <div class="w-16 h-16 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <img src="https://ixtif.com/storage/tenant2/355/x.png" alt="iXtif" class="w-10 h-10 object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl md:text-2xl font-extrabold mb-1">
+                                <span class="animated-gradient gradient-orange">Forklift satın almadan mutlaka bizi arayın!</span>
+                            </h3>
+                            <p class="text-white/80 text-sm">Piyasanın en uygun fiyatları. Yedek parça ve garanti dahil!</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <a href="tel:02167553555" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone"></i>
+                            <span>0216 755 3 555</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="/sizi-arayalim" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone-volume"></i>
+                            <span>Sizi Arayalım</span>
+                        </a>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-4 border-t border-white/20">
+                        <a href="/shop/kategori/forklift" class="inline-flex items-center gap-2 text-white/90 text-sm font-medium hover:text-white transition-colors">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>Forklift Ürünlerini İncele</span>
+                        </a>
+                        <div class="flex items-center gap-4 text-white/60 text-xs">
+                            <span><i class="fas fa-tools mr-1"></i>Yedek Parça</span>
+                            <span><i class="fas fa-certificate mr-1"></i>Garanti</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA 4: MOR ARKA PLAN -->
+        <div class="mb-8">
+            <h2 class="text-white text-lg font-semibold mb-3 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm">4</span>
+                Mor Tema
+            </h2>
+
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-600 via-violet-700 to-indigo-800 shadow-2xl">
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                </div>
+                <div class="relative p-5 md:p-6">
+                    <div class="flex items-start gap-4 mb-5">
+                        <div class="w-16 h-16 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <img src="https://ixtif.com/storage/tenant2/355/x.png" alt="iXtif" class="w-10 h-10 object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl md:text-2xl font-extrabold mb-1">
+                                <span class="animated-gradient gradient-purple">Forklift konusunda uzmanız, sizi bekliyoruz!</span>
+                            </h3>
+                            <p class="text-white/80 text-sm">500+ mutlu müşteri. Ücretsiz danışmanlık ve demo imkanı.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <a href="tel:02167553555" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone"></i>
+                            <span>0216 755 3 555</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="/sizi-arayalim" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone-volume"></i>
+                            <span>Sizi Arayalım</span>
+                        </a>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-4 border-t border-white/20">
+                        <a href="/shop/kategori/forklift" class="inline-flex items-center gap-2 text-white/90 text-sm font-medium hover:text-white transition-colors">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>Forklift Ürünlerini İncele</span>
+                        </a>
+                        <div class="flex items-center gap-4 text-white/60 text-xs">
+                            <span><i class="fas fa-users mr-1"></i>500+ Müşteri</span>
+                            <span><i class="fas fa-headset mr-1"></i>7/24 Destek</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA 5: KOYU + GOLD ARKA PLAN -->
+        <div class="mb-8">
+            <h2 class="text-white text-lg font-semibold mb-3 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 flex items-center justify-center text-gray-900 text-sm font-bold">5</span>
+                Koyu + Gold Tema (Premium)
+            </h2>
+
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-slate-800 to-zinc-900 border border-amber-500/40 shadow-2xl shadow-amber-500/10">
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-amber-500/20 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-yellow-500/20 rounded-full blur-2xl"></div>
+                </div>
+                <div class="relative p-5 md:p-6">
+                    <div class="flex items-start gap-4 mb-5">
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-amber-500/30 to-yellow-600/30 border border-amber-500/50 flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-500/20">
+                            <img src="https://ixtif.com/storage/tenant2/355/x.png" alt="iXtif" class="w-10 h-10 object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl md:text-2xl font-extrabold mb-1">
+                                <span class="animated-gradient gradient-gold">Forklift arıyorsanız doğru yerdesiniz!</span>
+                            </h3>
+                            <p class="text-gray-400 text-sm">Garantili ürünlerimizle fiyat, yedek parça ve servis konusunda yanınızdayız.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <a href="tel:02167553555" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-amber-500/30 text-white font-bold text-sm transition-all hover:bg-amber-500/20 hover:scale-[1.02]">
+                            <i class="fas fa-phone text-amber-400"></i>
+                            <span>0216 755 3 555</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-amber-500/30 text-white font-bold text-sm transition-all hover:bg-amber-500/20 hover:scale-[1.02]">
+                            <i class="fab fa-whatsapp text-green-400 text-lg"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="/sizi-arayalim" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-amber-500/30 text-white font-bold text-sm transition-all hover:bg-amber-500/20 hover:scale-[1.02]">
+                            <i class="fas fa-phone-volume text-amber-400"></i>
+                            <span>Sizi Arayalım</span>
+                        </a>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-4 border-t border-amber-500/20">
+                        <a href="/shop/kategori/forklift" class="inline-flex items-center gap-2 text-amber-400 text-sm font-medium hover:text-amber-300 transition-colors">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>Forklift Ürünlerini İncele</span>
+                        </a>
+                        <div class="flex items-center gap-4 text-gray-500 text-xs">
+                            <span><i class="fas fa-gem text-amber-400 mr-1"></i>Garantili</span>
+                            <span><i class="fas fa-handshake text-amber-400 mr-1"></i>Güvenilir</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA 6: KIRMIZI ARKA PLAN -->
+        <div class="mb-8">
+            <h2 class="text-white text-lg font-semibold mb-3 flex items-center gap-2">
+                <span class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white text-sm">6</span>
+                Kırmızı Tema
+            </h2>
+
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-red-600 via-rose-600 to-pink-700 shadow-2xl">
+                <div class="absolute inset-0 overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                </div>
+                <div class="relative p-5 md:p-6">
+                    <div class="flex items-start gap-4 mb-5">
+                        <div class="w-16 h-16 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 shadow-lg">
+                            <img src="https://ixtif.com/storage/tenant2/355/x.png" alt="iXtif" class="w-10 h-10 object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl md:text-2xl font-extrabold mb-1">
+                                <span class="animated-gradient gradient-red">Forklift kampanyalarını kaçırmayın!</span>
+                            </h3>
+                            <p class="text-white/80 text-sm">Sınırlı stok, özel fiyatlar. Şimdi arayın, en iyi teklifi kapın!</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <a href="tel:02167553555" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone"></i>
+                            <span>0216 755 3 555</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="/sizi-arayalim" class="flex items-center justify-center gap-2 px-4 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02]">
+                            <i class="fas fa-phone-volume"></i>
+                            <span>Sizi Arayalım</span>
+                        </a>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 pt-4 border-t border-white/20">
+                        <a href="/shop/kategori/forklift" class="inline-flex items-center gap-2 text-white/90 text-sm font-medium hover:text-white transition-colors">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>Forklift Ürünlerini İncele</span>
+                        </a>
+                        <div class="flex items-center gap-4 text-white/60 text-xs">
+                            <span><i class="fas fa-fire mr-1"></i>Sınırlı Stok</span>
+                            <span><i class="fas fa-bolt mr-1"></i>Acele Edin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖZET -->
+        <div class="bg-slate-800/50 rounded-2xl p-6 border border-slate-700">
+            <h3 class="text-white text-lg font-bold mb-4">v5 Özellikleri:</h3>
+            <ul class="space-y-2 text-gray-300 text-sm">
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-green-400 mt-1"></i>
+                    <span><strong>Çarpıcı Arka Plan:</strong> v3'teki renkli gradient arka planlar geri geldi</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-green-400 mt-1"></i>
+                    <span><strong>Animasyonlu Gradient Başlık:</strong> 3 saniyede renk kayması (belirgin farklı renkler)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-green-400 mt-1"></i>
+                    <span><strong>X Logosu:</strong> Gerçek turuncu logo kullanılıyor</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-green-400 mt-1"></i>
+                    <span><strong>Glass Butonlar:</strong> bg-white/20 backdrop-blur-md border border-white/30</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check text-green-400 mt-1"></i>
+                    <span><strong>Gradient Renkleri (Belirgin):</strong></span>
+                </li>
+            </ul>
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                <div class="p-2 rounded bg-slate-700/50">
+                    <span class="animated-gradient gradient-blue font-bold">Mavi:</span>
+                    <span class="text-gray-400 ml-1">Mavi → Pembe → Mor</span>
+                </div>
+                <div class="p-2 rounded bg-slate-700/50">
+                    <span class="animated-gradient gradient-green font-bold">Yeşil:</span>
+                    <span class="text-gray-400 ml-1">Yeşil → Sarı → Cyan</span>
+                </div>
+                <div class="p-2 rounded bg-slate-700/50">
+                    <span class="animated-gradient gradient-orange font-bold">Turuncu:</span>
+                    <span class="text-gray-400 ml-1">Turuncu → Kırmızı → Sarı</span>
+                </div>
+                <div class="p-2 rounded bg-slate-700/50">
+                    <span class="animated-gradient gradient-purple font-bold">Mor:</span>
+                    <span class="text-gray-400 ml-1">Mor → Pembe → Mavi</span>
+                </div>
+                <div class="p-2 rounded bg-slate-700/50">
+                    <span class="animated-gradient gradient-gold font-bold">Gold:</span>
+                    <span class="text-gray-400 ml-1">Sarı → Turuncu → Açık Sarı</span>
+                </div>
+                <div class="p-2 rounded bg-slate-700/50">
+                    <span class="animated-gradient gradient-red font-bold">Kırmızı:</span>
+                    <span class="text-gray-400 ml-1">Kırmızı → Sarı → Pembe</span>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center mt-8 pt-6 border-t border-slate-700">
+            <p class="text-gray-500 text-sm">Claude AI tarafından hazırlandı</p>
+        </footer>
+    </div>
+
+</body>
+</html>

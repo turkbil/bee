@@ -81,11 +81,23 @@
                         <div class="md:flex">
                             @if($featuredImage)
                                 <div class="md:w-1/3 lg:w-2/5">
-                                    <div class="aspect-[16/10] md:aspect-[4/3] lg:aspect-[16/10] overflow-hidden">
+                                    <div class="aspect-[16/10] md:aspect-[4/3] lg:aspect-[16/10] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 relative" x-data="{ imageLoaded: false }">
+                                        {{-- Skeleton Loader --}}
+                                        <div x-show="!imageLoaded" class="absolute inset-0 z-10">
+                                            <div class="w-full h-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse">
+                                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
+                                            </div>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <i class="fa-solid fa-newspaper text-4xl text-gray-300 animate-pulse"></i>
+                                            </div>
+                                        </div>
                                         <img src="{{ $featuredImage->getUrl() }}"
                                              alt="{{ $postTitle }}"
-                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                             loading="lazy">
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+                                             :class="{ 'opacity-0': !imageLoaded, 'opacity-100': imageLoaded }"
+                                             @load="imageLoaded = true"
+                                             loading="lazy"
+                                             decoding="async">
                                     </div>
                                 </div>
                             @endif

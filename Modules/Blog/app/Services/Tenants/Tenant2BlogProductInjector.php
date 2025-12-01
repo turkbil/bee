@@ -3,26 +3,90 @@
 namespace Modules\Blog\app\Services\Tenants;
 
 use Modules\Shop\app\Models\ShopProduct;
+use Modules\Shop\App\Models\ShopCategory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 /**
  * Tenant 2 (ixtif.com) Blog Product Injector
  *
- * Injects shop product cards into blog content for Tenant 2
+ * Injects shop product cards and CTA banners into blog content for Tenant 2
+ *
+ * Pattern: 3 product + 1 CTA + 3 product + 1 CTA ...
  */
 class Tenant2BlogProductInjector
 {
     /**
+     * Ana kategoriler (İxtif için)
+     */
+    private array $mainCategories = [
+        ['id' => 1, 'title' => 'Forklift', 'slug' => 'forklift', 'icon' => 'fa-forklift'],
+        ['id' => 2, 'title' => 'Transpalet', 'slug' => 'transpalet', 'icon' => 'fa-dolly'],
+        ['id' => 3, 'title' => 'İstif Makinesi', 'slug' => 'istif-makinesi', 'icon' => 'fa-boxes-stacked'],
+        ['id' => 4, 'title' => 'Order Picker', 'slug' => 'siparis-toplama-makinesi', 'icon' => 'fa-hand-holding-box'],
+        ['id' => 5, 'title' => 'Otonom Sistemler', 'slug' => 'otonom-sistemler', 'icon' => 'fa-robot'],
+        ['id' => 6, 'title' => 'Reach Truck', 'slug' => 'reach-truck', 'icon' => 'fa-truck-loading'],
+        ['id' => 7, 'title' => 'Yedek Parça', 'slug' => 'yedek-parca', 'icon' => 'fa-gears'],
+    ];
+
+    /**
+     * CTA bantları - dinamik ve çeşitli
+     */
+    private array $ctaBanners = [];
+
+    /**
+     * CTA Temaları - 6 farklı renk teması (Random seçilir)
+     */
+    private array $ctaThemes = [
+        'blue' => [
+            'bgClass' => 'cta-bg-blue',
+            'bgStyle' => 'background: linear-gradient(135deg, #1e40af 0%, #3b82f6 25%, #8b5cf6 50%, #6366f1 75%, #1e40af 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+        ],
+        'green' => [
+            'bgClass' => 'cta-bg-green',
+            'bgStyle' => 'background: linear-gradient(135deg, #059669 0%, #10b981 25%, #14b8a6 50%, #06b6d4 75%, #059669 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+        ],
+        'orange' => [
+            'bgClass' => 'cta-bg-orange',
+            'bgStyle' => 'background: linear-gradient(135deg, #ea580c 0%, #f97316 25%, #fb923c 50%, #fbbf24 75%, #ea580c 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+        ],
+        'purple' => [
+            'bgClass' => 'cta-bg-purple',
+            'bgStyle' => 'background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 25%, #a855f7 50%, #c084fc 75%, #7c3aed 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+        ],
+        'gold' => [
+            'bgClass' => 'cta-bg-gold',
+            'bgStyle' => 'background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #1e293b 75%, #0f172a 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+            'isGold' => true,
+        ],
+        'red' => [
+            'bgClass' => 'cta-bg-red',
+            'bgStyle' => 'background: linear-gradient(135deg, #dc2626 0%, #ef4444 25%, #f87171 50%, #fb7185 75%, #dc2626 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+        ],
+    ];
+
+    /**
+     * Blog içeriğinden çıkarılan anahtar kelimeler
+     */
+    private array $blogKeywords = [];
+
+    /**
      * Inject products into blog content between H2 tags
+     * Pattern: 3 product + 1 CTA banner (alternating)
      */
     public function injectProducts(string $content, $blog): string
     {
         try {
             // Cache key per blog
-            $cacheKey = "blog_product_injection_{$blog->id}";
+            $cacheKey = "blog_product_injection_v3_{$blog->id}";
 
             $result = Cache::remember($cacheKey, 3600, function () use ($content, $blog) {
+                // Blog anahtar kelimelerini çıkar
+                $this->extractBlogKeywords($blog);
+
+                // CTA bantlarını hazırla
+                $this->prepareCTABanners($blog);
+
                 // Get matching products
                 $products = $this->getMatchingProducts($blog);
 
@@ -40,6 +104,10 @@ class Tenant2BlogProductInjector
                 $result = '';
                 $h2Count = 0;
                 $productIndex = 0;
+                $ctaIndex = 0;
+                $injectionCount = 0; // Toplam injection sayısı
+
+                $isFirstInjection = true;
 
                 foreach ($parts as $part) {
                     // Check if this is an H2 tag
@@ -47,11 +115,23 @@ class Tenant2BlogProductInjector
                         $h2Count++;
 
                         // Skip first H2, inject BEFORE subsequent H2s
-                        if ($h2Count > 1 && $productIndex < $products->count()) {
-                            // Get 3 products for this card
-                            $cardProducts = $products->slice($productIndex, 3);
-                            $result .= $this->renderProductCard($cardProducts);
-                            $productIndex += 3;
+                        if ($h2Count > 1) {
+                            $injectionCount++;
+
+                            // Pattern: 3 product + 1 CTA (tek/çift kontrolü)
+                            if ($injectionCount % 2 === 1) {
+                                // Tek sayı: 3 ürün göster
+                                if ($productIndex < $products->count()) {
+                                    $cardProducts = $products->slice($productIndex, 3);
+                                    $result .= $this->renderProductCard($cardProducts, $isFirstInjection);
+                                    $productIndex += 3;
+                                    $isFirstInjection = false;
+                                }
+                            } else {
+                                // Çift sayı: CTA bant göster
+                                $result .= $this->renderCTABanner($ctaIndex);
+                                $ctaIndex++;
+                            }
                         }
                     }
 
@@ -67,6 +147,157 @@ class Tenant2BlogProductInjector
             \Log::error('Tenant2BlogProductInjector error: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
             return $content;
         }
+    }
+
+    /**
+     * Blog içeriğinden anahtar kelimeler çıkar
+     */
+    private function extractBlogKeywords($blog): void
+    {
+        $currentLocale = app()->getLocale();
+        $keywords = [];
+
+        // Title'dan
+        $title = $blog->getTranslated('title', $currentLocale) ?? '';
+        $titleWords = explode(' ', strtolower($title));
+        $keywords = array_merge($keywords, array_filter($titleWords, fn($w) => mb_strlen($w) > 3));
+
+        // Tags'den
+        if ($blog->tags && $blog->tags->isNotEmpty()) {
+            $tagNames = $blog->tags->pluck('name')->map(fn($n) => strtolower($n))->toArray();
+            $keywords = array_merge($keywords, $tagNames);
+        }
+
+        $this->blogKeywords = array_unique($keywords);
+    }
+
+    /**
+     * CTA bantlarını hazırla - HER CTA'DA TELEFON + WHATSAPP + SİZİ ARAYALIM
+     * Setting values'dan dinamik değerler çeker
+     */
+    private function prepareCTABanners($blog): void
+    {
+        // İlgili kategoriyi bul (blog keywords'e göre)
+        $matchedCategory = $this->findMatchingCategory();
+        $altCategory = $this->getAlternativeCategory($matchedCategory['id']);
+
+        // Settings'den dinamik değerler
+        $siteName = setting('site_name') ?: 'iXtif';
+        $siteSlogan = setting('site_slogan') ?: 'Türkiye\'nin İstif Pazarı';
+        $phone = setting('site_phone') ?: '0216 755 3 555';
+        $whatsapp = setting('site_whatsapp') ?: '0501 005 67 58';
+
+        // WhatsApp numarasını uluslararası formata çevir
+        $whatsappClean = preg_replace('/[^0-9]/', '', $whatsapp);
+        if (strlen($whatsappClean) === 10) {
+            $whatsappClean = '90' . $whatsappClean;
+        }
+
+        // Ortak veriler - her CTA'da kullanılacak
+        $commonData = [
+            'phone' => $phone,
+            'whatsapp' => $whatsappClean,
+            'siteName' => $siteName,
+            'siteSlogan' => $siteSlogan,
+        ];
+
+        $this->ctaBanners = [
+            // CTA 1: Mavi tema - Profesyonel
+            array_merge($commonData, [
+                'type' => 'style_blue',
+                'category' => $matchedCategory,
+                'headline' => 'En Uygun Fiyat Garantisi',
+                'subheadline' => 'Uzman ekibimizle iletişime geçin',
+            ]),
+            // CTA 2: Yeşil tema - WhatsApp vurgulu
+            array_merge($commonData, [
+                'type' => 'style_green',
+                'category' => $altCategory,
+                'headline' => 'Anında Fiyat Teklifi',
+                'subheadline' => '30 saniyede size dönüş yapalım',
+            ]),
+            // CTA 3: Turuncu tema - Acil
+            array_merge($commonData, [
+                'type' => 'style_orange',
+                'category' => $matchedCategory,
+                'headline' => 'Hemen Arayın, Fırsatları Kaçırmayın',
+                'subheadline' => 'Türkiye\'nin her yerine teslimat',
+            ]),
+            // CTA 4: Mor tema - Premium
+            array_merge($commonData, [
+                'type' => 'style_purple',
+                'category' => $altCategory,
+                'headline' => 'Profesyonel Danışmanlık',
+                'subheadline' => 'İhtiyacınıza özel çözümler sunuyoruz',
+            ]),
+            // CTA 5: Koyu tema - Kurumsal
+            array_merge($commonData, [
+                'type' => 'style_dark',
+                'category' => $matchedCategory,
+                'headline' => '15 Yıllık Sektör Deneyimi',
+                'subheadline' => '500+ mutlu müşteri, binlerce başarılı proje',
+            ]),
+            // CTA 6: Kırmızı tema - Kampanya
+            array_merge($commonData, [
+                'type' => 'style_red',
+                'category' => $altCategory,
+                'headline' => 'Özel Fiyatlar İçin Arayın',
+                'subheadline' => 'Stoklar ile sınırlı, acele edin',
+            ]),
+        ];
+    }
+
+    /**
+     * Eşleşen kategoriden farklı alternatif kategori seç
+     */
+    private function getAlternativeCategory(int $excludeId): array
+    {
+        $alternatives = array_filter($this->mainCategories, fn($c) => $c['id'] !== $excludeId);
+        return $alternatives[array_rand($alternatives)] ?? $this->mainCategories[0];
+    }
+
+    /**
+     * Blog keywords'e göre en uygun kategoriyi bul
+     */
+    private function findMatchingCategory(): array
+    {
+        // Keyword eşleştirme
+        $categoryKeywords = [
+            1 => ['forklift', 'fork', 'lift', 'dizel', 'elektrikli', 'lpg'],
+            2 => ['transpalet', 'palet', 'manuel', 'akülü'],
+            3 => ['istif', 'stacker', 'istifleme', 'yükseltici'],
+            4 => ['order', 'picker', 'sipariş', 'toplama'],
+            5 => ['otonom', 'agv', 'amr', 'robot', 'otomatik'],
+            6 => ['reach', 'truck', 'dar', 'koridor'],
+            7 => ['yedek', 'parça', 'bakım', 'servis'],
+        ];
+
+        $maxScore = 0;
+        $matchedId = 1; // Default: Forklift
+
+        foreach ($categoryKeywords as $catId => $catKeywords) {
+            $score = 0;
+            foreach ($this->blogKeywords as $blogKeyword) {
+                foreach ($catKeywords as $catKeyword) {
+                    if (stripos($blogKeyword, $catKeyword) !== false || stripos($catKeyword, $blogKeyword) !== false) {
+                        $score++;
+                    }
+                }
+            }
+            if ($score > $maxScore) {
+                $maxScore = $score;
+                $matchedId = $catId;
+            }
+        }
+
+        // Eşleşen kategoriyi bul
+        foreach ($this->mainCategories as $cat) {
+            if ($cat['id'] === $matchedId) {
+                return $cat;
+            }
+        }
+
+        return $this->mainCategories[0]; // Fallback
     }
 
     /**
@@ -224,6 +455,147 @@ class Tenant2BlogProductInjector
                 \Log::error('Product card render error (vertical): ' . $e->getMessage());
             }
         }
+        $html .= "</div>\n\n";
+
+        return $html;
+    }
+
+    /**
+     * CTA Bant render et - HER CTA'DA TELEFON + WHATSAPP + SİZİ ARAYALIM
+     * v7: Animasyonlu gradient arka planlar, X logosu, glass butonlar
+     */
+    private function renderCTABanner(int $index): string
+    {
+        $bannerIndex = $index % count($this->ctaBanners);
+        $banner = $this->ctaBanners[$bannerIndex];
+
+        // Random tema seç (6 tema)
+        $themeKeys = array_keys($this->ctaThemes);
+        $randomTheme = $themeKeys[array_rand($themeKeys)];
+        $theme = $this->ctaThemes[$randomTheme];
+        $isGold = $theme['isGold'] ?? false;
+
+        $html = "\n\n";
+
+        // Minimal divider
+        $html .= "<div class=\"flex justify-center items-center mb-3\">\n";
+        $html .= "    <div class=\"inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100/30 dark:bg-gray-800/20\">\n";
+        $html .= "        <i class=\"fas fa-chevron-down text-gray-400 dark:text-gray-600 text-xs\"></i>\n";
+        $html .= "        <span class=\"text-xs text-gray-400 dark:text-gray-600\">Yazı devam ediyor</span>\n";
+        $html .= "        <i class=\"fas fa-chevron-down text-gray-400 dark:text-gray-600 text-xs\"></i>\n";
+        $html .= "    </div>\n";
+        $html .= "</div>\n\n";
+
+        // Yeni v7 tasarımı ile render
+        $html .= $this->renderModernCTA($banner, $theme, $isGold);
+
+        return $html;
+    }
+
+    /**
+     * MODERN CTA RENDER - v7 Tasarımı
+     * Animasyonlu gradient arka plan, X logosu, glass butonlar
+     */
+    private function renderModernCTA(array $banner, array $theme, bool $isGold = false): string
+    {
+        $phone = $banner['phone'];
+        $whatsapp = $banner['whatsapp'];
+        $headline = $banner['headline'];
+        $subheadline = $banner['subheadline'];
+        $category = $banner['category'];
+        $categoryTitle = $category['title'];
+        $categoryIcon = $category['icon'] ?? 'fa-boxes-stacked';
+        $bgStyle = $theme['bgStyle'];
+
+        // Text gradient stilleri (kontrastlı)
+        $headlineGradient = $isGold
+            ? 'background-image: linear-gradient(90deg, #fbbf24, #f59e0b, #fcd34d, #fbbf24); background-size: 200% 200%; animation: cta-text-slide 3s ease infinite; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;'
+            : 'background-image: linear-gradient(90deg, #ffffff, #fef3c7, #ffffff, #e0f2fe, #ffffff); background-size: 200% 200%; animation: cta-text-slide 3s ease infinite; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;';
+
+        $html = "<div class=\"my-8 not-prose\">\n";
+
+        // CSS Keyframes (inline style içinde)
+        $html .= "<style>\n";
+        $html .= "@keyframes cta-bg-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }\n";
+        $html .= "@keyframes cta-text-slide { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }\n";
+        $html .= "</style>\n";
+
+        // Ana kart - Animasyonlu gradient arka plan
+        $html .= "<div class=\"relative overflow-hidden rounded-2xl shadow-2xl\" style=\"{$bgStyle}\">\n";
+
+        // Dekoratif elementler
+        $html .= "  <div class=\"absolute inset-0 overflow-hidden pointer-events-none\">\n";
+        $html .= "    <div class=\"absolute -top-20 -right-20 w-60 h-60 bg-white/10 rounded-full blur-3xl\"></div>\n";
+        $html .= "    <div class=\"absolute -bottom-20 -left-20 w-60 h-60 bg-white/10 rounded-full blur-3xl\"></div>\n";
+        $html .= "  </div>\n";
+
+        // İçerik
+        $html .= "  <div class=\"relative p-6 md:p-8\">\n";
+
+        // Üst Bölüm: X Logo + Başlık
+        $html .= "    <div class=\"flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6\">\n";
+
+        // X Logo (turuncu görsel)
+        $html .= "      <div class=\"w-14 h-14 md:w-16 md:h-16 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center flex-shrink-0 shadow-lg\">\n";
+        $html .= "        <img src=\"https://ixtif.com/storage/tenant2/355/x.png\" alt=\"iXtif\" class=\"w-10 h-10 md:w-12 md:h-12 object-contain\">\n";
+        $html .= "      </div>\n";
+
+        // Başlık ve alt başlık
+        $html .= "      <div class=\"flex-1\">\n";
+        $html .= "        <h3 class=\"text-xl md:text-2xl font-extrabold mb-1\" style=\"{$headlineGradient}\">{$headline}</h3>\n";
+        $html .= "        <p class=\"text-white/80 text-sm md:text-base\">{$subheadline}</p>\n";
+        $html .= "      </div>\n";
+
+        // Kategori badge (sağ üst)
+        $html .= "      <a href=\"/shop/kategori/{$category['slug']}\" class=\"inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white text-sm font-semibold hover:bg-white/30 transition-all\">\n";
+        $html .= "        <i class=\"fas {$categoryIcon}\"></i>\n";
+        $html .= "        <span>{$categoryTitle}</span>\n";
+        $html .= "        <i class=\"fas fa-arrow-right text-xs\"></i>\n";
+        $html .= "      </a>\n";
+
+        $html .= "    </div>\n";
+
+        // Butonlar - 3'lü grid, eşit yükseklik, glass efekt
+        $html .= "    <div class=\"grid grid-cols-1 sm:grid-cols-3 gap-3\">\n";
+
+        // Telefon butonu (glass efekt)
+        $html .= "      <a href=\"tel:{$phone}\" class=\"flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-base transition-all hover:bg-white/30 hover:scale-[1.02] hover:shadow-lg\">\n";
+        $html .= "        <i class=\"fas fa-phone text-lg\"></i>\n";
+        $html .= "        <span>{$phone}</span>\n";
+        $html .= "      </a>\n";
+
+        // WhatsApp butonu (yeşil glass)
+        $html .= "      <a href=\"https://wa.me/{$whatsapp}?text=Merhaba,%20{$categoryTitle}%20hakkında%20bilgi%20almak%20istiyorum\" target=\"_blank\" rel=\"noopener\" class=\"flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-green-500/80 backdrop-blur-md border border-green-400/50 text-white font-bold text-base transition-all hover:bg-green-500 hover:scale-[1.02] hover:shadow-lg\">\n";
+        $html .= "        <i class=\"fab fa-whatsapp text-xl\"></i>\n";
+        $html .= "        <span>WhatsApp</span>\n";
+        $html .= "      </a>\n";
+
+        // Sizi Arayalım butonu (glass efekt)
+        $html .= "      <a href=\"/sizi-arayalim\" class=\"flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-base transition-all hover:bg-white/30 hover:scale-[1.02] hover:shadow-lg\">\n";
+        $html .= "        <i class=\"fas fa-phone-volume text-lg\"></i>\n";
+        $html .= "        <span>Sizi Arayalım</span>\n";
+        $html .= "      </a>\n";
+
+        $html .= "    </div>\n";
+
+        // Trust badges (masaüstü)
+        $html .= "    <div class=\"hidden md:flex items-center justify-center gap-6 mt-6 pt-5 border-t border-white/20\">\n";
+        $html .= "      <span class=\"inline-flex items-center gap-2 text-white/70 text-sm\">\n";
+        $html .= "        <i class=\"fas fa-check-circle text-green-400\"></i> En Uygun Fiyat\n";
+        $html .= "      </span>\n";
+        $html .= "      <span class=\"inline-flex items-center gap-2 text-white/70 text-sm\">\n";
+        $html .= "        <i class=\"fas fa-truck text-blue-300\"></i> Hızlı Teslimat\n";
+        $html .= "      </span>\n";
+        $html .= "      <span class=\"inline-flex items-center gap-2 text-white/70 text-sm\">\n";
+        $html .= "        <i class=\"fas fa-shield-alt text-amber-400\"></i> Garanti\n";
+        $html .= "      </span>\n";
+        $html .= "      <span class=\"inline-flex items-center gap-2 text-white/70 text-sm\">\n";
+        $html .= "        <i class=\"fas fa-headset text-purple-300\"></i> 7/24 Destek\n";
+        $html .= "      </span>\n";
+        $html .= "    </div>\n";
+
+        $html .= "  </div>\n";
+        $html .= "</div>\n";
         $html .= "</div>\n\n";
 
         return $html;

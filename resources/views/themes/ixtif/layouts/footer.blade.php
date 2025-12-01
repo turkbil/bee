@@ -162,14 +162,13 @@
                 @endif
             </a>
 
-            {{-- Kurumsal İsim + Slogan --}}
+            {{-- Kurumsal İsim + Slogan (Alt Alta - Slogan En Altta) --}}
             <div class="flex flex-col items-center gap-2 text-center max-w-2xl px-4">
                 @if($companyName)
                     <h3 class="{{ $companyClass }} text-gray-800 dark:text-gray-200 font-bold leading-tight">
                         {{ $companyName }}
                     </h3>
                 @endif
-
                 @if($siteSlogan)
                     <p class="{{ $sloganClass }} text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
                         {{ $siteSlogan }}
@@ -323,7 +322,7 @@
 
             {{-- Ödeme Logoları (SAĞ) --}}
             <div class="flex justify-center md:justify-end">
-                <img src="https://ixtif.com/storage/tenant2/6/kartlar.png"
+                <img src="https://ixtif.com/storage/tenant2/331/kart.png"
                      alt="Ödeme Yöntemleri - Mastercard, Visa"
                      class="h-8 md:h-10 w-auto object-contain"
                      loading="lazy">
@@ -751,7 +750,8 @@
 <script defer src="{{ asset('js/web-share.js') }}"></script>
 
 {{-- instant.page - Preload on hover for instant navigation (Local) --}}
-<script src="{{ asset('js/instantpage.js') }}" type="module" data-instant-intensity="mousedown"></script>
+{{-- Ayarlar: viewport=mobile görünümde prefetch, hover=65ms gecikme, allow-query-string=URL param --}}
+<script src="{{ asset('js/instantpage.js') }}" type="module" data-instant-intensity="viewport" data-instant-allow-query-string></script>
 
 {{-- Back to Top Button Script --}}
 <script defer src="{{ asset('js/back-to-top.js') }}"></script>

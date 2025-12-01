@@ -186,4 +186,13 @@
             </div>
         </div>
     </div>
+
+    {{-- Dokümantasyon Linki - Sadece Root --}}
+    @if(auth()->user()->hasRole('root'))
+    <div class="mt-4 text-center">
+        <a href="{{ route('admin.settingmanagement.documentation') }}" class="text-muted small">
+            <i class="fas fa-book me-1"></i> AI Dokümantasyonu
+        </a>
+    </div>
+    @endif
 </div>

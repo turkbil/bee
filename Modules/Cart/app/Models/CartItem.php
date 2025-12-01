@@ -8,6 +8,7 @@ use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Log;
 
 class CartItem extends BaseModel
 {
@@ -15,6 +16,21 @@ class CartItem extends BaseModel
 
     protected $table = 'cart_items';
     protected $primaryKey = 'cart_item_id';
+
+    /**
+     * Boot method - Tenant context kontrolü
+     */
+    protected static function booted(): void
+    {
+        // Query yapmadan önce tenant context kontrolü
+        static::addGlobalScope('tenant_context', function ($builder) {
+            // Tenant context yoksa hiçbir sonuç döndürme
+            if (!function_exists('tenant') || !tenant()) {
+                Log::warning('CartItem: Query attempted without tenant context - returning empty result');
+                $builder->whereRaw('1 = 0');
+            }
+        });
+    }
 
     protected $fillable = [
         'cart_id',

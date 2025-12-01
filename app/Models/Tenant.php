@@ -94,11 +94,22 @@ class Tenant extends BaseTenant implements TenantWithDatabase
             'title',
             'tenancy_db_name',
             'is_active',
+            'is_premium',
             'central',
             'theme_id',
+            'theme_settings', // ← EKLENDI: data kolonuna yazılmasını önler
             'admin_default_locale',
             'tenant_default_locale',
+            'fullname',
+            'email',
+            'phone',
+            'ai_credits_balance',
+            'ai_last_used_at',
+            'tenant_ai_provider_id',
+            'tenant_ai_provider_model_id',
             'data',
+            'created_at',
+            'updated_at',
         ];
     }
 

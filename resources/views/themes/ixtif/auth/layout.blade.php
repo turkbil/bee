@@ -1,36 +1,21 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" x-data="authApp()" x-init="init()" :class="darkMode ? 'dark' : ''">
+<html lang="{{ app()->getLocale() }}" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="if(darkMode) document.documentElement.classList.add('dark')" :class="darkMode ? 'dark' : ''">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'İxtif - Giriş')</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': '#3b82f6',
-                        'primary-dark': '#2563eb',
-                    }
-                }
-            }
-        }
-    </script>
+    {{-- Local compiled CSS - no CDN overhead --}}
+    <link rel="stylesheet" href="{{ asset('css/tenant-2.css') }}?v={{ config('app.asset_version', time()) }}">
+    <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}">
+    <script src="{{ asset('assets/js/alpine.min.js') }}" defer></script>
 
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .slide-in { animation: slideIn 0.4s ease-out; }
     </style>
-
-    @livewireStyles
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
     <!-- Dark/Light Mode Toggle -->
@@ -69,35 +54,11 @@
         </div>
     </div>
 
-    @livewireScripts
-
     <script>
-        function authApp() {
-            return {
-                darkMode: localStorage.getItem('darkMode') === 'true',
-                showPassword: false,
-
-                init() {
-                    if (this.darkMode) {
-                        document.documentElement.classList.add('dark');
-                    }
-                },
-
-                toggleDarkMode() {
-                    this.darkMode = !this.darkMode;
-                    localStorage.setItem('darkMode', this.darkMode);
-
-                    if (this.darkMode) {
-                        document.documentElement.classList.add('dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
-                    }
-                },
-
-                togglePasswordVisibility() {
-                    this.showPassword = !this.showPassword;
-                }
-            }
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('darkMode', isDark);
         }
     </script>
 </body>

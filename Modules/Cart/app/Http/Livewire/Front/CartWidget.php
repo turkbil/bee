@@ -36,6 +36,12 @@ class CartWidget extends Component
     {
         \Log::info('🔄 CartWidget: refreshCartById called', ['cart_id' => $cartId]);
 
+        // Tenant context yoksa sorgu yapma (central DB'ye gitmesini engelle)
+        if (!function_exists('tenant') || !tenant()) {
+            \Log::warning('CartWidget: Tenant context not initialized, skipping cart query');
+            return;
+        }
+
         $cart = \Modules\Cart\App\Models\Cart::where('cart_id', $cartId)
             ->where('status', 'active')
             ->first();

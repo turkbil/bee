@@ -148,10 +148,12 @@ class UniversalMediaComponent extends Component
 
     protected function loadCollection($model, string $collectionName)
     {
-        if (!$model->hasMedia($collectionName)) {
-            return;
-        }
+        // ✅ FIX: Model'in media relationship cache'ini temizle
+        // Yeni yüklenen media'nın görünmesi için gerekli
+        $model->unsetRelation('media');
 
+        // ✅ FIX: hasMedia kontrolü yerine doğrudan getMedia kullan
+        // hasMedia da cache kullanıyor ve yanlış sonuç dönebilir
         $media = $model->getMedia($collectionName)
             ->sortBy('order_column')
             ->map(function ($item) {
@@ -207,6 +209,12 @@ class UniversalMediaComponent extends Component
                 $this->existingFeaturedImage = !empty($media) ? $media[0] : [];
                 break;
         }
+
+        Log::info('🖼️ [LOAD_COLLECTION] Media loaded', [
+            'collection' => $collectionName,
+            'count' => count($media),
+            'model_id' => $model->getKey(),
+        ]);
     }
 
     // ========================================
@@ -250,6 +258,9 @@ class UniversalMediaComponent extends Component
                         // Dynamic collection name (ilk collection'ı kullan)
                         $collectionName = $this->collections[0] ?? 'hero';
                         $this->mediaService->uploadMedia($model, $uploadedFile, $collectionName);
+
+                        // ✅ FIX: Model'i refresh et, sonra collection'ı yükle
+                        $model->refresh();
                         $this->loadCollection($model, $collectionName);
 
                         // Temp'i temizle
@@ -372,6 +383,9 @@ class UniversalMediaComponent extends Component
 
                     if (!empty($uploadedFiles)) {
                         $this->mediaService->uploadMultipleMedia($model, $uploadedFiles, 'gallery');
+
+                        // ✅ FIX: Model'i refresh et, sonra collection'ı yükle
+                        $model->refresh();
                         $this->loadCollection($model, 'gallery');
 
                         // Yüklenen temp dosyaları temizle
@@ -1280,6 +1294,9 @@ class UniversalMediaComponent extends Component
 
     /**
      * Manual upload handler - Livewire bypass for SSL issues
+     *
+     * ⚠️ KRİTİK: temp_media disk kullanılıyor (public/temp/media)
+     * Bu disk tenant-agnostic, her tenant için aynı fiziksel dizin
      */
     public static function manualFeaturedUpload(\Illuminate\Http\Request $request)
     {
@@ -1287,6 +1304,7 @@ class UniversalMediaComponent extends Component
             'user_id' => auth()->id(),
             'is_root' => auth()->check() && auth()->user()->id === 1,
             'has_file' => $request->hasFile('file'),
+            'tenant_id' => function_exists('tenant') && tenant() ? tenant('id') : 'central',
         ]);
 
         try {
@@ -1317,14 +1335,23 @@ class UniversalMediaComponent extends Component
                 \Log::info('✅ [MANUAL_UPLOAD] Root user - SKIP validation');
             }
 
-            // Save to temp storage
-            \Log::info('💾 [MANUAL_UPLOAD] Storing file...');
-            $tempPath = $file->store('livewire-tmp', 'public');
-            \Log::info('✅ [MANUAL_UPLOAD] File stored', ['temp_path' => $tempPath]);
+            // ✅ FIX: temp_media disk kullan (public/temp/media - tenant-agnostic)
+            // Bu sayede handleManualUpload da aynı dizinden okuyabilir
+            $fileName = uniqid('upload_') . '_' . \Illuminate\Support\Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+
+            \Log::info('💾 [MANUAL_UPLOAD] Storing file to temp_media disk...');
+            $file->storeAs('', $fileName, 'temp_media');
+
+            $fullPath = public_path('temp/media/' . $fileName);
+            \Log::info('✅ [MANUAL_UPLOAD] File stored', [
+                'fileName' => $fileName,
+                'fullPath' => $fullPath,
+                'exists' => file_exists($fullPath),
+            ]);
 
             return response()->json([
                 'success' => true,
-                'tempPath' => $tempPath,
+                'tempPath' => $fileName, // Sadece dosya adı, dizin yok
                 'message' => 'File uploaded successfully'
             ]);
 
@@ -1358,15 +1385,47 @@ class UniversalMediaComponent extends Component
 
     /**
      * Handle manual upload from Alpine.js
+     *
+     * ⚠️ KRİTİK: public/temp/media dizininden oku (tenant-agnostic)
      */
     public function handleManualUpload($tempPath)
     {
         try {
-            // Temp dosyayı oku
-            $fullPath = storage_path('app/public/' . $tempPath);
+            // ✅ FIX: public/temp/media dizininden oku (temp_media disk ile tutarlı)
+            // $tempPath sadece dosya adı: "upload_xxx_filename.ext"
+            $fullPath = public_path('temp/media/' . $tempPath);
+
+            \Log::info('🔍 [HANDLE_MANUAL_UPLOAD] Looking for file', [
+                'tempPath' => $tempPath,
+                'fullPath' => $fullPath,
+                'exists' => file_exists($fullPath),
+                'tenant_id' => function_exists('tenant') && tenant() ? tenant('id') : 'central',
+            ]);
 
             if (!file_exists($fullPath)) {
-                throw new \Exception('Temporary file not found');
+                // Alternatif yolları da dene (geriye uyumluluk için)
+                $altPaths = [
+                    storage_path('app/public/' . $tempPath),
+                    storage_path('app/public/livewire-tmp/' . basename($tempPath)),
+                    public_path('temp/media/' . basename($tempPath)),
+                ];
+
+                $found = false;
+                foreach ($altPaths as $altPath) {
+                    if (file_exists($altPath)) {
+                        $fullPath = $altPath;
+                        $found = true;
+                        \Log::info('✅ [HANDLE_MANUAL_UPLOAD] Found file at alternative path', ['path' => $altPath]);
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    \Log::error('❌ [HANDLE_MANUAL_UPLOAD] File not found in any location', [
+                        'tried_paths' => array_merge([$fullPath], $altPaths),
+                    ]);
+                    throw new \Exception('Temporary file not found: ' . $tempPath);
+                }
             }
 
             // UploadedFile oluştur
@@ -1378,20 +1437,33 @@ class UniversalMediaComponent extends Component
                 true
             );
 
+            \Log::info('✅ [HANDLE_MANUAL_UPLOAD] UploadedFile created, processing...', [
+                'size' => $uploadedFile->getSize(),
+                'mime' => $uploadedFile->getMimeType(),
+            ]);
+
             // Mevcut updatedFeaturedImageFile logic'ini kullan
             $this->featuredImageFile = $uploadedFile;
             $this->updatedFeaturedImageFile();
 
             // Temp dosyayı sil
             @unlink($fullPath);
+            \Log::info('🗑️ [HANDLE_MANUAL_UPLOAD] Temp file deleted');
 
         } catch (\Exception $e) {
             \Log::error('[HANDLE_MANUAL_UPLOAD_ERROR]', [
                 'error' => $e->getMessage(),
+                'tempPath' => $tempPath,
                 'trace' => $e->getTraceAsString()
             ]);
 
             $this->addError('featuredImageFile', $e->getMessage());
+
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => 'Dosya yüklenemedi: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
         }
     }
 

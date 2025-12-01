@@ -187,7 +187,7 @@
 
                 </div>
 
-                <!-- Right Column - Tetris Game -->
+                <!-- Right Column - Welcome Info -->
                 <div class="hidden lg:flex bg-gradient-to-br from-blue-600 to-purple-700 dark:from-blue-800 dark:to-purple-900 px-8 py-16 lg:px-12 flex-col justify-center relative overflow-hidden">
                     <!-- Animated Background Elements -->
                     <div class="absolute inset-0 overflow-hidden">
@@ -196,9 +196,51 @@
                         <div class="absolute top-1/3 right-10 w-24 h-24 bg-white/5 rounded-full animate-ping" style="animation-delay: 1s;"></div>
                     </div>
 
-                    <!-- Tetris Game Component -->
-                    <div class="relative z-10 h-full flex items-center justify-center">
-                        <x-tetris-game />
+                    <!-- Welcome Content -->
+                    <div class="relative z-10 text-white">
+                        <h2 class="text-3xl font-bold mb-6">{{ __('auth.welcome_title', ['app' => setting('site_title') ?: setting('site_name') ?: config('app.name')]) }}</h2>
+
+                        <div class="space-y-6">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">{{ __('auth.feature_secure_title') }}</h3>
+                                    <p class="text-white/70 text-sm">{{ __('auth.feature_secure_desc') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">{{ __('auth.feature_fast_title') }}</h3>
+                                    <p class="text-white/70 text-sm">{{ __('auth.feature_fast_desc') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">{{ __('auth.feature_support_title') }}</h3>
+                                    <p class="text-white/70 text-sm">{{ __('auth.feature_support_desc') }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 pt-6 border-t border-white/20">
+                            <p class="text-white/60 text-sm">{{ __('auth.welcome_footer') }}</p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,72 +1,415 @@
 <!DOCTYPE html>
-<html lang="tr" class="dark">
+<html lang="tr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muzibu Design System | Header Components</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Tasarım Kütüphanesi | Tuufi Design System</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Poppins', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #6366f1, #8b5cf6); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #4f46e5, #7c3aed); }
+
+        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.5); }
+        .gradient-text { background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .shine { position: relative; overflow: hidden; }
+        .shine::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); transition: left 0.5s; }
+        .shine:hover::after { left: 100%; }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen">
-    
-    <div class="max-w-7xl mx-auto px-4 py-12">
-        <div class="text-center mb-12">
-            <h1 class="text-6xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-4">
-                Muzibu Design System
-            </h1>
-            <p class="text-xl text-gray-400">Header Component Variations</p>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white min-h-screen font-sans">
+
+<div x-data="designLibrary()" class="min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <i class="fa-solid fa-palette text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-display font-bold text-lg">Tuufi Design</h1>
+                        <p class="text-xs text-slate-400">Tasarım Kütüphanesi</p>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input type="text" x-model="searchQuery" placeholder="Tasarım ara..."
+                               class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-2.5 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <span x-show="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-white">
+                            <i class="fa-solid fa-xmark"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="flex items-center gap-6 text-sm">
+                    <div class="text-center">
+                        <div class="font-bold text-indigo-400" x-text="totalDesigns">400+</div>
+                        <div class="text-xs text-slate-400">Tasarım</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-bold text-purple-400" x-text="categories.length">12</div>
+                        <div class="text-xs text-slate-400">Kategori</div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </header>
 
-        <div class="grid gap-8 md:grid-cols-3">
-            <!-- v1 Card -->
-            <a href="header/v1/" class="group bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10 hover:border-green-500/50 transition-all hover:shadow-2xl hover:shadow-green-500/20">
-                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fas fa-window-minimize text-white text-2xl"></i>
-                </div>
-                <h2 class="text-2xl font-bold mb-2">v1 - Minimal & Clean</h2>
-                <p class="text-gray-400 mb-4">Sade, modern ve odaklanmış tasarım</p>
-                <div class="flex items-center text-green-400 group-hover:gap-3 gap-2 transition-all">
-                    <span>Görüntüle</span>
-                    <i class="fas fa-arrow-right"></i>
-                </div>
-            </a>
-
-            <!-- v2 Card -->
-            <a href="header/v2/" class="group bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10 hover:border-purple-500/50 transition-all hover:shadow-2xl hover:shadow-purple-500/20">
-                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fas fa-bolt text-white text-2xl"></i>
-                </div>
-                <h2 class="text-2xl font-bold mb-2">v2 - Bold & Modern</h2>
-                <p class="text-gray-400 mb-4">Canlı, enerjik ve dinamik tasarım</p>
-                <div class="flex items-center text-purple-400 group-hover:gap-3 gap-2 transition-all">
-                    <span>Görüntüle</span>
-                    <i class="fas fa-arrow-right"></i>
-                </div>
-            </a>
-
-            <!-- v3 Card -->
-            <a href="header/v3/" class="group bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10 hover:border-pink-500/50 transition-all hover:shadow-2xl hover:shadow-pink-500/20">
-                <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fas fa-gem text-white text-2xl"></i>
-                </div>
-                <h2 class="text-2xl font-bold mb-2">v3 - Glassmorphism</h2>
-                <p class="text-gray-400 mb-4">Premium, şık ve modern tasarım</p>
-                <div class="flex items-center text-pink-400 group-hover:gap-3 gap-2 transition-all">
-                    <span>Görüntüle</span>
-                    <i class="fas fa-arrow-right"></i>
-                </div>
-            </a>
-        </div>
-
-        <div class="mt-12 text-center">
-            <div class="inline-block bg-white/5 backdrop-blur-lg rounded-2xl px-8 py-6 border border-white/10">
-                <p class="text-gray-400">
-                    <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
-                    Her tasarım detaylı açıklamalar ve özellikler içerir
-                </p>
+    <!-- Category Tabs -->
+    <div class="sticky top-16 z-40 glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-2 py-3 overflow-x-auto hide-scrollbar">
+                <template x-for="cat in categories" :key="cat.id">
+                    <button @click="activeCategory = cat.id"
+                            :class="activeCategory === cat.id ? cat.activeClass : 'bg-slate-800/50 text-slate-400 hover:bg-slate-700/50 hover:text-white'"
+                            class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                        <i :class="'fa-solid ' + cat.icon"></i>
+                        <span x-text="cat.name"></span>
+                        <span x-show="cat.id !== 'all'" class="text-xs opacity-70" x-text="'(' + getCategoryCount(cat.id) + ')'"></span>
+                    </button>
+                </template>
             </div>
         </div>
     </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Results Count -->
+        <div class="flex items-center justify-between mb-6">
+            <div class="text-slate-400 text-sm">
+                <span x-text="filteredSections.length"></span> bölüm bulundu
+                <span x-show="searchQuery" class="text-indigo-400"> "<span x-text="searchQuery"></span>" için</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button @click="viewMode = 'grid'" :class="viewMode === 'grid' ? 'text-indigo-400' : 'text-slate-500'" class="p-2 hover:text-white transition-colors">
+                    <i class="fa-solid fa-grid-2"></i>
+                </button>
+                <button @click="viewMode = 'list'" :class="viewMode === 'list' ? 'text-indigo-400' : 'text-slate-500'" class="p-2 hover:text-white transition-colors">
+                    <i class="fa-solid fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sections Grid -->
+        <div :class="viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4' : 'space-y-3'">
+            <template x-for="section in filteredSections" :key="section.id">
+                <a :href="section.file"
+                   :class="viewMode === 'grid' ? 'block' : 'flex items-center gap-4'"
+                   class="group glass rounded-2xl p-5 card-hover shine">
+
+                    <!-- Icon -->
+                    <div :class="viewMode === 'grid' ? 'mb-4' : ''"
+                         class="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
+                         :style="'background: linear-gradient(135deg, ' + section.colorFrom + ', ' + section.colorTo + ')'">
+                        <i :class="'fa-solid ' + section.icon + ' text-white text-xl'"></i>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex-1">
+                        <h3 class="font-display font-semibold text-white group-hover:text-indigo-300 transition-colors" x-text="section.name"></h3>
+                        <div class="flex items-center gap-3 mt-2 text-xs text-slate-400">
+                            <span class="flex items-center gap-1">
+                                <i class="fa-solid fa-layer-group"></i>
+                                <span x-text="section.count + ' Varyasyon'"></span>
+                            </span>
+                            <span class="flex items-center gap-1" x-show="section.isNew">
+                                <span class="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded text-[10px] font-bold">YENİ</span>
+                            </span>
+                            <span class="flex items-center gap-1" x-show="section.isPremium">
+                                <span class="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 rounded text-[10px] font-bold">PREMIUM</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div :class="viewMode === 'grid' ? 'absolute top-4 right-4' : ''" class="text-slate-500 group-hover:text-indigo-400 transition-colors">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
+            </template>
+        </div>
+
+        <!-- Empty State -->
+        <div x-show="filteredSections.length === 0" class="text-center py-20">
+            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center">
+                <i class="fa-solid fa-face-sad-tear text-3xl text-slate-500"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-slate-300 mb-2">Sonuç bulunamadı</h3>
+            <p class="text-slate-500">Farklı bir arama terimi deneyin</p>
+        </div>
+
+        <!-- Category Sections (Detailed View) -->
+        <div x-show="activeCategory === 'all' && !searchQuery" class="mt-16 space-y-16">
+
+            <!-- Navigation -->
+            <section>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                        <i class="fa-solid fa-compass text-white"></i>
+                    </div>
+                    <h2 class="font-display text-2xl font-bold">Navigasyon</h2>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    <template x-for="section in sections.filter(s => s.category === 'navigation')" :key="section.id">
+                        <a :href="section.file" class="glass rounded-xl p-4 text-center card-hover shine">
+                            <i :class="'fa-solid ' + section.icon + ' text-2xl mb-2'" :style="'color: ' + section.colorFrom"></i>
+                            <div class="text-sm font-medium" x-text="section.name"></div>
+                            <div class="text-xs text-slate-500" x-text="section.count + ' tasarım'"></div>
+                        </a>
+                    </template>
+                </div>
+            </section>
+
+            <!-- Landing -->
+            <section>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+                        <i class="fa-solid fa-rocket text-white"></i>
+                    </div>
+                    <h2 class="font-display text-2xl font-bold">Landing Sections</h2>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    <template x-for="section in sections.filter(s => s.category === 'landing')" :key="section.id">
+                        <a :href="section.file" class="glass rounded-xl p-4 text-center card-hover shine">
+                            <i :class="'fa-solid ' + section.icon + ' text-2xl mb-2'" :style="'color: ' + section.colorFrom"></i>
+                            <div class="text-sm font-medium" x-text="section.name"></div>
+                            <div class="text-xs text-slate-500" x-text="section.count + ' tasarım'"></div>
+                        </a>
+                    </template>
+                </div>
+            </section>
+
+            <!-- E-Commerce -->
+            <section>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                        <i class="fa-solid fa-cart-shopping text-white"></i>
+                    </div>
+                    <h2 class="font-display text-2xl font-bold">E-Ticaret</h2>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    <template x-for="section in sections.filter(s => s.category === 'ecommerce')" :key="section.id">
+                        <a :href="section.file" class="glass rounded-xl p-4 text-center card-hover shine">
+                            <i :class="'fa-solid ' + section.icon + ' text-2xl mb-2'" :style="'color: ' + section.colorFrom"></i>
+                            <div class="text-sm font-medium" x-text="section.name"></div>
+                            <div class="text-xs text-slate-500" x-text="section.count + ' tasarım'"></div>
+                        </a>
+                    </template>
+                </div>
+            </section>
+
+            <!-- Content -->
+            <section>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                        <i class="fa-solid fa-file-lines text-white"></i>
+                    </div>
+                    <h2 class="font-display text-2xl font-bold">İçerik</h2>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    <template x-for="section in sections.filter(s => s.category === 'content')" :key="section.id">
+                        <a :href="section.file" class="glass rounded-xl p-4 text-center card-hover shine">
+                            <i :class="'fa-solid ' + section.icon + ' text-2xl mb-2'" :style="'color: ' + section.colorFrom"></i>
+                            <div class="text-sm font-medium" x-text="section.name"></div>
+                            <div class="text-xs text-slate-500" x-text="section.count + ' tasarım'"></div>
+                        </a>
+                    </template>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-slate-400 text-sm">
+                    <span class="gradient-text font-semibold">Tuufi Design System</span> &copy; 2024
+                </div>
+                <div class="flex items-center gap-6 text-sm text-slate-500">
+                    <a href="https://ixtif.com" class="hover:text-indigo-400 transition-colors">ixtif.com</a>
+                    <a href="https://muzibu.com.tr" class="hover:text-indigo-400 transition-colors">muzibu.com.tr</a>
+                    <a href="https://tuufi.com" class="hover:text-indigo-400 transition-colors">tuufi.com</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<script>
+function designLibrary() {
+    return {
+        searchQuery: '',
+        activeCategory: 'all',
+        viewMode: 'grid',
+        totalDesigns: 0,
+
+        categories: [
+            { id: 'all', name: 'Tümü', icon: 'fa-grid-2', activeClass: 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white' },
+            { id: 'navigation', name: 'Navigasyon', icon: 'fa-compass', activeClass: 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white' },
+            { id: 'landing', name: 'Landing', icon: 'fa-rocket', activeClass: 'bg-gradient-to-r from-orange-500 to-red-600 text-white' },
+            { id: 'ecommerce', name: 'E-Ticaret', icon: 'fa-cart-shopping', activeClass: 'bg-gradient-to-r from-green-500 to-emerald-600 text-white' },
+            { id: 'content', name: 'İçerik', icon: 'fa-file-lines', activeClass: 'bg-gradient-to-r from-purple-500 to-pink-600 text-white' },
+            { id: 'social', name: 'Sosyal', icon: 'fa-users', activeClass: 'bg-gradient-to-r from-teal-500 to-cyan-600 text-white' },
+            { id: 'pricing', name: 'Fiyat', icon: 'fa-dollar-sign', activeClass: 'bg-gradient-to-r from-yellow-500 to-orange-600 text-white' },
+            { id: 'contact', name: 'İletişim', icon: 'fa-phone', activeClass: 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white' },
+            { id: 'support', name: 'Destek', icon: 'fa-life-ring', activeClass: 'bg-gradient-to-r from-pink-500 to-rose-600 text-white' },
+            { id: 'auth', name: 'Auth', icon: 'fa-lock', activeClass: 'bg-gradient-to-r from-slate-500 to-slate-600 text-white' },
+            { id: 'checkout', name: 'Checkout', icon: 'fa-credit-card', activeClass: 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white' },
+            { id: 'experimental', name: 'Deneysel', icon: 'fa-flask', activeClass: 'bg-gradient-to-r from-fuchsia-500 to-pink-600 text-white' },
+            { id: 'muzibu', name: 'Muzibu', icon: 'fa-music', activeClass: 'bg-gradient-to-r from-violet-500 to-purple-600 text-white' },
+        ],
+
+        sections: [
+            // === NAVİGASYON ===
+            { id: 1, name: 'Menu', file: 'design-menu.html', category: 'navigation', icon: 'fa-bars', count: 10, colorFrom: '#06b6d4', colorTo: '#3b82f6' },
+            { id: 2, name: 'Header', file: 'design-header.html', category: 'navigation', icon: 'fa-rectangle-wide', count: 10, colorFrom: '#8b5cf6', colorTo: '#ec4899' },
+            { id: 3, name: 'Footer', file: 'design-footer.html', category: 'navigation', icon: 'fa-rectangle-wide', count: 10, colorFrom: '#64748b', colorTo: '#475569' },
+            { id: 4, name: 'Breadcrumb', file: 'design-breadcrumb.html', category: 'navigation', icon: 'fa-chevrons-right', count: 8, colorFrom: '#f59e0b', colorTo: '#ef4444' },
+            { id: 5, name: 'Subheader', file: 'design-subheader.html', category: 'navigation', icon: 'fa-minus', count: 8, colorFrom: '#10b981', colorTo: '#06b6d4' },
+            { id: 6, name: 'Mega Menu', file: 'mega-menu/index.html', category: 'navigation', icon: 'fa-grid-2-plus', count: 9, colorFrom: '#6366f1', colorTo: '#8b5cf6', isPremium: true },
+            { id: 7, name: 'Sidebar', file: 'design-sidebar.html', category: 'navigation', icon: 'fa-sidebar', count: 6, colorFrom: '#0ea5e9', colorTo: '#6366f1' },
+            { id: 8, name: 'Tabs', file: 'design-tabs.html', category: 'navigation', icon: 'fa-folder', count: 6, colorFrom: '#84cc16', colorTo: '#22c55e' },
+            { id: 9, name: 'Search', file: 'design-search.html', category: 'navigation', icon: 'fa-magnifying-glass', count: 6, colorFrom: '#f97316', colorTo: '#eab308' },
+
+            // === LANDING ===
+            { id: 20, name: 'Hero', file: 'design-hero.html', category: 'landing', icon: 'fa-rocket-launch', count: 10, colorFrom: '#f97316', colorTo: '#ef4444' },
+            { id: 21, name: 'CTA', file: 'design-cta.html', category: 'landing', icon: 'fa-bullhorn', count: 10, colorFrom: '#22c55e', colorTo: '#10b981' },
+            { id: 22, name: 'Page Hero', file: 'design-page-hero.html', category: 'landing', icon: 'fa-image', count: 8, colorFrom: '#3b82f6', colorTo: '#8b5cf6' },
+
+            // === E-TİCARET ===
+            { id: 30, name: 'Shop Index', file: 'design-shop-index-1.html', category: 'ecommerce', icon: 'fa-store', count: 10, colorFrom: '#8b5cf6', colorTo: '#a855f7' },
+            { id: 31, name: 'Ürünler', file: 'design-products.html', category: 'ecommerce', icon: 'fa-box-open', count: 10, colorFrom: '#eab308', colorTo: '#f97316' },
+            { id: 32, name: 'Kategoriler', file: 'design-categories.html', category: 'ecommerce', icon: 'fa-grid-2', count: 10, colorFrom: '#14b8a6', colorTo: '#06b6d4' },
+            { id: 33, name: 'Ürün Detay', file: 'design-product-1.html', category: 'ecommerce', icon: 'fa-box', count: 10, colorFrom: '#10b981', colorTo: '#14b8a6' },
+            { id: 34, name: 'Kategori Sayfa', file: 'design-category-1.html', category: 'ecommerce', icon: 'fa-tags', count: 10, colorFrom: '#f59e0b', colorTo: '#f97316' },
+            { id: 35, name: 'Product Card Premium', file: 'design-product-card-premium-1.html', category: 'ecommerce', icon: 'fa-gem', count: 12, colorFrom: '#ec4899', colorTo: '#f43f5e', isPremium: true },
+            { id: 36, name: 'Product Card Luxe', file: 'design-product-card-luxe-1.html', category: 'ecommerce', icon: 'fa-crown', count: 12, colorFrom: '#f59e0b', colorTo: '#d97706', isPremium: true },
+            { id: 37, name: 'Subheader Shop', file: 'design-subheader-shop-1.html', category: 'ecommerce', icon: 'fa-filter', count: 8, colorFrom: '#6366f1', colorTo: '#8b5cf6' },
+            { id: 38, name: 'Shop Category', file: 'design-shop-category-transpalet-1.html', category: 'ecommerce', icon: 'fa-layer-group', count: 1, colorFrom: '#0ea5e9', colorTo: '#3b82f6' },
+
+            // === İÇERİK ===
+            { id: 40, name: 'Hakkımızda', file: 'design-about.html', category: 'content', icon: 'fa-building', count: 10, colorFrom: '#ec4899', colorTo: '#f43f5e' },
+            { id: 41, name: 'Özellikler', file: 'design-features.html', category: 'content', icon: 'fa-sparkles', count: 10, colorFrom: '#a855f7', colorTo: '#8b5cf6' },
+            { id: 42, name: 'Hizmetler', file: 'design-services.html', category: 'content', icon: 'fa-briefcase', count: 10, colorFrom: '#6366f1', colorTo: '#8b5cf6' },
+            { id: 43, name: 'İstatistikler', file: 'design-stats.html', category: 'content', icon: 'fa-chart-line', count: 10, colorFrom: '#3b82f6', colorTo: '#6366f1' },
+            { id: 44, name: 'Blog', file: 'design-blog.html', category: 'content', icon: 'fa-newspaper', count: 10, colorFrom: '#f59e0b', colorTo: '#eab308' },
+            { id: 45, name: 'Accordion', file: 'design-accordion.html', category: 'content', icon: 'fa-bars-staggered', count: 6, colorFrom: '#14b8a6', colorTo: '#10b981' },
+            { id: 46, name: 'Hakkımızda Alt', file: 'hakkimizda-alternatifler/index.html', category: 'content', icon: 'fa-building-columns', count: 10, colorFrom: '#3b82f6', colorTo: '#8b5cf6' },
+            { id: 47, name: 'Glass Compact', file: 'design-glass-compact-1.html', category: 'content', icon: 'fa-window', count: 3, colorFrom: '#06b6d4', colorTo: '#3b82f6' },
+
+            // === SOSYAL ===
+            { id: 50, name: 'Testimonials', file: 'design-testimonials.html', category: 'social', icon: 'fa-quote-left', count: 10, colorFrom: '#06b6d4', colorTo: '#3b82f6' },
+            { id: 51, name: 'Partners', file: 'design-partners.html', category: 'social', icon: 'fa-handshake', count: 10, colorFrom: '#10b981', colorTo: '#14b8a6' },
+            { id: 52, name: 'Galeri', file: 'design-gallery.html', category: 'social', icon: 'fa-images', count: 10, colorFrom: '#d946ef', colorTo: '#ec4899' },
+            { id: 53, name: 'Social Share', file: 'social-share/', category: 'social', icon: 'fa-share-nodes', count: 5, colorFrom: '#3b82f6', colorTo: '#6366f1', isNew: true },
+            { id: 54, name: 'Review Rating', file: 'review-rating/', category: 'social', icon: 'fa-star', count: 6, colorFrom: '#f59e0b', colorTo: '#f97316', isNew: true },
+
+            // === FİYATLANDIRMA ===
+            { id: 60, name: 'Fiyatlandırma', file: 'design-pricing.html', category: 'pricing', icon: 'fa-tag', count: 10, colorFrom: '#84cc16', colorTo: '#22c55e' },
+            { id: 61, name: 'Kampanyalar', file: 'design-promotions.html', category: 'pricing', icon: 'fa-badge-percent', count: 10, colorFrom: '#ef4444', colorTo: '#f97316' },
+            { id: 62, name: 'Promosyon', file: 'design-promotion.html', category: 'pricing', icon: 'fa-gift', count: 6, colorFrom: '#ec4899', colorTo: '#f43f5e' },
+
+            // === İLETİŞİM ===
+            { id: 70, name: 'İletişim', file: 'design-contact.html', category: 'contact', icon: 'fa-envelope', count: 18, colorFrom: '#0ea5e9', colorTo: '#3b82f6' },
+            { id: 71, name: 'Newsletter', file: 'design-newsletter.html', category: 'contact', icon: 'fa-paper-plane', count: 10, colorFrom: '#8b5cf6', colorTo: '#a855f7' },
+
+            // === DESTEK ===
+            { id: 80, name: 'SSS / FAQ', file: 'design-faq.html', category: 'support', icon: 'fa-circle-question', count: 10, colorFrom: '#f43f5e', colorTo: '#ec4899' },
+            { id: 81, name: 'Chatbot Inline', file: 'design-chatbot-inline.html', category: 'support', icon: 'fa-comment-dots', count: 6, colorFrom: '#3b82f6', colorTo: '#06b6d4' },
+            { id: 82, name: 'Chatbot Popup', file: 'design-chatbot-popup.html', category: 'support', icon: 'fa-messages', count: 5, colorFrom: '#8b5cf6', colorTo: '#ec4899' },
+            { id: 83, name: 'Cookie Consent', file: 'design-cookie-consent.html', category: 'support', icon: 'fa-cookie-bite', count: 1, colorFrom: '#f59e0b', colorTo: '#f97316' },
+
+            // === AUTH ===
+            { id: 90, name: 'Auth Themes', file: 'auth-themes/index.html', category: 'auth', icon: 'fa-lock', count: 8, colorFrom: '#64748b', colorTo: '#475569', isNew: true },
+
+            // === CHECKOUT ===
+            { id: 100, name: 'Checkout 2-Step', file: 'checkout-2step/index.html', category: 'checkout', icon: 'fa-credit-card', count: 10, colorFrom: '#10b981', colorTo: '#14b8a6', isNew: true },
+
+            // === DENEYSEL ===
+            { id: 110, name: 'Cardless', file: 'cardless/index.html', category: 'experimental', icon: 'fa-wand-magic-sparkles', count: 25, colorFrom: '#ec4899', colorTo: '#8b5cf6' },
+            { id: 111, name: 'Lazy Loading Demo', file: 'design-lazy-loading-demo.html', category: 'experimental', icon: 'fa-spinner', count: 1, colorFrom: '#6366f1', colorTo: '#8b5cf6' },
+            { id: 112, name: 'Photo Effects', file: 'photo-effects-demo.html', category: 'experimental', icon: 'fa-camera', count: 1, colorFrom: '#f43f5e', colorTo: '#ec4899' },
+            { id: 113, name: 'Multi Select', file: 'multi-select-designs.html', category: 'experimental', icon: 'fa-check-double', count: 1, colorFrom: '#22c55e', colorTo: '#10b981' },
+            { id: 114, name: 'PDF Designs', file: 'pdf-designs.html', category: 'experimental', icon: 'fa-file-pdf', count: 5, colorFrom: '#ef4444', colorTo: '#dc2626' },
+            { id: 115, name: 'Mobile Bottom Bars', file: 'mobile-bottom-bars/', category: 'experimental', icon: 'fa-mobile-screen', count: 5, colorFrom: '#0ea5e9', colorTo: '#3b82f6', isNew: true },
+
+            // === MUZİBU ===
+            { id: 120, name: 'Muzibu Themes', file: 'muzibu/index.html', category: 'muzibu', icon: 'fa-music', count: 20, colorFrom: '#8b5cf6', colorTo: '#a855f7', isPremium: true },
+            { id: 121, name: 'Song Upload', file: 'song-upload-designs.html', category: 'muzibu', icon: 'fa-upload', count: 3, colorFrom: '#22c55e', colorTo: '#10b981' },
+
+            // === ÖZEL ===
+            { id: 130, name: 'Transpalet F4', file: 'transpalet-f4-v1.html', category: 'ecommerce', icon: 'fa-dolly', count: 4, colorFrom: '#f97316', colorTo: '#ef4444' },
+            { id: 131, name: 'Karşılaştırma', file: 'F4-karsilastirma-transpalet.html', category: 'ecommerce', icon: 'fa-code-compare', count: 4, colorFrom: '#3b82f6', colorTo: '#6366f1' },
+        ],
+
+        init() {
+            this.totalDesigns = this.sections.reduce((sum, s) => sum + s.count, 0);
+        },
+
+        get filteredSections() {
+            return this.sections.filter(section => {
+                const matchesCategory = this.activeCategory === 'all' || section.category === this.activeCategory;
+                const matchesSearch = !this.searchQuery ||
+                    section.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    section.category.toLowerCase().includes(this.searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+        },
+
+        getCategoryCount(categoryId) {
+            return this.sections.filter(s => s.category === categoryId).length;
+        }
+    }
+}
+</script>
+
+<style>
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
 
 </body>
 </html>

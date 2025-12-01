@@ -328,6 +328,10 @@ class PortfolioObserver
         Cache::forget('portfolios_menu_cache');
         Cache::forget('portfolios_sitemap_cache');
 
+        // Sitemap XML cache temizle
+        $tenantId = tenant()?->id ?? 'central';
+        Cache::forget("sitemap_xml_{$tenantId}");
+
         if ($portfolioId) {
             Cache::forget("portfolio_detail_{$portfolioId}");
             Cache::forget("universal_seo_portfolio_{$portfolioId}");

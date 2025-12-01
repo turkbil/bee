@@ -1,211 +1,226 @@
-<div id="form-canvas" class="p-3">
-                        <div class="empty-canvas" id="empty-canvas" style="display: none;">
-                            <div class="text-center">
-                                <div class="h1 text-muted mb-3">
-                                    <i class="fas fa-arrows-alt"></i>
+<div class="tab-pane fade active show" id="tabs-1" style="border-radius: 0px !important; overflow: hidden !important;" role="tabpanel">
+                        <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->                                <div class="row g-3">
+                                    <!--[if BLOCK]><![endif]-->                                        <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12" wire:key="element-blog_ai_enabled">
+    <div class="mb-3">
+        <label class="form-label">
+            Blog AI Sistemi
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </label>
+        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+            <input type="checkbox" id="switch-blog_ai_enabled" name="blog_ai_enabled" value="1" checked="" x-on:change="$wire.call('syncSwitchValue', 'blog_ai_enabled', $event.target.checked)">
+            <div class="state p-success p-on ms-2">
+                <label>Aktif</label>
+            </div>
+            <div class="state p-danger p-off ms-2">
+                <label>Aktif Değil</label>
+            </div>
+        </div>
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <select id="blog_ai_daily_count" wire:model.defer="values.blog_ai_daily_count" class="form-select " style="border-radius: 0.25rem !important;" data-gtm-form-interact-field-id="0">
+                <option value="">Günlük Blog Sayısı</option>
+                <!--[if BLOCK]><![endif]-->                                        <option value="0" selected="">
+                        {"value":"option1","label":"1 blog\/g\u00fcn (30\/ay)","is_default":true}
+                    </option>
+                                                        <option value="1">
+                        {"value":"option2","label":"2 blog\/g\u00fcn (60\/ay)","is_default":false}
+                    </option>
+                                                        <option value="2">
+                        {"value":"option3","label":"3 blog\/g\u00fcn (90\/ay)","is_default":false}
+                    </option>
+                                                        <option value="3">
+                        {"value":"option4","label":"4 blog\/g\u00fcn (120\/ay) - B2B Optimal","is_default":false}
+                    </option>
+                                                        <option value="4">
+                        {"value":"option5","label":"5 blog\/g\u00fcn (150\/ay)","is_default":false}
+                    </option>
+                                                        <option value="5">
+                        {"value":"option6","label":"6 blog\/g\u00fcn (180\/ay)","is_default":false}
+                    </option>
+                                                        <option value="6">
+                        {"value":"option7","label":"8 blog\/g\u00fcn (240\/ay) - SEO Maksimum","is_default":false}
+                    </option>
+                <!--[if ENDBLOCK]><![endif]-->
+            </select>
+            <label for="blog_ai_daily_count">
+                Günlük Blog Sayısı
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Her gün kaç blog yazısı üretilsin? SEO için optimal: 4 blog/gün (120/ay). Maksimum güvenli: 8 blog/gün (240/ay).
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12" wire:key="element-blog_ai_auto_publish">
+    <div class="mb-3">
+        <label class="form-label">
+            Otomatik Yayınlama
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </label>
+        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+            <input type="checkbox" id="switch-blog_ai_auto_publish" name="blog_ai_auto_publish" value="1" checked="" x-on:change="$wire.call('syncSwitchValue', 'blog_ai_auto_publish', $event.target.checked)">
+            <div class="state p-success p-on ms-2">
+                <label>Evet, otomatik yayınlansın</label>
+            </div>
+            <div class="state p-danger p-off ms-2">
+                <label>Hayır, önce kontrol edilecek</label>
+            </div>
+        </div>
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12" wire:key="element-blog_ai_professional_only">
+    <div class="mb-3">
+        <label class="form-label">
+            Sadece Profesyonel/Uzman Stil
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </label>
+        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+            <input type="checkbox" id="switch-blog_ai_professional_only" name="blog_ai_professional_only" value="1" x-on:change="$wire.call('syncSwitchValue', 'blog_ai_professional_only', $event.target.checked)">
+            <div class="state p-success p-on ms-2">
+                <label>Sadece Profesyonel + Uzman (samimi hariç, B2B için önerilir).</label>
+            </div>
+            <div class="state p-danger p-off ms-2">
+                <label>Profesyonel + Samimi + Uzman (çeşitli tonlar, B2C için ideal).</label>
+            </div>
+        </div>
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                                            <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <select id="blog_ai_topic_source" wire:model.defer="values.blog_ai_topic_source" class="form-select " style="border-radius: 0.25rem !important;" data-gtm-form-interact-field-id="1">
+                <option value="">Seçiniz</option>
+                <!--[if BLOCK]><![endif]-->                                        <option value="0" selected="">
+                        {"value":"manual","label":"Manuel (Sadece a\u015fa\u011f\u0131daki listeden)","is_default":false}
+                    </option>
+                                                        <option value="1">
+                        {"value":"auto","label":"Otomatik (\u00dcr\u00fcn\/Kategori analizi)","is_default":false}
+                    </option>
+                                                        <option value="2">
+                        {"value":"mixed","label":"Karma (\u00d6nce manuel, sonra otomatik)","is_default":true}
+                    </option>
+                <!--[if ENDBLOCK]><![endif]-->
+            </select>
+            <label for="blog_ai_topic_source">
+                Konu Kaynağı
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Blog konularını nereden alacağını seçin. Manuel: Sadece aşağıdaki liste, Otomatik: Ürün/kategori analizi, Karma: Önce manuel sonra otomatik.
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <textarea id="blog_ai_manual_topics" wire:model.defer="values.blog_ai_manual_topics" class="form-control " placeholder="Her satıra bir ana konu yazın." rows="3" style="height: 120px; border-radius: 0.25rem !important;"></textarea>
+            <label for="blog_ai_manual_topics">
+                Ana Konular (Manuel Liste)
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Her satıra bir ana konu yazın. TEK KELİME yazarsanız sistem otomatik 12+ başlığa genişletir (örn: "transpalet" → "En İyi Transpalet Modelleri 2025", "Elektrikli Transpalet Nasıl Seçilir?" vb.). UZUN BAŞLIK yazarsanız birebir kullanılır (örn: "Elektrikli mi Manuel mi?" → direkt başlık olarak kullanılır).
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                                            <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12" wire:key="element-blog_ai_blog_fotograflar_nereden_uretilsin">
+    <div class="mb-3">
+        <label class="form-label">
+            Fotoğraflar nereden üretilsin?
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </label>
+        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
+            <input type="checkbox" id="switch-blog_ai_blog_fotograflar_nereden_uretilsin" name="blog_ai_blog_fotograflar_nereden_uretilsin" value="1" checked="" x-on:change="$wire.call('syncSwitchValue', 'blog_ai_blog_fotograflar_nereden_uretilsin', $event.target.checked)">
+            <div class="state p-success p-on ms-2">
+                <label>Yapay Zeka</label>
+            </div>
+            <div class="state p-danger p-off ms-2">
+                <label>Stok Foto</label>
+            </div>
+        </div>
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                    <!--[if ENDBLOCK]><![endif]-->
                                 </div>
-                                <h3 class="text-muted">Form Oluşturmaya Başlayın</h3>
-                                <p class="text-muted">Sol taraftaki elemanları sürükleyip buraya bırakın.</p>
-                            </div>
-                        </div>
-                    <div class="form-element" data-id="element-1" data-type="row"><div class="element-header">
-            <div class="element-handle">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-            <div class="element-title">
-                Satır Düzeni
-            </div>
-            <div class="element-actions">
-                <button type="button" class="btn btn-sm" data-action="duplicate">
-                    <i class="fas fa-clone"></i>
-                </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div><div class="element-content">
-              <div class="row row-element d-flex g-3"><div class="col-md-6 column-element" data-width="6"><div class="form-element" data-id="element-2" data-type="select" data-width="12" style="width: 100%;"><div class="element-header">
-            <div class="element-handle">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-            <div class="element-title">
-                Kayıt Aktif
-            </div>
-            <div class="element-actions">
-                <button type="button" class="btn btn-sm" data-action="duplicate">
-                    <i class="fas fa-clone"></i>
-                </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div><div class="element-content">
-              <div class="mb-3 col-12 col-md-12">
-                  <label class="form-label">Kayıt Aktif</label>
-                  <select class="form-select" onchange="window.updateSelectState(this)">
-                      <option value="" disabled=""></option>
-                      <!-- Seçenekler JavaScript tarafından eklenecek -->
-                  </select>
-                  <div class="form-text text-muted"></div>
-              </div>
-          </div></div><div class="form-element" data-id="element-3" data-type="select" data-width="12" style="width: 100%;"><div class="element-header">
-            <div class="element-handle">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-            <div class="element-title">
-                Email Doğrulama
-            </div>
-            <div class="element-actions">
-                <button type="button" class="btn btn-sm" data-action="duplicate">
-                    <i class="fas fa-clone"></i>
-                </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div><div class="element-content">
-              <div class="mb-3 col-12 col-md-12">
-                  <label class="form-label">Email Doğrulama</label>
-                  <select class="form-select" onchange="window.updateSelectState(this)">
-                      <option value="" disabled=""></option>
-                      <!-- Seçenekler JavaScript tarafından eklenecek -->
-                  </select>
-                  <div class="form-text text-muted"></div>
-              </div>
-          </div></div><div class="form-element" data-id="element-4" data-type="select" data-width="12" style="width: 100%;"><div class="element-header">
-            <div class="element-handle">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-            <div class="element-title">
-                Admin Onayı
-            </div>
-            <div class="element-actions">
-                <button type="button" class="btn btn-sm" data-action="duplicate">
-                    <i class="fas fa-clone"></i>
-                </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div><div class="element-content">
-              <div class="mb-3 col-12 col-md-12">
-                  <label class="form-label">Admin Onayı</label>
-                  <select class="form-select" onchange="window.updateSelectState(this)">
-                      <option value="" disabled=""></option>
-                      <!-- Seçenekler JavaScript tarafından eklenecek -->
-                  </select>
-                  <div class="form-text text-muted"></div>
-              </div>
-          </div></div><div class="form-element" data-id="element-5" data-type="number" data-width="12" style="width: 100%;"><div class="element-header">
-            <div class="element-handle">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-            <div class="element-title">
-                Deneme Süresi (Gün)
-            </div>
-            <div class="element-actions">
-                <button type="button" class="btn btn-sm" data-action="duplicate">
-                    <i class="fas fa-clone"></i>
-                </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div><div class="element-content">
-              <div class="mb-3 col-12 col-md-12">
-                  <label class="form-label">Deneme Süresi (Gün)</label>
-                  <input type="number" class="form-control" placeholder="" value="">
-                  <div class="form-text text-muted"></div>
-              </div>
-          </div></div></div><div class="col-md-6 column-element" data-width="6"><div class="form-element selected" data-id="element-6" data-type="select" data-width="12" style="width: 100%;" draggable="false"><div class="element-header">
-            <div class="element-handle">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-            <div class="element-title">
-                Telefon Zorunlu
-            </div>
-            <div class="element-actions">
-                <button type="button" class="btn btn-sm" data-action="duplicate">
-                    <i class="fas fa-clone"></i>
-                </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div><div class="element-content">
-              <div class="mb-3 col-12 col-md-12">
-                  <label class="form-label">Telefon Zorunlu</label>
-                  <select class="form-select" onchange="window.updateSelectState(this)">
-                      <option value="" disabled=""></option>
-                      <!-- Seçenekler JavaScript tarafından eklenecek -->
-                  </select>
-                  <div class="form-text text-muted"></div>
-              </div>
-          </div></div><div class="form-element" data-id="element-7" data-type="select" data-width="12" style="width: 100%;"><div class="element-header">
-            <div class="element-handle">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-            <div class="element-title">
-                Kullanım Şartları Zorunlu
-            </div>
-            <div class="element-actions">
-                <button type="button" class="btn btn-sm" data-action="duplicate">
-                    <i class="fas fa-clone"></i>
-                </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div><div class="element-content">
-              <div class="mb-3 col-12 col-md-12">
-                  <label class="form-label">Kullanım Şartları Zorunlu</label>
-                  <select class="form-select" onchange="window.updateSelectState(this)">
-                      <option value="" disabled=""></option>
-                      <!-- Seçenekler JavaScript tarafından eklenecek -->
-                  </select>
-                  <div class="form-text text-muted"></div>
-              </div>
-          </div></div><div class="form-element" data-id="element-8" data-type="text" data-width="12" style="width: 100%;"><div class="element-header">
-            <div class="element-handle">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-            <div class="element-title">
-                Kullanım Şartları Metni
-            </div>
-            <div class="element-actions">
-                <button type="button" class="btn btn-sm" data-action="duplicate">
-                    <i class="fas fa-clone"></i>
-                </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div><div class="element-content">
-              <div class="mb-3 col-12 col-md-12">
-                  <label class="form-label">Kullanım Şartları Metni</label>
-                  <input type="text" class="form-control" placeholder="" value="">
-                  <div class="form-text text-muted"></div>
-              </div>
-          </div></div><div class="form-element" data-id="element-9" data-type="text" data-width="12" style="width: 100%;"><div class="element-header">
-            <div class="element-handle">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-            <div class="element-title">
-                Kullanım Şartları URL
-            </div>
-            <div class="element-actions">
-                <button type="button" class="btn btn-sm" data-action="duplicate">
-                    <i class="fas fa-clone"></i>
-                </button>
-                <button type="button" class="btn btn-sm text-danger" data-action="remove">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        </div><div class="element-content">
-              <div class="mb-3 col-12 col-md-12">
-                  <label class="form-label">Kullanım Şartları URL</label>
-                  <input type="text" class="form-control" placeholder="" value="">
-                  <div class="form-text text-muted"></div>
-              </div>
-          </div></div></div></div>
-          </div></div></div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                        <!--[if ENDBLOCK]><![endif]-->
+                        
+                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                    </div>

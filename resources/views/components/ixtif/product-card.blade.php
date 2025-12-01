@@ -108,16 +108,16 @@
         }
 
         $productFormattedPrice = $currencyRelation
-            ? $currencyRelation->formatPrice($product->base_price)
-            : number_format($product->base_price, 0, ',', '.') . ' ₺';
+            ? $currencyRelation->formatPrice((float)($product->base_price ?? 0))
+            : number_format((float)($product->base_price ?? 0), 0, ',', '.') . ' ₺';
 
         $productFeatured = $product->is_featured ?? false;
 
         // Currency conversion data
         $productCurrencyCode = $currencyRelation ? $currencyRelation->code : 'TRY';
-        $productBasePrice = $product->base_price;
-        $productExchangeRate = $currencyRelation ? $currencyRelation->exchange_rate : 1;
-        $productTryPrice = $productCurrencyCode !== 'TRY'
+        $productBasePrice = (float)($product->base_price ?? 0);
+        $productExchangeRate = $currencyRelation ? ($currencyRelation->exchange_rate ?? 1) : 1;
+        $productTryPrice = $productCurrencyCode !== 'TRY' && $productBasePrice > 0
             ? number_format($productBasePrice * $productExchangeRate, 0, ',', '.')
             : null;
 
@@ -149,8 +149,8 @@
         $productFormattedComparePrice = null;
         if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
             $productFormattedComparePrice = $currencyRelation
-                ? $currencyRelation->formatPrice($productCompareAtPrice)
-                : number_format($productCompareAtPrice, 0, ',', '.') . ' ₺';
+                ? $currencyRelation->formatPrice((float)$productCompareAtPrice)
+                : number_format((float)$productCompareAtPrice, 0, ',', '.') . ' ₺';
         }
     }
 

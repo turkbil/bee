@@ -25,12 +25,12 @@
             $shopIndexUrl = $localePrefix . '/' . $indexSlug;
 
             // ✅ Varyant fotoğrafları - Yoksa parent'tan al
-            $featuredImage = $item->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
+            $featuredImage = getFirstMediaWithFallback($item);
             $galleryImages = $item->getMedia('gallery');
 
             // ✅ Fallback: Varyant fotoğrafı yoksa parent ürünün fotoğrafını kullan
             if (!$featuredImage && $parentProduct) {
-                $featuredImage = $parentProduct->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
+                $featuredImage = getFirstMediaWithFallback($parentProduct);
             }
             if ($galleryImages->isEmpty() && $parentProduct) {
                 $galleryImages = $parentProduct->getMedia('gallery');
@@ -126,11 +126,22 @@
                     </div>
 
                     @if ($featuredImage)
-                        <div class="hidden lg:block">
+                        <div class="hidden lg:block relative bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg overflow-hidden" x-data="{ loaded: false }">
+                            <div x-show="!loaded" class="absolute inset-0 z-10 flex items-center justify-center">
+                                <div class="w-full h-full relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
+                                </div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <i class="fa-solid fa-box-open text-5xl text-gray-300 animate-pulse"></i>
+                                </div>
+                            </div>
                             <img src="{{ $featuredImage->hasGeneratedConversion('large') ? $featuredImage->getUrl('large') : $featuredImage->getUrl() }}"
                                  alt="{{ $title }}"
-                                 class="w-full rounded-lg"
-                                 loading="lazy">
+                                 class="w-full rounded-lg transition-opacity duration-300"
+                                 :class="{ 'opacity-0': !loaded, 'opacity-100': loaded }"
+                                 @load="loaded = true"
+                                 loading="lazy"
+                                 decoding="async">
                         </div>
                     @endif
                 </div>
@@ -198,12 +209,24 @@
                                 };
                             @endphp
                             <a href="{{ $image->getUrl() }}"
-                                class="glightbox block overflow-hidden rounded-lg group {{ $spanClass }}"
-                                data-gallery="shop-gallery">
+                                class="glightbox block overflow-hidden rounded-lg group {{ $spanClass }} relative"
+                                data-gallery="shop-gallery"
+                                x-data="{ loaded: false }">
+                                <div x-show="!loaded" class="absolute inset-0 z-10 bg-gradient-to-br from-gray-100 to-gray-200">
+                                    <div class="w-full h-full relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
+                                    </div>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <i class="fa-solid fa-image text-4xl text-gray-300 animate-pulse"></i>
+                                    </div>
+                                </div>
                                 <img src="{{ $image->hasGeneratedConversion('medium') ? $image->getUrl('medium') : $image->getUrl() }}"
                                      alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                     loading="lazy">
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
+                                     :class="{ 'opacity-0': !loaded, 'opacity-100': loaded }"
+                                     @load="loaded = true"
+                                     loading="lazy"
+                                     decoding="async">
                                 <div
                                     class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center z-20">
                                     <i
@@ -333,7 +356,7 @@
                                     $currentLocale,
                                 );
 
-                                $variantImage = $variant->getFirstMediaWithFallback($item ?? $product ?? $variant ?? $parentProduct);
+                                $variantImage = getFirstMediaWithFallback($variant);
                                 $variantImageUrl = $variantImage
                                     ? ($variantImage->hasGeneratedConversion('thumb')
                                         ? $variantImage->getUrl('thumb')
@@ -344,11 +367,22 @@
                                 class="group bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:border-blue-500 dark:hover:border-blue-600 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
 
                                 @if ($variantImageUrl)
-                                    <div class="aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative" x-data="{ loaded: false }">
+                                        <div x-show="!loaded" class="absolute inset-0 z-10">
+                                            <div class="w-full h-full relative overflow-hidden">
+                                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
+                                            </div>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <i class="fa-solid fa-box text-3xl text-gray-300 dark:text-gray-500 animate-pulse"></i>
+                                            </div>
+                                        </div>
                                         <img src="{{ $variantImageUrl }}"
                                              alt="{{ $variantTitle }}"
-                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                             loading="lazy">
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"
+                                             :class="{ 'opacity-0': !loaded, 'opacity-100': loaded }"
+                                             @load="loaded = true"
+                                             loading="lazy"
+                                             decoding="async">
                                     </div>
                                 @endif
 

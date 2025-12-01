@@ -129,6 +129,15 @@
         .search-icon-close {
             display: none;
         }
+
+        /* Skeleton Shimmer Animation - Global */
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .skeleton-shimmer {
+            animation: shimmer 1.5s infinite;
+        }
     </style>
 
     {{-- AI Chat CSS - Load in head for styling --}}

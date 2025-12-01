@@ -358,11 +358,20 @@ Route::middleware(['site', 'page.tracker'])->group(function () {
 // Cache temizleme route'u
 Route::post('/clear-cache', [\Modules\Page\App\Http\Controllers\Front\PageController::class, 'clearCache'])->name('clear.cache');
 
-// Sitemap route'u
+// Sitemap route'u - CACHED (1 saat)
 Route::middleware([InitializeTenancy::class])->get('/sitemap.xml', function() {
-    $sitemap = \App\Services\TenantSitemapService::generate();
-    return response($sitemap->render(), 200, [
-        'Content-Type' => 'application/xml'
+    $tenantId = tenant()?->id ?? 'central';
+    $cacheKey = "sitemap_xml_{$tenantId}";
+
+    // Cache'den al veya oluştur (1 saat = 3600 saniye)
+    $sitemapXml = \Illuminate\Support\Facades\Cache::remember($cacheKey, 3600, function() {
+        $sitemap = \App\Services\TenantSitemapService::generate();
+        return $sitemap->render();
+    });
+
+    return response($sitemapXml, 200, [
+        'Content-Type' => 'application/xml',
+        'Cache-Control' => 'public, max-age=3600'
     ]);
 })->name('sitemap');
 
@@ -673,3 +682,4 @@ Route::get('/csrf-refresh', function () {
     return csrf_token();
 })->name('csrf.refresh')->middleware('web');
 Route::get('/test-megamenu-v3', function() { return view('themes.ixtif.pages.test-megamenu-v3'); });
+

@@ -49,10 +49,24 @@
                                data-gallery="portfolio-gallery"
                                data-title="{{ $featuredImage->getCustomProperty('title')[$currentLocale] ?? '' }}"
                                data-description="{{ $featuredImage->getCustomProperty('description')[$currentLocale] ?? '' }}">
-                                <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
-                                     alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
-                                     class="w-full rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]"
-                                     loading="lazy">
+                                <div class="relative bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl overflow-hidden" x-data="{ imageLoaded: false }">
+                                    {{-- Skeleton Loader --}}
+                                    <div x-show="!imageLoaded" class="absolute inset-0 z-10">
+                                        <div class="w-full h-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse">
+                                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
+                                        </div>
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <i class="fa-solid fa-briefcase text-5xl text-gray-300 animate-pulse"></i>
+                                        </div>
+                                    </div>
+                                    <img src="{{ $featuredImage->hasGeneratedConversion('medium') ? $featuredImage->getUrl('medium') : $featuredImage->getUrl() }}"
+                                         alt="{{ $featuredImage->getCustomProperty('alt_text')[$currentLocale] ?? $title }}"
+                                         class="w-full rounded-xl shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]"
+                                         :class="{ 'opacity-0': !imageLoaded, 'opacity-100': imageLoaded }"
+                                         @load="imageLoaded = true"
+                                         loading="lazy"
+                                         decoding="async">
+                                </div>
                             </a>
                             @if($featuredImage->getCustomProperty('title')[$currentLocale] ?? false)
                                 <figcaption class="mt-4 text-sm text-gray-600 dark:text-gray-400">
@@ -118,11 +132,24 @@
                                    class="glightbox block"
                                    data-gallery="portfolio-gallery"
                                    data-title="{{ $image->getCustomProperty('title')[$currentLocale] ?? '' }}"
-                                   data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}">
+                                   data-description="{{ $image->getCustomProperty('description')[$currentLocale] ?? '' }}"
+                                   x-data="{ imageLoaded: false }">
+                                    {{-- Skeleton Loader --}}
+                                    <div x-show="!imageLoaded" class="absolute inset-0 z-10 bg-gradient-to-br from-gray-100 to-gray-200">
+                                        <div class="w-full h-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-pulse">
+                                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent skeleton-shimmer"></div>
+                                        </div>
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <i class="fa-solid fa-image text-3xl text-gray-300 animate-pulse"></i>
+                                        </div>
+                                    </div>
                                     <img src="{{ $image->getUrl('thumb') }}"
                                          alt="{{ $image->getCustomProperty('alt_text')[$currentLocale] ?? '' }}"
-                                         class="w-full h-48 md:h-56 object-cover cursor-pointer transition-transform duration-500 group-hover:scale-110"
-                                         loading="lazy">
+                                         class="w-full h-48 md:h-56 object-cover cursor-pointer transition-all duration-500 group-hover:scale-110"
+                                         :class="{ 'opacity-0': !imageLoaded, 'opacity-100': imageLoaded }"
+                                         @load="imageLoaded = true"
+                                         loading="lazy"
+                                         decoding="async">
                                 </a>
                                 @if($image->getCustomProperty('title')[$currentLocale] ?? false)
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end p-4 pointer-events-none">

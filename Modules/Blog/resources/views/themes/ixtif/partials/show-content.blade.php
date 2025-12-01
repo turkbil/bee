@@ -544,43 +544,161 @@
                     <x-blog.review-section :blog="$item" />
                 </section>
 
-                {{-- Social Share (Article Bottom) --}}
-                <div id="yazi-paylas" class="mt-16 md:mt-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 md:p-8 shadow-xl border border-blue-100 dark:border-gray-600">
-                    <h3 class="text-2xl md:text-3xl font-bold mb-8 text-gray-900 dark:text-white flex items-center gap-3">
-                        <i class="fas fa-share-alt text-blue-500"></i>
-                        Bu yazıyı paylaş
-                    </h3>
-                    <div class="flex flex-wrap gap-3">
-                        <a href="https://wa.me/?text={{ urlencode($title) }}%20{{ urlencode($shareUrl) }}"
-                           target="_blank"
-                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white font-medium transition">
-                            <i class="fab fa-whatsapp"></i>
-                            WhatsApp
-                        </a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
-                           target="_blank"
-                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition">
-                            <i class="fab fa-facebook-f"></i>
-                            Facebook
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?text={{ urlencode($title) }}&url={{ urlencode($shareUrl) }}"
-                           target="_blank"
-                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-900 hover:bg-black text-white font-medium transition">
-                            <i class="fab fa-x-twitter"></i>
-                            Twitter
-                        </a>
-                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode($shareUrl) }}"
-                           target="_blank"
-                           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 text-white font-medium transition">
-                            <i class="fab fa-linkedin-in"></i>
-                            LinkedIn
-                        </a>
-                    </div>
-                </div>
+                {{-- Share & Author Combined Card --}}
+                @php
+                    // Copy button için body hazırla
+                    $rawBody = $body ?? '';
+                    $rawBody = preg_replace('/<h2[^>]*>(.*?)<\/h2>/is', "\n\n▸ $1\n", $rawBody);
+                    $rawBody = preg_replace('/<h3[^>]*>(.*?)<\/h3>/is', "\n\n• $1\n", $rawBody);
+                    $rawBody = preg_replace('/<h4[^>]*>(.*?)<\/h4>/is', "\n\n◦ $1\n", $rawBody);
+                    $rawBody = preg_replace('/<\/p>\s*<p[^>]*>/is', "\n\n", $rawBody);
+                    $rawBody = preg_replace('/<p[^>]*>/is', "\n\n", $rawBody);
+                    $rawBody = preg_replace('/<\/p>/is', "", $rawBody);
+                    $rawBody = preg_replace('/<li[^>]*>/is', "\n  • ", $rawBody);
+                    $rawBody = preg_replace('/<\/li>/is', "", $rawBody);
+                    $rawBody = preg_replace('/<\/?[uo]l[^>]*>/is', "\n", $rawBody);
+                    $rawBody = preg_replace('/<br\s*\/?>/is', "\n", $rawBody);
+                    $cleanBody = strip_tags($rawBody);
+                    $cleanBody = html_entity_decode($cleanBody, ENT_QUOTES, 'UTF-8');
+                    $cleanBody = preg_replace('/[ \t]+/', ' ', $cleanBody);
+                    $cleanBody = preg_replace('/\n{4,}/', "\n\n\n", $cleanBody);
+                    $cleanBody = trim($cleanBody);
 
-                {{-- Author Card (Detaylı) --}}
-                <section id="yazar-bilgileri" class="mt-16 md:mt-20">
-                    <x-blog.author-card variant="full" :blog="$item" />
+                    if (mb_strlen($cleanBody) > 1500) {
+                        $searchFrom = 1500;
+                        $maxSearch = min(mb_strlen($cleanBody), 2000);
+                        $sentenceEnd = false;
+                        for ($i = $searchFrom; $i < $maxSearch; $i++) {
+                            $char = mb_substr($cleanBody, $i, 1);
+                            if ($char === '.' || $char === '!' || $char === '?') {
+                                $sentenceEnd = $i + 1;
+                                break;
+                            }
+                        }
+                        if ($sentenceEnd) {
+                            $cleanBody = mb_substr($cleanBody, 0, $sentenceEnd) . '...';
+                        } else {
+                            $cleanBody = mb_substr($cleanBody, 0, 1500);
+                            $lastSpace = mb_strrpos($cleanBody, ' ');
+                            if ($lastSpace !== false && $lastSpace > 1300) {
+                                $cleanBody = mb_substr($cleanBody, 0, $lastSpace);
+                            }
+                            $cleanBody .= '...';
+                        }
+                    }
+                @endphp
+
+                <section id="yazi-paylas" class="mt-12 md:mt-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+                        {{-- Üst: Paylaş Butonları --}}
+                        <div class="px-4 py-3 flex items-center justify-between flex-wrap gap-2 border-b border-gray-100 dark:border-gray-700">
+                            <span class="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                <i class="fas fa-share-alt mr-1.5 text-blue-500"></i>Paylaş
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                {{-- Kopyala --}}
+                                <button type="button"
+                                        id="copy-article-btn"
+                                        data-title="{{ $title }}"
+                                        data-excerpt="{{ $excerpt ?: '' }}"
+                                        data-body="{{ $cleanBody }}"
+                                        data-url="{{ $shareUrl }}"
+                                        class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                                        title="Kopyala">
+                                    <i class="fas fa-copy text-sm" id="copy-article-icon"></i>
+                                </button>
+                                {{-- WhatsApp --}}
+                                <a href="https://wa.me/?text={{ urlencode($title) }}%20{{ urlencode($shareUrl) }}"
+                                   target="_blank"
+                                   class="w-8 h-8 flex items-center justify-center rounded-full bg-green-500 text-white hover:bg-green-600 transition"
+                                   title="WhatsApp">
+                                    <i class="fab fa-whatsapp text-sm"></i>
+                                </a>
+                                {{-- Facebook --}}
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
+                                   target="_blank"
+                                   class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition"
+                                   title="Facebook">
+                                    <i class="fab fa-facebook-f text-sm"></i>
+                                </a>
+                                {{-- Twitter --}}
+                                <a href="https://twitter.com/intent/tweet?text={{ urlencode($title) }}&url={{ urlencode($shareUrl) }}"
+                                   target="_blank"
+                                   class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-900 text-white hover:bg-black transition"
+                                   title="Twitter">
+                                    <i class="fab fa-x-twitter text-sm"></i>
+                                </a>
+                                {{-- LinkedIn --}}
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode($shareUrl) }}"
+                                   target="_blank"
+                                   class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-700 text-white hover:bg-blue-800 transition"
+                                   title="LinkedIn">
+                                    <i class="fab fa-linkedin-in text-sm"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        {{-- Alt: Yazar Bilgisi (Accordion) --}}
+                        <div id="yazar-bilgileri" x-data="{ open: false }">
+                            <button @click="open = !open"
+                                    type="button"
+                                    class="w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                {{-- Avatar --}}
+                                <x-blog.author-card variant="mini" :blog="$item" />
+
+                                {{-- Expand/Collapse --}}
+                                <div class="ml-auto text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1">
+                                    <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" :class="{'rotate-180': open}"></i>
+                                </div>
+                            </button>
+
+                            {{-- Expanded Content --}}
+                            <div x-show="open"
+                                 x-collapse
+                                 style="display: none;">
+                                @php
+                                    $blogSeo = optional($item)->seoSetting;
+                                    $authorBio = optional($blogSeo)->author_bio ?? setting('seo_default_author_bio') ?? null;
+                                    $authorWebsite = optional($blogSeo)->author_url ?? setting('seo_default_author_url') ?? null;
+                                    $facebook = setting('social_facebook');
+                                    $twitter = setting('social_twitter');
+                                    $instagram = setting('social_instagram');
+                                    $linkedin = setting('social_linkedin');
+                                    $youtube = setting('social_youtube');
+                                @endphp
+
+                                <div class="px-4 pb-4 pt-1 border-t border-gray-100 dark:border-gray-700">
+                                    @if($authorBio)
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-3">{{ $authorBio }}</p>
+                                    @endif
+
+                                    <div class="flex flex-wrap items-center gap-1.5">
+                                        @if($authorWebsite && $authorWebsite !== url('/'))
+                                            <a href="{{ $authorWebsite }}" target="_blank" rel="noopener"
+                                               class="text-xs px-2.5 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                                <i class="fas fa-globe mr-1"></i>Web
+                                            </a>
+                                        @endif
+                                        @if($facebook)
+                                            <a href="{{ $facebook }}" target="_blank" class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-600 text-white text-xs hover:scale-110 transition-transform"><i class="fab fa-facebook-f"></i></a>
+                                        @endif
+                                        @if($twitter)
+                                            <a href="{{ $twitter }}" target="_blank" class="w-7 h-7 flex items-center justify-center rounded-full bg-gray-900 text-white text-xs hover:scale-110 transition-transform"><i class="fab fa-x-twitter"></i></a>
+                                        @endif
+                                        @if($instagram)
+                                            <a href="{{ $instagram }}" target="_blank" class="w-7 h-7 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-600 to-pink-500 text-white text-xs hover:scale-110 transition-transform"><i class="fab fa-instagram"></i></a>
+                                        @endif
+                                        @if($linkedin)
+                                            <a href="{{ $linkedin }}" target="_blank" class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-700 text-white text-xs hover:scale-110 transition-transform"><i class="fab fa-linkedin-in"></i></a>
+                                        @endif
+                                        @if($youtube)
+                                            <a href="{{ $youtube }}" target="_blank" class="w-7 h-7 flex items-center justify-center rounded-full bg-red-600 text-white text-xs hover:scale-110 transition-transform"><i class="fab fa-youtube"></i></a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 {{-- İlgili Yazılar --}}
@@ -802,6 +920,72 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Copy Article Button
+            const copyBtn = document.getElementById('copy-article-btn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', async () => {
+                    const title = copyBtn.dataset.title;
+                    const excerpt = copyBtn.dataset.excerpt;
+                    const body = copyBtn.dataset.body;
+                    const url = copyBtn.dataset.url;
+                    const icon = document.getElementById('copy-article-icon');
+                    const btnText = document.getElementById('copy-article-text');
+
+                    // Header
+                    let copyText = `iXtif A.Ş.
+Türkiye'nin İstif Pazarı
+www.ixtif.com
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${title}`;
+
+                    // Excerpt
+                    if (excerpt) {
+                        copyText += `\n\n${excerpt}`;
+                    }
+
+                    // Body
+                    if (body) {
+                        copyText += `\n\n${body}`;
+                    }
+
+                    // Footer
+                    copyText += `\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n📖 Yazının devamı: ${url}`;
+
+                    const showSuccess = () => {
+                        copyBtn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                        copyBtn.classList.add('bg-green-600', 'hover:bg-green-600');
+                        icon.classList.remove('fa-copy');
+                        icon.classList.add('fa-check');
+                        btnText.textContent = 'Kopyalandı!';
+
+                        setTimeout(() => {
+                            copyBtn.classList.remove('bg-green-600', 'hover:bg-green-600');
+                            copyBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                            icon.classList.remove('fa-check');
+                            icon.classList.add('fa-copy');
+                            btnText.textContent = 'Kopyala';
+                        }, 2000);
+                    };
+
+                    try {
+                        await navigator.clipboard.writeText(copyText);
+                        showSuccess();
+                    } catch (err) {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = copyText;
+                        textarea.style.position = 'fixed';
+                        textarea.style.opacity = '0';
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textarea);
+                        showSuccess();
+                    }
+                });
+            }
+
             document.querySelectorAll('[data-reading-base]').forEach((element) => {
                 const base = parseInt(element.getAttribute('data-reading-base'), 10);
                 if (!Number.isFinite(base) || base <= 0) {

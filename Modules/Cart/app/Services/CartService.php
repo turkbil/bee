@@ -12,10 +12,28 @@ use Illuminate\Support\Facades\Log;
 class CartService
 {
     /**
+     * Tenant context kontrolü - Cart sorguları sadece tenant DB'de yapılmalı
+     */
+    protected function ensureTenantContext(): bool
+    {
+        // Tenancy initialize edilmemiş veya central tenant ise cart sorgusu yapma
+        if (!function_exists('tenant') || !tenant()) {
+            Log::warning('CartService: Tenant context not initialized, skipping cart query');
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Aktif sepeti al (session veya customer için)
      */
     public function getCart(?int $customerId = null, ?string $sessionId = null): ?Cart
     {
+        // Tenant context yoksa null dön (central DB'ye sorgu atmayı engelle)
+        if (!$this->ensureTenantContext()) {
+            return null;
+        }
+
         if ($customerId) {
             return Cart::where('customer_id', $customerId)
                 ->where('status', 'active')
@@ -40,8 +58,13 @@ class CartService
     /**
      * Sepet oluştur veya bul
      */
-    public function findOrCreateCart(?int $customerId = null, ?string $sessionId = null): Cart
+    public function findOrCreateCart(?int $customerId = null, ?string $sessionId = null): ?Cart
     {
+        // Tenant context yoksa null dön (central DB'ye sorgu atmayı engelle)
+        if (!$this->ensureTenantContext()) {
+            return null;
+        }
+
         if ($customerId) {
             return Cart::findOrCreateForCustomer($customerId);
         }

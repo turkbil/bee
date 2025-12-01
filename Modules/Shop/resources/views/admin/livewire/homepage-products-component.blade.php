@@ -86,7 +86,7 @@
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="d-flex align-items-center gap-3">
                                                 @php
-                                                    $heroImage = $product->getFirstMediaWithFallback();
+                                                    $heroImage = getFirstMediaWithFallback($product);
                                                 @endphp
                                                 @if($heroImage)
                                                     <img src="{{ $heroImage->getUrl('thumb') }}"

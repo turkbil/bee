@@ -7,6 +7,7 @@ use Modules\SettingManagement\App\Http\Livewire\GroupManageComponent;
 use Modules\SettingManagement\App\Http\Livewire\ValuesComponent;
 use Modules\SettingManagement\App\Http\Livewire\TenantSettingsComponent;
 use Modules\SettingManagement\App\Http\Livewire\FormBuilderComponent;
+use Modules\SettingManagement\App\Http\Livewire\DocumentationComponent;
 use Modules\SettingManagement\App\Http\Controllers\FormBuilderController;
 
 Route::middleware(['admin', 'tenant'])
@@ -69,7 +70,7 @@ Route::middleware(['admin', 'tenant'])
                     if (!$group) {
                         return response()->json(['error' => 'Grup bulunamadı'], 404);
                     }
-                    
+
                     return response()->json([
                         'id' => $group->id,
                         'name' => $group->name,
@@ -78,5 +79,9 @@ Route::middleware(['admin', 'tenant'])
                     ]);
                 })->middleware('module.permission:settingmanagement,view')
                   ->name('api.groups.show');
+
+                // Dokümantasyon - Sadece root kullanıcılar
+                Route::get('/documentation', DocumentationComponent::class)
+                    ->name('documentation');
             });
     });

@@ -9,6 +9,13 @@
     'index' => null,
 ])
 
+{{-- Tenant context kontrolü - central'da ürün kartı render etme --}}
+@if(!function_exists('tenant') || tenant() === null)
+    {{-- Tenant context yok, boş div döndür --}}
+    <div class="hidden"></div>
+    @php return; @endphp
+@endif
+
 @php
     // Yuvarlama Fonksiyonu: Compare at price'ı sadece 00 veya 50'ye yuvarla
     // function_exists() ile sadece bir kez tanımla (multiple card'larda redeclare hatası önlenir)
@@ -156,15 +163,15 @@
 
     // Layout classes
     $layoutClasses = $layout === 'horizontal'
-        ? 'flex flex-row gap-4 p-4'
+        ? 'flex flex-row gap-3 p-3'
         : 'flex flex-col';
 
     $imageContainerClasses = $layout === 'horizontal'
-        ? 'w-28 h-28 md:w-36 md:h-36 flex-shrink-0'
+        ? 'w-24 h-24 md:w-32 md:h-32 flex-shrink-0'
         : 'aspect-square';
 
     $contentClasses = $layout === 'horizontal'
-        ? 'flex-1 flex flex-col justify-between'
+        ? 'flex-1 flex flex-col justify-start gap-1'
         : 'p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5';
 
     // Grid responsive visibility (sadece homepage için)
@@ -411,7 +418,7 @@ document.addEventListener('alpine:init', () => {
     <div class="{{ $layoutClasses }}">
         {{-- Product Image --}}
         <div class="relative {{ $imageContainerClasses }}">
-            <a href="{{ $productUrl }}" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600 {{ $layout === 'horizontal' ? 'p-1' : ($compactImage ? 'p-2 md:p-4 lg:p-6' : 'p-2 md:p-8 lg:p-12') }}">
+            <a href="{{ $productUrl }}" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
                 @if($productImage)
                     <img src="{{ $productImage }}"
                          alt="{{ $productTitle }}"
@@ -451,58 +458,60 @@ document.addEventListener('alpine:init', () => {
 
         {{-- Content Section --}}
         <div class="{{ $contentClasses }}">
-            {{-- Category Badge with Icon + Custom Badges (Vertical: sağda, Horizontal: solda) --}}
-            @if($showCategory || $layout === 'horizontal')
-            <div class="flex items-center gap-2 {{ $layout === 'horizontal' ? 'mb-2' : 'mb-4 justify-end lg:justify-between' }}">
-                {{-- Category: Mobilde gizli, tablet+ göster --}}
-                @if($showCategory)
-                <span class="hidden lg:flex items-center gap-1.5 text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-[0.1em]">
-                    <i class="{{ $productCategoryIcon }} text-sm"></i>
-                    {{ $productCategory }}
-                </span>
-                @endif
-
-                {{-- Badges (Horizontal layout: sağda | Vertical: görsel üzerinde) --}}
-                @if($layout === 'horizontal')
-                    {{-- Mobilde: flex-row-reverse (indirim sağda), Desktop: normal --}}
-                    <div class="flex items-center gap-1.5 lg:gap-2 flex-wrap justify-end flex-row-reverse lg:flex-row">
-                        {{-- Discount Badge - sadece %5+ indirim varsa --}}
+            @if($layout === 'horizontal')
+                {{-- HORIZONTAL LAYOUT: Başlık önce, badge'ler başlıkla aynı satırda sağda --}}
+                <div class="flex items-start justify-between gap-2">
+                    {{-- Title --}}
+                    <a href="{{ $productUrl }}" class="flex-1 min-w-0">
+                        <h3 class="text-sm md:text-base font-semibold line-clamp-2 text-gray-950 dark:text-gray-50 leading-snug group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors">
+                            {{ $productTitle }}
+                        </h3>
+                    </a>
+                    {{-- Badges sağda --}}
+                    @if(($productDiscountPercentage && $productDiscountPercentage >= 5) || count($productBadges) > 0)
+                    <div class="flex items-center gap-1 flex-shrink-0">
                         @if($productDiscountPercentage && $productDiscountPercentage >= 5)
-                            <div class="w-fit bg-gradient-to-br from-orange-600 to-red-600 text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
+                            <div class="bg-gradient-to-br from-orange-600 to-red-600 text-white px-1.5 py-0.5 rounded-md text-xs font-bold">
                                 -%{{ $productDiscountPercentage }}
                             </div>
                         @endif
-
-                        {{-- Custom Badges --}}
                         @foreach($productBadges as $index => $badge)
+                            @if($index < 1)
                             @php
                                 $badgeColor = $badge['color'] ?? 'gray';
                                 $badgeGradient = $badgeGradients[$badgeColor] ?? 'from-gray-600 to-slate-600';
-                                // İlk custom badge animasyonlu (priority 1 veya ilk sıradaki)
-                                $isFirstBadge = $index === 0;
-                                $animationClass = $isFirstBadge ? 'bg-[length:200%_200%] animate-gradient' : '';
                             @endphp
-                            <div class="w-fit bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
+                            <div class="bg-gradient-to-br {{ $badgeGradient }} text-white px-1.5 py-0.5 rounded-md text-xs font-bold">
                                 {{ $getBadgeLabel($badge) }}
                             </div>
+                            @endif
                         @endforeach
                     </div>
-                @else
-                    @if($productFeatured && $showCategory)
+                    @endif
+                </div>
+            @else
+                {{-- VERTICAL LAYOUT: Kategori + Badge'ler üstte (mevcut yapı) --}}
+                @if($showCategory)
+                <div class="flex items-center gap-2 mb-4 justify-end lg:justify-between">
+                    <span class="hidden lg:flex items-center gap-1.5 text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-[0.1em]">
+                        <i class="{{ $productCategoryIcon }} text-sm"></i>
+                        {{ $productCategory }}
+                    </span>
+                    @if($productFeatured)
                         <span class="text-xs bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-0.5 rounded-full font-bold hidden lg:inline-block">
                             ⭐ Öne Çıkan
                         </span>
                     @endif
+                </div>
                 @endif
-            </div>
-            @endif
 
-            {{-- Title --}}
-            <a href="{{ $productUrl }}">
-                <h3 class="{{ $layout === 'horizontal' ? 'text-sm md:text-base font-semibold line-clamp-2' : 'text-base md:text-lg lg:text-xl font-bold line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem]' }} text-gray-950 dark:text-gray-50 leading-relaxed group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors tracking-wide">
-                    {{ $productTitle }}
-                </h3>
-            </a>
+                {{-- Title --}}
+                <a href="{{ $productUrl }}">
+                    <h3 class="text-base md:text-lg lg:text-xl font-bold line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] text-gray-950 dark:text-gray-50 leading-relaxed group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors tracking-wide">
+                        {{ $productTitle }}
+                    </h3>
+                </a>
+            @endif
 
             {{-- Price & Actions --}}
             <div class="{{ $layout === 'horizontal' ? 'flex items-center justify-between gap-4 mt-auto' : 'pt-3 md:pt-4 lg:pt-5 mt-auto flex items-center justify-between gap-3' }} {{ $layout === 'vertical' && $showDivider ? 'border-t border-gray-300 dark:border-gray-500' : '' }}">

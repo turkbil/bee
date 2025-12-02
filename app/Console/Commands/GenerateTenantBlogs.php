@@ -42,8 +42,10 @@ class GenerateTenantBlogs extends Command
 
     /**
      * Minimum draft count to maintain in the pool
+     *
+     * 🔧 Updated: 10 → 50 (2 days buffer for 24 blogs/day)
      */
-    const MINIMUM_DRAFT_THRESHOLD = 10;
+    const MINIMUM_DRAFT_THRESHOLD = 50;
 
     /**
      * Number of drafts to generate when pool is low

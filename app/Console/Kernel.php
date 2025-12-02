@@ -168,6 +168,40 @@ class Kernel extends ConsoleKernel
         ->withoutOverlapping(10)
         ->appendOutputTo(storage_path('logs/blog-cron.log'));
 
+        // 📝 BLOG DRAFT REGENERATION - Haftalık (Her Pazar 02:00)
+        $schedule->call(function () {
+            try {
+                $tenants = \App\Models\Tenant::all();
+                foreach ($tenants as $tenant) {
+                    tenancy()->initialize($tenant);
+
+                    // Blog AI enabled mi?
+                    $enabled = getTenantSetting('blog_ai_enabled', '0');
+                    $enabled = ($enabled === '1' || $enabled === 1 || $enabled === true || $enabled === 'true');
+
+                    if ($enabled) {
+                        // Her Pazar 200 yeni draft üret (haftalık buffer)
+                        \Modules\Blog\App\Jobs\GenerateDraftsJob::dispatch(200)
+                            ->onQueue('blog-ai');
+
+                        \Log::channel('daily')->info('🤖 Weekly Draft Generation', [
+                            'tenant_id' => $tenant->id,
+                            'draft_count' => 200,
+                            'day' => 'Sunday',
+                        ]);
+                    }
+
+                    tenancy()->end();
+                }
+            } catch (\Exception $e) {
+                \Log::error('Weekly draft generation error: ' . $e->getMessage());
+            }
+        })
+        ->weeklyOn(0, '02:00') // Pazar 02:00
+        ->name('blog-draft-weekly-regeneration')
+        ->withoutOverlapping()
+        ->appendOutputTo(storage_path('logs/blog-draft-weekly.log'));
+
         // 🔐 SUBSCRIPTION MANAGEMENT CRONS
 
         // Trial Expiry Check - Günlük 09:00

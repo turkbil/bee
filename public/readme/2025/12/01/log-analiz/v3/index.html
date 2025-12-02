@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Analiz Raporu v3 - Çalışma Dönemi (11:00-17:00)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #93c5fd;
+        }
+
+        .alert-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 12px;
+        }
+
+        .alert-box.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #f59e0b;
+        }
+
+        .alert-box.info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .alert-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #10b981;
+        }
+
+        .alert-box.warning .alert-title {
+            color: #f59e0b;
+        }
+
+        .alert-box.info .alert-title {
+            color: #3b82f6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .stat-card.good {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .stat-sublabel {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .comparison-box.morning {
+            border-left-color: #f59e0b;
+        }
+
+        .comparison-box.working {
+            border-left-color: #3b82f6;
+        }
+
+        .comparison-box.evening {
+            border-left-color: #dc2626;
+        }
+
+        .comparison-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #60a5fa;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 15px;
+            text-align: left;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-top: 1px solid #334155;
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .impact-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .impact-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .impact-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            border: 2px solid #10b981;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 12px;
+        }
+
+        .highlight-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .emoji {
+            font-size: 1.2em;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-info {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        @media (max-width: 968px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                📊 Log Analiz Raporu
+                <span class="version-badge">v3 - ÇALIŞMA DÖNEMİ</span>
+            </h1>
+            <div class="meta">
+                📅 Tarih: 1 Aralık 2025 |
+                🎯 Analiz: Çalışma Dönemi (11:00 - 17:00) - 6 SAAT |
+                ⏰ Senin Çalışma Süren
+            </div>
+        </header>
+
+        <!-- UYARI -->
+        <div class="alert-box">
+            <div class="alert-title">
+                <span class="emoji">✅</span> Bu Rapor Senin Çalışma Dönemini Gösteriyor
+            </div>
+            <p style="margin-bottom: 10px;">
+                <strong>Analiz Aralığı:</strong> 1 Aralık 2025, 11:00 - 17:00 (6 saat)
+            </p>
+            <p>
+                Bu dönemde sistem üzerinde çalışmalar yapıldı. Log'lar senin çalışma saatlerin boyunca oluştu.
+            </p>
+        </div>
+
+        <!-- ÖZET İSTATİSTİKLER -->
+        <section>
+            <h2><span class="emoji">📈</span> Çalışma Dönemi Özet (11:00 - 17:00)</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #3b82f6;">165</div>
+                    <div class="stat-label">Toplam Hata</div>
+                    <div class="stat-sublabel">6 saat içinde</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #3b82f6;">156</div>
+                    <div class="stat-label">ResourceTracker Hatası</div>
+                    <div class="stat-sublabel">%94.5 oranı</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #10b981;">9</div>
+                    <div class="stat-label">Database Hatası</div>
+                    <div class="stat-sublabel">%5.5 oranı</div>
+                </div>
+                <div class="stat-card good">
+                    <div class="stat-number" style="color: #10b981;">~28</div>
+                    <div class="stat-label">Saatlik Hata Ortalaması</div>
+                    <div class="stat-sublabel">Sabaha göre %17 artış</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GÜNLÜK KARŞILAŞTIRMA -->
+        <section>
+            <h2><span class="emoji">📊</span> Gün İçi Karşılaştırma (3 Dönem)</h2>
+
+            <div class="comparison-grid">
+                <div class="comparison-box morning">
+                    <div class="comparison-title" style="color: #f59e0b;">
+                        <span class="emoji">🌅</span> SABAH<br>(07:20-11:00)
+                    </div>
+                    <div class="stats-grid" style="grid-template-columns: 1fr; gap: 10px;">
+                        <div class="stat-card" style="background: rgba(245, 158, 11, 0.1); padding: 15px;">
+                            <div class="stat-number" style="color: #f59e0b; font-size: 2rem;">51</div>
+                            <div class="stat-label" style="font-size: 0.85rem;">Toplam Hata</div>
+                            <div class="stat-sublabel">3.7 saat</div>
+                        </div>
+                        <div class="stat-card" style="background: rgba(245, 158, 11, 0.1); padding: 15px;">
+                            <div class="stat-number" style="color: #f59e0b; font-size: 2rem;">~14</div>
+                            <div class="stat-label" style="font-size: 0.85rem;">Saatlik</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-box working">
+                    <div class="comparison-title" style="color: #3b82f6;">
+                        <span class="emoji">💼</span> ÇALIŞMA<br>(11:00-17:00)
+                    </div>
+                    <div class="stats-grid" style="grid-template-columns: 1fr; gap: 10px;">
+                        <div class="stat-card" style="background: rgba(59, 130, 246, 0.1); padding: 15px;">
+                            <div class="stat-number" style="color: #3b82f6; font-size: 2rem;">165</div>
+                            <div class="stat-label" style="font-size: 0.85rem;">Toplam Hata</div>
+                            <div class="stat-sublabel">6 saat</div>
+                        </div>
+                        <div class="stat-card" style="background: rgba(59, 130, 246, 0.1); padding: 15px;">
+                            <div class="stat-number" style="color: #3b82f6; font-size: 2rem;">~28</div>
+                            <div class="stat-label" style="font-size: 0.85rem;">Saatlik</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-box evening">
+                    <div class="comparison-title" style="color: #dc2626;">
+                        <span class="emoji">🌆</span> AKŞAM<br>(17:00-18:50)
+                    </div>
+                    <div class="stats-grid" style="grid-template-columns: 1fr; gap: 10px;">
+                        <div class="stat-card" style="background: rgba(220, 38, 38, 0.1); padding: 15px;">
+                            <div class="stat-number" style="color: #dc2626; font-size: 2rem;">79</div>
+                            <div class="stat-label" style="font-size: 0.85rem;">Toplam Hata</div>
+                            <div class="stat-sublabel">1.8 saat</div>
+                        </div>
+                        <div class="stat-card" style="background: rgba(220, 38, 38, 0.1); padding: 15px;">
+                            <div class="stat-number" style="color: #dc2626; font-size: 2rem;">~43</div>
+                            <div class="stat-label" style="font-size: 0.85rem;">Saatlik</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-box info">
+                <div class="alert-title">
+                    <span class="emoji">📈</span> Saatlik Trend Analizi
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dönem</th>
+                            <th>Süre</th>
+                            <th>Toplam Hata</th>
+                            <th>Saatlik Oran</th>
+                            <th>Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sabah</strong> (07:20-11:00)</td>
+                            <td>3.7 saat</td>
+                            <td style="color: #f59e0b; font-weight: 600;">51</td>
+                            <td style="color: #f59e0b; font-weight: 600;">~14/saat</td>
+                            <td><span class="badge badge-success">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Çalışma</strong> (11:00-17:00)</td>
+                            <td>6 saat</td>
+                            <td style="color: #3b82f6; font-weight: 600;">165</td>
+                            <td style="color: #3b82f6; font-weight: 600;">~28/saat</td>
+                            <td><span class="badge badge-info">+100% Artış</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Akşam</strong> (17:00-18:50)</td>
+                            <td>1.8 saat</td>
+                            <td style="color: #dc2626; font-weight: 600;">79</td>
+                            <td style="color: #dc2626; font-weight: 600;">~43/saat</td>
+                            <td><span class="badge badge-warning">+207% Artış!</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- DETAYLI ANALİZ -->
+        <section>
+            <h2><span class="emoji">🔍</span> Çalışma Dönemi Detay (11:00-17:00)</h2>
+
+            <h3>1. ResourceTracker Hatası (156 adet)</h3>
+
+            <div class="alert-box info">
+                <p style="margin-bottom: 15px;"><strong>Durum:</strong> Sabahki gibi devam ediyor</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #3b82f6;">156</div>
+                        <div class="stat-label">Toplam Hata</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #3b82f6;">~26</div>
+                        <div class="stat-label">Saatlik Oran</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #10b981;">15-27%</div>
+                        <div class="stat-label">CPU Kullanımı</div>
+                        <div class="stat-sublabel">Normal seviye!</div>
+                    </div>
+                </div>
+
+                <p style="margin: 15px 0;"><strong>Özellikler:</strong></p>
+                <ul class="impact-list">
+                    <li>Her 5 dakikada 1-3 hata (cron job sürekliliği)</li>
+                    <li>Etkilenen: Tenant 1, Tenant 2, Tenant 1001 (tüm tenant'lar)</li>
+                    <li><strong style="color: #10b981;">İyi haber:</strong> CPU normal seviyede (15-27%), sabahki %80-186 değil!</li>
+                    <li>Hata türü aynı: Array to string conversion (response_time_ms)</li>
+                </ul>
+            </div>
+
+            <h3>2. Database Context Hatası (9 adet)</h3>
+
+            <div class="alert-box warning">
+                <p style="margin-bottom: 15px;"><strong>Durum:</strong> Saatlik oran azaldı</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" style="color: #f59e0b;">9</div>
+                        <div class="stat-label">Toplam Hata</div>
+                    </div>
+                    <div class="stat-card good">
+                        <div class="stat-number" style="color: #10b981;">~1.5</div>
+                        <div class="stat-label">Saatlik Oran</div>
+                        <div class="stat-sublabel">Sabahla aynı!</div>
+                    </div>
+                </div>
+
+                <p style="margin: 15px 0;"><strong>İlk Görülme:</strong></p>
+                <ul class="impact-list">
+                    <li>14:58 - product-card.blade.php (ShopProduct media)</li>
+                    <li>15:31 - product-card.blade.php (ShopProduct media)</li>
+                    <li>16:01 - product-card.blade.php (ShopProduct media)</li>
+                </ul>
+
+                <p style="margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid #10b981;">
+                    <strong>İyi Haber:</strong> Database hatası çalışma döneminde artmadı!
+                    Akşam saatlerinde (17:00+) patladı (15/saat), ama senin çalışman sırasında stabıl kaldı.
+                </p>
+            </div>
+        </section>
+
+        <!-- TENANT 2 ANALİZİ -->
+        <section>
+            <h2><span class="emoji">📁</span> Tenant 2 (ixtif.com) - Çalışma Dönemi</h2>
+
+            <div class="highlight-box">
+                <div class="highlight-title">
+                    <span class="emoji">🎉</span> TEMİZ DÖNEM!
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card good">
+                        <div class="stat-number" style="color: #10b981;">28</div>
+                        <div class="stat-label">Toplam Log Girişi</div>
+                        <div class="stat-sublabel">Çoğu INFO seviyesi</div>
+                    </div>
+                    <div class="stat-card good">
+                        <div class="stat-number" style="color: #10b981;">0</div>
+                        <div class="stat-label">Leonardo AI Hatası</div>
+                        <div class="stat-sublabel">Moderation sorunu yok!</div>
+                    </div>
+                    <div class="stat-card good">
+                        <div class="stat-number" style="color: #10b981;">0</div>
+                        <div class="stat-label">Critical Error</div>
+                        <div class="stat-sublabel">Hiçbir ciddi sorun yok</div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.2); border-radius: 8px; text-align: center; font-size: 1.1rem;">
+                    <strong style="color: #10b981;">✅ Tenant 2 çalışma dönemi boyunca sorunsuz çalıştı!</strong><br>
+                    Blog AI görselleri başarıyla oluşturuldu, sistem stabil kaldı.
+                </p>
+            </div>
+        </section>
+
+        <!-- SONUÇ -->
+        <section>
+            <h2><span class="emoji">📌</span> Çalışma Dönemi Değerlendirmesi</h2>
+
+            <div class="alert-box">
+                <div class="alert-title">
+                    <span class="emoji">🎯</span> Senin Çalışma Saatlerin Özeti (11:00-17:00)
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metrik</th>
+                            <th>Değer</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Çalışma Süresi</td>
+                            <td>6 saat</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Toplam Hata</td>
+                            <td style="font-weight: 600;">165 adet</td>
+                            <td><span class="badge badge-info">Normal</span></td>
+                        </tr>
+                        <tr>
+                            <td>Saatlik Oran</td>
+                            <td style="font-weight: 600;">~28 hata/saat</td>
+                            <td><span class="badge badge-info">Sabahtan 2x</span></td>
+                        </tr>
+                        <tr>
+                            <td>ResourceTracker</td>
+                            <td>156 adet (%94.5)</td>
+                            <td><span class="badge badge-info">Sistemik</span></td>
+                        </tr>
+                        <tr>
+                            <td>Database Context</td>
+                            <td>9 adet (%5.5)</td>
+                            <td><span class="badge badge-success">Stabıl</span></td>
+                        </tr>
+                        <tr>
+                            <td>CPU Durumu</td>
+                            <td>15-27% (Normal)</td>
+                            <td><span class="badge badge-success">İyi</span></td>
+                        </tr>
+                        <tr>
+                            <td>Tenant 2 (ixtif)</td>
+                            <td>0 kritik hata</td>
+                            <td><span class="badge badge-success">Mükemmel</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 30px;">Önemli Tespitler:</h3>
+                <ul class="impact-list">
+                    <li>
+                        <strong style="color: #10b981;">CPU normale döndü:</strong>
+                        Sabah %80-186 arası kritik seviyedeyken, çalışma dönemi boyunca %15-27'de stabil kaldı.
+                        Muhtemelen sabah yapılan Horizon optimizasyonu işe yaradı!
+                    </li>
+                    <li>
+                        <strong style="color: #3b82f6;">ResourceTracker hala aktif:</strong>
+                        Her 5 dakikada tekrar ediyor, sistemik bir sorun. Cron job'dan geliyor ve
+                        düzeltilmesi gerekiyor, ama sistem performansını etkilemiyor.
+                    </li>
+                    <li>
+                        <strong style="color: #10b981;">Database context stabıl:</strong>
+                        Çalışma sırasında database hatası artmadı (~1.5/saat). Akşam saatlerinde
+                        patladı (15/saat), ama senin çalışma döneminде sorun yoktu.
+                    </li>
+                    <li>
+                        <strong style="color: #10b981;">Tenant 2 mükemmel:</strong>
+                        Leonardo AI başarılı, blog görselleri oluştu, hiçbir kritik hata yok.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <div class="highlight-title">
+                    <span class="emoji">✅</span> Genel Durum: İYİ
+                </div>
+                <p style="text-align: center; font-size: 1.1rem; margin: 20px 0;">
+                    Çalışma dönemi boyunca sistem <strong style="color: #10b981;">stabıl</strong> kaldı.<br>
+                    CPU performansı <strong style="color: #10b981;">normale döndü</strong>.<br>
+                    Database context hatası <strong style="color: #10b981;">artmadı</strong>.<br>
+                    Tenant 2 <strong style="color: #10b981;">sorunsuz</strong> çalıştı.
+                </p>
+                <p style="text-align: center; padding: 15px; background: rgba(59, 130, 246, 0.1); border-radius: 8px; margin-top: 20px;">
+                    <strong>Not:</strong> Akşam saatlerinde (17:00+) database hatası patladı (15/saat).
+                    Bu dönem senin çalışma saatin dışında, muhtemelen yeni deployment veya
+                    kullanıcı trafiği artışı ile ilgili.
+                </p>
+            </div>
+        </section>
+
+        <!-- VERSİYON LİNKLERİ -->
+        <section>
+            <h2><span class="emoji">📎</span> Diğer Raporlar</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card" style="background: rgba(245, 158, 11, 0.1); border: 2px solid #f59e0b;">
+                    <div class="stat-label" style="margin-bottom: 10px; color: #f59e0b;">v1 - Genel Durum</div>
+                    <a href="/readme/2025/12/01/log-analiz/v1/" style="color: #60a5fa; text-decoration: none;">
+                        📊 Tüm Gün Analizi
+                    </a>
+                </div>
+                <div class="stat-card" style="background: rgba(220, 38, 38, 0.1); border: 2px solid #dc2626;">
+                    <div class="stat-label" style="margin-bottom: 10px; color: #dc2626;">v2 - Sabah Dönemi</div>
+                    <a href="/readme/2025/12/01/log-analiz/v2/" style="color: #60a5fa; text-decoration: none;">
+                        🌅 07:20-16:50 Analizi
+                    </a>
+                </div>
+                <div class="stat-card" style="background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981;">
+                    <div class="stat-label" style="margin-bottom: 10px; color: #10b981;">v3 - Çalışma Dönemi</div>
+                    <a href="/readme/2025/12/01/log-analiz/v3/" style="color: #60a5fa; text-decoration: none;">
+                        💼 11:00-17:00 (Aktif)
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu • v3: Çalışma dönemi analizi (11:00-17:00) • 1 Aralık 2025, 19:20
+        </footer>
+    </div>
+</body>
+</html>

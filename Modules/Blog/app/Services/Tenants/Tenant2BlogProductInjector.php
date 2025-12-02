@@ -40,19 +40,19 @@ class Tenant2BlogProductInjector
     private array $ctaThemes = [
         'blue' => [
             'bgClass' => 'cta-bg-blue',
-            'bgStyle' => 'background: linear-gradient(135deg, #1e40af 0%, #3b82f6 25%, #8b5cf6 50%, #6366f1 75%, #1e40af 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+            'bgStyle' => 'background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 25%, #2563eb 50%, #1e40af 75%, #1e3a8a 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
         ],
         'green' => [
             'bgClass' => 'cta-bg-green',
-            'bgStyle' => 'background: linear-gradient(135deg, #059669 0%, #10b981 25%, #14b8a6 50%, #06b6d4 75%, #059669 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+            'bgStyle' => 'background: linear-gradient(135deg, #065f46 0%, #047857 25%, #059669 50%, #047857 75%, #065f46 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
         ],
         'orange' => [
             'bgClass' => 'cta-bg-orange',
-            'bgStyle' => 'background: linear-gradient(135deg, #ea580c 0%, #f97316 25%, #fb923c 50%, #fbbf24 75%, #ea580c 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+            'bgStyle' => 'background: linear-gradient(135deg, #9a3412 0%, #c2410c 25%, #ea580c 50%, #c2410c 75%, #9a3412 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
         ],
         'purple' => [
             'bgClass' => 'cta-bg-purple',
-            'bgStyle' => 'background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 25%, #a855f7 50%, #c084fc 75%, #7c3aed 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+            'bgStyle' => 'background: linear-gradient(135deg, #5b21b6 0%, #6d28d9 25%, #7c3aed 50%, #6d28d9 75%, #5b21b6 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
         ],
         'gold' => [
             'bgClass' => 'cta-bg-gold',
@@ -61,7 +61,7 @@ class Tenant2BlogProductInjector
         ],
         'red' => [
             'bgClass' => 'cta-bg-red',
-            'bgStyle' => 'background: linear-gradient(135deg, #dc2626 0%, #ef4444 25%, #f87171 50%, #fb7185 75%, #dc2626 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
+            'bgStyle' => 'background: linear-gradient(135deg, #991b1b 0%, #b91c1c 25%, #dc2626 50%, #b91c1c 75%, #991b1b 100%); background-size: 200% 200%; animation: cta-bg-shift 8s ease infinite;',
         ],
     ];
 
@@ -77,8 +77,14 @@ class Tenant2BlogProductInjector
     public function injectProducts(string $content, $blog): string
     {
         try {
-            // Cache key per blog
-            $cacheKey = "blog_product_injection_v3_{$blog->id}";
+            // Tenant context kontrolü - tenant yoksa ürün inject etme
+            if (!function_exists('tenant') || tenant() === null) {
+                return $content;
+            }
+
+            // Cache key per blog (tenant-aware)
+            $tenantId = tenant()->id ?? 'unknown';
+            $cacheKey = "blog_product_injection_v4_{$tenantId}_{$blog->id}";
 
             $result = Cache::remember($cacheKey, 3600, function () use ($content, $blog) {
                 // Blog anahtar kelimelerini çıkar
@@ -201,48 +207,53 @@ class Tenant2BlogProductInjector
             'siteSlogan' => $siteSlogan,
         ];
 
+        // Kategori adlarını al
+        $catName = $matchedCategory['title']; // Forklift, Transpalet vb.
+        $altCatName = $altCategory['title'];
+
+        // Dinamik headline'lar - kategori adı ile
         $this->ctaBanners = [
-            // CTA 1: Mavi tema - Profesyonel
+            // CTA 1: En Uygun Fiyat
             array_merge($commonData, [
                 'type' => 'style_blue',
                 'category' => $matchedCategory,
-                'headline' => 'En Uygun Fiyat Garantisi',
-                'subheadline' => 'Uzman ekibimizle iletişime geçin',
+                'headline' => "{$catName}'lerde En Uygun Fiyat Garantisi iXtif'te",
+                'subheadline' => 'Fiyat almadan karar vermeyin!',
             ]),
-            // CTA 2: Yeşil tema - WhatsApp vurgulu
+            // CTA 2: Hemen Ara
             array_merge($commonData, [
                 'type' => 'style_green',
-                'category' => $altCategory,
-                'headline' => 'Anında Fiyat Teklifi',
+                'category' => $matchedCategory,
+                'headline' => "{$catName} mi Arıyorsunuz? Hemen Arayın!",
                 'subheadline' => '30 saniyede size dönüş yapalım',
             ]),
-            // CTA 3: Turuncu tema - Acil
+            // CTA 3: Fiyat Teklifi
             array_merge($commonData, [
                 'type' => 'style_orange',
                 'category' => $matchedCategory,
-                'headline' => 'Hemen Arayın, Fırsatları Kaçırmayın',
+                'headline' => "{$catName} Fiyatı Almadan Karar Vermeyin!",
                 'subheadline' => 'Türkiye\'nin her yerine teslimat',
             ]),
-            // CTA 4: Mor tema - Premium
+            // CTA 4: Uzman Danışmanlık
             array_merge($commonData, [
                 'type' => 'style_purple',
-                'category' => $altCategory,
-                'headline' => 'Profesyonel Danışmanlık',
+                'category' => $matchedCategory,
+                'headline' => "{$catName} Seçiminde Uzman Danışmanlık",
                 'subheadline' => 'İhtiyacınıza özel çözümler sunuyoruz',
             ]),
-            // CTA 5: Koyu tema - Kurumsal
+            // CTA 5: Garantili Ürünler (Gold tema)
             array_merge($commonData, [
                 'type' => 'style_dark',
                 'category' => $matchedCategory,
-                'headline' => '15 Yıllık Sektör Deneyimi',
+                'headline' => "Garantili {$catName}'ler iXtif'te",
                 'subheadline' => '500+ mutlu müşteri, binlerce başarılı proje',
             ]),
-            // CTA 6: Kırmızı tema - Kampanya
+            // CTA 6: Stok Uyarısı
             array_merge($commonData, [
                 'type' => 'style_red',
-                'category' => $altCategory,
-                'headline' => 'Özel Fiyatlar İçin Arayın',
-                'subheadline' => 'Stoklar ile sınırlı, acele edin',
+                'category' => $matchedCategory,
+                'headline' => "{$catName} Stoklarımız Sınırlı, Acele Edin!",
+                'subheadline' => 'Özel fiyatlar için hemen arayın',
             ]),
         ];
     }
@@ -426,7 +437,8 @@ class Tenant2BlogProductInjector
         $html .= "</div>\n\n";
 
         // Mobile/Tablet (xs, sm, md): Horizontal layout (single column)
-        $html .= "<div class=\"my-12 lg:hidden grid grid-cols-1 gap-4\">\n";
+        // Homepage list view ile aynı: gap-6
+        $html .= "<div class=\"lg:hidden grid grid-cols-1 gap-6\">\n";
         foreach ($products as $index => $product) {
             try {
                 $html .= view('components.ixtif.product-card', [
@@ -442,7 +454,8 @@ class Tenant2BlogProductInjector
         $html .= "</div>\n";
 
         // Desktop (lg+): Vertical layout (3 columns)
-        $html .= "<div class=\"my-12 hidden lg:grid lg:grid-cols-3 gap-6\">\n";
+        // Homepage grid view ile aynı: gap-8
+        $html .= "<div class=\"hidden lg:grid lg:grid-cols-3 gap-8\">\n";
         foreach ($products as $index => $product) {
             try {
                 $html .= view('components.ixtif.product-card', [
@@ -555,27 +568,32 @@ class Tenant2BlogProductInjector
 
         $html .= "    </div>\n";
 
-        // Butonlar - 3'lü grid, eşit yükseklik, glass efekt
-        $html .= "    <div class=\"grid grid-cols-1 sm:grid-cols-3 gap-3\">\n";
+        // Butonlar - PC'de 3'lü yan yana (flex), mobilde 2+1
+        $html .= "    <div class=\"flex flex-col gap-3\">\n";
+
+        // Mobil: Tel + WhatsApp yan yana, Sizi Arayalım altta
+        // PC: Hepsi yan yana (flex-row)
+        $html .= "      <div class=\"flex flex-col sm:flex-row gap-3\">\n";
 
         // Telefon butonu (glass efekt)
-        $html .= "      <a href=\"tel:{$phone}\" class=\"flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-base transition-all hover:bg-white/30 hover:scale-[1.02] hover:shadow-lg\">\n";
-        $html .= "        <i class=\"fas fa-phone text-lg\"></i>\n";
-        $html .= "        <span>{$phone}</span>\n";
-        $html .= "      </a>\n";
+        $html .= "        <a href=\"tel:{$phone}\" class=\"flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02] hover:shadow-lg\">\n";
+        $html .= "          <i class=\"fas fa-phone\"></i>\n";
+        $html .= "          <span>{$phone}</span>\n";
+        $html .= "        </a>\n";
 
         // WhatsApp butonu (yeşil glass)
-        $html .= "      <a href=\"https://wa.me/{$whatsapp}?text=Merhaba,%20{$categoryTitle}%20hakkında%20bilgi%20almak%20istiyorum\" target=\"_blank\" rel=\"noopener\" class=\"flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-green-500/80 backdrop-blur-md border border-green-400/50 text-white font-bold text-base transition-all hover:bg-green-500 hover:scale-[1.02] hover:shadow-lg\">\n";
-        $html .= "        <i class=\"fab fa-whatsapp text-xl\"></i>\n";
-        $html .= "        <span>WhatsApp</span>\n";
-        $html .= "      </a>\n";
+        $html .= "        <a href=\"https://wa.me/{$whatsapp}?text=Merhaba,%20{$categoryTitle}%20hakkında%20bilgi%20almak%20istiyorum\" target=\"_blank\" rel=\"noopener\" class=\"flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-green-500/80 backdrop-blur-md border border-green-400/50 text-white font-bold text-sm transition-all hover:bg-green-500 hover:scale-[1.02] hover:shadow-lg\">\n";
+        $html .= "          <i class=\"fab fa-whatsapp text-lg\"></i>\n";
+        $html .= "          <span>WhatsApp</span>\n";
+        $html .= "        </a>\n";
 
-        // Sizi Arayalım butonu (glass efekt)
-        $html .= "      <a href=\"/sizi-arayalim\" class=\"flex items-center justify-center gap-3 px-5 py-4 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-base transition-all hover:bg-white/30 hover:scale-[1.02] hover:shadow-lg\">\n";
-        $html .= "        <i class=\"fas fa-phone-volume text-lg\"></i>\n";
-        $html .= "        <span>Sizi Arayalım</span>\n";
-        $html .= "      </a>\n";
+        // Sizi Arayalım butonu (glass efekt) - PC'de yan yana, mobilde tam genişlik
+        $html .= "        <a href=\"/sizi-arayalim\" class=\"flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm transition-all hover:bg-white/30 hover:scale-[1.02] hover:shadow-lg\">\n";
+        $html .= "          <i class=\"fas fa-phone-volume\"></i>\n";
+        $html .= "          <span>Sizi Arayalım</span>\n";
+        $html .= "        </a>\n";
 
+        $html .= "      </div>\n";
         $html .= "    </div>\n";
 
         // Trust badges (masaüstü)

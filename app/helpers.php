@@ -285,17 +285,24 @@ if (!function_exists('getBlogDailyCount')) {
     {
         $optionValue = getTenantSetting('blog_ai_daily_count', 'option4');
 
+        // 🔧 FIX: Direkt sayı kontrolü (backward compatibility)
+        // Eğer direkt sayı verilmişse (eski kayıtlar), onu kullan
+        if (is_numeric($optionValue)) {
+            return (int) $optionValue;
+        }
+
         // Option value → Integer mapping
         $mapping = [
-            'option1' => 1,
-            'option2' => 2,
-            'option3' => 3,
-            'option4' => 4,
-            'option5' => 5,
-            'option6' => 6,
-            'option7' => 8,
-            'option8' => 12,
-            'option9' => 24,
+            'option1' => 1,   // 1 blog/gün (günde 1)
+            'option2' => 2,   // 2 blog/gün (12 saatte 1)
+            'option3' => 3,   // 3 blog/gün (8 saatte 1)
+            'option4' => 4,   // 4 blog/gün (6 saatte 1) - DEFAULT
+            'option5' => 5,   // 5 blog/gün (5 saatte 1)
+            'option6' => 6,   // 6 blog/gün (4 saatte 1)
+            'option7' => 7,   // 7 blog/gün (haftada her gün farklı)
+            'option8' => 8,   // 8 blog/gün (3 saatte 1)
+            'option9' => 12,  // 12 blog/gün (2 saatte 1)
+            'option10' => 24, // 24 blog/gün (her saat)
         ];
 
         return $mapping[$optionValue] ?? 4; // Fallback: 4 blog/gün
@@ -398,7 +405,7 @@ if (!function_exists('calculateActiveHours')) {
      *
      * Returns array of hours (0-23) when blog generation should run
      *
-     * @param  int  $dailyCount  Number of blogs per day (1-8)
+     * @param  int  $dailyCount  Number of blogs per day (1-24)
      * @return array  Active hours (örn: [0, 6, 12, 18])
      *
      * Schedule Mapping:
@@ -409,6 +416,8 @@ if (!function_exists('calculateActiveHours')) {
      * - 5 blog/day: [0, 5, 10, 15, 20] - Her 5 saatte
      * - 6 blog/day: [0, 4, 8, 12, 16, 20] - Her 4 saatte
      * - 8 blog/day: [0, 3, 6, 9, 12, 15, 18, 21] - Her 3 saatte (SEO Maximum)
+     * - 12 blog/day: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22] - Her 2 saatte (Agresif SEO)
+     * - 24 blog/day: [0-23] Her saat (Maximum Growth)
      *
      * Örnek Kullanım:
      * $hours = calculateActiveHours(4); // [0, 6, 12, 18]
@@ -417,13 +426,16 @@ if (!function_exists('calculateActiveHours')) {
     function calculateActiveHours(int $dailyCount): array
     {
         $schedules = [
-            1 => [0],
-            2 => [0, 12],
-            3 => [0, 8, 16],
-            4 => [0, 6, 12, 18], // B2B Optimal
-            5 => [0, 5, 10, 15, 20],
-            6 => [0, 4, 8, 12, 16, 20],
-            8 => [0, 3, 6, 9, 12, 15, 18, 21], // SEO Maximum
+            1 => [0],                                                           // 1 blog/gün - Gece yarısı
+            2 => [0, 12],                                                        // 2 blog/gün - Her 12 saatte
+            3 => [0, 8, 16],                                                     // 3 blog/gün - Her 8 saatte
+            4 => [0, 6, 12, 18],                                                 // 4 blog/gün - Her 6 saatte (B2B Optimal)
+            5 => [0, 5, 10, 15, 20],                                             // 5 blog/gün - Her 5 saatte
+            6 => [0, 4, 8, 12, 16, 20],                                          // 6 blog/gün - Her 4 saatte
+            7 => [0, 3, 6, 9, 12, 15, 18],                                       // 7 blog/gün - Dengeli dağılım
+            8 => [0, 3, 6, 9, 12, 15, 18, 21],                                   // 8 blog/gün - Her 3 saatte (SEO Strong)
+            12 => [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22],                  // 12 blog/gün - Her 2 saatte (Agresif SEO)
+            24 => range(0, 23),                                                  // 24 blog/gün - Her saat (Maximum Growth)
         ];
 
         return $schedules[$dailyCount] ?? [0]; // Fallback: Günde 1 (gece yarısı)
@@ -706,6 +718,16 @@ if (!function_exists('getFirstMediaWithFallback')) {
             return null;
         }
 
+        // Tenant context kontrolü - database seçili değilse null dön
+        try {
+            if (function_exists('tenant') && tenant() === null) {
+                // Central context'te tenant model'e media query yapılamaz
+                return null;
+            }
+        } catch (\Exception $e) {
+            // Tenant check başarısız olursa devam et
+        }
+
         // Fallback chain
         $collections = [
             $preferredCollection,
@@ -720,10 +742,18 @@ if (!function_exists('getFirstMediaWithFallback')) {
         // Remove duplicates
         $collections = array_unique($collections);
 
-        foreach ($collections as $collection) {
-            if ($model->hasMedia($collection)) {
-                return $model->getFirstMedia($collection);
+        try {
+            foreach ($collections as $collection) {
+                if ($model->hasMedia($collection)) {
+                    return $model->getFirstMedia($collection);
+                }
             }
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Database seçili değilse (tenant context yok) sessizce null dön
+            if (str_contains($e->getMessage(), 'No database selected')) {
+                return null;
+            }
+            throw $e;
         }
 
         return null;

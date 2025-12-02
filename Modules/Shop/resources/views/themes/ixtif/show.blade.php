@@ -1154,6 +1154,113 @@
                     </section>
                 @endif
 
+                {{-- Review & Rating Section --}}
+                <section id="yorumlar-ve-degerlendirmeler" class="scroll-mt-24 mb-20 lg:mb-24">
+                    <header class="text-center mb-12">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30 rounded-2xl mb-4">
+                            <i class="fa-solid fa-star text-3xl text-amber-500 dark:text-amber-400"></i>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                            Değerlendirmeler
+                        </h2>
+                        <p class="text-lg text-gray-600 dark:text-gray-400">Müşteri yorumları ve puanları</p>
+                    </header>
+
+                    {{-- Rating Summary --}}
+                    @php
+                        $averageRating = method_exists($item, 'averageRating') ? $item->averageRating() : 5;
+                        $ratingsCount = method_exists($item, 'ratingsCount') ? $item->ratingsCount() : 1;
+                        $currentUserRating = auth()->check() && method_exists($item, 'userRating') ? $item->userRating(auth()->id()) : 0;
+                        $starsDistribution = method_exists($item, 'getStarsDistribution') ? $item->getStarsDistribution() : [1=>0,2=>0,3=>0,4=>0,5=>1];
+                    @endphp
+
+                    <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 rounded-2xl p-8 mb-8">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            {{-- Left: Average Rating --}}
+                            <div class="text-left">
+                                <div class="flex items-center justify-start gap-3 mb-2">
+                                    <span class="text-5xl font-bold text-gray-900 dark:text-white">{{ number_format($averageRating, 1) }}</span>
+                                    <div class="flex items-center gap-0.5">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <i class="{{ $i <= round($averageRating) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600' }} text-xl"></i>
+                                        @endfor
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-400">{{ $ratingsCount }} değerlendirme</p>
+                            </div>
+
+                            {{-- Right: Stars Distribution --}}
+                            <div class="space-y-2">
+                                @for($star = 5; $star >= 1; $star--)
+                                    @php
+                                        $count = $starsDistribution[$star] ?? 0;
+                                        $percentage = $ratingsCount > 0 ? ($count / $ratingsCount) * 100 : 0;
+                                    @endphp
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-8 text-sm font-medium text-gray-700 dark:text-gray-300">{{ $star }} <i class="fas fa-star text-yellow-400 text-xs"></i></span>
+                                        <div class="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                            <div class="h-full bg-yellow-400 rounded-full transition-all" style="width: {{ $percentage }}%"></div>
+                                        </div>
+                                        <span class="w-8 text-sm text-gray-500 dark:text-gray-400 text-right">{{ $count }}</span>
+                                    </div>
+                                @endfor
+                            </div>
+                        </div>
+
+                        {{-- Interactive Rating (for logged-in users) --}}
+                        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700"
+                             x-data="productRating({
+                                 modelClass: 'Modules\\Shop\\App\\Models\\ShopProduct',
+                                 modelId: {{ $item->product_id }},
+                                 currentRating: {{ $currentUserRating }},
+                                 averageRating: {{ $averageRating }},
+                                 ratingsCount: {{ $ratingsCount }},
+                                 isAuthenticated: {{ auth()->check() ? 'true' : 'false' }}
+                             })">
+
+                            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div class="text-center sm:text-left">
+                                    <p class="font-medium text-gray-900 dark:text-white mb-1">Bu ürünü değerlendirin</p>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Deneyiminizi paylaşın</p>
+                                </div>
+
+                                {{-- Star Rating Input --}}
+                                <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-1">
+                                        <template x-for="star in 5" :key="star">
+                                            <button @click="rateItem(star)"
+                                                    @mouseenter="hoverRating = star"
+                                                    @mouseleave="hoverRating = 0"
+                                                    class="text-2xl transition-transform hover:scale-110 cursor-pointer focus:outline-none">
+                                                <i :class="getStarClass(star)"></i>
+                                            </button>
+                                        </template>
+                                    </div>
+
+                                    {{-- Toast Message --}}
+                                    <div x-show="showMessage"
+                                         x-transition.opacity
+                                         :class="{
+                                             'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200': messageType === 'success',
+                                             'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200': messageType === 'error',
+                                             'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200': messageType === 'warning'
+                                         }"
+                                         class="ml-4 px-3 py-1.5 rounded-lg text-sm font-medium">
+                                        <span x-text="message"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Reviews List Component --}}
+                    @include('reviewsystem::components.review-list', [
+                        'model' => $item,
+                        'showForm' => true,
+                        'perPage' => 10
+                    ])
+                </section>
+
             </div>
 
             {{-- RIGHT: Sticky Sidebar (1/3) - Modern Native Sticky (MOBİLDE GİZLİ!) --}}
@@ -1526,6 +1633,70 @@
             <span>Teklif Al</span>
         </a>
     </div>
+
+    {{-- Product Rating Alpine Component --}}
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('productRating', (config) => ({
+                modelClass: config.modelClass,
+                modelId: config.modelId,
+                currentRating: config.currentRating,
+                averageRating: config.averageRating,
+                ratingsCount: config.ratingsCount,
+                isAuthenticated: config.isAuthenticated,
+                hoverRating: 0,
+                showMessage: false,
+                message: '',
+                messageType: 'success',
+
+                async rateItem(value) {
+                    if (!this.isAuthenticated) {
+                        this.showToast('Puan vermek için giriş yapmalısınız', 'warning');
+                        return;
+                    }
+                    try {
+                        const response = await fetch('/api/reviews/rating', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                model_class: this.modelClass,
+                                model_id: this.modelId,
+                                rating_value: value
+                            })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            this.currentRating = value;
+                            this.averageRating = parseFloat(data.data.average_rating);
+                            this.ratingsCount = parseInt(data.data.ratings_count);
+                            this.showToast('Puanınız kaydedildi! ⭐', 'success');
+                        } else {
+                            this.showToast(data.message || 'Bir hata oluştu', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Rating error:', error);
+                        this.showToast('Bir hata oluştu', 'error');
+                    }
+                },
+
+                showToast(msg, type = 'success') {
+                    this.message = msg;
+                    this.messageType = type;
+                    this.showMessage = true;
+                    setTimeout(() => this.showMessage = false, 3000);
+                },
+
+                getStarClass(star) {
+                    const rating = this.hoverRating > 0 ? this.hoverRating : (this.currentRating || this.averageRating);
+                    return star <= rating ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300 dark:text-gray-600';
+                }
+            }));
+        });
+    </script>
 
     {{-- AI Chat Context - Ürün Sayfası Bilgisi --}}
     <script>

@@ -1,0 +1,41 @@
+# robots.txt for ixtif.com
+# Generated: 2025-12-02
+
+User-agent: *
+
+# Allow all content
+Allow: /
+
+# Block search result pages (dynamic, duplicate content)
+Disallow: /search/
+Disallow: /search?
+
+# Block admin and internal paths
+Disallow: /admin/
+Disallow: /livewire/
+Disallow: /horizon/
+Disallow: /telescope/
+Disallow: /_debugbar/
+
+# Block API endpoints
+Disallow: /api/
+
+# Block login/auth pages
+Disallow: /login
+Disallow: /register
+Disallow: /password/
+Disallow: /logout
+
+# Block utility pages
+Disallow: /opcache-reset.php
+
+# Block URL parameters that create duplicates
+Disallow: /*?fbclid=
+Disallow: /*?utm_
+Disallow: /*?ref=
+Disallow: /*?source=
+Disallow: /*?gclid=
+Disallow: /*?msclkid=
+
+# Sitemap location
+Sitemap: https://ixtif.com/sitemap.xml

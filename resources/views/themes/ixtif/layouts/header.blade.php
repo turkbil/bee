@@ -86,7 +86,12 @@
 
     {{-- Dynamic Content Areas --}}
     {{-- 🤖 Universal Schema Auto-Render (Dynamic for ALL modules) --}}
-    @if(isset($item) && is_object($item) && method_exists($item, 'getUniversalSchemas'))
+    {{-- SKIP if Controller already shared metaTags with schemas (prevents duplicates) --}}
+    @php
+        $sharedMetaTags = view()->getShared()['metaTags'] ?? null;
+        $hasControllerSchemas = $sharedMetaTags && isset($sharedMetaTags['schemas']) && !empty($sharedMetaTags['schemas']);
+    @endphp
+    @if(!$hasControllerSchemas && isset($item) && is_object($item) && method_exists($item, 'getUniversalSchemas'))
         {!! \App\Services\SEOService::getAllSchemas($item) !!}
     @endif
     @stack('head')

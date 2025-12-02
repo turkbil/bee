@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Dosyaları Analiz Raporu v2 - Çalışma Öncesi Durum</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 15px 0;
+            color: #93c5fd;
+        }
+
+        .alert-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 12px;
+        }
+
+        .alert-box.info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .alert-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #f59e0b;
+        }
+
+        .alert-box.info .alert-title {
+            color: #3b82f6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .stat-sublabel {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .comparison-box {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .comparison-box.before {
+            border-left-color: #dc2626;
+        }
+
+        .comparison-box.after {
+            border-left-color: #10b981;
+        }
+
+        .comparison-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #60a5fa;
+        }
+
+        .comparison-box.before .comparison-title {
+            color: #f87171;
+        }
+
+        .comparison-box.after .comparison-title {
+            color: #34d399;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 15px;
+            text-align: left;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-top: 1px solid #334155;
+        }
+
+        tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-critical {
+            background: #dc2626;
+            color: white;
+        }
+
+        .badge-high {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .impact-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .impact-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .impact-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin: 30px 0;
+        }
+
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #3b82f6, #10b981);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -45px;
+            top: 25px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 3px solid #0f172a;
+        }
+
+        .timeline-time {
+            color: #60a5fa;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .timeline-content {
+            background: rgba(30, 41, 59, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .code-block {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border-left: 3px solid #3b82f6;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .emoji {
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                📊 Log Dosyaları Analiz Raporu
+                <span class="version-badge">v2</span>
+            </h1>
+            <div class="meta">
+                📅 Tarih: 1 Aralık 2025 |
+                🎯 Analiz: Son 2 Saatten ÖNCEKİ Veriler (07:20 - 16:50) |
+                ⏰ Çalışma Başlangıcı: 16:50
+            </div>
+        </header>
+
+        <!-- UYARI -->
+        <div class="alert-box">
+            <div class="alert-title">
+                <span class="emoji">⚠️</span> Önemli Not
+            </div>
+            <p style="margin-bottom: 10px;">
+                Bu rapor <strong>son 2 saatteki çalışmadan ÖNCEKİ</strong> log verilerini göstermektedir.
+            </p>
+            <p>
+                <strong>Analiz Aralığı:</strong> 1 Aralık 2025, 07:20 - 16:50 (9.5 saat)<br>
+                <strong>Amaç:</strong> Çalışma öncesi sistemin gerçek durumunu görmek
+            </p>
+        </div>
+
+        <!-- ÖZET İSTATİSTİKLER -->
+        <section>
+            <h2><span class="emoji">📈</span> Çalışma Öncesi Durum (07:20 - 16:50)</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #dc2626;">216</div>
+                    <div class="stat-label">Toplam Hata</div>
+                    <div class="stat-sublabel">9.5 saat içinde</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #dc2626;">201</div>
+                    <div class="stat-label">ResourceTracker Hatası</div>
+                    <div class="stat-sublabel">%93 oranı</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #f59e0b;">15</div>
+                    <div class="stat-label">Database Hatası</div>
+                    <div class="stat-sublabel">%7 oranı</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #3b82f6;">~23</div>
+                    <div class="stat-label">Saatlik Hata Ortalaması</div>
+                    <div class="stat-sublabel">Her 5 dakikada 2 hata</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KARŞILAŞTIRMA -->
+        <section>
+            <h2><span class="emoji">⚖️</span> Öncesi vs Sonrası Karşılaştırma</h2>
+
+            <div class="comparison-grid">
+                <div class="comparison-box before">
+                    <div class="comparison-title">
+                        <span class="emoji">🔴</span> ÖNCE (07:20 - 16:50)
+                    </div>
+                    <div class="stats-grid" style="grid-template-columns: 1fr;">
+                        <div class="stat-card" style="background: rgba(220, 38, 38, 0.1);">
+                            <div class="stat-number" style="color: #dc2626;">216</div>
+                            <div class="stat-label">Toplam Hata (9.5 saat)</div>
+                        </div>
+                        <div class="stat-card" style="background: rgba(220, 38, 38, 0.1);">
+                            <div class="stat-number" style="color: #dc2626;">201</div>
+                            <div class="stat-label">ResourceTracker</div>
+                        </div>
+                        <div class="stat-card" style="background: rgba(220, 38, 38, 0.1);">
+                            <div class="stat-number" style="color: #f59e0b;">15</div>
+                            <div class="stat-label">Database Context</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-box after">
+                    <div class="comparison-title">
+                        <span class="emoji">🟢</span> SONRA (16:50 - 18:50)
+                    </div>
+                    <div class="stats-grid" style="grid-template-columns: 1fr;">
+                        <div class="stat-card" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="stat-number" style="color: #10b981;">79</div>
+                            <div class="stat-label">Toplam Hata (2 saat)</div>
+                        </div>
+                        <div class="stat-card" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="stat-number" style="color: #10b981;">49</div>
+                            <div class="stat-label">ResourceTracker</div>
+                        </div>
+                        <div class="stat-card" style="background: rgba(16, 185, 129, 0.1);">
+                            <div class="stat-number" style="color: #34d399;">30</div>
+                            <div class="stat-label">Database Context</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-box info">
+                <div class="alert-title">
+                    <span class="emoji">📊</span> Saatlik Oran Karşılaştırması
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metrik</th>
+                            <th>Önce (saatlik)</th>
+                            <th>Sonra (saatlik)</th>
+                            <th>Değişim</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Toplam Hata</strong></td>
+                            <td style="color: #dc2626; font-weight: 600;">~23/saat</td>
+                            <td style="color: #10b981; font-weight: 600;">~40/saat</td>
+                            <td style="color: #f59e0b; font-weight: 600;">+74% artış ⚠️</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ResourceTracker</strong></td>
+                            <td style="color: #dc2626; font-weight: 600;">~21/saat</td>
+                            <td style="color: #10b981; font-weight: 600;">~25/saat</td>
+                            <td style="color: #f59e0b; font-weight: 600;">+19% artış</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Database Context</strong></td>
+                            <td style="color: #f59e0b; font-weight: 600;">~1.5/saat</td>
+                            <td style="color: #dc2626; font-weight: 600;">~15/saat</td>
+                            <td style="color: #dc2626; font-weight: 600;">+900% artış! 🚨</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ZAMAN ÇİZELGESİ -->
+        <section>
+            <h2><span class="emoji">⏰</span> Hata Zaman Çizelgesi</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-time">07:20 - İlk Hata</div>
+                    <div class="timeline-content">
+                        <strong>RealTimeResourceTracker error</strong><br>
+                        Array to string conversion hatası başladı.<br>
+                        CPU: 82.75% (critical)
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">07:20 - 08:30 (1 saat)</div>
+                    <div class="timeline-content">
+                        <strong>Sadece ResourceTracker hataları</strong><br>
+                        Her 5 dakikada bir tekrar ediyor.<br>
+                        CPU sürekli critical/warning seviyesinde.
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">08:05 - Database Hataları Başladı</div>
+                    <div class="timeline-content">
+                        <strong>No database selected hataları</strong><br>
+                        - Logo çekme hatası (site_logo, site_logo_2)<br>
+                        - Product card media query hatası<br>
+                        - Tenant context kaybı tespit edildi
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">08:30 - 16:50 (8 saat)</div>
+                    <div class="timeline-content">
+                        <strong>Karışık hata dönemi</strong><br>
+                        ResourceTracker + Database hataları birlikte devam etti.<br>
+                        Toplam 201 ResourceTracker, 15 Database hatası.
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-time">16:50 - Çalışma Başladı</div>
+                    <div class="timeline-content" style="border-left-color: #10b981;">
+                        <strong>Analiz ve düzeltme çalışmaları başladı</strong><br>
+                        Son 2 saatlik veriler bu rapora dahil edilmedi.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DETAYLI ANALİZ -->
+        <section>
+            <h2><span class="emoji">🔍</span> Detaylı Hata Analizi</h2>
+
+            <h3>1. RealTimeResourceTracker Hatası (201 adet)</h3>
+
+            <div class="alert-box">
+                <p style="margin-bottom: 15px;"><strong>Hata Türü:</strong></p>
+                <div class="code-block">
+RealTimeResourceTracker error: Array to string conversion
+SQL: INSERT INTO tenant_usage_logs (..., response_time_ms, ...) VALUES (..., ?, ...)
+                </div>
+
+                <p style="margin: 15px 0;"><strong>Özellikler:</strong></p>
+                <ul class="impact-list">
+                    <li><strong>Sıklık:</strong> Her 5 dakikada 1-2 kez (cron job ile tetikleniyor)</li>
+                    <li><strong>Etkilenen Tenant:</strong> Tenant 1 (tuufi.com) ve Tenant 2 (ixtif.com)</li>
+                    <li><strong>CPU Durumu:</strong> Çoğunlukla critical (>80%) veya warning (>70%)</li>
+                    <li><strong>Hata Sebebi:</strong> response_time_ms alanına array gönderiliyor, string/numeric bekleniyor</li>
+                </ul>
+
+                <p style="margin-top: 20px; padding: 15px; background: rgba(220, 38, 38, 0.1); border-radius: 8px; border-left: 4px solid #dc2626;">
+                    <strong>Kritik Sorun:</strong> Bu hata yüzünden tenant kullanım metrikleri kaydedilemiyor.
+                    Faturalama ve resource tracking için kritik veri kaybı yaşanıyor!
+                </p>
+            </div>
+
+            <h3>2. Database Context Hatası (15 adet)</h3>
+
+            <div class="alert-box">
+                <p style="margin-bottom: 15px;"><strong>Hata Türü:</strong></p>
+                <div class="code-block">
+SQLSTATE[3D000]: Invalid catalog name: 1046 No database selected
+Connection: tenant
+View: product-card.blade.php
+                </div>
+
+                <p style="margin: 15px 0;"><strong>İlk Görülme:</strong> 08:05 (çalışma başlangıcından ~8.5 saat önce)</p>
+
+                <p style="margin: 15px 0;"><strong>Etkilenen Alanlar:</strong></p>
+                <ul class="impact-list">
+                    <li>Setting modülü: site_logo, site_logo_2 media query'leri</li>
+                    <li>Shop modülü: ShopProduct media query'leri</li>
+                    <li>View: product-card.blade.php component'i</li>
+                </ul>
+
+                <p style="margin-top: 20px; padding: 15px; background: rgba(220, 38, 38, 0.1); border-radius: 8px; border-left: 4px solid #dc2626;">
+                    <strong>Kullanıcı Etkisi:</strong> Ürün kartlarında görseller yüklenmiyor,
+                    logo gösterilemiyor, sayfa 500 hatası verebiliyor!
+                </p>
+            </div>
+        </section>
+
+        <!-- TENANT 2 LOG ANALİZİ -->
+        <section>
+            <h2><span class="emoji">📁</span> Tenant 2 (ixtif.com) Özel Log Analizi</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #3b82f6;">36</div>
+                    <div class="stat-label">Toplam Log Girişi</div>
+                    <div class="stat-sublabel">07:20 - 16:50 arası</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" style="color: #10b981;">Başarılı</div>
+                    <div class="stat-label">Leonardo AI</div>
+                    <div class="stat-sublabel">Blog görselleri oluşturuldu</div>
+                </div>
+            </div>
+
+            <div class="alert-box info">
+                <div class="alert-title">
+                    <span class="emoji">✅</span> İyi Haber: AI Moderation Hatası Yok!
+                </div>
+                <p style="margin-bottom: 10px;">
+                    Çalışma öncesi dönemde (07:20 - 16:50) <strong>Leonardo AI moderation hatası tespit edilmedi.</strong>
+                </p>
+                <p style="margin-bottom: 15px;">
+                    Örnek başarılı log:
+                </p>
+                <div class="code-block">
+[12:03:41] INFO: Leonardo AI image generation - "Elektrikli Transpalet"
+[12:03:48] INFO: Generation successful (652 KB image)
+                </div>
+                <p style="margin-top: 15px;">
+                    <strong>Not:</strong> AI moderation hataları büyük ihtimalle son 2 saatteki çalışmalar sırasında oluştu.
+                </p>
+            </div>
+        </section>
+
+        <!-- SONUÇ -->
+        <section>
+            <h2><span class="emoji">📌</span> Sonuç ve Değerlendirme</h2>
+
+            <div class="alert-box">
+                <div class="alert-title">
+                    <span class="emoji">🎯</span> Çalışma Öncesi Durum Özeti
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metrik</th>
+                            <th>Değer</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Analiz Süresi</td>
+                            <td>9.5 saat (07:20 - 16:50)</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Toplam Hata</td>
+                            <td style="font-weight: 600;">216 adet</td>
+                            <td><span class="badge badge-critical">KRİTİK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Saatlik Oran</td>
+                            <td style="font-weight: 600;">~23 hata/saat</td>
+                            <td><span class="badge badge-high">YÜKSEK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Dominant Hata</td>
+                            <td>ResourceTracker (93%)</td>
+                            <td><span class="badge badge-critical">KRİTİK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Database Context</td>
+                            <td>15 adet (7%)</td>
+                            <td><span class="badge badge-high">YÜKSEK</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 style="margin-top: 30px;">Önemli Tespitler:</h3>
+                <ul class="impact-list">
+                    <li>
+                        <strong style="color: #dc2626;">ResourceTracker hatası sistemik:</strong>
+                        Her 5 dakikada tekrar ediyor, cron job ile tetikleniyor.
+                        Tenant kullanım metrikleri kaydedilemiyor.
+                    </li>
+                    <li>
+                        <strong style="color: #f59e0b;">Database context 08:05'te başladı:</strong>
+                        Sabah saat 8'den önce bu hata yoktu. Muhtemelen yeni deployment veya
+                        konfigürasyon değişikliği ile geldi.
+                    </li>
+                    <li>
+                        <strong style="color: #3b82f6;">CPU sürekli yüksek:</strong>
+                        ResourceTracker log'larında CPU %80-186 arası kritik seviyelerde.
+                        Performans sorunu var.
+                    </li>
+                    <li>
+                        <strong style="color: #10b981;">Tenant 2 (ixtif.com) AI başarılı:</strong>
+                        Leonardo AI moderation hatası çalışma öncesi dönemde yok.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="alert-box info">
+                <div class="alert-title">
+                    <span class="emoji">⚠️</span> Son 2 Saat Hakkında Not
+                </div>
+                <p style="margin-bottom: 10px;">
+                    <strong>16:50 - 18:50 arası (çalışma dönemi) veriler:</strong>
+                </p>
+                <ul class="impact-list">
+                    <li>Toplam 79 hata (saatlik ~40 hata - %74 artış!)</li>
+                    <li>Database context hatası 15 → 30'a çıktı (+100% artış!)</li>
+                    <li>ResourceTracker 49 hata (saatlik ~25 - öncekine benzer)</li>
+                </ul>
+                <p style="margin-top: 15px; padding: 15px; background: rgba(220, 38, 38, 0.1); border-radius: 8px; border-left: 4px solid #dc2626;">
+                    <strong>Kötü Haber:</strong> Çalışma sırasında database context hataları 10 kat arttı!
+                    Muhtemelen yapılan değişiklikler tenant context'i daha fazla bozdu.
+                </p>
+            </div>
+        </section>
+
+        <!-- AKSİYON PLANI -->
+        <section>
+            <h2><span class="emoji">🎯</span> Öncelikli Aksiyon Planı</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card" style="border: 2px solid #dc2626;">
+                    <div class="stat-number" style="color: #dc2626;">1</div>
+                    <div class="stat-label">Database Context Hatası</div>
+                    <div class="stat-sublabel">Acil düzeltme gerekli!</div>
+                </div>
+                <div class="stat-card" style="border: 2px solid #f59e0b;">
+                    <div class="stat-number" style="color: #f59e0b;">2</div>
+                    <div class="stat-label">ResourceTracker Array Fix</div>
+                    <div class="stat-sublabel">Metric kaybını önle</div>
+                </div>
+                <div class="stat-card" style="border: 2px solid #3b82f6;">
+                    <div class="stat-number" style="color: #3b82f6;">3</div>
+                    <div class="stat-label">CPU Performans İncelemesi</div>
+                    <div class="stat-sublabel">%80+ CPU sebebini bul</div>
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <p style="margin-bottom: 15px;"><strong>Hemen Yapılmalı:</strong></p>
+                <ul class="impact-list">
+                    <li>
+                        <strong>product-card.blade.php</strong> ve <strong>Setting helper'larını</strong> incele
+                    </li>
+                    <li>
+                        Tenant context'in media query'lerde kaybolmaması için fix yap
+                    </li>
+                    <li>
+                        RealTimeResourceTracker'da response_time_ms array'ini numeric'e çevir
+                    </li>
+                    <li>
+                        CPU yüksekliğinin sebebini araştır (Horizon process sayısı vs)
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu • v2: Çalışma öncesi durum analizi • 1 Aralık 2025, 18:52
+        </footer>
+    </div>
+</body>
+</html>

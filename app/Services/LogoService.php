@@ -74,6 +74,12 @@ class LogoService
     private function getLogoUrlFromMedia(string $settingKey): ?string
     {
         try {
+            // Tenant context kontrolü - database seçili değilse null dön
+            if (function_exists('tenant') && tenant() === null) {
+                // Central context'te tenant model'e media query yapılamaz
+                return null;
+            }
+
             // Setting modelini al
             $setting = Setting::where('key', $settingKey)
                 ->where('is_active', true)
@@ -93,6 +99,13 @@ class LogoService
             // URL döndür
             return $media->getUrl();
 
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Database seçili değilse (tenant context yok) sessizce null dön
+            if (str_contains($e->getMessage(), 'No database selected')) {
+                return null;
+            }
+            \Log::error("Logo URL error for {$settingKey}: " . $e->getMessage());
+            return null;
         } catch (\Exception $e) {
             \Log::error("Logo URL error for {$settingKey}: " . $e->getMessage());
             return null;

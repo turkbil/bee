@@ -341,14 +341,16 @@ document.addEventListener("DOMContentLoaded", function() {
           properties.options.forEach((option, index) => {
             const optionRow = document.createElement("div");
             optionRow.className = "input-group mb-2 option-row";
-            const isChecked = option.is_default || properties.default_value === option.value;
-            
+            const optValue = window.getOptionValue ? window.getOptionValue(option) : option.value;
+            const optLabel = window.getOptionLabel ? window.getOptionLabel(option) : option.label;
+            const isChecked = option.is_default || properties.default_value === optValue;
+
             optionRow.innerHTML = `
                 <div class="input-group-text">
                     <input class="form-check-input" type="radio" name="option-default" value="${index}" ${isChecked ? 'checked' : ''}>
                 </div>
-                <input type="text" class="form-control" name="option-label-${index}" placeholder="Etiket" value="${option.label || ""}">
-                <input type="text" class="form-control" name="option-value-${index}" placeholder="Değer" value="${option.value || ""}">
+                <input type="text" class="form-control" name="option-label-${index}" placeholder="Etiket" value="${optLabel || ""}">
+                <input type="text" class="form-control" name="option-value-${index}" placeholder="Değer" value="${optValue || ""}">
                 <button type="button" class="btn btn-outline-danger remove-option" data-index="${index}">
                     <i class="fas fa-times"></i>
                 </button>
@@ -414,29 +416,32 @@ document.addEventListener("DOMContentLoaded", function() {
       if (defaultValueContainer) {
         // Mevcut içeriği temizle
         defaultValueContainer.innerHTML = '';
-        
+
         if (properties.options && properties.options.length) {
           properties.options.forEach((option, index) => {
             // Radio butonu oluştur
             const radioDiv = document.createElement('div');
             radioDiv.className = 'form-check';
-            
+
+            const optValue = window.getOptionValue ? window.getOptionValue(option) : option.value;
+            const optLabel = window.getOptionLabel ? window.getOptionLabel(option) : option.label;
+
             const radioInput = document.createElement('input');
             radioInput.className = 'form-check-input';
             radioInput.type = 'radio';
             radioInput.name = 'default_value_radio';
-            radioInput.id = `default_value_${option.value}`;
-            radioInput.value = option.value;
-            
+            radioInput.id = `default_value_${optValue}`;
+            radioInput.value = optValue;
+
             // Varsayılan değeri seç
-            if (option.is_default || properties.default_value === option.value) {
+            if (option.is_default || properties.default_value === optValue) {
               radioInput.checked = true;
             }
-            
+
             const radioLabel = document.createElement('label');
             radioLabel.className = 'form-check-label';
-            radioLabel.htmlFor = `default_value_${option.value}`;
-            radioLabel.textContent = option.label;
+            radioLabel.htmlFor = `default_value_${optValue}`;
+            radioLabel.textContent = optLabel;
             
             radioDiv.appendChild(radioInput);
             radioDiv.appendChild(radioLabel);
@@ -1022,14 +1027,16 @@ document.addEventListener("DOMContentLoaded", function() {
           // Seçenekleri ekle
           properties.options.forEach(option => {
             const optionElement = document.createElement('option');
-            optionElement.value = option.value;
-            optionElement.textContent = option.label;
-            
+            const optValue = window.getOptionValue ? window.getOptionValue(option) : option.value;
+            const optLabel = window.getOptionLabel ? window.getOptionLabel(option) : option.label;
+            optionElement.value = optValue;
+            optionElement.textContent = optLabel;
+
             // Varsayılan seçeneği seç
-            if (option.is_default || properties.default_value === option.value) {
+            if (option.is_default || properties.default_value === optValue) {
               optionElement.selected = true;
             }
-            
+
             select.appendChild(optionElement);
           });
         }
@@ -1048,25 +1055,28 @@ document.addEventListener("DOMContentLoaded", function() {
           properties.options.forEach((option, index) => {
             const radioDiv = document.createElement('div');
             radioDiv.className = 'form-check';
-            
+
+            const optValue = window.getOptionValue ? window.getOptionValue(option) : option.value;
+            const optLabel = window.getOptionLabel ? window.getOptionLabel(option) : option.label;
+
             const radioInput = document.createElement('input');
             radioInput.className = 'form-check-input';
             radioInput.type = 'radio';
             radioInput.name = properties.name;
             radioInput.id = `${properties.name}_${index}`;
-            radioInput.value = option.value;
+            radioInput.value = optValue;
             radioInput.setAttribute('onchange', 'window.updateRadioState(this)');
-            
+
             // Varsayılan seçeneği seç
-            if (option.is_default || properties.default_value === option.value) {
+            if (option.is_default || properties.default_value === optValue) {
               radioInput.checked = true;
             }
-            
+
             const radioLabel = document.createElement('label');
             radioLabel.className = 'form-check-label';
             radioLabel.htmlFor = `${properties.name}_${index}`;
-            radioLabel.textContent = option.label;
-            
+            radioLabel.textContent = optLabel;
+
             radioDiv.appendChild(radioInput);
             radioDiv.appendChild(radioLabel);
             radioOptions.appendChild(radioDiv);
@@ -1084,9 +1094,11 @@ document.addEventListener("DOMContentLoaded", function() {
         if (selectElement) {
           properties.options.forEach((option) => {
             const optionElement = document.createElement("option");
-            optionElement.value = option.value || "";
-            optionElement.textContent = option.label || "";
-            if (option.is_default || properties.default_value === option.value) {
+            const optValue = window.getOptionValue ? window.getOptionValue(option) : (option.value || "");
+            const optLabel = window.getOptionLabel ? window.getOptionLabel(option) : (option.label || "");
+            optionElement.value = optValue;
+            optionElement.textContent = optLabel;
+            if (option.is_default || properties.default_value === optValue) {
                 optionElement.selected = true;
             }
             selectElement.appendChild(optionElement);
@@ -1098,14 +1110,14 @@ document.addEventListener("DOMContentLoaded", function() {
           properties.options.forEach((option) => {
             const radioElement = document.createElement("div");
             radioElement.className = "form-check";
-            const isDefault = option.is_default || properties.default_value === option.value;
+            const optValue = window.getOptionValue ? window.getOptionValue(option) : (option.value || "");
+            const optLabel = window.getOptionLabel ? window.getOptionLabel(option) : (option.label || "");
+            const isDefault = option.is_default || properties.default_value === optValue;
             radioElement.innerHTML = `
                           <input class="form-check-input" type="radio" name="${
                             properties.name || ""
                           }" ${isDefault ? 'checked' : ''}>
-                          <span class="form-check-label">${
-                            option.label || ""
-                          }</span>
+                          <span class="form-check-label">${optLabel}</span>
                       `;
             radioContainer.appendChild(radioElement);
           });

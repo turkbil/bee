@@ -247,12 +247,18 @@ class ShopController extends Controller
         // Shop modülü özel: Çoklu schema desteği (Product + Breadcrumb + FAQ)
         $metaTags = null;
         if ($seoService && method_exists($product, 'getAllSchemas')) {
-            // Shop product için özel schema'ları ekle
+            // Shop product için özel schema'ları al
             $shopSchemas = $product->getAllSchemas();
 
-            // SEO servisine schema'ları ekle (mevcut schemas array'ine merge et)
+            // SEO servisinden mevcut meta tags'i al
             $currentMetaTags = $seoService->generateMetaTags();
             $currentSchemas = $currentMetaTags['schemas'] ?? [];
+
+            // ⚠️ DUPLICATE PREVENTION: Shop modülü kendi Product/Breadcrumb schema'sını üretiyor
+            // SeoMetaTagService'in ürettiği 'main' (Product) ve 'breadcrumb' schema'larını kaldır
+            // Çünkü ShopProduct::getAllSchemas() daha detaylı ve offers içeren schema üretiyor
+            unset($currentSchemas['main']);      // Generic Product schema - kaldır
+            unset($currentSchemas['breadcrumb']); // Generic Breadcrumb - kaldır
 
             // Shop schema'larını ekle (Product, Breadcrumb, FAQ)
             foreach ($shopSchemas as $key => $schema) {
@@ -503,12 +509,18 @@ class ShopController extends Controller
         // Shop modülü özel: Çoklu schema desteği (Product + Breadcrumb + FAQ)
         $metaTags = null;
         if ($seoService && method_exists($product, 'getAllSchemas')) {
-            // Shop product için özel schema'ları ekle
+            // Shop product için özel schema'ları al
             $shopSchemas = $product->getAllSchemas();
 
-            // SEO servisine schema'ları ekle (mevcut schemas array'ine merge et)
+            // SEO servisinden mevcut meta tags'i al
             $currentMetaTags = $seoService->generateMetaTags();
             $currentSchemas = $currentMetaTags['schemas'] ?? [];
+
+            // ⚠️ DUPLICATE PREVENTION: Shop modülü kendi Product/Breadcrumb schema'sını üretiyor
+            // SeoMetaTagService'in ürettiği 'main' (Product) ve 'breadcrumb' schema'larını kaldır
+            // Çünkü ShopProduct::getAllSchemas() daha detaylı ve offers içeren schema üretiyor
+            unset($currentSchemas['main']);      // Generic Product schema - kaldır
+            unset($currentSchemas['breadcrumb']); // Generic Breadcrumb - kaldır
 
             // Shop schema'larını ekle (Product, Breadcrumb, FAQ)
             foreach ($shopSchemas as $key => $schema) {

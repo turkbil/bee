@@ -28,6 +28,10 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware('module.permission:blog,update')
                     ->name('ai-drafts');
 
+                // AI Guide (Sadece root user)
+                Route::get('/ai-guide', \Modules\Blog\App\Http\Livewire\Admin\BlogAiGuideComponent::class)
+                    ->name('ai-guide');
+
                 // Kategori route'ları
                 Route::prefix('category')
                     ->name('category.')

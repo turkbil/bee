@@ -406,10 +406,69 @@ RULES;
      * 🛒 Ürün Bahsetme Zorunluluğu (Tenant 2 - iXtif Özel)
      *
      * Blog içeriğinde is_homepage=1 ürünlerden ve kategorilerden MUTLAKA bahsetme kuralları
+     * + iXtif marka vurgusu ve pazar yeri konsepti
      */
     protected function getProductMentionRules(): string
     {
         return <<<'RULES'
+
+---
+
+## 🏪 iXtif MARKA & PAZAR YERİ VURGUSU - ZORUNLU!
+
+### ⚠️ KRİTİK: iXtif'in ÜRÜN SAHİBİ + PAZAR YERİ OLDUĞUNU UNUTMA!
+
+**iXtif İKİ AYRI ÖZELLİĞE SAHİPTİR:**
+
+1. **🏭 KENDİ ÜRÜNLERİ VAR (iXtif Marka):**
+   - iXtif marka transpalet, forklift, istif makinesi vb.
+   - Bu ürünler ÖNCELİKLİ olarak övülmeli!
+   - "iXtif marka elektrikli transpalet, yüksek kaliteli motor ve dayanıklı akü ile donatılmıştır."
+   - "iXtif'in kendi üretimi olan istif makineleri, rekabetçi fiyat ve uzun ömür garantisi sunar."
+
+2. **🛒 PAZAR YERİ PLATFORMU (Diğer Markalar):**
+   - Toyota, Linde, Heli, Jungheinrich, EP vb. markaları da satıyor
+   - Müşteriler farklı markaları karşılaştırabilir
+   - "iXtif'te Toyota, Linde gibi global markaların yanı sıra iXtif marka ekipmanları da bulabilirsiniz."
+
+---
+
+### ✅ DOĞRU KULLANIM (iXtif Marka Vurgusu):
+
+**1️⃣ iXtif MARKA ÜRÜNLERİ ÖVME (ZORUNLU!):**
+```
+"iXtif marka elektrikli transpalet, kalite ve uygun fiyatı bir arada sunar.
+Türkiye'de üretilen iXtif ürünleri, ithal markalara kıyasla daha hızlı servis ve yedek parça desteği sağlar."
+```
+
+```
+"iXtif'in kendi üretimi olan forkliftler, endüstriyel kullanım için optimize edilmiş motorlar ve
+dayanıklı şasilerle donatılmıştır. Rekabetçi fiyatları ve uzun garanti süreleri ile öne çıkar."
+```
+
+**2️⃣ PAZAR YERİ OLARAK DİĞER MARKALARI SUNMA:**
+```
+"Diğer markaları tercih ediyorsanız, iXtif'te Toyota, Linde, Heli, Jungheinrich gibi
+global markaların geniş ürün yelpazesini bulabilirsiniz.
+Uzman danışmanlarımız, ihtiyaçlarınıza en uygun markayı seçmenizde size yardımcı olacaktır."
+```
+
+**3️⃣ DANIŞMANLIK VE İLETİŞİM YÖNLENDİRMESİ:**
+```
+"Hangi markayı veya modeli seçeceğinizden emin değilseniz, {company_info.name} uzman danışmanları
+size yardımcı olmaktan mutluluk duyacaktır.
+Ücretsiz danışmanlık ve fiyat teklifi için:
+- Telefon: {contact_info.phone}
+- Email: {contact_info.email}"
+```
+
+---
+
+### 🎯 İÇERİK STRATEJİSİ (ZORUNLU SIRALAMA!):
+
+1. **İLK BAHSETME → iXtif Marka Ürünleri** (ÖNCELİK!)
+2. **İKİNCİ BAHSETME → Diğer Markalar** (Toyota, Linde vb.)
+3. **KAPANIŞ → Danışmanlık & İletişim** (Her iki seçenek için)
 
 ---
 

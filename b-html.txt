@@ -1,226 +1,161 @@
-<div class="tab-pane fade active show" id="tabs-1" style="border-radius: 0px !important; overflow: hidden !important;" role="tabpanel">
-                        <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->                                <div class="row g-3">
-                                    <!--[if BLOCK]><![endif]-->                                        <div class="col-12 mb-3">
-    <div class="row g-3">
-        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
-                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12" wire:key="element-blog_ai_enabled">
-    <div class="mb-3">
-        <label class="form-label">
-            Blog AI Sistemi
-            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        </label>
-        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-            <input type="checkbox" id="switch-blog_ai_enabled" name="blog_ai_enabled" value="1" checked="" x-on:change="$wire.call('syncSwitchValue', 'blog_ai_enabled', $event.target.checked)">
-            <div class="state p-success p-on ms-2">
-                <label>Aktif</label>
-            </div>
-            <div class="state p-danger p-off ms-2">
-                <label>Aktif Değil</label>
-            </div>
-        </div>
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                                                    <div class="col-12">
-    <div class="mb-3">
-        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
-            <select id="blog_ai_daily_count" wire:model.defer="values.blog_ai_daily_count" class="form-select " style="border-radius: 0.25rem !important;" data-gtm-form-interact-field-id="0">
-                <option value="">Günlük Blog Sayısı</option>
-                <!--[if BLOCK]><![endif]-->                                        <option value="0" selected="">
-                        {"value":"option1","label":"1 blog\/g\u00fcn (30\/ay)","is_default":true}
-                    </option>
-                                                        <option value="1">
-                        {"value":"option2","label":"2 blog\/g\u00fcn (60\/ay)","is_default":false}
-                    </option>
-                                                        <option value="2">
-                        {"value":"option3","label":"3 blog\/g\u00fcn (90\/ay)","is_default":false}
-                    </option>
-                                                        <option value="3">
-                        {"value":"option4","label":"4 blog\/g\u00fcn (120\/ay) - B2B Optimal","is_default":false}
-                    </option>
-                                                        <option value="4">
-                        {"value":"option5","label":"5 blog\/g\u00fcn (150\/ay)","is_default":false}
-                    </option>
-                                                        <option value="5">
-                        {"value":"option6","label":"6 blog\/g\u00fcn (180\/ay)","is_default":false}
-                    </option>
-                                                        <option value="6">
-                        {"value":"option7","label":"8 blog\/g\u00fcn (240\/ay) - SEO Maksimum","is_default":false}
-                    </option>
-                <!--[if ENDBLOCK]><![endif]-->
-            </select>
-            <label for="blog_ai_daily_count">
-                Günlük Blog Sayısı
-                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-            </label>
-            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        </div>
-        
-        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
-                <i class="fas fa-info-circle me-1"></i>Her gün kaç blog yazısı üretilsin? SEO için optimal: 4 blog/gün (120/ay). Maksimum güvenli: 8 blog/gün (240/ay).
-            </div>
-        <!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                        <!--[if ENDBLOCK]><![endif]-->
-                    <!--[if ENDBLOCK]><![endif]-->
-                </div>
-                            <div class="col-12 col-md-6">
-                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12" wire:key="element-blog_ai_auto_publish">
-    <div class="mb-3">
-        <label class="form-label">
-            Otomatik Yayınlama
-            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        </label>
-        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-            <input type="checkbox" id="switch-blog_ai_auto_publish" name="blog_ai_auto_publish" value="1" checked="" x-on:change="$wire.call('syncSwitchValue', 'blog_ai_auto_publish', $event.target.checked)">
-            <div class="state p-success p-on ms-2">
-                <label>Evet, otomatik yayınlansın</label>
-            </div>
-            <div class="state p-danger p-off ms-2">
-                <label>Hayır, önce kontrol edilecek</label>
-            </div>
-        </div>
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                                                    <div class="col-12" wire:key="element-blog_ai_professional_only">
-    <div class="mb-3">
-        <label class="form-label">
-            Sadece Profesyonel/Uzman Stil
-            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        </label>
-        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-            <input type="checkbox" id="switch-blog_ai_professional_only" name="blog_ai_professional_only" value="1" x-on:change="$wire.call('syncSwitchValue', 'blog_ai_professional_only', $event.target.checked)">
-            <div class="state p-success p-on ms-2">
-                <label>Sadece Profesyonel + Uzman (samimi hariç, B2B için önerilir).</label>
-            </div>
-            <div class="state p-danger p-off ms-2">
-                <label>Profesyonel + Samimi + Uzman (çeşitli tonlar, B2C için ideal).</label>
-            </div>
-        </div>
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                        <!--[if ENDBLOCK]><![endif]-->
-                    <!--[if ENDBLOCK]><![endif]-->
-                </div>
-            <!--[if ENDBLOCK]><![endif]-->
-        <!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                                                                            <div class="col-12 mb-3">
-    <div class="row g-3">
-        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
-                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
-    <div class="mb-3">
-        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
-            <select id="blog_ai_topic_source" wire:model.defer="values.blog_ai_topic_source" class="form-select " style="border-radius: 0.25rem !important;" data-gtm-form-interact-field-id="1">
-                <option value="">Seçiniz</option>
-                <!--[if BLOCK]><![endif]-->                                        <option value="0" selected="">
-                        {"value":"manual","label":"Manuel (Sadece a\u015fa\u011f\u0131daki listeden)","is_default":false}
-                    </option>
-                                                        <option value="1">
-                        {"value":"auto","label":"Otomatik (\u00dcr\u00fcn\/Kategori analizi)","is_default":false}
-                    </option>
-                                                        <option value="2">
-                        {"value":"mixed","label":"Karma (\u00d6nce manuel, sonra otomatik)","is_default":true}
-                    </option>
-                <!--[if ENDBLOCK]><![endif]-->
-            </select>
-            <label for="blog_ai_topic_source">
-                Konu Kaynağı
-                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-            </label>
-            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        </div>
-        
-        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
-                <i class="fas fa-info-circle me-1"></i>Blog konularını nereden alacağını seçin. Manuel: Sadece aşağıdaki liste, Otomatik: Ürün/kategori analizi, Karma: Önce manuel sonra otomatik.
-            </div>
-        <!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                        <!--[if ENDBLOCK]><![endif]-->
-                    <!--[if ENDBLOCK]><![endif]-->
-                </div>
-                            <div class="col-12 col-md-6">
-                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
-    <div class="mb-3">
-        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
-            <textarea id="blog_ai_manual_topics" wire:model.defer="values.blog_ai_manual_topics" class="form-control " placeholder="Her satıra bir ana konu yazın." rows="3" style="height: 120px; border-radius: 0.25rem !important;"></textarea>
-            <label for="blog_ai_manual_topics">
-                Ana Konular (Manuel Liste)
-                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-            </label>
-            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        </div>
-        
-        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
-                <i class="fas fa-info-circle me-1"></i>Her satıra bir ana konu yazın. TEK KELİME yazarsanız sistem otomatik 12+ başlığa genişletir (örn: "transpalet" → "En İyi Transpalet Modelleri 2025", "Elektrikli Transpalet Nasıl Seçilir?" vb.). UZUN BAŞLIK yazarsanız birebir kullanılır (örn: "Elektrikli mi Manuel mi?" → direkt başlık olarak kullanılır).
-            </div>
-        <!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                        <!--[if ENDBLOCK]><![endif]-->
-                    <!--[if ENDBLOCK]><![endif]-->
-                </div>
-            <!--[if ENDBLOCK]><![endif]-->
-        <!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                                                                            <div class="col-12 mb-3">
-    <div class="row g-3">
-        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
-                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12" wire:key="element-blog_ai_blog_fotograflar_nereden_uretilsin">
-    <div class="mb-3">
-        <label class="form-label">
-            Fotoğraflar nereden üretilsin?
-            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        </label>
-        <div class="pretty p-default p-curve p-toggle p-smooth ms-1">
-            <input type="checkbox" id="switch-blog_ai_blog_fotograflar_nereden_uretilsin" name="blog_ai_blog_fotograflar_nereden_uretilsin" value="1" checked="" x-on:change="$wire.call('syncSwitchValue', 'blog_ai_blog_fotograflar_nereden_uretilsin', $event.target.checked)">
-            <div class="state p-success p-on ms-2">
-                <label>Yapay Zeka</label>
-            </div>
-            <div class="state p-danger p-off ms-2">
-                <label>Stok Foto</label>
-            </div>
-        </div>
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-        
-        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                        <!--[if ENDBLOCK]><![endif]-->
-                    <!--[if ENDBLOCK]><![endif]-->
-                </div>
-                            <div class="col-12 col-md-6">
-                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                    <!--[if ENDBLOCK]><![endif]-->
-                </div>
-            <!--[if ENDBLOCK]><![endif]-->
-        <!--[if ENDBLOCK]><![endif]-->
-    </div>
-</div>                                    <!--[if ENDBLOCK]><![endif]-->
-                                </div>
-                            <!--[if ENDBLOCK]><![endif]-->
-                        <!--[if ENDBLOCK]><![endif]-->
-                        
-                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                    </div>
+# ParseError - Internal Server Error
+syntax error, unexpected end of file
+
+PHP 8.3.28
+Laravel 12.32.5
+ixtif.com
+
+## Stack Trace
+
+0 - Modules/Blog/resources/views/admin/livewire/blog-ai-draft-component.blade.php:804
+1 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:38
+2 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
+3 - vendor/livewire/livewire/src/Mechanisms/ExtendBlade/ExtendedCompilerEngine.php:16
+4 - vendor/laravel/framework/src/Illuminate/View/View.php:208
+5 - vendor/laravel/framework/src/Illuminate/View/View.php:191
+6 - vendor/laravel/framework/src/Illuminate/View/View.php:160
+7 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:241
+8 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:285
+9 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:233
+10 - vendor/livewire/livewire/src/Mechanisms/HandleComponents/HandleComponents.php:54
+11 - vendor/livewire/livewire/src/LivewireManager.php:73
+12 - vendor/livewire/volt/src/LivewireManager.php:23
+13 - vendor/livewire/livewire/src/Features/SupportPageComponents/HandlesPageComponents.php:17
+14 - vendor/livewire/livewire/src/Features/SupportPageComponents/SupportPageComponents.php:117
+15 - vendor/livewire/livewire/src/Features/SupportPageComponents/HandlesPageComponents.php:14
+16 - vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:46
+17 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:265
+18 - vendor/laravel/framework/src/Illuminate/Routing/Route.php:211
+19 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:822
+20 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+21 - Modules/UserManagement/app/Http/Middleware/ModulePermissionMiddleware.php:59
+22 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+23 - app/Http/Middleware/FixLegacyTenantUrls.php:16
+24 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+25 - Modules/LanguageManagement/app/Http/Middleware/AdminSetLocaleMiddleware.php:30
+26 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+27 - app/Http/Middleware/AdminNoCacheMiddleware.php:27
+28 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+29 - app/Http/Middleware/AdminAccessMiddleware.php:40
+30 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+31 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+33 - app/Http/Middleware/UnderConstructionProtection.php:20
+34 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+35 - app/Http/Middleware/LivewireJsonSanitizer.php:43
+36 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+37 - app/Http/Middleware/RootOnlyDebugbar.php:51
+38 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+39 - Modules/TenantManagement/app/Http/Middleware/ResourceTrackingMiddleware.php:36
+40 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+41 - app/Http/Middleware/DatabasePoolMiddleware.php:58
+42 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+43 - app/Http/Middleware/SecurityHeaders.php:18
+44 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+45 - app/Http/Middleware/CheckThemeStatus.php:40
+46 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+47 - app/Http/Middleware/RedisHealthCheckMiddleware.php:23
+48 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+49 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+50 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+51 - vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php:63
+52 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+53 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+54 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+55 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+56 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+57 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+58 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+59 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+60 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+61 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+62 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+63 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+64 - app/Http/Middleware/InitializeTenancy.php:104
+65 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+66 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+67 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+68 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+69 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+70 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+71 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+72 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+73 - vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php:19
+74 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+75 - vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:59
+76 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+77 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+78 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
+79 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+80 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+81 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:51
+82 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+83 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+84 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+85 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+86 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+87 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+88 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+89 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+90 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+91 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+92 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+93 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+94 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+95 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+96 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+97 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+98 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+99 - public/index.php:20
+
+## Request
+
+GET /admin/blog/ai-drafts
+
+## Headers
+
+* **cookie**: _clck=a3oaw3%5E2%5Eg1h%5E0%5E2161; _fbp=fb.1.1764563798723.223551420899979949; _ym_uid=1764563799204716214; _ym_d=1764563799; _ym_isad=2; siteTextColor=#ffffff; last_activity_read=1764566791; _ym_visorc=w; _gcl_au=1.1.2110550381.1764563798.643767810.1764618046.1764618046; _clsk=1qyqnhf%5E1764618245961%5E9%5E1%5Ei.clarity.ms%2Fcollect; XSRF-TOKEN=eyJpdiI6IldsbGpOSmRLQ1FneWs0VnVMZWJKS1E9PSIsInZhbHVlIjoiazJpY3RsWFJhUkpQdVNONVBkWklRTlJMVzdBNWNHSlM1SytlK2loSTQ5VGdveXcyQWRNNTFFc3FiN2FuNGhrdUIvMkJaOW01TDQrQVJTb2UzSnFzVitrN1lRTnE1d2lQa1VFbGlwWXBiYm5ja3JNSVZrUElhSFdZaThoU0piWXYiLCJtYWMiOiIzNjg2Yzg2YmQ4OTA3YWQzOGEyZDc0ZTkyYTAyMTA2OTFkOWFhOTk1MTMxNDVjZWQxNGFhZDk3MmM4ZjAzYjBhIiwidGFnIjoiIn0%3D; tuufi_session=eyJpdiI6IlI1ZlA5Um1maWpwSGwrYnhRejVMc3c9PSIsInZhbHVlIjoiaVNlQm5HdzI3OGZOTS85eWJ6VjhRU05ZRUszUmRxcjF0blE1NS9IdE9FR1I2MitLOHFoaFNQNS9aVzN4b1dIaFBnNmQvaVdISGVwMGZ6MnlQQXJIbVBGdnMxaEtVTFhqTlcxRmZseUhHZ1JVbkUyUEhGeDhkZmx5NGZ0QlZhaFkiLCJtYWMiOiI1MTZkMjVhYzNkNTQ1NjU5ZDRhNDU1OWNiNjNkMTI0MDExMGI3M2MyMjQzNzNjMTQxYzI1YWVhZWI3YmIwYWMzIiwidGFnIjoiIn0%3D
+* **priority**: u=0, i
+* **accept-language**: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7
+* **accept-encoding**: gzip, deflate, br, zstd
+* **referer**: https://ixtif.com/login
+* **sec-fetch-dest**: document
+* **sec-fetch-user**: ?1
+* **sec-fetch-mode**: navigate
+* **sec-fetch-site**: same-origin
+* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+* **user-agent**: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+* **upgrade-insecure-requests**: 1
+* **dnt**: 1
+* **sec-ch-ua-platform**: "macOS"
+* **sec-ch-ua-mobile**: ?0
+* **sec-ch-ua**: "Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
+* **cache-control**: no-cache
+* **pragma**: no-cache
+* **connection**: close
+* **x-accel-internal**: /internal-nginx-static-location
+* **x-real-ip**: 176.40.229.153
+* **host**: ixtif.com
+
+## Route Context
+
+controller: Modules\Blog\App\Http\Livewire\Admin\BlogAiDraftComponent
+route name: admin.blog.ai-drafts
+middleware: web, admin, tenant, module.permission:blog,update
+
+## Route Parameters
+
+No route parameter data available.
+
+## Database Queries
+
+* mysql - select * from `domains` where `domains`.`tenant_id` = 2 and `domains`.`tenant_id` is not null (2.71 ms)
+* tenant - select * from `users` where `id` = 1 and `users`.`deleted_at` is null limit 1 (2.28 ms)
+* mysql - select * from `tenants` where `tenants`.`id` = 2 limit 1 (0.73 ms)
+* tenant - select `roles`.*, `model_has_roles`.`model_id` as `pivot_model_id`, `model_has_roles`.`role_id` as `pivot_role_id`, `model_has_roles`.`model_type` as `pivot_model_type` from `roles` inner join `model_has_roles` on `roles`.`id` = `model_has_roles`.`role_id` where `model_has_roles`.`model_id` in (1) and `model_has_roles`.`model_type` = 'App\Models\User' (1.02 ms)
+* tenant - select `code` from `admin_languages` where `is_active` = 1 (2.83 ms)
+* tenant - select `id` from `blog_ai_drafts` where `is_selected` = 1 and `is_generated` = 0 (0.83 ms)
+* tenant - select count(*) as aggregate from `blog_ai_drafts` (0.82 ms)
+* tenant - select * from `blog_ai_drafts` order by `created_at` desc limit 50 offset 0 (1.03 ms)
+* tenant - select * from `blogs` where `blogs`.`blog_id` in (191, 192, 228, 395, 398, 399, 402, 403, 404, 405, 406, 420, 422, 424, 430, 431) and `blogs`.`deleted_at` is null (3.33 ms)
+* tenant - select * from `blog_categories` where 0 = 1 and `blog_categories`.`deleted_at` is null (0.66 ms)

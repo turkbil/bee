@@ -1,0 +1,160 @@
+# ANA KATEGORİLER
+transpalet
+forklift
+istif makinesi
+reach truck
+order picker
+
+# TİP BAZLI (Türkler böyle arar)
+elektrikli transpalet
+manuel transpalet
+akülü transpalet
+elektrikli forklift
+dizel forklift
+lpg forklift
+benzinli forklift
+akülü istif makinesi
+
+# MARKA ARAMA (Gerçek aramalar)
+toyota forklift
+linde forklift
+mitsubishi forklift
+heli forklift
+ep transpalet
+jungheinrich forklift
+still forklift
+hyster forklift
+crown forklift
+komatsu forklift
+doosan forklift
+caterpillar forklift
+
+# FİYAT ARAMALARI (Türkler böyle arar)
+forklift fiyatları
+transpalet fiyatları
+istif makinesi fiyatı
+forklift kaç para
+transpalet kaç para
+ucuz forklift
+ucuz transpalet
+uygun fiyatlı forklift
+2. el forklift fiyatları
+sıfır forklift fiyatı
+
+# KİRALAMA (En çok aranan)
+kiralık forklift
+kiralık transpalet
+forklift kiralama
+transpalet kiralama
+istif makinesi kiralama
+günlük forklift kiralama
+aylık forklift kiralama
+
+# COĞRAFYA (Gerçek aramalar)
+istanbul forklift
+istanbul transpalet
+ankara forklift
+izmir forklift
+bursa forklift
+forklift istanbul
+transpalet istanbul
+ikitelli forklift
+dudullu forklift
+esenyurt forklift
+gebze forklift
+tuzla forklift
+kocaeli forklift
+
+# İKİNCİ EL (Çok aranan!)
+2 el forklift
+2. el forklift
+ikinci el forklift
+ikinci el transpalet
+satılık forklift
+satılık transpalet
+sahibinden forklift
+sahibinden transpalet
+forklift alım satım
+transpalet alım satım
+
+# TEKNİK SORULAR (Gerçek kullanıcı soruları)
+forklift nasıl kullanılır
+transpalet nasıl kullanılır
+forklift ehliyeti
+forklift sertifikası
+forklift kullanma belgesi
+forklift sürücü belgesi
+forklift operatörü maaşı
+forklift tamiri
+transpalet tamiri
+forklift bakımı
+transpalet bakımı
+forklift arızaları
+forklift servisi
+transpalet servisi
+
+# SATIŞ/ALIM (B2B ama Türkçe)
+forklift satış
+transpalet satış
+forklift bayileri
+transpalet bayileri
+forklift satıcıları
+forklift firmaları
+transpalet firmaları
+forklift satan yerler
+toplu forklift alımı
+
+# KARŞILAŞTIRMA (Kullanıcılar bunu merak eder)
+forklift mi transpalet mi
+elektrikli mi dizel mi forklift
+manuel mi elektrikli mi transpalet
+kiralık mı satın alım mı forklift
+yeni mi 2. el mi forklift
+
+# SORUN/ÇÖZÜM (Gerçek problemler)
+forklift yedek parça
+transpalet yedek parça
+forklift lastiği
+forklift aküsü
+transpalet aküsü
+forklift şarj cihazı
+forklift hidrolik yağı
+forklift pompası
+transpalet pompası
+forklift çatalı
+forklift tekerleği
+
+# SEKTÖREL (Kullanıcı intent'i)
+depo için forklift
+fabrika için forklift
+inşaat için forklift
+lojistik için forklift
+market için transpalet
+depo ekipmanları
+malzeme taşıma ekipmanları
+
+# MARKA KARŞILAŞTIRMA (Çok merak ediliyor)
+toyota mu linde mi
+heli mi ep mi
+çin malı forklift
+japon forklift markaları
+alman forklift markaları
+türk forklift markaları
+
+# ÖZEL DURUMLAR
+dar koridor forklift
+dar alan istif makinesi
+yüksek kaldırma forklift
+dışarıda kullanılır forklift
+kapalı alan forklift
+soğuk hava deposu forklift
+
+# SORUNLAR/İHTİYAÇLAR
+forklift parçası
+forklift aküsü değişimi
+forklift lastiği değişimi
+forklift hidrolik sızıntısı
+transpalet kaldırmıyor
+transpalet çalışmıyor
+forklift yakıt tüketimi
+forklift elektrik tüketimi

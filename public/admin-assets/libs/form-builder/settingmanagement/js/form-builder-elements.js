@@ -1,5 +1,28 @@
 // Form Builder Elementleri ve Varsayılan Özellikleri
 document.addEventListener("DOMContentLoaded", function() {
+
+  // Helper: Nested option label/value parsing
+  // Örn: {value: "option1", label: {value: "x", label: "1 blog/gün"}} → "1 blog/gün"
+  window.getOptionLabel = function(option) {
+    if (!option) return '';
+    let label = option.label;
+    // label iç içe obje olabilir
+    if (label && typeof label === 'object') {
+      label = label.label || label.value || JSON.stringify(label);
+    }
+    return label || option.value || '';
+  };
+
+  window.getOptionValue = function(option) {
+    if (!option) return '';
+    let value = option.value;
+    // value iç içe obje olabilir
+    if (value && typeof value === 'object') {
+      value = value.value || JSON.stringify(value);
+    }
+    return value || '';
+  };
+
   // Form elementlerinin varsayılan özellikleri
   window.defaultProperties = {
     text: {
@@ -370,9 +393,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (selectElement) {
           properties.options.forEach((option) => {
             const optionElement = document.createElement("option");
-            optionElement.value = option.value;
-            optionElement.textContent = option.label;
-            if (option.is_default || properties.default_value === option.value) {
+            optionElement.value = window.getOptionValue(option);
+            optionElement.textContent = window.getOptionLabel(option);
+            if (option.is_default || properties.default_value === window.getOptionValue(option)) {
               optionElement.selected = true;
             }
             selectElement.appendChild(optionElement);
@@ -384,10 +407,12 @@ document.addEventListener("DOMContentLoaded", function() {
           properties.options.forEach((option) => {
             const radioElement = document.createElement("div");
             radioElement.className = "form-check";
-            const isDefault = option.is_default || properties.default_value === option.value;
+            const optValue = window.getOptionValue(option);
+            const optLabel = window.getOptionLabel(option);
+            const isDefault = option.is_default || properties.default_value === optValue;
             radioElement.innerHTML = `
                             <input class="form-check-input" type="radio" name="${properties.name}" ${isDefault ? 'checked' : ''}>
-                            <span class="form-check-label">${option.label}</span>
+                            <span class="form-check-label">${optLabel}</span>
                         `;
             radioContainer.appendChild(radioElement);
           });

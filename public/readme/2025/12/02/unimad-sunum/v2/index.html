@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unimad Madencilik - Yaşayan Web Sisteminiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        }
+
+        html, body {
+            background: #050810;
+            color: #f1f5f9;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Animated Background */
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 100% 100%, rgba(139, 92, 246, 0.1), transparent),
+                radial-gradient(ellipse 40% 30% at 0% 80%, rgba(6, 182, 212, 0.08), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating Orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            bottom: -100px;
+            left: -100px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            top: 50%;
+            left: 60%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 30px) scale(1.02); }
+        }
+
+        /* Slide System */
+        .slide-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 6rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        .slide.exit {
+            opacity: 0;
+            transform: scale(1.05) translateY(-20px);
+        }
+
+        .slide-content {
+            width: 100%;
+            max-width: 1400px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Typography */
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-blue {
+            background: linear-gradient(135deg, #38bdf8, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-purple {
+            background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-green {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glass Cards */
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 1.5rem;
+        }
+
+        .glass-light {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.08);
+            border-radius: 1.25rem;
+        }
+
+        .glass:hover, .glass-light:hover {
+            border-color: rgba(96, 165, 250, 0.3);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        /* Feature Items */
+        .feature-item {
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-item:hover {
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 4rem;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            font-size: 1.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Comparison Cards */
+        .compare-old {
+            border-left: 4px solid #ef4444;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), transparent);
+        }
+
+        .compare-new {
+            border-left: 4px solid #22c55e;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), transparent);
+        }
+
+        /* Navigation */
+        .nav-container {
+            position: fixed;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 100;
+            padding: 0.75rem 1.25rem;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 9999px;
+        }
+
+        .nav-btn {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: transparent;
+            border: 2px solid rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+            color: #60a5fa;
+            transform: scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            font-size: 0.9rem;
+            color: #64748b;
+            min-width: 60px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .slide-counter span {
+            color: #f1f5f9;
+            font-weight: 700;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+            transition: width 0.5s ease;
+            z-index: 100;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(96, 165, 250, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(96, 165, 250, 0.5);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Tech Stack Grid */
+        .tech-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        /* Module Grid */
+        .module-item {
+            padding: 1.25rem;
+            background: rgba(30, 41, 59, 0.3);
+            border-radius: 1rem;
+            border: 1px solid rgba(148, 163, 184, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .module-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 2rem 3rem;
+            }
+        }
+
+        /* Stagger Animation */
+        .stagger > * {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+        .stagger > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger > *:nth-child(2) { animation-delay: 0.2s; }
+        .stagger > *:nth-child(3) { animation-delay: 0.3s; }
+        .stagger > *:nth-child(4) { animation-delay: 0.4s; }
+        .stagger > *:nth-child(5) { animation-delay: 0.5s; }
+        .stagger > *:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Glow Effect */
+        .glow {
+            box-shadow: 0 0 60px -15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* List styling */
+        .feature-list li {
+            position: relative;
+            padding-left: 1.75rem;
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .feature-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+
+        /* Keyword highlight */
+        .highlight {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .highlight-purple {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        .highlight-green {
+            color: #4ade80;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-pattern"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Slide Container -->
+    <div class="slide-container">
+
+        <!-- ==================== SLIDE 1: KAPAK ==================== -->
+        <div class="slide active" data-slide="1">
+            <div class="slide-content text-center">
+                <div class="mb-8">
+                    <span class="badge bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        2016 → 2025 Dönüşümü
+                    </span>
+                </div>
+
+                <h1 class="text-7xl md:text-8xl lg:text-9xl font-black mb-8 leading-none tracking-tight">
+                    <span class="gradient-text">Yaşayan</span><br>
+                    <span class="text-white/90">Web Sisteminiz</span>
+                </h1>
+
+                <p class="text-xl md:text-2xl text-slate-400 max-w-3xl mx-auto leading-relaxed mb-12 font-light">
+                    9 yıl önce size statik bir web sitesi yaptık. O site görevini yaptı, hâlâ çalışıyor.
+                    <br class="hidden md:block">
+                    Ama dünya değişti. <span class="text-slate-200">Şimdi size yaşayan bir sistem sunuyoruz.</span>
+                </p>
+
+                <div class="flex flex-col items-center gap-6">
+                    <div class="glass-light px-8 py-4 inline-flex items-center gap-4">
+                        <span class="text-3xl">🏔️</span>
+                        <div class="text-left">
+                            <div class="text-2xl font-bold text-white">unimadmadencilik.com</div>
+                            <div class="text-sm text-slate-400">Madencilik Ekipmanları</div>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-500 text-sm">Sunuma başlamak için → tuşuna basın</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 2: YAŞAYAN SİSTEM ==================== -->
+        <div class="slide" data-slide="2">
+            <div class="slide-content">
+                <div class="mb-6">
+                    <span class="badge bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                        Temel Kavram
+                    </span>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-6">
+                    <span class="gradient-text-purple">"Yaşayan Sistem"</span>
+                    <span class="text-white/80"> Nedir?</span>
+                </h2>
+
+                <p class="text-xl text-slate-400 mb-12 max-w-3xl leading-relaxed">
+                    Bir web sitesi düşünün: 9 yıl önce yapıldı, o günden beri aynı. Ama internet 9 yılda tamamen değişti.
+                    <span class="text-slate-200">Yaşayan sistem tam da bu sorunu çözüyor.</span>
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-10 stagger">
+                    <!-- Eski Yaklaşım -->
+                    <div class="glass compare-old p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <span class="text-4xl">📦</span>
+                            <div>
+                                <h3 class="text-2xl font-bold text-red-400">Eski Yaklaşım</h3>
+                                <p class="text-slate-500 text-sm">2016 yılında böyle yapılıyordu</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-5 text-slate-300">
+                            <p class="leading-relaxed">
+                                <span class="highlight text-red-400">Kutulanmış ürün mantığı:</span> Web sitenizi yaptık, teslim ettik, bitti. Tıpkı bir kutuda teslim edilen yazılım gibi. O kutunun içindekiler sabit kaldı.
+                            </p>
+                            <p class="leading-relaxed">
+                                Google algoritması değişti ama siteniz aynı kaldı. Mobil kullanım patladı ama siteniz masaüstüne göre tasarlanmıştı. Güvenlik standartları yükseldi ama siteniz eski protokollerle kaldı.
+                            </p>
+                            <p class="leading-relaxed">
+                                <span class="text-red-300">Sonuç:</span> Rakipleriniz ilerledi, siz aynı yerde kaldınız. Her güncelleme için ayrı ücret, ayrı proje, ayrı zaman kaybı.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Yaklaşım -->
+                    <div class="glass compare-new p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <span class="text-4xl">🌱</span>
+                            <div>
+                                <h3 class="text-2xl font-bold text-green-400">Yaşayan Sistem</h3>
+                                <p class="text-slate-500 text-sm">2025 ve sonrası için</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-5 text-slate-300">
+                            <p class="leading-relaxed">
+                                <span class="highlight-green">Merkezi platform mantığı:</span> Tüm müşterilerimiz aynı gelişmiş altyapıyı kullanıyor. Bir müşterimiz için geliştirdiğimiz her yeni özellik, sizin sitenize de otomatik geliyor.
+                            </p>
+                            <p class="leading-relaxed">
+                                Google algoritması mı değişti? Merkezi sistemimizi güncelliyoruz, tüm siteler anında uyumlu hale geliyor. Yeni bir güvenlik standardı mı çıktı? Tek seferde tüm siteleri güncelliyoruz.
+                            </p>
+                            <p class="leading-relaxed">
+                                <span class="text-green-300">Sonuç:</span> Siz işinize odaklanın, teknik tarafı biz sürekli güncel tutuyoruz. Ek ücret yok, ek iş yok.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Örnek Kutusu -->
+                <div class="glass-light p-8 glow">
+                    <div class="flex items-start gap-5">
+                        <span class="text-4xl">💡</span>
+                        <div>
+                            <h4 class="text-xl font-bold text-blue-400 mb-3">Somut Bir Örnek</h4>
+                            <p class="text-lg text-slate-300 leading-relaxed">
+                                Diyelim ki 6 ay sonra başka bir müşterimize <span class="highlight">"Ürün Karşılaştırma"</span> özelliği ekliyoruz.
+                                Müşteri iki ürünü yan yana görebilsin, teknik özellikleri karşılaştırabilsin diye.
+                                Bu özellik hazır olduğu an <span class="text-white">sizin sitenize de otomatik geliyor</span>.
+                                Hiç uğraşmadınız, para ödemediniz, ama siteniz daha güçlü hale geldi.
+                                Rakipleriniz aynı özellik için belki binlerce lira ödeyecek ve aylarca bekleyecek.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 3: ESKİ vs YENİ TEKNOLOJİ ==================== -->
+        <div class="slide" data-slide="3">
+            <div class="slide-content">
+                <div class="mb-6">
+                    <span class="badge bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        Teknoloji Karşılaştırması
+                    </span>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-6">
+                    <span class="text-red-400">2016</span>
+                    <span class="text-slate-500 mx-4">→</span>
+                    <span class="gradient-text-green">2025</span>
+                </h2>
+
+                <p class="text-xl text-slate-400 mb-12 max-w-3xl leading-relaxed">
+                    9 yılda teknoloji dünyası tamamen değişti. Eskiden "iyi" olan artık "eski" sayılıyor.
+                    <span class="text-slate-200">İşte mevcut siteniz ile yeni sistemi karşılaştıralım.</span>
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                    <!-- Bootstrap (Eski) -->
+                    <div class="glass p-8">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="feature-icon bg-red-500/20">🐌</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-red-400">Bootstrap 3</h3>
+                                <p class="text-slate-500">Mevcut sitenizin altyapısı</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6 text-slate-300">
+                            <div>
+                                <h4 class="text-lg font-semibold text-red-300 mb-2">Hazır Şablon Sistemi</h4>
+                                <p class="leading-relaxed text-slate-400">
+                                    Bootstrap size hazır butonlar, hazır kartlar, hazır formlar verir. Kulağa pratik geliyor ama bir sorun var:
+                                    <span class="text-slate-300">Binlerce site aynı parçaları kullanıyor.</span>
+                                    Müşteriniz sitenize girdiğinde "bu siteyi daha önce gördüm" hissi yaşıyor.
+                                    Marka özgünlüğünüz kayboluyor, güven duygusu azalıyor.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 class="text-lg font-semibold text-red-300 mb-2">Şişkin Dosya Boyutu</h4>
+                                <p class="leading-relaxed text-slate-400">
+                                    Bootstrap tüm özelliklerini tek bir büyük dosyada yükler. Sitenizde sadece 10 özellik kullanıyorsanız bile,
+                                    kullanmadığınız 90 özellik de yükleniyor.
+                                    <span class="text-slate-300">Sonuç: Yavaş açılan sayfalar.</span>
+                                    Özellikle mobilde müşteri bekliyor, sabırsızlanıyor, siteyi kapatıp rakibe gidiyor.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 class="text-lg font-semibold text-red-300 mb-2">Sınırlı Özelleştirme</h4>
+                                <p class="leading-relaxed text-slate-400">
+                                    "Şu butonu biraz farklı yapalım" dediğinizde Bootstrap'ın kurallarını "ezmek" gerekiyor.
+                                    Bu hem zor, hem karmaşık, hem de bakımı güç kod üretiyor.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tailwind (Yeni) -->
+                    <div class="glass p-8">
+                        <div class="flex items-center gap-4 mb-8">
+                            <div class="feature-icon bg-green-500/20">⚡</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-green-400">Tailwind CSS 3.x</h3>
+                                <p class="text-slate-500">Yeni sistemin altyapısı</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6 text-slate-300">
+                            <div>
+                                <h4 class="text-lg font-semibold text-green-300 mb-2">Benzersiz Tasarım Özgürlüğü</h4>
+                                <p class="leading-relaxed text-slate-400">
+                                    Tailwind küçük yapı taşları sunar, siz bunları LEGO gibi birleştirirsiniz.
+                                    <span class="text-slate-300">Sonuç: Tamamen size özel tasarım.</span>
+                                    Rakiplerinizle sıfır benzerlik. Müşteri "bu firma profesyonel, detaylara önem veriyor" algısı oluşturuyor.
+                                    Bu algı güven yaratıyor, güven ise satış yapıyor.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 class="text-lg font-semibold text-green-300 mb-2">Minimum Dosya Boyutu</h4>
+                                <p class="leading-relaxed text-slate-400">
+                                    Tailwind sadece kullandığınız özellikleri dahil eder.
+                                    <span class="text-slate-300">2MB yerine 15KB!</span>
+                                    Bu da sayfaların göz açıp kapayıncaya kadar yüklenmesi demek.
+                                    Google bu hızı ölçüyor ve sıralamada size ekstra puan veriyor.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 class="text-lg font-semibold text-green-300 mb-2">Sınırsız Esneklik</h4>
+                                <p class="leading-relaxed text-slate-400">
+                                    Hayal ettiğiniz her tasarımı yapabiliyoruz. "Şurada şöyle bir efekt olsa" dediğinizde
+                                    hiçbir kısıtlama yok. Markanıza özel, unutulmaz bir deneyim.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sonuç -->
+                <div class="glass-light p-6 text-center">
+                    <p class="text-lg text-slate-300">
+                        <span class="highlight">Özet:</span>
+                        Yeni sistemle siteniz daha hızlı açılıyor, daha özgün görünüyor, daha kolay güncelleniyor.
+                        <span class="text-white">Bunların hepsi daha fazla müşteri, daha yüksek satış demek.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 4: FRONTEND TEKNOLOJİLERİ ==================== -->
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <div class="mb-6">
+                    <span class="badge bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                        Kullanıcı Deneyimi
+                    </span>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-4">
+                    <span class="gradient-text-blue">Frontend</span>
+                    <span class="text-white/80"> Teknolojileri</span>
+                </h2>
+
+                <p class="text-xl text-slate-400 mb-10 max-w-3xl">
+                    Müşterilerinizin gördüğü, dokunduğu, deneyimlediği her şey.
+                    <span class="text-slate-200">İlk izlenim burada oluşuyor.</span>
+                </p>
+
+                <div class="grid lg:grid-cols-3 gap-6 stagger">
+                    <!-- Tailwind CSS -->
+                    <div class="glass feature-item">
+                        <div class="feature-icon bg-blue-500/20 text-blue-400">🎨</div>
+                        <h3 class="text-2xl font-bold text-blue-400 mb-2">Tailwind CSS 3.x</h3>
+                        <p class="text-sm text-slate-500 mb-4">Modern Stil Sistemi</p>
+
+                        <div class="space-y-4 text-slate-400 text-sm leading-relaxed">
+                            <p>
+                                <span class="text-slate-200 font-medium">Ne İşe Yarar?</span><br>
+                                Sitenizin görünümünü oluşturan stil sistemi. Renkler, boşluklar, yazı tipleri, animasyonlar -
+                                gördüğünüz her şey Tailwind ile şekilleniyor.
+                            </p>
+                            <p>
+                                <span class="text-slate-200 font-medium">Neden Önemli?</span><br>
+                                Benzersiz tasarım = Rakiplerden farklılaşma.
+                                Müşteri "bu firma profesyonel" hissi yaşıyor.
+                                Hızlı yükleme = Google'da üst sıralar = Daha fazla ziyaretçi.
+                            </p>
+                            <p>
+                                <span class="text-slate-200 font-medium">İş Sonucu:</span><br>
+                                Profesyonel görünüm güven yaratır, güven satış yapar.
+                                Hız ise Google sıralamanızı yükselterek daha fazla müşteri çeker.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Alpine.js -->
+                    <div class="glass feature-item">
+                        <div class="feature-icon bg-purple-500/20 text-purple-400">⚡</div>
+                        <h3 class="text-2xl font-bold text-purple-400 mb-2">Alpine.js 3.x</h3>
+                        <p class="text-sm text-slate-500 mb-4">Hafif Etkileşim Motoru</p>
+
+                        <div class="space-y-4 text-slate-400 text-sm leading-relaxed">
+                            <p>
+                                <span class="text-slate-200 font-medium">Ne İşe Yarar?</span><br>
+                                Sayfadaki küçük etkileşimleri yönetiyor. Açılır menüler, tab geçişleri,
+                                modal pencereler, anlık filtreler - sayfa yenilenmeden çalışan her şey.
+                            </p>
+                            <p>
+                                <span class="text-slate-200 font-medium">Neden Önemli?</span><br>
+                                Sadece 15KB boyutunda ama çok güçlü. Özellikle mobilde fark yaratıyor -
+                                kullanıcı hiç beklemeden, akıcı bir deneyim yaşıyor.
+                            </p>
+                            <p>
+                                <span class="text-slate-200 font-medium">İş Sonucu:</span><br>
+                                Akıcı deneyim = Müşteri sitede daha uzun kalıyor =
+                                Daha fazla ürün inceliyor = Satış olasılığı artıyor.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Livewire -->
+                    <div class="glass feature-item">
+                        <div class="feature-icon bg-pink-500/20 text-pink-400">🔥</div>
+                        <h3 class="text-2xl font-bold text-pink-400 mb-2">Livewire 3.x</h3>
+                        <p class="text-sm text-slate-500 mb-4">Canlı Sayfa Teknolojisi</p>
+
+                        <div class="space-y-4 text-slate-400 text-sm leading-relaxed">
+                            <p>
+                                <span class="text-slate-200 font-medium">Ne İşe Yarar?</span><br>
+                                Sayfayı yenilemeden sunucuyla iletişim kuruyor.
+                                Müşteri form dolduruyor, butona basıyor, sonuç anında geliyor.
+                                Sayfa titremiyor, kaybolmuyor, akıcı devam ediyor.
+                            </p>
+                            <p>
+                                <span class="text-slate-200 font-medium">Neden Önemli?</span><br>
+                                "Ürün sayfasına canlı stok göstergesi ekleyelim" dediğinizde
+                                eski yöntemle günlerce sürerdi. Livewire ile aynı gün yapılabiliyor.
+                            </p>
+                            <p>
+                                <span class="text-slate-200 font-medium">İş Sonucu:</span><br>
+                                Aklınıza gelen fikirler hızla hayata geçiyor.
+                                Rakipler aylar sonra düşünürken siz çoktan uygulamış oluyorsunuz.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alt Not -->
+                <div class="mt-8 text-center">
+                    <p class="text-slate-500 text-sm">
+                        Bu üç teknoloji birlikte çalışarak <span class="text-slate-300">hızlı, akıcı ve etkileyici</span> bir kullanıcı deneyimi sunuyor.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 5: BACKEND TEKNOLOJİLERİ ==================== -->
+        <div class="slide" data-slide="5">
+            <div class="slide-content">
+                <div class="mb-6">
+                    <span class="badge bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                        Altyapı Gücü
+                    </span>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-4">
+                    <span class="gradient-text-purple">Backend</span>
+                    <span class="text-white/80"> Teknolojileri</span>
+                </h2>
+
+                <p class="text-xl text-slate-400 mb-10 max-w-3xl">
+                    Sitenizin motoru. Görünmüyor ama her şeyi çalıştıran güç burada.
+                </p>
+
+                <div class="grid lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Laravel -->
+                    <div class="glass p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="feature-icon bg-red-500/20 text-4xl">🚀</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-red-400">Laravel 12</h3>
+                                <p class="text-sm text-slate-500">PHP Web Framework</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-5 text-slate-400 leading-relaxed">
+                            <p>
+                                <span class="text-slate-200 font-medium">Ne Olduğunu Basitçe Anlatayım:</span>
+                                Ev inşa ederken temel, duvar, çatı gerekir. Laravel web sitesi için bu temeli sağlıyor.
+                                Her şeyi sıfırdan yapmak yerine, sağlam bir temel üzerine inşa ediyoruz.
+                            </p>
+
+                            <p>
+                                <span class="text-slate-200 font-medium">MVC Yapısı</span>
+                                <span class="text-slate-500">(Model-View-Controller)</span>:<br>
+                                Kodun düzenli, anlaşılır ve bakımı kolay olmasını sağlayan bir mimari.
+                                Yarın başka bir geliştirici devralsa bile kodu hemen anlayabiliyor.
+                                Bir kişiye bağımlılık riski ortadan kalkıyor.
+                            </p>
+
+                            <p>
+                                <span class="text-slate-200 font-medium">Eloquent ORM</span>:<br>
+                                Veritabanı işlemlerini kolaylaştıran sistem. En önemlisi:
+                                <span class="highlight">SQL Injection</span> gibi saldırılara karşı otomatik koruma sağlıyor.
+                                Müşteri bilgileri güvende.
+                            </p>
+
+                            <p>
+                                <span class="text-slate-200 font-medium">Queue Sistemi</span>
+                                <span class="text-slate-500">(Kuyruk)</span>:<br>
+                                Email göndermek, fatura oluşturmak gibi işler arka planda yapılıyor.
+                                Müşteri "sipariş ver" dediğinde anında "tamam" mesajı görüyor, beklemesi gerekmiyor.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- PHP & MySQL & Redis -->
+                    <div class="space-y-6">
+                        <!-- PHP -->
+                        <div class="glass-light p-6">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-3xl">🐘</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-purple-400">PHP 8.4</h3>
+                                    <p class="text-xs text-slate-500">Sunucu Tarafı Dili</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                Web sitelerinin beyni. Her kullanıcıya farklı içerik göstermek,
+                                veritabanından veri çekmek, form verilerini işlemek - hepsi PHP ile oluyor.
+                                <span class="text-slate-300">JIT Compiler</span> sayesinde eskisinden çok daha hızlı çalışıyor.
+                            </p>
+                        </div>
+
+                        <!-- Redis -->
+                        <div class="glass-light p-6">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-3xl">⚡</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-red-400">Redis Cache</h3>
+                                    <p class="text-xs text-slate-500">Bellek Önbellekleme</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-3">
+                                <span class="text-slate-200">En basit anlatımla:</span>
+                                Sık kullanılan bilgiler bellekte tutulur, her seferinde veritabanına gidilmez.
+                                Sonuç: Sayfa açılma süresi saniyelerden milisaniyelere düşer.
+                            </p>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                <span class="text-slate-200">Örnek:</span>
+                                Ürün listesi çok görüntüleniyor. Redis bu listeyi hafızada tutuyor.
+                                Veritabanına her seferinde sormak yerine, hazır yanıtı anında veriyor.
+                                <span class="highlight">Site çok hızlı açılıyor.</span>
+                            </p>
+                        </div>
+
+                        <!-- Horizon -->
+                        <div class="glass-light p-6">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-3xl">📊</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-blue-400">Laravel Horizon</h3>
+                                    <p class="text-xs text-slate-500">Arka Plan İş Yönetimi</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                Email gönderme, AI işlemleri, görsel optimizasyonu gibi arka plan işlerini yönetiyor.
+                                Tüm işlemler sırayla, düzenli şekilde yapılıyor. Bir şey takılırsa biz hemen görüp müdahale edebiliyoruz.
+                                <span class="text-slate-300">Müşteri hiçbir şey fark etmiyor, her şey sorunsuz çalışıyor.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-light p-6 text-center">
+                    <p class="text-slate-400">
+                        <span class="highlight">Sonuç:</span>
+                        Güçlü altyapı = Hızlı site = Güvenli işlemler = Mutlu müşteriler
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 6: YAPAY ZEKA ==================== -->
+        <div class="slide" data-slide="6">
+            <div class="slide-content">
+                <div class="mb-6">
+                    <span class="badge bg-pink-500/20 text-pink-300 border border-pink-500/30">
+                        Geleceğin Teknolojisi
+                    </span>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-4">
+                    <span class="gradient-text">Yapay Zeka</span>
+                    <span class="text-white/80"> Altyapısı</span>
+                </h2>
+
+                <p class="text-xl text-slate-400 mb-10 max-w-3xl">
+                    Sadece teknoloji şirketlerinin kullandığı yapay zeka artık sizin sitenizde.
+                    <span class="text-slate-200">7/24 çalışan, yorulmayan, her soruya anında cevap veren bir asistan.</span>
+                </p>
+
+                <div class="grid lg:grid-cols-2 gap-6 mb-8">
+                    <!-- AI Chat Asistan -->
+                    <div class="glass p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="feature-icon bg-gradient-to-br from-blue-500/30 to-purple-500/30 text-4xl">🤖</div>
+                            <div>
+                                <h3 class="text-2xl font-bold gradient-text">AI Chat Asistan</h3>
+                                <p class="text-sm text-slate-500">7/24 Müşteri Hizmeti</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-5 text-slate-400 leading-relaxed">
+                            <p>
+                                <span class="text-slate-200 font-medium">Nasıl Çalışıyor?</span><br>
+                                Müşteri sitenize giriyor, sohbet baloncuğuna tıklıyor, sorusunu yazıyor.
+                                Yapay zeka ürünlerinizi, özelliklerini, fiyatlarını biliyor.
+                                Saniyeler içinde anlamlı, yardımcı bir cevap veriyor.
+                            </p>
+
+                            <div class="glass-light p-4 rounded-xl">
+                                <p class="text-slate-500 text-sm mb-2">Örnek Senaryo:</p>
+                                <p class="text-slate-300 text-sm">
+                                    <span class="text-blue-400">Müşteri:</span> "Madencilik için ağır hizmet tipi ekipman arıyorum"<br>
+                                    <span class="text-green-400">AI:</span> "Ağır hizmet tipi ekipmanlarımız arasında X, Y ve Z modelleri bulunuyor.
+                                    X modeli daha düşük bütçeli projeler için idealken, Z modeli büyük ölçekli operasyonlar için tasarlandı.
+                                    Hangi kapasite aralığını düşünüyorsunuz?"
+                                </p>
+                            </div>
+
+                            <p>
+                                <span class="text-slate-200 font-medium">İş Sonucu:</span><br>
+                                Gece 23:00'te gelen müşteri sorusu yanıtsız kalmıyor.
+                                Tatil günlerinde bile müşterilerinize hizmet veriliyor.
+                                <span class="highlight">Kaçırılan fırsat sayısı azalıyor, satışlar artıyor.</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- AI Blog Writer & Çoklu Provider -->
+                    <div class="space-y-6">
+                        <div class="glass-light p-6">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-3xl">✍️</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-purple-400">AI Blog Yazarı</h3>
+                                    <p class="text-xs text-slate-500">SEO Uyumlu İçerik Üretimi</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3 text-slate-400 text-sm leading-relaxed">
+                                <p>
+                                    "Madencilik ekipmanları bakım rehberi" gibi bir konu veriyorsunuz.
+                                    AI sektörünüzü araştırıyor, SEO anahtar kelimelerini belirliyor,
+                                    profesyonel bir makale yazıyor, uygun görsel önerileri sunuyor.
+                                </p>
+                                <p class="text-slate-300">
+                                    <span class="highlight">Google'da bulunabilirlik artıyor.</span>
+                                    Potansiyel müşteriler sizi araştırırken karşılarına kaliteli içerikler çıkıyor.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="glass-light p-6">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-3xl">🧠</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-blue-400">Çoklu AI Sağlayıcı</h3>
+                                    <p class="text-xs text-slate-500">OpenAI, Anthropic, DeepSeek</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                Tek bir yapay zeka şirketine bağımlı değilsiniz. Sistemimiz birden fazla AI sağlayıcıyla çalışabiliyor.
+                                Biri sorun yaşarsa diğerine geçiyor, kesintisiz hizmet devam ediyor.
+                                <span class="text-slate-300">Ayrıca her görev için en uygun AI'ı seçebiliyoruz.</span>
+                            </p>
+                        </div>
+
+                        <div class="glass-light p-6">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="text-3xl">🎨</span>
+                                <div>
+                                    <h3 class="text-xl font-bold text-pink-400">AI Görsel Üretimi</h3>
+                                    <p class="text-xs text-slate-500">Otomatik Görsel Oluşturma</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                Blog yazısı veya ürün tanıtımı için görsel gerektiğinde AI üretiyor.
+                                Stok fotoğraf aramak, lisans satın almak derdi yok.
+                                <span class="text-slate-300">Markanıza özel, özgün görseller.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-light p-6 text-center glow">
+                    <p class="text-lg text-slate-300">
+                        <span class="highlight">Önemli Not:</span>
+                        Yapay zeka sizin işinizi yapmıyor, <span class="text-white">işinizi kolaylaştırıyor</span>.
+                        Siz strateji ve müşteri ilişkilerine odaklanırken, rutin işleri AI hallediyor.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 7: SEO & ARAMA ==================== -->
+        <div class="slide" data-slide="7">
+            <div class="slide-content">
+                <div class="mb-6">
+                    <span class="badge bg-green-500/20 text-green-300 border border-green-500/30">
+                        Bulunabilirlik
+                    </span>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-4">
+                    <span class="gradient-text-green">SEO</span>
+                    <span class="text-white/80"> & Akıllı Arama</span>
+                </h2>
+
+                <p class="text-xl text-slate-400 mb-10 max-w-3xl">
+                    En iyi ürünlere sahip olabilirsiniz ama müşteriler sizi bulamıyorsa ne anlamı var?
+                    <span class="text-slate-200">Google'da üst sıralara çıkmak ve sitede kolay arama için özel sistemler.</span>
+                </p>
+
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- SEO -->
+                    <div class="glass p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="feature-icon bg-green-500/20 text-4xl">🔍</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-green-400">SEO Altyapısı</h3>
+                                <p class="text-sm text-slate-500">Arama Motoru Optimizasyonu</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-5 text-slate-400 leading-relaxed">
+                            <p>
+                                <span class="text-slate-200 font-medium">SEO Nedir?</span><br>
+                                Kısaca: Google'da aratıldığında sitenizin üst sıralarda çıkması için yapılan çalışmalar.
+                                "Madencilik ekipmanları" diye arayan biri sizi mi görecek, yoksa rakibinizi mi?
+                            </p>
+
+                            <div>
+                                <span class="text-slate-200 font-medium">Schema.org Yapılandırılmış Veri:</span>
+                                <p class="mt-2">
+                                    Google'a "bu bir ürün sayfası, fiyatı şu, stokta var" gibi bilgileri özel bir dille söylüyoruz.
+                                    <span class="text-slate-300">Sonuç: Arama sonuçlarında daha dikkat çekici görünüm.</span>
+                                </p>
+                                <div class="glass-light p-4 mt-3 rounded-lg">
+                                    <p class="text-xs text-slate-500 mb-2">Örnek Google Görünümü:</p>
+                                    <div class="text-sm">
+                                        <p class="text-blue-400 font-medium">Madencilik Kırıcı Makinesi - Unimad</p>
+                                        <p class="text-green-400">★★★★★ 4.8 | Stokta | ₺125.000</p>
+                                        <p class="text-slate-400 text-xs">Profesyonel madencilik operasyonları için...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p>
+                                <span class="text-slate-200 font-medium">Otomatik Meta Tag'ler:</span><br>
+                                Her sayfa için başlık, açıklama, anahtar kelimeler otomatik oluşturuluyor.
+                                Manuel iş yükü sıfır ama SEO etkisi maksimum.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Meilisearch -->
+                    <div class="glass p-8">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="feature-icon bg-orange-500/20 text-4xl">⚡</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-orange-400">Meilisearch</h3>
+                                <p class="text-sm text-slate-500">Anlık Site İçi Arama</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-5 text-slate-400 leading-relaxed">
+                            <p>
+                                <span class="text-slate-200 font-medium">Ne İşe Yarıyor?</span><br>
+                                Müşteri sitenizde ürün arıyor. Her harf yazışında anında sonuçlar beliriyor.
+                                Beklemek yok, sayfa yenilenmesi yok. Tıpkı Google'ın arama kutusundaki gibi.
+                            </p>
+
+                            <div>
+                                <span class="text-slate-200 font-medium">Yazım Hatası Toleransı:</span>
+                                <p class="mt-2">
+                                    Müşteri "kirici" yazdı ama "kırıcı" demek istedi. Normal sistemler "sonuç bulunamadı" der.
+                                    <span class="text-slate-300">Meilisearch bunu anlar ve doğru sonuçları gösterir.</span>
+                                </p>
+                            </div>
+
+                            <div>
+                                <span class="text-slate-200 font-medium">Faceted Arama</span>
+                                <span class="text-slate-500">(Filtreli Arama)</span>:
+                                <p class="mt-2">
+                                    "Kırıcı" aramasına ek olarak "100 ton üzeri kapasite", "X marka", "stokta olan"
+                                    gibi filtreler uygulanabiliyor. Müşteri tam istediğini hızla buluyor.
+                                </p>
+                            </div>
+
+                            <p>
+                                <span class="text-slate-200 font-medium">İş Sonucu:</span><br>
+                                Aradığını bulamayan müşteri siteyi terk eder.
+                                <span class="highlight">Hızlı ve akıllı arama = Daha az terk, daha fazla satış.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 8: GÜVENLİK & PERFORMANS ==================== -->
+        <div class="slide" data-slide="8">
+            <div class="slide-content">
+                <div class="mb-6">
+                    <span class="badge bg-red-500/20 text-red-300 border border-red-500/30">
+                        Koruma & Hız
+                    </span>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-4">
+                    <span class="text-red-400">Güvenlik</span>
+                    <span class="text-slate-500 mx-2">&</span>
+                    <span class="gradient-text-blue">Performans</span>
+                </h2>
+
+                <p class="text-xl text-slate-400 mb-10 max-w-3xl">
+                    Müşteri bilgileri güvende, site ışık hızında. İkisi de aynı anda.
+                </p>
+
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Güvenlik -->
+                    <div class="glass p-6">
+                        <h3 class="text-2xl font-bold text-red-400 mb-6 flex items-center gap-3">
+                            <span class="text-3xl">🛡️</span> Güvenlik Katmanları
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="glass-light p-4">
+                                <h4 class="font-semibold text-slate-200 mb-2">SSL/TLS <span class="text-slate-500 text-sm">(Şifreleme)</span></h4>
+                                <p class="text-slate-400 text-sm">
+                                    Tarayıcınızdaki kilit simgesi. Müşteri ile siteniz arasındaki tüm iletişim şifreleniyor.
+                                    Kredi kartı bilgileri, şifreler, kişisel veriler - hiçbiri başkaları tarafından okunamıyor.
+                                </p>
+                            </div>
+
+                            <div class="glass-light p-4">
+                                <h4 class="font-semibold text-slate-200 mb-2">CSRF Koruması <span class="text-slate-500 text-sm">(İstek Sahteciliği Önleme)</span></h4>
+                                <p class="text-slate-400 text-sm">
+                                    Kötü niyetli siteler sizin adınıza işlem yapamaz. Her form işlemi gizli bir anahtarla doğrulanıyor.
+                                </p>
+                            </div>
+
+                            <div class="glass-light p-4">
+                                <h4 class="font-semibold text-slate-200 mb-2">SQL Injection Koruması</h4>
+                                <p class="text-slate-400 text-sm">
+                                    Hackerlar veritabanınıza sızamaz. Tüm kullanıcı girdileri özel tekniklerle temizleniyor.
+                                </p>
+                            </div>
+
+                            <div class="glass-light p-4">
+                                <h4 class="font-semibold text-slate-200 mb-2">Rate Limiting <span class="text-slate-500 text-sm">(Saldırı Önleme)</span></h4>
+                                <p class="text-slate-400 text-sm">
+                                    Bir kullanıcı saniyede binlerce istek göndermeye çalışırsa engelleniyor.
+                                    DDoS saldırılarına karşı koruma.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performans -->
+                    <div class="glass p-6">
+                        <h3 class="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-3">
+                            <span class="text-3xl">⚡</span> Performans Optimizasyonları
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="glass-light p-4">
+                                <h4 class="font-semibold text-slate-200 mb-2">Redis Cache <span class="text-slate-500 text-sm">(Bellekte Saklama)</span></h4>
+                                <p class="text-slate-400 text-sm">
+                                    Sık erişilen veriler bellekte tutuluyor. Veritabanına her seferinde sormak yerine
+                                    hazır yanıt milisaniyeler içinde veriliyor. <span class="text-blue-400">Sayfa açılma süresi dramatik düşüyor.</span>
+                                </p>
+                            </div>
+
+                            <div class="glass-light p-4">
+                                <h4 class="font-semibold text-slate-200 mb-2">OPcache <span class="text-slate-500 text-sm">(Kod Önbellekleme)</span></h4>
+                                <p class="text-slate-400 text-sm">
+                                    PHP kodları bir kere derleniyor, sonra bellekten çalıştırılıyor. Her istekte tekrar derleme yok.
+                                    Sonuç: Çok daha hızlı sunucu yanıtı.
+                                </p>
+                            </div>
+
+                            <div class="glass-light p-4">
+                                <h4 class="font-semibold text-slate-200 mb-2">WebP & Lazy Loading <span class="text-slate-500 text-sm">(Görsel Optimizasyonu)</span></h4>
+                                <p class="text-slate-400 text-sm">
+                                    Görseller modern WebP formatında sunuluyor (JPG'den %30 daha küçük).
+                                    Ayrıca sayfa açıldığında sadece görünen görseller yükleniyor, diğerleri kaydırıldıkça geliyor.
+                                </p>
+                            </div>
+
+                            <div class="glass-light p-4">
+                                <h4 class="font-semibold text-slate-200 mb-2">Gzip/Brotli <span class="text-slate-500 text-sm">(Sıkıştırma)</span></h4>
+                                <p class="text-slate-400 text-sm">
+                                    Sunucudan tarayıcıya gönderilen tüm veriler sıkıştırılıyor.
+                                    Aynı içerik daha az veriyle iletiliyor = Daha hızlı yükleme.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-light p-5 mt-6 text-center">
+                    <p class="text-slate-400">
+                        <span class="text-white font-medium">Hepsi birlikte çalışıyor:</span>
+                        Güvenli veri, hızlı sayfa, mutlu müşteri.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 9: MODÜLLER ==================== -->
+        <div class="slide" data-slide="9">
+            <div class="slide-content">
+                <div class="mb-6">
+                    <span class="badge bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                        Modüler Yapı
+                    </span>
+                </div>
+
+                <h2 class="text-5xl md:text-6xl font-black mb-4">
+                    <span class="gradient-text-purple">25+</span>
+                    <span class="text-white/80"> Hazır Modül</span>
+                </h2>
+
+                <p class="text-xl text-slate-400 mb-8 max-w-3xl">
+                    LEGO mantığı: İhtiyacınız olan parçaları birleştiriyoruz, ihtiyacınız olmayanları eklemiyoruz.
+                    <span class="text-slate-200">Her modül bağımsız çalışıyor, istediğiniz zaman eklenip çıkarılabiliyor.</span>
+                </p>
+
+                <div class="grid lg:grid-cols-4 gap-4 mb-8">
+                    <!-- İçerik Yönetimi -->
+                    <div class="glass-light p-5">
+                        <h4 class="font-bold text-blue-400 mb-4 flex items-center gap-2">
+                            <span>📄</span> İçerik Yönetimi
+                        </h4>
+                        <div class="space-y-2 text-sm text-slate-400">
+                            <div class="module-item">Page (Sayfalar)</div>
+                            <div class="module-item">Blog (Haberler)</div>
+                            <div class="module-item">Menu (Navigasyon)</div>
+                            <div class="module-item">Media (Görseller)</div>
+                            <div class="module-item">Slider (Kaydırıcı)</div>
+                            <div class="module-item">Formbuilder (Formlar)</div>
+                        </div>
+                    </div>
+
+                    <!-- E-Ticaret -->
+                    <div class="glass-light p-5">
+                        <h4 class="font-bold text-green-400 mb-4 flex items-center gap-2">
+                            <span>🛒</span> E-Ticaret
+                        </h4>
+                        <div class="space-y-2 text-sm text-slate-400">
+                            <div class="module-item">Shop (Mağaza)</div>
+                            <div class="module-item">Product (Ürünler)</div>
+                            <div class="module-item">Category (Kategoriler)</div>
+                            <div class="module-item">Brand (Markalar)</div>
+                            <div class="module-item">Cart (Sepet)</div>
+                            <div class="module-item">Order (Siparişler)</div>
+                        </div>
+                    </div>
+
+                    <!-- Yapay Zeka -->
+                    <div class="glass-light p-5">
+                        <h4 class="font-bold text-purple-400 mb-4 flex items-center gap-2">
+                            <span>🤖</span> Yapay Zeka
+                        </h4>
+                        <div class="space-y-2 text-sm text-slate-400">
+                            <div class="module-item">AI Chat</div>
+                            <div class="module-item">AI Blog Writer</div>
+                            <div class="module-item">AI Image</div>
+                            <div class="module-item">AI Translator</div>
+                            <div class="module-item">AI Analytics</div>
+                        </div>
+                    </div>
+
+                    <!-- Sistem -->
+                    <div class="glass-light p-5">
+                        <h4 class="font-bold text-orange-400 mb-4 flex items-center gap-2">
+                            <span>⚙️</span> Sistem
+                        </h4>
+                        <div class="space-y-2 text-sm text-slate-400">
+                            <div class="module-item">Settings (Ayarlar)</div>
+                            <div class="module-item">SEO (Optimizasyon)</div>
+                            <div class="module-item">Language (Çoklu Dil)</div>
+                            <div class="module-item">User (Kullanıcılar)</div>
+                            <div class="module-item">Analytics (İstatistik)</div>
+                            <div class="module-item">Backup (Yedekleme)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-6">
+                    <div class="glass-light p-6">
+                        <h4 class="font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">🧩</span> Modüler Yapının Avantajı
+                        </h4>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Her modül bağımsız çalışıyor. Blog istemiyorsanız eklemiyoruz, sadece ürün kataloğu
+                            istiyorsanız sadece onu ekliyoruz. İleride fikriniz değişirse, mevcut sisteme zarar vermeden
+                            yeni modüller eklenebiliyor. <span class="text-slate-300">Esnek, ölçeklenebilir, geleceğe hazır.</span>
+                        </p>
+                    </div>
+
+                    <div class="glass-light p-6">
+                        <h4 class="font-bold text-slate-200 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">🔄</span> Sürekli Güncelleme
+                        </h4>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Her modül sürekli geliştiriliyor. Bir modüle yeni özellik eklediğimizde,
+                            o modülü kullanan tüm müşterilerimiz otomatik faydalanıyor.
+                            <span class="text-slate-300">Yaşayan sistem kavramı modül seviyesinde de geçerli.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 10: SONUÇ ==================== -->
+        <div class="slide" data-slide="10">
+            <div class="slide-content text-center">
+                <div class="mb-8">
+                    <span class="badge bg-gradient-to-r from-blue-500/30 to-purple-500/30 text-white border border-blue-500/20">
+                        Özet
+                    </span>
+                </div>
+
+                <h2 class="text-6xl md:text-7xl font-black mb-8">
+                    <span class="text-white/90">9 Yıl Önce</span><br>
+                    <span class="gradient-text">Web Sitesi Yaptık</span>
+                </h2>
+
+                <p class="text-2xl text-slate-400 max-w-3xl mx-auto leading-relaxed mb-12">
+                    Bugün size <span class="text-white">yaşayan bir sistem</span> sunuyoruz.
+                    <br>
+                    Sadece bir web sitesi değil, <span class="highlight">işinizi büyüten bir platform</span>.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12 stagger">
+                    <div class="glass-light p-6 text-center">
+                        <div class="text-4xl mb-4">🚀</div>
+                        <h4 class="text-xl font-bold text-white mb-2">Hız</h4>
+                        <p class="text-slate-400 text-sm">
+                            Göz açıp kapayıncaya kadar açılan sayfalar.
+                            Müşteri beklemez, rakibe gitmez.
+                        </p>
+                    </div>
+
+                    <div class="glass-light p-6 text-center">
+                        <div class="text-4xl mb-4">🤖</div>
+                        <h4 class="text-xl font-bold text-white mb-2">7/24 Hizmet</h4>
+                        <p class="text-slate-400 text-sm">
+                            AI asistan gece gündüz çalışıyor.
+                            Hiçbir müşteri sorusu yanıtsız kalmıyor.
+                        </p>
+                    </div>
+
+                    <div class="glass-light p-6 text-center">
+                        <div class="text-4xl mb-4">📈</div>
+                        <h4 class="text-xl font-bold text-white mb-2">Büyüme</h4>
+                        <p class="text-slate-400 text-sm">
+                            SEO, hız, içerik - hepsi birlikte çalışarak
+                            Google'da sizi yukarı taşıyor.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass p-8 max-w-2xl mx-auto glow">
+                    <p class="text-xl text-slate-300 leading-relaxed mb-6">
+                        Siz işinize odaklanın.<br>
+                        <span class="text-white font-semibold">Teknolojiyi biz yönetelim.</span>
+                    </p>
+
+                    <div class="flex items-center justify-center gap-4">
+                        <span class="text-4xl">🏔️</span>
+                        <div class="text-left">
+                            <div class="text-2xl font-bold gradient-text">unimadmadencilik.com</div>
+                            <div class="text-slate-500 text-sm">Yeni nesil web sisteminiz hazır</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <button class="nav-btn" id="prevBtn" disabled onclick="prevSlide()">←</button>
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">10</span>
+        </div>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">→</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 10;
+
+        function updateSlide(direction) {
+            const slides = document.querySelectorAll('.slide');
+            const current = document.querySelector('.slide.active');
+
+            if (direction === 'next' && currentSlide < totalSlides) {
+                current.classList.remove('active');
+                current.classList.add('exit');
+                setTimeout(() => current.classList.remove('exit'), 800);
+
+                currentSlide++;
+                slides[currentSlide - 1].classList.add('active');
+            } else if (direction === 'prev' && currentSlide > 1) {
+                current.classList.remove('active');
+
+                currentSlide--;
+                slides[currentSlide - 1].classList.add('active');
+            }
+
+            updateUI();
+        }
+
+        function nextSlide() {
+            updateSlide('next');
+        }
+
+        function prevSlide() {
+            updateSlide('prev');
+        }
+
+        function updateUI() {
+            document.getElementById('currentSlide').textContent = currentSlide;
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+
+            // Progress bar
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        // Initialize
+        updateUI();
+    </script>
+</body>
+</html>

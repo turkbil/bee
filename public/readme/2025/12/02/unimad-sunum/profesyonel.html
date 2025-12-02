@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unimad Madencilik - Yeni Nesil Web Sitesi Sunumu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        html, body {
+            background: #0a0f1e !important;
+            color: #e2e8f0 !important;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            padding: 3rem 4rem;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            display: none;
+            background: #0a0f1e !important;
+        }
+        .slide.active { opacity: 1; transform: translateX(0); display: block; z-index: 2; }
+        .slide.prev { transform: translateX(-100%); }
+
+        .gradient-text { background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+                        -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .content-box {
+            background: rgba(15, 23, 42, 0.8) !important;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-buttons { position: fixed; bottom: 2rem; right: 2rem; display: flex; gap: 1rem; z-index: 1000; }
+        .nav-btn { background: rgba(59, 130, 246, 0.2); backdrop-filter: blur(10px); border: 2px solid rgba(59, 130, 246, 0.4);
+                   color: white; width: 60px; height: 60px; border-radius: 50%; font-size: 24px; cursor: pointer;
+                   transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
+        .nav-btn:hover:not(:disabled) { background: rgba(59, 130, 246, 0.4); transform: scale(1.1); }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .counter {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: rgba(10, 15, 30, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Slide 1: KAPAK -->
+<div class="slide active">
+    <div class="flex flex-col justify-center items-center h-full max-w-6xl mx-auto text-center">
+        <h1 class="text-8xl font-black mb-8 leading-tight">
+            <span class="gradient-text">Yaşayan</span><br>
+            <span class="text-white">Web Sisteminiz</span>
+        </h1>
+        <p class="text-3xl text-slate-300 mb-12 max-w-4xl leading-relaxed">
+            9 yıl önce yaptığımız web siteniz statikti, durağandı.<br>
+            Şimdi size <span class="text-blue-400 font-semibold">sürekli gelişen, büyüyen</span> bir sistem sunuyoruz.
+        </p>
+        <div class="text-xl text-slate-400">unimadmadencilik.com</div>
+    </div>
+</div>
+
+<!-- Slide 2: YAŞAYAN SİSTEM NEDİR? -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-6xl font-black mb-8"><span class="gradient-text">Yaşayan Sistem</span> Ne Demek?</h2>
+        <p class="text-2xl text-slate-300 mb-12">Çünkü sizin siteniz artık durmuyor, her gün gelişiyor!</p>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-red-900/20 border-2 border-red-500/40 rounded-2xl p-8">
+                <h3 class="text-3xl font-bold text-red-400 mb-6">❌ Eski Yaklaşım (2015)</h3>
+                <div class="space-y-4 text-lg text-slate-300">
+                    <p><strong>Statik Sistem:</strong> Web sitesini yaptık, yayınladık, 9 yıl dokunmadık. Google algoritmaları değişti, mobil önem kazandı, güvenlik standartları yükseldi ama siteniz aynı kaldı.</p>
+                    <p><strong>Teknoloji Eskidi:</strong> Bootstrap 3 kullanmıştık, şimdi Bootstrap 5 çıktı. PHP 7.4'tü, şimdi 8.4. Ama güncelleyemedik çünkü tüm sistemi yeniden yazmak gerekiyordu.</p>
+                    <p><strong>Rakipler Geçti:</strong> Diğer firmalar yeni özellikler ekledi - canlı sohbet, AI asistan, hızlı arama. Bizim sitemiz geride kaldı.</p>
+                </div>
+            </div>
+
+            <div class="bg-green-900/20 border-2 border-green-500/40 rounded-2xl p-8">
+                <h3 class="text-3xl font-bold text-green-400 mb-6">✅ Yeni Yaklaşım (2025)</h3>
+                <div class="space-y-4 text-lg text-slate-300">
+                    <p><strong>Canlı Sistem:</strong> Sistemimiz merkezi bir yapıda. Diğer müşterilerimiz için geliştirdiğimiz her yeni özellik, sizin sitenize de otomatik geliyor. Ek ücret yok, ek iş yok.</p>
+                    <p><strong>Sürekli Güncelleme:</strong> Google algoritması değişti mi? Sistem kendini ayarlıyor. Yeni bir güvenlik standardı çıktı mı? Tüm siteler aynı anda güncellenmiş oluyor.</p>
+                    <p><strong>Rekabette Önde:</strong> Rakipleriniz hala 5 yıl önceki teknoloji kullanırken, siz her zaman en yeni özelliklere sahipsiniz.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4">💡 Konkret Örnek:</h3>
+            <p class="text-xl text-slate-200 leading-relaxed mb-4">
+                Diyelim ki bugün başka bir müşterimiz için "Ürün karşılaştırma" özelliği ekledik.
+                Yarın bu özellik sizin sitenizde de hazır. Siz hiç uğraşmadınız, para ödemediniz ama siteniz daha güçlü oldu.
+            </p>
+            <p class="text-lg text-slate-300 leading-relaxed">
+                Bu yüzden "yaşayan sistem" diyoruz. Tıpkı canlı bir organizma gibi, sürekli büyüyor, gelişiyor, güçleniyor.
+                Sizin tek yapmanız gereken müşterilerinize odaklanmak. Teknik tarafı, güncellemeleri, yeni özellikleri biz hallediyoruz.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 3: ESKİ vs YENİ TEKNOLOJİ -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-6xl font-black mb-6"><span class="gradient-text">Eski</span> vs <span class="text-green-400">Yeni</span> Teknoloji</h2>
+        <p class="text-2xl text-slate-400 mb-10">Neden yeniden yaptık? Çünkü teknoloji 9 yılda tamamen değişti!</p>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="content-box border-red-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-5xl">🐌</span>
+                    <div>
+                        <h3 class="text-3xl font-bold text-red-400">Bootstrap (2015 Teknolojisi)</h3>
+                        <p class="text-sm text-slate-400">Component-Based Framework</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-lg font-bold text-red-300 mb-2">Hazır Kalıplar Sistemi:</h4>
+                        <p class="leading-relaxed">Bootstrap hazır "component" (bileşen) sistemiyle çalışır. Buton mu lazım? Hazır buton kullan. Kart mı lazım? Hazır kart kullan. Kulağa pratik geliyor ama sorun şu: Binlerce site aynı hazır parçaları kullanıyor. Sonuç? Her site birbirine benziyor. Müşteri "bu siteyi daha önce de gördüm" hissi yaşıyor.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-bold text-red-300 mb-2">Şişkin Dosya Boyutları:</h4>
+                        <p class="leading-relaxed">Bootstrap tüm özellikleri içeren büyük bir CSS dosyası yükler. Sitenizde sadece buton ve form kullanıyor olsanız bile, modal, carousel, tooltip gibi kullanmadığınız binlerce satır kod da yükleniyor. Bu da sayfayı yavaşlatıyor. Özellikle mobilde bu fark edilir - kullanıcı bekliyor, sabırsızlanıyor, siteden ayrılıyor.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-bold text-red-300 mb-2">Sınırlı Özelleştirme:</h4>
+                        <p class="leading-relaxed">Özel bir tasarım istediğinizde Bootstrap'ın kurallarını "ezmek" gerekiyor. Bu hem zor hem de bakımı zor kod üretiyor. Tasarımcı "şurayı böyle yapalım" dediğinde geliştirici "Bootstrap bunu desteklemiyor, farklı yapmalıyız" diyor. Kompromislerle dolu bir süreç.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-green-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-5xl">⚡</span>
+                    <div>
+                        <h3 class="text-3xl font-bold text-green-400">Tailwind CSS (2025 Teknolojisi)</h3>
+                        <p class="text-sm text-slate-400">Utility-First Framework</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-lg font-bold text-green-300 mb-2">Benzersiz Tasarım Özgürlüğü:</h4>
+                        <p class="leading-relaxed">Tailwind küçük "utility" (yardımcı) sınıflar sunar. Bunları LEGO parçaları gibi istediğiniz şekilde birleştirirsiniz. Sonuç? Tamamen size özel tasarım. Rakiplerinizle benzerlik yok. Müşteri "bu site profesyonel, kendine özgü" diyor. Bu da güven ve marka değeri yaratıyor.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-bold text-green-300 mb-2">Ultra Optimize Dosya Boyutu:</h4>
+                        <p class="leading-relaxed">Tailwind'in "PurgeCSS" sistemi sayesinde sadece kullandığınız sınıflar final CSS'e dahil ediliyor. 2MB CSS dosyası → 10KB CSS dosyasına iniyor! Bu da sayfaların çok hızlı açılması demek. Google bu hızı ölçüyor ve sıralamada size artı puan veriyor. Hızlı site = Google'da üst sıra = Daha fazla ziyaretçi = Daha fazla müşteri.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-bold text-green-300 mb-2">Sınırsız Esneklik:</h4>
+                        <p class="leading-relaxed">Aklınıza gelen her tasarımı yapabiliyoruz. "Şurada böyle bir hover efekti olsa", "burada gradient arka plan olsa" dediğinizde hiçbir kısıtlama yok. Tasarımcının hayalindeki her şey kodlanabiliyor. Bu da markanıza özel, unutulmaz bir web deneyimi yaratıyor.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box mt-8">
+            <p class="text-xl text-slate-200 leading-relaxed">
+                <span class="text-blue-400 font-bold">Sonuç:</span>
+                Tailwind ile siteniz daha hızlı yükleniyor (Google bunu ödüllendiriyor), daha özgün görünüyor (müşteriler hatırlıyor), daha kolay güncellenebiliyor (yeni özellikler hemen eklenebiliyor). Bunların hepsi iş sonuçlarınıza direkt yansıyor: Daha fazla ziyaretçi, daha uzun sitede kalma süresi, daha yüksek dönüşüm oranı.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 4: FRONTEND TEKNOLOJİLERİ -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-6xl font-black mb-6"><span class="gradient-text">Frontend</span> Teknolojileri</h2>
+        <p class="text-2xl text-slate-400 mb-10">Müşterilerinizin gördüğü, dokunduğu, deneyimlediği her şey</p>
+
+        <div class="space-y-8">
+            <div class="content-box border-blue-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-6xl">🎨</span>
+                    <div>
+                        <h3 class="text-4xl font-bold text-blue-400">Tailwind CSS 3.x</h3>
+                        <p class="text-slate-400">Utility-First CSS Framework (Yardımcı sınıf odaklı stil sistemi)</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-3">Tailwind Nedir?</h4>
+                        <p class="text-lg leading-relaxed">
+                            Geleneksel CSS framework'lerinden farklı olarak, Tailwind size hazır "buton", "kart", "navbar" gibi component'ler vermez.
+                            Bunun yerine binlerce küçük yardımcı sınıf sunar. Örneğin: <code class="bg-slate-800 px-2 py-1 rounded">text-blue-500</code> (mavi yazı),
+                            <code class="bg-slate-800 px-2 py-1 rounded">p-4</code> (padding), <code class="bg-slate-800 px-2 py-1 rounded">rounded-lg</code> (yuvarlatılmış köşeler).
+                            Bu sınıfları istediğiniz gibi birleştirerek tamamen özgün tasarımlar yaratıyorsunuz.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-3">Neden Önemli?</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>1. Benzersiz Marka İmajı:</strong> Rakiplerinizin siteleri birbirine benziyor çünkü hepsi aynı hazır şablonları kullanıyor.
+                            Sizin siteniz ise tamamen özgün. Müşteri "bu firma profesyonel, detaylara önem veriyor" algısı oluşturuyor.
+                            Bu algı güven yaratıyor, güven satış yapıyor.
+                        </p>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>2. Sayfa Hızı:</strong> Tailwind'in "tree-shaking" (kullanılmayan kod temizleme) özelliği sayesinde son CSS dosyası çok küçük oluyor.
+                            Küçük dosya = Hızlı yüklenme = Müşteri beklemeden siteyi görüyor = Google sıralamada size puan veriyor.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            <strong>3. Geliştirme Hızı:</strong> Yeni bir özellik eklemek istediğinizde, karmaşık CSS yazmaya gerek yok.
+                            Tailwind sınıflarını kullanarak hızlıca tasarım yapabiliyoruz. Bu da "bu özelliği ekleyebilir misiniz?" dediğinizde
+                            cevabımızın "evet, birkaç günde yapılır" olması demek.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-purple-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-6xl">⚡</span>
+                    <div>
+                        <h3 class="text-4xl font-bold text-purple-400">Alpine.js 3.x</h3>
+                        <p class="text-slate-400">Lightweight JavaScript Framework (Hafif JavaScript kütüphanesi)</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-purple-300 mb-3">Alpine.js Nedir?</h4>
+                        <p class="text-lg leading-relaxed">
+                            Küçük etkileşimleri yönetmek için kullanılan minimal bir JavaScript framework.
+                            Açılır menüler, tab geçişleri, modal pencereler, form validasyonu gibi kullanıcı etkileşimlerini yönetiyor.
+                            "jQuery'nin modern, hafif versiyonu" diyebiliriz. Sadece 15KB boyutunda ama çok güçlü.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-purple-300 mb-3">Sizin İçin Ne İfade Ediyor?</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Akıcı Deneyim:</strong> Müşteri ürün filtreleme yaparken sayfa yenilenmiyor, anlık sonuç görüyor.
+                            Sepete ürün eklerken animasyonlu bir bildirim çıkıyor. Favori butonuna basınca kalp ikonu dolup boşalıyor.
+                            Bu küçük detaylar "bu site kaliteli" hissi yaratıyor.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            <strong>Mobil Uyumluluk:</strong> Alpine.js çok hafif olduğu için mobil cihazlarda bile hızlı çalışıyor.
+                            Müşterilerinizin %70'i telefondan giriyorsa, bu çok önemli. Hızlı mobil deneyim = Daha fazla mobil alışveriş.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-red-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-6xl">🔥</span>
+                    <div>
+                        <h3 class="text-4xl font-bold text-red-400">Livewire 3.x</h3>
+                        <p class="text-slate-400">Full-Stack Framework (Tam yığın geliştirme sistemi)</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-3">Livewire Nedir?</h4>
+                        <p class="text-lg leading-relaxed">
+                            Laravel'in sunduğu bir teknoloji. Frontend (kullanıcının gördüğü) ile backend (sunucu tarafı) arasındaki köprü.
+                            Normalde frontend için ayrı JavaScript framework (React, Vue gibi), backend için ayrı PHP kodu yazılır.
+                            Livewire ile her ikisini tek bir dosyada, PHP ile yazabiliyoruz. Bu hem geliştirmeyi hızlandırıyor hem de kodun bakımını kolaylaştırıyor.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-3">Sizin Açınızdan Faydası?</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Hızlı Geliştirme:</strong> "Ürün sayfasına canlı stok sayacı ekleyelim" dediğinizde,
+                            eski yöntemle 3-4 gün sürerdi (API yazılması, JavaScript kodu, test vs). Livewire ile aynı işi bir günde yapabiliyoruz.
+                            Bu da "aklıma şöyle bir özellik geldi" dediğinizde hemen hayata geçirebilmemiz demek.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            <strong>Güvenlik:</strong> Tüm iş mantığı sunucu tarafında çalıştığı için, müşteriler kodunuzu göremez veya manipüle edemez.
+                            Bu da daha güvenli bir alışveriş ortamı demek.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box mt-8 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-500/30">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4">💼 İş Sonuçlarına Etkisi:</h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Bu üç teknoloji kombinasyonu sayesinde siteniz hem görsel olarak etkileyici, hem kullanımı akıcı, hem de hızlı yükleniyor.
+                Sonuç? Müşteriler sitede daha uzun kalıyor, daha çok ürün inceliyor, alışveriş yapma olasılığı artıyor.
+                Ayrıca Google bu faktörleri ölçüyor ve sıralamada size avantaj sağlıyor.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 5: BACKEND TEKNOLOJİLERİ -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-6xl font-black mb-6"><span class="gradient-text">Backend</span> Teknolojileri</h2>
+        <p class="text-2xl text-slate-400 mb-10">Sitenizi ayakta tutan, görünmeyen ama kritik teknolojiler</p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <div class="content-box border-blue-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-7xl">🚀</span>
+                    <div>
+                        <h3 class="text-4xl font-bold text-blue-400">Laravel 12</h3>
+                        <p class="text-slate-400">PHP Web Application Framework</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-3">Laravel Nedir?</h4>
+                        <p class="text-lg leading-relaxed">
+                            Web uygulamaları geliştirmek için kullanılan bir PHP framework (çatı). Düşünün ki ev inşa ediyorsunuz.
+                            Çatı (framework) olmadan her taşı, her tuğlayı kendiniz yerleştirmeniz gerekir. Laravel size hazır bir çatı sunuyor:
+                            Temel, duvarlar, elektrik altyapısı hazır. Siz sadece dekorasyon ve özel odaları ekliyorsunuz.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-3">Neden Laravel?</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>MVC Architecture (Model-View-Controller):</strong> Kodun düzenli, anlaşılır ve bakımı kolay olması için kullanılan bir yapı.
+                            Veri yönetimi, görünüm ve iş mantığı birbirinden ayrı. Bu sayede başka bir geliştirici alsan bile kodu hemen anlayabiliyor.
+                            Bağımlılık riski azalıyor.
+                        </p>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Eloquent ORM (Object-Relational Mapping):</strong> Database (veritabanı) işlemlerini çok kolaylaştıran bir sistem.
+                            Karmaşık SQL sorguları yazmak yerine, basit PHP kodlarıyla veri çekip ekleyebiliyoruz. En önemlisi:
+                            SQL Injection (veritabanı saldırıları) gibi güvenlik açıklarına karşı otomatik koruma sağlıyor.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            <strong>Queue System (Kuyruk Sistemi):</strong> Email göndermek, görsel işlemek, rapor oluşturmak gibi uzun süren işleri arka planda yapıyor.
+                            Müşteri "sipariş ver" butonuna bastığında anında "siparişiniz alındı" mesajı görüyor. Sipariş emaili, fatura oluşturma vs.
+                            arka planda sessizce halloluyor. Site hiç yavaşlamıyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-purple-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-7xl">🐘</span>
+                    <div>
+                        <h3 class="text-4xl font-bold text-purple-400">PHP 8.4</h3>
+                        <p class="text-slate-400">Server-Side Programming Language</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-purple-300 mb-3">PHP Nedir?</h4>
+                        <p class="text-lg leading-relaxed">
+                            Sunucu tarafında (server-side) çalışan bir programlama dili. Web sitelerinin dinamik kısımlarını oluşturur.
+                            "Dinamik" ne demek? Örneğin her kullanıcıya farklı içerik göstermek: Giriş yapmış kullanıcıya "Hoşgeldin Ahmet",
+                            yapmamışa "Giriş Yap" butonu gösterme. Ürün listesini database'den çekip gösterme. Form verilerini kaydetme. Bunların hepsi PHP ile oluyor.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-purple-300 mb-3">PHP 8.4'ün Yenilikleri:</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>JIT Compiler (Just-In-Time Derleme):</strong> Kod çalıştırma hızını ciddi şekilde artıran bir teknoloji.
+                            Eskiden her sayfa yüklendiğinde PHP kodu tekrar yorumlanırdı. JIT ile bir kere yorumlanıp cache'leniyor,
+                            sonraki yüklemelerde direkt çalıştırılıyor. Sonuç: Daha hızlı sayfa yanıtları, daha fazla eşzamanlı kullanıcı kapasitesi.
+                        </p>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Type Declarations (Tip Tanımlaması):</strong> Kodun daha güvenli olmasını sağlayan bir özellik.
+                            "Bu fonksiyon sadece sayı kabul eder" diye tanımlıyorsunuz, yanlışlıkla metin gönderilirse hata veriyor.
+                            Bu da çalışma zamanı hatalarını önlüyor, sitenizin daha stabil çalışmasını sağlıyor.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            <strong>Attributes (Özellik İşaretleyicileri):</strong> Kod içinde metadata (açıklayıcı bilgi) eklemenizi sağlıyor.
+                            Bu da kodun daha okunabilir ve bakımının kolay olması demek.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="content-box border-red-500/20">
+                <span class="text-5xl mb-4 block">📦</span>
+                <h3 class="text-2xl font-bold text-red-400 mb-3">MySQL 8.0+</h3>
+                <p class="text-sm text-slate-400 mb-4">Relational Database Management System (İlişkisel Veritabanı Yönetim Sistemi)</p>
+                <p class="text-slate-300 leading-relaxed">
+                    Tüm bilgilerinizin saklandığı yer. Ürünler, müşteriler, siparişler, blog yazıları - Her şey organize bir şekilde database'de tutuluyor.
+                    MySQL dünyanın en yaygın kullanılan veritabanı sistemi. Güvenilir, hızlı, milyonlarca kayıt tutabilir.
+                    Otomatik yedekleme sistemleri sayesinde veri kaybı riski minimum.
+                </p>
+            </div>
+
+            <div class="content-box border-orange-500/20">
+                <span class="text-5xl mb-4 block">⚡</span>
+                <h3 class="text-2xl font-bold text-orange-400 mb-3">Redis Cache</h3>
+                <p class="text-sm text-slate-400 mb-4">In-Memory Data Store (Bellek İçi Veri Saklama)</p>
+                <p class="text-slate-300 leading-relaxed">
+                    Sık kullanılan verileri bellekte (RAM'de) tutan bir sistem. Normal database okuma milisaniyeler sürer, Redis microsaniye seviyesinde yanıt verir.
+                    Örnek: Anasayfadaki "En Çok Satanlar" listesi her ziyaretçi için database'den çekilmek yerine Redis'te tutuluyor.
+                    Binlerce kullanıcı aynı anda girdiğinde bile site yavaşlamıyor.
+                </p>
+            </div>
+
+            <div class="content-box border-green-500/20">
+                <span class="text-5xl mb-4 block">🔄</span>
+                <h3 class="text-2xl font-bold text-green-400 mb-3">Laravel Horizon</h3>
+                <p class="text-sm text-slate-400 mb-4">Queue Monitoring Dashboard (Kuyruk İzleme Paneli)</p>
+                <p class="text-slate-300 leading-relaxed">
+                    Arka planda çalışan işleri izlemenizi sağlayan bir panel. Email gönderildi mi? Görsel işleme tamamlandı mı?
+                    Bir hata var mı? Horizon tüm bunları gerçek zamanlı gösteriyor. Problem olduğunda anında fark edip müdahale edebiliyoruz.
+                    Bu da sitenizin kesintisiz çalışmasını garanti altına alıyor.
+                </p>
+            </div>
+        </div>
+
+        <div class="content-box bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-500/30">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4">🎯 Backend Neden Bu Kadar Önemli?</h3>
+            <p class="text-xl text-slate-200 leading-relaxed mb-4">
+                Frontend müşterinin gördüğü kısımsa, backend evin temeli gibi. Güçlü temel olmadan ne kadar güzel ev olursa olsun,
+                çabuk yıkılır. Eski sitenizin temeli 9 yıl önceki teknolojiydi. Şimdi çatlamış, kırılgan bir halde.
+            </p>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Yeni sistemin temeli 2025 teknolojisi: Laravel 12 + PHP 8.4. Sağlam, güvenli, hızlı.
+                Günde 10.000 ziyaretçi gelse bile sorunsuz çalışacak. Yıllarca güncellemesiz kalsa bile güvenlik açığı olmayacak.
+                İşte bu yüzden backend'e bu kadar önem veriyoruz.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 6: YAPAY ZEKA ALTYAPISI -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-6xl font-black mb-6"><span class="gradient-text">Yapay Zeka</span> Altyapısı</h2>
+        <p class="text-2xl text-slate-400 mb-10">Siteniz artık düşünebiliyor, öğrenebiliyor, size yardım edebiliyor</p>
+
+        <div class="content-box border-purple-500/40 bg-purple-900/20 mb-8">
+            <h3 class="text-4xl font-bold text-purple-300 mb-6">🤖 Çoklu Yapay Zeka Sağlayıcı Sistemi</h3>
+            <p class="text-xl text-slate-200 leading-relaxed mb-6">
+                <strong>Sadece tek bir yapay zeka servisine bağımlı değiliz.</strong> Sistemimiz 3 farklı yapay zeka sağlayıcısı ile çalışıyor.
+                Birisi çalışmazsa diğeri otomatik devreye giriyor. Bu sayede yapay zeka hizmetlerimiz kesintisiz devam ediyor.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-slate-800/60 rounded-xl p-6 border border-blue-500/30">
+                    <h4 class="text-2xl font-bold text-blue-400 mb-3">OpenAI</h4>
+                    <p class="text-sm text-slate-400 mb-3">(GPT-4 Turbo, GPT-3.5)</p>
+                    <p class="text-slate-300 leading-relaxed">
+                        ChatGPT'yi yapan şirket. Dünyanın en gelişmiş dil modellerine sahip. Blog yazma, müşterilerle konuşma,
+                        içerik oluşturma gibi karmaşık dil işlerinde kullanıyoruz.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/60 rounded-xl p-6 border border-orange-500/30">
+                    <h4 class="text-2xl font-bold text-orange-400 mb-3">Anthropic</h4>
+                    <p class="text-sm text-slate-400 mb-3">(Claude 3.5 Sonnet)</p>
+                    <p class="text-slate-300 leading-relaxed">
+                        Çok uzun metinleri analiz edebilen, detaylı yanıtlar verebilen bir sistem.
+                        Özellikle ürün kataloglarını analiz etme, karmaşık sorulara cevap verme konusunda güçlü.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/60 rounded-xl p-6 border border-green-500/30">
+                    <h4 class="text-2xl font-bold text-green-400 mb-3">DeepSeek</h4>
+                    <p class="text-sm text-slate-400 mb-3">(Alternatif Model)</p>
+                    <p class="text-slate-300 leading-relaxed">
+                        Maliyet-performans dengesi çok iyi bir alternatif. Basit işler için kullanıldığında
+                        maliyeti düşürüyor ama kaliteden ödün vermiyor.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-6">
+                <p class="text-lg text-slate-200 leading-relaxed">
+                    <strong>Akıllı Yük Dağılımı:</strong> Sistem hangi işin hangi AI'ya uygun olduğunu biliyor.
+                    Basit bir soru mu? Ekonomik modeli kullan. Karmaşık bir analiz mi? En güçlü modeli devreye sok.
+                    Bu sayede hem maliyet optimize ediliyor hem de en iyi sonuçlar alınıyor.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <div class="content-box border-green-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-7xl">✍️</span>
+                    <div>
+                        <h3 class="text-4xl font-bold text-green-400">AI Blog Yazarı</h3>
+                        <p class="text-slate-400">Otomatik SEO-Optimized İçerik Üretimi</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-3">Nasıl Çalışıyor?</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            Siz "forklift bakımı" konusunda blog yazılsın diyorsunuz. Yapay zeka:
+                        </p>
+                        <ul class="space-y-3 ml-6">
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">1.</span>
+                                <span>İnternetten konuyla ilgili güncel bilgileri topluyor</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">2.</span>
+                                <span>SEO için hangi kelimelerin önemli olduğunu belirliyor</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">3.</span>
+                                <span>Profesyonel, okunaklı bir blog yazısı hazırlıyor</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">4.</span>
+                                <span>İçeriğe uygun görsel için çoklu AI görsel sistemini tetikliyor</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">5.</span>
+                                <span>Meta tagları, başlıkları, SEO bilgilerini otomatik ekliyor</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-3">Sizin İçin Ne İfade Ediyor?</h4>
+                        <p class="text-lg leading-relaxed">
+                            <strong>Sürekli Güncel İçerik:</strong> Google, düzenli içerik üreten siteleri seviyor.
+                            Ayda 20-30 blog yazısı yayınlayan bir site olduğunuzu düşünün. Google sizi "aktif, güncel" olarak görüyor
+                            ve aramalar da daha yukarılarda çıkıyor. Müşteriler bloğunuzu okuyor, "bu firma uzman" diyor,
+                            size güveniyor ve alışveriş yapıyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-blue-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-7xl">💬</span>
+                    <div>
+                        <h3 class="text-4xl font-bold text-blue-400">AI Sohbet Asistanı</h3>
+                        <p class="text-slate-400">7/24 Akıllı Müşteri Desteği</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-3">Ne Yapabiliyor?</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            Sitenize bir sohbet penceresi (chatbot) eklenmiş olacak. Müşteri:
+                        </p>
+                        <ul class="space-y-3 ml-6">
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-400">💡</span>
+                                <span><strong>"2 ton kapasiteli transpalet istiyorum"</strong> yazıyor →
+                                Sistem ürün katalogunda arama yapıp uygun ürünleri gösteriyor</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-400">💡</span>
+                                <span><strong>"Fiyatı ne kadar?"</strong> soruyor →
+                                Gerçek zamanlı fiyat bilgisini veriyor</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-400">💡</span>
+                                <span><strong>"İç mekan için uygun mu?"</strong> diyor →
+                                Ürün özelliklerini analiz edip cevap veriyor</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-400">💡</span>
+                                <span><strong>"Kargo ücretsiz mi?"</strong> merak ediyor →
+                                Kargo politikanızı açıklıyor</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-3">Neden Değerli?</h4>
+                        <p class="text-lg leading-relaxed">
+                            Müşteri gece saat 23:00'te sitenize girdi. Bir soru sormak istiyor ama kimse yok.
+                            Normal sitede müşteri "yarın tekrar bakarım" deyip gidiyor (ve genelde geri gelmiyor).
+                            Sizin sitenizde AI asistan anında yanıt veriyor. Müşteri "vay be, çok profesyoneller" diyor
+                            ve o anda satın alma kararı veriyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box border-purple-500/30 bg-purple-900/10">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-7xl">🎨</span>
+                <div>
+                    <h3 class="text-4xl font-bold text-purple-400">Çoklu AI Görsel Üretim Sistemleri</h3>
+                    <p class="text-slate-400">Her İçerik İçin Özel, Benzersiz Görseller</p>
+                </div>
+            </div>
+
+            <div class="space-y-6 text-slate-300">
+                <p class="text-xl leading-relaxed">
+                    <strong>Stok fotoğraf sitelerini unutun!</strong> Sistem, her blog yazısı için,
+                    her ürün için özel görseller üretebiliyor. Birden fazla AI görsel üretim servisi ile çalışıyoruz.
+                    Bir servis yavaşsa veya kalitesiz sonuç veriyorsa, otomatik olarak alternatif servise geçiliyor.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800/40 rounded-lg p-6">
+                        <h4 class="text-xl font-bold text-purple-300 mb-4">Nasıl Çalışıyor?</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3">
+                                <span class="text-purple-400">→</span>
+                                <span>Blog başlığı: "Forklift Güvenlik İpuçları"</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-purple-400">→</span>
+                                <span>AI prompt oluşturuyor: "Industrial warehouse, forklift safety demonstration, professional lighting"</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-purple-400">→</span>
+                                <span>Görsel üretim sistemine gönderiliyor</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-purple-400">→</span>
+                                <span>30-60 saniye içinde özel görsel hazır</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-purple-400">→</span>
+                                <span>Otomatik bloğa ekleniyor</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-800/40 rounded-lg p-6">
+                        <h4 class="text-xl font-bold text-purple-300 mb-4">Faydaları:</h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400">✓</span>
+                                <span><strong>Benzersiz Görseller:</strong> Rakiplerinizin sitesinde aynı görseli görmeyeceksiniz</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400">✓</span>
+                                <span><strong>Maliyet Tasarrufu:</strong> Stok fotoğraf aboneliği, fotoğrafçı, stüdyo masrafı yok</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400">✓</span>
+                                <span><strong>Hız:</strong> İstediğiniz kadar görsel, dakikalar içinde</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400">✓</span>
+                                <span><strong>SEO:</strong> Google görsellerde arama yapan müşteri sizin benzersiz görselinizi görüyor</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box mt-8 bg-gradient-to-r from-purple-900/20 to-blue-900/20 border-purple-500/30">
+            <h3 class="text-2xl font-bold text-purple-400 mb-4">💼 Yapay Zeka = Dijital Ekibiniz</h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Düşünün: İçerik yazarı, SEO uzmanı, müşteri temsilcisi, grafik tasarımcı işe alsanız ayda ciddi bir maliyet.
+                Yapay zeka bu rollerin hepsini üstleniyor: Blog yazıyor, SEO yapıyor, müşterilerle konuşuyor, görsel üretiyor.
+                7/24 çalışıyor, tatil kullanmıyor, maaş artışı istemiyor. Sizin dijital çalışanlarınız!
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 7: SEO & ARAMA TEKNOLOJİLERİ -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-6xl font-black mb-6"><span class="gradient-text">SEO & Arama</span> Teknolojileri</h2>
+        <p class="text-2xl text-slate-400 mb-10">Google'ın sizi bulmasını ve müşterilerin sizi aramasını sağlayan sistemler</p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <div class="content-box border-blue-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-7xl">🔍</span>
+                    <div>
+                        <h3 class="text-4xl font-bold text-blue-400">Schema.org</h3>
+                        <p class="text-slate-400">Structured Data Markup (Yapılandırılmış Veri İşaretlemesi)</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-3">Schema.org Nedir?</h4>
+                        <p class="text-lg leading-relaxed">
+                            Google'ın sitenizi daha iyi anlamasını sağlayan özel kod etiketleri. Normal HTML koduna ek olarak,
+                            "bu bir ürün", "bu fiyatı", "bu stok durumu", "bu yorum puanı" gibi işaretler koyuyoruz.
+                            Google bu işaretleri okuyunca "ah, bu bir forklift ürünü, fiyatı 50.000₺, stokta var" diye anlıyor.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-3">Nasıl Fayda Sağlıyor?</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Rich Snippets (Zengin Sonuçlar):</strong> Google'da arama yaptığınızda bazı sonuçların altında
+                            yıldız puanları, fiyatlar, stok durumu görüyorsunuz. İşte o Schema.org sayesinde oluyor.
+                        </p>
+                        <p class="text-lg leading-relaxed mb-4">
+                            Müşteri "transpalet fiyatları" diye arıyor. Rakiplerinizin sitesi sadece başlık ve açıklama gösteriyor.
+                            Sizin siteniz: ⭐⭐⭐⭐⭐ 4.8 puan, "15.000₺'den başlayan fiyatlar", "Stokta var" gösteriyor.
+                            Müşteri hangisine tıklar? Tabi ki sizinkine!
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            <strong>Daha İyi Sıralama:</strong> Google, Schema kullanılan siteleri daha iyi anlayabildiği için
+                            sıralamada avantaj veriyor. Aynı kalitedeki iki siteden Schema kullanan genellikle üstte çıkıyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-purple-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-7xl">⚡</span>
+                    <div>
+                        <h3 class="text-4xl font-bold text-purple-400">Meilisearch</h3>
+                        <p class="text-slate-400">Ultra-Fast Search Engine (Ultra Hızlı Arama Motoru)</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-purple-300 mb-3">Meilisearch Nedir?</h4>
+                        <p class="text-lg leading-relaxed">
+                            Sitenizin arama kutusu için kullandığımız özel bir arama motoru. Normal database araması yavaş ve kısıtlı.
+                            Meilisearch ise özel olarak hızlı arama yapmak için geliştirilmiş. Elasticsearch'ün modern, daha hızlı alternatifi.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-purple-300 mb-3">Özellikleri:</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Typo-Tolerant (Yazım Hatası Hoşgörülü):</strong> Müşteri "transpalet" yerine "traspalet" yazsa bile
+                            doğru ürünleri buluyor. "Forklift" yerine "forklıft" yazsa sorun değil, anlıyor.
+                        </p>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Instant Results (Anlık Sonuçlar):</strong> Müşteri yazmaya başladığı anda sonuçlar görünmeye başlıyor.
+                            "for" yazdı → "forklift" önerileri geldi. "trans" yazdı → "transpalet" ürünleri listelendi.
+                            Aramayı tamamlamasına bile gerek yok!
+                        </p>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Faceted Search (Yönlü Arama):</strong> Sol tarafta filtreler var: Fiyat aralığı, marka, kapasite vb.
+                            Müşteri istediği gibi daraltıyor, aradığını hemen buluyor.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            <strong>Analytics (Analitik):</strong> En çok ne aranıyor? Hangi ürünler bulunamıyor?
+                            Bu verileri görüp ona göre stok veya içerik stratejisi belirleyebiliyorsunuz.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-purple-300 mb-3">İş Sonuçları:</h4>
+                        <p class="text-lg leading-relaxed">
+                            Müşteri aradığını hızlıca buluyor = Sitede daha uzun kalıyor = Satın alma olasılığı artıyor.
+                            Rakip sitede müşteri arama yapıyor, bulamıyor, sinirlenip çıkıyor. Sizin sitede bulmasına imkan yok!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-500/30">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4">🎯 SEO & Arama = Daha Fazla Müşteri</h3>
+            <p class="text-xl text-slate-200 leading-relaxed mb-4">
+                SEO çalışmaları kısa vadede değil, orta-uzun vadede etkisini gösteriyor. 6 ay sonra "forklift satış"
+                aramasında Google'ın ilk sayfasında olabilirsiniz. Bu da ayda binlerce potansiyel müşterinin
+                sitenizi görmesi demek.
+            </p>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Arama sistemi ise anlık etki yapıyor. Sitenize giren müşteri hemen istediğini buluyor,
+                zaman kaybetmiyor, memnun kalıyor, alışveriş yapıyor. İyi arama = Yüksek dönüşüm oranı.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 8: GÜVENLİK & PERFORMANS -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-6xl font-black mb-6"><span class="gradient-text">Güvenlik</span> & <span class="text-green-400">Performans</span></h2>
+        <p class="text-2xl text-slate-400 mb-10">Görünmeyen ama müşterilerinizi koruyan ve sitenizi hızlandıran teknolojiler</p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <div class="content-box border-red-500/40 bg-red-900/10">
+                <h3 class="text-4xl font-bold text-red-400 mb-8 flex items-center gap-4">
+                    <span class="text-6xl">🛡️</span> Güvenlik Katmanları
+                </h3>
+
+                <div class="space-y-8 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-3">SSL/TLS Şifreleme</h4>
+                        <p class="text-lg leading-relaxed">
+                            Müşteri sitenizde kredi kartı bilgisi, şifre, adres gibi özel bilgiler girdiğinde bu veriler şifreleniyor.
+                            Ortadaki bir kötü niyetli kişi veriyi ele geçirse bile şifreli olduğu için okuyamıyor, kullanamıyor.
+                            Tarayıcıda kilit ikonu ve "https://" bunun göstergesi. <strong>Müşteri güvenle alışveriş yapıyor.</strong>
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-3">CSRF Protection</h4>
+                        <p class="text-lg leading-relaxed mb-3">
+                            <strong>CSRF (Cross-Site Request Forgery)</strong> saldırısı: Kötü niyetli bir site, müşterinizin bilgisi dışında
+                            sizin sitenize istek gönderiyor. Örneğin müşteri başka sitedeyken arka planda "ürün satın al" komutu gönderilebilir.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            Laravel'in CSRF koruması her form gönderiminde özel bir token (anahtar) istiyor. Bu token olmadan hiçbir işlem yapılmıyor.
+                            Yani kötü niyetli siteler müşterileriniz adına işlem yaptıramıyor.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-3">XSS Prevention</h4>
+                        <p class="text-lg leading-relaxed mb-3">
+                            <strong>XSS (Cross-Site Scripting):</strong> Saldırganlar yorum, form gibi alanlara zararlı kod yerleştirmeye çalışıyor.
+                            Diğer müşteriler o sayfayı açtığında zararlı kod çalışıp bilgilerini çalabiliyor.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            Sistemimiz tüm kullanıcı girdilerini otomatik temizliyor (sanitize ediyor). Zararlı kod çalıştırılamıyor,
+                            sadece düz metin olarak saklanıyor. Müşterileriniz güvende.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-3">SQL Injection Koruması</h4>
+                        <p class="text-lg leading-relaxed mb-3">
+                            <strong>SQL Injection:</strong> Eski sitelerin en büyük güvenlik açığı. Saldırgan arama kutusuna özel kodlar yazıp
+                            veritabanınıza erişebiliyor, tüm müşteri bilgilerini çalabiliyor hatta silebiliyor.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            Laravel'in Eloquent ORM sistemi sayesinde tüm database sorguları otomatik korunuyor.
+                            Saldırganlar ne yaparsa yapsın veritabanınıza zarar veremez.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-3">Rate Limiting (Hız Sınırlama)</h4>
+                        <p class="text-lg leading-relaxed">
+                            Bot'lar bazen sitenize saniyede binlerce istek gönderip çökertmeye çalışıyor (DDoS saldırısı).
+                            Rate Limiting sistemi aynı IP adresinden gelen aşırı istekleri engelliyor.
+                            Normal müşteriler etkilenmiyor ama bot saldırıları otomatik bloklanıyor. <strong>Siteniz kesintisiz açık kalıyor.</strong>
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-3">2FA (İki Faktörlü Doğrulama)</h4>
+                        <p class="text-lg leading-relaxed">
+                            Admin paneline giriş yaparken sadece şifre yetmiyor, telefona gelen kod da gerekiyor.
+                            Birisi şifrenizi ele geçirse bile telefonunuz olmadan panele giremez. <strong>İşletme güvenliği maksimum seviyede.</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-green-500/40 bg-green-900/10">
+                <h3 class="text-4xl font-bold text-green-400 mb-8 flex items-center gap-4">
+                    <span class="text-6xl">⚡</span> Performans Optimizasyonları
+                </h3>
+
+                <div class="space-y-8 text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-3">Redis Cache - Detaylı Açıklama</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Cache (Önbellek) Nedir?</strong> Sık kullanılan verilerin kopyasını hızlı erişilebilecek bir yerde tutmak.
+                            Örneğin anasayfadaki "Popüler Ürünler" listesi her ziyaretçi için database'den çekilse,
+                            günde 1000 ziyaretçi = 1000 defa aynı sorgu. Gereksiz yük.
+                        </p>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Redis Ne Yapıyor?</strong> Bu listeyi RAM'de (bilgisayar belleğinde) tutuyor. RAM okuma hızı disk'ten
+                            binlerce kat daha hızlı. İlk ziyaretçi için database'den çekiliyor (50ms), Redis'e kaydediliyor.
+                            Sonraki 999 ziyaretçi için Redis'ten geliyor (1ms). Hem sunucu rahat nefes alıyor, hem site hızlanıyor.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            <strong>İş Etkisi:</strong> Sayfa yüklenme süresi kısalıyor. Müşteri "site çok hızlı" diyor, deneyimden memnun kalıyor,
+                            Google hız metriklerinde puan alıyorsunuz, sıralama yükseliyor.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-3">Laravel Horizon - Detaylı Açıklama</h4>
+                        <p class="text-lg leading-relaxed mb-4">
+                            <strong>Queue (Kuyruk) Sistemi Nedir?</strong> Uzun süren işleri arka plana atıp daha sonra yapmak.
+                            Müşteri sipariş verdi → Email göndermek 2 saniye sürüyor. Müşteri 2 saniye beklemek istemiyor,
+                            hemen "Siparişiniz alındı" görmek istiyor.
+                        </p>
+                        <p class="text-lg leading-relaxed mb-4">
+                            Queue sistemi: Sipariş verisini kuyruğa atıyor, müşteriye anında "tamamlandı" diyor.
+                            Arka planda job (iş) worker'ları bu kuyruğu işliyor: Email gönderme, fatura oluşturma, stok güncelleme vs.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            <strong>Horizon Bu İşleri İzliyor:</strong> Gerçek zamanlı panel var, hangi işler çalışıyor, hangileri bitti,
+                            hata alan var mı görebiliyorsunuz. Bir sorun olduğunda anında fark edip müdahale edebiliyoruz.
+                            Müşteriler "emailim gelmedi" demeden biz düzeltiyoruz.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-3">OPcache (PHP Bytecode Cache)</h4>
+                        <p class="text-lg leading-relaxed">
+                            Normal şartlarda her sayfa isteğinde PHP kodu tekrar yorumlanıyor (parsing). OPcache bu yorumlanmış kodu bellekte tutuyor.
+                            Yeniden yorumlamaya gerek kalmıyor, direkt çalıştırılıyor. PHP kodları %30-50 daha hızlı çalışıyor.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-3">Gzip/Brotli Compression</h4>
+                        <p class="text-lg leading-relaxed">
+                            Sunucudan tarayıcıya gönderilen HTML, CSS, JavaScript dosyaları sıkıştırılıyor. 500KB HTML dosyası → 80KB olabiliyor.
+                            Özellikle mobil bağlantılarda (3G, 4G) çok fark ediyor. Daha az veri = Daha hızlı yüklenme.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-3">WebP Image Format</h4>
+                        <p class="text-lg leading-relaxed">
+                            Ürün fotoğrafları eskiden JPG/PNG formatındaydı. WebP modern bir görsel formatı: Aynı kalitede %30-50 daha küçük dosya.
+                            Sitenizde 100 ürün görseli var, her biri 200KB → WebP ile 80KB'a iniyor. Sayfa çok daha hızlı yükleniyor.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-3">Lazy Loading (Tembel Yükleme)</h4>
+                        <p class="text-lg leading-relaxed">
+                            Sayfada 50 ürün var ama müşteri sadece ilk 5'ini görüyor. Lazy loading: Sadece ekranda görünen görseller yükleniyor.
+                            Müşteri scroll yapıp aşağı indikçe diğerleri yükleniyor. İlk yüklenme çok hızlı oluyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box bg-gradient-to-r from-red-900/20 to-green-900/20 border-yellow-500/40">
+            <h3 class="text-2xl font-bold text-yellow-400 mb-4">🎯 Güvenlik & Performans = Güven & Memnuniyet</h3>
+            <p class="text-xl text-slate-200 leading-relaxed mb-4">
+                <strong>Güvenlik:</strong> Müşterileriniz bilgilerinin güvende olduğunu biliyor. "Bu sitede rahatça alışveriş yapabilirim" güveni oluşuyor.
+                Bir kere güven kazanınca müşteri tekrar geliyor, sadık müşteri oluyor.
+            </p>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                <strong>Performans:</strong> Site hızlı = Müşteri memnun = Google mutlu = Daha fazla ziyaretçi.
+                Rakip sitede sayfa 5 saniyede açılıyor, müşteri sinirleniyor, kapatıyor. Sizin site 1 saniyede açılıyor, müşteri "vay be" diyor,
+                alışverişe devam ediyor. Hız farkı satış farkı yaratıyor.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 9: 25 MODÜL SİSTEMİ -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-6xl font-black mb-6"><span class="gradient-text">25 Modül</span> Sistemi</h2>
+        <p class="text-2xl text-slate-400 mb-10">Her biri ayrı bir özellik, hepsi birlikte tam bir ekosistem</p>
+
+        <div class="content-box border-blue-500/40 bg-blue-900/10 mb-8">
+            <h3 class="text-3xl font-bold text-blue-400 mb-6">🧩 Modüler Mimari Nedir?</h3>
+            <p class="text-xl text-slate-200 leading-relaxed mb-4">
+                Sistemimiz <strong>LEGO</strong> gibi çalışıyor. Her modül bağımsız bir özellik sağlıyor ama hepsi birbiriyle uyumlu.
+                Bir müşteriye "Blog istemiyorum" diyorsa Blog modülünü kapatabiliyoruz, site çalışmaya devam ediyor.
+                Başka müşteri "AI chat istiyorum" diyorsa AI modülünü açıyoruz, hemen kullanıma hazır.
+            </p>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                <strong>Eski sistemde:</strong> Her şey iç içe, bir şeyi değiştirmek istesen tüm sistemi bozma riski var.
+                <strong>Yeni sistemde:</strong> Her modül ayrı, rahatça ekle/çıkar/güncelle yapabiliyoruz.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="content-box border-green-500/30">
+                <h4 class="text-2xl font-bold text-green-400 mb-4 flex items-center gap-3">
+                    <span class="text-4xl">📦</span> İçerik Yönetimi
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-400 mt-1">•</span>
+                        <div><strong>Page:</strong> Hakkımızda, İletişim gibi statik sayfalar</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-400 mt-1">•</span>
+                        <div><strong>Blog:</strong> Haber, makale, SEO içerikleri</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-400 mt-1">•</span>
+                        <div><strong>FAQ:</strong> Sık sorulan sorular sistemi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-400 mt-1">•</span>
+                        <div><strong>Media Library:</strong> Tüm görsellerin merkezi yönetimi</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-box border-blue-500/30">
+                <h4 class="text-2xl font-bold text-blue-400 mb-4 flex items-center gap-3">
+                    <span class="text-4xl">🛒</span> E-Ticaret
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 mt-1">•</span>
+                        <div><strong>Shop:</strong> Ürün katalog sistemi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 mt-1">•</span>
+                        <div><strong>Product:</strong> Detaylı ürün yönetimi, varyantlar, stok</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 mt-1">•</span>
+                        <div><strong>Category:</strong> Ürün kategorilendirme</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 mt-1">•</span>
+                        <div><strong>Brand:</strong> Marka yönetimi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 mt-1">•</span>
+                        <div><strong>Cart:</strong> Sepet sistemi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 mt-1">•</span>
+                        <div><strong>Order:</strong> Sipariş yönetimi</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-box border-purple-500/30">
+                <h4 class="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-3">
+                    <span class="text-4xl">🤖</span> Yapay Zeka
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-purple-400 mt-1">•</span>
+                        <div><strong>AI:</strong> Çoklu AI sağlayıcı yönetimi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-purple-400 mt-1">•</span>
+                        <div><strong>AI Chat:</strong> Müşteri sohbet asistanı</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-purple-400 mt-1">•</span>
+                        <div><strong>AI Blog Writer:</strong> Otomatik içerik üretimi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-purple-400 mt-1">•</span>
+                        <div><strong>AI Image Generation:</strong> Çoklu AI görsel üretim</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-box border-yellow-500/30">
+                <h4 class="text-2xl font-bold text-yellow-400 mb-4 flex items-center gap-3">
+                    <span class="text-4xl">👥</span> Kullanıcı Sistemi
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-yellow-400 mt-1">•</span>
+                        <div><strong>User:</strong> Kullanıcı yönetimi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-yellow-400 mt-1">•</span>
+                        <div><strong>Role & Permission:</strong> Yetki sistemi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-yellow-400 mt-1">•</span>
+                        <div><strong>Profile:</strong> Müşteri profil yönetimi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-yellow-400 mt-1">•</span>
+                        <div><strong>Favorites:</strong> Favori ürünler</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-box border-red-500/30">
+                <h4 class="text-2xl font-bold text-red-400 mb-4 flex items-center gap-3">
+                    <span class="text-4xl">⭐</span> Sosyal Özellikler
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-red-400 mt-1">•</span>
+                        <div><strong>Review:</strong> Müşteri yorumları ve puanlama</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-red-400 mt-1">•</span>
+                        <div><strong>Rating:</strong> Yıldız sistemi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-red-400 mt-1">•</span>
+                        <div><strong>Comment:</strong> Yorum sistemi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-red-400 mt-1">•</span>
+                        <div><strong>Share:</strong> Sosyal medya paylaşım</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-box border-orange-500/30">
+                <h4 class="text-2xl font-bold text-orange-400 mb-4 flex items-center gap-3">
+                    <span class="text-4xl">🔍</span> Arama & SEO
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-orange-400 mt-1">•</span>
+                        <div><strong>Search:</strong> Meilisearch entegrasyonu</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-orange-400 mt-1">•</span>
+                        <div><strong>Search History:</strong> Arama geçmişi ve analitik</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-orange-400 mt-1">•</span>
+                        <div><strong>SEO:</strong> Meta tag, Schema.org yönetimi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-orange-400 mt-1">•</span>
+                        <div><strong>Sitemap:</strong> Otomatik sitemap üretimi</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-box border-pink-500/30">
+                <h4 class="text-2xl font-bold text-pink-400 mb-4 flex items-center gap-3">
+                    <span class="text-4xl">⚙️</span> Sistem Modülleri
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-pink-400 mt-1">•</span>
+                        <div><strong>Settings:</strong> Site ayarları yönetimi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-pink-400 mt-1">•</span>
+                        <div><strong>Language:</strong> Çoklu dil desteği</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-pink-400 mt-1">•</span>
+                        <div><strong>Currency:</strong> Çoklu para birimi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-pink-400 mt-1">•</span>
+                        <div><strong>Translation:</strong> Dinamik çeviri sistemi</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-box border-cyan-500/30">
+                <h4 class="text-2xl font-bold text-cyan-400 mb-4 flex items-center gap-3">
+                    <span class="text-4xl">📊</span> Analitik & Raporlama
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-cyan-400 mt-1">•</span>
+                        <div><strong>Analytics:</strong> Ziyaretçi davranış analizi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-cyan-400 mt-1">•</span>
+                        <div><strong>Log:</strong> Sistem log kayıtları</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-cyan-400 mt-1">•</span>
+                        <div><strong>Activity:</strong> Kullanıcı aktivite takibi</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content-box border-indigo-500/30">
+                <h4 class="text-2xl font-bold text-indigo-400 mb-4 flex items-center gap-3">
+                    <span class="text-4xl">📧</span> İletişim & Bildirim
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-indigo-400 mt-1">•</span>
+                        <div><strong>Contact:</strong> İletişim form sistemi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-indigo-400 mt-1">•</span>
+                        <div><strong>Newsletter:</strong> Email bülteni sistemi</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-indigo-400 mt-1">•</span>
+                        <div><strong>Notification:</strong> Push bildirimleri</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-box mt-8 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-500/30">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4">💼 Modüler Sistem = Sınırsız Esneklik</h3>
+            <p class="text-xl text-slate-200 leading-relaxed mb-4">
+                <strong>Bugün:</strong> 25 modül var, hepsi aktif. E-ticaret, blog, AI, arama, SEO - Her şey hazır.
+            </p>
+            <p class="text-xl text-slate-200 leading-relaxed mb-4">
+                <strong>3 ay sonra:</strong> "Forum modülü ekleyelim" diyorsunuz. Yeni modül yazıyoruz,
+                diğer 25 modüle dokunmadan sisteme ekliyoruz. 26 modül oldu, hepsi çalışıyor.
+            </p>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                <strong>6 ay sonra:</strong> Başka müşteriye "Video kurs" modülü yaptık. Sizin sitenize de eklemek ister misiniz?
+                Tek tıkla aktif ediyoruz. İşte "yaşayan sistem" bu demek. Sürekli büyüyor, sürekli güçleniyor.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 10: SONUÇ -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col justify-center h-full">
+            <h2 class="text-7xl font-black mb-10 text-center">
+                <span class="gradient-text">Yaşayan Sisteminiz</span><br>
+                <span class="text-white">Hazır!</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="content-box border-green-500/40 bg-green-900/10">
+                    <h3 class="text-4xl font-bold text-green-400 mb-8 flex items-center gap-4">
+                        <span class="text-6xl">✨</span> Size Neler Sunuyoruz?
+                    </h3>
+                    <div class="space-y-6 text-lg text-slate-200">
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🎨</span>
+                            <div>
+                                <strong>Modern, Benzersiz Tasarım:</strong> Tailwind CSS ile rakiplerden farklı, markanıza özel görünüm
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">⚡</span>
+                            <div>
+                                <strong>Yüksek Performans:</strong> Redis cache, OPcache, WebP - Site hızlı, Google mutlu
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🤖</span>
+                            <div>
+                                <strong>Yapay Zeka Gücü:</strong> Blog yazar, müşterilerle konuşur, görsel üretir - 7/24 çalışan dijital ekip
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🔍</span>
+                            <div>
+                                <strong>SEO & Bulunabilirlik:</strong> Schema.org, Meilisearch - Google'da görünün, müşteriler sizi kolayca bulsun
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🛡️</span>
+                            <div>
+                                <strong>Maksimum Güvenlik:</strong> SSL, CSRF, XSS, SQL Injection koruması - Müşterileriniz güvende
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🧩</span>
+                            <div>
+                                <strong>25 Modül Sistemi:</strong> Her özellik ayrı modül, istediğiniz gibi özelleştirin
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-box border-blue-500/40 bg-blue-900/10">
+                    <h3 class="text-4xl font-bold text-blue-400 mb-8 flex items-center gap-4">
+                        <span class="text-6xl">🎯</span> İş Sonuçları
+                    </h3>
+                    <div class="space-y-6 text-lg text-slate-200">
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">📈</span>
+                            <div>
+                                <strong>Daha Fazla Ziyaretçi:</strong> SEO çalışmaları ve hızlı site sayesinde Google sıralamasında yükseliyorsunuz
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">💬</span>
+                            <div>
+                                <strong>Gece Yarısı Satış:</strong> AI chat asistan 7/24 müşterilere yardım ediyor, hiçbir fırsat kaçmıyor
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">⭐</span>
+                            <div>
+                                <strong>Müşteri Memnuniyeti:</strong> Hızlı site, kolay arama, akıcı deneyim - Müşteriler memnun kalıyor, tekrar geliyor
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">📱</span>
+                            <div>
+                                <strong>Mobil Satışlar:</strong> Site mobilde de çok hızlı ve kullanışlı, mobil müşteriler de alışveriş yapıyor
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🔄</span>
+                            <div>
+                                <strong>Sürekli Gelişim:</strong> Sistem yaşıyor, her gün yeni özellikler ekleniyor, siz hiç uğraşmadan güçleniyorsunuz
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🏆</span>
+                            <div>
+                                <strong>Rekabet Avantajı:</strong> Rakipleriniz eski teknoloji kullanırken, siz 2025 teknolojisiyle öndesiniz
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-purple-500/50">
+                <div class="text-center">
+                    <p class="text-3xl text-slate-100 leading-relaxed mb-6">
+                        <strong>9 yıl önce</strong> size bir web sitesi yaptık.<br>
+                        <strong>Bugün</strong> size <span class="text-purple-400 font-bold">yaşayan bir sistem</span> sunuyoruz.
+                    </p>
+                    <p class="text-2xl text-slate-300 leading-relaxed mb-8">
+                        Bu sistem sizinle birlikte büyüyecek, gelişecek, güçlenecek.<br>
+                        Siz işinize odaklanın, teknoloji tarafını biz hallediyoruz.
+                    </p>
+                    <div class="text-5xl font-black gradient-text">
+                        unimadmadencilik.com
+                    </div>
+                    <p class="text-xl text-slate-400 mt-6">Geleceğe Hazır, Şimdi Yayında!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+
+function show(n) {
+    if (n >= total) n = total - 1;
+    if (n < 0) n = 0;
+    current = n;
+
+    slides.forEach((s, i) => {
+        s.classList.remove('active', 'prev');
+        if (i === current) s.classList.add('active');
+        else if (i < current) s.classList.add('prev');
+    });
+
+    document.getElementById('prev').disabled = current === 0;
+    document.getElementById('next').disabled = current === total - 1;
+    document.getElementById('current').textContent = current + 1;
+}
+
+function change(d) { show(current + d); }
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') change(-1);
+    if (e.key === 'ArrowRight') change(1);
+});
+
+show(0);
+</script>
+<div class="nav-buttons">
+    <button id="prev" class="nav-btn" onclick="change(-1)">◀</button>
+    <button id="next" class="nav-btn" onclick="change(1)">▶</button>
+</div>
+<div class="counter"><span id="current">1</span> / <span id="total">3</span></div>
+<script>document.getElementById('total').textContent = total;</script>
+</html>

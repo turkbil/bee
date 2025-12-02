@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unimad Madencilik - Yeni Nesil Web Sistemi Sunumu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+
+        html, body {
+            background: #0a0f1e;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
+                linear-gradient(135deg, #0a0f1e 0%, #1a1f3e 50%, #0a0f1e 100%);
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Slide System */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            min-height: 100vh;
+            padding: 3rem 4rem 10rem 4rem;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            display: none;
+            background: transparent;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            display: block;
+            z-index: 2;
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        /* Typography */
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease infinite;
+        }
+
+        .gradient-text-green {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Content Boxes */
+        .content-box {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 1.25rem;
+            padding: 2rem;
+        }
+
+        /* Navigation - Daha asagida */
+        .nav-buttons {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 2rem;
+            display: flex;
+            gap: 0.75rem;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(59, 130, 246, 0.5);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(59, 130, 246, 0.5);
+            transform: scale(1.1);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Counter */
+        .counter {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 2rem;
+            background: rgba(10, 15, 30, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            z-index: 1000;
+        }
+
+        /* Float Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .float { animation: float 3s ease-in-out infinite; }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 2px solid rgba(96, 165, 250, 0.3);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .slide { padding: 2rem 1.5rem 8rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="animated-bg"></div>
+
+<!-- ================================== -->
+<!-- SLIDE 1: KAPAK -->
+<!-- ================================== -->
+<div class="slide active">
+    <div class="flex flex-col justify-center items-center h-full max-w-6xl mx-auto text-center" style="min-height: 85vh;">
+        <div class="float mb-6">
+            <i class="fas fa-mountain text-9xl text-blue-400 opacity-60"></i>
+        </div>
+        <h1 class="text-9xl font-black mb-6 leading-tight tracking-tight">
+            <span class="gradient-text">UNIMAD</span>
+        </h1>
+        <h2 class="text-6xl font-bold text-white mb-8">MADENCiLiK</h2>
+        <div class="w-32 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full mb-8"></div>
+        <p class="text-4xl text-slate-200 mb-6 font-light">
+            <span class="gradient-text font-semibold">Yasayan</span> Web Sisteminiz
+        </p>
+        <p class="text-2xl text-slate-400 max-w-3xl leading-relaxed">
+            9 yil once yaptigimiz web siteniz <span class="text-red-400">statikti, durgundu.</span><br>
+            Simdi size <span class="text-blue-400 font-semibold">surekli gelisen, buyuyen</span> bir sistem sunuyoruz.
+        </p>
+        <div class="mt-12 flex items-center gap-3 text-xl text-slate-500">
+            <i class="fas fa-globe text-blue-400"></i>
+            <span class="font-medium">unimadmadencilik.com</span>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 2: YASAYAN SISTEM NEDIR? -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Yasayan Sistem</span> Ne Demek?</h2>
+        <p class="text-2xl text-slate-300 mb-10">Cunki sizin siteniz artik durmuyor, her gun gelisiyor!</p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <div class="bg-red-900/20 border-2 border-red-500/40 rounded-2xl p-8">
+                <h3 class="text-3xl font-bold text-red-400 mb-6">Eski Yaklasim (2015)</h3>
+                <div class="space-y-5 text-xl text-slate-300">
+                    <p><strong class="text-red-300">Statik Sistem:</strong> Web sitesini yaptik, yayinladik, 9 yil dokunmadik. Google algoritmalari degisti, mobil onem kazandi, guvenlik standartlari yukseldi ama siteniz ayni kaldi.</p>
+                    <p><strong class="text-red-300">Teknoloji Eskidi:</strong> Bootstrap 3 kullanmistik, simdi Bootstrap 5 cikti. PHP 7.4'tu, simdi 8.4. Ama guncelleyemedik cunku tum sistemi yeniden yazmak gerekiyordu.</p>
+                    <p><strong class="text-red-300">Rakipler Gecti:</strong> Diger firmalar yeni ozellikler ekledi - canli sohbet, yapay zeka asistan, hizli arama. Bizim sitemiz geride kaldi.</p>
+                </div>
+            </div>
+
+            <div class="bg-green-900/20 border-2 border-green-500/40 rounded-2xl p-8">
+                <h3 class="text-3xl font-bold text-green-400 mb-6">Yeni Yaklasim (2025)</h3>
+                <div class="space-y-5 text-xl text-slate-300">
+                    <p><strong class="text-green-300">Canli Sistem:</strong> Sistemimiz merkezi bir yapida. Diger musterilerimiz icin gelistirdigimiz her yeni ozellik, sizin sitenize de otomatik geliyor. Ek ucret yok, ek is yok.</p>
+                    <p><strong class="text-green-300">Surekli Guncelleme:</strong> Google algoritmasi degisti mi? Sistem kendini ayarliyor. Yeni bir guvenlik standardi cikti mi? Tum siteler ayni anda guncellenmis oluyor.</p>
+                    <p><strong class="text-green-300">Rekabette Onde:</strong> Rakipleriniz hala 5 yil onceki teknoloji kullanirken, siz her zaman en yeni ozelliklere sahipsiniz.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4">Somut Ornek:</h3>
+            <p class="text-xl text-slate-200 leading-relaxed mb-4">
+                Diyelim ki bugun baska bir musterimiz icin "Belge arsiv sistemi" ozelligi ekledik.
+                Yarin bu ozellik sizin sitenizde de hazir. Siz hic ugrasmadınız, para odemediniz ama siteniz daha guclu oldu.
+            </p>
+            <p class="text-xl text-slate-300 leading-relaxed">
+                Bu yuzden "yasayan sistem" diyoruz. Tipki canli bir organizma gibi, surekli buyuyor, gelisiyor, gucleniyor.
+                Sizin tek yapmaniz gereken musterilerinize odaklanmak. Teknik tarafi, guncellemeleri, yeni ozellikleri biz hallediyoruz.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 3: ESKI vs YENI TEKNOLOJI -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Eski</span> vs <span class="gradient-text-green">Yeni</span> Teknoloji</h2>
+        <p class="text-2xl text-slate-400 mb-10">Neden yeniden yaptik? Cunku teknoloji 9 yilda tamamen degisti!</p>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="content-box border-red-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-5xl">🐌</span>
+                    <div>
+                        <h3 class="text-3xl font-bold text-red-400">Bootstrap (2015 Teknolojisi)</h3>
+                        <p class="text-lg text-slate-400">Component-Based Framework (Hazir Bilesen Sistemi)</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-lg text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-2">Hazir Kaliplar Sistemi:</h4>
+                        <p class="leading-relaxed">Bootstrap hazir "component" (bilesen) sistemiyle calisir. Buton mu lazim? Hazir buton kullan. Kart mi lazim? Hazir kart kullan. Kulaga pratik geliyor ama sorun su: Binlerce site ayni hazir parcalari kullaniyor. Sonuc? Her site birbirine benziyor. Musteri "bu siteyi daha once de gordum" hissi yasiyor.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-2">Siskin Dosya Boyutlari:</h4>
+                        <p class="leading-relaxed">Bootstrap tum ozellikleri iceren buyuk bir CSS dosyasi yukler. Sitenizde sadece buton ve form kullaniyor olsaniz bile, kullanmadiginiz binlerce satir kod da yukleniyor. Bu da sayfayi yavaslatıyor. Ozellikle mobilde bu fark edilir - kullanici bekliyor, sabirsizlaniyor, siteden ayriliyor.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-red-300 mb-2">Sinirli Ozellestirme:</h4>
+                        <p class="leading-relaxed">Ozel bir tasarim istediginizde Bootstrap'in kurallarini "ezmek" gerekiyor. Bu hem zor hem de bakimi zor kod uretiyor. Kompromislerle dolu bir surec.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-green-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-5xl">⚡</span>
+                    <div>
+                        <h3 class="text-3xl font-bold text-green-400">Tailwind CSS (2025 Teknolojisi)</h3>
+                        <p class="text-lg text-slate-400">Utility-First Framework (Yardimci Sinif Sistemi)</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-lg text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-2">Benzersiz Tasarim Ozgurlugu:</h4>
+                        <p class="leading-relaxed">Tailwind kucuk yardimci siniflar sunar. Bunlari LEGO parcalari gibi istediginiz sekilde birlestirirsiniz. Sonuc? Tamamen size ozel tasarim. Rakiplerinizle benzerlik yok. Musteri "bu site profesyonel, kendine ozgu" diyor. Bu da guven ve marka degeri yaratiyor.</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-2">Ultra Optimize Dosya Boyutu:</h4>
+                        <p class="leading-relaxed">Tailwind'in "PurgeCSS" sistemi sayesinde sadece kullandiginiz siniflar final CSS'e dahil ediliyor. 2MB CSS dosyasi → 10KB CSS dosyasina iniyor! Bu da sayfalarin cok hizli acilmasi demek. Google bu hizi olcuyor ve siralamada size arti puan veriyor. <strong>Hizli site = Google'da ust sira = Daha fazla ziyaretci = Daha fazla musteri.</strong></p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-green-300 mb-2">Sinirsiz Esneklik:</h4>
+                        <p class="leading-relaxed">Akliniza gelen her tasarimi yapabiliyoruz. Hicbir kisitlama yok. Tasarimcinin hayalindeki her sey kodlanabiliyor. Bu da markaniza ozel, unutulmaz bir web deneyimi yaratiyor.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box mt-8">
+            <p class="text-xl text-slate-200 leading-relaxed">
+                <span class="text-blue-400 font-bold">Sonuc:</span>
+                Tailwind ile siteniz daha hizli yukleniyor (Google bunu odullendiriyor), daha ozgun gorunuyor (musteriler hatirliyor), daha kolay guncellenebiliyor (yeni ozellikler hemen eklenebiliyor). Bunlarin hepsi is sonuclarina direkt yansiyor: <strong>Daha fazla ziyaretci, daha uzun sitede kalma suresi, daha yuksek donusum orani.</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 4: FRONTEND TEKNOLOJILERI -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Frontend</span> Teknolojileri</h2>
+        <p class="text-2xl text-slate-400 mb-8">Musterilerinizin gordugu, dokundugu, deneyimledigi her sey</p>
+
+        <div class="space-y-6">
+            <div class="content-box border-blue-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-6xl">🎨</span>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-400">Tailwind CSS 3.x</h3>
+                        <p class="text-lg text-slate-400">Utility-First CSS Framework (Yardimci sinif odakli stil sistemi)</p>
+                    </div>
+                </div>
+
+                <div class="space-y-5 text-lg text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-2">Tailwind Nedir?</h4>
+                        <p class="leading-relaxed">
+                            Geleneksel CSS framework'lerinden farkli olarak, Tailwind size hazir "buton", "kart", "navbar" gibi componentler vermez.
+                            Bunun yerine binlerce kucuk yardimci sinif sunar. Bu siniflari istediginiz gibi birlestirerek tamamen ozgun tasarimlar yaratiyorsunuz.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-2">Neden Onemli?</h4>
+                        <p class="leading-relaxed mb-3">
+                            <strong>1. Benzersiz Marka Imaji:</strong> Rakiplerinizin siteleri birbirine benziyor cunku hepsi ayni hazir sablonlari kullaniyor.
+                            Sizin siteniz ise tamamen ozgun. Musteri "bu firma profesyonel, detaylara onem veriyor" algisi olusturuyor.
+                            Bu algi guven yaratiyor, guven satis yapiyor.
+                        </p>
+                        <p class="leading-relaxed mb-3">
+                            <strong>2. Sayfa Hizi:</strong> Tailwind'in kullanilmayan kod temizleme ozelligi sayesinde son CSS dosyasi cok kucuk oluyor.
+                            Kucuk dosya = Hizli yuklenme = Musteri beklemeden siteyi goruyor = Google siralamada size puan veriyor.
+                        </p>
+                        <p class="leading-relaxed">
+                            <strong>3. Gelistirme Hizi:</strong> Yeni bir ozellik eklemek istediginizde cok hizli yapabiliyoruz.
+                            Bu da "bu ozelligi ekleyebilir misiniz?" dediginizde cevabimizin "evet, hemen yapilir" olmasi demek.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="content-box border-purple-500/30">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-5xl">⚡</span>
+                        <div>
+                            <h3 class="text-2xl font-bold text-purple-400">Alpine.js 3.x</h3>
+                            <p class="text-sm text-slate-400">Lightweight JavaScript Framework (Hafif JavaScript kutuphanesi)</p>
+                        </div>
+                    </div>
+                    <p class="text-lg text-slate-300 leading-relaxed mb-3">
+                        Kucuk etkilesimleri yonetmek icin kullanilan minimal bir JavaScript framework.
+                        Acilir menuler, tab gecisleri, modal pencereler, form dogrulamasi gibi kullanici etkileşimlerini yonetiyor.
+                    </p>
+                    <p class="text-lg text-slate-300 leading-relaxed">
+                        <strong>Sizin Icin Ne Ifade Ediyor?</strong> Musteri urun filtreleme yaparken sayfa yenilenmiyor, anlik sonuc goruyor.
+                        Sepete urun eklerken animasyonlu bir bildirim cikiyor. Bu kucuk detaylar "bu site kaliteli" hissi yaratiyor.
+                    </p>
+                </div>
+
+                <div class="content-box border-red-500/30">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="text-5xl">🔥</span>
+                        <div>
+                            <h3 class="text-2xl font-bold text-red-400">Livewire 3.x</h3>
+                            <p class="text-sm text-slate-400">Full-Stack Framework (Tam yigin gelistirme sistemi)</p>
+                        </div>
+                    </div>
+                    <p class="text-lg text-slate-300 leading-relaxed mb-3">
+                        Laravel'in sundugu bir teknoloji. Frontend (kullanicinin gordugu) ile backend (sunucu tarafi) arasindaki kopru.
+                        Normalde frontend icin ayri JavaScript, backend icin ayri PHP kodu yazilir. Livewire ile her ikisini tek bir dosyada yapabiliyoruz.
+                    </p>
+                    <p class="text-lg text-slate-300 leading-relaxed">
+                        <strong>Hizli Gelistirme:</strong> "Sayfaya canli sayac ekleyelim" dediginizde, eski yontemle 3-4 gun surerdi.
+                        Livewire ile ayni isi bir gunde yapabiliyoruz.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 5: BACKEND TEKNOLOJILERI -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Backend</span> Teknolojileri</h2>
+        <p class="text-2xl text-slate-400 mb-8">Sitenizi ayakta tutan, gorunmeyen ama kritik teknolojiler</p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-6">
+            <div class="content-box border-blue-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-6xl">🚀</span>
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-400">Laravel 12</h3>
+                        <p class="text-lg text-slate-400">PHP Web Application Framework</p>
+                    </div>
+                </div>
+
+                <div class="space-y-5 text-lg text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-2">Laravel Nedir?</h4>
+                        <p class="leading-relaxed">
+                            Web uygulamalari gelistirmek icin kullanilan bir PHP framework (cati). Dusunun ki ev insa ediyorsunuz.
+                            Cati (framework) olmadan her tasi, her tuglayı kendiniz yerlestirmeniz gerekir. Laravel size hazir bir cati sunuyor:
+                            Temel, duvarlar, elektrik altyapisi hazir. Siz sadece dekorasyon ve ozel odalari ekliyorsunuz.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-300 mb-2">Neden Laravel?</h4>
+                        <p class="leading-relaxed mb-3">
+                            <strong>MVC Architecture (Model-View-Controller):</strong> Kodun duzenli, anlasilir ve bakimi kolay olmasi icin kullanilan bir yapi.
+                            Veri yonetimi, gorunum ve is mantigi birbirinden ayri. Bu sayede baska bir gelistirici alsan bile kodu hemen anlayabiliyor.
+                            Bagimlilik riski azaliyor.
+                        </p>
+                        <p class="leading-relaxed">
+                            <strong>Queue System (Kuyruk Sistemi):</strong> Email gondermek, gorsel islemek, rapor olusturmak gibi uzun suren isleri arka planda yapiyor.
+                            Musteri "siparis ver" butonuna bastiginda aninda "siparisiniz alindi" mesaji goruyor. Email, fatura olusturma vs.
+                            arka planda sessizce halloluyor. Site hic yavaslamiyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-purple-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <span class="text-6xl">🐘</span>
+                    <div>
+                        <h3 class="text-3xl font-bold text-purple-400">PHP 8.4</h3>
+                        <p class="text-lg text-slate-400">Server-Side Programming Language</p>
+                    </div>
+                </div>
+
+                <div class="space-y-5 text-lg text-slate-300">
+                    <div>
+                        <h4 class="text-xl font-bold text-purple-300 mb-2">PHP Nedir?</h4>
+                        <p class="leading-relaxed">
+                            Sunucu tarafinda (server-side) calisan bir programlama dili. Web sitelerinin dinamik kisimlarini olusturur.
+                            "Dinamik" ne demek? Ornegin her kullaniciya farkli icerik gostermek: Giris yapmis kullaniciya "Hosgeldin Ahmet",
+                            yapmamiş kullaniciya "Giris Yap" butonu gosterme. Urun listesini veritabanindan cekip gosterme. Form verilerini kaydetme.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xl font-bold text-purple-300 mb-2">PHP 8.4'un Yenilikleri:</h4>
+                        <p class="leading-relaxed mb-3">
+                            <strong>JIT Compiler (Just-In-Time Derleme):</strong> Kod calistirma hizini ciddi sekilde artiran bir teknoloji.
+                            Eskiden her sayfa yuklendiginde PHP kodu tekrar yorumlanirdi. JIT ile bir kere yorumlanip cache'leniyor,
+                            sonraki yuklemelerde direkt calistirilıyor. Sonuc: Daha hizli sayfa yanitlari, daha fazla eszamanli kullanici kapasitesi.
+                        </p>
+                        <p class="leading-relaxed">
+                            <strong>Type Declarations (Tip Tanimlamasi):</strong> Kodun daha guvenli olmasini saglayan bir ozellik.
+                            Calisma zamani hatalarini onluyor, sitenizin daha stabil calismasini sagliyor.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="feature-card">
+                <span class="text-4xl mb-3 block">📦</span>
+                <h3 class="text-xl font-bold text-red-400 mb-2">MySQL 8.0+</h3>
+                <p class="text-sm text-slate-400 mb-3">Iliskisel Veritabani Yonetim Sistemi</p>
+                <p class="text-slate-300 leading-relaxed">
+                    Tum bilgilerinizin saklandigi yer. Dunyanin en yaygin kullanilan veritabani sistemi. Guvenilir, hizli, milyonlarca kayit tutabilir.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="text-4xl mb-3 block">⚡</span>
+                <h3 class="text-xl font-bold text-orange-400 mb-2">Redis Cache</h3>
+                <p class="text-sm text-slate-400 mb-3">Bellek Ici Veri Saklama</p>
+                <p class="text-slate-300 leading-relaxed">
+                    Sik kullanilan verileri bellekte (RAM'de) tutan bir sistem. Normal veritabani okuma milisaniyeler surer, Redis mikrosaniye seviyesinde yanit verir.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="text-4xl mb-3 block">🔄</span>
+                <h3 class="text-xl font-bold text-green-400 mb-2">Laravel Horizon</h3>
+                <p class="text-sm text-slate-400 mb-3">Kuyruk Izleme Paneli</p>
+                <p class="text-slate-300 leading-relaxed">
+                    Arka planda calisan isleri izlemenizi saglayan bir panel. Email gonderildi mi? Hata var mi? Gercek zamanli goruyoruz.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 6: YAPAY ZEKA GENEL BAKIS -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Yapay Zeka</span> Altyapisi</h2>
+        <p class="text-2xl text-slate-400 mb-8">Siteniz artik dusunebiliyor, ogrenebiliyor, size yardim edebiliyor</p>
+
+        <div class="content-box border-purple-500/40 bg-purple-900/10 mb-8">
+            <h3 class="text-3xl font-bold text-purple-300 mb-6">Coklu Yapay Zeka Saglayici Sistemi</h3>
+            <p class="text-xl text-slate-200 leading-relaxed mb-6">
+                <strong>Sadece tek bir yapay zeka servisine bagimli degiliz.</strong> Sistemimiz 3 farkli yapay zeka saglayicisi ile calisiyor.
+                Birisi calismazsa digeri otomatik devreye giriyor. Bu sayede yapay zeka hizmetlerimiz kesintisiz devam ediyor.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-slate-800/60 rounded-xl p-6 border border-blue-500/30">
+                    <h4 class="text-2xl font-bold text-blue-400 mb-3">OpenAI</h4>
+                    <p class="text-sm text-slate-400 mb-3">(GPT-4 Turbo, GPT-3.5)</p>
+                    <p class="text-slate-300 leading-relaxed">
+                        ChatGPT'yi yapan sirket. Dunyanin en gelismis dil modellerine sahip. Blog yazma, musterilerle konusma,
+                        icerik olusturma gibi karmasik dil islerinde kullaniyoruz.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/60 rounded-xl p-6 border border-orange-500/30">
+                    <h4 class="text-2xl font-bold text-orange-400 mb-3">Anthropic</h4>
+                    <p class="text-sm text-slate-400 mb-3">(Claude 3.5 Sonnet)</p>
+                    <p class="text-slate-300 leading-relaxed">
+                        Cok uzun metinleri analiz edebilen, detayli yanitlar verebilen bir sistem.
+                        Ozellikle belge inceleme, karmasik sorulara cevap verme konusunda guclu.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/60 rounded-xl p-6 border border-green-500/30">
+                    <h4 class="text-2xl font-bold text-green-400 mb-3">DeepSeek</h4>
+                    <p class="text-sm text-slate-400 mb-3">(Alternatif Model)</p>
+                    <p class="text-slate-300 leading-relaxed">
+                        Maliyet-performans dengesi cok iyi bir alternatif. Basit isler icin kullanildiginda
+                        maliyeti dusuruyor ama kaliteden odun vermiyor.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-6">
+                <p class="text-xl text-slate-200 leading-relaxed">
+                    <strong>Akilli Yuk Dagilimi:</strong> Sistem hangi isin hangi yapay zekaya uygun oldugunu biliyor.
+                    Basit bir soru mu? Ekonomik modeli kullan. Karmasik bir analiz mi? En guclu modeli devreye sok.
+                    Bu sayede hem maliyet optimize ediliyor hem de en iyi sonuclar aliniyor.
+                </p>
+            </div>
+        </div>
+
+        <div class="content-box bg-gradient-to-r from-purple-900/20 to-blue-900/20 border-purple-500/30">
+            <h3 class="text-2xl font-bold text-purple-400 mb-4">Yapay Zeka = Dijital Ekibiniz</h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Dusunun: Icerik yazari, SEO uzmani, musteri temsilcisi, grafik tasarimci ise alsaniz ayda ciddi bir maliyet.
+                Yapay zeka bu rollerin hepsini ustleniyor: Blog yaziyor, SEO yapiyor, musterilerle konusuyor, gorsel uretiyor.
+                7/24 calisiyor, tatil kullanmiyor, maas artisi istemiyor. <strong>Sizin dijital calisanlariniz!</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 7: BLOG SISTEMI - DRAFT HAVUZU -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Yapay Zeka Blog</span> Sistemi</h2>
+        <p class="text-2xl text-slate-400 mb-8">Once taslak havuzu, sonra secim, sonra yazim - profesyonel icerik uretimi</p>
+
+        <div class="content-box border-blue-500/30 mb-6">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">💡</span>
+                <div>
+                    <h3 class="text-3xl font-bold text-blue-400">Adim 1: Taslak Havuzu (Blog Draft)</h3>
+                    <p class="text-lg text-slate-400">25'den fazla hazir blog fikri</p>
+                </div>
+            </div>
+
+            <p class="text-xl text-slate-200 leading-relaxed mb-6">
+                "Ne yazayim?" sorusu artik tarihe karisiyor. Yapay zeka <strong>sektorunuzu analiz ediyor</strong> ve sizin icin yazilabilecek
+                blog konularini otomatik olusturuyor. Su anda havuzda 25'den fazla hazir konu var!
+            </p>
+
+            <div class="highlight-box">
+                <h4 class="text-xl font-bold text-blue-300 mb-3">Bu Size Ne Sagliyor?</h4>
+                <p class="text-lg text-slate-200 leading-relaxed">
+                    Eskiden: "Blog yazmaliyiz ama konu bulamiyoruz" diyordunuz. Haftalar geciyordu, bir sey yazilmiyordu.<br>
+                    <strong>Simdi:</strong> Havuza bakin, begendiklerinizi secin, yapay zeka yazip hazirlıyor. Siz sadece onaylayin!
+                </p>
+            </div>
+        </div>
+
+        <div class="content-box border-green-500/30 mb-6">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">✍️</span>
+                <div>
+                    <h3 class="text-3xl font-bold text-green-400">Adim 2: Blog Yazimi</h3>
+                    <p class="text-lg text-slate-400">Sectiginiz taslak profesyonel icerige donusuyor</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-5 gap-4 mb-6">
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-green-400 mb-2">1</div>
+                    <p class="text-sm text-slate-300">Konu Arastirmasi</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-green-400 mb-2">2</div>
+                    <p class="text-sm text-slate-300">Anahtar Kelime Analizi</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-green-400 mb-2">3</div>
+                    <p class="text-sm text-slate-300">Icerik Yazimi</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-green-400 mb-2">4</div>
+                    <p class="text-sm text-slate-300">Gorsel Uretimi</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 text-center">
+                    <div class="text-3xl font-bold text-green-400 mb-2">5</div>
+                    <p class="text-sm text-slate-300">SEO Optimizasyonu</p>
+                </div>
+            </div>
+
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Tum bu adimlar <strong>otomatik</strong> gerceklesiyor. Siz sadece havuzdan bir konu seciyorsunuz,
+                gerisi sistem tarafindan tamamlaniyor. Sonuc: Profesyonel, SEO uyumlu, gorsel iceren tam bir blog yazisi!
+            </p>
+        </div>
+
+        <div class="content-box bg-gradient-to-r from-green-900/20 to-blue-900/20 border-green-500/30">
+            <h3 class="text-2xl font-bold text-green-400 mb-4">Is Sonuclarina Etkisi</h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Google, duzenli icerik ureten siteleri seviyor. Ayda 20-30 blog yazisi yayinladiginizda,
+                Google sizi <strong>"aktif, guncel"</strong> olarak goruyor ve aramalarda <strong>daha yukarilarda</strong> cikartiyor.
+                Musteriler blogunuzu okuyor, <strong>"bu firma uzman"</strong> diyor, size guveniyor ve is yapiyor.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 8: 11 ALTIN KURAL - GORSEL URETIMI -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">11 Altin Kural</span> - Gorsel Uretimi</h2>
+        <p class="text-2xl text-slate-400 mb-8">Her gorsel profesyonel, tutarli ve markaniza uygun</p>
+
+        <div class="content-box border-purple-500/30 bg-purple-900/10 mb-6">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">🎨</span>
+                <div>
+                    <h3 class="text-3xl font-bold text-purple-300">Yapay Zeka Gorsel Uretimi (DALL-E 3)</h3>
+                    <p class="text-lg text-slate-400">Her icerik icin benzersiz, profesyonel gorseller</p>
+                </div>
+            </div>
+
+            <p class="text-xl text-slate-200 leading-relaxed mb-6">
+                <strong>Stok fotograf sitelerini unutun!</strong> Sistem, her blog yazisi icin, her sayfa icin
+                <strong>ozel gorseller</strong> uretiyor. Ama rastgele degil - <strong>11 Altin Kural</strong> sayesinde
+                her gorsel profesyonel, tutarli ve markaniza uygun oluyor.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-bold text-purple-300 mb-2">1. Insan Yok</h4>
+                    <p class="text-sm text-slate-400">Yapay zeka insan cizerken hata yapabilir - bundan kaciniyoruz</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-bold text-purple-300 mb-2">2. Yazi Yok</h4>
+                    <p class="text-sm text-slate-400">Yapay zeka harf cizerken karisik sonuc verir</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-bold text-purple-300 mb-2">3. Profesyonel Isik</h4>
+                    <p class="text-sm text-slate-400">Studio kalitesinde aydinlatma</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-bold text-purple-300 mb-2">4. Minimalist</h4>
+                    <p class="text-sm text-slate-400">Temiz, sade kompozisyon</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-bold text-purple-300 mb-2">5. Yuksek Cozunurluk</h4>
+                    <p class="text-sm text-slate-400">1792x1024 piksel - her cihazda keskin</p>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4">
+                    <h4 class="font-bold text-purple-300 mb-2">6. Sektor Uyumu</h4>
+                    <p class="text-sm text-slate-400">Sektorunuze ozel profesyonel gorunum</p>
+                </div>
+            </div>
+
+            <div class="highlight-box bg-green-500/10 border-green-500/30">
+                <h4 class="text-xl font-bold text-green-400 mb-3">Faydalar:</h4>
+                <ul class="text-lg text-slate-200 space-y-2">
+                    <li><strong>Benzersizlik:</strong> Rakiplerin sitesinde ayni gorseli gormeyeceksiniz</li>
+                    <li><strong>Maliyet Tasarrufu:</strong> Stok fotograf aboneligi, fotografci masrafi yok</li>
+                    <li><strong>Hiz:</strong> Istediginiz kadar gorsel, dakikalar icinde</li>
+                    <li><strong>SEO:</strong> Google gorsel aramasinda sizi buluyor</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 9: BLOG ICI URUN/HIZMET ONERILERI -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Blog Ici</span> Urun/Hizmet Onerileri</h2>
+        <p class="text-2xl text-slate-400 mb-8">Ziyaretciler artik sadece bilgi alip cikmiyor - musteriye donusuyor!</p>
+
+        <div class="content-box border-orange-500/30 mb-6">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">🎯</span>
+                <div>
+                    <h3 class="text-3xl font-bold text-orange-400">Problem: Bilgi Alip Cikan Ziyaretciler</h3>
+                </div>
+            </div>
+
+            <p class="text-xl text-slate-200 leading-relaxed mb-4">
+                Eski sistemde blog yazisi yazdıginizda ne oluyordu? Ziyaretci Google'dan geliyordu, yaziyi okuyordu,
+                ihtiyaci olan bilgiyi alıyordu ve <strong>siteden cikip gidiyordu</strong>. Hicbir sey satın almadan, hicbir iletisim birakmadan...
+            </p>
+            <p class="text-xl text-red-300 leading-relaxed">
+                Bu cok buyuk bir kayip! Ziyaretci zaten ilgili bir konuyu aradi, sitenize geldi, vaktini harcadi.
+                Ama onu musteriye cevirecek hicbir mekanizma yoktu.
+            </p>
+        </div>
+
+        <div class="content-box border-green-500/30 mb-6">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">✅</span>
+                <div>
+                    <h3 class="text-3xl font-bold text-green-400">Cozum: Akilli Urun/Hizmet Eslestirme</h3>
+                </div>
+            </div>
+
+            <p class="text-xl text-slate-200 leading-relaxed mb-6">
+                Yeni sistemde blog yazisinin icine, <strong>o yaziyla ilgili hizmetleriniz otomatik olarak yerlestiriliyor</strong>.
+                Sistem yazinin konusunu analiz ediyor ve ilgili hizmetlerinizi secip gosteriyor.
+            </p>
+
+            <div class="bg-slate-800/50 rounded-xl p-6 mb-6">
+                <h4 class="text-xl font-bold text-green-300 mb-4">Ornek Senaryo:</h4>
+                <p class="text-lg text-slate-300 leading-relaxed mb-3">
+                    Ziyaretci "Maden Ruhsati Nasil Alinir?" yazinizi okuyor. Yazinin ortasinda ve sonunda:
+                </p>
+                <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+                    <p class="text-green-200 font-semibold mb-2">"Maden Ruhsati Danismanligi Hizmetimiz"</p>
+                    <p class="text-slate-300">Profesyonel ekibimizle ruhsat basvuru surecinizi kolaylastiriyoruz. Detayli bilgi icin tiklayin.</p>
+                </div>
+            </div>
+
+            <div class="highlight-box bg-green-500/10 border-green-500/30">
+                <h4 class="text-xl font-bold text-green-400 mb-3">Sonuc:</h4>
+                <p class="text-xl text-slate-200 leading-relaxed">
+                    Ziyaretci bilgiyi aldi + hizmetinizi gordu + iletisime gecti = <strong>Potansiyel musteri kazandiniz!</strong><br>
+                    Eskiden: 100 ziyaretci → 0 musteri adayi<br>
+                    Simdi: 100 ziyaretci → 10-15 musteri adayi
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 10: AI SOHBET ASISTANI -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Yapay Zeka</span> Sohbet Asistani</h2>
+        <p class="text-2xl text-slate-400 mb-8">7/24 musteri destegi - gece yarisi bile satis firsati kacmaz</p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-6">
+            <div class="content-box border-blue-500/30">
+                <h3 class="text-2xl font-bold text-blue-400 mb-6">Ne Yapabiliyor?</h3>
+
+                <div class="space-y-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-blue-400">👤</span>
+                            <span class="text-blue-300 font-semibold">Musteri:</span>
+                        </div>
+                        <p class="text-slate-200">"Maden ruhsati basvurusu nasil yapiliyor?"</p>
+                    </div>
+                    <div class="bg-blue-900/30 rounded-lg p-4 border border-blue-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-green-400">🤖</span>
+                            <span class="text-green-300 font-semibold">Yapay Zeka:</span>
+                        </div>
+                        <p class="text-slate-200">"Maden ruhsati basvurusu icin 5 temel adim var: 1) MTA'ya basvuru, 2) Cevre izni..."</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-blue-400">👤</span>
+                            <span class="text-blue-300 font-semibold">Musteri:</span>
+                        </div>
+                        <p class="text-slate-200">"Bize yardimci olabilir misiniz?"</p>
+                    </div>
+                    <div class="bg-green-900/30 rounded-lg p-4 border border-green-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-green-400">🤖</span>
+                            <span class="text-green-300 font-semibold">Yapay Zeka:</span>
+                        </div>
+                        <p class="text-slate-200">"Tabii! Size ulasmamiz icin telefon numaranizi alabilir miyim?"</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-purple-500/30">
+                <h3 class="text-2xl font-bold text-purple-400 mb-6">Workflow Sistemi (12 Farkli Adim Tipi)</h3>
+
+                <p class="text-lg text-slate-300 mb-4">
+                    Asistanin davranislarini <strong>gorsel editor</strong> ile ayarlayabiliyorsunuz.
+                    Hangi soruda ne cevap versin, ne zaman telefon istesin, ne zaman size bildirim gitsin...
+                </p>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-slate-800/50 rounded p-2 text-sm flex items-center gap-2">
+                        <span class="text-green-400">▶</span> Baslangic
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-2 text-sm flex items-center gap-2">
+                        <span class="text-blue-400">🤖</span> AI Yanit
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-2 text-sm flex items-center gap-2">
+                        <span class="text-purple-400">🔍</span> Hizmet Arama
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-2 text-sm flex items-center gap-2">
+                        <span class="text-orange-400">⑃</span> Kosul Kontrolu
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-2 text-sm flex items-center gap-2">
+                        <span class="text-green-400">📞</span> Telefon Toplama
+                    </div>
+                    <div class="bg-slate-800/50 rounded p-2 text-sm flex items-center gap-2">
+                        <span class="text-cyan-400">📱</span> Telegram Bildirim
+                    </div>
+                </div>
+
+                <div class="mt-4 bg-purple-500/10 border border-purple-500/20 rounded-lg p-4">
+                    <p class="text-purple-200">
+                        <strong>Ogrenen Sistem:</strong> Asistan her konusmadan ogreniyor. Basarili yanitlari hatirliyor, daha iyi hizmet veriyor.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box bg-gradient-to-r from-blue-900/20 to-green-900/20 border-blue-500/30">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4">Gece Yarisi Satis Firsati</h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Musteri gece saat 23:00'te sitenize girdi. Soru sormak istiyor ama kimse yok.
+                Normal sitede musteri "yarin tekrar bakarim" deyip gidiyor (ve genelde geri gelmiyor).
+                <strong class="text-green-400">Sizin sitenizde yapay zeka asistan aninda yanit veriyor.</strong>
+                Musteri "vay be, cok profesyoneller" diyor ve o anda is yapmaya karar veriyor.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 11: TELEGRAM BILDIRIMLERI -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Telegram</span> Bildirimleri</h2>
+        <p class="text-2xl text-slate-400 mb-8">Potansiyel musteri telefon biraktiginda aninda haberiniz olsun</p>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-6">
+            <div class="content-box border-cyan-500/30">
+                <h3 class="text-2xl font-bold text-cyan-400 mb-6">Nasil Calisiyor?</h3>
+
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xl">1</div>
+                        <div>
+                            <strong class="text-cyan-300 text-lg">Musteri Telefon Birakir</strong>
+                            <p class="text-slate-400">Yapay zeka sohbetinde veya iletisim formunda</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xl">2</div>
+                        <div>
+                            <strong class="text-cyan-300 text-lg">Sistem Aninda Bildirim Gonderir</strong>
+                            <p class="text-slate-400">Telegram grubunuza veya kisisel hesabiniza</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xl">3</div>
+                        <div>
+                            <strong class="text-cyan-300 text-lg">Siz Hizla Geri Donersiniz</strong>
+                            <p class="text-slate-400">Sicak lead sogumadan iletisime gecersiniz</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-box border-green-500/30">
+                <h3 class="text-2xl font-bold text-green-400 mb-6">Ornek Bildirim</h3>
+
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-2xl">📱</span>
+                        <span class="font-bold text-slate-200">Unimad Bildirim Botu</span>
+                    </div>
+                    <div class="bg-cyan-900/30 rounded-lg p-4 border border-cyan-500/20">
+                        <p class="text-cyan-100 mb-2 font-bold">Yeni Potansiyel Musteri!</p>
+                        <p class="text-slate-300 text-sm mb-1">📞 +90 532 XXX XX XX</p>
+                        <p class="text-slate-300 text-sm mb-1">🕐 14:32 - 2 Aralik 2025</p>
+                        <p class="text-slate-300 text-sm mb-1">💬 "Maden ruhsati hizmeti hakkinda bilgi istedi"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box bg-gradient-to-r from-cyan-900/20 to-green-900/20 border-cyan-500/30">
+            <h3 class="text-2xl font-bold text-cyan-400 mb-4">Neden Hiz Onemli?</h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Arastirmalara gore, potansiyel musteriye <strong>ilk 5 dakika icinde</strong> ulasan firmalar,
+                1 saat sonra ulasanlardan <strong>21 kat daha fazla</strong> satis kapatiyor.
+                Telegram bildirimi sayesinde musteri sicakken, ilgisi tazeyken hemen arayabilirsiniz.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 12: SEO & SCHEMA.ORG -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">SEO</span> & Schema.org</h2>
+        <p class="text-2xl text-slate-400 mb-8">Google'in sizi bulmasi ve musterilerin sizi secmesi icin</p>
+
+        <div class="content-box border-blue-500/30 mb-6">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">🔍</span>
+                <div>
+                    <h3 class="text-3xl font-bold text-blue-400">Schema.org Nedir?</h3>
+                    <p class="text-lg text-slate-400">Yapilandirilmis Veri Isaretlemesi (Structured Data Markup)</p>
+                </div>
+            </div>
+
+            <p class="text-xl text-slate-200 leading-relaxed mb-6">
+                Google'in sitenizi daha iyi anlamasini saglayan ozel kod etiketleri. Normal HTML koduna ek olarak,
+                "bu bir hizmet", "bu fiyati", "bu iletisim bilgisi" gibi isaretler koyuyoruz.
+                Google bu isaretleri okuyunca "ah, bu bir maden danismanligi firmasi, iletisim bilgisi su" diye anliyor.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-slate-800/50 rounded-xl p-6">
+                    <h4 class="text-xl font-bold text-blue-300 mb-4">Rich Snippets (Zengin Sonuclar)</h4>
+                    <p class="text-lg text-slate-300 leading-relaxed">
+                        Google'da arama yaptiginizda bazi sonuclarin altinda yildiz puanlari, fiyatlar, SSS bloklari goruyorsunuz.
+                        Iste o Schema.org sayesinde oluyor! Rakipleriniz sadece baslik gosterirken,
+                        <strong>siz cok daha dikkat cekici gorunuyorsunuz</strong>.
+                    </p>
+                </div>
+                <div class="bg-slate-800/50 rounded-xl p-6">
+                    <h4 class="text-xl font-bold text-blue-300 mb-4">Desteklenen Tipler</h4>
+                    <ul class="text-lg text-slate-300 space-y-2">
+                        <li>⭐ Yildiz Puanlari (Rating)</li>
+                        <li>❓ SSS Bloklari (FAQ)</li>
+                        <li>📋 Nasil Yapilir (HowTo)</li>
+                        <li>🏢 Firma Bilgisi (Organization)</li>
+                        <li>📍 Yerel Isletme (LocalBusiness)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box bg-blue-500/10 border-blue-500/30">
+                <p class="text-xl text-slate-200 leading-relaxed">
+                    <strong>Sonuc:</strong> Musteri arama yaptiginda sizin sonucunuz daha dikkat cekici, daha guvenilir gorunuyor.
+                    Daha fazla tiklanma = Daha fazla ziyaretci = Daha fazla potansiyel musteri!
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 13: MEILISEARCH ARAMA -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Meilisearch</span> Hizli Arama</h2>
+        <p class="text-2xl text-slate-400 mb-8">Ultra hizli, yazim hatasi hosgoren, akilli arama motoru</p>
+
+        <div class="content-box border-purple-500/30 mb-6">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="text-5xl">⚡</span>
+                <div>
+                    <h3 class="text-3xl font-bold text-purple-400">Meilisearch Nedir?</h3>
+                    <p class="text-lg text-slate-400">Ultra-Fast Search Engine (Ultra Hizli Arama Motoru)</p>
+                </div>
+            </div>
+
+            <p class="text-xl text-slate-200 leading-relaxed mb-6">
+                Sitenizin arama kutusu icin kullandigimiz ozel bir arama motoru. Normal veritabani aramasi yavas ve kisitli.
+                Meilisearch ise ozel olarak hizli arama yapmak icin gelistirilmis.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="space-y-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-purple-300 mb-2">Yazim Hatasi Hosgorusu</h4>
+                        <p class="text-slate-300">"Ruhzat" yazsa bile "Ruhsat" sonuclarini buluyor. "Madencilik" yerine "madencilik" yazsa sorun degil.</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-purple-300 mb-2">Anlik Sonuclar</h4>
+                        <p class="text-slate-300">Yazmaya basladiginiz anda sonuclar gorunmeye basliyor. Aramayi tamamlamasina bile gerek yok!</p>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-purple-300 mb-2">Filtreleme</h4>
+                        <p class="text-slate-300">Kategori, tarih gibi filtrelerle aramayi daraltabilir, tam istediginizi bulabilirsiniz.</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <h4 class="font-bold text-purple-300 mb-2">Arama Kayitlari</h4>
+                        <p class="text-slate-300">En cok ne araniyor? Bu verileri gorup icerik stratejinizi belirleyebilirsiniz.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box bg-purple-500/10 border-purple-500/30">
+                <h4 class="text-xl font-bold text-purple-400 mb-3">Arama Kayitlari = SEO Hazinesi</h4>
+                <p class="text-xl text-slate-200 leading-relaxed">
+                    Ziyaretciler sitenizde ne ariyor? "maden ruhsati" cok araniyorsa, bu konuda daha fazla icerik yazin.
+                    "cevre izni" araniyor ama bulunamiyorsa, bu hizmeti one cikarin.
+                    <strong class="text-green-400">Veriye dayali kararlar alirsiniz.</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 14: GUVENLIK -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Guvenlik</span> Katmanlari</h2>
+        <p class="text-2xl text-slate-400 mb-8">Musterilerinizi ve verilerinizi koruyan gorunmez kalkan</p>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="feature-card border-red-500/30">
+                <h4 class="text-xl font-bold text-red-400 mb-3">🔒 SSL/TLS Sifreleme</h4>
+                <p class="text-lg text-slate-300 leading-relaxed">
+                    Musteri sitenizde bilgi girdiginde veriler sifreleniyor. Ortadaki kotu niyetli biri veriyi ele gecirse bile okuyamiyor.
+                    Tarayicida kilit ikonu ve "https://" bunun gostergesi. <strong>Musteri guvenle islem yapiyor.</strong>
+                </p>
+            </div>
+
+            <div class="feature-card border-orange-500/30">
+                <h4 class="text-xl font-bold text-orange-400 mb-3">🛡️ CSRF Korumasi</h4>
+                <p class="text-lg text-slate-300 leading-relaxed">
+                    Kotu niyetli siteler, musterinizin bilgisi disinda sitenize istek gonderebilir.
+                    CSRF tokenlari sayesinde her form gonderimine ozel anahtar isteniyor. Bu anahtar olmadan hicbir islem yapilamiyor.
+                </p>
+            </div>
+
+            <div class="feature-card border-yellow-500/30">
+                <h4 class="text-xl font-bold text-yellow-400 mb-3">💻 XSS Onleme</h4>
+                <p class="text-lg text-slate-300 leading-relaxed">
+                    Saldiganlar yorum alanlarina zararli kod yerlestirmeye calisabilir.
+                    Sistemimiz tum kullanici girdilerini otomatik temizliyor. Zararli kod calistirilamiyor, musterileriniz guvende.
+                </p>
+            </div>
+
+            <div class="feature-card border-purple-500/30">
+                <h4 class="text-xl font-bold text-purple-400 mb-3">🗄️ SQL Injection Korumasi</h4>
+                <p class="text-lg text-slate-300 leading-relaxed">
+                    Eski sitelerin en buyuk guvenlik acigi. Saldirgan arama kutusuna ozel kodlar yazarak veritabaniniza erisebilir.
+                    Laravel'in Eloquent ORM sistemi tum sorgulari otomatik koruyor.
+                </p>
+            </div>
+
+            <div class="feature-card border-green-500/30">
+                <h4 class="text-xl font-bold text-green-400 mb-3">⏱️ Rate Limiting</h4>
+                <p class="text-lg text-slate-300 leading-relaxed">
+                    Bot'lar sitenize saniyede binlerce istek gonderip cokertmeye calisabilir (DDoS saldirisi).
+                    Hiz sinirlamasi sistemi asiri istekleri engelliyor. Normal musteriler etkilenmiyor.
+                </p>
+            </div>
+
+            <div class="feature-card border-blue-500/30">
+                <h4 class="text-xl font-bold text-blue-400 mb-3">📱 2FA Dogrulama</h4>
+                <p class="text-lg text-slate-300 leading-relaxed">
+                    Yonetim paneline girerken sadece sifre yetmiyor, telefona gelen kod da gerekiyor.
+                    Birisi sifrenizi ele gecirse bile telefonunuz olmadan panele giremez.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 15: PERFORMANS -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">Performans</span> & Hiz</h2>
+        <p class="text-2xl text-slate-400 mb-8">Hizli site = Mutlu musteri = Google'da ust sira</p>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-6">
+            <div class="feature-card">
+                <span class="text-4xl mb-3 block">📦</span>
+                <h3 class="text-xl font-bold text-green-400 mb-2">Redis Cache</h3>
+                <p class="text-slate-300 leading-relaxed">
+                    Sik kullanilan verileri bellekte tutuyor. Normal veritabani milisaniyeler, Redis mikrosaniye seviyesinde yanit veriyor.
+                    Binlerce kullanici ayni anda girse bile site yavaslamiyor.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="text-4xl mb-3 block">⚡</span>
+                <h3 class="text-xl font-bold text-blue-400 mb-2">InstantPage</h3>
+                <p class="text-slate-300 leading-relaxed">
+                    Kullanici bir linkin uzerine geldiginde (tiklamadan once) sayfa arka planda yukleniyor.
+                    Tikladiginda sayfa aninda aciliyor. "Bu site cok hizli" hissi yaratiyor.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <span class="text-4xl mb-3 block">🖼️</span>
+                <h3 class="text-xl font-bold text-purple-400 mb-2">WebP Format</h3>
+                <p class="text-slate-300 leading-relaxed">
+                    Gorseller eskiden JPG/PNG formatindaydi. WebP ayni kalitede %30-50 daha kucuk dosya.
+                    Sayfalar cok daha hizli yukleniyor, ozellikle mobilde buyuk fark.
+                </p>
+            </div>
+        </div>
+
+        <div class="content-box bg-gradient-to-r from-green-900/20 to-blue-900/20 border-green-500/30">
+            <h3 class="text-2xl font-bold text-green-400 mb-4">Hiz = Para</h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Amazon'un arastirmasina gore sayfa yukleme suresinde <strong>her 100 milisaniyelik gecikme</strong>,
+                <strong>%1 satis kaybi</strong> demek. Site hizli = Daha fazla musteri = Daha fazla gelir.
+                Google da hizli siteleri ust siralarda gosteriyor.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 16: TUM MODULLER -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black mb-4"><span class="gradient-text">25+ Modul</span> Sistemi</h2>
+        <p class="text-2xl text-slate-400 mb-8">Her biri ayri bir ozellik, hepsi birlikte tam bir ekosistem - ve surekli buyuyor!</p>
+
+        <div class="content-box border-blue-500/30 mb-6">
+            <h3 class="text-2xl font-bold text-blue-400 mb-4">Moduler Mimari = LEGO Gibi</h3>
+            <p class="text-xl text-slate-200 leading-relaxed">
+                Her modul bagimsiz bir ozellik sagliyor ama hepsi birbiriyle uyumlu.
+                "Blog istemiyorum" diyorsaniz Blog modulunu kapatabiliyoruz, site calismaya devam ediyor.
+                "Yapay zeka sohbet istiyorum" diyorsaniz hemen aktif ediyoruz. <strong>Ve modul sayisi surekli artiyor!</strong>
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-3">
+            <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">📄</span>
+                <p class="text-sm font-semibold text-green-300 mt-1">Page</p>
+            </div>
+            <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">📝</span>
+                <p class="text-sm font-semibold text-green-300 mt-1">Blog</p>
+            </div>
+            <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">❓</span>
+                <p class="text-sm font-semibold text-green-300 mt-1">FAQ</p>
+            </div>
+            <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">🖼️</span>
+                <p class="text-sm font-semibold text-green-300 mt-1">Media</p>
+            </div>
+            <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">🤖</span>
+                <p class="text-sm font-semibold text-purple-300 mt-1">AI</p>
+            </div>
+            <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">💬</span>
+                <p class="text-sm font-semibold text-purple-300 mt-1">AI Chat</p>
+            </div>
+            <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">✍️</span>
+                <p class="text-sm font-semibold text-purple-300 mt-1">AI Blog</p>
+            </div>
+            <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">🎨</span>
+                <p class="text-sm font-semibold text-purple-300 mt-1">AI Image</p>
+            </div>
+            <div class="bg-orange-900/20 border border-orange-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">🔍</span>
+                <p class="text-sm font-semibold text-orange-300 mt-1">Search</p>
+            </div>
+            <div class="bg-orange-900/20 border border-orange-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">📊</span>
+                <p class="text-sm font-semibold text-orange-300 mt-1">SEO</p>
+            </div>
+            <div class="bg-orange-900/20 border border-orange-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">🗺️</span>
+                <p class="text-sm font-semibold text-orange-300 mt-1">Sitemap</p>
+            </div>
+            <div class="bg-orange-900/20 border border-orange-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">🌍</span>
+                <p class="text-sm font-semibold text-orange-300 mt-1">Language</p>
+            </div>
+            <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">👥</span>
+                <p class="text-sm font-semibold text-blue-300 mt-1">User</p>
+            </div>
+            <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">🔐</span>
+                <p class="text-sm font-semibold text-blue-300 mt-1">Permission</p>
+            </div>
+            <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">⚙️</span>
+                <p class="text-sm font-semibold text-blue-300 mt-1">Settings</p>
+            </div>
+            <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">📧</span>
+                <p class="text-sm font-semibold text-blue-300 mt-1">Contact</p>
+            </div>
+            <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">⭐</span>
+                <p class="text-sm font-semibold text-red-300 mt-1">Review</p>
+            </div>
+            <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">❤️</span>
+                <p class="text-sm font-semibold text-red-300 mt-1">Favorites</p>
+            </div>
+            <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">💳</span>
+                <p class="text-sm font-semibold text-red-300 mt-1">Payment</p>
+            </div>
+            <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">📱</span>
+                <p class="text-sm font-semibold text-red-300 mt-1">Notification</p>
+            </div>
+            <div class="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">📈</span>
+                <p class="text-sm font-semibold text-cyan-300 mt-1">Analytics</p>
+            </div>
+            <div class="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">📋</span>
+                <p class="text-sm font-semibold text-cyan-300 mt-1">Activity Log</p>
+            </div>
+            <div class="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">🌓</span>
+                <p class="text-sm font-semibold text-cyan-300 mt-1">Dark/Light</p>
+            </div>
+            <div class="bg-cyan-900/20 border border-cyan-500/30 rounded-lg p-3 text-center">
+                <span class="text-2xl">➕</span>
+                <p class="text-sm font-semibold text-cyan-300 mt-1">Ve daha fazlasi...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 17: YAPAY ZEKA SOZU -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col justify-center items-center text-center" style="min-height: 85vh;">
+
+            <!-- Buyuk Quote Icon -->
+            <div class="text-8xl mb-8 opacity-30">
+                <i class="fas fa-quote-left text-purple-400"></i>
+            </div>
+
+            <!-- Ana Soz -->
+            <blockquote class="mb-12">
+                <p class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-4">
+                    "Yapay zeka <span class="gradient-text">insanlarin yerini almayacak</span>."
+                </p>
+                <p class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white">
+                    "Yapay zeka kullanan insanlar,<br>
+                    <span class="text-red-400">yapay zeka kullanmayan insanlarin</span><br>
+                    yerini alacak."
+                </p>
+            </blockquote>
+
+            <!-- Aciklama Bolumu -->
+            <div class="content-box bg-gradient-to-r from-purple-900/40 to-blue-900/40 border-purple-500/40 max-w-5xl mt-8">
+                <h3 class="text-3xl font-bold text-purple-300 mb-6">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-3"></i>
+                    Bu Sizin Icin Ne Anlama Geliyor?
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-6 text-left">
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400 text-2xl mt-1">✓</span>
+                            <div>
+                                <p class="text-xl text-slate-200 font-semibold">Rekabet Avantaji</p>
+                                <p class="text-slate-400">Rakipleriniz hala eski yontemlerle calisirken, siz yapay zeka ile one gecersiniz.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400 text-2xl mt-1">✓</span>
+                            <div>
+                                <p class="text-xl text-slate-200 font-semibold">7/24 Caliskan Asistan</p>
+                                <p class="text-slate-400">Siz uyurken bile AI chat musterilerinize cevap verir, blog yazar, gorsel uretir.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400 text-2xl mt-1">✓</span>
+                            <div>
+                                <p class="text-xl text-slate-200 font-semibold">Zaman = Para</p>
+                                <p class="text-slate-400">1 blog yazmak 2-3 saat mi? AI ile 5 dakika. Kazanilan zaman, kazanilan para.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-green-400 text-2xl mt-1">✓</span>
+                            <div>
+                                <p class="text-xl text-slate-200 font-semibold">Gelecege Yatirim</p>
+                                <p class="text-slate-400">AI kullanmayan firmalar 5 yil icinde geride kalacak. Siz simdi basliyorsunuz!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-purple-500/30 text-center">
+                    <p class="text-2xl text-slate-200">
+                        <span class="text-purple-400 font-bold">Unimad Madencilik</span> artik yapay zeka kullanan firmalar liginde!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================== -->
+<!-- SLIDE 18: SONUC -->
+<!-- ================================== -->
+<div class="slide">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col justify-center items-center text-center" style="min-height: 80vh;">
+            <h2 class="text-6xl font-black mb-8">
+                <span class="gradient-text">Yasayan Sisteminiz</span><br>
+                <span class="text-white">Hazir!</span>
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-10 w-full max-w-5xl">
+                <div class="content-box border-green-500/30 text-center">
+                    <span class="text-5xl mb-3 block">🚀</span>
+                    <h4 class="text-xl font-bold text-green-400 mb-2">Modern Teknoloji</h4>
+                    <p class="text-slate-300">Laravel 12, PHP 8.4, Tailwind CSS - 2025 standartlari</p>
+                </div>
+                <div class="content-box border-purple-500/30 text-center">
+                    <span class="text-5xl mb-3 block">🤖</span>
+                    <h4 class="text-xl font-bold text-purple-400 mb-2">Yapay Zeka Gucu</h4>
+                    <p class="text-slate-300">Blog yazar, gorsel uretir, 7/24 musteri destegi</p>
+                </div>
+                <div class="content-box border-blue-500/30 text-center">
+                    <span class="text-5xl mb-3 block">📈</span>
+                    <h4 class="text-xl font-bold text-blue-400 mb-2">SEO & Bulunabilirlik</h4>
+                    <p class="text-slate-300">Google'da ust siralarda, musteriler sizi buluyor</p>
+                </div>
+            </div>
+
+            <div class="content-box bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-purple-500/40 max-w-4xl">
+                <p class="text-3xl text-slate-100 leading-relaxed mb-6">
+                    <strong>9 yil once</strong> size bir web sitesi yaptik.<br>
+                    <strong>Bugun</strong> size <span class="gradient-text font-bold">yasayan bir sistem</span> sunuyoruz.
+                </p>
+                <p class="text-2xl text-slate-300 leading-relaxed mb-6">
+                    Bu sistem sizinle birlikte buyuyecek, gelisecek, guclenecek.<br>
+                    Siz isinize odaklanin, teknoloji tarafini biz hallediyoruz.
+                </p>
+                <div class="text-5xl font-black gradient-text">
+                    unimadmadencilik.com
+                </div>
+                <p class="text-xl text-slate-400 mt-4">Gelecege Hazir, Simdi Yayinda!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav-buttons">
+    <button id="prev" class="nav-btn" onclick="change(-1)"><i class="fas fa-chevron-left"></i></button>
+    <button id="next" class="nav-btn" onclick="change(1)"><i class="fas fa-chevron-right"></i></button>
+</div>
+
+<!-- Counter -->
+<div class="counter">
+    <span id="current">1</span> / <span id="total">18</span>
+</div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+
+function show(n) {
+    if (n >= total) n = total - 1;
+    if (n < 0) n = 0;
+    current = n;
+
+    slides.forEach((s, i) => {
+        s.classList.remove('active', 'prev');
+        if (i === current) s.classList.add('active');
+        else if (i < current) s.classList.add('prev');
+    });
+
+    document.getElementById('prev').disabled = current === 0;
+    document.getElementById('next').disabled = current === total - 1;
+    document.getElementById('current').textContent = current + 1;
+    document.getElementById('total').textContent = total;
+}
+
+function change(d) { show(current + d); }
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') change(-1);
+    if (e.key === 'ArrowRight') change(1);
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(total - 1);
+});
+
+// Touch support
+let touchStartX = 0;
+document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) change(diff > 0 ? 1 : -1);
+});
+
+show(0);
+</script>
+</body>
+</html>

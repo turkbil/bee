@@ -548,7 +548,18 @@
                             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
                                 <div>
                                     <label class="block text-xs text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
-                                    <select wire:model.live="new_address_city"
+                                    <select wire:model="new_address_city" id="shipping_city"
+                                            @change="
+                                                fetch('/api/get-districts/' + $event.target.value)
+                                                    .then(r => r.json())
+                                                    .then(data => {
+                                                        let select = document.getElementById('shipping_district');
+                                                        select.innerHTML = '<option value=\'\'>Seçin</option>';
+                                                        data.forEach(d => {
+                                                            select.innerHTML += '<option value=\'' + d + '\'>' + d + '</option>';
+                                                        });
+                                                    });
+                                            "
                                             class="w-full px-3 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm @error('new_address_city') border-red-500 @enderror">
                                         <option value="">Seçin</option>
                                         @foreach($cities ?? [] as $city)
@@ -559,7 +570,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                    <select wire:model="new_address_district"
+                                    <select wire:model="new_address_district" id="shipping_district"
                                             class="w-full px-3 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm @error('new_address_district') border-red-500 @enderror">
                                         <option value="">{{ empty($new_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
                                         @foreach($districts ?? [] as $district)
@@ -674,7 +685,8 @@
                                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
                                     <div>
                                         <label class="block text-xs text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
-                                        <select wire:model.live="new_billing_address_city"
+                                        <select wire:model="new_billing_address_city"
+                                                @change="console.log('🔵 FATURA - İl değişti:', $event.target.value); $wire.loadBillingDistricts().then(() => console.log('✅ FATURA - Method çağrıldı'))"
                                                 class="w-full px-3 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm @error('new_billing_address_city') border-red-500 @enderror">
                                             <option value="">Seçin</option>
                                             @foreach($cities ?? [] as $city)
@@ -807,7 +819,18 @@
                             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
                                 <div>
                                     <label class="block text-xs text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
-                                    <select wire:model.live="new_billing_address_city"
+                                    <select wire:model="new_billing_address_city" id="billing_city"
+                                            @change="
+                                                fetch('/api/get-districts/' + $event.target.value)
+                                                    .then(r => r.json())
+                                                    .then(data => {
+                                                        let select = document.getElementById('billing_district');
+                                                        select.innerHTML = '<option value=\'\'>Seçin</option>';
+                                                        data.forEach(d => {
+                                                            select.innerHTML += '<option value=\'' + d + '\'>' + d + '</option>';
+                                                        });
+                                                    });
+                                            "
                                             class="w-full px-3 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm @error('new_billing_address_city') border-red-500 @enderror">
                                         <option value="">Seçin</option>
                                         @foreach($cities ?? [] as $city)
@@ -818,7 +841,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                    <select wire:model="new_billing_address_district"
+                                    <select wire:model="new_billing_address_district" id="billing_district"
                                             class="w-full px-3 py-2.5 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm @error('new_billing_address_district') border-red-500 @enderror">
                                         <option value="">{{ empty($new_billing_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
                                         @foreach($billingDistricts ?? [] as $district)
@@ -1187,12 +1210,9 @@
 
 @script
 <script>
-    console.log('CheckoutPage: Initializing...');
     const storedCartId = localStorage.getItem('cart_id');
     if (storedCartId) {
-        console.log('Found cart_id:', storedCartId);
         $wire.loadCartById(parseInt(storedCartId)).then(() => {
-            console.log('Cart loaded');
             const emptyMsg = document.getElementById('empty-cart-message');
             if (emptyMsg && $wire.items && $wire.items.length > 0) emptyMsg.style.display = 'none';
         });

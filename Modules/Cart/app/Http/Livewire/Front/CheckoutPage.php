@@ -135,6 +135,8 @@ class CheckoutPage extends Component
     // İletişim bilgileri değiştiğinde customer'ı güncelle
     public function updated($propertyName)
     {
+        \Log::info('🟢 UPDATED CALLED', ['property' => $propertyName, 'value' => $this->$propertyName ?? 'null']);
+
         // ⚠️ INFINITE LOOP GUARD: Metod içinde set edilen property'leri ignore et!
         $ignoreProperties = [
             'installmentFee',
@@ -152,6 +154,7 @@ class CheckoutPage extends Component
         ];
 
         if (in_array($propertyName, $ignoreProperties)) {
+            \Log::info('⚪ Ignored property', ['property' => $propertyName]);
             return; // Bu property'ler başka metodlar tarafından set ediliyor, ignore et!
         }
 
@@ -171,6 +174,21 @@ class CheckoutPage extends Component
         // Ödeme yöntemi veya taksit değişirse komisyon hesapla
         if (in_array($propertyName, ['selectedPaymentMethodId', 'selectedInstallment'])) {
             $this->calculatePaymentFees();
+        }
+
+        // İl seçilince ilçeleri yükle
+        if ($propertyName === 'new_address_city') {
+            \Log::info('🔵 City changed (shipping)', ['city' => $this->new_address_city]);
+            $this->districts = $this->getDistrictsByCity($this->new_address_city);
+            $this->new_address_district = '';
+            \Log::info('✅ Districts loaded', ['count' => count($this->districts)]);
+        }
+
+        if ($propertyName === 'new_billing_address_city') {
+            \Log::info('🔵 City changed (billing)', ['city' => $this->new_billing_address_city]);
+            $this->billingDistricts = $this->getDistrictsByCity($this->new_billing_address_city);
+            $this->new_billing_address_district = '';
+            \Log::info('✅ Billing districts loaded', ['count' => count($this->billingDistricts)]);
         }
     }
 
@@ -550,17 +568,30 @@ class CheckoutPage extends Component
     }
 
     /**
-     * Şehir değiştiğinde ilçeleri yükle
+     * İl seçilince ilçeleri yükle (Teslimat)
      */
-    public function updatedNewAddressCity($value)
+    public function loadShippingDistricts()
     {
-        $this->districts = $this->getDistrictsByCity($value);
+        if (empty($this->new_address_city)) {
+            $this->districts = [];
+            return;
+        }
+
+        $this->districts = $this->getDistrictsByCity($this->new_address_city);
         $this->new_address_district = '';
     }
 
-    public function updatedNewBillingAddressCity($value)
+    /**
+     * İl seçilince ilçeleri yükle (Fatura)
+     */
+    public function loadBillingDistricts()
     {
-        $this->billingDistricts = $this->getDistrictsByCity($value);
+        if (empty($this->new_billing_address_city)) {
+            $this->billingDistricts = [];
+            return;
+        }
+
+        $this->billingDistricts = $this->getDistrictsByCity($this->new_billing_address_city);
         $this->new_billing_address_district = '';
     }
 

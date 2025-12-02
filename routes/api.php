@@ -18,6 +18,45 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Get districts by city (for checkout page)
+Route::get('/get-districts/{city}', function ($city) {
+    try {
+        // Türkçe karaktersiz karşılaştırma için normalize fonksiyonu
+        $normalize = function($str) {
+            $tr = ['İ', 'I', 'Ş', 'Ğ', 'Ü', 'Ö', 'Ç', 'ş', 'ğ', 'ü', 'ö', 'ç', 'ı'];
+            $en = ['I', 'I', 'S', 'G', 'U', 'O', 'C', 's', 'g', 'u', 'o', 'c', 'i'];
+            return strtolower(str_replace($tr, $en, $str));
+        };
+
+        // Tüm şehirleri al ve normalize edilmiş isimle eşleştir
+        $allCities = DB::connection('central')->table('cities')->get();
+        $matchedCity = null;
+
+        foreach ($allCities as $dbCity) {
+            if ($normalize($dbCity->name) === $normalize($city)) {
+                $matchedCity = $dbCity;
+                break;
+            }
+        }
+
+        if (!$matchedCity) {
+            return response()->json([]);
+        }
+
+        // İlçeleri getir
+        $districts = DB::connection('central')
+            ->table('districts')
+            ->where('city_id', $matchedCity->id)
+            ->orderBy('name')
+            ->pluck('name')
+            ->toArray();
+
+        return response()->json($districts);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+});
+
 // 🔐 SESSION CHECK - Tenant 1001 (Muzibu) için session kontrolü
 Route::get('/session/check', function (Request $request) {
     // Tenant 1001 kontrolü

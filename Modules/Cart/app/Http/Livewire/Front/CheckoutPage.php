@@ -36,6 +36,7 @@ class CheckoutPage extends Component
     public $billingProfiles = []; // Kullanıcının fatura profilleri
 
     // Yeni Fatura Profili Formu
+    public $edit_billing_profile_id = null; // Edit mode için
     public $new_billing_profile_title = '';
     public $new_billing_profile_type = 'individual';
     public $new_billing_profile_identity_number = '';
@@ -240,21 +241,23 @@ class CheckoutPage extends Component
     }
 
     /**
-     * Şehir listesini yükle
+     * Şehir listesini yükle (Central DB'den)
      */
     public function loadCities()
     {
-        // Türkiye illeri
-        $this->cities = [
-            'Adana', 'Adıyaman', 'Afyonkarahisar', 'Ağrı', 'Aksaray', 'Amasya', 'Ankara', 'Antalya', 'Ardahan', 'Artvin',
-            'Aydın', 'Balıkesir', 'Bartın', 'Batman', 'Bayburt', 'Bilecik', 'Bingöl', 'Bitlis', 'Bolu', 'Burdur',
-            'Bursa', 'Çanakkale', 'Çankırı', 'Çorum', 'Denizli', 'Diyarbakır', 'Düzce', 'Edirne', 'Elazığ', 'Erzincan',
-            'Erzurum', 'Eskişehir', 'Gaziantep', 'Giresun', 'Gümüşhane', 'Hakkari', 'Hatay', 'Iğdır', 'Isparta', 'İstanbul',
-            'İzmir', 'Kahramanmaraş', 'Karabük', 'Karaman', 'Kars', 'Kastamonu', 'Kayseri', 'Kırıkkale', 'Kırklareli', 'Kırşehir',
-            'Kilis', 'Kocaeli', 'Konya', 'Kütahya', 'Malatya', 'Manisa', 'Mardin', 'Mersin', 'Muğla', 'Muş',
-            'Nevşehir', 'Niğde', 'Ordu', 'Osmaniye', 'Rize', 'Sakarya', 'Samsun', 'Siirt', 'Sinop', 'Sivas',
-            'Şanlıurfa', 'Şırnak', 'Tekirdağ', 'Tokat', 'Trabzon', 'Tunceli', 'Uşak', 'Van', 'Yalova', 'Yozgat', 'Zonguldak'
-        ];
+        try {
+            // Central DB'den illeri çek
+            $cities = DB::connection('central')
+                ->table('cities')
+                ->orderBy('name')
+                ->pluck('name')
+                ->toArray();
+
+            $this->cities = $cities;
+        } catch (\Exception $e) {
+            \Log::error('❌ Error loading cities from central DB', ['error' => $e->getMessage()]);
+            $this->cities = [];
+        }
     }
 
     /**
@@ -309,20 +312,41 @@ class CheckoutPage extends Component
     }
 
     /**
+     * Billing Profile'ı legacy property'lere sync et (backward compatibility)
+     */
+    private function syncBillingProfileToLegacy($profile)
+    {
+        if (!$profile) {
+            return;
+        }
+
+        $this->billing_type = $profile->type; // 'individual' or 'corporate'
+
+        if ($profile->isCorporate()) {
+            $this->billing_company_name = $profile->company_name;
+            $this->billing_tax_number = $profile->tax_number;
+            $this->billing_tax_office = $profile->tax_office;
+        } else {
+            // Bireysel - legacy alanları temizle
+            $this->billing_company_name = '';
+            $this->billing_tax_number = '';
+            $this->billing_tax_office = '';
+        }
+    }
+
+    /**
      * Yeni fatura profili kaydet
      */
     public function saveNewBillingProfile()
     {
         $rules = [
-            'new_billing_profile_title' => 'required|string|max:100',
             'new_billing_profile_type' => 'required|in:individual,corporate',
         ];
 
-        $messages = [
-            'new_billing_profile_title.required' => 'Profil adı zorunludur',
-        ];
+        $messages = [];
 
         if ($this->new_billing_profile_type === 'corporate') {
+            // Kurumsal - Şirket ünvanı zorunlu, title şirket ünvanından alınacak
             $rules['new_billing_profile_company_name'] = 'required|string|max:255';
             $rules['new_billing_profile_tax_number'] = 'required|string|size:10';
             $rules['new_billing_profile_tax_office'] = 'required|string|max:255';
@@ -331,7 +355,11 @@ class CheckoutPage extends Component
             $messages['new_billing_profile_tax_number.size'] = 'VKN 10 haneli olmalıdır';
             $messages['new_billing_profile_tax_office.required'] = 'Vergi dairesi zorunludur';
         } else {
-            // Bireysel - TC opsiyonel ama girilirse 11 haneli
+            // Bireysel - Title zorunlu
+            $rules['new_billing_profile_title'] = 'required|string|max:100';
+            $messages['new_billing_profile_title.required'] = 'Kayıt adı zorunludur';
+
+            // TC opsiyonel ama girilirse 11 haneli
             if (!empty($this->new_billing_profile_identity_number)) {
                 $rules['new_billing_profile_identity_number'] = 'string|size:11';
                 $messages['new_billing_profile_identity_number.size'] = 'TC Kimlik No 11 haneli olmalıdır';
@@ -340,21 +368,53 @@ class CheckoutPage extends Component
 
         $this->validate($rules, $messages);
 
-        // Profil oluştur
-        $isFirst = BillingProfile::where('user_id', $this->customerId)->count() === 0;
+        // Edit mode mu, yoksa yeni kayıt mı?
+        if ($this->edit_billing_profile_id) {
+            // UPDATE - Mevcut profili güncelle
+            $profile = BillingProfile::where('billing_profile_id', $this->edit_billing_profile_id)
+                ->where('user_id', $this->customerId)
+                ->first();
 
-        $profile = BillingProfile::create([
-            'user_id' => $this->customerId,
-            'title' => $this->new_billing_profile_title,
-            'type' => $this->new_billing_profile_type,
-            'identity_number' => $this->new_billing_profile_type === 'individual' ? $this->new_billing_profile_identity_number : null,
-            'company_name' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_company_name : null,
-            'tax_number' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_tax_number : null,
-            'tax_office' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_tax_office : null,
-            'is_default' => $isFirst, // İlk profil varsayılan olsun
-        ]);
+            if (!$profile) {
+                session()->flash('error', 'Profil bulunamadı.');
+                return;
+            }
 
-        // Yeni profili seç
+            $profile->update([
+                'title' => $this->new_billing_profile_type === 'corporate'
+                    ? $this->new_billing_profile_company_name
+                    : $this->new_billing_profile_title,
+                'type' => $this->new_billing_profile_type,
+                'identity_number' => $this->new_billing_profile_type === 'individual' ? $this->new_billing_profile_identity_number : null,
+                'company_name' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_company_name : null,
+                'tax_number' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_tax_number : null,
+                'tax_office' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_tax_office : null,
+            ]);
+
+            session()->flash('success', 'Fatura profili başarıyla güncellendi!');
+            \Log::info('✅ Billing profile updated', ['profile_id' => $profile->billing_profile_id]);
+        } else {
+            // CREATE - Yeni profil oluştur
+            $isFirst = BillingProfile::where('user_id', $this->customerId)->count() === 0;
+
+            $profile = BillingProfile::create([
+                'user_id' => $this->customerId,
+                'title' => $this->new_billing_profile_type === 'corporate'
+                    ? $this->new_billing_profile_company_name
+                    : $this->new_billing_profile_title,
+                'type' => $this->new_billing_profile_type,
+                'identity_number' => $this->new_billing_profile_type === 'individual' ? $this->new_billing_profile_identity_number : null,
+                'company_name' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_company_name : null,
+                'tax_number' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_tax_number : null,
+                'tax_office' => $this->new_billing_profile_type === 'corporate' ? $this->new_billing_profile_tax_office : null,
+                'is_default' => $isFirst, // İlk profil varsayılan olsun
+            ]);
+
+            session()->flash('success', 'Fatura profili başarıyla kaydedildi!');
+            \Log::info('✅ New billing profile created', ['profile_id' => $profile->billing_profile_id]);
+        }
+
+        // Profili seç
         $this->billing_profile_id = $profile->billing_profile_id;
         $this->syncBillingProfileToLegacy($profile);
 
@@ -363,6 +423,7 @@ class CheckoutPage extends Component
 
         // Formu temizle
         $this->reset([
+            'edit_billing_profile_id',
             'new_billing_profile_title',
             'new_billing_profile_type',
             'new_billing_profile_identity_number',
@@ -374,10 +435,118 @@ class CheckoutPage extends Component
 
         // Alpine'a formu kapat sinyali gönder
         $this->dispatch('billing-profile-saved', profileId: $profile->billing_profile_id);
+    }
 
-        session()->flash('success', 'Fatura profili başarıyla kaydedildi!');
+    /**
+     * Fatura profilini düzenle (form verilerini yükle)
+     */
+    public function editBillingProfile($profileId)
+    {
+        $profile = BillingProfile::where('billing_profile_id', $profileId)
+            ->where('user_id', $this->customerId)
+            ->first();
 
-        \Log::info('✅ New billing profile created', ['profile_id' => $profile->billing_profile_id]);
+        if (!$profile) {
+            session()->flash('error', 'Profil bulunamadı.');
+            return;
+        }
+
+        // Form verilerini yükle
+        $this->edit_billing_profile_id = $profile->billing_profile_id;
+        $this->new_billing_profile_title = $profile->title;
+        $this->new_billing_profile_type = $profile->type;
+        $this->new_billing_profile_identity_number = $profile->identity_number ?? '';
+        $this->new_billing_profile_company_name = $profile->company_name ?? '';
+        $this->new_billing_profile_tax_number = $profile->tax_number ?? '';
+        $this->new_billing_profile_tax_office = $profile->tax_office ?? '';
+
+        \Log::info('📝 Editing billing profile', ['profile_id' => $profileId]);
+    }
+
+    /**
+     * Fatura profilini sil
+     */
+    public function deleteBillingProfile($profileId)
+    {
+        try {
+            $profile = BillingProfile::where('billing_profile_id', $profileId)
+                ->where('user_id', $this->customerId)
+                ->first();
+
+            if (!$profile) {
+                session()->flash('error', 'Profil bulunamadı.');
+                return;
+            }
+
+            // Seçili profil siliniyorsa, seçimi kaldır
+            if ($this->billing_profile_id == $profileId) {
+                $this->billing_profile_id = null;
+            }
+
+            // Edit edilen profil siliniyorsa, edit formunu kapat
+            if ($this->edit_billing_profile_id == $profileId) {
+                $this->edit_billing_profile_id = null;
+                $this->reset([
+                    'new_billing_profile_title',
+                    'new_billing_profile_type',
+                    'new_billing_profile_identity_number',
+                    'new_billing_profile_company_name',
+                    'new_billing_profile_tax_number',
+                    'new_billing_profile_tax_office'
+                ]);
+                $this->new_billing_profile_type = 'individual';
+
+                // Alpine'a formu kapat sinyali gönder
+                $this->dispatch('close-billing-form');
+            }
+
+            $profile->delete();
+
+            // Listeyi yenile
+            $this->loadBillingProfiles();
+
+            session()->flash('success', 'Fatura profili başarıyla silindi.');
+            \Log::info('✅ Billing profile deleted', ['profile_id' => $profileId]);
+        } catch (\Exception $e) {
+            session()->flash('error', 'Silme işlemi başarısız oldu.');
+            \Log::error('❌ Error deleting billing profile', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Adresi sil
+     */
+    public function deleteAddress($addressId)
+    {
+        try {
+            $address = Address::where('address_id', $addressId)
+                ->where('user_id', $this->customerId)
+                ->first();
+
+            if (!$address) {
+                session()->flash('error', 'Adres bulunamadı.');
+                return;
+            }
+
+            // Seçili adres siliniyorsa, seçimi kaldır
+            if ($this->shipping_address_id == $addressId) {
+                $this->shipping_address_id = null;
+            }
+            if ($this->billing_address_id == $addressId) {
+                $this->billing_address_id = null;
+            }
+
+            $address->delete();
+
+            // Adresleri yenile
+            $this->loadDefaultAddresses();
+
+            session()->flash('success', 'Adres başarıyla silindi.');
+            \Log::info('✅ Address deleted', ['address_id' => $addressId]);
+        } catch (\Exception $e) {
+            session()->flash('error', 'Silme işlemi başarısız oldu.');
+            \Log::error('❌ Error deleting address', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -396,20 +565,28 @@ class CheckoutPage extends Component
     }
 
     /**
-     * Şehre göre ilçe listesi
+     * Şehre göre ilçe listesi (Central DB'den)
      */
     private function getDistrictsByCity($city)
     {
-        // Basit ilçe listesi (örnek olarak İstanbul ve Ankara)
-        $districtList = [
-            'İstanbul' => ['Adalar', 'Arnavutköy', 'Ataşehir', 'Avcılar', 'Bağcılar', 'Bahçelievler', 'Bakırköy', 'Başakşehir', 'Bayrampaşa', 'Beşiktaş', 'Beykoz', 'Beylikdüzü', 'Beyoğlu', 'Büyükçekmece', 'Çatalca', 'Çekmeköy', 'Esenler', 'Esenyurt', 'Eyüpsultan', 'Fatih', 'Gaziosmanpaşa', 'Güngören', 'Kadıköy', 'Kağıthane', 'Kartal', 'Küçükçekmece', 'Maltepe', 'Pendik', 'Sancaktepe', 'Sarıyer', 'Silivri', 'Sultanbeyli', 'Sultangazi', 'Şile', 'Şişli', 'Tuzla', 'Ümraniye', 'Üsküdar', 'Zeytinburnu'],
-            'Ankara' => ['Akyurt', 'Altındağ', 'Ayaş', 'Balâ', 'Beypazarı', 'Çamlıdere', 'Çankaya', 'Çubuk', 'Elmadağ', 'Etimesgut', 'Evren', 'Gölbaşı', 'Güdül', 'Haymana', 'Kalecik', 'Kahramankazan', 'Keçiören', 'Kızılcahamam', 'Mamak', 'Nallıhan', 'Polatlı', 'Pursaklar', 'Sincan', 'Şereflikoçhisar', 'Yenimahalle'],
-            'İzmir' => ['Aliağa', 'Balçova', 'Bayındır', 'Bayraklı', 'Bergama', 'Beydağ', 'Bornova', 'Buca', 'Çeşme', 'Çiğli', 'Dikili', 'Foça', 'Gaziemir', 'Güzelbahçe', 'Karabağlar', 'Karaburun', 'Karşıyaka', 'Kemalpaşa', 'Kınık', 'Kiraz', 'Konak', 'Menderes', 'Menemen', 'Narlıdere', 'Ödemiş', 'Seferihisar', 'Selçuk', 'Tire', 'Torbalı', 'Urla'],
-            'Bursa' => ['Büyükorhan', 'Gemlik', 'Gürsu', 'Harmancık', 'İnegöl', 'İznik', 'Karacabey', 'Keles', 'Kestel', 'Mudanya', 'Mustafakemalpaşa', 'Nilüfer', 'Orhaneli', 'Orhangazi', 'Osmangazi', 'Yenişehir', 'Yıldırım'],
-            'Antalya' => ['Akseki', 'Aksu', 'Alanya', 'Demre', 'Döşemealtı', 'Elmalı', 'Finike', 'Gazipaşa', 'Gündoğmuş', 'İbradı', 'Kaş', 'Kemer', 'Kepez', 'Konyaaltı', 'Korkuteli', 'Kumluca', 'Manavgat', 'Muratpaşa', 'Serik'],
-        ];
+        try {
+            // Central DB'den seçili ilin ilçelerini çek
+            $districts = DB::connection('central')
+                ->table('districts')
+                ->join('cities', 'districts.city_id', '=', 'cities.id')
+                ->where('cities.name', $city)
+                ->orderBy('districts.name')
+                ->pluck('districts.name')
+                ->toArray();
 
-        return $districtList[$city] ?? [];
+            return $districts;
+        } catch (\Exception $e) {
+            \Log::error('❌ Error loading districts from central DB', [
+                'city' => $city,
+                'error' => $e->getMessage()
+            ]);
+            return [];
+        }
     }
 
     /**

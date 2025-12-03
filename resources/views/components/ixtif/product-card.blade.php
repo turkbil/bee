@@ -17,6 +17,10 @@
 @endif
 
 @php
+    // 🏷️ KDV Gösterim Modu (Settings'den)
+    // true = KDV dahil göster, false = KDV hariç + "KDV" etiketi
+    $showTaxIncluded = setting('shop_product_tax', true);
+
     // Yuvarlama Fonksiyonu: Compare at price'ı sadece 00 veya 50'ye yuvarla
     // function_exists() ile sadece bir kez tanımla (multiple card'larda redeclare hatası önlenir)
     if (!function_exists('roundComparePrice')) {
@@ -87,10 +91,9 @@
         $productId = $product->product_id;
         $productTitle = $product->getTranslated('title', app()->getLocale());
         $productUrl = \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product);
-        // 🎯 Helper function ile multi-collection fallback
-        $productMedia = getFirstMediaWithFallback($product);
-        $productImage = $productMedia
-            ? thumb($productMedia, 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp'])
+        // 🎯 Sadece hero koleksiyonu kullan
+        $productImage = $product->hasMedia('hero')
+            ? thumb($product->getFirstMedia('hero'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp'])
             : null;
         $productCategory = $product->category ? $product->category->getTranslated('title', app()->getLocale()) : 'Genel';
         $productCategoryIcon = $product->category->icon_class ?? 'fa-light fa-box';
@@ -114,33 +117,48 @@
             }
         }
 
+        // 🏷️ KDV Calculation (Model formatı için - accessor kullan)
+        $productBasePrice = (float)($product->base_price ?? 0); // KDV hariç
+        $productPriceWithTax = $product->price_with_tax ?? 0; // Accessor'dan gelir
+
+        // Gösterim moduna göre fiyat seç
+        $displayPrice = $showTaxIncluded ? $productPriceWithTax : $productBasePrice;
+
         $productFormattedPrice = $currencyRelation
-            ? $currencyRelation->formatPrice((float)($product->base_price ?? 0))
-            : number_format((float)($product->base_price ?? 0), 0, ',', '.') . ' ₺';
+            ? $currencyRelation->formatPrice($displayPrice)
+            : number_format($displayPrice, 0, ',', '.') . ' ₺';
 
         $productFeatured = $product->is_featured ?? false;
 
         // Currency conversion data
         $productCurrencyCode = $currencyRelation ? $currencyRelation->code : 'TRY';
-        $productBasePrice = (float)($product->base_price ?? 0);
         $productExchangeRate = $currencyRelation ? ($currencyRelation->exchange_rate ?? 1) : 1;
-        $productTryPrice = $productCurrencyCode !== 'TRY' && $productBasePrice > 0
-            ? number_format($productBasePrice * $productExchangeRate, 0, ',', '.')
+        $productTryPrice = $productCurrencyCode !== 'TRY' && $displayPrice > 0
+            ? number_format($displayPrice * $productExchangeRate, 0, ',', '.')
             : null;
 
-        // Old price (discount) data
-        $productCompareAtPrice = $product->compare_at_price ?? null;
+        // Old price (discount) data - KDV hariç olarak saklanmış
+        $productCompareAtPriceBase = $product->compare_at_price ?? null;
+
+        // 🏷️ Compare price için de KDV hesapla (setting'e göre)
+        $productTaxRate = $product->tax_rate ?? 20.0;
+        $productCompareAtPriceWithTax = $productCompareAtPriceBase
+            ? $productCompareAtPriceBase * (1 + $productTaxRate / 100)
+            : null;
+
+        // Gösterim moduna göre compare price seç
+        $productCompareAtPrice = $showTaxIncluded ? $productCompareAtPriceWithTax : $productCompareAtPriceBase;
 
         // ✨ OTOMATIK İNDİRİM SİSTEMİ (Model formatı için)
         $productDiscountPercentage = null;
 
-        // Eğer compare_at_price yoksa veya base_price'dan küçükse, otomatik hesapla
-        if (!$productCompareAtPrice || $productCompareAtPrice <= $productBasePrice) {
+        // Eğer compare_at_price yoksa veya display_price'dan küçükse, otomatik hesapla
+        if (!$productCompareAtPrice || $productCompareAtPrice <= $displayPrice) {
             // Hedef indirim yüzdesi (badge için - SABİT: %5, %10, %15, %20)
             $productDiscountPercentage = (($productId % 4) * 5 + 5);
 
             // Eski fiyatı hesapla (ters formül: old = new / (1 - discount))
-            $productCompareAtPrice = $productBasePrice / (1 - ($productDiscountPercentage / 100));
+            $productCompareAtPrice = $displayPrice / (1 - ($productDiscountPercentage / 100));
         }
 
         // Yuvarlama uygula (00 veya 50)
@@ -149,12 +167,12 @@
         }
 
         // Manuel compare_at_price varsa, gerçek indirim yüzdesini hesapla
-        if (!$productDiscountPercentage && $productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
-            $productDiscountPercentage = round((($productCompareAtPrice - $productBasePrice) / $productCompareAtPrice) * 100);
+        if (!$productDiscountPercentage && $productCompareAtPrice && $productCompareAtPrice > $displayPrice) {
+            $productDiscountPercentage = round((($productCompareAtPrice - $displayPrice) / $productCompareAtPrice) * 100);
         }
 
         $productFormattedComparePrice = null;
-        if ($productCompareAtPrice && $productCompareAtPrice > $productBasePrice) {
+        if ($productCompareAtPrice && $productCompareAtPrice > $displayPrice) {
             $productFormattedComparePrice = $currencyRelation
                 ? $currencyRelation->formatPrice((float)$productCompareAtPrice)
                 : number_format((float)$productCompareAtPrice, 0, ',', '.') . ' ₺';
@@ -270,12 +288,20 @@ document.addEventListener('alpine:init', () => {
             console.log('🛒 Alpine: addToCart clicked', { productId: this.productId });
             this.loading = true;
 
+            // 🚀 OPTIMISTIC UPDATE: Badge'i hemen güncelle
+            const currentCartId = localStorage.getItem('cart_id');
+            if (typeof Livewire !== 'undefined' && currentCartId) {
+                Livewire.dispatch('optimisticAdd', { quantity: 1 });
+                console.log('⚡ Optimistic: Badge +1 (anında feedback)');
+            }
+
+            // 🎯 Cart icon animasyonu için window event
+            window.dispatchEvent(new CustomEvent('optimistic-add', { detail: { quantity: 1 } }));
+
             try {
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-                // localStorage'dan cart_id al (varsa)
-                const cartId = localStorage.getItem('cart_id');
-                console.log('🛒 Alpine: Current cart_id from localStorage:', cartId);
+                console.log('🛒 Alpine: Current cart_id from localStorage:', currentCartId);
                 console.log('🛒 Alpine: Sending request to /api/cart/add');
 
                 const response = await fetch('/api/cart/add', {
@@ -289,7 +315,7 @@ document.addEventListener('alpine:init', () => {
                     body: JSON.stringify({
                         product_id: this.productId,
                         quantity: 1,
-                        cart_id: cartId ? parseInt(cartId) : null
+                        cart_id: currentCartId ? parseInt(currentCartId) : null
                     })
                 });
 
@@ -305,25 +331,43 @@ document.addEventListener('alpine:init', () => {
                         console.log('💾 Alpine: cart_id saved to localStorage:', data.data.cart_id);
                     }
 
-                    // CartWidget'ı güncelle - Window event (daha güvenilir)
-                    window.dispatchEvent(new CustomEvent('cart-updated', {
-                        detail: { cartId: data.data?.cart_id, itemCount: data.data?.item_count }
-                    }));
-                    console.log('✅ Alpine: window.dispatchEvent(cart-updated)');
-
-                    // Livewire dispatch (yedek)
+                    // CartWidget'ı gerçek veriyle güncelle (optimistic update'i onayla)
                     if (typeof Livewire !== 'undefined') {
-                        Livewire.dispatch('cartUpdated');
+                        Livewire.dispatch('cartUpdated', {
+                            cartId: data.data?.cart_id,
+                            itemCount: data.data?.item_count
+                        });
+                        console.log('✅ Alpine: Livewire.dispatch(cartUpdated) - confirmed cart_id:', data.data?.cart_id);
                     }
 
                     setTimeout(() => { this.success = false; }, 2000);
                 } else {
                     console.error('❌ Alpine: API returned error', data.message);
-                    alert(data.message || 'Ürün sepete eklenirken hata oluştu');
+
+                    // ❌ OPTIMISTIC UPDATE ROLLBACK: Hata varsa geri al
+                    if (typeof Livewire !== 'undefined') {
+                        Livewire.dispatch('optimisticRollback', { quantity: 1 });
+                        console.log('🔄 Optimistic Rollback: Badge -1 (hata nedeniyle geri alındı)');
+                    }
+
+                    // Toast notification (alert yerine)
+                    if (typeof window.notify === 'function') {
+                        window.notify('error', data.message || 'Ürün sepete eklenirken hata oluştu');
+                    }
                 }
             } catch (error) {
                 console.error('❌ Alpine: Fetch error', error);
-                alert('Ürün sepete eklenirken hata oluştu');
+
+                // ❌ OPTIMISTIC UPDATE ROLLBACK: Network hatası varsa geri al
+                if (typeof Livewire !== 'undefined') {
+                    Livewire.dispatch('optimisticRollback', { quantity: 1 });
+                    console.log('🔄 Optimistic Rollback: Badge -1 (network hatası nedeniyle geri alındı)');
+                }
+
+                // Toast notification (alert yerine)
+                if (typeof window.notify === 'function') {
+                    window.notify('error', 'Ürün sepete eklenirken hata oluştu');
+                }
             } finally {
                 this.loading = false;
             }
@@ -422,7 +466,7 @@ document.addEventListener('alpine:init', () => {
                 @if($productImage)
                     <img src="{{ $productImage }}"
                          alt="{{ $productTitle }}"
-                         class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark"
+                         class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark p-3 md:p-4 lg:p-6"
                          loading="lazy">
                 @else
                     <i class="{{ $productCategoryIcon }} text-4xl md:text-6xl text-blue-400 dark:text-blue-400"></i>
@@ -555,6 +599,9 @@ document.addEventListener('alpine:init', () => {
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95">
                                 {{ $productFormattedPrice }}
+                                @if(!$showTaxIncluded && ($productBasePrice ?? 0) > 0)
+                                    <small class="text-xs font-light text-gray-600 dark:text-gray-300 ml-1 align-text-bottom">+ KDV</small>
+                                @endif
                             </div>
 
                             {{-- TRY Price (hover ile gösterim) --}}
@@ -565,9 +612,11 @@ document.addEventListener('alpine:init', () => {
                                  x-transition:enter-end="opacity-100 scale-105"
                                  x-transition:leave="transition ease-out duration-150"
                                  x-transition:leave-start="opacity-100 scale-105"
-                                 x-transition:leave-end="opacity-0 scale-95"
-                                 style="display: none;">
+                                 x-transition:leave-end="opacity-0 scale-95">
                                 {{ $productTryPrice }} ₺
+                                @if(!$showTaxIncluded && ($productBasePrice ?? 0) > 0)
+                                    <small class="text-xs font-light text-gray-600 dark:text-gray-300 ml-1 align-text-bottom">+ KDV</small>
+                                @endif
                             </div>
                         </div>
                     @else
@@ -587,6 +636,9 @@ document.addEventListener('alpine:init', () => {
                         {{-- TRY Only Price --}}
                         <div class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 h-8 flex items-center whitespace-nowrap">
                             {{ $productFormattedPrice }}
+                            @if(!$showTaxIncluded && ($productBasePrice ?? 0) > 0)
+                                <small class="text-xs font-light text-gray-600 dark:text-gray-300 ml-1 align-text-bottom">+ KDV</small>
+                            @endif
                         </div>
                     @endif
                 </div>

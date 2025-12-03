@@ -44,6 +44,7 @@ foreach ($mainCategories as $cat) {
         $products = ShopProduct::where('category_id', $catId)
             ->where('is_active', 1)
             ->whereNull('parent_product_id')
+            ->with(['currency', 'category', 'media'])  // 🔥 Currency eager loading ekle (TRY transformation için)
             ->orderBy('sort_order', 'asc')
             ->take(4)
             ->get();

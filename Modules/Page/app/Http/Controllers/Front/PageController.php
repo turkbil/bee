@@ -61,32 +61,51 @@ class PageController extends Controller
                 // Relation'a getRelation() ile güvenli eriş
                 $currencyRelation = $product->relationLoaded('currency') ? $product->getRelation('currency') : null;
 
-                // Currency code: attributes array'inden direkt al
-                $currencyCode = $product->attributes['currency'] ?? 'TRY';
+                // 🔥 FIX: Currency code RELATION'dan al (attribute güvenilir değil!)
+                $currencyCode = $currencyRelation && is_object($currencyRelation) ? $currencyRelation->code : 'TRY';
+
+                // 🏷️ KDV Gösterim Modu (Settings'den)
+                $showTaxIncluded = setting('shop_product_tax', true);
+
+                // 🏷️ KDV Calculation
+                $basePrice = (float)($product->base_price ?? 0);
+                $priceWithTax = $product->price_with_tax ?? 0; // Model accessor
+
+                // Gösterim moduna göre fiyat seç
+                $displayPrice = $showTaxIncluded ? $priceWithTax : $basePrice;
 
                 // TRY conversion için exchange rate hesapla
                 $exchangeRate = $currencyRelation && is_object($currencyRelation) ? $currencyRelation->exchange_rate : 1;
-                $tryPrice = ($currencyCode !== 'TRY' && $exchangeRate > 0)
-                    ? number_format($product->base_price * $exchangeRate, 0, ',', '.')
+                $tryPrice = ($currencyCode !== 'TRY' && $exchangeRate > 0 && $displayPrice > 0)
+                    ? number_format($displayPrice * $exchangeRate, 0, ',', '.')
                     : null;
 
                 // Old price (compare_at_price) - Otomatik hesaplama
-                $compareAtPrice = $product->compare_at_price;
+                $compareAtPriceBase = $product->compare_at_price;
+
+                // 🏷️ Compare price için de KDV hesapla (setting'e göre)
+                $taxRate = $product->tax_rate ?? 20.0;
+                $compareAtPriceWithTax = $compareAtPriceBase
+                    ? $compareAtPriceBase * (1 + $taxRate / 100)
+                    : null;
+
+                // Gösterim moduna göre compare price seç
+                $compareAtPrice = $showTaxIncluded ? $compareAtPriceWithTax : $compareAtPriceBase;
 
                 // ✨ OTOMATIK İNDİRİM SİSTEMİ
-                // Eğer compare_at_price yoksa veya base_price'dan küçükse, otomatik hesapla
+                // Eğer compare_at_price yoksa veya display_price'dan küçükse, otomatik hesapla
                 $autoDiscountPercentage = null;
-                if (!$compareAtPrice || $compareAtPrice <= $product->base_price) {
+                if (!$compareAtPrice || $compareAtPrice <= $displayPrice) {
                     // Hedef indirim yüzdesi (badge için - SABİT: %5, %10, %15, %20)
                     $autoDiscountPercentage = (($product->product_id % 4) * 5 + 5);
 
                     // Eski fiyatı hesapla (ters formül: old = new / (1 - discount))
-                    $compareAtPrice = $product->base_price / (1 - ($autoDiscountPercentage / 100));
+                    $compareAtPrice = $displayPrice / (1 - ($autoDiscountPercentage / 100));
                 }
 
                 // Format compare price
                 $formattedComparePrice = null;
-                if ($compareAtPrice && $compareAtPrice > $product->base_price) {
+                if ($compareAtPrice && $compareAtPrice > $displayPrice) {
                     $formattedComparePrice = $currencyRelation
                         ? $currencyRelation->formatPrice($compareAtPrice)
                         : number_format($compareAtPrice, 0, ',', '.') . ' ₺';
@@ -97,15 +116,13 @@ class PageController extends Controller
                     'title' => $product->getTranslated('title', app()->getLocale()),
                     'description' => strip_tags($product->getTranslated('short_description', app()->getLocale()) ?? ''),
                     'url' => \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product),
-                    'price' => $product->base_price,
+                    'price' => $basePrice,
                     'currency' => $currencyCode,
                     'currency_symbol' => $currencyRelation ? $currencyRelation->symbol : '₺',
-                    'formatted_price' => $currencyRelation ? $currencyRelation->formatPrice($product->base_price) : number_format($product->base_price, 0, ',', '.') . ' ₺',
+                    'formatted_price' => $currencyRelation ? $currencyRelation->formatPrice($displayPrice) : number_format($displayPrice, 0, ',', '.') . ' ₺',
                     'image' => $product->hasMedia('hero')
                         ? thumb($product->getFirstMedia('hero'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp'])
-                        : ($product->hasMedia('featured_image')
-                            ? thumb($product->getFirstMedia('featured_image'), 400, 400, ['quality' => 85, 'scale' => 0, 'format' => 'webp'])
-                            : null),
+                        : null,
                     'category' => $product->category ? $product->category->getTranslated('title', app()->getLocale()) : null,
                     'category_icon' => $product->category->icon_class ?? 'fa-light fa-box',
                     'featured' => $product->is_featured ?? false,

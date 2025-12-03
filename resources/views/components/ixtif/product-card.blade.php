@@ -285,14 +285,12 @@ document.addEventListener('alpine:init', () => {
             }, 4500); // Döngü: 4.5 saniye (USD 3s + TRY 1.5s)
         },
         async addToCart() {
-            console.log('🛒 Alpine: addToCart clicked', { productId: this.productId });
             this.loading = true;
 
             // 🚀 OPTIMISTIC UPDATE: Badge'i hemen güncelle
             const currentCartId = localStorage.getItem('cart_id');
             if (typeof Livewire !== 'undefined' && currentCartId) {
                 Livewire.dispatch('optimisticAdd', { quantity: 1 });
-                console.log('⚡ Optimistic: Badge +1 (anında feedback)');
             }
 
             // 🎯 Cart icon animasyonu için window event
@@ -300,9 +298,6 @@ document.addEventListener('alpine:init', () => {
 
             try {
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-                console.log('🛒 Alpine: Current cart_id from localStorage:', currentCartId);
-                console.log('🛒 Alpine: Sending request to /api/cart/add');
 
                 const response = await fetch('/api/cart/add', {
                     method: 'POST',
@@ -320,7 +315,6 @@ document.addEventListener('alpine:init', () => {
                 });
 
                 const data = await response.json();
-                console.log('🛒 Alpine: API Response', data);
 
                 if (data.success) {
                     this.success = true;
@@ -328,7 +322,6 @@ document.addEventListener('alpine:init', () => {
                     // API'den dönen cart_id'yi localStorage'a kaydet
                     if (data.data && data.data.cart_id) {
                         localStorage.setItem('cart_id', data.data.cart_id);
-                        console.log('💾 Alpine: cart_id saved to localStorage:', data.data.cart_id);
                     }
 
                     // CartWidget'ı gerçek veriyle güncelle (optimistic update'i onayla)
@@ -337,7 +330,6 @@ document.addEventListener('alpine:init', () => {
                             cartId: data.data?.cart_id,
                             itemCount: data.data?.item_count
                         });
-                        console.log('✅ Alpine: Livewire.dispatch(cartUpdated) - confirmed cart_id:', data.data?.cart_id);
                     }
 
                     setTimeout(() => { this.success = false; }, 2000);
@@ -347,7 +339,6 @@ document.addEventListener('alpine:init', () => {
                     // ❌ OPTIMISTIC UPDATE ROLLBACK: Hata varsa geri al
                     if (typeof Livewire !== 'undefined') {
                         Livewire.dispatch('optimisticRollback', { quantity: 1 });
-                        console.log('🔄 Optimistic Rollback: Badge -1 (hata nedeniyle geri alındı)');
                     }
 
                     // Toast notification (alert yerine)
@@ -361,7 +352,6 @@ document.addEventListener('alpine:init', () => {
                 // ❌ OPTIMISTIC UPDATE ROLLBACK: Network hatası varsa geri al
                 if (typeof Livewire !== 'undefined') {
                     Livewire.dispatch('optimisticRollback', { quantity: 1 });
-                    console.log('🔄 Optimistic Rollback: Badge -1 (network hatası nedeniyle geri alındı)');
                 }
 
                 // Toast notification (alert yerine)
@@ -391,9 +381,6 @@ document.addEventListener('alpine:init', () => {
 
                 // 🔑 localStorage'dan cart_id al (varsa)
                 const cartId = localStorage.getItem('cart_id');
-                console.log('🛒 Alpine: Current cart_id from localStorage:', cartId);
-
-                console.log('🛒 Alpine: Sending request to /api/cart/add');
 
                 const response = await fetch('/api/cart/add', {
                     method: 'POST',
@@ -410,7 +397,6 @@ document.addEventListener('alpine:init', () => {
                 });
 
                 const data = await response.json();
-                console.log('🛒 Alpine: API Response', data);
 
                 if (data.success) {
                     this.success = true;
@@ -418,13 +404,11 @@ document.addEventListener('alpine:init', () => {
                     // 🔑 API'den dönen cart_id'yi localStorage'a kaydet
                     if (data.data && data.data.cart_id) {
                         localStorage.setItem('cart_id', data.data.cart_id);
-                        console.log('💾 Alpine: cart_id saved to localStorage:', data.data.cart_id);
                     }
 
                     // CartWidget'ı güncelle - Livewire event dispatch
                     if (typeof Livewire !== 'undefined') {
                         Livewire.dispatch('cartUpdated');
-                        console.log('✅ Alpine: Livewire.dispatch(cartUpdated) - Badge güncellenecek');
                     }
 
                     setTimeout(() => { this.success = false; }, 2000);
@@ -445,11 +429,9 @@ document.addEventListener('alpine:init', () => {
     document.addEventListener('DOMContentLoaded', () => {
         const cartId = localStorage.getItem('cart_id');
         if (cartId && typeof Livewire !== 'undefined') {
-            console.log('🔄 Page Init: Found cart_id in localStorage, refreshing CartWidget...', cartId);
             // CartWidget'ı refresh et (Livewire event)
             setTimeout(() => {
                 Livewire.dispatch('cartUpdated');
-                console.log('✅ Page Init: CartWidget refresh triggered');
             }, 500); // Livewire init bekle
         }
     });

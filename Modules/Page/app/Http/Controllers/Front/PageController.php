@@ -46,17 +46,19 @@ class PageController extends Controller
         // SEO meta tags'i ayarla
         view()->share('currentModel', $page);
 
-        // Homepage products'ları çek (homepage_sort_order'a göre sıralı)
-        // ⚡ OPTIMIZED: Currency eager loading eklendi (N+1 çözümü)
-        $homepageProductsQuery = \Modules\Shop\App\Models\ShopProduct::where('show_on_homepage', true)
-            ->where('is_active', true)
-            ->with(['category', 'brand', 'media', 'currency'])
-            ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
-            ->orderBy('product_id', 'desc')
-            ->get();
+        // Shop modülü kontrolü
+        $homepageProducts = collect([]);
 
-        // ⚡ OPTIMIZED: Currency artık eager loading ile yüklü (satır 53)
-        $homepageProducts = $homepageProductsQuery->map(function ($product) {
+        if (class_exists('\\Modules\\Shop\\App\\Models\\ShopProduct')) {
+            $homepageProductsQuery = \Modules\Shop\App\Models\ShopProduct::where('show_on_homepage', true)
+                ->where('is_active', true)
+                ->with(['category', 'brand', 'media', 'currency'])
+                ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
+                ->orderBy('product_id', 'desc')
+                ->get();
+
+            // ⚡ OPTIMIZED: Currency artık eager loading ile yüklü (satır 53)
+            $homepageProducts = $homepageProductsQuery->map(function ($product) {
                 // ⚠️ FIX: 'currency' hem attribute (string: "TRY", "USD") hem relation adı
                 // Relation'a getRelation() ile güvenli eriş
                 $currencyRelation = $product->relationLoaded('currency') ? $product->getRelation('currency') : null;
@@ -132,9 +134,10 @@ class PageController extends Controller
                     'try_price' => $tryPrice,
                     'compare_at_price' => $compareAtPrice,
                     'formatted_compare_price' => $formattedComparePrice,
-                    'auto_discount_percentage' => $autoDiscountPercentage, // SABİT: 5, 10, 15, 20
+                    'auto_discount_percentage' => $autoDiscountPercentage,
                 ];
             });
+        }
 
         try {
             // ThemeService ile homepage view'ını al

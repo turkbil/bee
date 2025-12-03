@@ -335,7 +335,14 @@
                                                         </span>
                                                     @endif
 
-                                                    <span class="fw-semibold editable-price">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
+                                                    <div class="d-flex flex-column">
+                                                        <span class="fw-semibold editable-price">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
+                                                        <small class="text-muted" style="font-size: 0.7rem;">KDV Hariç</small>
+                                                    </div>
+                                                    <div class="d-flex flex-column mt-1">
+                                                        <span class="fw-bold text-success" style="font-size: 0.95rem;">{{ formatPrice($product->price_with_tax, $product->currency ?? 'TRY') }}</span>
+                                                        <small class="text-success" style="font-size: 0.7rem;">KDV Dahil</small>
+                                                    </div>
                                                     @if ($compareAtPrice && $compareAtPrice > $product->base_price)
                                                         <small class="text-muted text-decoration-line-through">
                                                             {{ formatPrice($compareAtPrice, $product->currency ?? 'TRY') }}

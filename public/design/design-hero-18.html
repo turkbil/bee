@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Parallax - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+
+        .parallax-container {
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+            perspective: 1px;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .parallax-back {
+            transform: translateZ(-2px) scale(3);
+        }
+
+        .parallax-mid {
+            transform: translateZ(-1px) scale(2);
+        }
+
+        .parallax-front {
+            transform: translateZ(0);
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        @keyframes float-medium {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-50px) rotate(-5deg); }
+        }
+
+        @keyframes float-fast {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-70px) scale(1.1); }
+        }
+
+        @keyframes drift-left {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(-100px); }
+        }
+
+        @keyframes drift-right {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(100px); }
+        }
+
+        .float-slow { animation: float-slow 8s ease-in-out infinite; }
+        .float-medium { animation: float-medium 6s ease-in-out infinite; }
+        .float-fast { animation: float-fast 4s ease-in-out infinite; }
+        .drift-left { animation: drift-left 10s ease-in-out infinite; }
+        .drift-right { animation: drift-right 12s ease-in-out infinite; }
+
+        @keyframes scroll-hint {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(10px); opacity: 0.5; }
+        }
+
+        .scroll-hint {
+            animation: scroll-hint 2s ease-in-out infinite;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-black text-white overflow-hidden">
+
+    <!-- Navigation -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-black/40 backdrop-blur-xl border-b border-white/10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="px-4 py-2 border border-white/20 rounded-lg hover:bg-white/10">
+                    <i class="fa-solid fa-home"></i>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold">18 / 20</div>
+                    <div class="text-xs text-gray-400">PARALLAX</div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="design-hero-17.html" class="px-4 py-2 border border-white/20 rounded-lg hover:bg-white/10">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <a href="design-hero-19.html" class="px-4 py-2 border border-white/20 rounded-lg hover:bg-white/10">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO-018: PARALLAX SCROLLING MULTI-LAYER -->
+    <section id="hero-018" class="parallax-container relative"
+             x-data="{ scrollY: 0 }"
+             @scroll.window="scrollY = window.scrollY">
+
+        <!-- Background Layer (Deepest) -->
+        <div class="parallax-layer parallax-back">
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-purple-950 to-pink-950"></div>
+            
+            <!-- Animated Background Circles -->
+            <div class="absolute top-20 left-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl drift-left"></div>
+            <div class="absolute bottom-40 right-40 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-3xl drift-right"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-500/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <!-- Middle Layer (Floating Icons) -->
+        <div class="parallax-layer parallax-mid pointer-events-none">
+            <!-- Large Floating Icons -->
+            <div class="absolute top-32 left-40 opacity-10 float-slow">
+                <i class="fa-solid fa-brain text-9xl text-cyan-300"></i>
+            </div>
+            <div class="absolute top-64 right-32 opacity-10 float-medium" style="animation-delay: 1s;">
+                <i class="fa-solid fa-chart-network text-8xl text-purple-300"></i>
+            </div>
+            <div class="absolute bottom-80 left-1/4 opacity-10 float-fast" style="animation-delay: 2s;">
+                <i class="fa-solid fa-rocket text-7xl text-pink-300"></i>
+            </div>
+            <div class="absolute top-1/3 right-1/4 opacity-10 float-slow" style="animation-delay: 1.5s;">
+                <i class="fa-solid fa-shield-check text-9xl text-blue-300"></i>
+            </div>
+        </div>
+
+        <!-- Front Layer (Main Content) -->
+        <div class="parallax-layer parallax-front">
+            <div class="min-h-screen flex items-center justify-center px-6 pt-20">
+                <div class="container mx-auto max-w-7xl">
+                    
+                    <!-- Hero Content -->
+                    <div class="text-center space-y-8 mb-16">
+                        <!-- Badge -->
+                        <div class="inline-block px-6 py-3 glass-card rounded-full" 
+                             :style="`transform: translateY(${scrollY * 0.1}px)`">
+                            <span class="text-sm font-bold">⚡ NEXT-GEN PLATFORM</span>
+                        </div>
+
+                        <!-- Main Title with Parallax -->
+                        <h1 class="text-7xl md:text-9xl font-black leading-none"
+                            :style="`transform: translateY(${scrollY * 0.3}px)`">
+                            <span class="block bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400">
+                                Parallax
+                            </span>
+                            <span class="block text-white">Deneyim</span>
+                        </h1>
+
+                        <!-- Subtitle -->
+                        <p class="text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
+                           :style="`transform: translateY(${scrollY * 0.2}px)`">
+                            Her katman farklı hızda hareket eder. Derinlik hissi veren modern tasarım.
+                        </p>
+
+                        <!-- CTA Buttons -->
+                        <div class="flex flex-wrap justify-center gap-4"
+                             :style="`transform: translateY(${scrollY * 0.15}px)`">
+                            <button class="px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-cyan-500/50 transition-all hover:scale-105">
+                                <i class="fa-solid fa-rocket mr-2"></i>
+                                Keşfet
+                            </button>
+                            <button class="px-10 py-5 glass-card rounded-xl font-bold text-lg hover:bg-white/15 transition-all">
+                                <i class="fa-solid fa-play-circle mr-2"></i>
+                                Demo İzle
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Floating Feature Cards -->
+                    <div class="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                        <!-- Card 1 -->
+                        <div class="glass-card p-8 rounded-2xl hover:bg-white/15 transition-all group float-slow">
+                            <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-brain text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">AI Arama</h3>
+                            <p class="text-gray-400 text-sm">Akıllı filtreleme sistemi</p>
+                            <div class="mt-4 text-4xl font-black text-cyan-400">500+</div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="glass-card p-8 rounded-2xl hover:bg-white/15 transition-all group float-medium" style="animation-delay: 0.5s;">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-chart-line text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">Real-Time</h3>
+                            <p class="text-gray-400 text-sm">Canlı stok takibi</p>
+                            <div class="mt-4 text-4xl font-black text-purple-400">99.9%</div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="glass-card p-8 rounded-2xl hover:bg-white/15 transition-all group float-fast" style="animation-delay: 1s;">
+                            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-rocket text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">Express</h3>
+                            <p class="text-gray-400 text-sm">Hızlı teslimat</p>
+                            <div class="mt-4 text-4xl font-black text-green-400">&lt;24h</div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="glass-card p-8 rounded-2xl hover:bg-white/15 transition-all group float-slow" style="animation-delay: 1.5s;">
+                            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-shield-halved text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3">Güvenli</h3>
+                            <p class="text-gray-400 text-sm">SSL şifreleme</p>
+                            <div class="mt-4 text-4xl font-black text-orange-400">256</div>
+                        </div>
+                    </div>
+
+                    <!-- Scroll Hint -->
+                    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 text-center scroll-hint">
+                        <div class="text-sm text-gray-400 mb-2">Kaydır</div>
+                        <i class="fa-solid fa-chevron-down text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Extended Scrollable Content -->
+            <div class="min-h-screen bg-gradient-to-b from-transparent to-black/50 flex items-center justify-center px-6">
+                <div class="container mx-auto max-w-5xl text-center">
+                    <h2 class="text-5xl font-black mb-8">Derinlemesine Deneyim</h2>
+                    <p class="text-xl text-gray-300 leading-relaxed mb-12">
+                        Parallax scrolling ile her katman farklı hızda hareket eder. 
+                        Bu teknik, sayfaya derinlik ve dinamizm katar.
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="glass-card p-8 rounded-2xl">
+                            <i class="fa-solid fa-layer-group text-5xl mb-4 text-cyan-400"></i>
+                            <h3 class="text-2xl font-bold mb-3">Çoklu Katman</h3>
+                            <p class="text-gray-400">3+ parallax katmanı ile derinlik hissi</p>
+                        </div>
+                        <div class="glass-card p-8 rounded-2xl">
+                            <i class="fa-solid fa-gauge-high text-5xl mb-4 text-purple-400"></i>
+                            <h3 class="text-2xl font-bold mb-3">Performanslı</h3>
+                            <p class="text-gray-400">GPU hızlandırma ile akıcı animasyonlar</p>
+                        </div>
+                        <div class="glass-card p-8 rounded-2xl">
+                            <i class="fa-solid fa-mobile-screen text-5xl mb-4 text-pink-400"></i>
+                            <h3 class="text-2xl font-bold mb-3">Responsive</h3>
+                            <p class="text-gray-400">Tüm cihazlarda mükemmel deneyim</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Badge -->
+        <div class="fixed bottom-12 left-12 z-50">
+            <div class="glass-card rounded-full px-8 py-3">
+                <span class="font-bold">#HERO-018</span>
+                <span class="mx-3 text-white/40">|</span>
+                <span class="text-xs text-white/60">PARALLAX</span>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

@@ -20,11 +20,6 @@ class SubscriptionPlanManageComponent extends Component
     // Dil-neutral inputs
     public $inputs = [
         'slug' => '',
-        'price_monthly' => 0,
-        'price_yearly' => 0,
-        'compare_price_monthly' => null,
-        'compare_price_yearly' => null,
-        'trial_days' => 0,
         'device_limit' => 1,
         'is_featured' => false,
         'is_active' => true,
@@ -32,7 +27,9 @@ class SubscriptionPlanManageComponent extends Component
 
     // Features array
     public $features = [];
-    public $newFeature = '';
+
+    // Billing Cycles
+    public $cycles = [];
 
     // Universal Component Data
     public $currentLanguage;
@@ -41,6 +38,7 @@ class SubscriptionPlanManageComponent extends Component
     public function boot()
     {
         view()->share('pretitle', $this->planId ? __('subscription::admin.edit_plan') : __('subscription::admin.new_plan'));
+        view()->share('title', $this->planId ? __('subscription::admin.edit_plan') : __('subscription::admin.new_plan'));
     }
 
     public function mount($id = null)
@@ -76,6 +74,7 @@ class SubscriptionPlanManageComponent extends Component
         }
 
         $this->features = [];
+        $this->cycles = [];
     }
 
     protected function loadPlanData()
@@ -85,11 +84,6 @@ class SubscriptionPlanManageComponent extends Component
         // Dil-neutral alanlar
         $this->inputs = [
             'slug' => $plan->slug ?? '',
-            'price_monthly' => (float) $plan->price_monthly,
-            'price_yearly' => (float) $plan->price_yearly,
-            'compare_price_monthly' => $plan->compare_price_monthly ? (float) $plan->compare_price_monthly : null,
-            'compare_price_yearly' => $plan->compare_price_yearly ? (float) $plan->compare_price_yearly : null,
-            'trial_days' => (int) ($plan->trial_days ?? 0),
             'device_limit' => (int) ($plan->device_limit ?? 1),
             'is_featured' => (bool) $plan->is_featured,
             'is_active' => (bool) $plan->is_active,
@@ -97,6 +91,9 @@ class SubscriptionPlanManageComponent extends Component
 
         // Features
         $this->features = is_array($plan->features) ? $plan->features : [];
+
+        // Billing Cycles
+        $this->cycles = is_array($plan->billing_cycles) ? $plan->billing_cycles : [];
 
         // Çoklu dil alanları
         foreach ($this->availableLanguages as $lang) {
@@ -107,15 +104,26 @@ class SubscriptionPlanManageComponent extends Component
         }
     }
 
+    /**
+     * Title değiştiğinde slug'ı otomatik oluştur
+     */
+    public function updated($propertyName)
+    {
+        // Ana dil title'ı değiştiğinde slug'ı otomatik oluştur (sadece yeni kayıtta)
+        $defaultLang = $this->availableLanguages[0] ?? 'tr';
+
+        if ($propertyName === "multiLangInputs.{$defaultLang}.title" && !$this->planId) {
+            $title = $this->multiLangInputs[$defaultLang]['title'] ?? '';
+            if (!empty($title)) {
+                $this->inputs['slug'] = \Str::slug($title);
+            }
+        }
+    }
+
     protected function rules()
     {
         return [
             'inputs.slug' => 'required|string|max:255|unique:subscription_plans,slug,' . $this->planId . ',subscription_plan_id',
-            'inputs.price_monthly' => 'required|numeric|min:0',
-            'inputs.price_yearly' => 'required|numeric|min:0',
-            'inputs.compare_price_monthly' => 'nullable|numeric|min:0',
-            'inputs.compare_price_yearly' => 'nullable|numeric|min:0',
-            'inputs.trial_days' => 'nullable|integer|min:0',
             'inputs.device_limit' => 'required|integer|min:1',
             'inputs.is_featured' => 'boolean',
             'inputs.is_active' => 'boolean',
@@ -124,18 +132,52 @@ class SubscriptionPlanManageComponent extends Component
         ];
     }
 
-    public function addFeature()
+    /**
+     * Yeni cycle ekle
+     */
+    public function addCycle($cycleData)
     {
-        if (!empty(trim($this->newFeature))) {
-            $this->features[] = trim($this->newFeature);
-            $this->newFeature = '';
-        }
+        $cycleKey = \Str::slug($cycleData['label_tr'] ?? 'cycle');
+
+        $this->cycles[$cycleKey] = [
+            'label' => [
+                'tr' => $cycleData['label_tr'] ?? '',
+                'en' => $cycleData['label_en'] ?? $cycleData['label_tr'] ?? '',
+            ],
+            'price' => (float) ($cycleData['price'] ?? 0),
+            'compare_price' => !empty($cycleData['compare_price']) ? (float) $cycleData['compare_price'] : null,
+            'duration_days' => (int) ($cycleData['duration_days'] ?? 30),
+            'trial_days' => !empty($cycleData['trial_days']) ? (int) $cycleData['trial_days'] : null,
+            'badge' => [
+                'text' => $cycleData['badge_text'] ?? null,
+                'color' => $cycleData['badge_color'] ?? null,
+            ],
+            'promo_text' => [
+                'tr' => $cycleData['promo_text_tr'] ?? null,
+                'en' => $cycleData['promo_text_en'] ?? null,
+            ],
+            'sort_order' => (int) ($cycleData['sort_order'] ?? count($this->cycles) + 1),
+        ];
+
+        $this->dispatch('toast', [
+            'title' => __('admin.success'),
+            'message' => 'Cycle eklendi!',
+            'type' => 'success'
+        ]);
     }
 
-    public function removeFeature($index)
+    /**
+     * Cycle sil
+     */
+    public function removeCycle($cycleKey)
     {
-        unset($this->features[$index]);
-        $this->features = array_values($this->features);
+        unset($this->cycles[$cycleKey]);
+
+        $this->dispatch('toast', [
+            'title' => __('admin.success'),
+            'message' => 'Cycle silindi!',
+            'type' => 'success'
+        ]);
     }
 
     public function save()
@@ -152,7 +194,7 @@ class SubscriptionPlanManageComponent extends Component
         }
 
         if (!$hasTitle) {
-            $this->addError('multiLangInputs', __('subscription::admin.plans.title_required'));
+            $this->addError('multiLangInputs', __('subscription::admin.title_required'));
             return;
         }
 
@@ -181,11 +223,7 @@ class SubscriptionPlanManageComponent extends Component
             'title' => $titleArray,
             'description' => $descriptionArray,
             'slug' => $this->inputs['slug'],
-            'price_monthly' => $this->inputs['price_monthly'],
-            'price_yearly' => $this->inputs['price_yearly'],
-            'compare_price_monthly' => $this->inputs['compare_price_monthly'] ?: null,
-            'compare_price_yearly' => $this->inputs['compare_price_yearly'] ?: null,
-            'trial_days' => $this->inputs['trial_days'] ?: 0,
+            'billing_cycles' => $this->cycles,
             'device_limit' => $this->inputs['device_limit'],
             'features' => $featuresArray,
             'is_featured' => $this->inputs['is_featured'],

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI İçerik Üretim Kuralları - v2 (Güncel)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rule-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .rule-card h3 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rule-card p {
+            color: #cbd5e1;
+            line-height: 1.9;
+            font-size: 1.05rem;
+        }
+
+        .rule-card ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .rule-card ul li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #cbd5e1;
+        }
+
+        .rule-card ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .yes {
+            border-left-color: #10b981;
+        }
+
+        .yes h3 {
+            color: #10b981;
+        }
+
+        .no {
+            border-left-color: #ef4444;
+        }
+
+        .no h3 {
+            color: #ef4444;
+        }
+
+        .warning {
+            border-left-color: #f59e0b;
+        }
+
+        .warning h3 {
+            color: #f59e0b;
+        }
+
+        .highlight {
+            background: rgba(96, 165, 250, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 3px solid #60a5fa;
+        }
+
+        .highlight strong {
+            color: #fbbf24;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .brand-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .brand-box strong {
+            color: #10b981;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 AI İçerik Üretim Kuralları v2</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-03 (Güncellenmiş) |
+                🎯 Hedef: 690 Yedek Parça Ürünü |
+                🤖 Sistem: OpenAI GPT-4o-mini + Leonardo AI
+            </div>
+        </header>
+
+        <!-- İSTATİSTİKLER -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">690</div>
+                <div class="stat-label">Toplam Ürün</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">%34</div>
+                <div class="stat-label">Token Tasarrufu</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">1</div>
+                <div class="stat-label">API Çağrısı/Ürün</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Alan Üretiliyor</div>
+            </div>
+        </div>
+
+        <!-- MARKA BİLGİSİ -->
+        <div class="brand-box">
+            <strong>🏢 FİRMA KIMLIĞI</strong><br><br>
+            <p style="color: #cbd5e1; line-height: 1.8;">
+                <strong style="color: #10b981;">iXtif</strong> (X büyük harf) = Satışı yapan firma (biziz!)<br>
+                ✅ "iXtif olarak..." yazabilirsin<br>
+                ✅ "Biz iXtif..." yazabilirsin<br>
+                ℹ️ Bu ÜRÜNÜN markası değil, SİTENİN firması
+            </p>
+        </div>
+
+        <!-- KURAL 1: TEK ÇAĞRI -->
+        <div class="section">
+            <h2>🎯 Kural 1: Tek Çağrıda Hepsini Üret</h2>
+
+            <div class="rule-card yes">
+                <h3>✅ DOĞRU</h3>
+                <p>OpenAI'ye <strong>TEK BİR</strong> istek gönder, <strong>HEPSİNİ BİRDEN</strong> al:</p>
+                <ul>
+                    <li>EXCERPT (kısa özet)</li>
+                    <li>BODY (400-500 kelime HTML)</li>
+                    <li>FEATURES (4-5 madde)</li>
+                    <li>USE_CASES (2-3 madde)</li>
+                    <li>FAQ (5 soru-cevap)</li>
+                    <li>SEO_TITLE + SEO_DESCRIPTION</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>NEDEN?</strong><br>
+                Tek çağrıda tüm alanları üretirsen %34 token tasarrufu sağlarsın.<br>
+                690 ürün için 897,000 token tasarruf = Daha ucuz, daha hızlı!
+            </div>
+        </div>
+
+        <!-- KURAL 2: YASAKLAR (GÜNCELLENDİ) -->
+        <div class="section">
+            <h2>⛔ Kural 2: Mutlak Yasaklar</h2>
+
+            <div class="rule-card no">
+                <h3>❌ BUNLARI ASLA YAZMA</h3>
+                <ul>
+                    <li><strong>Fiyat rakamları:</strong> TL, USD, EUR, ₺, $ yazma</li>
+                    <li><strong>Rakip/marka karşılaştırma:</strong> "X markasından daha iyi" yazma</li>
+                    <li><strong>Yıl:</strong> 2023, 2024, 2025 yazma</li>
+                </ul>
+            </div>
+
+            <div class="rule-card yes">
+                <h3>✅ FİRMA ADI (iXtif) YAZILIR</h3>
+                <p><strong>iXtif</strong> (X büyük!) satışı yapan firmamızdır, yazabilirsin:</p>
+                <ul>
+                    <li>"iXtif olarak kaliteli ürünler sunuyoruz"</li>
+                    <li>"Biz iXtif, müşteri memnuniyetini ön planda tutuyoruz"</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>NEDEN YAZILIR?</strong><br>
+                iXtif = Satışı yapan firma (biziz!), ürünün markası değil.<br>
+                Güven oluşturur, marka bilinirliği artırır.
+            </div>
+        </div>
+
+        <!-- KURAL 3: TEKNİK ÖZELLİKLER (YENİ) -->
+        <div class="section">
+            <h2>⚠️ Kural 3: Teknik Özellik Kuralı</h2>
+
+            <div class="rule-card warning">
+                <h3>⚠️ BİLMİYORSAN YAZMA!</h3>
+                <p>Eski teknik özellikler yoksa veya bilmiyorsan:</p>
+                <ul>
+                    <li><strong>Yanlış teknik detay yazma:</strong> Bizi tehlikeye atar!</li>
+                    <li><strong>Genel yaz:</strong> "Dayanıklı malzeme", "Kaliteli üretim"</li>
+                    <li><strong>Güvenli kal:</strong> Pazarlama odaklı anlat</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>ÖRNEK:</strong><br>
+                ❌ "60mm çapında, 1200kg kapasiteli" (emin değilsen yazma!)<br>
+                ✅ "Yüksek dayanıklılık ve uzun ömürlü kullanım sağlar"
+            </div>
+        </div>
+
+        <!-- KURAL 4: GİRİŞ (GÜNCELLENDİ) -->
+        <div class="section">
+            <h2>📝 Kural 4: GİRİŞ Bölümü (Google SEO)</h2>
+
+            <div class="rule-card yes">
+                <h3>✅ DAHA UZUN + GOOGLE KELİMELERİ</h3>
+                <p>GİRİŞ bölümü artık <strong>150-200 kelime</strong> olacak:</p>
+                <ul>
+                    <li><strong>Google arama kelimeleri:</strong> İlgili aranabilecek kelimeler ekle</li>
+                    <li><strong>Doğal cümleler:</strong> Anahtar kelimeleri doğal kullan</li>
+                    <li><strong>Pazarlama + SEO:</strong> Hem satış hem arama motorları için</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>ÖRNEK (Balata için):</strong><br>
+                "Fren balatası, araç güvenliğinin en kritik parçasıdır. Forklift balata sistemleri, ağır yük taşıma araçlarında güvenli durma mesafesi sağlar. Kaliteli fren balatası seçimi, hem operatör güvenliği hem de ekipman ömrü açısından büyük önem taşır. iXtif olarak, endüstriyel araç fren sistemleri için yüksek performanslı balata çözümleri sunuyoruz..."
+            </div>
+        </div>
+
+        <!-- KURAL 5: BODY STRATEJİSİ (YENİ) -->
+        <div class="section">
+            <h2>📋 Kural 5: BODY Stratejisi</h2>
+
+            <div class="rule-card yes">
+                <h3>✅ EĞER BODY DOLU İSE</h3>
+                <p>Mevcut BODY'den faydalan:</p>
+                <ul>
+                    <li><strong>İçeriği al:</strong> Mevcut yazıyı oku</li>
+                    <li><strong>Detaylandır:</strong> Eksikleri tamamla, genişlet</li>
+                    <li><strong>Tüm kuralları uygula:</strong> Tailwind CSS, yapı, SEO</li>
+                </ul>
+            </div>
+
+            <div class="rule-card warning">
+                <h3>⚠️ EĞER BODY ÇOK KISA İSE</h3>
+                <p>Mevcut BODY kısaysa:</p>
+                <ul>
+                    <li><strong>Al + genişlet:</strong> Kısa içeriği temel al</li>
+                    <li><strong>Başlık + kategori ekle:</strong> Ürün adı ve kategoriden faydalanarak detaylandır</li>
+                    <li><strong>Tüm kuralları uygula:</strong> 400-500 kelimeye genişlet</li>
+                </ul>
+            </div>
+
+            <div class="rule-card no">
+                <h3>❌ EĞER BODY YOK İSE</h3>
+                <p>BODY hiç yoksa:</p>
+                <ul>
+                    <li><strong>Başlık + kategori al:</strong> Sadece bunlardan yola çık</li>
+                    <li><strong>Sıfırdan genişlet:</strong> Genel konuş, detaylı anlat</li>
+                    <li><strong>TEHLİKEYE ATMA:</strong> Bilmediğin teknik detay yazma!</li>
+                    <li><strong>Güvenli kal:</strong> Pazarlama odaklı, genel ifadeler kullan</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>STRATEJİ ÖZETİ:</strong><br>
+                • BODY dolu → Detaylandır<br>
+                • BODY kısa → Al + genişlet + başlık/kategori ekle<br>
+                • BODY yok → Sıfırdan, genel, güvenli yaz
+            </div>
+        </div>
+
+        <!-- KURAL 6: BODY FORMATI -->
+        <div class="section">
+            <h2>📐 Kural 6: BODY Yapısı (Tailwind CSS)</h2>
+
+            <div class="rule-card">
+                <h3>📐 Yapı Şeması</h3>
+                <ul>
+                    <li><strong>GİRİŞ:</strong> 150-200 kelime - Google SEO + pazarlama</li>
+                    <li><strong>TEKNİK ÖZELLIKLER:</strong> 125-150 kelime - Güvenli detaylar</li>
+                    <li><strong>KULLANIM ALANLARI:</strong> 100-125 kelime - Nerede kullanılır</li>
+                    <li><strong>AVANTAJLAR:</strong> 100-125 kelime - Neden bu ürün</li>
+                    <li><strong>SONUÇ:</strong> 25-50 kelime - iXtif vurgusu + çağrı</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>TOPLAM:</strong> 500-650 kelime (3,500-4,500 karakter)<br>
+                <strong>FORMAT:</strong> Tailwind CSS ile <code>&lt;div class="space-y-6"&gt;</code> içinde HTML
+            </div>
+        </div>
+
+        <!-- KURAL 7: FEATURES -->
+        <div class="section">
+            <h2>⭐ Kural 7: FEATURES (Özellikler)</h2>
+
+            <div class="rule-card">
+                <h3>📋 Format</h3>
+                <p>4-5 madde, her madde:</p>
+                <ul>
+                    <li><strong>icon:</strong> FontAwesome sınıfı (fas fa-shield-alt)</li>
+                    <li><strong>text:</strong> Kısa, net özellik (max 50 karakter)</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>ÖRNEKLER:</strong><br>
+                • "Yüksek güvenlik standartları"<br>
+                • "Kolay montaj ve kullanım"<br>
+                • "Uzun ömürlü performans"<br>
+                • "iXtif kalite garantisi"
+            </div>
+        </div>
+
+        <!-- KURAL 8: USE CASES -->
+        <div class="section">
+            <h2>🎯 Kural 8: USE CASES (Kullanım Alanları)</h2>
+
+            <div class="rule-card">
+                <h3>📋 Format</h3>
+                <p>2-3 madde, her madde:</p>
+                <ul>
+                    <li><strong>icon:</strong> FontAwesome sınıfı (fas fa-warehouse)</li>
+                    <li><strong>text:</strong> Spesifik kullanım alanı (max 60 karakter)</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>ÖRNEKLER:</strong><br>
+                • "Forkliftlerde güvenli kullanım"<br>
+                • "Lojistik ve taşıma araçlarında etkili performans"<br>
+                • "Ağır yük taşıma sistemlerinde dayanıklılık"
+            </div>
+        </div>
+
+        <!-- KURAL 9: FAQ -->
+        <div class="section">
+            <h2>❓ Kural 9: FAQ (Sıkça Sorulan Sorular)</h2>
+
+            <div class="rule-card">
+                <h3>📋 Format</h3>
+                <p>5 soru-cevap çifti, her biri:</p>
+                <ul>
+                    <li><strong>question:</strong> {"tr": "Soru?"}</li>
+                    <li><strong>answer:</strong> {"tr": "Cevap"}</li>
+                    <li><strong>icon:</strong> FontAwesome sınıfı</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>ÖRNEK SORULAR:</strong><br>
+                1. "[Ürün] nedir?"<br>
+                2. "Hangi araçlarda kullanılır?"<br>
+                3. "Malzemesi nedir?" (biliyorsan!)<br>
+                4. "iXtif'ten neden almalıyım?"<br>
+                5. "Güvenli sürüş için neden önemlidir?"
+            </div>
+        </div>
+
+        <!-- KURAL 10: SEO -->
+        <div class="section">
+            <h2>🔍 Kural 10: SEO (Arama Motoru)</h2>
+
+            <div class="rule-card">
+                <h3>📋 Format</h3>
+                <ul>
+                    <li><strong>SEO_TITLE:</strong> 60 karakter max - Başlık + kategori</li>
+                    <li><strong>SEO_DESCRIPTION:</strong> 155 karakter max - Özet + pazarlama</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>ÖRNEKLER:</strong><br>
+                <strong>Title:</strong> "Kaliteli Balata - iXtif Güvenli Fren Balatası"<br>
+                <strong>Description:</strong> "iXtif olarak yüksek aşınma direnci ve mükemmel ısı dağıtımı ile güvenli sürüş deneyimi sunuyoruz. Forklift ve ağır yük taşıma araçları için ideal."
+            </div>
+        </div>
+
+        <!-- KURAL 11: LEONARDO GÖRSEL (GÜNCELLENDİ) -->
+        <div class="section">
+            <h2>🎨 Kural 11: Leonardo AI Görsel</h2>
+
+            <div class="rule-card yes">
+                <h3>✅ ÇOĞUL + FARKLI GÖRÜNTÜLER</h3>
+                <ul>
+                    <li><strong>Çoğul ürün:</strong> Birden fazla ürün görünümü</li>
+                    <li><strong>Farklı açılar:</strong> Ama aynı tip ürünler</li>
+                    <li><strong>Temsili görsel:</strong> Kategoriyi temsil eden</li>
+                    <li><strong>Depo/raf/kullanım:</strong> Farklı senaryolar</li>
+                </ul>
+            </div>
+
+            <div class="rule-card no">
+                <h3>❌ BUNLARI YAPMA</h3>
+                <ul>
+                    <li><strong>Tekli portre:</strong> Tek ürün close-up yasak!</li>
+                    <li><strong>Çok farklı çeşitler:</strong> Ziyaretçi anlamaz</li>
+                    <li><strong>Sadece raf:</strong> Monoton olmasın</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>MANTIK:</strong><br>
+                • Tek ürün → Ziyaretçi gerçek sanır<br>
+                • Çok farklı çeşit → Ziyaretçi anlamaz<br>
+                • Çoğul + benzer → Temsili + anlaşılır ✅
+            </div>
+        </div>
+
+        <!-- KURAL 12: İŞLEM SÜRECİ -->
+        <div class="section">
+            <h2>⚙️ Kural 12: İşlem Süreci</h2>
+
+            <div class="rule-card">
+                <h3>🔄 Adımlar</h3>
+                <ul>
+                    <li><strong>1.</strong> Ürün bilgisini al (başlık + kategori + MEVCUT BODY)</li>
+                    <li><strong>2.</strong> BODY kontrolü yap (dolu/kısa/yok → Strateji belirle)</li>
+                    <li><strong>3.</strong> OpenAI'ye tek istek → 6 alan al</li>
+                    <li><strong>4.</strong> Leonardo görsel → Çoğul + farklı açılar</li>
+                    <li><strong>5.</strong> Database'e kaydet</li>
+                    <li><strong>6.</strong> 5 saniye bekle → Sonraki ürün</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <strong>SÜRE TAHMİNİ:</strong><br>
+                Her ürün ~15-20 saniye<br>
+                690 ürün = ~3-4 saat
+            </div>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | v2 (Güncellenmiş) | 2025-12-03
+        </footer>
+    </div>
+</body>
+</html>

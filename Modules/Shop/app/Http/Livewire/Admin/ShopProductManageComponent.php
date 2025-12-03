@@ -58,6 +58,10 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
     public $tabConfig = [];
     public $tabCompletionStatus = [];
 
+    // KDV Fiyat Senkronizasyonu
+    public $price_with_tax;  // KDV dahil fiyat (hesaplanan, DB'ye kaydedilmez)
+    public $tax_rate = 20.0;  // KDV oranı
+
     // SOLID Dependencies
     protected $productService;
     protected $categoryService;
@@ -286,6 +290,10 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
                 'sort_order' => $product->sort_order ?? 0,
                 'badges' => is_array($product->badges) ? $product->badges : [],
             ]);
+
+            // KDV bilgilerini yükle
+            $this->tax_rate = $product->tax_rate ?? 20.0;
+            $this->calculatePriceWithTax();
 
             // Çoklu dil alanları - FALLBACK KAPALI (input boş kalır, backend'de fallback)
             foreach ($this->availableLanguages as $lang) {
@@ -647,5 +655,62 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
     public function getModuleInstructions(): string
     {
         return __('shop::admin.ai_content_instructions');
+    }
+
+    /**
+     * KDV hariç fiyat değiştiğinde (base_price)
+     * KDV dahil fiyatı otomatik hesapla
+     */
+    public function updatedInputsBasePrice()
+    {
+        $this->calculatePriceWithTax();
+    }
+
+    /**
+     * KDV dahil fiyat değiştiğinde (price_with_tax)
+     * KDV hariç fiyatı otomatik hesapla
+     */
+    public function updatedPriceWithTax()
+    {
+        $this->calculateBasePrice();
+    }
+
+    /**
+     * KDV oranı değiştiğinde
+     * Hangisi doluysa ondan diğerini hesapla
+     */
+    public function updatedTaxRate()
+    {
+        if ($this->inputs['base_price']) {
+            $this->calculatePriceWithTax();
+        } elseif ($this->price_with_tax) {
+            $this->calculateBasePrice();
+        }
+    }
+
+    /**
+     * KDV dahil fiyatı hesapla (base_price'dan)
+     */
+    protected function calculatePriceWithTax()
+    {
+        if (!isset($this->inputs['base_price']) || !$this->tax_rate) {
+            $this->price_with_tax = null;
+            return;
+        }
+
+        $this->price_with_tax = $this->inputs['base_price'] * (1 + $this->tax_rate / 100);
+    }
+
+    /**
+     * KDV hariç fiyatı hesapla (price_with_tax'tan)
+     */
+    protected function calculateBasePrice()
+    {
+        if (!$this->price_with_tax || !$this->tax_rate) {
+            $this->inputs['base_price'] = null;
+            return;
+        }
+
+        $this->inputs['base_price'] = $this->price_with_tax / (1 + $this->tax_rate / 100);
     }
 }

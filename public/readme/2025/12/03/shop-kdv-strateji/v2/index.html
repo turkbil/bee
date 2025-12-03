@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop KDV Stratejisi v2 - Admin Her İki Fiyatı da Girer + Settings Gösterim</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 15px;
+            color: #93c5fd;
+        }
+
+        .highlight-box {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+
+        .highlight-box h4 {
+            color: #10b981;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .code-box {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .code-inline {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #93c5fd;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛒 Shop KDV Stratejisi <span class="version-badge">v2 - FİNAL</span></h1>
+            <div class="meta">
+                📅 2025-12-03 | 🎯 Admin Her İki Fiyatı da Girer + Settings Gösterim | 🏢 iXtif
+            </div>
+        </header>
+
+        <section>
+            <h2>🎯 Ana Kural (v2 - FİNAL)</h2>
+
+            <div class="highlight-box">
+                <h4>✅ Admin: Her İki Fiyatı da Girer</h4>
+                <ul>
+                    <li>✅ <strong>KDV Hariç Fiyat:</strong> 1.000 TL (price_without_tax)</li>
+                    <li>✅ <strong>KDV Dahil Fiyat:</strong> 1.200 TL (price_with_tax)</li>
+                    <li>✅ <strong>KDV Oranı:</strong> %20 (tax_rate)</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <h4>⚙️ Yönetici: Settings'ten Gösterim Ayarı Yapar</h4>
+                <p style="margin-bottom: 15px;">Settings Management → Product Display Settings:</p>
+                <ul>
+                    <li>☑️ <strong>KDV Dahil Fiyat Göster</strong> (with_tax) → Ürün kartlarında: "1.200 TL (KDV Dahil)"</li>
+                    <li>☑️ <strong>KDV Hariç Fiyat Göster</strong> (without_tax) → Ürün kartlarında: "1.000 TL + KDV"</li>
+                </ul>
+                <p style="margin-top: 15px; color: #94a3b8;">
+                    Bu ayar <strong>tüm ürün kartlarına</strong> uygulanır (homepage, category, shop index).
+                </p>
+            </div>
+
+            <div class="highlight-box">
+                <h4>🛒 Sepet + Checkout: HER ZAMAN KDV Dahil!</h4>
+                <p>Ürün kartlarında ayar ne olursa olsun, <strong>sepet ve checkout sayfasında HER ZAMAN KDV dahil</strong> fiyat gösterilir.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🗄️ Database Migration</h2>
+
+            <div class="code-box">
+// shop_products tablosuna YENİ ALANLAR:<br><br>
+
+$table->decimal('price_without_tax', 12, 2)<br>
+      ->nullable()<br>
+      ->after('base_price')<br>
+      ->comment('KDV hariç fiyat');<br><br>
+
+$table->decimal('price_with_tax', 12, 2)<br>
+      ->nullable()<br>
+      ->after('price_without_tax')<br>
+      ->comment('KDV dahil fiyat');
+            </div>
+        </section>
+
+        <section>
+            <h2>⚙️ Settings Management</h2>
+
+            <div class="code-box">
+Setting Key: product_price_display<br>
+Type: select<br>
+Options:<br>
+  - with_tax (KDV Dahil Göster)<br>
+  - without_tax (KDV Hariç Göster)<br>
+Default: with_tax
+            </div>
+
+            <h3>Blade Kullanımı</h3>
+            <div class="code-box">
+@php<br>
+    $display = setting('product_price_display', 'with_tax');<br>
+@endphp<br><br>
+
+@if($display === 'with_tax')<br>
+    {{ number_format($product->price_with_tax, 2) }} TL (KDV Dahil)<br>
+@else<br>
+    {{ number_format($product->price_without_tax, 2) }} TL + KDV<br>
+@endif
+            </div>
+        </section>
+
+        <section>
+            <h2>🛍️ CartService - Güncelleme</h2>
+
+            <div class="code-box">
+// Artık hesaplamaya gerek yok!<br>
+$priceWithoutTax = $item->price_without_tax ?? 0;<br>
+$priceWithTax = $item->price_with_tax ?? 0;<br>
+$taxRate = $item->tax_rate ?? 20.0;<br>
+$taxAmount = $priceWithTax - $priceWithoutTax;<br><br>
+
+$cartItem->unit_price = $priceWithoutTax;<br>
+$cartItem->tax_amount = $taxAmount;<br>
+$cartItem->final_price = $priceWithTax;<br>
+$cartItem->total = $priceWithTax * $quantity;
+            </div>
+        </section>
+
+        <section>
+            <h2>💳 Subscription - Aynı Mantık</h2>
+
+            <div class="code-box">
+billing_cycles: {<br>
+    "monthly": {<br>
+        "price_without_tax": 166.58,<br>
+        "price_with_tax": 199.90,<br>
+        "tax_rate": 20.00<br>
+    }<br>
+}
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Özet</h2>
+            <ul>
+                <li>✅ Admin her iki fiyatı da girer (KDV hariç + KDV dahil)</li>
+                <li>✅ Settings'ten site geneli gösterim ayarı (with_tax / without_tax)</li>
+                <li>✅ Ürün kartlarında Settings'e göre göster</li>
+                <li>✅ Cart + Checkout HER ZAMAN KDV dahil</li>
+                <li>✅ Aynı mantık Subscription'a da uygulanır</li>
+            </ul>
+        </section>
+
+        <footer>
+            🤖 Claude AI - 2025-12-03
+        </footer>
+    </div>
+</body>
+</html>

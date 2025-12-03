@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonelik Planı Yönetimi - UI/UX Tasarım v2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(100, 116, 139, 0.3);
+            color: #cbd5e1;
+            border: 1px solid #475569;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(100, 116, 139, 0.5);
+        }
+
+        /* Meta Info */
+        .meta-bar {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .meta-item strong {
+            color: #cbd5e1;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card */
+        .card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 16px;
+            border: 1px solid #334155;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .card-header h2 {
+            font-size: 1.4rem;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .card-header .icon {
+            font-size: 1.5rem;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        label.required::after {
+            content: " *";
+            color: #ef4444;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Switch */
+        .switch-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #475569;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .switch.active {
+            background: #3b82f6;
+        }
+
+        .switch::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+
+        .switch.active::after {
+            transform: translateX(24px);
+        }
+
+        /* Billing Cycles */
+        .cycle-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cycle-item {
+            background: rgba(15, 23, 42, 0.7);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .cycle-item:hover {
+            transform: translateX(5px);
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .cycle-info h3 {
+            color: #60a5fa;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .cycle-details {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .cycle-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: #10b981;
+            color: white;
+        }
+
+        .cycle-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-icon.edit {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .btn-icon.delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Add Cycle Form - IMPROVED */
+        .add-cycle-container {
+            background: rgba(15, 23, 42, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px dashed #475569;
+        }
+
+        .add-cycle-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .add-cycle-header h3 {
+            color: #60a5fa;
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .form-section:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            color: #60a5fa;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-section-title .number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-row.three-col {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        @media (max-width: 768px) {
+            .form-row,
+            .form-row.three-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Optional Badge */
+        .optional-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            background: rgba(100, 116, 139, 0.3);
+            color: #94a3b8;
+            border-radius: 12px;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+
+        /* Features List */
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .feature-item {
+            background: rgba(15, 23, 42, 0.7);
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            cursor: move;
+        }
+
+        .feature-item:hover {
+            background: rgba(15, 23, 42, 0.9);
+            transform: translateX(5px);
+        }
+
+        .drag-handle {
+            color: #64748b;
+            font-size: 1.2rem;
+            cursor: grab;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        .feature-icon {
+            color: #10b981;
+            font-size: 1.3rem;
+        }
+
+        .feature-text {
+            flex: 1;
+            color: #cbd5e1;
+        }
+
+        /* Add Feature Form */
+        .add-feature-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-feature-form input {
+            flex: 1;
+        }
+
+        .add-feature-form .btn {
+            padding: 12px 20px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+
+        /* Section Divider */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #334155, transparent);
+            margin: 30px 0;
+        }
+
+        /* Highlights */
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .highlight-box p {
+            color: #cbd5e1;
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Version Badge */
+        .version-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div>
+                <h1>📋 Abonelik Planı Yönetimi <span class="version-badge">v2</span></h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary">
+                    ← Geri Dön
+                </button>
+                <button class="btn btn-primary">
+                    💾 Kaydet
+                </button>
+            </div>
+        </header>
+
+        <!-- Meta Bar -->
+        <div class="meta-bar">
+            <div class="meta-item">
+                <span>📅</span>
+                <span>Tarih: <strong>03 Aralık 2025</strong></span>
+            </div>
+            <div class="meta-item">
+                <span>🏢</span>
+                <span>Tenant: <strong>ixtif.com</strong></span>
+            </div>
+            <div class="meta-item">
+                <span>✏️</span>
+                <span>Mod: <strong>Yeni Plan Oluşturma</strong></span>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid">
+            <!-- Left Column -->
+            <div>
+                <!-- Plan Bilgileri -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <span class="icon">ℹ️</span>
+                            Plan Bilgileri
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="required">Plan Adı</label>
+                            <input type="text" placeholder="Örn: Premium, Gold, Silver">
+                            <span class="form-hint">Kullanıcılara gösterilecek plan ismi</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Açıklama</label>
+                            <textarea placeholder="Plan hakkında kısa açıklama"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required">Slug</label>
+                            <input type="text" placeholder="premium-plan" readonly>
+                            <span class="form-hint">Plan adından otomatik oluşturulur</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Cycles -->
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2>
+                            <span class="icon">⏰</span>
+                            Süre & Fiyat Seçenekleri
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- Mevcut Cycles -->
+                        <div class="cycle-list">
+                            <div class="cycle-item">
+                                <div class="cycle-info">
+                                    <h3>Aylık</h3>
+                                    <div class="cycle-details">
+                                        <span>💰 ₺99</span>
+                                        <span>📅 30 gün</span>
+                                        <span>🎁 7 gün deneme</span>
+                                        <span class="cycle-badge">Popüler</span>
+                                    </div>
+                                </div>
+                                <div class="cycle-actions">
+                                    <button class="btn-icon edit">✏️</button>
+                                    <button class="btn-icon delete">🗑️</button>
+                                </div>
+                            </div>
+
+                            <div class="cycle-item">
+                                <div class="cycle-info">
+                                    <h3>6 Aylık</h3>
+                                    <div class="cycle-details">
+                                        <span>💰 ₺499</span>
+                                        <span style="text-decoration: line-through; color: #64748b;">₺594</span>
+                                        <span>📅 180 gün</span>
+                                        <span>🎁 14 gün deneme</span>
+                                        <span class="cycle-badge" style="background: #f59e0b;">%16 İndirim</span>
+                                    </div>
+                                </div>
+                                <div class="cycle-actions">
+                                    <button class="btn-icon edit">✏️</button>
+                                    <button class="btn-icon delete">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Add New Cycle - IMPROVED VERSION -->
+                        <div class="add-cycle-container">
+                            <div class="add-cycle-header">
+                                <h3>➕ Yeni Süre Ekle</h3>
+                            </div>
+
+                            <!-- Bölüm 1: Temel Bilgiler -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <span class="number">1</span>
+                                    <span>Temel Bilgiler</span>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="required">Süre Adı (TR)</label>
+                                        <input type="text" placeholder="Örn: Aylık, 15 Günlük, 6 Aylık">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="required">Gün Sayısı</label>
+                                        <input type="number" placeholder="30" min="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bölüm 2: Fiyatlandırma -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <span class="number">2</span>
+                                    <span>Fiyatlandırma</span>
+                                </div>
+                                <div class="form-row three-col">
+                                    <div class="form-group">
+                                        <label class="required">Fiyat (₺)</label>
+                                        <input type="number" placeholder="99" min="0" step="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Üstü Çizili Fiyat (₺)
+                                            <span class="optional-badge">Opsiyonel</span>
+                                        </label>
+                                        <input type="number" placeholder="120" min="0" step="0.01">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Deneme Süresi (gün)
+                                            <span class="optional-badge">Opsiyonel</span>
+                                        </label>
+                                        <input type="number" placeholder="7" min="0">
+                                    </div>
+                                </div>
+                                <span class="form-hint" style="display: block; margin-top: -10px;">
+                                    💡 Üstü çizili fiyat, kullanıcıya tasarruf miktarını gösterir
+                                </span>
+                            </div>
+
+                            <!-- Bölüm 3: Ekstra Özellikler -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <span class="number">3</span>
+                                    <span>Ekstra Özellikler</span>
+                                    <span class="optional-badge">Tümü Opsiyonel</span>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Badge Yazısı</label>
+                                        <input type="text" placeholder="Popüler, En Avantajlı, %20 İndirim">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Badge Rengi</label>
+                                        <select>
+                                            <option value="">Seç</option>
+                                            <option value="primary">🔵 Mavi</option>
+                                            <option value="success">🟢 Yeşil</option>
+                                            <option value="warning">🟡 Sarı</option>
+                                            <option value="danger">🔴 Kırmızı</option>
+                                            <option value="info">🔷 Açık Mavi</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row full">
+                                    <div class="form-group">
+                                        <label>Promosyon Yazısı</label>
+                                        <input type="text" placeholder="2 ay bedava!, İlk ay %20 indirim, Yıllık pakette 2 ay hediye">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button class="btn btn-primary" style="width: 100%; margin-top: 15px; padding: 15px;">
+                                ✅ Cycle Ekle
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2>
+                            <span class="icon">✨</span>
+                            Özellikler
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="highlight-box">
+                            <p>💡 Özellikleri sürükleyerek sırasını değiştirebilirsiniz</p>
+                        </div>
+
+                        <!-- Features List -->
+                        <div class="features-list">
+                            <div class="feature-item">
+                                <span class="drag-handle">⋮⋮</span>
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Sınırsız ürün ekleme</span>
+                                <button class="btn-icon delete">🗑️</button>
+                            </div>
+
+                            <div class="feature-item">
+                                <span class="drag-handle">⋮⋮</span>
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">5 cihaz desteği</span>
+                                <button class="btn-icon delete">🗑️</button>
+                            </div>
+
+                            <div class="feature-item">
+                                <span class="drag-handle">⋮⋮</span>
+                                <span class="feature-icon">✅</span>
+                                <span class="feature-text">Öncelikli destek</span>
+                                <button class="btn-icon delete">🗑️</button>
+                            </div>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Add Feature -->
+                        <div class="add-feature-form">
+                            <input type="text" placeholder="İkon class (fas fa-check)">
+                            <input type="text" placeholder="Özellik metni" style="flex: 2;">
+                            <button class="btn btn-primary">➕</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div>
+                <!-- Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>
+                            <span class="icon">⚙️</span>
+                            Ayarlar
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="required">Cihaz Limiti</label>
+                            <input type="number" value="1" min="1">
+                            <span class="form-hint">Aynı anda kaç cihazda kullanılabilir</span>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <div class="switch-group">
+                            <div class="switch active"></div>
+                            <label style="margin: 0;">Öne Çıkan Plan</label>
+                        </div>
+
+                        <div class="switch-group">
+                            <div class="switch active"></div>
+                            <label style="margin: 0;">Aktif</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Card -->
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h2>
+                            <span class="icon">💡</span>
+                            Bilgilendirme
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.8;">
+                            <p style="margin-bottom: 15px;">
+                                <strong style="color: #60a5fa;">Deneme Süresi:</strong>
+                                Her kullanıcı sadece bir kez deneme süresinden yararlanabilir.
+                            </p>
+                            <p style="margin-bottom: 15px;">
+                                <strong style="color: #60a5fa;">Özellikler:</strong>
+                                Tüm süre seçenekleri için aynı özellikler geçerlidir.
+                            </p>
+                            <p>
+                                <strong style="color: #60a5fa;">Sıralama:</strong>
+                                Özellikler ve planlar sürükle-bırak ile sıralanabilir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            🤖 Claude AI tarafından tasarlandı • UI/UX Mockup v2 • Yeni Süre Ekle formu iyileştirildi
+        </footer>
+    </div>
+
+    <script>
+        // Demo interactivity
+        document.querySelectorAll('.switch').forEach(sw => {
+            sw.addEventListener('click', () => {
+                sw.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>

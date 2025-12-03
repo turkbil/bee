@@ -218,26 +218,42 @@ class CartService
             $cartItem->special_instructions = $options['special_instructions'];
         }
 
+        // Metadata (subscription cycle info, vb.)
+        if (!empty($options['metadata'])) {
+            $cartItem->metadata = $options['metadata'];
+        }
+
+        // Item description
+        if (!empty($options['item_description'])) {
+            $cartItem->item_description = $options['item_description'];
+        }
+
         // İlk hesaplama
         $cartItem->recalculate();
     }
 
     /**
      * Item fiyatını al
+     * 🏷️ ShopProduct için KDV dahil fiyat kullanılır (price_with_tax accessor)
      */
     protected function getItemPrice($item): float
     {
-        // Method priority: getPrice() > final_price > base_price > sale_price > price > 0
+        // Method priority: getPrice() > price_with_tax (ShopProduct) > final_price > base_price > sale_price > price > 0
         if (method_exists($item, 'getPrice')) {
             return (float) $item->getPrice();
         }
 
-        // ShopProduct için final_price accessor (en çok kullanılır)
+        // 🏷️ ShopProduct için price_with_tax accessor (KDV dahil - sepette her zaman KDV dahil gösterilir)
+        if (isset($item->price_with_tax) && $item->price_with_tax > 0) {
+            return (float) $item->price_with_tax;
+        }
+
+        // ShopProduct için final_price accessor (fallback)
         if (isset($item->final_price) && $item->final_price > 0) {
             return (float) $item->final_price;
         }
 
-        // ShopProduct için base_price (standart fiyat)
+        // ShopProduct için base_price (fallback - KDV hariç)
         if (isset($item->base_price) && $item->base_price > 0) {
             return (float) $item->base_price;
         }

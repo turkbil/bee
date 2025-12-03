@@ -123,9 +123,16 @@
                                     <td class="text-end">
                                         @if ($product->base_price && $product->base_price > 0)
                                             <div class="d-flex flex-column align-items-end">
-                                                <span class="fw-semibold">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
+                                                <div class="mb-1">
+                                                    <span class="fw-semibold">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
+                                                    <small class="text-muted d-block" style="font-size: 0.7rem;">KDV Hariç</small>
+                                                </div>
+                                                <div>
+                                                    <span class="fw-bold text-success" style="font-size: 0.95rem;">{{ formatPrice($product->price_with_tax, $product->currency ?? 'TRY') }}</span>
+                                                    <small class="text-success d-block" style="font-size: 0.7rem;">KDV Dahil</small>
+                                                </div>
                                                 @if ($product->compare_at_price && $product->compare_at_price > $product->base_price)
-                                                    <small class="text-muted text-decoration-line-through">
+                                                    <small class="text-muted text-decoration-line-through mt-1">
                                                         {{ formatPrice($product->compare_at_price, $product->currency ?? 'TRY') }}
                                                     </small>
                                                 @endif

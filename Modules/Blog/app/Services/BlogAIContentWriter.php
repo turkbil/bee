@@ -630,17 +630,36 @@ Her adıma farklı ve konuya uygun icon seç.";
                 }
 
                 // 5. Birleştir
-                // 🔧 FIX: Excerpt - ilk paragraftan, kısa ve öz (80 karakter max)
+                // 🔧 FIX: Excerpt - ilk TAMAM CÜMLEYİ al (SEO için 155 karakter max)
                 preg_match('/<p[^>]*>(.*?)<\/p>/s', $fullContent, $pMatches);
                 $firstParagraph = isset($pMatches[1]) ? strip_tags($pMatches[1]) : strip_tags($fullContent);
                 $cleanBodyForExcerpt = preg_replace('/\s+/', ' ', trim($firstParagraph));
-                $autoExcerpt = mb_substr($cleanBodyForExcerpt, 0, 80, 'UTF-8');
-                // Son kelimeyi kesmemek için son boşluğa kadar al
-                $lastSpace = mb_strrpos($autoExcerpt, ' ', 0, 'UTF-8');
-                if ($lastSpace !== false && $lastSpace > 40) {
-                    $autoExcerpt = mb_substr($autoExcerpt, 0, $lastSpace, 'UTF-8');
+
+                // İlk cümleyi al (nokta, soru veya ünlem işaretine kadar)
+                if (preg_match('/^(.+?[.!?])\s/u', $cleanBodyForExcerpt, $sentenceMatch)) {
+                    // İlk tam cümle bulundu
+                    $autoExcerpt = trim($sentenceMatch[1]);
+
+                    // SEO için 155 karakter limit (Google meta description standard)
+                    if (mb_strlen($autoExcerpt) > 155) {
+                        // 155'e kes, son kelimeyi kesmeden, "..." ekle
+                        $autoExcerpt = mb_substr($autoExcerpt, 0, 152);
+                        $lastSpace = mb_strrpos($autoExcerpt, ' ');
+                        if ($lastSpace !== false && $lastSpace > 100) {
+                            $autoExcerpt = mb_substr($autoExcerpt, 0, $lastSpace);
+                        }
+                        $autoExcerpt = rtrim($autoExcerpt, '.,;:') . '...';
+                    }
+                    // Else: İlk cümle 155'ten kısa, olduğu gibi bırak (nokta korunuyor!)
+                } else {
+                    // İlk cümle bulunamadı (nadiren), 155'e kes ve "..." ekle
+                    $autoExcerpt = mb_substr($cleanBodyForExcerpt, 0, 152);
+                    $lastSpace = mb_strrpos($autoExcerpt, ' ');
+                    if ($lastSpace !== false && $lastSpace > 100) {
+                        $autoExcerpt = mb_substr($autoExcerpt, 0, $lastSpace);
+                    }
+                    $autoExcerpt = rtrim($autoExcerpt, '.,;:') . '...';
                 }
-                $autoExcerpt = rtrim($autoExcerpt, '.,;:');
 
                 $blogData = [
                     'title' => $draftContext['topic_keyword'],

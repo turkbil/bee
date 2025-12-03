@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V1: Deluxe Industrial - Amazon Business Style | İxtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-fadeIn { animation: fadeIn 1s ease-out forwards; }
+        .animate-scaleIn { animation: scaleIn 0.6s ease-out forwards; }
+        .animate-slideInRight { animation: slideInRight 0.8s ease-out forwards; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.8); }
+        }
+        
+        .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-white to-blue-50">
+
+    <!-- Version Navigation -->
+    <div class="fixed top-6 right-6 z-50 flex items-center gap-3">
+        <div class="bg-white/90 backdrop-blur-xl border border-gray-200 rounded-full px-6 py-3 shadow-lg">
+            <div class="flex items-center gap-4">
+                <span class="text-sm font-bold text-gray-900">DELUXE INDUSTRIAL</span>
+                <span class="text-gray-400">|</span>
+                <span class="text-sm font-bold text-blue-600">V1 / 5</span>
+            </div>
+        </div>
+        <a href="../index.html" class="w-12 h-12 bg-white/90 backdrop-blur-xl border border-gray-200 rounded-full flex items-center justify-center hover:bg-gray-50 transition-all shadow-lg">
+            <i class="fa-solid fa-home text-gray-700"></i>
+        </a>
+        <a href="v2.html" class="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition-all shadow-lg">
+            <i class="fa-solid fa-arrow-right text-white"></i>
+        </a>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="relative min-h-screen flex items-center overflow-hidden pt-20 pb-16">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-30">
+            <div class="absolute top-20 left-20 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
+            <div class="absolute bottom-20 right-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl animate-float" style="animation-delay: 2s;"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- LEFT: Content -->
+                <div class="space-y-8">
+                    <!-- Top Badge -->
+                    <div class="animate-fadeInUp opacity-0" style="animation-delay: 0.1s;">
+                        <div class="inline-flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-all">
+                            <i class="fa-solid fa-industry"></i>
+                            <span>Endüstriyel Ekipman Lideri</span>
+                            <i class="fa-solid fa-star text-yellow-300"></i>
+                        </div>
+                    </div>
+
+                    <!-- Main Headline -->
+                    <div class="animate-fadeInUp opacity-0" style="animation-delay: 0.2s;">
+                        <h1 class="text-5xl lg:text-7xl font-black leading-tight">
+                            <span class="text-gray-900">Forklift ve</span><br/>
+                            <span class="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">İstif Makinelerinde</span><br/>
+                            <span class="text-gray-900">Toptan Satış</span>
+                        </h1>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="animate-fadeInUp opacity-0" style="animation-delay: 0.3s;">
+                        <p class="text-xl text-gray-700 leading-relaxed max-w-xl">
+                            <strong class="text-blue-600">2.000+ işletme</strong> bize güveniyor. 
+                            Akülü forklift, dizel istif makinesi, transpalet ve depo ekipmanlarında 
+                            <span class="font-bold text-orange-600">%40'a varan toptan fiyat avantajı</span> ile hızlı teslimat.
+                        </p>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="animate-fadeInUp opacity-0" style="animation-delay: 0.4s;">
+                        <div class="grid grid-cols-3 gap-6">
+                            <div class="text-center p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                                <div class="text-4xl font-black text-blue-600 mb-1">500+</div>
+                                <div class="text-sm text-gray-600 font-semibold">Ürün Çeşidi</div>
+                            </div>
+                            <div class="text-center p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                                <div class="text-4xl font-black text-green-600 mb-1">24h</div>
+                                <div class="text-sm text-gray-600 font-semibold">Hızlı Kargo</div>
+                            </div>
+                            <div class="text-center p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                                <div class="text-4xl font-black text-orange-600 mb-1">%40</div>
+                                <div class="text-sm text-gray-600 font-semibold">Toptan İndirim</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons -->
+                    <div class="animate-fadeInUp opacity-0" style="animation-delay: 0.5s;">
+                        <div class="flex flex-wrap gap-4">
+                            <button class="group px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-105">
+                                <span class="flex items-center gap-3">
+                                    <i class="fa-solid fa-shopping-cart"></i>
+                                    <span>Ürünleri İncele</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </span>
+                            </button>
+                            <button class="px-8 py-4 bg-white border-2 border-gray-300 hover:border-orange-500 text-gray-900 hover:text-orange-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all">
+                                <span class="flex items-center gap-3">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                    <span>Toptan Fiyat Al</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Trust Indicators -->
+                    <div class="animate-fadeInUp opacity-0" style="animation-delay: 0.6s;">
+                        <div class="flex flex-wrap items-center gap-6 pt-6 border-t-2 border-gray-200">
+                            <div class="flex items-center gap-2.5">
+                                <i class="fa-solid fa-shield-check text-2xl text-green-600"></i>
+                                <span class="text-sm font-bold text-gray-700">Güvenli Alışveriş</span>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <i class="fa-solid fa-truck-fast text-2xl text-blue-600"></i>
+                                <span class="text-sm font-bold text-gray-700">Express Teslimat</span>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <i class="fa-solid fa-headset text-2xl text-purple-600"></i>
+                                <span class="text-sm font-bold text-gray-700">7/24 Canlı Destek</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Featured Product Card -->
+                <div class="animate-slideInRight opacity-0" style="animation-delay: 0.4s;">
+                    <div class="relative">
+                        <!-- Floating Badge -->
+                        <div class="absolute -top-6 -right-6 z-20 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full font-black text-sm shadow-2xl pulse-glow">
+                            <i class="fa-solid fa-fire mr-2"></i>
+                            ÇOK SATAN ÜRÜN
+                        </div>
+
+                        <!-- Main Card -->
+                        <div class="relative bg-white rounded-3xl shadow-2xl p-8 hover:shadow-3xl transition-all duration-500 animate-float">
+                            <!-- Product Image -->
+                            <div class="aspect-[4/3] bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl mb-6 flex items-center justify-center overflow-hidden group">
+                                <i class="fa-solid fa-forklift text-9xl text-blue-600 group-hover:scale-110 transition-transform duration-500"></i>
+                            </div>
+
+                            <!-- Product Info -->
+                            <div class="space-y-5">
+                                <!-- Title -->
+                                <div>
+                                    <span class="inline-block px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-bold mb-2">ÖNE ÇIKAN</span>
+                                    <h3 class="text-3xl font-black text-gray-900">Akülü Forklift 2.5 Ton</h3>
+                                    <p class="text-sm text-gray-600 mt-2">Kapalı alan kullanımı için ideal elektrikli forklift</p>
+                                </div>
+
+                                <!-- Features -->
+                                <ul class="space-y-3">
+                                    <li class="flex items-center gap-3">
+                                        <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-check text-green-600 text-xs"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-700 font-medium">2.5 Ton kaldırma kapasitesi</span>
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-check text-green-600 text-xs"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-700 font-medium">48V Akülü elektrikli motor</span>
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-check text-green-600 text-xs"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-700 font-medium">3 metre kaldırma yüksekliği</span>
+                                    </li>
+                                    <li class="flex items-center gap-3">
+                                        <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-solid fa-check text-green-600 text-xs"></i>
+                                        </div>
+                                        <span class="text-sm text-gray-700 font-medium">CE belgeli, 2 yıl garanti</span>
+                                    </li>
+                                </ul>
+
+                                <!-- Price & CTA -->
+                                <div class="flex items-center justify-between pt-5 border-t-2 border-gray-100">
+                                    <div>
+                                        <div class="text-xs text-gray-500 font-semibold mb-1">Toptan Fiyat</div>
+                                        <div class="text-4xl font-black bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Teklif Al</div>
+                                        <div class="text-xs text-green-600 font-bold mt-1">
+                                            <i class="fa-solid fa-circle-check mr-1"></i>
+                                            Stokta mevcut
+                                        </div>
+                                    </div>
+                                    <button class="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-bold transition-all hover:scale-110 shadow-lg hover:shadow-xl">
+                                        <i class="fa-solid fa-arrow-right text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORY SHOWCASE -->
+    <section class="py-20 bg-gradient-to-b from-white to-gray-50">
+        <div class="container mx-auto px-6">
+            <!-- Section Header -->
+            <div class="text-center mb-16 animate-scaleIn">
+                <h2 class="text-4xl lg:text-5xl font-black text-gray-900 mb-4">Ürün Kategorileri</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Endüstriyel ihtiyaçlarınız için geniş ürün yelpazesi</p>
+            </div>
+
+            <!-- Category Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- Category 1 -->
+                <a href="#" class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        <i class="fa-solid fa-forklift text-4xl text-blue-600"></i>
+                    </div>
+                    <h3 class="font-black text-gray-900 mb-2 text-xl">Forklift</h3>
+                    <p class="text-sm text-gray-600 mb-3">Akülü & Dizel</p>
+                    <div class="text-xs font-bold text-blue-600 flex items-center gap-2">
+                        <span>150+ ürün</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Category 2 -->
+                <a href="#" class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2" style="animation-delay: 0.1s;">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        <i class="fa-solid fa-pallet text-4xl text-orange-600"></i>
+                    </div>
+                    <h3 class="font-black text-gray-900 mb-2 text-xl">Transpalet</h3>
+                    <p class="text-sm text-gray-600 mb-3">Manuel & Akülü</p>
+                    <div class="text-xs font-bold text-orange-600 flex items-center gap-2">
+                        <span>200+ ürün</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Category 3 -->
+                <a href="#" class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2" style="animation-delay: 0.2s;">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        <i class="fa-solid fa-boxes-stacked text-4xl text-green-600"></i>
+                    </div>
+                    <h3 class="font-black text-gray-900 mb-2 text-xl">İstif Makinesi</h3>
+                    <p class="text-sm text-gray-600 mb-3">Tam Elektrikli</p>
+                    <div class="text-xs font-bold text-green-600 flex items-center gap-2">
+                        <span>80+ ürün</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- Category 4 -->
+                <a href="#" class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl p-8 transition-all duration-500 hover:scale-105 hover:-translate-y-2" style="animation-delay: 0.3s;">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        <i class="fa-solid fa-warehouse text-4xl text-purple-600"></i>
+                    </div>
+                    <h3 class="font-black text-gray-900 mb-2 text-xl">Depo Ekipmanı</h3>
+                    <p class="text-sm text-gray-600 mb-3">Raf & Platform</p>
+                    <div class="text-xs font-bold text-purple-600 flex items-center gap-2">
+                        <span>120+ ürün</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Version Badge -->
+    <div class="fixed bottom-8 left-8 z-50">
+        <div class="bg-white/90 backdrop-blur-xl border-2 border-gray-200 rounded-full px-6 py-3 shadow-xl">
+            <span class="font-black text-gray-900">#DELUXE-IND-V1</span>
+            <span class="mx-3 text-gray-300">|</span>
+            <span class="text-xs font-bold text-gray-600">AMAZON BUSINESS STYLE</span>
+        </div>
+    </div>
+
+</body>
+</html>

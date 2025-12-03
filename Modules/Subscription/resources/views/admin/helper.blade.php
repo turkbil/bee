@@ -1,7 +1,12 @@
 {{-- Modules/Subscription/resources/views/admin/helper.blade.php --}}
 {{-- PreTitle --}}
 @section('pretitle')
-    {{ __('subscription::admin.subscription_management') }}
+    {{ $pretitle ?? __('subscription::admin.subscription_management') }}
+@endsection
+
+{{-- Başlık --}}
+@section('title')
+    {{ $title ?? __('subscription::admin.plans') }}
 @endsection
 
 {{-- Modül Menüsü --}}

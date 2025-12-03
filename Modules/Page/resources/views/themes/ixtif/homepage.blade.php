@@ -387,62 +387,27 @@
                             <div class="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 flex justify-between items-start">
                                 <div class="flex items-center gap-1 sm:gap-2">
                                     <span class="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg">
-                                        <i class="fa-regular fa-calendar text-blue-500 dark:text-blue-400 hidden sm:inline"></i>
-                                        {{ $blogDate }}
+                                        <i class="fa-regular fa-calendar text-blue-500 dark:text-blue-400"></i>
+                                        <span class="hidden sm:inline">{{ $blogDate }}</span>
+                                        <span class="sm:hidden">{{ $blog->published_at ? $blog->published_at->format('d.m') : $blog->created_at->format('d.m') }}</span>
                                     </span>
                                     <span class="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg">
-                                        <i class="fa-regular fa-clock text-blue-500 dark:text-blue-400 hidden sm:inline"></i>
-                                        {{ $readTime }} dk
+                                        <i class="fa-regular fa-clock text-blue-500 dark:text-blue-400"></i>
+                                        <span>{{ $readTime }}<span class="hidden sm:inline"> dakika</span></span>
                                     </span>
                                 </div>
                                 {{-- Favoriye Ekle Butonu --}}
                                 @auth
-                                <div x-data="{
-                                        favorited: {{ $blog->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
-                                        loading: false,
-                                        async toggleFavorite() {
-                                            if (this.loading) return;
-                                            this.loading = true;
-                                            // Anında görsel feedback - optimistic update
-                                            this.favorited = !this.favorited;
-                                            try {
-                                                const response = await fetch('/api/favorites/toggle', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
-                                                        'Accept': 'application/json'
-                                                    },
-                                                    body: JSON.stringify({
-                                                        model_class: '{{ addslashes(get_class($blog)) }}',
-                                                        model_id: {{ $blog->id }}
-                                                    })
-                                                });
-                                                const data = await response.json();
-                                                if (data.success) {
-                                                    this.favorited = data.data.is_favorited;
-                                                } else {
-                                                    // Hata durumunda geri al
-                                                    this.favorited = !this.favorited;
-                                                }
-                                            } catch (error) {
-                                                console.error('Favorite error:', error);
-                                                // Hata durumunda geri al
-                                                this.favorited = !this.favorited;
-                                            } finally {
-                                                this.loading = false;
-                                            }
-                                        }
-                                    }"
+                                <div x-data="favoriteButton('{{ addslashes(get_class($blog)) }}', {{ $blog->id }}, {{ $blog->isFavoritedBy(auth()->id()) ? 'true' : 'false' }})"
                                      @click.prevent.stop="toggleFavorite()"
                                      class="group/fav w-6 h-6 sm:w-8 sm:h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200 cursor-pointer"
-                                     title="Favorilere Ekle">
+                                     aria-label="Favorilere Ekle">
                                     <i :class="favorited ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400'" class="text-[10px] sm:text-sm transition-all duration-200"></i>
                                 </div>
                                 @else
                                 <span onclick="event.preventDefault(); event.stopPropagation(); window.location.href='{{ route('login') }}'"
                                    class="group/fav w-6 h-6 sm:w-8 sm:h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200 cursor-pointer"
-                                   title="Favorilere eklemek için giriş yapın">
+                                   aria-label="Giriş Yap">
                                     <i class="fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400 text-[10px] sm:text-sm transition-all duration-200"></i>
                                 </span>
                                 @endauth

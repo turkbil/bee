@@ -14,7 +14,7 @@
                 ['label' => 'Ürünler', 'url' => route('shop.index')]
             ];
             if($category->parent) {
-                $breadcrumbs[] = ['label' => $category->parent->getTranslated('title'), 'url' => url('/shop/kategori/' . $category->parent->getTranslated('slug'))];
+                $breadcrumbs[] = ['label' => $category->parent->getTranslated('title'), 'url' => route('shop.category', $category->parent->getTranslated('slug'))];
             }
             $breadcrumbs[] = ['label' => $category->getTranslated('title')];
         @endphp
@@ -80,7 +80,7 @@
                                        ($category->parent && $category->parent->category_id === $cat->category_id);
                         @endphp
 
-                        <a href="/shop/kategori/{{ $catSlug }}"
+                        <a href="{{ route('shop.category', $catSlug) }}"
                            class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
                             @if($cat->icon_class)
                                 <i class="{{ $cat->icon_class }} mr-2"></i>
@@ -108,7 +108,7 @@
                             $subcategorySlug = $subcategory->getTranslated('slug');
                             $subcategoryProductCount = $subcategory->products()->active()->published()->count();
                         @endphp
-                        <a href="{{ url('/shop/kategori/' . $subcategorySlug) }}"
+                        <a href="{{ route('shop.category', $subcategorySlug) }}"
                            class="group bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
                             <div class="flex flex-col items-center justify-center text-center h-full min-h-[120px]">
                                 @if($subcategory->icon_class)

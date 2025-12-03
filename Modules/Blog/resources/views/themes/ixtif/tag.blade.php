@@ -131,15 +131,36 @@
 
                                 <!-- Meta Info -->
                                 <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
-                                    <div class="flex items-center gap-2">
-                                        <i class="fa-regular fa-calendar-days"></i>
-                                        <time datetime="{{ $post->published_at ? $post->published_at->toISOString() : $post->created_at->toISOString() }}">
-                                            {{ $publishedDate }}
-                                        </time>
+                                    <div class="flex items-center gap-4">
+                                        <div class="flex items-center gap-2"
+                                             title="Yayın Tarihi: {{ $post->published_at ? $post->published_at->format('d.m.Y H:i') : $post->created_at->format('d.m.Y H:i') }}">
+                                            <i class="fa-regular fa-calendar-days"></i>
+                                            <time datetime="{{ $post->published_at ? $post->published_at->toISOString() : $post->created_at->toISOString() }}">
+                                                {{ $publishedDate }}
+                                            </time>
+                                        </div>
+                                        @if($readingTime)
+                                            <span class="flex items-center gap-2"
+                                                  title="Tahmini Okuma Süresi: {{ $readingTime }} dakika">
+                                                <i class="fa-regular fa-clock"></i>{{ $readingTime }} dk okuma
+                                            </span>
+                                        @endif
                                     </div>
-                                    @if($readingTime)
-                                        <span class="flex items-center gap-2"><i class="fa-regular fa-clock"></i>{{ $readingTime }} dk okuma</span>
-                                    @endif
+                                    {{-- Favoriye Ekle Butonu --}}
+                                    @auth
+                                    <div x-data="favoriteButton('{{ addslashes(get_class($post)) }}', {{ $post->blog_id }}, {{ $post->isFavoritedBy(auth()->id()) ? 'true' : 'false' }})"
+                                         @click.prevent.stop="toggleFavorite()"
+                                         class="group/fav w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-900/30 hover:scale-110 transition-all duration-200 cursor-pointer z-10 relative"
+                                         title="Favorilere Ekle">
+                                        <i :class="favorited ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400'" class="text-sm transition-all duration-200"></i>
+                                    </div>
+                                    @else
+                                    <span onclick="event.preventDefault(); event.stopPropagation(); window.location.href='{{ route('login') }}'"
+                                       class="group/fav w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center hover:bg-red-50 dark:hover:bg-red-900/30 hover:scale-110 transition-all duration-200 cursor-pointer z-10 relative"
+                                       title="Favorilere eklemek için giriş yapın">
+                                        <i class="fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400 text-sm transition-all duration-200"></i>
+                                    </span>
+                                    @endauth
                                 </div>
 
                                 <!-- Tags -->

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yedek Parça İçerik & Görsel Projesi v3 - 11 Kural Formülü</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 15px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 30px 0 20px 0;
+            color: #fbbf24;
+        }
+
+        .task-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .task-card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .task-card p {
+            color: #cbd5e1;
+            margin-bottom: 12px;
+        }
+
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .prompt-example {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .success-box {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid #22c55e;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid #fbbf24;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .rule-list {
+            counter-reset: rule-counter;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .rule-list li {
+            counter-increment: rule-counter;
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 15px;
+        }
+
+        .rule-list li::before {
+            content: counter(rule-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #3b82f6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .skip-badge {
+            display: inline-block;
+            background: #ef4444;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 Yedek Parça İçerik & Görsel Projesi<span class="version-badge">v3</span></h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-03 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                📊 Ürün: 690 adet (Kategori 7-106) |
+                💰 Maliyet: $20.70
+            </div>
+        </header>
+
+        <div class="warning-box">
+            <h3 style="margin-top: 0; color: #ef4444;">⚠️ v3 Güncellemesi: 11 Kural Formülü Entegrasyonu</h3>
+            <p><strong>Kritik Değişiklik:</strong> DALL-E görsel üretimi artık <strong>11 Kural Formülü</strong> kullanacak.</p>
+            <p><strong>Önemli:</strong> Rule 9 (Kusurlar/Imperfections) <span class="skip-badge">SKIP</span> - Satış fotoğrafı olduğu için kusursuz, doğal görünüm hedefleniyor.</p>
+        </div>
+
+        <section>
+            <h2>📊 Proje Özeti</h2>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">690</div>
+                    <div class="stat-label">Yedek Parça Ürünü</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">99.7%</div>
+                    <div class="stat-label">FAQ Eksik (688 ürün)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Features/Use Cases Eksik</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$20.70</div>
+                    <div class="stat-label">Toplam API Maliyeti</div>
+                </div>
+            </div>
+
+            <p>690 yedek parça ürününe kapsamlı içerik ve görsel güncellemesi yapılacak. Ürünler şu anda minimal içeriğe sahip (body: 47 karakter, sadece başlık tekrarı). Görseller daha önce silinmiş durumda.</p>
+        </section>
+
+        <section>
+            <h2>🎨 11 Kural Formülü - Satış Fotoğrafı Versiyonu</h2>
+
+            <div class="info-box">
+                <p><strong>Kaynak:</strong> <a href="https://ixtif.com/readme/2025/11/26/11-kural-formulu/" style="color: #60a5fa;">https://ixtif.com/readme/2025/11/26/11-kural-formulu/</a></p>
+                <p><strong>Uyarlama:</strong> Orijinal formül editorial/sanatsal fotoğraflar için tasarlanmış. Bizim versiyonumuz satış fotoğrafları için <strong>kusursuz ve temiz</strong> olacak.</p>
+            </div>
+
+            <h3>📋 Kullanılacak 10 Kural (Rule 9 Skip)</h3>
+
+            <ul class="rule-list">
+                <li><strong>Photo Type:</strong> Editorial photograph of / Product catalog shot of</li>
+                <li><strong>Subject + Action:</strong> Ürün + mikro hikaye (örnek: "forklift tires stacked in organized rows")</li>
+                <li><strong>Environment + Time:</strong> Industrial warehouse, well-lit storage area, daylight through windows</li>
+                <li><strong>Camera Angle:</strong> Eye-level veya slightly elevated (katalog görünümü için)</li>
+                <li><strong>Composition:</strong> Rule of thirds, multiple products visible, depth</li>
+                <li><strong>Lighting:</strong> Mixed industrial lighting (overhead + natural), bright and clean</li>
+                <li><strong>Camera + Lens:</strong> Canon EOS R5, 50mm f/2.8, natural depth of field</li>
+                <li><strong>Film Stock:</strong> Kodak Portra 400 (warm, natural tones)</li>
+                <li><strong style="text-decoration: line-through; opacity: 0.5;">Imperfections:</strong> <span class="skip-badge">SKIP</span> <span style="color: #94a3b8;">Satış fotoğrafı için kusur eklenmeyecek</span></li>
+                <li><strong>Mood + Emotion:</strong> Professional, organized, industrial efficiency</li>
+                <li><strong>Post-Processing:</strong> Clean commercial grade, slightly desaturated, warm tones</li>
+            </ul>
+
+            <div class="success-box">
+                <p><strong>✅ Hedef Görünüm:</strong></p>
+                <ul>
+                    <li>Gerçek depo/raf ortamı (sanki profesyonel fotoğrafçı çekmiş)</li>
+                    <li>Birden fazla ürün görünür (tek ürün değil, çeşitlilik olmalı)</li>
+                    <li>Temiz, kusursuz, satış kalitesi</li>
+                    <li>Doğal ışık, sıcak tonlar</li>
+                    <li>Profesyonel katalog estetiği</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>📸 Kategoriye Özel Prompt Örnekleri</h2>
+
+            <h3>Örnek 1: Lastikler (Category 77)</h3>
+            <div class="prompt-example">
+                <div class="code-block">
+                    <pre>Editorial photograph of forklift tires stacked in organized rows on industrial warehouse shelves, well-lit storage area with daylight streaming through large windows, eye-level shot showing multiple tire sizes and treads, Canon EOS R5, 50mm f/2.8, Kodak Portra 400, rule of thirds composition with depth, mixed industrial lighting (overhead fluorescent and natural light), professional organized mood conveying industrial efficiency and reliability, clean commercial grade post-processing with slightly desaturated colors and warm tones, photorealistic</pre>
+                </div>
+            </div>
+
+            <h3>Örnek 2: Ampuller (Category 31)</h3>
+            <div class="prompt-example">
+                <div class="code-block">
+                    <pre>Product catalog shot of industrial bulbs and automotive lamps arranged in organized compartments on warehouse storage shelves, bright clean storage area with natural daylight, slightly elevated angle showing variety of bulb types (12V, 24V, different sizes), Canon EOS R5, 50mm f/2.8, Kodak Portra 400, rule of thirds with multiple products visible in frame, bright mixed lighting creating clean professional look, mood of organized industrial supply, commercial grade post-processing with warm natural tones, photorealistic</pre>
+                </div>
+            </div>
+
+            <h3>Örnek 3: Rulmanlar/Bearings (Category 50+)</h3>
+            <div class="prompt-example">
+                <div class="code-block">
+                    <pre>Editorial photograph of industrial bearings displayed in organized grid storage bins, well-maintained warehouse parts department with bright overhead lighting, eye-level shot showing various bearing sizes arranged systematically, Canon EOS R5, 50mm f/2.8, Kodak Portra 400, composition emphasizing organization and variety, mixed industrial and natural lighting creating clean professional environment, mood conveying precision engineering and reliability, clean post-processing with slightly desaturated professional catalog look, photorealistic</pre>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>💡 Prompt Yapısı:</strong> Her prompt kategoriye göre özelleştirilecek, ancak yukarıdaki 10 kural yapısını takip edecek. GPT-4 her ürün için dinamik prompt oluşturacak.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>📋 Veri Yapıları</h2>
+
+            <h3>Features (Özellikler) Yapısı</h3>
+            <p>Diğer ürünlerde bulunan <span class="tech-term">features</span> alanı JSON array formatında:</p>
+            <div class="code-block">
+                <pre>[
+  {
+    "icon": "fas fa-shield-alt",
+    "text": "Yüksek dayanıklılık ve uzun ömür"
+  },
+  {
+    "icon": "fas fa-temperature-low",
+    "text": "Geniş sıcaklık aralığında çalışma"
+  },
+  {
+    "icon": "fas fa-tools",
+    "text": "Kolay montaj ve bakım"
+  }
+]</pre>
+            </div>
+            <p><strong>Hedef:</strong> Her ürün için 3-5 özellik, FontAwesome ikon + açıklama formatında.</p>
+
+            <h3>Use Cases (Kullanım Senaryoları) Yapısı</h3>
+            <p>Diğer ürünlerde bulunan <span class="tech-term">use_cases</span> alanı JSON array formatında:</p>
+            <div class="code-block">
+                <pre>[
+  {
+    "icon": "fas fa-warehouse",
+    "text": "Depo ve lojistik operasyonlarında"
+  },
+  {
+    "icon": "fas fa-industry",
+    "text": "Üretim tesislerinde malzeme taşımada"
+  }
+]</pre>
+            </div>
+            <p><strong>Hedef:</strong> Her ürün için 2-3 senaryo, FontAwesome ikon + açıklama formatında.</p>
+
+            <h3>FAQ Yapısı</h3>
+            <div class="code-block">
+                <pre>[
+  {
+    "question": "Bu lastik hangi forklift modellerine uyumludur?",
+    "answer": "Sanayi tipi elektrikli ve LPG'li forkliftlerin çoğuna uyumludur..."
+  },
+  {
+    "question": "Ömrü ne kadar?",
+    "answer": "Normal kullanım koşullarında 2-3 yıl dayanıklılık sağlar..."
+  }
+]</pre>
+            </div>
+            <p><strong>Hedef:</strong> Her ürün için 5 soru-cevap çifti.</p>
+        </section>
+
+        <section>
+            <h2>🎯 Yapılacaklar - 7 Ana Görev</h2>
+
+            <div class="task-card">
+                <h3>1. Layout Değişikliği - Sticky Sidebar Kaldır</h3>
+                <p><strong>Neden:</strong> Ürün görselleri silindiği için sticky sidebar (sağ kolon) boş kalıyor ve layout bozuk görünüyor.</p>
+                <p><strong>Çözüm:</strong> Kategori ID 7 (Yedek Parça) ve alt kategorileri için layout'u full-width yap.</p>
+                <p><strong>Değişiklik:</strong> <span class="tech-term">show.blade.php</span> dosyasında koşullu rendering</p>
+                <ul>
+                    <li>Şu an: Ana içerik <code>lg:col-span-2</code> + Sidebar <code>lg:col-span-1</code></li>
+                    <li>Yedek parça için: Ana içerik <code>lg:col-span-3</code> (full-width)</li>
+                </ul>
+                <p><strong>Etkilenen dosya:</strong> <code>Modules/Shop/resources/views/themes/ixtif/show.blade.php</code></p>
+            </div>
+
+            <div class="task-card">
+                <h3>2. DALL-E Görsel Üretimi - 11 Kural Formülü</h3>
+                <p><strong>Model:</strong> DALL-E 2 (1024x1024) - $0.020/görsel</p>
+                <p><strong>Toplam:</strong> 690 ürün × $0.020 = <strong>$13.80</strong></p>
+                <p><strong>Özellikler:</strong></p>
+                <ul>
+                    <li>✅ 10 kural takip edilecek (Rule 9 imperfections SKIP)</li>
+                    <li>✅ Kategoriye özel prompt (lastik, ampul, rulman vb.)</li>
+                    <li>✅ Depo/raf ortamı, birden fazla ürün görünür</li>
+                    <li>✅ Kusursuz, temiz, satış kalitesi</li>
+                    <li>✅ Doğal ışık, sıcak tonlar</li>
+                </ul>
+                <p><strong>Collection:</strong> <span class="tech-term">spare_parts_hero</span> koleksiyonuna kayıt</p>
+                <p><strong>Rate Limit:</strong> 1 görsel/dakika (DALL-E 2 limiti)</p>
+            </div>
+
+            <div class="task-card">
+                <h3>3. FAQ İçeriği Üretimi</h3>
+                <p><strong>Durum:</strong> 688/690 üründe eksik (%99.7)</p>
+                <p><strong>Hedef:</strong> Her ürün için 5 soru-cevap çifti</p>
+                <p><strong>İçerik:</strong> Ürün adı + kategorisinden yola çıkarak GPT-4 ile üret</p>
+                <p><strong>Format:</strong> JSON array: <code>[{question, answer}, ...]</code></p>
+                <p><strong>Prompt Yaklaşımı:</strong></p>
+                <ul>
+                    <li>Ürün tipi ve kategori bilgisini kullan</li>
+                    <li>Uyumluluk, dayanıklılık, kullanım sorularına odaklan</li>
+                    <li>150-200 kelime arası cevaplar</li>
+                </ul>
+            </div>
+
+            <div class="task-card">
+                <h3>4. Excerpt (Kısa Açıklama) Üretimi</h3>
+                <p><strong>Durum:</strong> 688/690 üründe eksik (%99.7)</p>
+                <p><strong>Hedef:</strong> 150-200 karakter kısa tanıtım metni</p>
+                <p><strong>Kullanım:</strong> Liste sayfalarında ve meta description'da</p>
+                <p><strong>Ton:</strong> Profesyonel, doğrudan, satış odaklı</p>
+                <p><strong>Örnek:</strong> "Sanayi tipi forkliftler için yüksek dayanıklılıklı lastik. Uzun ömürlü kauçuk karışımı ve güçlendirilmiş yapı. 2-3 yıl garanti."</p>
+            </div>
+
+            <div class="task-card">
+                <h3>5. Features (Özellikler) Üretimi</h3>
+                <p><strong>Durum:</strong> 690/690 üründe eksik (%100)</p>
+                <p><strong>Hedef:</strong> Her ürün için 3-5 özellik</p>
+                <p><strong>Format:</strong> JSON array: <code>[{icon: "fas fa-...", text: "..."}, ...]</code></p>
+                <p><strong>İçerik Tipi:</strong></p>
+                <ul>
+                    <li>Teknik özellikler (dayanıklılık, malzeme, performans)</li>
+                    <li>Avantajlar (kolay montaj, uzun ömür, maliyet tasarrufu)</li>
+                    <li>Kalite standartları (sertifikalar, testler)</li>
+                </ul>
+                <p><strong>Icon Seçimi:</strong> FontAwesome - ürün tipine uygun (shield, tools, cog, bolt vb.)</p>
+            </div>
+
+            <div class="task-card">
+                <h3>6. Use Cases (Kullanım Senaryoları) Üretimi</h3>
+                <p><strong>Durum:</strong> 690/690 üründe eksik (%100)</p>
+                <p><strong>Hedef:</strong> Her ürün için 2-3 kullanım senaryosu</p>
+                <p><strong>Format:</strong> JSON array: <code>[{icon: "fas fa-...", text: "..."}, ...]</code></p>
+                <p><strong>İçerik Tipi:</strong></p>
+                <ul>
+                    <li>Sektörel kullanım (depo, lojistik, üretim)</li>
+                    <li>Uygulama alanları (malzeme taşıma, yükleme, iç mekan)</li>
+                    <li>Özel durumlar (soğuk hava deposu, ağır yük vb.)</li>
+                </ul>
+                <p><strong>Icon Seçimi:</strong> FontAwesome - sektör/uygulama ikonu (warehouse, industry, truck vb.)</p>
+            </div>
+
+            <div class="task-card">
+                <h3>7. Body İçeriği Zenginleştirme</h3>
+                <p><strong>Durum:</strong> Şu an sadece 47 karakter (başlık tekrarı)</p>
+                <p><strong>Hedef:</strong> 300-500 kelime detaylı ürün açıklaması</p>
+                <p><strong>İçerik Yapısı:</strong></p>
+                <ul>
+                    <li><strong>Giriş:</strong> Ürün tanıtımı (50-75 kelime)</li>
+                    <li><strong>Teknik Detaylar:</strong> Özellikler, malzeme, boyutlar (100-150 kelime)</li>
+                    <li><strong>Kullanım:</strong> Hangi ekipman/sektörlerde kullanılır (75-100 kelime)</li>
+                    <li><strong>Avantajlar:</strong> Neden tercih edilmeli (75-100 kelime)</li>
+                    <li><strong>Sonuç:</strong> Özet ve eylem çağrısı (25-50 kelime)</li>
+                </ul>
+                <p><strong>SEO:</strong> Ürün adı ve kategori adı doğal şekilde metinde geçmeli</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>💰 Maliyet Analizi</h2>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">$13.80</div>
+                    <div class="stat-label">DALL-E 2 (690 görsel)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$6.90</div>
+                    <div class="stat-label">GPT-4 İçerik Üretimi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$20.70</div>
+                    <div class="stat-label">Toplam Maliyet</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$0.03</div>
+                    <div class="stat-label">Ürün Başına Maliyet</div>
+                </div>
+            </div>
+
+            <h3>Detaylı Breakdown</h3>
+            <div class="code-block">
+                <pre>DALL-E 2 (1024x1024):
+  690 ürün × $0.020/görsel = $13.80
+
+GPT-4 İçerik Üretimi:
+  - Input: ~500 token/ürün (kategori, ürün adı, talimat)
+  - Output: ~1000 token/ürün (FAQ + excerpt + features + use_cases + body)
+  - Toplam: 1,500 token/ürün × 690 ürün = 1,035,000 token
+  - Maliyet: $6.90 (yaklaşık)
+
+Toplam: $20.70</pre>
+            </div>
+
+            <div class="info-box">
+                <p><strong>💡 Optimizasyon:</strong> Tüm içerik (FAQ, excerpt, features, use_cases, body) tek GPT-4 çağrısında üretilecek. Bu hem maliyeti düşürür hem de hız kazandırır.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>⚙️ Teknik Yaklaşım</h2>
+
+            <h3>1. Queue Job Yapısı</h3>
+            <p>Bulk işlem için Laravel Queue kullanılacak:</p>
+            <div class="code-block">
+                <pre>ProcessSparePartContent (Queue Job)
+├── Ürün bilgisini çek (title, category, existing data)
+├── GPT-4 ile içerik üret (tek çağrı)
+│   ├── FAQ (5 soru-cevap)
+│   ├── Excerpt (150-200 char)
+│   ├── Features (3-5 item + icon)
+│   ├── Use Cases (2-3 item + icon)
+│   └── Body (300-500 kelime)
+├── DALL-E 2 ile görsel üret (11 Kural + kategori özel)
+├── Görseli Spatie Media Library'ye kaydet (spare_parts_hero)
+└── Ürün kaydını güncelle</pre>
+            </div>
+
+            <h3>2. Rate Limiting</h3>
+            <ul>
+                <li><strong>DALL-E 2:</strong> 1 görsel/dakika (API limiti)</li>
+                <li><strong>GPT-4:</strong> 500 request/minute (batch halinde gönderilecek)</li>
+                <li><strong>Toplam Süre:</strong> ~11.5 saat (690 dakika)</li>
+            </ul>
+
+            <h3>3. Kategori Tespiti</h3>
+            <p>Yedek parça kategorilerini tespit etmek için helper:</p>
+            <div class="code-block">
+                <pre>function isSparePartCategory($categoryId): bool
+{
+    // Category 7 = Yedek Parça (ana kategori)
+    // Categories 7-106 = Alt kategoriler
+    return $categoryId >= 7 && $categoryId <= 106;
+}</pre>
+            </div>
+
+            <h3>4. Prompt Template Yapısı</h3>
+            <p>GPT-4 için dinamik prompt şablonu:</p>
+            <div class="code-block">
+                <pre>Ürün: {product_title}
+Kategori: {category_name}
+
+Aşağıdaki içerikleri Türkçe olarak üret:
+
+1. FAQ (5 soru-cevap, JSON)
+2. Excerpt (150-200 karakter)
+3. Features (3-5 item, JSON, icon + text)
+4. Use Cases (2-3 item, JSON, icon + text)
+5. Body (300-500 kelime, SEO friendly)
+
+Format: JSON response döndür.</pre>
+            </div>
+
+            <h3>5. DALL-E Prompt Template</h3>
+            <p>Kategoriye göre dinamik prompt oluşturma:</p>
+            <div class="code-block">
+                <pre>function generateImagePrompt($category): string
+{
+    $base = "Editorial photograph of";
+
+    switch ($category) {
+        case 'Lastik':
+            $subject = "forklift tires stacked in organized rows...";
+            break;
+        case 'Ampul':
+            $subject = "industrial bulbs arranged in compartments...";
+            break;
+        // ... diğer kategoriler
+    }
+
+    return $base . $subject . ", eye-level shot, Canon EOS R5, 50mm f/2.8,
+            Kodak Portra 400, rule of thirds, mixed industrial lighting,
+            organized professional mood, clean post-processing, photorealistic";
+}</pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>📦 Beklenen Sonuç</h2>
+
+            <div class="success-box">
+                <h3 style="margin-top: 0; color: #22c55e;">✅ Proje Tamamlandıktan Sonra</h3>
+                <ul>
+                    <li>✅ 690 ürünün tamamında profesyonel, gerçekçi depo görseli</li>
+                    <li>✅ Her üründe 5 adet FAQ (kullanıcı sorularını yanıtlar)</li>
+                    <li>✅ Tüm ürünlerde kısa açıklama (excerpt) - liste ve meta için</li>
+                    <li>✅ Her üründe 3-5 özellik (features) - ikonlu yapı</li>
+                    <li>✅ Her üründe 2-3 kullanım senaryosu (use cases) - ikonlu yapı</li>
+                    <li>✅ 300-500 kelime zengin body içeriği - SEO optimizasyonlu</li>
+                    <li>✅ Full-width temiz layout (sticky sidebar kaldırıldı)</li>
+                    <li>✅ Toplam maliyet: $20.70 (ürün başına $0.03)</li>
+                </ul>
+            </div>
+
+            <h3>SEO & Kullanıcı Deneyimi Etkisi</h3>
+            <ul>
+                <li><strong>SEO:</strong> Zengin içerik + FAQ → Google sıralamasında yükselme</li>
+                <li><strong>Görsel:</strong> Profesyonel ürün görseli → Güven artışı</li>
+                <li><strong>Bilgilendirme:</strong> FAQ + Features → Kullanıcı sorularını yanıtlar</li>
+                <li><strong>Dönüşüm:</strong> Use Cases + Body → Satın alma kararını destekler</li>
+                <li><strong>Mobil:</strong> Full-width layout → Daha iyi mobil deneyim</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>🚀 Sonraki Adımlar</h2>
+
+            <div class="task-card">
+                <h3>Aşama 1: Layout Düzeltme (15 dakika)</h3>
+                <p>Sticky sidebar'ı kaldır, yedek parça kategorileri için full-width layout aktif et.</p>
+            </div>
+
+            <div class="task-card">
+                <h3>Aşama 2: Service & Job Oluşturma (1 saat)</h3>
+                <ul>
+                    <li>DalleSparePartImageService (11 Kural Formülü)</li>
+                    <li>GptSparePartContentService (içerik üretimi)</li>
+                    <li>ProcessSparePartContent (Queue Job)</li>
+                </ul>
+            </div>
+
+            <div class="task-card">
+                <h3>Aşama 3: Test (30 dakika)</h3>
+                <p>5 örnek üründe test çalıştır, sonuçları kontrol et, gerekli ayarları yap.</p>
+            </div>
+
+            <div class="task-card">
+                <h3>Aşama 4: Bulk İşlem (11.5 saat)</h3>
+                <p>690 ürünün tamamı için queue job'ları başlat, rate limiting ile güvenli şekilde işle.</p>
+            </div>
+
+            <div class="task-card">
+                <h3>Aşama 5: Kalite Kontrolü (1 saat)</h3>
+                <p>Rastgele 20 ürün seç, görsel kalitesi, içerik doğruluğu, layout kontrolü yap.</p>
+            </div>
+        </section>
+
+        <div class="warning-box">
+            <h3 style="margin-top: 0; color: #ef4444;">⚠️ Önemli Notlar</h3>
+            <ul>
+                <li>DALL-E 2 rate limit (1/dakika) nedeniyle işlem ~11.5 saat sürecek</li>
+                <li>Queue job çalışırken site performansı izlenmeli</li>
+                <li>İlk 10 üründe manuel kontrol yapılmalı</li>
+                <li>Görsel kalitesi düşükse DALL-E 3'e geçiş düşünülebilir (maliyet 2x)</li>
+                <li>GPT-4 output'u JSON formatında gelmiyorsa parsing mantığı güçlendirilmeli</li>
+            </ul>
+        </div>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu - v3 (11 Kural Formülü Entegrasyonu)<br>
+            📊 Önceki versiyonlar: <a href="../v1/" style="color: #60a5fa;">v1</a> | <a href="../v2/" style="color: #60a5fa;">v2</a>
+        </footer>
+    </div>
+</body>
+</html>

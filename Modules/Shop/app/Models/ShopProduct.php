@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
+use Modules\Shop\App\Enums\ProductType;
 use Spatie\MediaLibrary\HasMedia;
 
 class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
@@ -391,6 +392,17 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         return !is_null($this->parent_product_id);
     }
 
+    /**
+     * Check if this product requires shipping
+     * Only physical products need shipping
+     */
+    public function requiresShipping(): bool
+    {
+        // Sadece fiziksel ürünler kargo gerektirir
+        // DIGITAL, SERVICE, MEMBERSHIP, BUNDLE kargo gerektirmez
+        return $this->product_type === ProductType::PHYSICAL->value;
+    }
+
     public function getTranslatableFields(): array
     {
         return [
@@ -651,7 +663,9 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         // 3. Use Cases (Kullanım Alanları)
         if (!empty($this->use_cases)) {
             $useCaseTexts = [];
-            foreach ($this->use_cases as $useCase) {
+            // ✅ FIX: Ensure use_cases is array
+            $useCases = is_string($this->use_cases) ? json_decode($this->use_cases, true) : $this->use_cases;
+            foreach ($useCases as $useCase) {
                 if (is_array($useCase)) {
                     $useCaseTitle = is_array($useCase['title'] ?? null)
                         ? ($useCase['title'][$locale] ?? '')
@@ -669,7 +683,9 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         // 4. Competitive Advantages (Rekabet Avantajları)
         if (!empty($this->competitive_advantages)) {
             $advantageTexts = [];
-            foreach ($this->competitive_advantages as $advantage) {
+            // ✅ FIX: Ensure competitive_advantages is array
+            $competitiveAdvantages = is_string($this->competitive_advantages) ? json_decode($this->competitive_advantages, true) : $this->competitive_advantages;
+            foreach ($competitiveAdvantages as $advantage) {
                 if (is_array($advantage)) {
                     $advantageText = is_array($advantage['text'] ?? null)
                         ? ($advantage['text'][$locale] ?? '')
@@ -687,7 +703,9 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         // 5. Target Industries (Hedef Sektörler)
         if (!empty($this->target_industries)) {
             $industryTexts = [];
-            foreach ($this->target_industries as $industry) {
+            // ✅ FIX: Ensure target_industries is array
+            $targetIndustries = is_string($this->target_industries) ? json_decode($this->target_industries, true) : $this->target_industries;
+            foreach ($targetIndustries as $industry) {
                 if (is_array($industry)) {
                     $industryName = is_array($industry['name'] ?? null)
                         ? ($industry['name'][$locale] ?? '')
@@ -707,7 +725,9 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         // 6. Primary Specs (Ana Özellikler)
         if (!empty($this->primary_specs)) {
             $primarySpecTexts = [];
-            foreach ($this->primary_specs as $spec) {
+            // ✅ FIX: Ensure primary_specs is array (handle JSON string case)
+            $primarySpecs = is_string($this->primary_specs) ? json_decode($this->primary_specs, true) : $this->primary_specs;
+            foreach ($primarySpecs as $spec) {
                 if (is_array($spec)) {
                     $specLabel = is_array($spec['label'] ?? null)
                         ? ($spec['label'][$locale] ?? '')
@@ -726,7 +746,9 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         // 7. Highlighted Features (Öne Çıkan Özellikler)
         if (!empty($this->highlighted_features)) {
             $highlightedTexts = [];
-            foreach ($this->highlighted_features as $highlight) {
+            // ✅ FIX: Ensure highlighted_features is array
+            $highlightedFeatures = is_string($this->highlighted_features) ? json_decode($this->highlighted_features, true) : $this->highlighted_features;
+            foreach ($highlightedFeatures as $highlight) {
                 if (is_array($highlight)) {
                     $highlightText = is_array($highlight['text'] ?? null)
                         ? ($highlight['text'][$locale] ?? '')
@@ -1299,6 +1321,29 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
     public function getFinalPriceAttribute(): float
     {
         return (float) ($this->base_price ?? 0.0);
+    }
+
+    /**
+     * KDV dahil fiyat hesaplama (Runtime calculation)
+     * base_price (KDV hariç) üzerinden hesaplanır
+     */
+    public function getPriceWithTaxAttribute(): float
+    {
+        if (!$this->base_price) {
+            return 0.0;
+        }
+
+        $taxRate = $this->tax_rate ?? 20.0;
+
+        return (float) ($this->base_price * (1 + $taxRate / 100));
+    }
+
+    /**
+     * KDV tutarı hesaplama
+     */
+    public function getTaxAmountAttribute(): float
+    {
+        return $this->price_with_tax - ($this->base_price ?? 0.0);
     }
 
     protected static function newFactory(): \Modules\Shop\Database\Factories\ShopProductFactory

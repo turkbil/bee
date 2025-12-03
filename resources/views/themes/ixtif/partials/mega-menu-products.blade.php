@@ -1,5 +1,10 @@
 {{-- Ürünler Mega Menu - Split Layout with Tabs --}}
 @php
+// 🛡️ Admin sayfalarında mega-menu render etme (tenant database yok)
+if (request()->is('admin/*')) {
+    return;
+}
+
 use Modules\Shop\app\Models\ShopCategory;
 use Modules\Shop\app\Models\ShopProduct;
 

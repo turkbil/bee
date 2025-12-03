@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - KDV Fiyat Girişi (İnteraktif Örnek)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #f5f7fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #1f2937;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: #f9fafb;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+        }
+
+        .form-input:disabled {
+            background: #e5e7eb;
+            cursor: not-allowed;
+        }
+
+        .price-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .price-item {
+            text-align: center;
+            color: white;
+        }
+
+        .price-item-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .price-item-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        .code-section {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .code-title {
+            font-size: 1.2rem;
+            color: #60a5fa;
+            margin-bottom: 15px;
+        }
+
+        pre {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .badge-live {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-calculated {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border: 2px solid #3b82f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .info-box h3 {
+            color: #1e40af;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-box p {
+            color: #1e3a8a;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛒 Admin Panel - KDV Fiyat Girişi</h1>
+            <p class="subtitle">İki input da editable, otomatik senkronizasyon</p>
+        </header>
+
+        <!-- INTERACTIVE DEMO -->
+        <div class="demo-card">
+            <div class="section-title">🎮 Canlı Demo - Dene!</div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label class="form-label">
+                        KDV Hariç Fiyat (₺)
+                        <span class="badge badge-live">CANLI</span>
+                    </label>
+                    <input
+                        type="number"
+                        id="priceWithoutTax"
+                        class="form-input"
+                        placeholder="Örnek: 1000.00"
+                        step="0.01"
+                    >
+                    <div class="help-text">Buraya girilince → KDV dahil fiyat otomatik hesaplanır</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        KDV Dahil Fiyat (₺)
+                        <span class="badge badge-live">CANLI</span>
+                    </label>
+                    <input
+                        type="number"
+                        id="priceWithTax"
+                        class="form-input"
+                        placeholder="Örnek: 1200.00"
+                        step="0.01"
+                    >
+                    <div class="help-text">Buraya girilince → KDV hariç fiyat otomatik hesaplanır</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        KDV Oranı (%)
+                        <span class="badge badge-live">CANLI</span>
+                    </label>
+                    <input
+                        type="number"
+                        id="taxRate"
+                        class="form-input"
+                        value="20.00"
+                        step="0.01"
+                    >
+                    <div class="help-text">KDV oranı değişince tüm hesaplamalar güncellenir</div>
+                </div>
+            </div>
+
+            <div class="price-display">
+                <div class="price-item">
+                    <div class="price-item-label">KDV Hariç</div>
+                    <div class="price-item-value" id="displayWithoutTax">0,00 ₺</div>
+                </div>
+                <div class="price-item">
+                    <div class="price-item-label">KDV Tutarı</div>
+                    <div class="price-item-value" id="displayTaxAmount">0,00 ₺</div>
+                </div>
+                <div class="price-item">
+                    <div class="price-item-label">KDV Dahil</div>
+                    <div class="price-item-value" id="displayWithTax">0,00 ₺</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 Nasıl Çalışıyor?</h3>
+                <p>
+                    <strong>Kullanıcı KDV hariç girerse:</strong> 1.000 TL → Sistem otomatik 1.200 TL hesaplar<br>
+                    <strong>Kullanıcı KDV dahil girerse:</strong> 1.200 TL → Sistem otomatik 1.000 TL hesaplar<br>
+                    <strong>Database'e kaydedilen:</strong> Sadece <span class="highlight">price_without_tax</span> (tek kaynak!)
+                </p>
+            </div>
+        </div>
+
+        <!-- LIVEWIRE KOD ÖRNEĞİ -->
+        <div class="code-section">
+            <div class="code-title">💻 Livewire Component Kodu</div>
+            <pre>// ShopProductManageComponent.php
+
+public $price_without_tax;
+public $price_with_tax;
+public $tax_rate = 20.0;
+
+public function mount($productId = null)
+{
+    if ($productId) {
+        $product = ShopProduct::find($productId);
+        $this->price_without_tax = $product->price_without_tax;
+        $this->tax_rate = $product->tax_rate ?? 20.0;
+
+        // KDV dahil fiyatı hesapla
+        $this->calculatePriceWithTax();
+    }
+}
+
+// KDV hariç fiyat değiştiğinde
+public function updatedPriceWithoutTax()
+{
+    $this->calculatePriceWithTax();
+}
+
+// KDV dahil fiyat değiştiğinde
+public function updatedPriceWithTax()
+{
+    $this->calculatePriceWithoutTax();
+}
+
+// KDV oranı değiştiğinde
+public function updatedTaxRate()
+{
+    // Hangisi doluysa ondan diğerini hesapla
+    if ($this->price_without_tax) {
+        $this->calculatePriceWithTax();
+    } elseif ($this->price_with_tax) {
+        $this->calculatePriceWithoutTax();
+    }
+}
+
+private function calculatePriceWithTax()
+{
+    if (!$this->price_without_tax || !$this->tax_rate) {
+        $this->price_with_tax = null;
+        return;
+    }
+
+    $this->price_with_tax = $this->price_without_tax * (1 + $this->tax_rate / 100);
+}
+
+private function calculatePriceWithoutTax()
+{
+    if (!$this->price_with_tax || !$this->tax_rate) {
+        $this->price_without_tax = null;
+        return;
+    }
+
+    $this->price_without_tax = $this->price_with_tax / (1 + $this->tax_rate / 100);
+}
+
+public function save()
+{
+    // Database'e SADECE price_without_tax kaydedilir
+    $product->update([
+        'price_without_tax' => $this->price_without_tax,
+        'tax_rate' => $this->tax_rate,
+        // price_with_tax KAYDEDİLMEZ! (accessor ile hesaplanır)
+    ]);
+}</pre>
+        </div>
+
+        <!-- BLADE TEMPLATE -->
+        <div class="code-section">
+            <div class="code-title">🎨 Blade Template</div>
+            <pre>&lt;div class="form-group"&gt;
+    &lt;label class="form-label"&gt;KDV Hariç Fiyat (₺)&lt;/label&gt;
+    &lt;input
+        type="number"
+        wire:model.live="price_without_tax"
+        class="form-input"
+        step="0.01"
+    &gt;
+&lt;/div&gt;
+
+&lt;div class="form-group"&gt;
+    &lt;label class="form-label"&gt;KDV Dahil Fiyat (₺)&lt;/label&gt;
+    &lt;input
+        type="number"
+        wire:model.live="price_with_tax"
+        class="form-input"
+        step="0.01"
+    &gt;
+    &lt;small&gt;Otomatik hesaplanır&lt;/small&gt;
+&lt;/div&gt;
+
+&lt;div class="form-group"&gt;
+    &lt;label class="form-label"&gt;KDV Oranı (%)&lt;/label&gt;
+    &lt;input
+        type="number"
+        wire:model.live="tax_rate"
+        class="form-input"
+        step="0.01"
+    &gt;
+&lt;/div&gt;
+
+&lt;!-- Özet Gösterim --&gt;
+&lt;div class="price-summary"&gt;
+    &lt;div&gt;KDV Hariç: {{ number_format($price_without_tax, 2) }} ₺&lt;/div&gt;
+    &lt;div&gt;KDV Tutarı: {{ number_format(($price_with_tax - $price_without_tax), 2) }} ₺&lt;/div&gt;
+    &lt;div&gt;KDV Dahil: {{ number_format($price_with_tax, 2) }} ₺&lt;/div&gt;
+&lt;/div&gt;</pre>
+        </div>
+
+        <!-- FRONTEND KULLANIMI -->
+        <div class="code-section">
+            <div class="code-title">🌐 Frontend - Blade Template Kullanımı</div>
+            <pre>&lt;!-- Ürün kartında fiyat gösterimi --&gt;
+@php
+    $displayMode = setting('shop_product_tax', true); // true = KDV dahil
+@endphp
+
+@if($displayMode)
+    &lt;!-- KDV Dahil Göster --&gt;
+    &lt;div class="product-price"&gt;
+        {{ number_format($product->price_with_tax, 2) }} ₺
+        &lt;small&gt;KDV Dahil&lt;/small&gt;
+    &lt;/div&gt;
+@else
+    &lt;!-- KDV Hariç Göster --&gt;
+    &lt;div class="product-price"&gt;
+        {{ number_format($product->price_without_tax, 2) }} ₺
+        &lt;small&gt;+ KDV&lt;/small&gt;
+    &lt;/div&gt;
+@endif</pre>
+        </div>
+    </div>
+
+    <script>
+        // İnteraktif Demo JavaScript
+        const priceWithoutTaxInput = document.getElementById('priceWithoutTax');
+        const priceWithTaxInput = document.getElementById('priceWithTax');
+        const taxRateInput = document.getElementById('taxRate');
+
+        const displayWithoutTax = document.getElementById('displayWithoutTax');
+        const displayWithTax = document.getElementById('displayWithTax');
+        const displayTaxAmount = document.getElementById('displayTaxAmount');
+
+        let updating = false;
+
+        function formatPrice(value) {
+            return new Intl.NumberFormat('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value) + ' ₺';
+        }
+
+        function calculatePriceWithTax() {
+            if (updating) return;
+            updating = true;
+
+            const priceWithoutTax = parseFloat(priceWithoutTaxInput.value) || 0;
+            const taxRate = parseFloat(taxRateInput.value) || 0;
+
+            const priceWithTax = priceWithoutTax * (1 + taxRate / 100);
+
+            priceWithTaxInput.value = priceWithTax.toFixed(2);
+            updateDisplay();
+
+            updating = false;
+        }
+
+        function calculatePriceWithoutTax() {
+            if (updating) return;
+            updating = true;
+
+            const priceWithTax = parseFloat(priceWithTaxInput.value) || 0;
+            const taxRate = parseFloat(taxRateInput.value) || 0;
+
+            const priceWithoutTax = priceWithTax / (1 + taxRate / 100);
+
+            priceWithoutTaxInput.value = priceWithoutTax.toFixed(2);
+            updateDisplay();
+
+            updating = false;
+        }
+
+        function updateDisplay() {
+            const priceWithoutTax = parseFloat(priceWithoutTaxInput.value) || 0;
+            const priceWithTax = parseFloat(priceWithTaxInput.value) || 0;
+            const taxAmount = priceWithTax - priceWithoutTax;
+
+            displayWithoutTax.textContent = formatPrice(priceWithoutTax);
+            displayWithTax.textContent = formatPrice(priceWithTax);
+            displayTaxAmount.textContent = formatPrice(taxAmount);
+        }
+
+        priceWithoutTaxInput.addEventListener('input', calculatePriceWithTax);
+        priceWithTaxInput.addEventListener('input', calculatePriceWithoutTax);
+        taxRateInput.addEventListener('input', function() {
+            // Hangisi doluysa ondan hesapla
+            if (priceWithoutTaxInput.value) {
+                calculatePriceWithTax();
+            } else if (priceWithTaxInput.value) {
+                calculatePriceWithoutTax();
+            }
+        });
+
+        // İlk yükleme
+        updateDisplay();
+    </script>
+</body>
+</html>

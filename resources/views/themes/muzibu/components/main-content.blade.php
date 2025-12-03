@@ -11,6 +11,7 @@
 
         {{-- Content (Gradient ile birlikte scroll yapar) --}}
         <div class="relative z-10">
+            {{ $slot ?? '' }}
             @yield('content')
         </div>
     </div>

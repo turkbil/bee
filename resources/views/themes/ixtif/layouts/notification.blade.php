@@ -133,3 +133,6 @@
         })();
     </script>
 @endif
+
+{{-- Toast Notification Component (Alpine.js) - Modern bildirimler için --}}
+@include('components.notifications.toast')

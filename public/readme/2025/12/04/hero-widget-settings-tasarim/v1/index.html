@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Widget Settings Tasarımı & Kademe Kademe Implementation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            margin-top: 30px;
+            color: #93c5fd;
+        }
+
+        .intro-box {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 30px;
+            border-radius: 16px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .intro-box p {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .intro-box a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .intro-box a:hover {
+            text-decoration: underline;
+        }
+
+        .schema-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .schema-table thead {
+            background: #1e293b;
+        }
+
+        .schema-table th {
+            color: #60a5fa;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #334155;
+        }
+
+        .schema-table td {
+            padding: 15px;
+            border-bottom: 1px solid #334155;
+            color: #cbd5e1;
+            vertical-align: top;
+        }
+
+        .schema-table tr:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .code-block {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 3px solid #f59e0b;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #fbbf24;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .mockup-box {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid #3b82f6;
+            margin: 25px 0;
+        }
+
+        .mockup-box h4 {
+            color: #60a5fa;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .form-field {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            border-left: 3px solid #10b981;
+        }
+
+        .form-field label {
+            display: block;
+            color: #34d399;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-field .field-type {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-left: 10px;
+            font-weight: 400;
+        }
+
+        .form-field input,
+        .form-field textarea {
+            width: 100%;
+            padding: 12px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+        }
+
+        .form-field .placeholder {
+            color: #64748b;
+            font-style: italic;
+        }
+
+        .step-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 16px;
+            border-left: 5px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateX(5px);
+            border-left-color: #10b981;
+        }
+
+        .step-card h4 {
+            color: #60a5fa;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .step-content {
+            margin-top: 20px;
+        }
+
+        .step-content p {
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .step-content ul {
+            margin-left: 25px;
+            color: #cbd5e1;
+        }
+
+        .step-content li {
+            margin-bottom: 10px;
+        }
+
+        .test-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .test-box h5 {
+            color: #34d399;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .test-box p, .test-box ul {
+            color: #a7f3d0;
+            font-size: 0.95rem;
+        }
+
+        .rollback-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .rollback-box h5 {
+            color: #f87171;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .rollback-box p, .rollback-box code {
+            color: #fecaca;
+            font-size: 0.95rem;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid #f59e0b;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .warning-box p {
+            color: #fde68a;
+            line-height: 1.7;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid #10b981;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .success-box h4 {
+            color: #34d399;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .success-box p {
+            color: #a7f3d0;
+            line-height: 1.7;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .schema-table { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚙️ Hero Widget Settings Tasarımı</h1>
+            <div class="meta">
+                <span>📅 Tarih: 2025-12-04</span>
+                <span>🎯 Tenant: ixtif.com</span>
+                <span>🔧 Tip: FILE Widget</span>
+                <span>📍 Admin: <a href="https://tuufi.com/admin/widgetmanagement/manage" target="_blank" style="color: #60a5fa;">Widget Yönetimi</a></span>
+            </div>
+        </header>
+
+        <!-- Introduction -->
+        <section>
+            <h2>📋 Genel Bakış</h2>
+            <div class="intro-box">
+                <p><strong>Amaç:</strong> Hero widget için settings schema'sını tasarlamak ve admin panelde nasıl görüneceğini planlamak.</p>
+                <p><strong>Yaklaşım:</strong> Kademe kademe ilerleyeceğiz. Her adımda test edilebilir, geri alınabilir.</p>
+                <p><strong>Admin Panel:</strong> <a href="https://tuufi.com/admin/widgetmanagement/manage" target="_blank">https://tuufi.com/admin/widgetmanagement/manage</a></p>
+            </div>
+        </section>
+
+        <!-- Settings Schema -->
+        <section>
+            <h2>⚙️ Settings Schema (8 Alan)</h2>
+            <p style="color: #cbd5e1; margin-bottom: 25px;">Hero widget için admin panelde düzenlenebilecek ayarlar:</p>
+
+            <table class="schema-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Alan Adı</th>
+                        <th style="width: 15%;">Tip</th>
+                        <th style="width: 30%;">Açıklama</th>
+                        <th style="width: 35%;">Varsayılan Değer (İxtif)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>title_line1</strong></td>
+                        <td>text</td>
+                        <td>Başlık birinci satır</td>
+                        <td>TÜRKİYE'NİN</td>
+                    </tr>
+                    <tr>
+                        <td><strong>title_line2</strong></td>
+                        <td>text</td>
+                        <td>Başlık ikinci satır</td>
+                        <td>İSTİF PAZARI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>description</strong></td>
+                        <td>textarea</td>
+                        <td>Ana açıklama metni</td>
+                        <td>Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı</td>
+                    </tr>
+                    <tr>
+                        <td><strong>cta_text</strong></td>
+                        <td>text</td>
+                        <td>CTA button yazısı</td>
+                        <td>Ürünleri İncele</td>
+                    </tr>
+                    <tr>
+                        <td><strong>cta_url</strong></td>
+                        <td>url</td>
+                        <td>CTA button linki</td>
+                        <td>/shop</td>
+                    </tr>
+                    <tr>
+                        <td><strong>cta_icon</strong></td>
+                        <td>text</td>
+                        <td>CTA button icon (FontAwesome class)</td>
+                        <td>fa-light fa-shopping-cart</td>
+                    </tr>
+                    <tr>
+                        <td><strong>hero_image</strong></td>
+                        <td>image</td>
+                        <td>Hero görseli (media picker)</td>
+                        <td>storage/tenant2/4/hero.png</td>
+                    </tr>
+                    <tr>
+                        <td><strong>hero_image_alt</strong></td>
+                        <td>text</td>
+                        <td>Hero görsel alt text (SEO)</td>
+                        <td>iXtif İstif Makinesi - Forklift</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Settings Schema JSON</h3>
+            <div class="code-block">{
+  "settings_schema": [
+    {
+      "name": "title_line1",
+      "label": "Başlık - 1. Satır",
+      "type": "text",
+      "required": true,
+      "properties": {
+        "placeholder": "TÜRKİYE'NİN",
+        "help_text": "Hero başlığının ilk satırı"
+      }
+    },
+    {
+      "name": "title_line2",
+      "label": "Başlık - 2. Satır",
+      "type": "text",
+      "required": true,
+      "properties": {
+        "placeholder": "İSTİF PAZARI",
+        "help_text": "Hero başlığının ikinci satırı"
+      }
+    },
+    {
+      "name": "description",
+      "label": "Açıklama",
+      "type": "textarea",
+      "required": true,
+      "properties": {
+        "rows": 3,
+        "placeholder": "Profesyonel istif çözümleri...",
+        "help_text": "Hero bölümünün açıklama metni"
+      }
+    },
+    {
+      "name": "cta_text",
+      "label": "CTA Button Yazısı",
+      "type": "text",
+      "required": true,
+      "properties": {
+        "placeholder": "Ürünleri İncele",
+        "help_text": "Call-to-action button metni"
+      }
+    },
+    {
+      "name": "cta_url",
+      "label": "CTA Button Linki",
+      "type": "url",
+      "required": true,
+      "properties": {
+        "placeholder": "/shop",
+        "help_text": "Button tıklandığında gidilecek sayfa"
+      }
+    },
+    {
+      "name": "cta_icon",
+      "label": "CTA Button Icon",
+      "type": "text",
+      "required": false,
+      "properties": {
+        "placeholder": "fa-light fa-shopping-cart",
+        "help_text": "FontAwesome icon class (opsiyonel)"
+      }
+    },
+    {
+      "name": "hero_image",
+      "label": "Hero Görseli",
+      "type": "image",
+      "required": true,
+      "properties": {
+        "help_text": "Ana hero görseli (önerilen: 1200x800px)"
+      }
+    },
+    {
+      "name": "hero_image_alt",
+      "label": "Hero Görsel Alt Text",
+      "type": "text",
+      "required": false,
+      "properties": {
+        "placeholder": "iXtif İstif Makinesi",
+        "help_text": "SEO için görsel açıklaması"
+      }
+    }
+  ]
+}</div>
+        </section>
+
+        <!-- Admin Panel Mockup -->
+        <section>
+            <h2>🖥️ Admin Panel Form Görünümü</h2>
+            <p style="color: #cbd5e1; margin-bottom: 25px;">Settings formu admin panelde şu şekilde görünecek:</p>
+
+            <div class="mockup-box">
+                <h4>📝 Widget Ayarları Formu</h4>
+
+                <div class="form-field">
+                    <label>Başlık - 1. Satır <span class="field-type">(text)</span></label>
+                    <input type="text" value="TÜRKİYE'NİN" />
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">Hero başlığının ilk satırı</p>
+                </div>
+
+                <div class="form-field">
+                    <label>Başlık - 2. Satır <span class="field-type">(text)</span></label>
+                    <input type="text" value="İSTİF PAZARI" />
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">Hero başlığının ikinci satırı</p>
+                </div>
+
+                <div class="form-field">
+                    <label>Açıklama <span class="field-type">(textarea)</span></label>
+                    <textarea rows="3">Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı</textarea>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">Hero bölümünün açıklama metni</p>
+                </div>
+
+                <div class="form-field">
+                    <label>CTA Button Yazısı <span class="field-type">(text)</span></label>
+                    <input type="text" value="Ürünleri İncele" />
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">Call-to-action button metni</p>
+                </div>
+
+                <div class="form-field">
+                    <label>CTA Button Linki <span class="field-type">(url)</span></label>
+                    <input type="url" value="/shop" />
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">Button tıklandığında gidilecek sayfa</p>
+                </div>
+
+                <div class="form-field">
+                    <label>CTA Button Icon <span class="field-type">(text)</span></label>
+                    <input type="text" value="fa-light fa-shopping-cart" />
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">FontAwesome icon class (opsiyonel)</p>
+                </div>
+
+                <div class="form-field">
+                    <label>Hero Görseli <span class="field-type">(image)</span></label>
+                    <div style="padding: 15px; background: #1e293b; border: 2px dashed #334155; border-radius: 8px; text-align: center; color: #94a3b8;">
+                        📸 Görsel Seç / Yükle
+                        <p style="font-size: 0.85rem; margin-top: 8px;">Mevcut: hero.png</p>
+                    </div>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">Ana hero görseli (önerilen: 1200x800px)</p>
+                </div>
+
+                <div class="form-field">
+                    <label>Hero Görsel Alt Text <span class="field-type">(text)</span></label>
+                    <input type="text" value="iXtif İstif Makinesi - Forklift" />
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">SEO için görsel açıklaması</p>
+                </div>
+
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #334155;">
+                    <button style="padding: 12px 30px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        💾 Kaydet
+                    </button>
+                    <button style="padding: 12px 30px; background: #64748b; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-left: 10px;">
+                        ❌ İptal
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Item Schema -->
+        <section>
+            <h2>📦 Item Schema (Feature Kartları)</h2>
+            <p style="color: #cbd5e1; margin-bottom: 25px;">4 feature kartı için widget item schema'sı:</p>
+
+            <table class="schema-table">
+                <thead>
+                    <tr>
+                        <th>Alan Adı</th>
+                        <th>Tip</th>
+                        <th>Açıklama</th>
+                        <th>Örnek Değer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>title</strong></td>
+                        <td>text</td>
+                        <td>Feature başlığı (otomatik - sistem alanı)</td>
+                        <td>Güçlü Stok</td>
+                    </tr>
+                    <tr>
+                        <td><strong>icon</strong></td>
+                        <td>text</td>
+                        <td>FontAwesome icon class</td>
+                        <td>fa-light fa-boxes-stacked</td>
+                    </tr>
+                    <tr>
+                        <td><strong>subtitle</strong></td>
+                        <td>text</td>
+                        <td>Alt başlık / açıklama</td>
+                        <td>Zengin ürün çeşidi</td>
+                    </tr>
+                    <tr>
+                        <td><strong>is_active</strong></td>
+                        <td>switch</td>
+                        <td>Aktif/Pasif (otomatik - sistem alanı)</td>
+                        <td>true</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Item Schema JSON</h3>
+            <div class="code-block">{
+  "item_schema": [
+    {
+      "name": "icon",
+      "label": "Icon",
+      "type": "text",
+      "required": true,
+      "properties": {
+        "placeholder": "fa-light fa-boxes-stacked",
+        "help_text": "FontAwesome icon class"
+      }
+    },
+    {
+      "name": "subtitle",
+      "label": "Alt Başlık",
+      "type": "text",
+      "required": true,
+      "properties": {
+        "placeholder": "Zengin ürün çeşidi",
+        "help_text": "Feature açıklaması"
+      }
+    }
+  ]
+}</div>
+
+            <div class="warning-box">
+                <h4>⚠️ Otomatik Sistem Alanları</h4>
+                <p><strong>title</strong> ve <strong>is_active</strong> alanları otomatik olarak eklenir (Widget.php ensureRequiredItemFields metodu). Bunları schema'ya manuel eklemeye gerek yok!</p>
+            </div>
+        </section>
+
+        <!-- Step by Step Implementation -->
+        <section>
+            <h2>🪜 Kademe Kademe Implementation</h2>
+            <p style="color: #cbd5e1; margin-bottom: 25px;">Her adımı sırayla yapacağız, test edeceğiz, sorun olursa geri alacağız:</p>
+
+            <!-- Step 1 -->
+            <div class="step-card">
+                <h4><span class="step-number">1</span> Widget Kaydı Oluştur (Central DB)</h4>
+                <div class="step-content">
+                    <p><strong>Ne Yapacağız?</strong></p>
+                    <ul>
+                        <li>Central database'e Widget kaydı ekleyeceğiz</li>
+                        <li>type='file', slug='hero-ixtif'</li>
+                        <li>settings_schema ve item_schema JSON'larını ekleyeceğiz</li>
+                        <li>Henüz Blade dosyası yok, sadece kayıt</li>
+                    </ul>
+
+                    <div class="test-box">
+                        <h5>✅ Nasıl Test Edilecek?</h5>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Admin panele gir: <a href="https://tuufi.com/admin/widgetmanagement/manage" style="color: #34d399;">Widget Yönetimi</a></li>
+                            <li>Yeni widget'ı listede görmelisin: "Hero - İxtif"</li>
+                            <li>Widget'a tıkla, settings schema'yı kontrol et (8 alan var mı?)</li>
+                            <li>Item schema'yı kontrol et (icon, subtitle var mı?)</li>
+                        </ul>
+                    </div>
+
+                    <div class="rollback-box">
+                        <h5>🔙 Nasıl Geri Alınır?</h5>
+                        <p>Widget kaydını database'den sil:</p>
+                        <code style="display: block; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px;">
+DELETE FROM widgets WHERE slug = 'hero-ixtif';
+                        </code>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>🎯 Beklenen Sonuç</h4>
+                        <p>Admin panelde "Hero - İxtif" widget'ı görünecek. Henüz kullanılamaz (Blade dosyası yok), ama ayarlar tanımlı olacak.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-card">
+                <h4><span class="step-number">2</span> Blade View Dosyası Oluştur</h4>
+                <div class="step-content">
+                    <p><strong>Ne Yapacağız?</strong></p>
+                    <ul>
+                        <li>Blade dosyası oluştur: <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px;">blocks/hero/ixtif-hero/view.blade.php</code></li>
+                        <li>İlk versiyonda basit bir test HTML koyacağız</li>
+                        <li>Settings değişkenlerini {{ $settings['title_line1'] }} ile ekleyeceğiz</li>
+                        <li>Feature kartları henüz yok, sadece ana bölüm</li>
+                    </ul>
+
+                    <div class="test-box">
+                        <h5>✅ Nasıl Test Edilecek?</h5>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Test sayfası oluştur: <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px;">public/test-hero.php</code></li>
+                            <li>Widget'ı render et: <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px;">@widget('hero-ixtif')</code></li>
+                            <li>Blade dosyasının render olduğunu kontrol et</li>
+                            <li>Settings değişkenleri boş olacak (henüz TenantWidget yok)</li>
+                        </ul>
+                    </div>
+
+                    <div class="rollback-box">
+                        <h5>🔙 Nasıl Geri Alınır?</h5>
+                        <p>Blade dosyasını sil:</p>
+                        <code style="display: block; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px;">
+sudo rm -rf /path/to/blocks/hero/ixtif-hero/
+                        </code>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>🎯 Beklenen Sonuç</h4>
+                        <p>Test sayfasında basit Hero HTML render olacak. Değişkenler boş, ama yapı çalışıyor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-card">
+                <h4><span class="step-number">3</span> TenantWidget Oluştur + Settings Doldur</h4>
+                <div class="step-content">
+                    <p><strong>Ne Yapacağız?</strong></p>
+                    <ul>
+                        <li>İxtif tenant'ı için TenantWidget kaydı oluşturacağız</li>
+                        <li>Admin panelden settings formunu dolduracağız (8 alan)</li>
+                        <li>Başlık, açıklama, CTA, hero görsel ayarlayacağız</li>
+                        <li>Henüz feature kartları yok</li>
+                    </ul>
+
+                    <div class="test-box">
+                        <h5>✅ Nasıl Test Edilecek?</h5>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Admin panelden widget'ı aktif et</li>
+                            <li>Settings formunu doldur (title_line1, title_line2, vb.)</li>
+                            <li>Kaydet</li>
+                            <li>Test sayfasını aç, settings değerlerinin render olduğunu gör</li>
+                            <li>"TÜRKİYE'NİN", "İSTİF PAZARI" başlıkları görünmeli</li>
+                        </ul>
+                    </div>
+
+                    <div class="rollback-box">
+                        <h5>🔙 Nasıl Geri Alınır?</h5>
+                        <p>TenantWidget kaydını sil:</p>
+                        <code style="display: block; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px;">
+DELETE FROM tenant_widgets WHERE widget_id = [widget_id];
+                        </code>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>🎯 Beklenen Sonuç</h4>
+                        <p>Hero bölümünde başlık, açıklama, CTA button görünecek. Görsel render olacak. Feature kartları henüz yok.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-card">
+                <h4><span class="step-number">4</span> WidgetItems Ekle (4 Feature)</h4>
+                <div class="step-content">
+                    <p><strong>Ne Yapacağız?</strong></p>
+                    <ul>
+                        <li>Admin panelden 4 WidgetItem ekleyeceğiz</li>
+                        <li>Güçlü Stok / fa-boxes-stacked / Zengin ürün çeşidi</li>
+                        <li>Garantili Ürün / fa-certificate / Teknik servis</li>
+                        <li>Profesyonel Ekip / fa-award / Uzman danışmanlık</li>
+                        <li>Hızlı Teslimat / fa-truck-fast / Aynı gün kargo</li>
+                    </ul>
+
+                    <div class="test-box">
+                        <h5>✅ Nasıl Test Edilecek?</h5>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Admin panelden widget items bölümüne git</li>
+                            <li>4 item ekle (title, icon, subtitle)</li>
+                            <li>Blade view'de @foreach ile items render et</li>
+                            <li>Test sayfasını aç, 4 feature kartını gör</li>
+                            <li>Icon'lar, başlıklar, alt başlıklar doğru mu kontrol et</li>
+                        </ul>
+                    </div>
+
+                    <div class="rollback-box">
+                        <h5>🔙 Nasıl Geri Alınır?</h5>
+                        <p>WidgetItem kayıtlarını sil:</p>
+                        <code style="display: block; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px;">
+DELETE FROM widget_items WHERE tenant_widget_id = [tenant_widget_id];
+                        </code>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>🎯 Beklenen Sonuç</h4>
+                        <p>Hero bölümünde 4 feature kartı görünecek. Tüm içerik dinamik, admin panelden düzenlenebilir.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step-card">
+                <h4><span class="step-number">5</span> Homepage.blade.php Güncelle</h4>
+                <div class="step-content">
+                    <p><strong>Ne Yapacağız?</strong></p>
+                    <ul>
+                        <li>homepage.blade.php'den 81 satırlık Hero bölümünü sileceğiz (lines 10-91)</li>
+                        <li>Yerine @widget('hero-ixtif') ekleyeceğiz</li>
+                        <li>Önce git checkpoint yapacağız (rollback için)</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Dikkat: Git Checkpoint Zorunlu!</h4>
+                        <p>Bu adımda dosyayı değiştireceğiz. Mutlaka önce git commit yapacağız!</p>
+                    </div>
+
+                    <div class="test-box">
+                        <h5>✅ Nasıl Test Edilecek?</h5>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Git checkpoint: <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px;">git add . && git commit -m "CHECKPOINT: Before Hero widget"</code></li>
+                            <li>homepage.blade.php'yi düzenle (81 satır sil, @widget ekle)</li>
+                            <li>Cache temizle: <code style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px;">php artisan view:clear</code></li>
+                            <li>Ana sayfayı aç: <a href="https://ixtif.com/" style="color: #34d399;">https://ixtif.com/</a></li>
+                            <li>Hero bölümü önceki gibi görünmeli (widget ile)</li>
+                        </ul>
+                    </div>
+
+                    <div class="rollback-box">
+                        <h5>🔙 Nasıl Geri Alınır?</h5>
+                        <p>Git ile geri al:</p>
+                        <code style="display: block; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px;">
+git reset --hard HEAD~1
+# veya
+git checkout homepage.blade.php
+                        </code>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>🎯 Beklenen Sonuç</h4>
+                        <p>Ana sayfa önceki gibi görünecek, ama artık widget sistemi üzerinden! 757 satır → 676 satır.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step-card">
+                <h4><span class="step-number">6</span> Final Test & Optimization</h4>
+                <div class="step-content">
+                    <p><strong>Ne Yapacağız?</strong></p>
+                    <ul>
+                        <li>Tüm sayfaları test edeceğiz (desktop, mobile, tablet)</li>
+                        <li>Dark mode geçişi test edeceğiz</li>
+                        <li>Responsive görünüm kontrol edeceğiz</li>
+                        <li>Cache performansını test edeceğiz</li>
+                        <li>Admin panelden değişiklik yaptığımızda hemen yansıyor mu?</li>
+                    </ul>
+
+                    <div class="test-box">
+                        <h5>✅ Test Checklist</h5>
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>✅ Desktop görünüm (1920px)</li>
+                            <li>✅ Tablet görünüm (768px)</li>
+                            <li>✅ Mobil görünüm (375px)</li>
+                            <li>✅ Dark mode geçişi</li>
+                            <li>✅ Gradient animasyon çalışıyor mu?</li>
+                            <li>✅ CTA button yönlendirme doğru mu?</li>
+                            <li>✅ Hero görsel yükleniyor mu?</li>
+                            <li>✅ 4 feature kartı responsive mu?</li>
+                            <li>✅ Admin değişikliği anında yansıyor mu?</li>
+                            <li>✅ Cache sonrası hız nasıl?</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <h4>🎯 Beklenen Sonuç</h4>
+                        <p>Tüm testler başarılı! Hero widget production'a hazır. Admin panelden kolayca düzenlenebiliyor.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section>
+            <div class="intro-box">
+                <h3 style="color: #60a5fa; margin-bottom: 20px;">📋 Özet: Sıradaki Adım</h3>
+                <p><strong>Şu An:</strong> Settings tasarımı ve kademe kademe plan hazır.</p>
+                <p><strong>Sonraki Adım:</strong> Adım 1'i gerçekleştireceğiz - Widget kaydı oluştur (Central DB).</p>
+                <p><strong>Onayınızı Bekliyorum:</strong> "Adım 1'e başla" derseniz, Widget kaydını oluşturacağım.</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>🤖 Claude AI tarafından oluşturuldu | 📅 2025-12-04</p>
+            <p style="margin-top: 10px;">Hero Widget Settings Tasarımı - Kademe Kademe Implementation - v1</p>
+        </footer>
+    </div>
+</body>
+</html>

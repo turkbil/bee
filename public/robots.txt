@@ -6,10 +6,6 @@ User-agent: *
 # Allow all content
 Allow: /
 
-# Block search result pages (dynamic, duplicate content)
-Disallow: /search/
-Disallow: /search?
-
 # Block admin and internal paths
 Disallow: /admin/
 Disallow: /livewire/

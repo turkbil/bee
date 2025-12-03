@@ -12,7 +12,7 @@
                     $categorySlug = is_array($category->slug) ? $category->slug['tr'] : $category->slug;
                 @endphp
 
-                <a href="{{ href('Shop', 'category', $categorySlug) }}"
+                <a href="{{ route('shop.category', $categorySlug) }}"
                    class="flex items-center gap-3 bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-xl p-4 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200">
 
                     {{-- Icon --}}
@@ -83,7 +83,7 @@
                                 $categorySlug = is_array($category->slug) ? $category->slug['tr'] : $category->slug;
                             @endphp
 
-                            <a href="{{ href('Shop', 'category', $categorySlug) }}"
+                            <a href="{{ route('shop.category', $categorySlug) }}"
                                class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-300 dark:border-white/10 rounded-2xl p-6 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 overflow-hidden">
 
                                 <div class="relative z-10 flex items-center gap-4">
@@ -185,7 +185,7 @@
                                 $subTitle = is_array($subcategory->title) ? $subcategory->title['tr'] : $subcategory->title;
                                 $subSlug = is_array($subcategory->slug) ? $subcategory->slug['tr'] : $subcategory->slug;
                             @endphp
-                            <a href="{{ href('Shop', 'category', $subSlug) }}"
+                            <a href="{{ route('shop.category', $subSlug) }}"
                                class="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors py-1.5 px-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20">
                                 <i class="fa-solid fa-chevron-right text-xs text-gray-400 dark:text-gray-500"></i>
                                 <span class="text-sm font-medium">{{ $subTitle }}</span>

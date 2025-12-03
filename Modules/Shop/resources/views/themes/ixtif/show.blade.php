@@ -39,6 +39,22 @@
             $shortDescription = $item->getTranslated('short_description', $currentLocale);
             $longDescription = $item->getTranslated('body', $currentLocale);
 
+            // 🏷️ KDV Gösterim Modu (Settings'den)
+            // true = KDV dahil göster, false = KDV hariç + "KDV" etiketi
+            $showTaxIncluded = setting('shop_product_tax', true);
+
+            // Fiyat hesaplama
+            $displayPrice = $showTaxIncluded ? ($item->price_with_tax ?? 0) : ($item->base_price ?? 0);
+            $compareAtPriceBase = $item->compare_at_price ?? null;
+
+            // Compare price için de KDV ekle (gerekirse)
+            if ($compareAtPriceBase && $showTaxIncluded) {
+                $taxRate = $item->tax_rate ?? 20.0;
+                $compareAtPrice = $compareAtPriceBase * (1 + $taxRate / 100);
+            } else {
+                $compareAtPrice = $compareAtPriceBase;
+            }
+
             // 📞 İletişim Bilgileri - Settings'ten al
             $contactPhone = setting('contact_phone_1');
             $contactWhatsapp = setting('contact_whatsapp_1');
@@ -290,15 +306,18 @@
                         @endif
 
                         {{-- Fiyat Gösterimi --}}
-                        @if($item->base_price && $item->base_price > 0)
+                        @if($displayPrice > 0)
                             <div class="mb-8">
                                 <div class="inline-flex flex-col gap-2">
                                     <div class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400">
-                                        {{ formatPrice($item->base_price, $item->currency ?? 'TRY') }}
+                                        {{ formatPrice($displayPrice, $item->currency ?? 'TRY') }}
+                                        @if(!$showTaxIncluded)
+                                            <small class="text-2xl font-light text-gray-600 dark:text-gray-300 ml-2 align-text-bottom">+ KDV</small>
+                                        @endif
                                     </div>
-                                    @if($item->compare_at_price && $item->compare_at_price > $item->base_price)
+                                    @if($compareAtPrice && $compareAtPrice > $displayPrice)
                                         <div class="text-xl text-gray-500 dark:text-gray-400 line-through">
-                                            {{ formatPrice($item->compare_at_price, $item->currency ?? 'TRY') }}
+                                            {{ formatPrice($compareAtPrice, $item->currency ?? 'TRY') }}
                                         </div>
                                     @endif
                                 </div>
@@ -309,7 +328,7 @@
                             {{-- CTA Buttons - MOBİL: 3'lü grid | DESKTOP: Normal flex --}}
                             <div class="grid grid-cols-3 lg:flex gap-2 lg:gap-4">
                                 {{-- Sepete Ekle Butonu --}}
-                                @if(!$item->price_on_request && $item->base_price > 0)
+                                @if(!$item->price_on_request && $displayPrice > 0)
                                     @livewire('shop::front.add-to-cart-button', [
                                         'productId' => $item->product_id,
                                         'quantity' => 1,
@@ -1277,7 +1296,7 @@
                         {{-- CTA Section - V6 SaaS Modern Style --}}
                         <div class="mb-6">
                             {{-- Fiyat Kutusu --}}
-                            @if($item->base_price && $item->base_price > 0)
+                            @if($displayPrice > 0)
                                 <div class="rounded-xl p-6 mb-4"
                                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                                     @if($item->stock_tracking && $item->current_stock > 0)
@@ -1286,9 +1305,14 @@
                                             Stokta Var
                                         </div>
                                     @endif
-                                    <div class="text-2xl font-bold text-white mb-1">{{ formatPrice($item->base_price, $item->currency ?? 'TRY') }}</div>
-                                    @if($item->compare_at_price && $item->compare_at_price > $item->base_price)
-                                        <div class="text-sm text-white/80 line-through">{{ formatPrice($item->compare_at_price, $item->currency ?? 'TRY') }}</div>
+                                    <div class="text-2xl font-bold text-white mb-1">
+                                        {{ formatPrice($displayPrice, $item->currency ?? 'TRY') }}
+                                        @if(!$showTaxIncluded)
+                                            <small class="text-sm font-light text-white/80 ml-1 align-text-bottom">+ KDV</small>
+                                        @endif
+                                    </div>
+                                    @if($compareAtPrice && $compareAtPrice > $displayPrice)
+                                        <div class="text-sm text-white/80 line-through">{{ formatPrice($compareAtPrice, $item->currency ?? 'TRY') }}</div>
                                     @endif
                                 </div>
                             @endif

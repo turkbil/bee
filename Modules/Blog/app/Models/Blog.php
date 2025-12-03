@@ -724,4 +724,47 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
     {
         return false; // SYNC mode - tenant context sorununu önler
     }
+
+    /**
+     * 🔧 FIX: Temiz excerpt al - Yarım cümleleri otomatik düzelt
+     *
+     * Excerpt'i alırken otomatik olarak:
+     * - Noktalama kontrolü yapar
+     * - Yarım cümleye "..." ekler
+     * - SEO-friendly hale getirir
+     *
+     * @param string|null $locale Language code (default: current locale)
+     * @return string|null Clean excerpt with proper punctuation
+     */
+    public function getCleanExcerpt(?string $locale = null): ?string
+    {
+        $locale = $locale ?? app()->getLocale();
+        $excerpt = $this->getTranslated('excerpt', $locale);
+
+        if (!$excerpt) {
+            // Excerpt yoksa body'den oluştur
+            return $this->generateExcerpt($locale, 155);
+        }
+
+        $length = mb_strlen($excerpt);
+        $lastChar = mb_substr($excerpt, -1);
+
+        // Noktalama kontrolü: Eğer cümle tamamlanmamışsa "..." ekle
+        if (!in_array($lastChar, ['.', '!', '?', '…'])) {
+            // Yarım cümle - "..." ekle
+            $excerpt = rtrim($excerpt) . '...';
+        }
+
+        // SEO için max 155 karakter
+        if (mb_strlen($excerpt) > 155) {
+            $excerpt = mb_substr($excerpt, 0, 152);
+            $lastSpace = mb_strrpos($excerpt, ' ');
+            if ($lastSpace !== false && $lastSpace > 100) {
+                $excerpt = mb_substr($excerpt, 0, $lastSpace);
+            }
+            $excerpt = rtrim($excerpt, '.,;:') . '...';
+        }
+
+        return $excerpt;
+    }
 }

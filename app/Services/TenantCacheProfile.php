@@ -73,9 +73,15 @@ class TenantCacheProfile implements CacheProfile
         }
 
         if ($response->isSuccessful()) {
-            // Cache header'larını düzelt
+            // PREFETCH İÇİN AGRESIF CACHE HEADER'LARI
             $response->setPublic();
             $response->setMaxAge(3600); // 1 saat
+            $response->setSharedMaxAge(3600);
+
+            // Eski no-cache header'larını kaldır
+            $response->headers->remove('Pragma');
+            $response->headers->set('Cache-Control', 'public, max-age=3600, s-maxage=3600');
+
             return true;
         }
 

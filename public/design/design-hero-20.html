@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Glassmorphism - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+
+        .glass-layer-1 {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-layer-2 {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(30px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .glass-layer-3 {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(40px) saturate(220%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes float-smooth {
+            0%, 100% { 
+                transform: translate(0, 0) rotate(0deg); 
+            }
+            25% { 
+                transform: translate(20px, -20px) rotate(2deg); 
+            }
+            50% { 
+                transform: translate(-10px, -40px) rotate(-1deg); 
+            }
+            75% { 
+                transform: translate(-20px, -20px) rotate(1deg); 
+            }
+        }
+
+        @keyframes morph-blob {
+            0%, 100% { 
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; 
+            }
+            25% { 
+                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; 
+            }
+            50% { 
+                border-radius: 50% 40% 60% 40% / 40% 70% 60% 50%; 
+            }
+            75% { 
+                border-radius: 40% 70% 30% 60% / 70% 50% 40% 60%; 
+            }
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes shimmer-wave {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .float-smooth { animation: float-smooth 10s ease-in-out infinite; }
+        .morph-blob { animation: morph-blob 15s ease-in-out infinite; }
+        
+        .gradient-animated {
+            background: linear-gradient(270deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 800% 800%;
+            animation: gradient-shift 15s ease infinite;
+        }
+
+        .shimmer-overlay::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            animation: shimmer-wave 8s infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { 
+                box-shadow: 0 0 30px rgba(102, 126, 234, 0.3),
+                           0 0 60px rgba(102, 126, 234, 0.2),
+                           inset 0 0 30px rgba(102, 126, 234, 0.1);
+            }
+            50% { 
+                box-shadow: 0 0 50px rgba(118, 75, 162, 0.5),
+                           0 0 100px rgba(118, 75, 162, 0.3),
+                           inset 0 0 50px rgba(118, 75, 162, 0.2);
+            }
+        }
+
+        .glass-glow {
+            animation: glow-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes scale-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .scale-pulse { animation: scale-pulse 3s ease-in-out infinite; }
+
+        .perspective-container {
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        .glass-card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .glass-card-3d:hover {
+            transform: rotateY(10deg) rotateX(5deg) translateZ(30px);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Animated Gradient Background -->
+    <div class="fixed inset-0 gradient-animated"></div>
+
+    <!-- Morphing Blobs -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-purple-400/30 rounded-full morph-blob blur-3xl"></div>
+        <div class="absolute -bottom-40 -right-40 w-[500px] h-[500px] bg-blue-400/30 rounded-full morph-blob blur-3xl" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-pink-400/20 rounded-full morph-blob blur-3xl" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="fixed top-0 left-0 right-0 z-50 glass-layer-2 border-b">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="px-4 py-2 glass-layer-1 rounded-lg hover:glass-layer-3 transition-all">
+                    <i class="fa-solid fa-home text-white"></i>
+                </a>
+                <div class="text-center text-white">
+                    <div class="text-2xl font-bold">20 / 20</div>
+                    <div class="text-xs text-white/60">GLASSMORPHISM</div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="design-hero-19.html" class="px-4 py-2 glass-layer-1 rounded-lg hover:glass-layer-3 transition-all">
+                        <i class="fa-solid fa-arrow-left text-white"></i>
+                    </a>
+                    <a href="design-hero-1.html" class="px-4 py-2 glass-layer-1 rounded-lg hover:glass-layer-3 transition-all">
+                        <i class="fa-solid fa-arrow-right text-white"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO-020: ANIMATED GLASSMORPHISM LAYERS -->
+    <section id="hero-020" class="min-h-screen pt-32 pb-20 relative"
+             x-data="{
+                mouseX: 0,
+                mouseY: 0,
+                activeCard: null
+             }"
+             @mousemove="mouseX = $event.clientX; mouseY = $event.clientY">
+
+        <div class="container mx-auto px-6 relative z-10">
+
+            <!-- Main Hero Content -->
+            <div class="text-center mb-20">
+                <!-- Floating Badge -->
+                <div class="inline-block mb-8 float-smooth">
+                    <div class="glass-layer-3 rounded-full px-8 py-4 shimmer-overlay relative overflow-hidden">
+                        <span class="text-white font-bold relative z-10">✨ ULTRA MODERN DESIGN</span>
+                    </div>
+                </div>
+
+                <!-- Title with Layers -->
+                <h1 class="text-7xl md:text-9xl font-black leading-none mb-8 text-white">
+                    <span class="block scale-pulse">Glassmorphism</span>
+                    <span class="block bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white">
+                        Design System
+                    </span>
+                </h1>
+
+                <!-- Subtitle -->
+                <p class="text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed mb-12">
+                    Çoklu katman cam efektleri ile gelişmiş backdrop blur teknolojisi. 
+                    Modern, şeffaf, derinlik hissi veren tasarım.
+                </p>
+
+                <!-- CTA Buttons with Glass Effect -->
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button class="px-12 py-6 glass-layer-3 glass-glow rounded-2xl font-bold text-xl text-white hover:glass-layer-2 transition-all hover:scale-105 group">
+                        <i class="fa-solid fa-sparkles mr-2"></i>
+                        Deneyimle
+                        <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-2 transition-transform"></i>
+                    </button>
+                    <button class="px-12 py-6 glass-layer-2 rounded-2xl font-bold text-xl text-white hover:glass-layer-3 transition-all">
+                        <i class="fa-solid fa-play-circle mr-2"></i>
+                        Demo İzle
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3D Glass Cards Grid -->
+            <div class="perspective-container">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+
+                    <!-- Card 1: AI Search -->
+                    <div @mouseenter="activeCard = 1" 
+                         @mouseleave="activeCard = null"
+                         class="glass-card-3d glass-layer-2 p-8 rounded-3xl hover:glass-layer-3 transition-all group relative overflow-hidden shimmer-overlay">
+                        
+                        <!-- Icon Circle -->
+                        <div class="w-20 h-20 glass-layer-3 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all relative z-10">
+                            <i class="fa-solid fa-brain text-5xl text-white"></i>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="relative z-10">
+                            <div class="text-sm text-white/60 mb-2">AI Powered</div>
+                            <h3 class="text-2xl font-black text-white mb-4">Akıllı Arama</h3>
+                            <p class="text-white/80 text-sm mb-6">
+                                Yapay zeka destekli gelişmiş filtreleme ve anlık sonuç sistemi
+                            </p>
+                            
+                            <!-- Stat -->
+                            <div class="glass-layer-1 rounded-xl p-4">
+                                <div class="text-4xl font-black text-white">500+</div>
+                                <div class="text-xs text-white/60">Ürün Database</div>
+                            </div>
+                        </div>
+
+                        <!-- Hover Glow -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl"></div>
+                    </div>
+
+                    <!-- Card 2: Real-Time -->
+                    <div @mouseenter="activeCard = 2" 
+                         @mouseleave="activeCard = null"
+                         class="glass-card-3d glass-layer-2 p-8 rounded-3xl hover:glass-layer-3 transition-all group relative overflow-hidden shimmer-overlay"
+                         style="animation-delay: 0.2s;">
+                        
+                        <div class="w-20 h-20 glass-layer-3 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all relative z-10">
+                            <i class="fa-solid fa-chart-line text-5xl text-white"></i>
+                        </div>
+
+                        <div class="relative z-10">
+                            <div class="text-sm text-white/60 mb-2">Live Tracking</div>
+                            <h3 class="text-2xl font-black text-white mb-4">Real-Time Stok</h3>
+                            <p class="text-white/80 text-sm mb-6">
+                                Gerçek zamanlı envanter senkronizasyonu ve otomatik bildirimler
+                            </p>
+                            
+                            <div class="glass-layer-1 rounded-xl p-4">
+                                <div class="text-4xl font-black text-white">99.9%</div>
+                                <div class="text-xs text-white/60">Sync Rate</div>
+                            </div>
+                        </div>
+
+                        <div class="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl"></div>
+                    </div>
+
+                    <!-- Card 3: Express Delivery -->
+                    <div @mouseenter="activeCard = 3" 
+                         @mouseleave="activeCard = null"
+                         class="glass-card-3d glass-layer-2 p-8 rounded-3xl hover:glass-layer-3 transition-all group relative overflow-hidden shimmer-overlay"
+                         style="animation-delay: 0.4s;">
+                        
+                        <div class="w-20 h-20 glass-layer-3 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all relative z-10">
+                            <i class="fa-solid fa-rocket text-5xl text-white"></i>
+                        </div>
+
+                        <div class="relative z-10">
+                            <div class="text-sm text-white/60 mb-2">Fast Shipping</div>
+                            <h3 class="text-2xl font-black text-white mb-4">Express Teslimat</h3>
+                            <p class="text-white/80 text-sm mb-6">
+                                24 saat içinde kapınızda garanti. Canlı kargo takip sistemi
+                            </p>
+                            
+                            <div class="glass-layer-1 rounded-xl p-4">
+                                <div class="text-4xl font-black text-white">&lt; 24h</div>
+                                <div class="text-xs text-white/60">Delivery Time</div>
+                            </div>
+                        </div>
+
+                        <div class="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl"></div>
+                    </div>
+
+                    <!-- Card 4: Security -->
+                    <div @mouseenter="activeCard = 4" 
+                         @mouseleave="activeCard = null"
+                         class="glass-card-3d glass-layer-2 p-8 rounded-3xl hover:glass-layer-3 transition-all group relative overflow-hidden shimmer-overlay"
+                         style="animation-delay: 0.6s;">
+                        
+                        <div class="w-20 h-20 glass-layer-3 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all relative z-10">
+                            <i class="fa-solid fa-shield-halved text-5xl text-white"></i>
+                        </div>
+
+                        <div class="relative z-10">
+                            <div class="text-sm text-white/60 mb-2">256-bit Encryption</div>
+                            <h3 class="text-2xl font-black text-white mb-4">Güvenli Ödeme</h3>
+                            <p class="text-white/80 text-sm mb-6">
+                                Banka seviyesi güvenlik. 3D Secure ve şifreli işlemler
+                            </p>
+                            
+                            <div class="glass-layer-1 rounded-xl p-4">
+                                <div class="text-4xl font-black text-white">SSL</div>
+                                <div class="text-xs text-white/60">256-bit Security</div>
+                            </div>
+                        </div>
+
+                        <div class="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Banner -->
+            <div class="mt-20 glass-layer-2 glass-glow rounded-3xl p-12 max-w-5xl mx-auto">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div class="float-smooth">
+                        <div class="text-5xl font-black text-white mb-3">500+</div>
+                        <div class="text-sm text-white/60">Ürün Çeşidi</div>
+                    </div>
+                    <div class="float-smooth" style="animation-delay: 0.5s;">
+                        <div class="text-5xl font-black text-white mb-3">99%</div>
+                        <div class="text-sm text-white/60">Uptime Oranı</div>
+                    </div>
+                    <div class="float-smooth" style="animation-delay: 1s;">
+                        <div class="text-5xl font-black text-white mb-3">24h</div>
+                        <div class="text-sm text-white/60">Hızlı Teslimat</div>
+                    </div>
+                    <div class="float-smooth" style="animation-delay: 1.5s;">
+                        <div class="text-5xl font-black text-white mb-3">SSL</div>
+                        <div class="text-sm text-white/60">256-bit Güvenlik</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Badge -->
+        <div class="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
+            <div class="glass-layer-3 glass-glow rounded-full px-8 py-3">
+                <span class="font-bold text-white">#HERO-020</span>
+                <span class="mx-3 text-white/40">|</span>
+                <span class="text-xs text-white/60">GLASSMORPHISM</span>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

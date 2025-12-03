@@ -26,49 +26,30 @@
     }"
     x-init="$watch('isGenerating', value => { if(value) { this.pollCount = 0; this.startPolling(); } })"
 >
+    @php
+        // Subheader için butonları hazırla
+        $headerButtons = '<div class="d-flex align-items-center gap-2">
+            <select wire:model.live="draftCount" class="form-select" style="width: 140px;" ' . ($isGenerating ? 'disabled' : '') . '>
+                <option value="10">10 Taslak</option>
+                <option value="25">25 Taslak</option>
+                <option value="50">50 Taslak</option>
+                <option value="100">100 Taslak</option>
+                <option value="200">200 Taslak</option>
+            </select>
+            <button type="button" class="btn btn-primary" wire:click="generateDrafts" wire:loading.attr="disabled" ' . ($isGenerating ? 'disabled' : '') . '>
+                <i class="fa-solid fa-plus"></i>
+                <span wire:loading.remove wire:target="generateDrafts">Taslak Üret (1 kredi)</span>
+                <span wire:loading wire:target="generateDrafts">
+                    <span class="spinner-border spinner-border-sm me-1"></span>
+                    Oluşturuluyor...
+                </span>
+            </button>
+        </div>';
+
+        View::share('buttons', $headerButtons);
+    @endphp
+
     @include('blog::admin.helper')
-
-    {{-- Header --}}
-    <div class="page-header d-print-none">
-        <div class="row align-items-center">
-            <div class="col">
-                <h2 class="page-title">AI Blog Taslakları</h2>
-            </div>
-            <div class="col-auto ms-auto d-print-none">
-                <div class="d-flex align-items-center gap-2">
-                    {{-- Draft Count Selector --}}
-                    <select
-                        wire:model.live="draftCount"
-                        class="form-select"
-                        style="width: 140px;"
-                        @if($isGenerating) disabled @endif
-                    >
-                        <option value="10">10 Taslak</option>
-                        <option value="25">25 Taslak</option>
-                        <option value="50">50 Taslak</option>
-                        <option value="100">100 Taslak</option>
-                        <option value="200">200 Taslak</option>
-                    </select>
-
-                    {{-- Taslak Üret Butonu --}}
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        wire:click="generateDrafts"
-                        wire:loading.attr="disabled"
-                        @if($isGenerating) disabled @endif
-                    >
-                        <i class="fa-solid fa-plus"></i>
-                        <span wire:loading.remove wire:target="generateDrafts">Taslak Üret (1 kredi)</span>
-                        <span wire:loading wire:target="generateDrafts">
-                            <span class="spinner-border spinner-border-sm me-1"></span>
-                            Oluşturuluyor...
-                        </span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     {{-- Flash Messages --}}
     @if (session()->has('success'))
@@ -330,59 +311,82 @@
                     </table>
                 </div>
             </div>
-        </div>
 
-        <!-- Pagination -->
-        <div class="card-footer">
-            @if ($drafts->hasPages())
-                {{ $drafts->links('livewire.custom-pagination') }}
-            @else
-                <div class="text-center py-3">
-                    <p class="small text-muted mb-0">
-                        Toplam <span class="fw-semibold">{{ $drafts->total() }}</span> sonuç
-                    </p>
-                </div>
-            @endif
-        </div>
+            <!-- Pagination -->
+            <div class="card-footer">
+                @if ($drafts->hasPages())
+                    {{ $drafts->links('livewire.custom-pagination') }}
+                @else
+                    <div class="text-center py-3">
+                        <p class="small text-muted mb-0">
+                            Toplam <span class="fw-semibold">{{ $drafts->total() }}</span> sonuç
+                        </p>
+                    </div>
+                @endif
 
-        <!-- Bulk Actions -->
-        @if(count($selectedDrafts) > 0)
-            <div class="position-fixed bottom-0 start-50 translate-middle-x mb-4" style="z-index: 1050;">
-                <div class="card shadow-lg border-0">
-                    <div class="card-body py-3 px-4">
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="text-muted">
-                                <strong>{{ count($selectedDrafts) }}</strong> taslak seçildi
-                            </span>
-                            <div class="vr"></div>
-                            <button
-                                type="button"
-                                class="btn btn-success"
-                                wire:click.prevent="generateBlogs"
-                                @if($isWriting) disabled @endif
-                                data-bs-toggle="tooltip"
-                                title="Seçilenleri Blog Olarak Yaz"
-                            >
-                                <i class="fa-solid fa-check me-1"></i>
-                                Blog Yaz ({{ count($selectedDrafts) }} kredi)
-                            </button>
-                            <button
-                                type="button"
-                                class="btn btn-outline-danger"
-                                wire:click.prevent="bulkDelete"
-                                onclick="return confirm('Seçili {{ count($selectedDrafts) }} taslağı silmek istediğinize emin misiniz?')"
-                                data-bs-toggle="tooltip"
-                                title="Seçilenleri Sil"
-                            >
-                                <i class="fa-solid fa-trash me-1"></i>
-                                Sil
-                            </button>
+                {{-- AI Guide Link --}}
+                <div class="mt-3 p-3 bg-light rounded border">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="text-primary" style="font-size: 2rem;">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Blog AI Rehberi</h5>
+                                    <p class="text-muted mb-0 small">
+                                        AI ile blog üretimi, ayarlar ve gelişmiş özellikler için rehbere göz atın
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <a href="{{ route('admin.blog.ai-guide') }}" class="btn btn-primary">
+                                <i class="fa-solid fa-arrow-right me-2"></i>
+                                Rehbere Git
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        @endif
 
+            <!-- Bulk Actions -->
+            @if(count($selectedDrafts) > 0)
+                <div class="position-fixed bottom-0 start-50 translate-middle-x mb-4" style="z-index: 1050;">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body py-3 px-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-muted">
+                                    <strong>{{ count($selectedDrafts) }}</strong> taslak seçildi
+                                </span>
+                                <div class="vr"></div>
+                                <button
+                                    type="button"
+                                    class="btn btn-success"
+                                    wire:click.prevent="generateBlogs"
+                                    @if($isWriting) disabled @endif
+                                    data-bs-toggle="tooltip"
+                                    title="Seçilenleri Blog Olarak Yaz"
+                                >
+                                    <i class="fa-solid fa-check me-1"></i>
+                                    Blog Yaz ({{ count($selectedDrafts) }} kredi)
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                    wire:click.prevent="bulkDelete"
+                                    onclick="return confirm('Seçili {{ count($selectedDrafts) }} taslağı silmek istediğinize emin misiniz?')"
+                                    data-bs-toggle="tooltip"
+                                    title="Seçilenleri Sil"
+                                >
+                                    <i class="fa-solid fa-trash me-1"></i>
+                                    Sil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endif
     </div>
-    @endif
 </div>

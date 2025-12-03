@@ -180,19 +180,73 @@
                                     <div class="row mb-4">
                                         <div class="col-12 col-md-4">
                                             <div class="form-floating">
-                                                <input type="number" step="0.01" wire:model="inputs.base_price"
+                                                <input type="number" step="0.01" wire:model.live="inputs.base_price"
                                                     class="form-control @error('inputs.base_price') is-invalid @enderror"
                                                     id="base_price_input" placeholder="0.00">
                                                 <label for="base_price_input">
-                                                    {{ __('shop::admin.base_price') }}
+                                                    KDV Hariç Fiyat (₺)
                                                 </label>
                                                 @error('inputs.base_price')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
+                                                <small class="form-text text-muted">
+                                                    Buraya girilince KDV dahil otomatik hesaplanır
+                                                </small>
                                             </div>
                                         </div>
 
                                         <div class="col-12 col-md-4">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" wire:model.live="price_with_tax"
+                                                    class="form-control"
+                                                    id="price_with_tax_input" placeholder="0.00">
+                                                <label for="price_with_tax_input">
+                                                    KDV Dahil Fiyat (₺)
+                                                </label>
+                                                <small class="form-text text-muted">
+                                                    Buraya girilince KDV hariç otomatik hesaplanır
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-4">
+                                            <div class="form-floating">
+                                                <input type="number" step="0.01" wire:model.live="tax_rate"
+                                                    class="form-control"
+                                                    id="tax_rate_input" placeholder="20.00">
+                                                <label for="tax_rate_input">
+                                                    KDV Oranı (%)
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Fiyat Özeti - Modern Design -->
+                                    @if($inputs['base_price'] ?? false)
+                                    <div class="card bg-gradient-primary text-white mb-4">
+                                        <div class="card-body p-4">
+                                            <div class="row text-center">
+                                                <div class="col-md-4">
+                                                    <div class="mb-2 opacity-75" style="font-size: 0.85rem;">KDV Hariç</div>
+                                                    <div class="fs-3 fw-bold">{{ number_format($inputs['base_price'] ?? 0, 2) }} ₺</div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-2 opacity-75" style="font-size: 0.85rem;">KDV Tutarı</div>
+                                                    <div class="fs-3 fw-bold">{{ number_format(($price_with_tax ?? 0) - ($inputs['base_price'] ?? 0), 2) }} ₺</div>
+                                                    <small class="opacity-75">({{ number_format($tax_rate ?? 20, 1) }}%)</small>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-2 opacity-75" style="font-size: 0.85rem;">KDV Dahil</div>
+                                                    <div class="fs-3 fw-bold">{{ number_format($price_with_tax ?? 0, 2) }} ₺</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
+
+                                    <!-- Diğer Fiyat Bilgileri -->
+                                    <div class="row mb-4">
+                                        <div class="col-12 col-md-6">
                                             <div class="form-floating">
                                                 <input type="number" step="0.01"
                                                     wire:model="inputs.compare_at_price" class="form-control"
@@ -203,7 +257,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-12 col-md-4">
+                                        <div class="col-12 col-md-6">
                                             <div class="form-floating">
                                                 <select wire:model.live="inputs.currency_id"
                                                     class="form-control @error('inputs.currency_id') is-invalid @enderror"

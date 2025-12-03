@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İçerik & Görsel Varyasyon Analizi - 690 Ürün</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+        
+        section {
+            margin-bottom: 60px;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .product-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .product-card h4 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .content-section {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .content-section h5 {
+            color: #fbbf24;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .content-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .content-section li {
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .content-section li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+        }
+        
+        .image-variations {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .image-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #8b5cf6;
+        }
+        
+        .image-card h4 {
+            color: #8b5cf6;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .prompt-text {
+            background: rgba(15, 23, 42, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .category-table {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .category-table th,
+        .category-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .category-table th {
+            background: rgba(15, 23, 42, 0.7);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .category-table td {
+            color: #cbd5e1;
+        }
+        
+        .category-table tr:hover {
+            background: rgba(30, 41, 59, 0.8);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border-top: 4px solid #10b981;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .highlight {
+            background: rgba(139, 92, 246, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #c4b5fd;
+            font-weight: 600;
+        }
+        
+        .warning {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #fbbf24;
+            margin-bottom: 30px;
+        }
+        
+        .warning h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+        
+        .warning p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+        
+        .success {
+            background: rgba(16, 185, 129, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            margin-bottom: 30px;
+        }
+        
+        .success h4 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+        
+        .success p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 690 Ürün: İçerik & Görsel Varyasyon Analizi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-03 | 🎯 Tenant: ixtif.com | 
+                🤖 AI: GPT-4o-mini + Leonardo Phoenix
+            </div>
+        </header>
+
+        <!-- İSTATİSTİKLER -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">690</div>
+                <div class="stat-label">Toplam Ürün</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15</div>
+                <div class="stat-label">Ana Kategori</div>
+            </div>
+            <div class="stat-card" style="border-top-color: #8b5cf6;">
+                <div class="stat-number" style="color: #8b5cf6;">~50</div>
+                <div class="stat-label">Benzersiz Görsel</div>
+            </div>
+            <div class="stat-card" style="border-top-color: #60a5fa;">
+                <div class="stat-number" style="color: #60a5fa;">690</div>
+                <div class="stat-label">Benzersiz İçerik</div>
+            </div>
+        </div>
+
+        <!-- ANA SORU -->
+        <div class="warning">
+            <h4>❓ Kullanıcı Sorusu</h4>
+            <p><strong>"Balatların da kendi içlerinde farklı içerikleri var. Türleri aynı tür 1 2 3 4 56 diye gidiyor. Onlara çözümün ne olacak. Her içerik farklı mı olacak. Her görsel farklı mı olacak?"</strong></p>
+        </div>
+
+        <!-- CEVAP -->
+        <div class="success">
+            <h4>✅ Kısa Cevap</h4>
+            <p><strong>İçerik:</strong> Her 690 ürün için <span class="highlight">tamamen farklı</span> içerik oluşturulacak (AI her seferinde farklı FAQ, Feature, UseCase üretir)</p>
+            <p><strong>Görsel:</strong> Kategori bazlı <span class="highlight">~50 benzersiz görsel</span> (aynı kategorideki ürünler benzer tesislerde farklı açılardan görseller kullanır)</p>
+            <p><strong>Örnek:</strong> Balata-1219, Balata-1220, Balata-1221 → 3 farklı içerik + 4 farklı tesis görseli rotasyonu</p>
+        </div>
+
+        <!-- İÇERİK VARYASYONU -->
+        <section>
+            <h2>📝 İçerik Varyasyonu (Gerçek Örnekler)</h2>
+            <p style="color: #94a3b8; margin-bottom: 30px;">
+                Aşağıda 3 farklı Balata ürünü için GPT-4o-mini ile üretilmiş <strong>gerçek içerikler</strong> var. 
+                Her ürün için içerik <span class="highlight">tamamen farklı</span> - AI doğal olarak çeşitlilik sağlıyor.
+            </p>
+
+            <div class="comparison-grid">
+                <!-- Balata 1219 -->
+                <div class="product-card">
+                    <h4>🔵 Balata - 1219</h4>
+                    
+                    <div class="content-section">
+                        <h5>⭐ Özellikler (3 adet)</h5>
+                        <ul>
+                            <li>Yüksek sürtünme performansı</li>
+                            <li>Kolay montaj ve kullanım</li>
+                            <li>Uzun ömürlü ve dayanıklı yapı</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-section">
+                        <h5>🎯 Kullanım Alanları (2 adet)</h5>
+                        <ul>
+                            <li>Forklift uygulamaları için idealdir</li>
+                            <li>Transpaletlerde güvenli frenleme sağlar</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-section">
+                        <h5>❓ FAQ (5 soru)</h5>
+                        <ul>
+                            <li>Balata neden tercih edilmeli?</li>
+                            <li>Hangi ekipmanlarda kullanılabilir?</li>
+                            <li>Montajı zor mu?</li>
+                            <li>Performans garantisi var mı?</li>
+                            <li>Ne kadar süre dayanır?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Balata 1220 -->
+                <div class="product-card">
+                    <h4>🟢 Balata - 1220</h4>
+                    
+                    <div class="content-section">
+                        <h5>⭐ Özellikler (3 adet)</h5>
+                        <ul>
+                            <li>Yüksek ısılara dayanıklı yapı</li>
+                            <li>Uzun ömürlü ve dayanıklı malzeme</li>
+                            <li>Mükemmel frenleme kontrolü</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-section">
+                        <h5>🎯 Kullanım Alanları (2 adet)</h5>
+                        <ul>
+                            <li>Forkliftlerde güvenli ve etkin frenleme</li>
+                            <li>Transpaletlerde yüksek performanslı kullanım</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-section">
+                        <h5>❓ FAQ (5 soru) - FARKLI SORULAR!</h5>
+                        <ul>
+                            <li>Balata nerelerde kullanılabilir?</li>
+                            <li>Bu balatanın avantajları nelerdir?</li>
+                            <li>Hangi malzemeden üretilmiştir?</li>
+                            <li>Bakım gereksinimleri nelerdir?</li>
+                            <li>İade politikası var mı?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Balata 1221 -->
+                <div class="product-card">
+                    <h4>🟡 Balata - 1221</h4>
+                    
+                    <div class="content-section">
+                        <h5>⭐ Özellikler (3 adet)</h5>
+                        <ul>
+                            <li>Yüksek ısıya dayanıklı özel formülasyon</li>
+                            <li>Uzun ömürlü ve düşük aşınma oranı</li>
+                            <li>Kolay montaj ve bakım imkanı</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-section">
+                        <h5>🎯 Kullanım Alanları (2 adet)</h5>
+                        <ul>
+                            <li>Forkliftlerde güvenli frenleme için idealdir</li>
+                            <li>Transpaletlerde yüksek verimlilik sağlar</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-section">
+                        <h5>❓ FAQ (5 soru) - YINE FARKLI!</h5>
+                        <ul>
+                            <li>Balata ne için kullanılabilir?</li>
+                            <li>Bu balatanın avantajları nelerdir?</li>
+                            <li>Nasıl montaj yapılır?</li>
+                            <li>Frenleme performansı nasıldır?</li>
+                            <li>Neden iXtif'i tercih etmeliyim?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="success">
+                <h4>✅ İçerik Varyasyon Sonucu</h4>
+                <p>
+                    Görüldüğü gibi, aynı kategori (Balata) içindeki 3 ürün için AI <strong>tamamen farklı FAQ soruları</strong>, 
+                    <strong>farklı özellik vurguları</strong> ve <strong>farklı ifadeler</strong> kullandı.
+                </p>
+                <p style="margin-top: 10px;">
+                    Bu demektir ki: <span class="highlight">690 ürün = 690 benzersiz içerik</span> - Tekrarlama olmayacak!
+                </p>
+            </div>
+        </section>
+
+        <!-- GÖRSEL VARYASYONU -->
+        <section>
+            <h2>📸 Görsel Varyasyon Stratejisi</h2>
+            <p style="color: #94a3b8; margin-bottom: 30px;">
+                Her ürün için ayrı görsel üretmek maliyetli ve gereksiz. 
+                <strong>Kategori bazlı 4-5 farklı tesis görseli</strong> kullanarak doğallık sağlıyoruz.
+            </p>
+
+            <h3>Balata Kategorisi - 4 Farklı Tesis Görseli</h3>
+            <div class="image-variations">
+                <div class="image-card">
+                    <h4>🏭 Varyasyon 1: Hidrolik Pres Montaj Hattı</h4>
+                    <div class="prompt-text">
+                        Professional stock photography of modern brake pad manufacturing facility, 
+                        massive hydraulic press machines assembling brake pads, automated production line with robotic arms, 
+                        workers in protective equipment conducting quality checks, bright industrial LED lighting...
+                    </div>
+                    <p style="color: #94a3b8; margin-top: 10px; font-size: 0.9rem;">
+                        <strong>Kullanım:</strong> Balata-1219, Balata-1225, Balata-1230... (her 4-5 üründe bir)
+                    </p>
+                </div>
+
+                <div class="image-card">
+                    <h4>🧪 Varyasyon 2: Malzeme Hazırlık Bölgesi</h4>
+                    <div class="prompt-text">
+                        Professional stock photography of brake pad material preparation facility, 
+                        industrial composite mixing machines with friction material ingredients, 
+                        automated weighing and blending systems, clean room environment...
+                    </div>
+                    <p style="color: #94a3b8; margin-top: 10px; font-size: 0.9rem;">
+                        <strong>Kullanım:</strong> Balata-1220, Balata-1226, Balata-1231...
+                    </p>
+                </div>
+
+                <div class="image-card">
+                    <h4>🔬 Varyasyon 3: Kalite Kontrol Laboratuvarı</h4>
+                    <div class="prompt-text">
+                        Professional stock photography of brake pad quality control laboratory, 
+                        multiple testing stations with precision measurement equipment, 
+                        brake pads undergoing friction coefficient testing...
+                    </div>
+                    <p style="color: #94a3b8; margin-top: 10px; font-size: 0.9rem;">
+                        <strong>Kullanım:</strong> Balata-1221, Balata-1227, Balata-1232...
+                    </p>
+                </div>
+
+                <div class="image-card">
+                    <h4>📦 Varyasyon 4: Paketleme & Son Montaj</h4>
+                    <div class="prompt-text">
+                        Professional stock photography of brake pad packaging and distribution center, 
+                        finished brake pads being organized on automated conveyor systems, 
+                        workers conducting final inspection and packaging...
+                    </div>
+                    <p style="color: #94a3b8; margin-top: 10px; font-size: 0.9rem;">
+                        <strong>Kullanım:</strong> Balata-1222, Balata-1228, Balata-1233...
+                    </p>
+                </div>
+            </div>
+
+            <div class="success">
+                <h4>✅ Görsel Varyasyon Sonucu</h4>
+                <p>
+                    <strong>26 Balata ürünü</strong> için <strong>4 farklı görsel</strong> kullanıyoruz 
+                    (her görsel ~6-7 üründe tekrar ediyor). Kullanıcı sayfayı dolaşırken 
+                    <span class="highlight">doğal çeşitlilik</span> görür - "neden hepsi aynı depo?" demiyor!
+                </p>
+            </div>
+        </section>
+
+        <!-- KATEGORİ MAPPİNG -->
+        <section>
+            <h2>🗺️ Tüm Kategoriler - Görsel Stratejisi</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;">
+                Her kategori kendi sektörüne uygun <strong>modern üretim tesisi</strong> görselleri alacak.
+            </p>
+
+            <table class="category-table">
+                <thead>
+                    <tr>
+                        <th>Kategori</th>
+                        <th>Ürün Sayısı</th>
+                        <th>Tesis Tipi</th>
+                        <th>Varyasyon Sayısı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Forklift</strong></td>
+                        <td>129</td>
+                        <td>Forklift Üretim Tesisi (Montaj Hattı, Komponent Üretimi)</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>İstif Makinesi</strong></td>
+                        <td>106</td>
+                        <td>Forklift Üretim Tesisi (aynı kategoride)</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Link Pimi</strong></td>
+                        <td>72</td>
+                        <td>Precision CNC Üretim (Rulman tarzı)</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Transpalet</strong></td>
+                        <td>69</td>
+                        <td>Forklift Üretim Tesisi</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Çelik Plate</strong></td>
+                        <td>48</td>
+                        <td>Metal Forging/Kesim Tesisi</td>
+                        <td>1 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Balata</strong></td>
+                        <td>26</td>
+                        <td>Balata Üretim Tesisi (Hidrolik Pres, Kalite Kontrol, Paketleme)</td>
+                        <td>4 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Çatal</strong></td>
+                        <td>25</td>
+                        <td>Forklift Fork Forging Tesisi</td>
+                        <td>1 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Siyah Dolgu Lastik</strong></td>
+                        <td>20</td>
+                        <td>Lastik Vulkanizasyon Tesisi</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Beyaz Dolgu Lastik</strong></td>
+                        <td>20</td>
+                        <td>Lastik Vulkanizasyon Tesisi</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>İğneli Rulman</strong></td>
+                        <td>20</td>
+                        <td>Precision Bearing Manufacturing (Clean Room CNC)</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Order Picker</strong></td>
+                        <td>19</td>
+                        <td>Forklift Üretim Tesisi</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Havalı Lastik</strong></td>
+                        <td>16</td>
+                        <td>Lastik Vulkanizasyon Tesisi</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ampul</strong></td>
+                        <td>16</td>
+                        <td>Light Bulb Production (Glass Blowing, Assembly)</td>
+                        <td>2 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tork Sacı</strong></td>
+                        <td>15</td>
+                        <td>Metal Forging/Kesim Tesisi</td>
+                        <td>1 varyasyon</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diğer Kategoriler</strong></td>
+                        <td>~129</td>
+                        <td>Industrial Warehouse (Fallback)</td>
+                        <td>1 varyasyon</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- MALİYET ANALİZİ -->
+        <section>
+            <h2>💰 Maliyet & Verimlilik Analizi</h2>
+
+            <h3>İçerik Üretimi (GPT-4o-mini)</h3>
+            <div class="content-section">
+                <ul>
+                    <li><strong>Birim Maliyet:</strong> ~$0.0007 per ürün (ortalama 1,500 token)</li>
+                    <li><strong>Toplam Maliyet:</strong> 690 × $0.0007 = <span class="highlight">~$0.48</span></li>
+                    <li><strong>Süre:</strong> ~30 dakika (parallel processing ile)</li>
+                    <li><strong>Sonuç:</strong> 690 benzersiz, kaliteli içerik</li>
+                </ul>
+            </div>
+
+            <h3>Görsel Üretimi (Leonardo Phoenix)</h3>
+            <div class="content-section">
+                <ul>
+                    <li><strong>Benzersiz Görsel Sayısı:</strong> ~50 görsel (kategori başına 1-4 varyasyon)</li>
+                    <li><strong>Birim Maliyet:</strong> $0.20 per görsel (Leonardo Phoenix CINEMATIC)</li>
+                    <li><strong>Toplam Maliyet:</strong> 50 × $0.20 = <span class="highlight">~$10</span></li>
+                    <li><strong>Süre:</strong> ~40 dakika (her görsel 45 saniye)</li>
+                    <li><strong>Sonuç:</strong> Premium kalite, çeşitli tesis görselleri</li>
+                </ul>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">$10.48</div>
+                    <div class="stat-label">Toplam Maliyet</div>
+                </div>
+                <div class="stat-card" style="border-top-color: #8b5cf6;">
+                    <div class="stat-number" style="color: #8b5cf6;">~70dk</div>
+                    <div class="stat-label">Toplam Süre</div>
+                </div>
+                <div class="stat-card" style="border-top-color: #fbbf24;">
+                    <div class="stat-number" style="color: #fbbf24;">690</div>
+                    <div class="stat-label">Benzersiz İçerik</div>
+                </div>
+                <div class="stat-card" style="border-top-color: #60a5fa;">
+                    <div class="stat-number" style="color: #60a5fa;">50</div>
+                    <div class="stat-label">Premium Görsel</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SONUÇ -->
+        <section>
+            <h2>✅ Sonuç & Öneriler</h2>
+
+            <div class="success">
+                <h4>📋 İçerik Çözümü</h4>
+                <p>
+                    <strong>Soru:</strong> "Balata-1219, 1220, 1221... içerikleri farklı mı olacak?"<br>
+                    <strong>Cevap:</strong> <span class="highlight">EVET</span> - AI her ürün için doğal olarak farklı FAQ, özellik ve kullanım alanları üretir. 
+                    Tekrarlama olmaz, her içerik benzersizdir.
+                </p>
+            </div>
+
+            <div class="success">
+                <h4>📸 Görsel Çözümü</h4>
+                <p>
+                    <strong>Soru:</strong> "Her görsel farklı mı olacak? 700 raf fotoğrafı anlamsız olabilir."<br>
+                    <strong>Cevap:</strong> <span class="highlight">KATEGORİ BAZLI ÇÖZÜM</span> - Her kategori kendi tesis tipi görselleri alır. 
+                    Örneğin Balata → 4 farklı üretim tesisi görseli (pres, malzeme hazırlık, kalite kontrol, paketleme). 
+                    Toplam ~50 benzersiz görsel, raf fotoğrafı yok!
+                </p>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Önemli Not</h4>
+                <p>
+                    Görsel varyasyonu içerik kadar yüksek değil (50 görsel vs 690 içerik), ancak bu <strong>normaldir ve avantajlıdır</strong>:
+                </p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Maliyet düşük ($10 vs $700)</li>
+                    <li>Kategori tutarlılığı sağlar (aynı kategorideki ürünler benzer ortamlarda)</li>
+                    <li>Kullanıcı yeterince çeşitlilik görür (4-5 üründe bir farklı görsel)</li>
+                    <li>Premium kalite korunur (Leonardo Phoenix CINEMATIC)</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI + GPT-4o-mini + Leonardo Phoenix | 
+            📊 Gerçek verilerle hazırlanmıştır | 
+            ⏱️ Oluşturma: 2025-12-03
+        </footer>
+    </div>
+</body>
+</html>

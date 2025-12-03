@@ -148,7 +148,7 @@
                         @endphp
 
                         {{-- Root Category --}}
-                        <a href="/shop/kategori/{{ $categorySlug }}"
+                        <a href="{{ route('shop.category', $categorySlug) }}"
                            class="flex-shrink-0 px-6 py-3 rounded-xl font-bold text-base transition-all {{ $isActive ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white shadow-lg' : 'bg-white/50 dark:bg-white/5 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400' }}">
                             @if($category->icon_class)
                                 <i class="{{ $category->icon_class }} mr-2"></i>
@@ -174,7 +174,7 @@
                         @php
                             $subcategorySlug = $subcategory->getTranslated('slug');
                         @endphp
-                        <a href="{{ url('/shop/category/' . $subcategorySlug) }}"
+                        <a href="{{ route('shop.category', $subcategorySlug) }}"
                            class="group bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
                             <div class="flex flex-col items-center justify-center text-center h-full min-h-[120px]">
                                 @if($subcategory->icon_class)
@@ -288,7 +288,7 @@
                             @foreach($categories as $rootCategory)
                                 <div class="bg-gray-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-gray-200 dark:border-white/10">
                                     {{-- Root Category --}}
-                                    <a href="/shop/kategori/{{ $rootCategory->getTranslated('slug') }}"
+                                    <a href="{{ route('shop.category', $rootCategory->getTranslated('slug')) }}"
                                        class="group flex items-center gap-3 mb-4 hover:bg-white dark:hover:bg-slate-700 rounded-xl p-3 -m-3 transition-all">
                                         @if($rootCategory->icon_class)
                                             <i class="{{ $rootCategory->icon_class }} text-3xl text-blue-500 dark:text-blue-400 group-hover:scale-110 transition-transform"></i>
@@ -311,7 +311,7 @@
                                     @if($subcategories->count() > 0)
                                         <div class="space-y-1 pl-4 border-l-2 border-gray-200 dark:border-white/10">
                                             @foreach($subcategories as $subCategory)
-                                                <a href="{{ url('/shop/kategori/' . $subCategory->getTranslated('slug')) }}"
+                                                <a href="{{ route('shop.category', $subCategory->getTranslated('slug')) }}"
                                                    class="flex items-center gap-2 py-2 px-3 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-sm text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all group">
                                                     @if($subCategory->icon_class)
                                                         <i class="{{ $subCategory->icon_class }} text-xs opacity-60 group-hover:opacity-100"></i>

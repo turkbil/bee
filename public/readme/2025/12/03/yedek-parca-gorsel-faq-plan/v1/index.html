@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yedek Parça Ürünleri: Görsel Kaldırma + FAQ/Excerpt Ekleme Planı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #34d399;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .stat-card.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .stat-card.warning .value {
+            color: #fbbf24;
+        }
+
+        .task-section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 4px solid #10b981;
+        }
+
+        .task-section.high-priority {
+            border-left-color: #ef4444;
+        }
+
+        .task-item {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .task-item h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .task-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .code-example {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #fbbf24;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-high { background: #dc2626; color: white; }
+        .priority-medium { background: #f59e0b; color: white; }
+        .priority-low { background: #10b981; color: white; }
+
+        .warning-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 2px solid #f59e0b;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .warning-box h3 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+
+        .warning-box p {
+            color: #fde68a;
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 8px;
+            position: relative;
+            padding-left: 60px;
+        }
+
+        .step-list li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 35px;
+            height: 35px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .tech-note {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .tech-note strong {
+            color: #60a5fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛠️ Yedek Parça Ürünleri - Büyük Güncelleme Planı</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-03 00:30 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                📦 Kapsam: 690 Yedek Parça Ürünü
+            </div>
+        </header>
+
+        <section>
+            <h2>📊 Durum Analizi</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="value">690</div>
+                    <div class="label">Toplam Yedek Parça Ürünü</div>
+                </div>
+
+                <div class="stat-card warning">
+                    <div class="value">688</div>
+                    <div class="label">FAQ Eksik (%99.7)</div>
+                </div>
+
+                <div class="stat-card warning">
+                    <div class="value">688</div>
+                    <div class="label">Excerpt Eksik (%99.7)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="value">100</div>
+                    <div class="label">Alt Kategori</div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3>⚠️ Kritik Sorunlar</h3>
+                <p>
+                    <strong>1. Görseller Silindi:</strong> Body içindeki görseller (hero collection hariç) silinmiş. Görsel yokken sticky kolon boş duruyor.<br><br>
+                    <strong>2. FAQ & Excerpt Eksik:</strong> Neredeyse tüm yedek parça ürünlerinde FAQ ve kısa açıklama yok. SEO ve kullanıcı deneyimi zayıf.<br><br>
+                    <strong>3. Layout Sorunu:</strong> Sticky kolonun içinde görsel olmadığı için boş alan oluşuyor.
+                </p>
+            </div>
+
+            <div class="tech-note">
+                <strong>Kategori Yapısı:</strong> Yedek Parça (ID: 7) ana kategorisi altında 100 alt kategori var.
+                Örnek: Lastik Jant Teker (ID: 8), Motor Grubu (ID: 9), Çatal/Ataşman (ID: 10), Elektrik/Elektronik (ID: 16), Ampul (ID: 74), vb.
+            </div>
+        </section>
+
+        <section>
+            <h2>🎯 3 Ana Görev</h2>
+
+            <div class="task-section high-priority">
+                <h3>Görev 1: Görsel Alanını Kaldır <span class="priority-badge priority-high">Yüksek Öncelik</span></h3>
+
+                <div class="task-item">
+                    <h4>📍 Sorun</h4>
+                    <p>
+                        Body içindeki görseller silinmiş. Sticky kolonun içinde görsel alanı var ama gösterecek görsel yok.
+                        Bu durumda kolon boş kalıyor ve sayfa düzeni bozuk görünüyor.
+                    </p>
+                </div>
+
+                <div class="task-item">
+                    <h4>✅ Çözüm</h4>
+                    <p>
+                        Yedek parça ürünlerinde sticky kolonun içindeki görsel alanını tamamen kaldır.
+                        Yazı alanını full genişliğe çıkar. Böylece görsel olmasa bile sayfa düzgün görünür.
+                    </p>
+                </div>
+
+                <div class="task-item">
+                    <h4>🔧 Teknik Yaklaşım</h4>
+                    <p>
+                        <strong>1. Kategori Kontrolü:</strong> ShopController'da yedek parça kategorilerini tespit et (ID: 7 ve alt kategorileri).<br><br>
+                        <strong>2. View Parametresi:</strong> View'a <code>$isYedekParca = true</code> parametresi gönder.<br><br>
+                        <strong>3. Blade Şartı:</strong> <code>show.blade.php</code> içinde:
+                    </p>
+                    <div class="code-example">
+@if ($isYedekParca)
+    {{-- Yedek parça: Görsel yok, yazı full genişlik --}}
+    &lt;div class="lg:col-span-3"&gt;
+        {{-- Tüm içerik burada --}}
+    &lt;/div&gt;
+@else
+    {{-- Normal ürün: lg:col-span-2 + lg:col-span-1 (sticky) --}}
+    &lt;div class="lg:col-span-2"&gt;...&lt;/div&gt;
+    &lt;div class="lg:col-span-1"&gt;...&lt;/div&gt;
+@endif
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-section">
+                <h3>Görev 2: FAQ Oluştur ve Ekle <span class="priority-badge priority-high">Yüksek Öncelik</span></h3>
+
+                <div class="task-item">
+                    <h4>📍 Sorun</h4>
+                    <p>
+                        688 üründe FAQ yok (%99.7). FAQ olmadan:
+                        <br>• SEO zayıf (Google Rich Snippets yok)
+                        <br>• Kullanıcı soruları cevapsız
+                        <br>• Satış dönüşümü düşük
+                    </p>
+                </div>
+
+                <div class="task-item">
+                    <h4>✅ Çözüm: OpenAI ile Oto-Oluşturma</h4>
+                    <p>
+                        Her ürün için OpenAI kullanarak ürün başlığı ve kategorisine özel FAQ oluştur.
+                    </p>
+                </div>
+
+                <div class="task-item">
+                    <h4>🔧 FAQ Üretim Süreci</h4>
+                    <p>
+                        <strong>1. Prompt Hazırla:</strong>
+                    </p>
+                    <div class="code-example">
+"[ÜRÜN BAŞLIĞI] için Türkçe SSS (Sıkça Sorulan Sorular) oluştur.
+Kategori: [KATEGORİ]
+Sektör: Forklift yedek parçaları
+
+5 adet soru-cevap oluştur:
+1. Teknik özellikler
+2. Uyumluluk / Hangi modellerde kullanılır?
+3. Garanti süresi
+4. Teslimat süresi
+5. Montaj / Kurulum
+
+JSON formatında döndür:
+[
+    {\"question\": \"...\", \"answer\": \"...\"},
+    ...
+]"
+                    </div>
+
+                    <p style="margin-top: 15px;">
+                        <strong>2. OpenAI API Çağrısı:</strong> GPT-4 veya GPT-3.5-turbo kullan<br>
+                        <strong>3. JSON Parse:</strong> Dönen JSON'u parse et<br>
+                        <strong>4. Database Kaydet:</strong> <code>faq_data</code> JSON fieldine kaydet
+                    </p>
+                </div>
+
+                <div class="task-item">
+                    <h4>⚡ Toplu İşlem Stratejisi</h4>
+                    <p>
+                        <strong>Yöntem 1: Queue Job (Önerilen)</strong><br>
+                        • Her ürün için job kuyruğa at<br>
+                        • Saniyede 1-2 ürün işle (rate limiting)<br>
+                        • Toplam süre: ~6-12 saat<br><br>
+
+                        <strong>Yöntem 2: Batch API</strong><br>
+                        • 50'şer ürün grupla<br>
+                        • Batch API ile toplu gönder<br>
+                        • Daha hızlı ama hata yönetimi zor
+                    </p>
+                </div>
+            </div>
+
+            <div class="task-section">
+                <h3>Görev 3: Excerpt (Kısa Açıklama) Ekle <span class="priority-badge priority-high">Yüksek Öncelik</span></h3>
+
+                <div class="task-item">
+                    <h4>📍 Sorun</h4>
+                    <p>
+                        688 üründe excerpt (<code>short_description</code>) yok. Excerpt olmadan:
+                        <br>• Google arama sonuçlarında açıklama eksik
+                        <br>• Ürün listelerinde tanım yok
+                        <br>• Meta description boş
+                    </p>
+                </div>
+
+                <div class="task-item">
+                    <h4>✅ Çözüm: OpenAI ile Oto-Oluşturma</h4>
+                    <p>
+                        Her ürün için 150-200 karakter arası kısa, özlü açıklama oluştur.
+                    </p>
+                </div>
+
+                <div class="task-item">
+                    <h4>🔧 Excerpt Üretim Süreci</h4>
+                    <p>
+                        <strong>Prompt Örneği:</strong>
+                    </p>
+                    <div class="code-example">
+"[ÜRÜN BAŞLIĞI] için Türkçe kısa ürün açıklaması yaz.
+Kategori: [KATEGORİ]
+
+Gereksinimler:
+- 150-200 karakter
+- SEO dostu
+- Ürünün ne olduğunu ve ne için kullanıldığını açıkla
+- Teknik terimler kullan
+- Sadece metni döndür, ek format yok"
+                    </div>
+
+                    <p style="margin-top: 15px;">
+                        <strong>Örnek Çıktı:</strong><br>
+                        "15x4-1/2-8 ebadında siyah dolgu forklift lastiği. Yüksek dayanıklılı, uzun ömürlü. Elektrikli forkliftler için ideal. Hızlı teslimat."
+                    </p>
+                </div>
+
+                <div class="task-item">
+                    <h4>⚡ FAQ ile Birleştir</h4>
+                    <p>
+                        Excerpt ve FAQ oluşturmayı aynı API çağrısında birleştirerek maliyet ve süreyi azalt.
+                    </p>
+                    <div class="code-example">
+{
+    "excerpt": "...",
+    "faq": [
+        {"question": "...", "answer": "..."},
+        ...
+    ]
+}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🚀 Uygulama Planı</h2>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Kategori Fonksiyonu Yaz:</strong> Yedek parça kategorilerini tespit eden helper fonksiyon oluştur.
+                </li>
+                <li>
+                    <strong>ShopController Güncelle:</strong> <code>show()</code> metoduna <code>$isYedekParca</code> parametresi ekle.
+                </li>
+                <li>
+                    <strong>View Dosyasını Güncelle:</strong> <code>show.blade.php</code> içinde sticky kolonu kaldır (yedek parça için).
+                </li>
+                <li>
+                    <strong>OpenAI Service Oluştur:</strong> FAQ ve excerpt üretimi için servis sınıfı yaz.
+                </li>
+                <li>
+                    <strong>Queue Job Oluştur:</strong> Toplu işlem için job sınıfı hazırla.
+                </li>
+                <li>
+                    <strong>Test Et:</strong> 5-10 ürünle test yap, sonuçları kontrol et.
+                </li>
+                <li>
+                    <strong>Toplu Çalıştır:</strong> 690 ürünün tamamı için job'u başlat.
+                </li>
+                <li>
+                    <strong>Doğrulama:</strong> FAQ ve excerpt'lerin kaydedildiğini kontrol et.
+                </li>
+                <li>
+                    <strong>Cache Temizle:</strong> OPcache, view cache, response cache temizle.
+                </li>
+                <li>
+                    <strong>Final Test:</strong> Birkaç ürün sayfasını açıp layout ve içeriği kontrol et.
+                </li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>💰 Maliyet & Süre Tahmini</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="value">$3-5</div>
+                    <div class="label">OpenAI Maliyeti (GPT-3.5)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="value">6-12 saat</div>
+                    <div class="label">Toplam İşlem Süresi</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="value">2-3 saat</div>
+                    <div class="label">Geliştirme Süresi</div>
+                </div>
+            </div>
+
+            <div class="tech-note">
+                <strong>Not:</strong> Rate limiting nedeniyle saniyede 1-2 ürün işlenebilir.
+                690 ürün için toplam ~6-12 saat süre. Background job ile çalıştırılacağı için kullanıcı beklemez.
+            </div>
+        </section>
+
+        <section>
+            <h2>⚠️ Riskler ve Önlemler</h2>
+
+            <div class="task-item">
+                <h4>Risk 1: OpenAI API Hatası</h4>
+                <p>
+                    <strong>Önlem:</strong> Try-catch ile hataları yakala. Hata olan ürünleri log'a yaz, sonra tekrar işle.
+                </p>
+            </div>
+
+            <div class="task-item">
+                <h4>Risk 2: Rate Limiting</h4>
+                <p>
+                    <strong>Önlem:</strong> Job'a delay ekle (1-2 saniye). Retry mekanizması kur.
+                </p>
+            </div>
+
+            <div class="task-item">
+                <h4>Risk 3: JSON Cast Sorunu</h4>
+                <p>
+                    <strong>Önlem:</strong> Kaydederken JSON formatını doğrula. <code>json_encode()</code> kullan.
+                </p>
+            </div>
+
+            <div class="task-item">
+                <h4>Risk 4: Layout Bozulması</h4>
+                <p>
+                    <strong>Önlem:</strong> View değişikliklerini test ortamında dene. Rollback planı hazırla.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>✅ Başarı Kriterleri</h2>
+
+            <ul class="step-list" style="list-style: none;">
+                <li>690 yedek parça ürününde görsel alanı kaldırıldı, layout düzgün görünüyor</li>
+                <li>688 üründe FAQ eklendi (5 soru-cevap)</li>
+                <li>688 üründe excerpt eklendi (150-200 karakter)</li>
+                <li>Tüm ürün sayfaları 200 OK dönüyor (500 error yok)</li>
+                <li>SEO meta tagları düzgün oluşturuluyor</li>
+                <li>Google Search Console'da Rich Snippets görünüyor</li>
+            </ul>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu<br>
+            📊 Analiz Tarihi: 2025-12-03 00:30<br>
+            🏢 Tenant: ixtif.com (Endüstriyel Ekipman)
+        </footer>
+    </div>
+</body>
+</html>

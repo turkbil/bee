@@ -18,15 +18,8 @@ class SubscriptionPlan extends BaseModel
         'slug',
         'description',
         'features',
-        'price_daily',
-        'price_weekly',
-        'price_monthly',
-        'price_quarterly',
-        'price_yearly',
-        'compare_price_monthly',
-        'compare_price_yearly',
+        'billing_cycles', // Dinamik cycles (15 gün, 1 ay, 2 ay...)
         'currency',
-        'has_trial',
         'trial_days',
         'device_limit',
         'requires_payment_method',
@@ -38,7 +31,6 @@ class SubscriptionPlan extends BaseModel
         'has_priority_support',
         'has_api_access',
         'enabled_features',
-        'default_billing_cycle',
         'sort_order',
         'is_featured',
         'is_popular',
@@ -56,17 +48,10 @@ class SubscriptionPlan extends BaseModel
         'title' => 'array',
         'description' => 'array',
         'features' => 'array',
+        'billing_cycles' => 'array', // Dinamik cycles
         'custom_limits' => 'array',
         'enabled_features' => 'array',
         'metadata' => 'array',
-        'price_daily' => 'decimal:2',
-        'price_weekly' => 'decimal:2',
-        'price_monthly' => 'decimal:2',
-        'price_quarterly' => 'decimal:2',
-        'price_yearly' => 'decimal:2',
-        'compare_price_monthly' => 'decimal:2',
-        'compare_price_yearly' => 'decimal:2',
-        'has_trial' => 'boolean',
         'requires_payment_method' => 'boolean',
         'has_analytics' => 'boolean',
         'has_priority_support' => 'boolean',
@@ -130,43 +115,59 @@ class SubscriptionPlan extends BaseModel
         return $this->getTranslated('description', app()->getLocale()) ?? '';
     }
 
-    public function getPriceAttribute()
+    /**
+     * Cycles accessor - billing_cycles'ı cycles olarak döndür
+     */
+    public function getCyclesAttribute()
     {
-        return $this->price_monthly;
+        return $this->billing_cycles;
     }
 
-    public function getPriceByBillingCycle(string $cycle): float
+    /**
+     * Belirli bir cycle'ın fiyatını al
+     */
+    public function getCyclePrice(string $cycleKey): ?float
     {
-        return match($cycle) {
-            'daily' => (float) $this->price_daily,
-            'weekly' => (float) $this->price_weekly,
-            'monthly' => (float) $this->price_monthly,
-            'quarterly' => (float) $this->price_quarterly,
-            'yearly' => (float) $this->price_yearly,
-            default => (float) $this->price_monthly,
-        };
+        $cycles = $this->billing_cycles ?? [];
+        return isset($cycles[$cycleKey]['price']) ? (float) $cycles[$cycleKey]['price'] : null;
     }
 
-    public function getFormattedPriceAttribute(): string
+    /**
+     * Belirli bir cycle'ın tüm bilgilerini al
+     */
+    public function getCycle(string $cycleKey): ?array
     {
-        return number_format($this->price_monthly, 2) . ' ' . ($this->currency ?? '₺');
+        $cycles = $this->billing_cycles ?? [];
+        return $cycles[$cycleKey] ?? null;
+    }
+
+    /**
+     * Tüm cycles'ları sort_order'a göre sıralı al
+     */
+    public function getSortedCycles(): array
+    {
+        $cycles = $this->billing_cycles ?? [];
+
+        uasort($cycles, function($a, $b) {
+            return ($a['sort_order'] ?? 999) <=> ($b['sort_order'] ?? 999);
+        });
+
+        return $cycles;
+    }
+
+    /**
+     * En düşük fiyatlı cycle'ı bul
+     */
+    public function getLowestPriceCycle(): ?array
+    {
+        $cycles = $this->billing_cycles ?? [];
+        if (empty($cycles)) return null;
+
+        return collect($cycles)->sortBy('price')->first();
     }
 
     public function getActiveSubscribersCountAttribute(): int
     {
         return $this->subscriptions()->where('status', 'active')->count();
-    }
-
-    public function getYearlySavings(): float
-    {
-        $monthlyTotal = $this->price_monthly * 12;
-        return $monthlyTotal - $this->price_yearly;
-    }
-
-    public function getYearlySavingsPercent(): int
-    {
-        $monthlyTotal = $this->price_monthly * 12;
-        if ($monthlyTotal <= 0) return 0;
-        return (int) round((($monthlyTotal - $this->price_yearly) / $monthlyTotal) * 100);
     }
 }

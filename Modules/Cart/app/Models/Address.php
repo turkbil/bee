@@ -40,11 +40,34 @@ class Address extends BaseModel
         'metadata',
     ];
 
+    /**
+     * BaseModel'den gelen gereksiz alanları engelle
+     */
+    protected $guarded = [
+        'is_active',  // cart_addresses tablosunda bu column yok
+        'slug',       // cart_addresses slug kullanmaz
+    ];
+
+    /**
+     * BaseModel'den gelen varsayılan is_active'i kaldır
+     */
+    protected $attributes = [
+        // is_active yok - cart_addresses bu column'u kullanmaz
+    ];
+
     protected $casts = [
         'is_default_billing' => 'boolean',
         'is_default_shipping' => 'boolean',
         'metadata' => 'array',
     ];
+
+    /**
+     * Sluggable - DEVRE DIŞI (Address slug kullanmaz)
+     */
+    public function sluggable(): array
+    {
+        return []; // Slug generation disabled
+    }
 
     /**
      * User relation

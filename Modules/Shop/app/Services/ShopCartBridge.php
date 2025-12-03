@@ -80,9 +80,25 @@ class ShopCartBridge
      */
     protected function getProductDisplayInfo(ShopProduct $product): array
     {
+        // 🎯 Sadece hero koleksiyonu kullan
+        $itemImage = $product->hasMedia('hero')
+            ? thumb($product->getFirstMedia('hero'), 200, 200, ['quality' => 85, 'format' => 'webp'])
+            : null;
+
+        // 🔍 DEBUG: Görsel nereden çekiliyor?
+        Log::info('🛒 ShopCartBridge - Görsel Bilgisi', [
+            'product_id' => $product->product_id,
+            'product_title' => $product->getTranslated('title', app()->getLocale()),
+            'has_hero' => $product->hasMedia('hero'),
+            'hero_count' => $product->getMedia('hero')->count(),
+            'all_media_count' => $product->getMedia()->count(),
+            'all_collections' => $product->getMedia()->pluck('collection_name')->unique()->values()->toArray(),
+            'generated_image_url' => $itemImage,
+        ]);
+
         return [
             'item_title' => $product->getTranslated('title', app()->getLocale()),
-            'item_image' => $product->getFirstMediaUrl('featured_image'),
+            'item_image' => $itemImage,
             'item_sku' => $product->sku,
         ];
     }

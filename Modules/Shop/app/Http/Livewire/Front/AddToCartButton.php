@@ -65,6 +65,9 @@ class AddToCartButton extends Component
     {
         $this->isAdding = true;
 
+        // 🎯 Cart icon animasyonu için optimistic event
+        $this->js('window.dispatchEvent(new CustomEvent("optimistic-add", { detail: { quantity: ' . $this->quantity . ' } }))');
+
         try {
             // Cart service
             $cartService = app(CartService::class);

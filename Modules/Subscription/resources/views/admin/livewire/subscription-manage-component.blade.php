@@ -1,3 +1,5 @@
+@include('subscription::admin.helper')
+
 <div>
     <form wire:submit="save">
         <div class="row">
@@ -37,9 +39,9 @@
 
                             {{-- Plan Seçimi --}}
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">
+                                <label class="form-label required">
                                     <i class="fas fa-box text-success me-1"></i>
-                                    Abonelik Planı *
+                                    Abonelik Planı
                                 </label>
                                 <select class="form-select @error('plan_id') is-invalid @enderror"
                                         wire:model.live="plan_id">
@@ -47,46 +49,83 @@
                                     @foreach($plans as $plan)
                                         <option value="{{ $plan->subscription_plan_id }}">
                                             {{ $plan->getTranslated('title', 'tr') }}
-                                            ({{ number_format($plan->price_monthly, 2) }} ₺/ay)
                                         </option>
                                     @endforeach
                                 </select>
                                 @error('plan_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <small class="text-muted">Önce plan seçin, sonra süre seçeneği görünecek</small>
                             </div>
                         </div>
 
+                        {{-- Süre Seçimi (Dynamic Cycles) --}}
+                        @if($plan_id && !empty($available_cycles))
                         <div class="row">
-                            {{-- Faturalama Döngüsü --}}
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-sync text-info me-1"></i>
-                                    Faturalama Döngüsü *
+                            <div class="col-12 mb-3">
+                                <label class="form-label required">
+                                    <i class="fas fa-clock text-warning me-1"></i>
+                                    Süre Seçeneği
                                 </label>
-                                <select class="form-select" wire:model.live="billing_cycle">
-                                    <option value="monthly">Aylık</option>
-                                    <option value="yearly">Yıllık</option>
+                                <select class="form-select @error('cycle_key') is-invalid @enderror"
+                                        wire:model.live="cycle_key">
+                                    <option value="">Süre seçin...</option>
+                                    @foreach($available_cycles as $key => $cycle)
+                                        <option value="{{ $key }}">
+                                            {{ $cycle['label']['tr'] ?? $cycle['label']['en'] ?? $key }}
+                                            ({{ $cycle['duration_days'] }} gün • ₺{{ number_format($cycle['price'], 2) }})
+                                        </option>
+                                    @endforeach
                                 </select>
+                                @error('cycle_key')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
-                            {{-- Fiyat (Otomatik) --}}
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">
-                                    <i class="fas fa-money-bill-wave text-success me-1"></i>
-                                    Dönem Fiyatı
-                                </label>
-                                <div class="input-group">
-                                    <input type="number"
-                                           class="form-control"
-                                           wire:model="price_per_cycle"
-                                           step="0.01"
-                                           readonly>
-                                    <span class="input-group-text">₺</span>
+                            {{-- Cycle Detayları --}}
+                            @if($cycle_key && !empty($available_cycles[$cycle_key]))
+                                @php
+                                    $selectedCycle = $available_cycles[$cycle_key];
+                                @endphp
+                                <div class="col-12">
+                                    <div class="alert alert-info mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-info-circle me-2 fs-3"></i>
+                                            <div>
+                                                <strong>{{ $selectedCycle['label']['tr'] ?? $selectedCycle['label']['en'] }}</strong>
+                                                <div class="small mt-1">
+                                                    <span class="me-3">
+                                                        <i class="fas fa-calendar-days me-1"></i>
+                                                        {{ $selectedCycle['duration_days'] }} gün
+                                                    </span>
+                                                    <span class="me-3">
+                                                        <i class="fas fa-money-bill-wave me-1"></i>
+                                                        ₺{{ number_format($selectedCycle['price'], 2) }}
+                                                    </span>
+                                                    @if(!empty($selectedCycle['trial_days']))
+                                                        <span class="me-3">
+                                                            <i class="fas fa-gift me-1"></i>
+                                                            {{ $selectedCycle['trial_days'] }} gün deneme
+                                                        </span>
+                                                    @endif
+                                                    @if(!empty($selectedCycle['badge']['text']))
+                                                        <span class="badge bg-{{ $selectedCycle['badge']['color'] ?? 'info' }}">
+                                                            {{ $selectedCycle['badge']['text'] }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <small class="text-muted">Plan ve döngüye göre otomatik hesaplanır</small>
-                            </div>
+                            @endif
                         </div>
+                        @elseif($plan_id)
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Bu plan için henüz süre seçeneği tanımlanmamış.
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -101,23 +140,25 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Başlangıç Tarihi *</label>
+                                <label class="form-label required">Başlangıç Tarihi</label>
                                 <input type="date"
                                        class="form-control @error('started_at') is-invalid @enderror"
-                                       wire:model="started_at">
+                                       wire:model.live="started_at">
                                 @error('started_at')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Bitiş Tarihi *</label>
+                                <label class="form-label required">Bitiş Tarihi</label>
                                 <input type="date"
                                        class="form-control @error('current_period_end') is-invalid @enderror"
-                                       wire:model="current_period_end">
+                                       wire:model="current_period_end"
+                                       readonly>
                                 @error('current_period_end')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <small class="text-muted">Seçilen süreye göre otomatik hesaplanır</small>
                             </div>
                         </div>
                     </div>

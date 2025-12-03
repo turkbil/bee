@@ -22,7 +22,9 @@ class Subscription extends BaseModel
         'plan_id',
         'subscription_number',
         'status',
-        'billing_cycle',
+        'billing_cycle', // Deprecated - backward compatibility
+        'cycle_key', // Yeni dinamik cycle sistemi
+        'cycle_metadata', // Cycle bilgileri (label, duration_days, trial_days...)
         'price_per_cycle',
         'currency',
         'has_trial',
@@ -46,6 +48,7 @@ class Subscription extends BaseModel
 
     protected $casts = [
         'metadata' => 'array',
+        'cycle_metadata' => 'array', // Yeni: Dinamik cycle bilgileri
         'cancellation_feedback' => 'array',
         'price_per_cycle' => 'decimal:2',
         'total_paid' => 'decimal:2',
@@ -208,6 +211,59 @@ class Subscription extends BaseModel
         } while (self::where('subscription_number', $number)->exists());
 
         return $number;
+    }
+
+    /**
+     * Cycle label'ı al (çoklu dil desteği)
+     */
+    public function getCycleLabel(?string $locale = null): ?string
+    {
+        if (!$this->cycle_metadata) {
+            return null;
+        }
+
+        $locale = $locale ?? app()->getLocale();
+
+        return $this->cycle_metadata['label'][$locale]
+            ?? $this->cycle_metadata['label']['tr']
+            ?? $this->cycle_metadata['label']['en']
+            ?? $this->cycle_key;
+    }
+
+    /**
+     * Cycle süresini al (gün olarak)
+     */
+    public function getCycleDuration(): ?int
+    {
+        return $this->cycle_metadata['duration_days'] ?? null;
+    }
+
+    /**
+     * Cycle fiyatını al
+     */
+    public function getCyclePrice(): ?float
+    {
+        return $this->cycle_metadata['price'] ?? $this->price_per_cycle;
+    }
+
+    /**
+     * Kullanıcı daha önce deneme kullandı mı?
+     */
+    public function scopeHasUsedTrial($query, int $userId): bool
+    {
+        return self::where('customer_id', $userId)
+            ->where('has_trial', true)
+            ->exists();
+    }
+
+    /**
+     * User için trial kullanımını kontrol et (statik helper)
+     */
+    public static function userHasUsedTrial(int $userId): bool
+    {
+        return self::where('customer_id', $userId)
+            ->where('has_trial', true)
+            ->exists();
     }
 
     protected static function boot()

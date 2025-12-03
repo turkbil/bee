@@ -29,8 +29,10 @@ class FixResponseCacheHeaders
 
         // ResponseCache tarafından cache'lenen response'larda header var mı kontrol et
         if ($response->headers->has('laravel-responsecache')) {
-            // Cache'den gelmiş, header'ları düzelt
-            $response->headers->set('Cache-Control', 'public, max-age=3600, must-revalidate');
+            // Cache'den gelmiş, PREFETCH-FRIENDLY header'lar
+            $response->headers->set('Cache-Control', 'public, max-age=3600, immutable');
+            $response->headers->remove('Pragma');
+            $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT');
             return $response;
         }
 
@@ -40,8 +42,10 @@ class FixResponseCacheHeaders
             $cacheProfile = app(config('responsecache.cache_profile'));
 
             if ($cacheProfile->shouldCacheRequest($request) && $cacheProfile->shouldCacheResponse($response)) {
-                // Session middleware "private" yapmış olabilir, "public" yap
-                $response->headers->set('Cache-Control', 'public, max-age=3600, must-revalidate');
+                // PREFETCH-FRIENDLY: Session/StartSession middleware override etmesin
+                $response->headers->set('Cache-Control', 'public, max-age=3600, immutable');
+                $response->headers->remove('Pragma');
+                $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 3600) . ' GMT');
             }
         }
 

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Magazine - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .font-display { font-family: 'Playfair Display', serif; }
+        .font-sans { font-family: 'Inter', sans-serif; }
+
+        @keyframes reveal-line {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .reveal-line {
+            animation: reveal-line 1.5s ease-out forwards;
+        }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in-up {
+            animation: fade-in-up 0.8s ease-out forwards;
+            animation-delay: var(--delay);
+            opacity: 0;
+        }
+
+        .split-screen {
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+            transition: clip-path 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        .split-screen:hover {
+            clip-path: polygon(0 0, 55% 0, 55% 100%, 0 100%);
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 font-sans">
+
+    <!-- Navigation -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <i class="fa-solid fa-home"></i>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold">16 / 20</div>
+                    <div class="text-xs text-gray-500">MAGAZINE</div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="design-hero-15.html" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <a href="design-hero-17.html" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO-016: MAGAZINE EDITORIAL SPLIT SCREEN -->
+    <section id="hero-016" class="min-h-screen pt-20 relative">
+
+        <div class="grid lg:grid-cols-2 min-h-screen">
+
+            <!-- LEFT: Editorial Content -->
+            <div class="flex items-center justify-center px-12 py-20 bg-white">
+                <div class="max-w-xl">
+
+                    <!-- Issue Number -->
+                    <div class="fade-in-up mb-8" style="--delay: 0.2s;">
+                        <div class="inline-block px-4 py-2 border-2 border-black rounded-full">
+                            <span class="text-xs font-bold tracking-widest">VOL. 04 / 2025</span>
+                        </div>
+                    </div>
+
+                    <!-- Main Headline -->
+                    <div class="space-y-6 mb-12">
+                        <div class="fade-in-up" style="--delay: 0.4s;">
+                            <h1 class="font-display text-8xl font-black leading-none mb-6">
+                                İSTİF<br/>
+                                <span class="italic">Platformu</span>
+                            </h1>
+                        </div>
+
+                        <!-- Decorative Line -->
+                        <div class="w-full h-1 bg-black reveal-line"></div>
+
+                        <div class="fade-in-up" style="--delay: 0.6s;">
+                            <p class="text-2xl leading-relaxed text-gray-700">
+                                Endüstriyel ekipman tedarikinde <strong>yeni dönem</strong>. 
+                                Dijital, hızlı, güvenilir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Features List (Magazine Style) -->
+                    <div class="space-y-6 mb-12 fade-in-up" style="--delay: 0.8s;">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                                01
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Akıllı Arama Sistemi</h3>
+                                <p class="text-gray-600">AI destekli gelişmiş filtreleme teknolojisi</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                                02
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Real-Time Envanter</h3>
+                                <p class="text-gray-600">Gerçek zamanlı stok takibi ve bildirim</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                                03
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold mb-2">Express Teslimat</h3>
+                                <p class="text-gray-600">24 saat içinde kapınızda garanti</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="fade-in-up" style="--delay: 1s;">
+                        <button class="group px-10 py-5 bg-black text-white rounded-none font-bold text-lg hover:bg-gray-900 transition-all relative overflow-hidden">
+                            <span class="relative z-10 flex items-center gap-3">
+                                Platform'a Git
+                                <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                            </span>
+                            <div class="absolute inset-0 bg-gray-800 transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
+                        </button>
+                    </div>
+
+                    <!-- Stats (Editorial Style) -->
+                    <div class="grid grid-cols-3 gap-8 mt-16 pt-12 border-t-2 border-black fade-in-up" style="--delay: 1.2s;">
+                        <div>
+                            <div class="text-4xl font-black mb-2">500+</div>
+                            <div class="text-xs uppercase tracking-wider text-gray-500">Ürün Çeşidi</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-black mb-2">24/7</div>
+                            <div class="text-xs uppercase tracking-wider text-gray-500">Online</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-black mb-2">99%</div>
+                            <div class="text-xs uppercase tracking-wider text-gray-500">Güvenli</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Visual Section -->
+            <div class="relative bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center p-12">
+
+                <!-- Large Typography Overlay -->
+                <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                    <div class="font-display text-[20rem] font-black text-white">iX</div>
+                </div>
+
+                <!-- Content Cards -->
+                <div class="relative z-10 space-y-6 max-w-md">
+
+                    <!-- Card 1: Image Placeholder -->
+                    <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 fade-in-up" style="--delay: 0.6s;">
+                        <div class="aspect-video bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl mb-6 flex items-center justify-center">
+                            <i class="fa-solid fa-warehouse text-white text-6xl opacity-50"></i>
+                        </div>
+                        <div class="text-white">
+                            <div class="text-sm opacity-60 mb-2">FEATURE SPOTLIGHT</div>
+                            <h3 class="text-2xl font-bold mb-3">Dijital Depo Yönetimi</h3>
+                            <p class="text-white/80 text-sm leading-relaxed">
+                                Bulut tabanlı envanter sistemi ile tüm ürünlerinizi tek platformda yönetin
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Stats -->
+                    <div class="grid grid-cols-2 gap-6 fade-in-up" style="--delay: 0.8s;">
+                        <div class="bg-cyan-500 rounded-2xl p-6 text-white">
+                            <i class="fa-solid fa-clock text-4xl mb-4 opacity-80"></i>
+                            <div class="text-3xl font-black mb-1">&lt;24h</div>
+                            <div class="text-sm opacity-80">Teslimat</div>
+                        </div>
+                        <div class="bg-purple-600 rounded-2xl p-6 text-white">
+                            <i class="fa-solid fa-shield-check text-4xl mb-4 opacity-80"></i>
+                            <div class="text-3xl font-black mb-1">SSL</div>
+                            <div class="text-sm opacity-80">Güvenlik</div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Testimonial Style -->
+                    <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 fade-in-up" style="--delay: 1s;">
+                        <div class="flex items-center gap-1 mb-4">
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                        </div>
+                        <p class="text-white italic mb-4">
+                            "Profesyonel ekipman tedarikinde güvenle kullanıyoruz"
+                        </p>
+                        <div class="text-white/60 text-sm">Endüstriyel Müşteri</div>
+                    </div>
+                </div>
+
+                <!-- Corner Badge -->
+                <div class="absolute top-8 right-8">
+                    <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-full px-6 py-3">
+                        <div class="text-white text-sm font-bold">2025 EDITION</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Badge -->
+        <div class="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
+            <div class="bg-white border-2 border-black rounded-full px-8 py-3 shadow-xl">
+                <span class="font-bold">#HERO-016</span>
+                <span class="mx-3">|</span>
+                <span class="text-xs uppercase tracking-wider">Magazine Editorial</span>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

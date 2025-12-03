@@ -50,6 +50,11 @@ class MergeGuestCartOnLogin
         try {
             $this->cartService->mergeGuestCart($guestCart, $customerCart);
 
+            // 🔄 FRONTEND GÜNCELLEME: localStorage cart_id'yi güncelle
+            // Session'a customer cart_id'yi kaydet (blade'de JS ile localStorage'a yazılacak)
+            session()->put('merged_cart_id', $customerCart->cart_id);
+            session()->put('cart_merge_completed', true);
+
             Log::info('Guest cart merged on login', [
                 'user_id' => $user->id,
                 'guest_cart_id' => $guestCart->cart_id,

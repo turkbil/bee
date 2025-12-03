@@ -100,7 +100,7 @@
 
                                 $title = $item->getTranslated('title', $currentLocale);
                                 $body = $item->getTranslated('body', $currentLocale);
-                                $excerpt = $item->getTranslated('excerpt', $currentLocale) ?: \Illuminate\Support\Str::limit(strip_tags($body), 150);
+                                $excerpt = $item->getCleanExcerpt($currentLocale) ?: \Illuminate\Support\Str::limit(strip_tags($body), 150);
 
                                 // Module slug service kullanarak dinamik slug prefix al
                                 $moduleSlugService = app(\App\Services\ModuleSlugService::class);
@@ -127,6 +127,40 @@
                                         <div
                                             class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                                         </div>
+
+                                        {{-- Floating Stats --}}
+                                        <div class="absolute top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 flex justify-between items-start">
+                                            <div class="flex items-center gap-1 sm:gap-2">
+                                                <span class="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg"
+                                                      title="Yayın Tarihi: {{ $item->published_at ? $item->published_at->format('d.m.Y H:i') : $item->created_at->format('d.m.Y H:i') }}">
+                                                    <i class="fa-regular fa-calendar text-blue-500 dark:text-blue-400 hidden sm:inline"></i>
+                                                    {{ $item->created_at->format('d.m.Y') }}
+                                                </span>
+                                                @php
+                                                    $readTime = $item->calculateReadingTime($currentLocale);
+                                                @endphp
+                                                <span class="inline-flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 shadow-lg"
+                                                      title="Tahmini Okuma Süresi: {{ $readTime }} dakika">
+                                                    <i class="fa-regular fa-clock text-blue-500 dark:text-blue-400 hidden sm:inline"></i>
+                                                    {{ $readTime }} dk
+                                                </span>
+                                            </div>
+                                            {{-- Favoriye Ekle Butonu --}}
+                                            @auth
+                                            <div x-data="favoriteButton('{{ addslashes(get_class($item)) }}', {{ $item->blog_id }}, {{ $item->isFavoritedBy(auth()->id()) ? 'true' : 'false' }})"
+                                                 @click.prevent.stop="toggleFavorite()"
+                                                 class="group/fav w-6 h-6 sm:w-8 sm:h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200 cursor-pointer"
+                                                 title="Favorilere Ekle">
+                                                <i :class="favorited ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400'" class="text-[10px] sm:text-sm transition-all duration-200"></i>
+                                            </div>
+                                            @else
+                                            <span onclick="event.preventDefault(); event.stopPropagation(); window.location.href='{{ route('login') }}'"
+                                               class="group/fav w-6 h-6 sm:w-8 sm:h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200 cursor-pointer"
+                                               title="Favorilere eklemek için giriş yapın">
+                                                <i class="fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400 text-[10px] sm:text-sm transition-all duration-200"></i>
+                                            </span>
+                                            @endauth
+                                        </div>
                                     </div>
                                 @else
                                     <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
@@ -144,10 +178,6 @@
 
                                     <div class="flex items-center justify-between">
                                         <span class="text-sm text-gray-500 dark:text-gray-500">
-                                            <i class="fa-regular fa-calendar mr-1"></i>
-                                            {{ $item->created_at->format('d.m.Y') }}
-                                        </span>
-                                        <span class="text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-1 transition-transform">
                                             Devamını Oku →
                                         </span>
                                     </div>
@@ -213,7 +243,7 @@
                         });
                     }, {
                         root: null,
-                        rootMargin: '0px 0px 600px 0px'
+                        rootMargin: '0px 0px 1500px 0px' // Prefetch: 1500px önceden yüklemeye başla
                     });
 
                     observer.observe(this.$refs.sentinel);

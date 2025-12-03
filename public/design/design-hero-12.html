@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Deluxe - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; }
+
+        @keyframes rotate-infinite {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes slide-up {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes float-complex {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) translateX(10px) rotate(5deg); }
+            50% { transform: translateY(-10px) translateX(-10px) rotate(-3deg); }
+            75% { transform: translateY(-25px) translateX(5px) rotate(2deg); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .animate-rotate { animation: rotate-infinite 20s linear infinite; }
+        .animate-pulse-scale { animation: pulse-scale 3s ease-in-out infinite; }
+        .animate-slide-up { animation: slide-up 0.8s ease-out forwards; }
+        .animate-float-complex { animation: float-complex 8s ease-in-out infinite; }
+
+        .shimmer-effect {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            background-size: 1000px 100%;
+            animation: shimmer 3s infinite;
+        }
+
+        .glass-ultra {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 40px rgba(59, 130, 246, 0.5),
+                         0 0 80px rgba(147, 51, 234, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen overflow-x-hidden">
+
+    <!-- Navigation -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-2xl border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="hidden sm:inline">Ana Sayfa</span>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400">
+                        12 / 20
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Deluxe Edition</div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="design-hero-11.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <a href="design-hero-13.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO-012: ULTRA DELUXE IMMERSIVE -->
+    <section id="hero-012" class="min-h-screen relative overflow-hidden pt-20">
+
+        <!-- Ultra Complex Background -->
+        <div class="absolute inset-0">
+            <!-- Gradient Base -->
+            <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950"></div>
+
+            <!-- Animated Gradient Overlays (Multi-layer) -->
+            <div class="absolute inset-0 bg-gradient-to-tr from-cyan-950/40 via-transparent to-transparent animate-pulse-scale"></div>
+            <div class="absolute inset-0 bg-gradient-to-bl from-purple-950/40 via-transparent to-transparent animate-pulse-scale" style="animation-delay: 1.5s;"></div>
+
+            <!-- Rotating Gradient Ring -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] bg-gradient-conic from-cyan-500 via-blue-500 via-purple-500 via-pink-500 to-cyan-500 rounded-full blur-3xl opacity-20 animate-rotate"></div>
+
+            <!-- Floating Blobs (Multiple Sizes) -->
+            <div class="absolute top-20 right-20 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-30 animate-pulse-scale"></div>
+            <div class="absolute bottom-20 left-20 w-[500px] h-[500px] bg-purple-500 rounded-full blur-3xl opacity-25 animate-pulse-scale" style="animation-delay: 2s;"></div>
+            <div class="absolute top-1/3 left-1/4 w-64 h-64 bg-cyan-400 rounded-full blur-3xl opacity-20 animate-pulse-scale" style="animation-delay: 1s;"></div>
+            <div class="absolute bottom-1/3 right-1/4 w-80 h-80 bg-pink-500 rounded-full blur-3xl opacity-20 animate-pulse-scale" style="animation-delay: 3s;"></div>
+
+            <!-- Dot Matrix Pattern -->
+            <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 50px 50px;"></div>
+
+            <!-- Grid Lines -->
+            <div class="absolute inset-0 opacity-5" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 100px 100px;"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10 py-20">
+            <div class="max-w-7xl mx-auto">
+
+                <!-- Top Status Bar -->
+                <div class="flex items-center justify-between mb-16 animate-slide-up">
+                    <div class="glass-ultra px-6 py-3 rounded-full flex items-center gap-3">
+                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm font-semibold">PLATFORM ACTIVE</span>
+                        <div class="w-px h-4 bg-white/20"></div>
+                        <span class="text-xs text-gray-400">500+ Online</span>
+                    </div>
+                    <div class="glass-ultra px-6 py-3 rounded-full flex items-center gap-2">
+                        <i class="fa-solid fa-shield-check text-green-400"></i>
+                        <span class="text-sm">SSL Secured</span>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-5 gap-12 items-center">
+
+                    <!-- LEFT: Main Content (3 columns) -->
+                    <div class="lg:col-span-3 space-y-10 animate-slide-up" style="animation-delay: 0.2s;">
+
+                        <!-- Badge -->
+                        <div class="inline-flex items-center gap-3 glass-ultra px-6 py-4 rounded-2xl">
+                            <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center animate-pulse-scale">
+                                <i class="fa-solid fa-sparkles text-white"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-400">New Generation</div>
+                                <div class="font-bold text-sm">Digital Platform v4.0</div>
+                            </div>
+                        </div>
+
+                        <!-- Main Headline -->
+                        <div class="space-y-6">
+                            <h1 class="text-7xl md:text-8xl lg:text-9xl font-black leading-none text-glow">
+                                <span class="block">Endüstriyel</span>
+                                <span class="block mt-4 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 via-purple-400 to-pink-400">
+                                    Devrim
+                                </span>
+                            </h1>
+                            <div class="relative">
+                                <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 blur-2xl"></div>
+                                <p class="relative text-2xl md:text-3xl text-gray-300 leading-relaxed max-w-3xl">
+                                    <span class="font-bold text-white">Yapay zeka destekli</span> platform ile istif ekipmanı tedariğinde
+                                    <span class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">yeni çağ</span>.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Feature Pills -->
+                        <div class="flex flex-wrap gap-3">
+                            <div class="glass-ultra px-5 py-3 rounded-full flex items-center gap-2 hover:bg-white/10 transition-all cursor-pointer group">
+                                <i class="fa-solid fa-robot text-cyan-400 group-hover:scale-110 transition-transform"></i>
+                                <span class="text-sm font-semibold">AI Powered</span>
+                            </div>
+                            <div class="glass-ultra px-5 py-3 rounded-full flex items-center gap-2 hover:bg-white/10 transition-all cursor-pointer group">
+                                <i class="fa-solid fa-bolt text-yellow-400 group-hover:scale-110 transition-transform"></i>
+                                <span class="text-sm font-semibold">Real-time Data</span>
+                            </div>
+                            <div class="glass-ultra px-5 py-3 rounded-full flex items-center gap-2 hover:bg-white/10 transition-all cursor-pointer group">
+                                <i class="fa-solid fa-shield-halved text-green-400 group-hover:scale-110 transition-transform"></i>
+                                <span class="text-sm font-semibold">Secure</span>
+                            </div>
+                            <div class="glass-ultra px-5 py-3 rounded-full flex items-center gap-2 hover:bg-white/10 transition-all cursor-pointer group">
+                                <i class="fa-solid fa-rocket text-purple-400 group-hover:scale-110 transition-transform"></i>
+                                <span class="text-sm font-semibold">Fast Deploy</span>
+                            </div>
+                        </div>
+
+                        <!-- CTAs -->
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button class="group relative px-10 py-6 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-2xl font-bold text-xl overflow-hidden hover:shadow-2xl hover:shadow-blue-500/50 transition-all">
+                                <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div class="absolute inset-0 shimmer-effect"></div>
+                                <span class="relative flex items-center justify-center gap-3">
+                                    <i class="fa-solid fa-rocket"></i>
+                                    Platform'u Başlat
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </span>
+                            </button>
+                            <button class="group px-10 py-6 glass-ultra rounded-2xl font-bold text-xl border-2 border-white/20 hover:border-white/40 hover:bg-white/10 transition-all">
+                                <span class="flex items-center justify-center gap-3">
+                                    <i class="fa-solid fa-play-circle"></i>
+                                    3D Demo
+                                </span>
+                            </button>
+                        </div>
+
+                        <!-- Live Stats Dashboard -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="glass-ultra rounded-2xl p-6 hover:bg-white/10 transition-all group cursor-pointer">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-database text-white"></i>
+                                    </div>
+                                    <div class="text-4xl font-black text-cyan-400">500+</div>
+                                </div>
+                                <div class="text-sm text-gray-400">Ürün Database</div>
+                                <div class="mt-2 flex items-center gap-1 text-xs text-green-400">
+                                    <i class="fa-solid fa-arrow-up"></i>
+                                    <span>+12% bu ay</span>
+                                </div>
+                            </div>
+
+                            <div class="glass-ultra rounded-2xl p-6 hover:bg-white/10 transition-all group cursor-pointer">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-clock text-white"></i>
+                                    </div>
+                                    <div class="text-4xl font-black text-purple-400">24/7</div>
+                                </div>
+                                <div class="text-sm text-gray-400">Sistem Uptime</div>
+                                <div class="mt-2 flex items-center gap-1 text-xs text-green-400">
+                                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                    <span>Online</span>
+                                </div>
+                            </div>
+
+                            <div class="glass-ultra rounded-2xl p-6 hover:bg-white/10 transition-all group cursor-pointer">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-truck-fast text-white"></i>
+                                    </div>
+                                    <div class="text-4xl font-black text-blue-400">< 24h</div>
+                                </div>
+                                <div class="text-sm text-gray-400">Teslimat Süresi</div>
+                                <div class="mt-2 flex items-center gap-1 text-xs text-blue-400">
+                                    <i class="fa-solid fa-gauge-high"></i>
+                                    <span>Express</span>
+                                </div>
+                            </div>
+
+                            <div class="glass-ultra rounded-2xl p-6 hover:bg-white/10 transition-all group cursor-pointer">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-shield-check text-white"></i>
+                                    </div>
+                                    <div class="text-4xl font-black text-green-400">%99</div>
+                                </div>
+                                <div class="text-sm text-gray-400">Güvenlik Skoru</div>
+                                <div class="mt-2 flex items-center gap-1 text-xs text-green-400">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    <span>SSL</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Floating Interactive Cards (2 columns) -->
+                    <div class="lg:col-span-2 relative h-[700px] hidden lg:block">
+
+                        <!-- Card 1: Akıllı Arama -->
+                        <div class="absolute top-0 right-0 w-80 glass-ultra rounded-3xl p-8 border-2 border-cyan-500/30 hover:border-cyan-500/60 transition-all cursor-pointer animate-float-complex shadow-2xl shadow-cyan-500/20">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shimmer-effect">
+                                        <i class="fa-solid fa-magnifying-glass text-3xl text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-black text-white">Akıllı Arama</div>
+                                        <div class="text-cyan-300 text-sm">AI Enhanced</div>
+                                    </div>
+                                </div>
+                                <div class="w-10 h-10 bg-cyan-500/20 rounded-full flex items-center justify-center">
+                                    <i class="fa-solid fa-arrow-right text-cyan-400"></i>
+                                </div>
+                            </div>
+                            <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                                Yapay zeka destekli gelişmiş filtreleme. 500+ ürün arasında anlık sonuç, akıllı öneriler.
+                            </p>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-xs text-gray-400">
+                                    <div class="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                                    <span>Semantic search</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-gray-400">
+                                    <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                                    <span>Auto-complete</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-xs text-gray-400">
+                                    <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
+                                    <span>Smart filters</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Real-time Stok -->
+                        <div class="absolute top-48 left-0 w-80 glass-ultra rounded-3xl p-8 border-2 border-purple-500/30 hover:border-purple-500/60 transition-all cursor-pointer animate-float-complex shadow-2xl shadow-purple-500/20" style="animation-delay: 1s;">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center">
+                                        <i class="fa-solid fa-chart-line text-3xl text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-black text-white">Live Stok</div>
+                                        <div class="text-purple-300 text-sm">Real-time</div>
+                                    </div>
+                                </div>
+                                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                            </div>
+                            <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                                Gerçek zamanlı envanter takibi. Anlık stok güncelleme, otomatik bildirim sistemi.
+                            </p>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="bg-white/5 rounded-xl p-3 text-center">
+                                    <div class="text-2xl font-black text-green-400">127</div>
+                                    <div class="text-xs text-gray-400">Stokta</div>
+                                </div>
+                                <div class="bg-white/5 rounded-xl p-3 text-center">
+                                    <div class="text-2xl font-black text-yellow-400">43</div>
+                                    <div class="text-xs text-gray-400">Yolda</div>
+                                </div>
+                                <div class="bg-white/5 rounded-xl p-3 text-center">
+                                    <div class="text-2xl font-black text-purple-400">18</div>
+                                    <div class="text-xs text-gray-400">Rezerve</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Express Kargo -->
+                        <div class="absolute bottom-0 right-8 w-80 glass-ultra rounded-3xl p-8 border-2 border-blue-500/30 hover:border-blue-500/60 transition-all cursor-pointer animate-float-complex shadow-2xl shadow-blue-500/20" style="animation-delay: 2s;">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
+                                        <i class="fa-solid fa-truck-fast text-3xl text-white"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-black text-white">Express</div>
+                                        <div class="text-blue-300 text-sm">24h Delivery</div>
+                                    </div>
+                                </div>
+                                <div class="px-3 py-1 bg-green-500/20 rounded-full text-xs text-green-400 font-bold">
+                                    FAST
+                                </div>
+                            </div>
+                            <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                                24 saat içinde teslimat garantisi. Türkiye geneli kargo takip sistemi, anlık konum.
+                            </p>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                        <span class="text-gray-400">Sipariş alındı</span>
+                                    </div>
+                                    <span class="text-green-400 font-semibold">Tamamlandı</span>
+                                </div>
+                                <div class="w-full bg-white/5 rounded-full h-2">
+                                    <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                                <div class="flex items-center justify-between text-xs text-gray-400">
+                                    <span>Kargoya verildi</span>
+                                    <span>14 saat kaldı</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Bottom Trust Bar -->
+                <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 animate-slide-up" style="animation-delay: 0.4s;">
+                    <div class="glass-ultra rounded-2xl p-6 flex items-center gap-4 hover:bg-white/10 transition-all">
+                        <i class="fa-solid fa-shield-check text-3xl text-green-400"></i>
+                        <div>
+                            <div class="font-bold">SSL Güvenlik</div>
+                            <div class="text-xs text-gray-400">256-bit</div>
+                        </div>
+                    </div>
+                    <div class="glass-ultra rounded-2xl p-6 flex items-center gap-4 hover:bg-white/10 transition-all">
+                        <i class="fa-solid fa-headset text-3xl text-blue-400"></i>
+                        <div>
+                            <div class="font-bold">7/24 Destek</div>
+                            <div class="text-xs text-gray-400">Canlı</div>
+                        </div>
+                    </div>
+                    <div class="glass-ultra rounded-2xl p-6 flex items-center gap-4 hover:bg-white/10 transition-all">
+                        <i class="fa-solid fa-award text-3xl text-yellow-400"></i>
+                        <div>
+                            <div class="font-bold">%100 Garanti</div>
+                            <div class="text-xs text-gray-400">Memnuniyet</div>
+                        </div>
+                    </div>
+                    <div class="glass-ultra rounded-2xl p-6 flex items-center gap-4 hover:bg-white/10 transition-all">
+                        <i class="fa-solid fa-bolt text-3xl text-purple-400"></i>
+                        <div>
+                            <div class="font-bold">Anlık İşlem</div>
+                            <div class="text-xs text-gray-400">Real-time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Badge -->
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+            <div class="glass-ultra px-8 py-3 rounded-full border border-white/20">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-hashtag text-cyan-400"></i>
+                    <span class="font-bold">HERO-012</span>
+                    <div class="w-px h-4 bg-white/20"></div>
+                    <span class="text-xs text-gray-400">DELUXE EDITION</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

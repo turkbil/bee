@@ -22,7 +22,7 @@
     {{-- Theme Flash Fix: Minimal inline script (1 line) - Prevents flash before Alpine.js loads --}}
     <script>if(localStorage.getItem('darkMode')==='dark')document.documentElement.classList.add('dark')</script>
 
-    {{-- Alpine.js is included in Livewire - DO NOT load separately --}}
+    {{-- ✅ Alpine.js is included in Livewire - DO NOT load separately to avoid conflicts --}}
 
 {{-- Global SEO Meta Tags - Tek Satır --}}
 <x-seo-meta />
@@ -154,7 +154,9 @@
 </head>
 
 <body class="font-sans antialiased min-h-screen bg-white dark:bg-gray-900 transition-all duration-500 flex flex-col"
-      :class="{ 'dark-mode-active': darkMode === 'dark' }">
+      :class="{ 'dark-mode-active': darkMode === 'dark' }"
+      data-instant-allow-query-string
+      data-instant-intensity="0">
 
     {{-- 🎯 GTM Body Snippet (No-Script Fallback) --}}
     <x-marketing.gtm-body />

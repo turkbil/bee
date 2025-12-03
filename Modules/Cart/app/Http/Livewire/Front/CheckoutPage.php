@@ -243,6 +243,13 @@ class CheckoutPage extends Component
         \Log::info('🔵 MOUNT CALLED', ['user_id' => Auth::id()]);
 
         try {
+            // Subscription plan parametresi varsa sepete ekle ve URL'den temizle
+            if (request()->has('plan') && request()->has('cycle')) {
+                $this->addSubscriptionToCart(request('plan'), request('cycle'));
+                // URL'den parametreleri temizle (güvenlik)
+                return $this->redirect(route('cart.checkout'), navigate: true);
+            }
+
             $this->agree_all = false;
             $this->loadCart();
             $this->loadOrCreateCustomer();
@@ -255,6 +262,44 @@ class CheckoutPage extends Component
         } catch (\Exception $e) {
             \Log::error('❌ MOUNT ERROR: ' . $e->getMessage());
             session()->flash('error', 'Checkout yüklenirken hata: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Subscription plan'ı sepete ekle
+     */
+    protected function addSubscriptionToCart($planId, $cycleKey)
+    {
+        try {
+            $plan = \Modules\Subscription\App\Models\SubscriptionPlan::findOrFail($planId);
+            $bridge = app(\Modules\Subscription\App\Services\SubscriptionCartBridge::class);
+
+            if (!$bridge->canAddToCart($plan)) {
+                return;
+            }
+
+            $cartService = app(CartService::class);
+            $sessionId = session()->getId();
+            $customerId = auth()->check() ? auth()->id() : null;
+            $cart = $cartService->findOrCreateCart($customerId, $sessionId);
+
+            // Diğer subscription'ları temizle
+            $cart->items()
+                ->where('cartable_type', 'Modules\Subscription\App\Models\SubscriptionPlan')
+                ->each(function ($item) use ($cartService) {
+                    $cartService->removeItem($item);
+                });
+
+            // Subscription ekle
+            $options = $bridge->prepareSubscriptionForCart($plan, $cycleKey, true);
+            $cartService->addItem($cart, $plan, 1, $options);
+
+            \Log::info('✅ Subscription auto-added to cart', [
+                'plan_id' => $planId,
+                'cycle_key' => $cycleKey,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('❌ Subscription auto-add error: ' . $e->getMessage());
         }
     }
 
@@ -641,7 +686,9 @@ class CheckoutPage extends Component
             $address = Address::create([
                 'user_id' => auth()->id(),
                 'title' => $this->new_address_title,
-                'phone' => $this->new_address_phone,
+                'first_name' => $this->contact_first_name ?? '',
+                'last_name' => $this->contact_last_name ?? '',
+                'phone' => $this->new_address_phone ?? $this->contact_phone ?? '',
                 'address_line_1' => $this->new_address_line,
                 'city' => $this->new_address_city,
                 'district' => $this->new_address_district,
@@ -683,7 +730,9 @@ class CheckoutPage extends Component
             $address = Address::create([
                 'user_id' => auth()->id(),
                 'title' => $this->new_billing_address_title,
-                'phone' => $this->new_billing_address_phone,
+                'first_name' => $this->contact_first_name ?? '',
+                'last_name' => $this->contact_last_name ?? '',
+                'phone' => $this->new_billing_address_phone ?? $this->contact_phone ?? '',
                 'address_line_1' => $this->new_billing_address_line,
                 'city' => $this->new_billing_address_city,
                 'district' => $this->new_billing_address_district,
@@ -816,10 +865,10 @@ class CheckoutPage extends Component
             $subtotalTRY += ($item->subtotal ?? 0) * $exchangeRate;
         }
 
-        $this->subtotal = $subtotalTRY;
-        $taxRate = config('shop.tax_rate', 20) / 100;
-        $this->taxAmount = $this->subtotal * $taxRate;
-        $this->total = $this->subtotal + $this->taxAmount;
+        // Cart'tan subtotal ve tax_amount al (item bazlı tax hesaplama)
+        $this->subtotal = (float) $this->cart->subtotal;
+        $this->taxAmount = (float) $this->cart->tax_amount;
+        $this->total = (float) $this->cart->total;
 
         // Kredi kartı komisyonu kaldırıldı
         $this->creditCardFee = 0;
@@ -1407,6 +1456,9 @@ class CheckoutPage extends Component
                 OrderItem::createFromCartItem($item, $order->order_id);
             }
 
+            // 🆕 Subscription oluştur (eğer sepette subscription varsa)
+            $this->createSubscriptionsFromOrder($order);
+
             // Payment kaydı
             $payment = Payment::create([
                 'payment_method_id' => $this->selectedPaymentMethodId,
@@ -1556,6 +1608,86 @@ class CheckoutPage extends Component
         } else {
             session()->flash('error', 'Ödeme hazırlanamadı: ' . $result['message']);
             $this->showCardForm = false;
+        }
+    }
+
+    /**
+     * Siparişteki subscription item'lardan subscription oluştur
+     */
+    private function createSubscriptionsFromOrder($order)
+    {
+        foreach ($this->items as $cartItem) {
+            // Subscription item mı kontrol et
+            if ($cartItem->cartable_type !== 'Modules\Subscription\App\Models\SubscriptionPlan') {
+                continue;
+            }
+
+            // Cart metadata'dan cycle bilgilerini al
+            $metadata = is_array($cartItem->metadata) ? $cartItem->metadata : json_decode($cartItem->metadata, true);
+            $cycleKey = $metadata['cycle_key'] ?? null;
+
+            if (!$cycleKey) {
+                \Log::error('Subscription cart item has no cycle_key!', ['cart_item_id' => $cartItem->cart_item_id]);
+                continue;
+            }
+
+            // Plan'ı al
+            $plan = \Modules\Subscription\App\Models\SubscriptionPlan::find($cartItem->cartable_id);
+
+            if (!$plan) {
+                \Log::error('Subscription plan not found!', ['plan_id' => $cartItem->cartable_id]);
+                continue;
+            }
+
+            // Plan'dan cycle bilgilerini al
+            $cycle = $plan->getCycle($cycleKey);
+
+            if (!$cycle) {
+                \Log::error('Cycle not found in plan!', ['cycle_key' => $cycleKey, 'plan_id' => $plan->subscription_plan_id]);
+                continue;
+            }
+
+            // Trial kontrolü - kullanıcı daha önce trial kullandı mı?
+            $hasUsedTrial = \Modules\Subscription\App\Models\Subscription::userHasUsedTrial($order->user_id);
+            $trialDays = (!$hasUsedTrial && isset($cycle['trial_days']) && $cycle['trial_days'] > 0) ? $cycle['trial_days'] : 0;
+
+            // Subscription oluştur (status: pending_payment - ödeme başarılı olunca active/trial olacak)
+            $subscription = \Modules\Subscription\App\Models\Subscription::create([
+                'customer_id' => $order->user_id,
+                'plan_id' => $plan->subscription_plan_id,
+                'cycle_key' => $cycleKey,
+                'cycle_metadata' => [
+                    'label' => $cycle['label'],
+                    'duration_days' => $cycle['duration_days'],
+                    'price' => $cycle['price'],
+                    'compare_price' => $cycle['compare_price'] ?? null,
+                    'trial_days' => $cycle['trial_days'] ?? null,
+                ],
+                'price_per_cycle' => $cycle['price'],
+                'currency' => 'TRY',
+                'has_trial' => $trialDays > 0,
+                'trial_days' => $trialDays,
+                'trial_ends_at' => $trialDays > 0 ? now()->addDays($trialDays) : null,
+                'started_at' => now(),
+                'current_period_start' => $trialDays > 0 ? now()->addDays($trialDays) : now(),
+                'current_period_end' => $trialDays > 0
+                    ? now()->addDays($trialDays + $cycle['duration_days'])
+                    : now()->addDays($cycle['duration_days']),
+                'next_billing_date' => now()->addDays($trialDays + $cycle['duration_days']),
+                'status' => 'pending_payment', // Ödeme başarılı olunca active/trial olacak
+                'auto_renew' => true,
+                'billing_cycles_completed' => 0,
+                'total_paid' => 0,
+            ]);
+
+            \Log::info('✅ Subscription created from order', [
+                'subscription_id' => $subscription->subscription_id,
+                'order_id' => $order->order_id,
+                'plan_id' => $plan->subscription_plan_id,
+                'cycle_key' => $cycleKey,
+                'has_trial' => $subscription->has_trial,
+                'trial_days' => $trialDays,
+            ]);
         }
     }
 

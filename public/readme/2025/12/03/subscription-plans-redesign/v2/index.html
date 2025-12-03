@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonelik Planları v2 - Her Cycle Ayrı Kart</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            padding: 60px 20px;
+            min-height: 100vh;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            color: #94a3b8;
+        }
+
+        /* Plans Grid */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* Plan Card */
+        .plan-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 2px solid transparent;
+            backdrop-filter: blur(10px);
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        /* Plan Colors */
+        .plan-premium {
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .plan-premium:hover {
+            border-color: #667eea;
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+        }
+
+        .plan-gold {
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .plan-gold:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 20px 60px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Featured Plan */
+        .plan-card.featured {
+            transform: scale(1.05);
+            border-width: 3px;
+        }
+
+        .plan-card.featured:hover {
+            transform: scale(1.08) translateY(-10px);
+        }
+
+        /* Badges */
+        .badges {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-featured { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .badge-save { background: linear-gradient(135deg, #10b981, #059669); }
+        .badge-cycle { background: rgba(100, 116, 139, 0.9); }
+
+        /* Header Section */
+        .plan-header {
+            padding: 50px 30px 30px;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .plan-premium .plan-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(59, 130, 246, 0.2));
+        }
+
+        .plan-gold .plan-header {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2));
+        }
+
+        .plan-name {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .plan-premium .plan-name {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .plan-gold .plan-name {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .plan-description {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        /* Duration */
+        .duration {
+            padding: 20px 30px;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.5);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .duration-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        /* Price Section */
+        .price-section {
+            padding: 35px 30px;
+            text-align: center;
+            background: rgba(30, 41, 59, 0.3);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .price-main {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .plan-premium .price-main {
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .plan-gold .price-main {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .price-old {
+            font-size: 1.1rem;
+            text-decoration: line-through;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .price-save {
+            font-size: 0.95rem;
+            color: #10b981;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .trial-badge {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .promo-text {
+            margin-top: 12px;
+            padding: 10px 15px;
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .features-list {
+            list-style: none;
+            flex: 1;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+
+        .feature-icon {
+            color: #10b981;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 25px 30px;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .cta-button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .plan-premium .cta-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .plan-premium .cta-button:hover {
+            background: linear-gradient(135deg, #5568d3, #6941a0);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .plan-gold .cta-button {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .plan-gold .cta-button:hover {
+            background: linear-gradient(135deg, #e08e0a, #c76d05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+
+        /* Footer Note */
+        .footer-note {
+            text-align: center;
+            color: #94a3b8;
+            margin-top: 50px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .header p { font-size: 1rem; }
+            .plans-grid { 
+                grid-template-columns: 1fr; 
+                gap: 25px; 
+            }
+            .plan-card.featured { transform: scale(1); }
+            .price-main { font-size: 2.8rem; }
+            .plan-name { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Üyelik Planları</h1>
+            <p>Size en uygun plan ve süreyi seçin</p>
+        </div>
+
+        <!-- Plans Grid -->
+        <div class="plans-grid">
+            <!-- Premium 1 Aylık -->
+            <div class="plan-card plan-premium featured">
+                <div class="badges">
+                    <div class="badge badge-featured">Popüler</div>
+                    <div class="badge badge-cycle">1 Aylık</div>
+                </div>
+                
+                <div class="plan-header">
+                    <h2 class="plan-name">Premium</h2>
+                    <p class="plan-description">Profesyonel işletmeler için gelişmiş özellikler</p>
+                </div>
+
+                <div class="duration">
+                    <div class="duration-value">📅 30 gün süre</div>
+                </div>
+
+                <div class="price-section">
+                    <div class="price-main">₺199<small style="font-size: 1.5rem;">.90</small></div>
+                    <div class="trial-badge">🎁 14 gün ücretsiz deneme</div>
+                </div>
+
+                <div class="features-section">
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Sınırsız ürün</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>10 kullanıcı</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Öncelikli destek</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Gelişmiş raporlama</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>SSL sertifikası</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Mobil uyumlu</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cta-section">
+                    <button class="cta-button">Satın Al</button>
+                </div>
+            </div>
+
+            <!-- Premium 12 Aylık -->
+            <div class="plan-card plan-premium">
+                <div class="badges">
+                    <div class="badge badge-save">%15 Tasarruf</div>
+                    <div class="badge badge-cycle">12 Aylık</div>
+                </div>
+                
+                <div class="plan-header">
+                    <h2 class="plan-name">Premium</h2>
+                    <p class="plan-description">Yıllık avantajlarla daha ekonomik</p>
+                </div>
+
+                <div class="duration">
+                    <div class="duration-value">📅 365 gün süre</div>
+                </div>
+
+                <div class="price-section">
+                    <div class="price-main">₺169<small style="font-size: 1.5rem;">.90</small></div>
+                    <div class="price-old">Aylık ₺199.90 yerine</div>
+                    <div class="price-save">₺360 tasarruf ediyorsunuz</div>
+                    <div class="promo-text">🎉 2 ay bedava!</div>
+                </div>
+
+                <div class="features-section">
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Sınırsız ürün</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>10 kullanıcı</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Öncelikli destek</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Gelişmiş raporlama</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>SSL sertifikası</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Mobil uyumlu</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cta-section">
+                    <button class="cta-button">Satın Al</button>
+                </div>
+            </div>
+
+            <!-- Gold 1 Aylık -->
+            <div class="plan-card plan-gold">
+                <div class="badges">
+                    <div class="badge badge-cycle">1 Aylık</div>
+                </div>
+                
+                <div class="plan-header">
+                    <h2 class="plan-name">Gold</h2>
+                    <p class="plan-description">Büyük işletmeler için tam donanımlı paket</p>
+                </div>
+
+                <div class="duration">
+                    <div class="duration-value">📅 30 gün süre</div>
+                </div>
+
+                <div class="price-section">
+                    <div class="price-main">₺399<small style="font-size: 1.5rem;">.90</small></div>
+                </div>
+
+                <div class="features-section">
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Sınırsız her şey</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Sınırsız kullanıcı</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>7/24 destek</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Gelişmiş analitik</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Güvenlik</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Öncelikli özellikler</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Yedekleme</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>API erişimi</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cta-section">
+                    <button class="cta-button">Satın Al</button>
+                </div>
+            </div>
+
+            <!-- Gold 12 Aylık -->
+            <div class="plan-card plan-gold">
+                <div class="badges">
+                    <div class="badge badge-save">%20 Tasarruf</div>
+                    <div class="badge badge-cycle">12 Aylık</div>
+                </div>
+                
+                <div class="plan-header">
+                    <h2 class="plan-name">Gold</h2>
+                    <p class="plan-description">Yıllık kurumsal avantajlar</p>
+                </div>
+
+                <div class="duration">
+                    <div class="duration-value">📅 365 gün süre</div>
+                </div>
+
+                <div class="price-section">
+                    <div class="price-main">₺319<small style="font-size: 1.5rem;">.90</small></div>
+                    <div class="price-old">Aylık ₺399.90 yerine</div>
+                    <div class="price-save">₺960 tasarruf ediyorsunuz</div>
+                    <div class="promo-text">🎉 2 ay bedava!</div>
+                </div>
+
+                <div class="features-section">
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Sınırsız her şey</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Sınırsız kullanıcı</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>7/24 destek</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Gelişmiş analitik</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Güvenlik</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Öncelikli özellikler</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Yedekleme</span>
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>API erişimi</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cta-section">
+                    <button class="cta-button">Satın Al</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="footer-note">
+            💡 Tüm planlar 30 gün para iade garantisi ile gelir
+        </div>
+    </div>
+</body>
+</html>

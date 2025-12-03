@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yedek Parça v2: Görsel Üretimi + AI İçerik Stratejisi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .meta { color: #94a3b8; font-size: 0.95rem; }
+        .update-badge {
+            display: inline-block;
+            background: #ef4444;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        section { margin-bottom: 50px; }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #f59e0b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+            backdrop-filter: blur(10px);
+        }
+        .stat-card .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 5px;
+        }
+        .stat-card .label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+        .stat-card.critical {
+            border-left-color: #dc2626;
+            background: rgba(220, 38, 38, 0.1);
+        }
+        .stat-card.critical .value { color: #ef4444; }
+        .task-section {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 4px solid #f59e0b;
+        }
+        .task-section.new {
+            border-left-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .task-item {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 3px solid #f59e0b;
+        }
+        .task-item h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .task-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+        .code-example {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #fbbf24;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .image-example {
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px solid #8b5cf6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .image-example img {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .warning-box {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        .warning-box h3 {
+            color: #ef4444;
+            margin-bottom: 10px;
+        }
+        .warning-box ul {
+            margin-left: 20px;
+            color: #fca5a5;
+            line-height: 2;
+        }
+        .cost-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        .cost-table th, .cost-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        .cost-table th {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        .cost-table tr:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-new { background: #8b5cf6; color: white; }
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Yedek Parça v2: Görsel Üretimi + AI İçerik Stratejisi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-03 01:00 |
+                🎯 Tenant: ixtif.com (Tenant 2) |
+                📦 Kapsam: 690 Yedek Parça Ürünü
+            </div>
+            <span class="update-badge">🆕 YENİ: DALL-E Görsel Üretimi Eklendi</span>
+        </header>
+
+        <section>
+            <h2>⚠️ KRİTİK: Durum Tahmin Edilenden Kötü!</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card critical">
+                    <div class="value">%100</div>
+                    <div class="label">Use Cases EKSİK</div>
+                </div>
+
+                <div class="stat-card critical">
+                    <div class="value">%100</div>
+                    <div class="label">Features EKSİK</div>
+                </div>
+
+                <div class="stat-card critical">
+                    <div class="value">%99.7</div>
+                    <div class="label">FAQ EKSİK</div>
+                </div>
+
+                <div class="stat-card critical">
+                    <div class="value">%99.7</div>
+                    <div class="label">Excerpt EKSİK</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="value">%53</div>
+                    <div class="label">Primary Specs EKSİK</div>
+                </div>
+
+                <div class="stat-card critical">
+                    <div class="value">47 chr</div>
+                    <div class="label">Body içerik (sadece başlık!)</div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3>🚨 Acil Müdahale Gereken Alanlar</h3>
+                <ul>
+                    <li><strong>Use Cases (Kullanım Alanları):</strong> 690 üründe hiç yok!</li>
+                    <li><strong>Features (Özellikler):</strong> 690 üründe hiç yok!</li>
+                    <li><strong>Body İçerik:</strong> Sadece başlık tekrarı (47 karakter)</li>
+                    <li><strong>Görsel:</strong> Hero hariç tüm görseller silinmiş</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎨 YENİ GÖREV: DALL-E ile Görsel Üretimi</h2>
+
+            <div class="task-section new">
+                <h3>📸 Yapay Görsel Stratejisi <span class="priority-badge priority-new">YENİ</span></h3>
+
+                <div class="task-item">
+                    <h4>🎯 Hedef</h4>
+                    <p>
+                        Her yedek parça ürünü için gerçekçi, profesyonel depo/raf görseli oluştur.
+                        Görseller gerçek gibi görünmeli ama yapay olduğu belli olmamalı.
+                    </p>
+                </div>
+
+                <div class="task-item">
+                    <h4>🖼️ Görsel Özellikleri</h4>
+                    <p>
+                        <strong>Tema:</strong> Temiz, profesyonel forklift yedek parça deposu<br>
+                        <strong>Kompozisyon:</strong> Rafta/depoda ÇOKLU ürün (10-20 adet)<br>
+                        <strong>Açı:</strong> Hafif yandan, ürünlerin net göründüğü açı<br>
+                        <strong>Aydınlatma:</strong> Profesyonel depo aydınlatması, gölgeler yumuşak<br>
+                        <strong>Renk:</strong> Gerçekçi renkler, oversaturate değil<br>
+                        <strong>Boyut:</strong> 1024x1024 (DALL-E 3) veya 1024x1024 (DALL-E 2)
+                    </p>
+                </div>
+
+                <div class="image-example">
+                    <h4 style="color: #8b5cf6; margin-bottom: 15px;">💡 Örnek Prompt Şablonu</h4>
+                    <div class="code-example" style="border-left: 3px solid #8b5cf6;">
+<strong>Lastik için:</strong>
+"Professional warehouse photo of multiple black solid forklift tires (15x4-1/2-8 size)
+stacked on industrial shelves. Clean, well-lit warehouse environment.
+Realistic product photography style. Industrial storage facility.
+No text, no logos, no people. High quality, photorealistic."
+
+<strong>Ampul için:</strong>
+"Professional warehouse photo of multiple 12V automotive bulbs
+displayed on organized shelves. Clean industrial storage.
+Realistic product photography. Bright warehouse lighting.
+Dozens of bulbs visible. No text, no logos. Photorealistic."
+
+<strong>Rulman için:</strong>
+"Professional warehouse photo of multiple industrial bearings
+neatly arranged on metal shelves. Clean warehouse environment.
+Realistic product photography style. Industrial parts storage.
+No text, no logos, no people. High quality, photorealistic."
+                    </div>
+                </div>
+
+                <div class="task-item">
+                    <h4>🔧 Teknik İmplementasyon</h4>
+                    <p>
+                        <strong>1. DALL-E 3 vs DALL-E 2:</strong>
+                    </p>
+                    <div class="code-example">
+// DALL-E 3 (Daha kaliteli, daha pahalı)
+$image = OpenAI::images()->create([
+    'model' => 'dall-e-3',
+    'prompt' => $promptText,
+    'size' => '1024x1024',
+    'quality' => 'standard', // veya 'hd'
+    'n' => 1,
+]);
+Cost: $0.040/image (standard) | $0.080/image (HD)
+
+// DALL-E 2 (Daha ucuz, yeterli kalite)
+$image = OpenAI::images()->create([
+    'model' => 'dall-e-2',
+    'prompt' => $promptText,
+    'size' => '1024x1024',
+    'n' => 1,
+]);
+Cost: $0.020/image
+                    </div>
+
+                    <p style="margin-top: 15px;">
+                        <strong>2. Görseli İndirme ve Kaydetme:</strong>
+                    </p>
+                    <div class="code-example">
+// DALL-E'den URL gelir
+$imageUrl = $response->data[0]->url;
+
+// Download
+$imageContent = file_get_contents($imageUrl);
+
+// Media Library'ye kaydet
+$product->addMediaFromString($imageContent)
+    ->usingFileName('ai-generated-' . $product->product_id . '.png')
+    ->toMediaCollection('featured_image');
+                    </div>
+                </div>
+
+                <div class="task-item">
+                    <h4>📍 Görsellerin Yerleştirilmesi</h4>
+                    <p>
+                        <strong>Opsiyon 1: Featured Image (ÖNERİLEN)</strong><br>
+                        • Hero bölümünde otomatik gösterilir<br>
+                        • Mevcut sisteme entegre<br>
+                        • Kod değişikliği minimal
+                    </p>
+                    <div class="code-example">
+// Featured image olarak kaydet
+$product->addMedia($imagePath)
+    ->toMediaCollection('featured_image');
+
+// View'da otomatik gösterilir (mevcut kod)
+$featuredImage = getFirstMediaWithFallback($item);
+                    </div>
+
+                    <p style="margin-top: 15px;">
+                        <strong>Opsiyon 2: Body İçinde (ALTERNATİF)</strong><br>
+                        • Body içeriğine HTML img tag ekle<br>
+                        • Lightbox ile büyütme<br>
+                        • Daha fazla kontrol
+                    </p>
+                    <div class="code-example">
+// Body içeriğine ekle
+$bodyContent = $product->body['tr'] ?? '';
+$bodyContent .= '
+&lt;div class="product-images-grid my-8"&gt;
+    &lt;img src="' . $imageUrl . '"
+         alt="' . $product->title['tr'] . '"
+         class="w-full rounded-xl shadow-lg"
+         loading="lazy"&gt;
+&lt;/div&gt;
+';
+$product->body = ['tr' => $bodyContent, 'en' => $bodyContent];
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>💰 Güncellenmiş Maliyet Analizi</h2>
+
+            <table class="cost-table">
+                <thead>
+                    <tr>
+                        <th>Hizmet</th>
+                        <th>Miktar</th>
+                        <th>Birim Fiyat</th>
+                        <th>Toplam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>DALL-E 2 Görsel</strong></td>
+                        <td>690 ürün</td>
+                        <td>$0.020/image</td>
+                        <td><strong>$13.80</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>DALL-E 3 Görsel (Alternatif)</strong></td>
+                        <td>690 ürün</td>
+                        <td>$0.040/image</td>
+                        <td><strong>$27.60</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>GPT-4 İçerik (FAQ+Excerpt+Features+UseCases)</strong></td>
+                        <td>690 ürün × 4 field</td>
+                        <td>~$0.01/ürün</td>
+                        <td><strong>$6.90</strong></td>
+                    </tr>
+                    <tr style="background: rgba(59, 130, 246, 0.2);">
+                        <td colspan="3"><strong>TOPLAM (DALL-E 2 + GPT-4)</strong></td>
+                        <td><strong>$20.70</strong></td>
+                    </tr>
+                    <tr style="background: rgba(251, 191, 36, 0.2);">
+                        <td colspan="3"><strong>TOPLAM (DALL-E 3 + GPT-4)</strong></td>
+                        <td><strong>$34.50</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="task-item">
+                <h4>💡 Maliyet Optimizasyonu</h4>
+                <p>
+                    <strong>Önerilen:</strong> DALL-E 2 kullan ($13.80 tasarruf)<br>
+                    <strong>Sebep:</strong> Yedek parça görselleri için DALL-E 2 kalitesi yeterli.<br>
+                    <strong>Toplam Maliyet:</strong> $20.70 (tüm 690 ürün için)
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>📋 Güncellenmiş Görev Listesi (7 Görev)</h2>
+
+            <div class="task-section">
+                <h3>1. Layout Düzeltme <span class="priority-badge priority-high">Yüksek</span></h3>
+                <p>Sticky kolondan görsel alanını kaldır, yazıyı full genişliğe çıkar.</p>
+            </div>
+
+            <div class="task-section new">
+                <h3>2. Görsel Üretimi (DALL-E) <span class="priority-badge priority-new">YENİ</span></h3>
+                <p>690 ürün için DALL-E 2 ile gerçekçi depo görseli oluştur ve featured_image olarak kaydet.</p>
+            </div>
+
+            <div class="task-section">
+                <h3>3. FAQ Oluştur <span class="priority-badge priority-critical">Kritik</span></h3>
+                <p>688 ürün için GPT-4 ile 5 soru-cevap oluştur.</p>
+            </div>
+
+            <div class="task-section">
+                <h3>4. Excerpt Ekle <span class="priority-badge priority-critical">Kritik</span></h3>
+                <p>688 ürün için 150-200 karakter kısa açıklama oluştur.</p>
+            </div>
+
+            <div class="task-section">
+                <h3>5. Features Ekle <span class="priority-badge priority-critical">Kritik</span></h3>
+                <p>690 ürün için ürün özelliklerini (3-5 madde) oluştur.</p>
+            </div>
+
+            <div class="task-section">
+                <h3>6. Use Cases Ekle <span class="priority-badge priority-critical">Kritik</span></h3>
+                <p>690 ürün için kullanım alanlarını (2-3 senaryo) oluştur.</p>
+            </div>
+
+            <div class="task-section">
+                <h3>7. Body İçerik Zenginleştir <span class="priority-badge priority-high">Yüksek</span></h3>
+                <p>Body içeriğini 300-500 kelimeye çıkar, ürün detaylarını ekle.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>⏱️ Süre Tahmini (Revize)</h2>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="value">12-18 saat</div>
+                    <div class="label">Toplam İşlem Süresi<br>(DALL-E + GPT dahil)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="value">4-6 saat</div>
+                    <div class="label">Geliştirme Süresi<br>(Kod + Test)</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="value">$20.70</div>
+                    <div class="label">Toplam Maliyet<br>(DALL-E 2 + GPT-4)</div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>🚀 Uygulama Stratejisi</h2>
+
+            <div class="task-item">
+                <h4>Aşama 1: Görsel Üretimi (Öncelikli)</h4>
+                <div class="code-example">
+1. DALL-E Service oluştur
+2. Kategori bazlı prompt şablonları hazırla
+   - Lastik kategorisi → "forklift tire" promptu
+   - Ampul kategorisi → "automotive bulb" promptu
+   - Rulman kategorisi → "industrial bearing" promptu
+3. Queue job ile toplu üretim başlat
+4. Featured image olarak kaydet
+5. Hero'da otomatik gösterilsin
+                </div>
+            </div>
+
+            <div class="task-item">
+                <h4>Aşama 2: Metinsel İçerik (Paralel)</h4>
+                <div class="code-example">
+1. GPT-4 ile tek API call'da TÜM içerikleri üret:
+   - FAQ (5 soru-cevap)
+   - Excerpt (150-200 karakter)
+   - Features (3-5 madde)
+   - Use Cases (2-3 senaryo)
+   - Body İçerik (300-500 kelime)
+
+2. Tek seferde kaydet → Performans ↑, Maliyet ↓
+                </div>
+            </div>
+
+            <div class="task-item">
+                <h4>Aşama 3: Layout Düzeltme (Hızlı)</h4>
+                <div class="code-example">
+1. ShopController'a kategori kontrolü ekle
+2. View'a $isYedekParca parametresi gönder
+3. Blade'de şartlı render yap
+4. Test ve deploy
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu (v2 - Görsel Üretimi Eklendi)<br>
+            📊 Güncellenme: 2025-12-03 01:00<br>
+            🏢 Tenant: ixtif.com | 💰 Tahmini Maliyet: $20.70
+        </footer>
+    </div>
+</body>
+</html>

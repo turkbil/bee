@@ -68,7 +68,7 @@ class BlogController extends Controller
 
         $items = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->orderByDesc('created_at')
-            ->simplePaginate(12);
+            ->simplePaginate(36);
 
         // Sadece ana kategorileri çek (parent_id = null), alt kategorilerle birlikte
         $categories = BlogCategory::query()
@@ -158,7 +158,7 @@ class BlogController extends Controller
 
         $items = $query->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->orderByDesc('created_at')
-            ->simplePaginate(12);
+            ->simplePaginate(36);
 
         $currentLocale = app()->getLocale();
         $moduleSlugService = app(\App\Services\ModuleSlugService::class);
@@ -185,7 +185,7 @@ class BlogController extends Controller
 
             $title = $item->getTranslated('title', $currentLocale);
             $body = $item->getTranslated('body', $currentLocale);
-            $excerpt = $item->getTranslated('excerpt', $currentLocale) ?: Str::limit(strip_tags($body), 150);
+            $excerpt = $item->getCleanExcerpt($currentLocale) ?: Str::limit(strip_tags($body), 150);
 
             // Helper function ile multi-collection fallback
             $featuredMedia = getFirstMediaWithFallback($item);
@@ -243,7 +243,7 @@ class BlogController extends Controller
             ->whereIn('blog_category_id', $categoryIds)
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->orderByDesc('created_at')
-            ->simplePaginate(12);
+            ->simplePaginate(36);
 
         // Tüm kategorileri çek (slider için)
         $categories = BlogCategory::query()
@@ -338,7 +338,7 @@ class BlogController extends Controller
             ->whereHas('tags', fn ($query) => $query->where('slug', $resolvedTag->slug))
             ->orderByRaw('COALESCE(published_at, created_at) DESC')
             ->orderByDesc('created_at')
-            ->simplePaginate(10);
+            ->simplePaginate(36);
 
         $displayTag = $resolvedTag->name;
         $moduleTitle = "#{$displayTag} Etiketli Yazılar";

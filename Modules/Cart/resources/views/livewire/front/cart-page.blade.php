@@ -68,6 +68,26 @@
                                                 {{ $item->item_description }}
                                             </p>
                                         @endif
+
+                                        {{-- Subscription Cycle Info --}}
+                                        @if($item->cartable_type === 'Modules\Subscription\App\Models\SubscriptionPlan' && $item->metadata)
+                                            @php
+                                                $metadata = is_array($item->metadata) ? $item->metadata : json_decode($item->metadata, true);
+                                                $cycleLabel = $metadata['cycle_label']['tr'] ?? $metadata['cycle_label']['en'] ?? $metadata['cycle_label'] ?? null;
+                                                $durationDays = $metadata['duration_days'] ?? null;
+                                            @endphp
+                                            @if($cycleLabel || $durationDays)
+                                            <div class="mt-2 inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full text-xs font-semibold">
+                                                <i class="fas fa-calendar-days"></i>
+                                                @if($cycleLabel)
+                                                    <span>{{ $cycleLabel }}</span>
+                                                @endif
+                                                @if($durationDays)
+                                                    <span>({{ $durationDays }} {{ __('gün') }})</span>
+                                                @endif
+                                            </div>
+                                            @endif
+                                        @endif
                                     </div>
 
                                     {{-- Remove Button --}}
@@ -85,7 +105,8 @@
 
                                 {{-- Price & Quantity --}}
                                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                                    {{-- Quantity Controls --}}
+                                    {{-- Quantity Controls (Gizle subscription için) --}}
+                                    @if($item->cartable_type !== 'Modules\Subscription\App\Models\SubscriptionPlan')
                                     <div class="flex items-center gap-3">
                                         <span class="text-sm text-gray-600 dark:text-gray-400">{{ __('cart::front.quantity') }}:</span>
                                         <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
@@ -105,6 +126,7 @@
                                             </button>
                                         </div>
                                     </div>
+                                    @endif
 
                                     {{-- Price --}}
                                     <div class="text-right">

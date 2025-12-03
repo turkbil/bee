@@ -31,9 +31,32 @@ class BillingProfile extends BaseModel
         'is_default',
     ];
 
+    /**
+     * BaseModel'den gelen gereksiz alanları engelle
+     */
+    protected $guarded = [
+        'is_active',  // billing_profiles tablosunda bu column yok
+        'slug',       // billing_profiles slug kullanmaz
+    ];
+
+    /**
+     * BaseModel'den gelen varsayılan is_active'i kaldır
+     */
+    protected $attributes = [
+        // is_active yok - billing_profiles bu column'u kullanmaz
+    ];
+
     protected $casts = [
         'is_default' => 'boolean',
     ];
+
+    /**
+     * Sluggable - DEVRE DIŞI (BillingProfile slug kullanmaz)
+     */
+    public function sluggable(): array
+    {
+        return []; // Slug generation disabled
+    }
 
     /**
      * User relation

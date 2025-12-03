@@ -19,8 +19,27 @@ class CartWidget extends Component
 
     public function mount()
     {
-        // Cart yükleme @script'te localStorage'dan yapılacak
-        // Session bazlı yükleme kaldırıldı - localStorage ile senkron kalması için
+        // 🔐 Kullanıcı login ise customer_id ile cart yükle
+        if (auth()->check()) {
+            $customerId = auth()->id();
+            $cartService = app(CartService::class);
+
+            // Kullanıcının aktif cart'ını bul
+            $cart = \Modules\Cart\App\Models\Cart::where('customer_id', $customerId)
+                ->where('status', 'active')
+                ->first();
+
+            if ($cart) {
+                $this->loadCartData($cart);
+                \Log::info('🔐 CartWidget: Loaded user cart on mount', [
+                    'customer_id' => $customerId,
+                    'cart_id' => $cart->cart_id,
+                ]);
+                return;
+            }
+        }
+
+        // Guest kullanıcı - localStorage'dan yüklenecek (@script'te)
         $this->items = [];
         $this->itemCount = 0;
         $this->subtotal = 0.0;
@@ -50,18 +69,55 @@ class CartWidget extends Component
     }
 
     #[On('cartUpdated')]
-    public function refreshCart()
+    public function refreshCart($cartId = null, $itemCount = null)
     {
-        \Log::info('🔄 CartWidget: refreshCart called');
+        \Log::info('🔄 CartWidget: refreshCart called', ['cart_id' => $cartId, 'item_count' => $itemCount]);
 
+        // Event'ten cart_id gelirse direkt onu kullan (performanslı)
+        if ($cartId) {
+            $this->refreshCartById($cartId);
+            return;
+        }
+
+        // Fallback: localStorage'dan cart_id al
+        $localCartId = request()->cookie('cart_id') ?? null;
+        if ($localCartId) {
+            \Log::info('🔄 CartWidget: Using cart_id from cookie', ['cart_id' => $localCartId]);
+            $this->refreshCartById(intval($localCartId));
+            return;
+        }
+
+        // Son çare: Session ile cart bul
         $cartService = app(CartService::class);
         $sessionId = session()->getId();
         $customerId = auth()->check() ? auth()->id() : null;
 
-        // Session ile cart bul (oluşturma - API oluşturur)
         $cart = $cartService->getCart($customerId, $sessionId);
-
         $this->loadCartData($cart);
+    }
+
+    /**
+     * Optimistic Update - Badge'i anında artır (API beklemeden)
+     */
+    #[On('optimisticAdd')]
+    public function optimisticAdd($quantity = 1)
+    {
+        \Log::info('⚡ CartWidget: Optimistic Add', ['quantity' => $quantity]);
+
+        // Badge'i anında artır
+        $this->itemCount += $quantity;
+    }
+
+    /**
+     * Optimistic Update Rollback - API fail olursa geri al
+     */
+    #[On('optimisticRollback')]
+    public function optimisticRollback($quantity = 1)
+    {
+        \Log::info('🔄 CartWidget: Optimistic Rollback', ['quantity' => $quantity]);
+
+        // Badge'i geri al
+        $this->itemCount = max(0, $this->itemCount - $quantity);
     }
 
     /**
@@ -91,6 +147,7 @@ class CartWidget extends Component
                     'tax_rate' => (float) ($item->tax_rate ?? 0),
                     'tax_amount' => (float) ($item->tax_amount ?? 0),
                     'total' => (float) ($item->total ?? $item->subtotal),
+                    'cartable_type' => $item->cartable_type, // Subscription kontrolü için
                 ];
             })->toArray();
 
@@ -137,6 +194,9 @@ class CartWidget extends Component
             $cart->recalculateTotals();
             $this->loadCartData($cart);
 
+            // 🔄 CartPage'i güncelle
+            $this->dispatch('cartUpdated');
+
             \Log::info('✅ CartWidget: Item removed');
         }
     }
@@ -160,6 +220,9 @@ class CartWidget extends Component
             $item->recalculate();
             $cart->recalculateTotals();
             $this->loadCartData($cart);
+
+            // 🔄 CartPage'i güncelle
+            $this->dispatch('cartUpdated');
 
             \Log::info('✅ CartWidget: Quantity increased', ['new_qty' => $item->quantity]);
         }
@@ -189,6 +252,9 @@ class CartWidget extends Component
             }
             $cart->recalculateTotals();
             $this->loadCartData($cart);
+
+            // 🔄 CartPage'i güncelle
+            $this->dispatch('cartUpdated');
 
             \Log::info('✅ CartWidget: Quantity decreased');
         }

@@ -16,6 +16,9 @@ Route::get('/cart', \Modules\Cart\App\Http\Livewire\Front\CartPage::class)->name
 Route::get('/shop/checkout', \Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew::class)->name('shop.checkout');
 Route::get('/shop/payment/{orderNumber}', [\Modules\Shop\App\Http\Controllers\PaymentPageController::class, 'show'])->name('shop.payment.page');
 
+// 👑 SUBSCRIPTION PLANS (tek route yeterli)
+Route::get('/subscription/plans', \Modules\Subscription\App\Http\Livewire\Front\SubscriptionPlansComponent::class)->name('subscription.plans');
+
 // 💳 PAYMENT ROUTES
 Route::get('/payment/success', [\Modules\Payment\App\Http\Controllers\PaymentSuccessController::class, 'show'])->name('payment.success');
 
@@ -29,6 +32,11 @@ require __DIR__.'/landing.php';
 
 // DESIGN LIBRARY STATIC FILES - MUST BE FIRST, BEFORE ADMIN & CATCHALL ROUTES
 Route::get('design', [App\Http\Controllers\DesignLibraryController::class, 'index'])->name('designs.index');
+
+// 🧪 TEST & DEVELOPMENT ROUTES (BEFORE catch-all!)
+require __DIR__.'/test.php';
+
+// Design catch-all route (must be LAST!)
 Route::get('design/{file}', [App\Http\Controllers\DesignLibraryController::class, 'show'])->where('file', '.*')->name('designs.show');
 
 // README STATIC HTML FILES - Serve without database/tenant middleware
@@ -624,11 +632,11 @@ Route::middleware([InitializeTenancy::class, 'site'])
             ->group(function () {
                 // Shop Category (2-level route)
                 Route::get('/kategori/{slug}', [\Modules\Shop\App\Http\Controllers\Front\ShopController::class, 'category'])
-                    ->name('shop.category.explicit');
+                    ->name('shop.category');
 
                 // Shop Brand (2-level route)
                 Route::get('/brand/{slug}', [\Modules\Shop\App\Http\Controllers\Front\ShopController::class, 'brand'])
-                    ->name('shop.brand.explicit');
+                    ->name('shop.brand');
             });
 
         // ⚡ BLOG MODULE EXPLICIT ROUTES (catch-all'dan ÖNCE tanımlanmalı!)

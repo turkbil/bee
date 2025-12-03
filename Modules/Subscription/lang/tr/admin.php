@@ -10,6 +10,7 @@ return [
     'plans' => 'Abonelik Planları',
     'new_plan' => 'Yeni Plan',
     'edit_plan' => 'Plan Düzenle',
+    'plan_information' => 'Plan Bilgileri',
     'plan_name' => 'Plan Adı',
     'pricing' => 'Fiyatlandırma',
     'price_monthly' => 'Aylık Fiyat',

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero 3D Isometric - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Space Grotesk', sans-serif; }
+
+        .isometric {
+            transform: rotateX(45deg) rotateZ(45deg);
+            transform-style: preserve-3d;
+        }
+
+        .isometric-card {
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .isometric-card:hover {
+            transform: translateZ(60px) scale(1.05);
+            z-index: 100;
+        }
+
+        @keyframes rotate-3d {
+            0%, 100% { transform: rotateY(0deg) rotateX(0deg); }
+            25% { transform: rotateY(10deg) rotateX(5deg); }
+            50% { transform: rotateY(0deg) rotateX(10deg); }
+            75% { transform: rotateY(-10deg) rotateX(5deg); }
+        }
+
+        .cube-3d {
+            transform-style: preserve-3d;
+            animation: rotate-3d 10s ease-in-out infinite;
+        }
+
+        .card-face {
+            backface-visibility: hidden;
+        }
+
+        @keyframes pulse-3d {
+            0%, 100% { transform: scale3d(1, 1, 1); }
+            50% { transform: scale3d(1.05, 1.05, 1.05); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-white min-h-screen">
+
+    <!-- Navigation -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-2xl border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">14 / 20</div>
+                    <div class="text-xs text-purple-300">3D ISOMETRIC</div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="design-hero-13.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <a href="design-hero-15.html" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO-014: 3D ISOMETRIC INTERACTIVE CARDS -->
+    <section id="hero-014" class="min-h-screen pt-32 pb-20 relative overflow-hidden"
+             x-data="{
+                activeCard: null,
+                cards: [
+                    {
+                        id: 1,
+                        title: 'Akıllı Arama',
+                        subtitle: 'AI Search',
+                        icon: 'fa-brain',
+                        color: 'from-cyan-500 to-blue-600',
+                        stat: '500+',
+                        desc: 'Yapay zeka destekli gelişmiş arama motoru'
+                    },
+                    {
+                        id: 2,
+                        title: 'Real-Time Stok',
+                        subtitle: 'Live Inventory',
+                        icon: 'fa-chart-line',
+                        color: 'from-purple-500 to-pink-600',
+                        stat: '24/7',
+                        desc: 'Gerçek zamanlı envanter takibi'
+                    },
+                    {
+                        id: 3,
+                        title: 'Express Kargo',
+                        subtitle: 'Fast Delivery',
+                        icon: 'fa-rocket',
+                        color: 'from-green-500 to-emerald-600',
+                        stat: '< 24h',
+                        desc: 'Hızlı teslimat garantisi'
+                    },
+                    {
+                        id: 4,
+                        title: 'Güvenlik',
+                        subtitle: 'Security',
+                        icon: 'fa-shield-halved',
+                        color: 'from-orange-500 to-red-600',
+                        stat: 'SSL',
+                        desc: '256-bit güvenli ödeme'
+                    }
+                ]
+             }">
+
+        <!-- Animated Background -->
+        <div class="absolute inset-0">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+
+            <!-- Top Section -->
+            <div class="text-center mb-20">
+                <div class="inline-block px-6 py-3 bg-white/10 backdrop-blur-xl rounded-full mb-8 border border-white/20">
+                    <span class="text-sm font-bold">🎯 3D INTERACTIVE PLATFORM</span>
+                </div>
+                <h1 class="text-7xl md:text-8xl font-black mb-6">
+                    <span class="block">İnteraktif</span>
+                    <span class="block bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
+                        Deneyim
+                    </span>
+                </h1>
+                <p class="text-2xl text-purple-200 max-w-3xl mx-auto leading-relaxed">
+                    3D kartlara hover yapın ve özellikleri keşfedin
+                </p>
+            </div>
+
+            <!-- 3D Isometric Cards Grid -->
+            <div class="perspective-1000 max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
+                     style="perspective: 1000px;">
+
+                    <template x-for="card in cards" :key="card.id">
+                        <div @mouseenter="activeCard = card.id"
+                             @mouseleave="activeCard = null"
+                             class="isometric-card group cursor-pointer">
+
+                            <div :class="'bg-gradient-to-br ' + card.color + ' p-8 rounded-3xl border-2 border-white/20 relative overflow-hidden'"
+                                 style="min-height: 320px;">
+
+                                <!-- Card Background Effect -->
+                                <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all"></div>
+                                <div class="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+
+                                <!-- Icon -->
+                                <div class="relative mb-6">
+                                    <div class="w-20 h-20 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all">
+                                        <i :class="'fa-solid ' + card.icon + ' text-4xl text-white'" x-show="activeCard !== card.id"></i>
+                                        <i :class="'fa-solid ' + card.icon + ' text-4xl text-white'" x-show="activeCard === card.id" style="display: none;"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="relative">
+                                    <div class="text-xs text-white/60 mb-2" x-text="card.subtitle"></div>
+                                    <h3 class="text-2xl font-black text-white mb-4" x-text="card.title"></h3>
+
+                                    <!-- Stat (Default State) -->
+                                    <div x-show="activeCard !== card.id" class="transition-all">
+                                        <div class="text-5xl font-black text-white mb-2" x-text="card.stat"></div>
+                                        <div class="text-sm text-white/80">Aktif Sistem</div>
+                                    </div>
+
+                                    <!-- Description (Hover State) -->
+                                    <div x-show="activeCard === card.id"
+                                         x-transition:enter="transition ease-out duration-300"
+                                         x-transition:enter-start="opacity-0 transform scale-90"
+                                         x-transition:enter-end="opacity-100 transform scale-100"
+                                         style="display: none;">
+                                        <p class="text-white/90 text-sm leading-relaxed mb-4" x-text="card.desc"></p>
+                                        <button class="px-6 py-2 bg-white/20 backdrop-blur-xl rounded-lg text-sm font-bold hover:bg-white/30 transition-all">
+                                            Detaylar <i class="fa-solid fa-arrow-right ml-2"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Corner Badge -->
+                                <div class="absolute top-4 right-4">
+                                    <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Bottom CTA Section -->
+            <div class="mt-20 text-center">
+                <div class="inline-flex flex-col sm:flex-row gap-4">
+                    <button class="px-12 py-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-2xl font-bold text-xl shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-105">
+                        <i class="fa-solid fa-cube mr-2"></i>
+                        Platform'u Keşfet
+                    </button>
+                    <button class="px-12 py-5 bg-white/10 backdrop-blur-xl border-2 border-white/30 rounded-2xl font-bold text-xl hover:bg-white/20 transition-all">
+                        <i class="fa-solid fa-play-circle mr-2"></i>
+                        3D Demo İzle
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 text-center border border-white/10">
+                    <div class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400 mb-2">500+</div>
+                    <div class="text-sm text-gray-400">Ürün Çeşidi</div>
+                </div>
+                <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 text-center border border-white/10">
+                    <div class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 mb-2">99%</div>
+                    <div class="text-sm text-gray-400">Uptime</div>
+                </div>
+                <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 text-center border border-white/10">
+                    <div class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400 mb-2">24h</div>
+                    <div class="text-sm text-gray-400">Teslimat</div>
+                </div>
+                <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 text-center border border-white/10">
+                    <div class="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-red-400 mb-2">SSL</div>
+                    <div class="text-sm text-gray-400">Güvenlik</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Badge -->
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+            <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-full px-8 py-3">
+                <span class="font-bold">#HERO-014</span>
+                <span class="mx-3 text-purple-400">|</span>
+                <span class="text-xs text-purple-300">3D ISOMETRIC</span>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

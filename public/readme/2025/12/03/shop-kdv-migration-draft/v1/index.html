@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop KDV Sistemi - Migration + Tasarım Draft</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 15px;
+            color: #93c5fd;
+        }
+
+        .alert-box {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+
+        .alert-box h4 {
+            color: #ef4444;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .highlight-box {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+
+        .highlight-box h4 {
+            color: #10b981;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid #3b82f6;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 12px;
+        }
+
+        .info-box h4 {
+            color: #3b82f6;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .code-box {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .design-mockup {
+            background: white;
+            color: #1f2937;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: #f9fafb;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-checkbox:hover {
+            background: #e5e7eb;
+        }
+
+        .form-checkbox input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .price-display {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .price-item {
+            flex: 1;
+        }
+
+        .price-item strong {
+            display: block;
+            color: #92400e;
+            margin-bottom: 5px;
+        }
+
+        .price-item span {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .product-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .product-card h4 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin: 10px 0;
+        }
+
+        .product-price-alt {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .product-price-alt small {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛒 Shop KDV Sistemi - DRAFT</h1>
+            <div class="meta">
+                📅 2025-12-03 | 🎯 Migration + Admin Panel + Frontend Tasarım | 🏢 İxtif
+            </div>
+        </header>
+
+        <!-- SORUN ANALİZİ -->
+        <section>
+            <h2>🚨 Bulunan Sorunlar</h2>
+
+            <div class="alert-box">
+                <h4>❌ Sorun 1: tax_rate Migration Yanlış Yerde!</h4>
+                <ul>
+                    <li><strong>Dosya:</strong> database/migrations/2025_11_14_062442_add_tax_rate_to_shop_products.php</li>
+                    <li><strong>Sorun:</strong> Central migrations klasöründe (database/migrations/)</li>
+                    <li><strong>Olması Gereken:</strong> Tenant migrations klasöründe (database/migrations/tenant/)</li>
+                    <li><strong>Sonuç:</strong> Manuel olarak eklenmişe benziyor (ixtif.com'da mevcut)</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>✅ Mevcut Durum (İxtif Database)</h4>
+                <ul>
+                    <li>✅ <strong>tax_rate:</strong> VAR (decimal 5,2, default: 20.00)</li>
+                    <li>❌ <strong>price_without_tax:</strong> YOK (eklenecek)</li>
+                    <li>✅ <strong>currency:</strong> VAR</li>
+                    <li>✅ <strong>currency_id:</strong> VAR</li>
+                    <li>📦 <strong>Toplam Ürün:</strong> 1.021 adet</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- MİGRATİON PLANI -->
+        <section>
+            <h2>🗄️ Migration Planı</h2>
+
+            <div class="highlight-box">
+                <h4>📋 Yapılacaklar</h4>
+                <p><span class="step-number">1</span> Yeni migration dosyası: <strong>033_add_price_without_tax_to_shop_products.php</strong></p>
+                <p><span class="step-number">2</span> Konum: <strong>Modules/Shop/database/migrations/tenant/</strong></p>
+                <p><span class="step-number">3</span> Eklenecek alan: <strong>price_without_tax (decimal 12,2, nullable)</strong></p>
+                <p><span class="step-number">4</span> Data migration: <strong>base_price → price_without_tax kopyalanacak</strong></p>
+            </div>
+
+            <h3>Migration Mantığı</h3>
+            <div class="code-box">// Tablo yapısına price_without_tax eklenir
+// Alan özellikleri:
+//   - decimal(12, 2) formatında (örnek: 1234567890.12)
+//   - nullable (boş olabilir)
+//   - base_price alanından sonra gelecek
+//   - Açıklama: "KDV hariç fiyat (runtime calculation için kaynak veri)"
+
+// Data Migration Stratejisi:
+// Adım 1: Mevcut base_price değerleri price_without_tax'a kopyalanır
+// Adım 2: tax_rate NULL ise 20.00 olarak ayarlanır
+//
+// Varsayım: Mevcut base_price değerleri KDV HARİÇ girilmiş
+// (Eğer KDV dahil girildiyse kullanıcıya sorulmalı!)
+
+// Geri alma (rollback):
+// price_without_tax alanı silinir</div>
+        </section>
+
+        <!-- RUNTIME HESAPLAMA -->
+        <section>
+            <h2>⚡ Runtime Hesaplama Mantığı</h2>
+
+            <div class="info-box">
+                <h4>🎯 Temel Kural</h4>
+                <p>Database'de SADECE <strong>price_without_tax</strong> ve <strong>tax_rate</strong> saklanır.</p>
+                <p>KDV dahil fiyat → Accessor ile runtime'da hesaplanır.</p>
+            </div>
+
+            <h3>Formüller</h3>
+            <div class="code-box">// KDV Dahil Fiyat Hesaplama (Accessor):
+price_with_tax = price_without_tax × (1 + tax_rate / 100)
+
+// Örnek 1: KDV %20
+price_without_tax = 1.000 TL
+tax_rate = 20
+price_with_tax = 1.000 × (1 + 20/100) = 1.000 × 1.20 = 1.200 TL
+
+// Örnek 2: KDV %10
+price_without_tax = 500 TL
+tax_rate = 10
+price_with_tax = 500 × (1 + 10/100) = 500 × 1.10 = 550 TL
+
+// KDV Tutarı:
+tax_amount = price_with_tax - price_without_tax
+           = 1.200 - 1.000 = 200 TL</div>
+
+            <h3>Neden Runtime?</h3>
+            <ul>
+                <li>✅ KDV oranları değişebilir (örnek: %20 → %18)</li>
+                <li>✅ Tek bir alanı (tax_rate) güncelleyince tüm fiyatlar otomatik güncellenir</li>
+                <li>✅ Database'de gereksiz veri duplicasyonu önlenir</li>
+                <li>✅ Her zaman tutarlı hesaplama garantisi</li>
+            </ul>
+        </section>
+
+        <!-- ADMIN PANEL TASARIMI -->
+        <section>
+            <h2>🎨 Admin Panel Tasarımı</h2>
+
+            <div class="highlight-box">
+                <h4>📍 Sayfa: /admin/shop/manage (Ürün Ekle/Düzenle)</h4>
+                <p>Livewire auto-calculation ile anlık hesaplama yapılacak.</p>
+            </div>
+
+            <div class="design-mockup">
+                <h3 style="color: #1f2937; margin-bottom: 20px;">Fiyatlandırma Bölümü</h3>
+
+                <!-- Setting Checkbox -->
+                <div class="form-group">
+                    <div class="form-checkbox">
+                        <input type="checkbox" checked>
+                        <label style="color: #1f2937; font-weight: 600;">
+                            Fiyat girişi varsayılan: <strong>KDV Dahil</strong>
+                        </label>
+                    </div>
+                    <small style="color: #6b7280; display: block; margin-top: 8px; margin-left: 30px;">
+                        (Ayarlar → shop_tax_default - Kullanıcı isterse değiştirebilir)
+                    </small>
+                </div>
+
+                <hr style="margin: 25px 0; border: 1px solid #e5e7eb;">
+
+                <!-- shop_tax_default = AÇIK (KDV Dahil) -->
+                <h4 style="color: #1f2937; margin-bottom: 15px;">📥 Senaryo 1: KDV Dahil Fiyat Girişi</h4>
+
+                <div class="form-group">
+                    <label class="form-label">KDV Dahil Fiyat (Ana Giriş)</label>
+                    <input type="text" class="form-input" value="1.200,00 TL" placeholder="Buraya giriş yapılır">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">KDV Oranı (%)</label>
+                    <input type="text" class="form-input" value="20" readonly style="background: #e5e7eb;">
+                </div>
+
+                <div class="price-display">
+                    <div class="price-item">
+                        <strong>🔢 Otomatik Hesaplanan (KDV Hariç):</strong>
+                        <span>1.000,00 TL</span>
+                    </div>
+                    <div class="price-item">
+                        <strong>💰 KDV Tutarı:</strong>
+                        <span>200,00 TL</span>
+                    </div>
+                </div>
+
+                <hr style="margin: 35px 0; border: 1px solid #e5e7eb;">
+
+                <!-- shop_tax_default = KAPALI (KDV Hariç) -->
+                <h4 style="color: #1f2937; margin-bottom: 15px;">📥 Senaryo 2: KDV Hariç Fiyat Girişi</h4>
+                <small style="color: #6b7280; display: block; margin-bottom: 15px;">
+                    (Kullanıcı checkbox'ı değiştirdi → KDV Hariç varsayılan oldu)
+                </small>
+
+                <div class="form-group">
+                    <label class="form-label">KDV Hariç Fiyat (Ana Giriş)</label>
+                    <input type="text" class="form-input" value="1.000,00 TL" placeholder="Buraya giriş yapılır">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">KDV Oranı (%)</label>
+                    <input type="text" class="form-input" value="20" readonly style="background: #e5e7eb;">
+                </div>
+
+                <div class="price-display">
+                    <div class="price-item">
+                        <strong>🔢 Otomatik Hesaplanan (KDV Dahil):</strong>
+                        <span>1.200,00 TL</span>
+                    </div>
+                    <div class="price-item">
+                        <strong>💰 KDV Tutarı:</strong>
+                        <span>200,00 TL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>⚙️ Teknik Detay: Livewire Auto-Calculation</h4>
+                <ul>
+                    <li>wire:model.live ile anlık hesaplama</li>
+                    <li>updatedPriceWithTax() → KDV hariç hesapla</li>
+                    <li>updatedPriceWithoutTax() → KDV dahil hesapla</li>
+                    <li>Setting shop_tax_default'a göre hangi alan disabled olacağını belirle</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- FRONTEND TASARIMI -->
+        <section>
+            <h2>🎨 Frontend Tasarımı (Ürün Kartları)</h2>
+
+            <div class="highlight-box">
+                <h4>📍 Sayfalar: Homepage, Category, Shop Index</h4>
+                <p>Setting <strong>shop_product_tax</strong> değerine göre görünüm değişir.</p>
+            </div>
+
+            <h3>Senaryo 1: shop_product_tax = AÇIK (KDV Dahil Göster)</h3>
+            <div class="product-card">
+                <h4>🏗️ Forklift 3 Ton Akülü</h4>
+                <p style="color: #6b7280; margin: 10px 0;">Elektrikli forklift, 3000 kg kaldırma kapasitesi</p>
+                <div class="product-price">1.200,00 TL</div>
+                <small style="color: #10b981; font-weight: 600;">KDV Dahil</small>
+            </div>
+
+            <h3>Senaryo 2: shop_product_tax = KAPALI (KDV Hariç Göster)</h3>
+            <div class="product-card">
+                <h4>🏗️ Forklift 3 Ton Akülü</h4>
+                <p style="color: #6b7280; margin: 10px 0;">Elektrikli forklift, 3000 kg kaldırma kapasitesi</p>
+                <div class="product-price-alt">
+                    1.000,00 TL <small>+ KDV</small>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>⚠️ Önemli: Cart + Checkout HER ZAMAN KDV Dahil!</h4>
+                <p>Ürün kartlarında hangi gösterim seçilirse seçilsin, <strong>sepet ve ödeme sayfalarında HER ZAMAN KDV dahil fiyat gösterilir.</strong></p>
+                <p>Sebep: Kullanıcıyı son adımda yanıltmamak, net fiyat göstermek.</p>
+            </div>
+        </section>
+
+        <!-- ÖZET -->
+        <section>
+            <h2>✅ Özet & Onay Sorusu</h2>
+
+            <div class="highlight-box">
+                <h4>📋 Tüm Yapılacaklar</h4>
+                <ol style="margin-left: 20px;">
+                    <li><strong>Migration:</strong> price_without_tax ekle (033_add_price_without_tax_to_shop_products.php)</li>
+                    <li><strong>Model:</strong> getPriceWithTaxAttribute() accessor ekle (ShopProduct.php)</li>
+                    <li><strong>Admin Livewire:</strong> Auto-calculation ekle (ProductManageComponent.php)</li>
+                    <li><strong>Frontend Blade:</strong> shop_product_tax setting'e göre gösterim (product-card.blade.php)</li>
+                    <li><strong>CartService:</strong> Runtime calculation kullan (accessor çağır)</li>
+                    <li><strong>Subscription:</strong> Aynı mantığı uygula (billing_cycles JSON'a tax ekle)</li>
+                </ol>
+            </div>
+
+            <div class="alert-box">
+                <h4>⚠️ Kritik Soru: Mevcut base_price Değerleri?</h4>
+                <p><strong>Sorun:</strong> 1.021 ürün var, bunların base_price değerleri KDV dahil mi hariç mi girilmiş?</p>
+                <ul>
+                    <li>✅ KDV HARİÇ girildiyse → Direkt price_without_tax'a kopyala</li>
+                    <li>❌ KDV DAHİL girildiyse → Önce KDV'yi çıkar, sonra price_without_tax'a yaz</li>
+                </ul>
+                <p><strong>Varsayımım:</strong> KDV hariç girilmiş (çünkü tax_rate alanı var ve default 20.00)</p>
+                <p><strong>Onayınız?</strong> Bu varsayım doğru mu? Yoksa bir örnek ürüne bakayım mı?</p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI - 2025-12-03
+        </footer>
+    </div>
+</body>
+</html>

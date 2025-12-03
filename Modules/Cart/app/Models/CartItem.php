@@ -50,6 +50,7 @@ class CartItem extends BaseModel
         'currency_id',
         'customization_options',
         'special_instructions',
+        'metadata',
         'in_stock',
         'stock_checked_at',
         'moved_from_wishlist',
@@ -74,6 +75,7 @@ class CartItem extends BaseModel
         'tax_rate' => 'decimal:2',
         'total' => 'decimal:2',
         'customization_options' => 'array',
+        'metadata' => 'array',
         'in_stock' => 'boolean',
         'moved_from_wishlist' => 'boolean',
         'stock_checked_at' => 'datetime',
@@ -300,7 +302,13 @@ class CartItem extends BaseModel
      */
     public function getItemImageAttribute(): ?string
     {
-        // 1. cartable'ın kendi getMainImage() method'u varsa (polymorphic)
+        // 🎯 ÖNCELİK 1: Database'e kaydedilen snapshot image (ShopCartBridge tarafından set edilir)
+        // Bu, sepete eklendiği anki görsel URL'sidir (değişmez)
+        if (!empty($this->attributes['item_image'])) {
+            return $this->attributes['item_image'];
+        }
+
+        // 🎯 ÖNCELİK 2: cartable'ın kendi getMainImage() method'u varsa (polymorphic)
         if ($this->cartable && method_exists($this->cartable, 'getMainImage')) {
             $mainImage = $this->cartable->getMainImage();
             if ($mainImage) {
@@ -309,11 +317,16 @@ class CartItem extends BaseModel
             }
         }
 
-        // 2. Backward compatibility: product_id varsa ShopProduct'tan al
+        // 🎯 ÖNCELİK 3: Backward compatibility - Spatie Media Library
         if ($this->cartable) {
-            // Spatie Media Library - featured_image collection (ShopProduct için)
             if (method_exists($this->cartable, 'getFirstMediaUrl')) {
-                // featured_image collection'ını dene
+                // hero collection'ını dene (YENİ SYSTEM)
+                $mediaUrl = $this->cartable->getFirstMediaUrl('hero');
+                if ($mediaUrl) {
+                    return $mediaUrl;
+                }
+
+                // featured_image collection'ını dene (ESKİ SYSTEM)
                 $mediaUrl = $this->cartable->getFirstMediaUrl('featured_image');
                 if ($mediaUrl) {
                     return $mediaUrl;

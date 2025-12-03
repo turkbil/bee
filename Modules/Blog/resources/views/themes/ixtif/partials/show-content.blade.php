@@ -176,38 +176,7 @@
                             {{-- Favori Butonu (Guest/Auth Aware) --}}
                             @auth
                                 <div class="flex items-center gap-1.5 md:gap-2 cursor-pointer hover:scale-110 transition-transform duration-200"
-                                     x-data="{
-                                         favorited: {{ $item->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
-                                         count: {{ $item->favoritesCount() ?? 0 }},
-                                         loading: false,
-                                         async toggleFavorite() {
-                                             if (this.loading) return;
-                                             this.loading = true;
-                                             try {
-                                                 const response = await fetch('/api/favorites/toggle', {
-                                                     method: 'POST',
-                                                     headers: {
-                                                         'Content-Type': 'application/json',
-                                                         'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
-                                                         'Accept': 'application/json'
-                                                     },
-                                                     body: JSON.stringify({
-                                                         model_class: '{{ addslashes(get_class($item)) }}',
-                                                         model_id: {{ $item->id }}
-                                                     })
-                                                 });
-                                                 const data = await response.json();
-                                                 if (data.success) {
-                                                     this.favorited = data.data.is_favorited;
-                                                     this.count = data.data.favorites_count;
-                                                 }
-                                             } catch (error) {
-                                                 console.error('Favorite error:', error);
-                                             } finally {
-                                                 this.loading = false;
-                                             }
-                                         }
-                                     }"
+                                     x-data="favoriteButton('{{ addslashes(get_class($item)) }}', {{ $item->id }}, {{ $item->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}, {{ $item->favoritesCount() ?? 0 }})"
                                      @click="toggleFavorite()">
                                     <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
                                        class="text-sm md:text-lg transition-colors"></i>

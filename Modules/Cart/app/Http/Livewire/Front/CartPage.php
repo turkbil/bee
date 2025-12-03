@@ -95,8 +95,9 @@ class CartPage extends Component
             $item = $this->cart->items()->find($cartItemId);
 
             if ($item) {
-                $item->delete();
-                $this->cart->recalculate();
+                // CartService kullan (consistent)
+                $cartService = app(CartService::class);
+                $cartService->removeItem($item);
             }
 
             $this->loadCart();

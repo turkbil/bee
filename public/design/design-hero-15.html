@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Bento Grid - ixtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; }
+
+        @keyframes slide-in-up {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .bento-item {
+            animation: slide-in-up 0.6s ease-out forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+            opacity: 0;
+        }
+
+        @keyframes count-up {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .stat-number {
+            animation: count-up 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
+
+    <!-- Navigation -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="px-4 py-2 bg-gray-100 dark:bg-gray-900 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-all">
+                    <i class="fa-solid fa-home"></i>
+                </a>
+                <div class="text-center">
+                    <div class="text-2xl font-bold">15 / 20</div>
+                    <div class="text-xs text-gray-500">BENTO GRID</div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="design-hero-14.html" class="px-4 py-2 bg-gray-100 dark:bg-gray-900 rounded-lg">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <a href="design-hero-16.html" class="px-4 py-2 bg-gray-100 dark:bg-gray-900 rounded-lg">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO-015: BENTO GRID DASHBOARD STYLE -->
+    <section id="hero-015" class="min-h-screen pt-28 pb-20 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900">
+        <div class="container mx-auto px-6">
+
+            <!-- Bento Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-6 max-w-7xl mx-auto">
+
+                <!-- Main Hero Card (Spans 6 columns, 2 rows) -->
+                <div class="md:col-span-6 lg:col-span-6 md:row-span-2 bento-item bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl p-12 text-white relative overflow-hidden" style="--delay: 1;">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                    <div class="relative z-10">
+                        <div class="inline-block px-4 py-2 bg-white/20 backdrop-blur-xl rounded-full mb-6">
+                            <span class="text-sm font-bold">v4.0 Platform</span>
+                        </div>
+                        <h1 class="text-6xl font-black leading-tight mb-6">
+                            Endüstriyel<br/>
+                            Platform
+                        </h1>
+                        <p class="text-xl text-blue-100 mb-8 max-w-md">
+                            Yeni nesil istif ekipmanı tedarik sistemi. Akıllı, hızlı, güvenli.
+                        </p>
+                        <button class="px-8 py-4 bg-white text-blue-600 rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition-all">
+                            Başla <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Card 1 -->
+                <div class="md:col-span-3 lg:col-span-3 bento-item bg-white dark:bg-gray-900 rounded-3xl p-8 border-2 border-gray-200 dark:border-gray-800" style="--delay: 2;">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                            <i class="fa-solid fa-database text-white text-2xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Ürün Database</div>
+                            <div class="text-4xl font-black stat-number">500+</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <div class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full">
+                            <i class="fa-solid fa-arrow-up mr-1"></i>
+                            +12%
+                        </div>
+                        <span class="text-gray-500 dark:text-gray-400">bu ay</span>
+                    </div>
+                </div>
+
+                <!-- Live Status Card -->
+                <div class="md:col-span-3 lg:col-span-3 bento-item bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl p-8 text-white" style="--delay: 3;">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <div class="text-sm opacity-80">Sistem Durumu</div>
+                            <div class="text-3xl font-black">Aktif</div>
+                        </div>
+                        <div class="w-4 h-4 bg-white rounded-full animate-pulse"></div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span>Uptime</span>
+                            <span class="font-bold">99.9%</span>
+                        </div>
+                        <div class="w-full bg-white/20 rounded-full h-2">
+                            <div class="bg-white h-2 rounded-full" style="width: 99.9%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="md:col-span-3 lg:col-span-3 bento-item bg-white dark:bg-gray-900 rounded-3xl p-8 border-2 border-gray-200 dark:border-gray-800" style="--delay: 4;">
+                    <div class="text-sm font-bold text-gray-500 dark:text-gray-400 mb-4">Hızlı İşlemler</div>
+                    <div class="space-y-3">
+                        <button class="w-full p-4 bg-gray-100 dark:bg-gray-800 rounded-xl text-left hover:bg-gray-200 dark:hover:bg-gray-700 transition-all group">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-search text-blue-600"></i>
+                                    <span class="font-semibold">Arama</span>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-gray-400 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </button>
+                        <button class="w-full p-4 bg-gray-100 dark:bg-gray-800 rounded-xl text-left hover:bg-gray-200 dark:hover:bg-gray-700 transition-all group">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-shopping-cart text-purple-600"></i>
+                                    <span class="font-semibold">Sipariş</span>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-gray-400 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Delivery Speed -->
+                <div class="md:col-span-3 lg:col-span-3 bento-item bg-gradient-to-br from-orange-500 to-red-600 rounded-3xl p-8 text-white" style="--delay: 5;">
+                    <i class="fa-solid fa-truck-fast text-5xl mb-4 opacity-80"></i>
+                    <div class="text-sm opacity-80 mb-2">Teslimat Hızı</div>
+                    <div class="text-5xl font-black mb-2">&lt; 24h</div>
+                    <div class="text-sm opacity-80">Express kargo</div>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="md:col-span-6 lg:col-span-6 bento-item bg-white dark:bg-gray-900 rounded-3xl p-8 border-2 border-gray-200 dark:border-gray-800" style="--delay: 6;">
+                    <div class="text-2xl font-black mb-6">Platform Özellikleri</div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                            <i class="fa-solid fa-brain text-2xl text-cyan-600 mb-2"></i>
+                            <div class="font-bold">AI Arama</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">Akıllı</div>
+                        </div>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                            <i class="fa-solid fa-chart-line text-2xl text-purple-600 mb-2"></i>
+                            <div class="font-bold">Real-Time</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">Canlı</div>
+                        </div>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                            <i class="fa-solid fa-shield-check text-2xl text-green-600 mb-2"></i>
+                            <div class="font-bold">Güvenli</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">SSL</div>
+                        </div>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                            <i class="fa-solid fa-headset text-2xl text-blue-600 mb-2"></i>
+                            <div class="font-bold">Destek</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">7/24</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Badge -->
+                <div class="md:col-span-3 lg:col-span-3 bento-item bg-gradient-to-br from-indigo-600 to-purple-600 rounded-3xl p-8 text-white flex items-center justify-center text-center" style="--delay: 7;">
+                    <div>
+                        <i class="fa-solid fa-shield-halved text-6xl mb-4"></i>
+                        <div class="text-2xl font-black">SSL 256</div>
+                        <div class="text-sm opacity-80">Güvenli Ödeme</div>
+                    </div>
+                </div>
+
+                <!-- Support Card -->
+                <div class="md:col-span-3 lg:col-span-3 bento-item bg-white dark:bg-gray-900 rounded-3xl p-8 border-2 border-gray-200 dark:border-gray-800" style="--delay: 8;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-headset text-blue-600"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold">Canlı Destek</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">24/7 Online</div>
+                        </div>
+                    </div>
+                    <button class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all">
+                        <i class="fa-solid fa-message mr-2"></i>
+                        Sohbet Başlat
+                    </button>
+                </div>
+
+                <!-- Testimonial/Trust -->
+                <div class="md:col-span-6 lg:col-span-12 bento-item bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 rounded-3xl p-12 text-center" style="--delay: 9;">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="flex items-center justify-center gap-8 mb-6">
+                            <div class="text-center">
+                                <div class="text-4xl font-black">500+</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Ürün</div>
+                            </div>
+                            <div class="w-px h-12 bg-gray-300 dark:bg-gray-700"></div>
+                            <div class="text-center">
+                                <div class="text-4xl font-black">99%</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Uptime</div>
+                            </div>
+                            <div class="w-px h-12 bg-gray-300 dark:bg-gray-700"></div>
+                            <div class="text-center">
+                                <div class="text-4xl font-black">24h</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Teslimat</div>
+                            </div>
+                            <div class="w-px h-12 bg-gray-300 dark:bg-gray-700"></div>
+                            <div class="text-center">
+                                <div class="text-4xl font-black">SSL</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Güvenlik</div>
+                            </div>
+                        </div>
+                        <p class="text-xl text-gray-600 dark:text-gray-300">
+                            <strong>Profesyonel ekipman tedarikinde</strong> Türkiye'nin en güvenilir dijital platformu
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Badge -->
+        <div class="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
+            <div class="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 rounded-full px-8 py-3 shadow-xl">
+                <span class="font-bold">#HERO-015</span>
+                <span class="mx-3 text-gray-400">|</span>
+                <span class="text-xs text-gray-500">BENTO GRID</span>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

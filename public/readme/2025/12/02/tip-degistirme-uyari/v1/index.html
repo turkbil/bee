@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fatura Profil Tipi Değiştirme - Uyarı Sistemi Tasarımı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .option-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid #334155;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .option-number {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .option-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-fast { background: #10b981; color: white; }
+        .badge-good { background: #f59e0b; color: white; }
+        .badge-best { background: #8b5cf6; color: white; }
+        .badge-recommended { background: #3b82f6; color: white; }
+
+        .option-title {
+            font-size: 1.4rem;
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .option-description {
+            color: #cbd5e1;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .mockup {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #334155;
+            font-size: 0.9rem;
+        }
+
+        .mockup-title {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        /* Browser Confirm Mockup */
+        .browser-confirm {
+            background: white;
+            color: #1e293b;
+            padding: 20px;
+            border-radius: 8px;
+            border: 3px solid #cbd5e1;
+            text-align: center;
+        }
+
+        .browser-confirm-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .browser-confirm-text {
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .browser-confirm-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .browser-confirm-buttons button {
+            padding: 8px 24px;
+            border: 1px solid #cbd5e1;
+            background: #f1f5f9;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Inline Banner Mockup */
+        .inline-banner {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #78350f;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .inline-banner-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Modal Mockup */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            color: #1e293b;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+
+        .modal-text {
+            color: #64748b;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-buttons button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        /* Smart Logic Mockup */
+        .logic-flow {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .logic-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+        }
+
+        .logic-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .logic-icon {
+            background: #3b82f6;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .logic-text {
+            flex: 1;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .logic-text strong {
+            color: #60a5fa;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .pros, .cons {
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .pros {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .cons {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .pros h4, .cons h4 {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .pros h4 { color: #10b981; }
+        .cons h4 { color: #ef4444; }
+
+        .pros ul, .cons ul {
+            list-style: none;
+            font-size: 0.85rem;
+        }
+
+        .pros li, .cons li {
+            padding: 4px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .pros li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .cons li:before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .comparison-table {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .comparison-table td {
+            color: #cbd5e1;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .score {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .star {
+            color: #fbbf24;
+        }
+
+        .star-empty {
+            color: #475569;
+        }
+
+        .recommendation {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+            border: 2px solid #8b5cf6;
+            padding: 30px;
+            border-radius: 16px;
+            margin-top: 40px;
+        }
+
+        .recommendation h3 {
+            color: #a78bfa;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recommendation p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .recommendation strong {
+            color: #60a5fa;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚠️ Fatura Profil Tipi Değiştirme - Uyarı Sistemi</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-02 |
+                🎯 Tenant: ixtif.com |
+                👤 Talep: Tip değiştirirken veri kaybı uyarısı
+            </div>
+        </header>
+
+        <section>
+            <h2>🎯 Problem</h2>
+            <div class="option-card">
+                <p style="line-height: 1.8; color: #cbd5e1;">
+                    Kullanıcı fatura profili oluştururken veya düzenlerken tip değiştirdiğinde
+                    (<strong style="color: #60a5fa;">Bireysel ↔ Kurumsal</strong>) karşı taraftaki veriler
+                    otomatik temizleniyor:
+                </p>
+                <ul style="list-style: none; margin-top: 15px; padding-left: 0;">
+                    <li style="padding: 8px 0; color: #f59e0b;">
+                        <strong>Bireysel → Kurumsal:</strong> TC Kimlik No temizlenir
+                    </li>
+                    <li style="padding: 8px 0; color: #f59e0b;">
+                        <strong>Kurumsal → Bireysel:</strong> Şirket Ünvanı, VKN, Vergi Dairesi temizlenir
+                    </li>
+                </ul>
+                <p style="margin-top: 15px; color: #94a3b8;">
+                    Kullanıcı bu veri kaybından haberdar değil. Uyarı vermeliyiz.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>💡 Çözüm Seçenekleri</h2>
+
+            <div class="option-grid">
+                <!-- Seçenek 1: Browser Confirm -->
+                <div class="option-card">
+                    <div class="option-header">
+                        <div class="option-number">1</div>
+                        <span class="option-badge badge-fast">Hızlı</span>
+                    </div>
+                    <h3 class="option-title">Browser Confirm</h3>
+                    <p class="option-description">
+                        Tarayıcının yerleşik onay kutusunu kullanır. Tip butonuna tıklayınca direkt uyarı çıkar.
+                    </p>
+
+                    <div class="mockup">
+                        <div class="mockup-title">Görünüm</div>
+                        <div class="browser-confirm">
+                            <div class="browser-confirm-icon">⚠️</div>
+                            <div class="browser-confirm-text">
+                                TC Kimlik bilgisi silinecek. Devam edilsin mi?
+                            </div>
+                            <div class="browser-confirm-buttons">
+                                <button>İptal</button>
+                                <button style="background: #3b82f6; color: white; border-color: #3b82f6;">Tamam</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>✅ Artılar</h4>
+                            <ul>
+                                <li>Çok hızlı implementasyon (2 dk)</li>
+                                <li>Ek kod gerektirmez</li>
+                                <li>Her tarayıcıda çalışır</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>❌ Eksiler</h4>
+                            <ul>
+                                <li>Eski görünüm, modern değil</li>
+                                <li>Özelleştirilemez</li>
+                                <li>Mobilde çirkin</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seçenek 2: Inline Banner -->
+                <div class="option-card">
+                    <div class="option-header">
+                        <div class="option-number">2</div>
+                        <span class="option-badge badge-good">Bilgilendirici</span>
+                    </div>
+                    <h3 class="option-title">Inline Uyarı Banner</h3>
+                    <p class="option-description">
+                        Tip değiştiğinde form üstünde sarı uyarı banner gösterilir. Kullanıcı ne olduğunu görür ama veri çoktan silinmiştir.
+                    </p>
+
+                    <div class="mockup">
+                        <div class="mockup-title">Görünüm</div>
+                        <div class="inline-banner">
+                            <div class="inline-banner-icon">⚠️</div>
+                            <div>
+                                <strong>Tip değiştirildi.</strong> Önceki bilgiler (TC Kimlik No) temizlendi.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>✅ Artılar</h4>
+                            <ul>
+                                <li>Modern görünüm</li>
+                                <li>Göze batar, fark edilir</li>
+                                <li>Engelleme yok (smooth UX)</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>❌ Eksiler</h4>
+                            <ul>
+                                <li>Veri çoktan silinmiş</li>
+                                <li>Kullanıcı iptal edemez</li>
+                                <li>Geri alma yok</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seçenek 3: Süslü Modal -->
+                <div class="option-card">
+                    <div class="option-header">
+                        <div class="option-number">3</div>
+                        <span class="option-badge badge-best">Profesyonel</span>
+                    </div>
+                    <h3 class="option-title">Süslü Modal Onay</h3>
+                    <p class="option-description">
+                        Özel tasarlanmış modern modal açılır. Kullanıcı bilinçli karar verir, veriler onay verince silinir.
+                    </p>
+
+                    <div class="mockup">
+                        <div class="mockup-title">Görünüm</div>
+                        <div class="modal-overlay">
+                            <div class="modal-content">
+                                <div class="modal-icon">⚠️</div>
+                                <div class="modal-title">Tip Değiştiriliyor</div>
+                                <div class="modal-text">
+                                    <strong>TC Kimlik bilgisi</strong> temizlenecektir.
+                                    Devam etmek istiyor musunuz?
+                                </div>
+                                <div class="modal-buttons">
+                                    <button class="btn-cancel">Vazgeç</button>
+                                    <button class="btn-confirm">Devam Et</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>✅ Artılar</h4>
+                            <ul>
+                                <li>Çok profesyonel görünüm</li>
+                                <li>Özelleştirilebilir</li>
+                                <li>Mobil uyumlu</li>
+                                <li>Kullanıcı kontrol sahibi</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>❌ Eksiler</h4>
+                            <ul>
+                                <li>Daha fazla kod</li>
+                                <li>Alpine.js modal logic</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seçenek 4: Akıllı Temizleme -->
+                <div class="option-card" style="border-color: #8b5cf6;">
+                    <div class="option-header">
+                        <div class="option-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">4</div>
+                        <span class="option-badge badge-recommended">ÖNERİLEN</span>
+                    </div>
+                    <h3 class="option-title">Akıllı Temizleme Mantığı</h3>
+                    <p class="option-description">
+                        Duruma göre akıllı davranır. Yeni profilde uyarı yok, düzenlemede sadece veri varsa uyarı verir. En mantıklı yaklaşım.
+                    </p>
+
+                    <div class="mockup">
+                        <div class="mockup-title">Mantık Akışı</div>
+                        <div class="logic-flow">
+                            <div class="logic-step">
+                                <div class="logic-icon">1</div>
+                                <div class="logic-text">
+                                    <strong>Yeni Profil Modunda:</strong> Direkt değiştir, uyarı verme (zaten form boş)
+                                </div>
+                            </div>
+                            <div class="logic-step">
+                                <div class="logic-icon">2</div>
+                                <div class="logic-text">
+                                    <strong>Edit Modunda + Veri Varsa:</strong> Uyarı göster
+                                    <br>• Bireysel → Kurumsal: TC Kimlik varsa sor
+                                    <br>• Kurumsal → Bireysel: Şirket bilgisi varsa sor
+                                </div>
+                            </div>
+                            <div class="logic-step">
+                                <div class="logic-icon">3</div>
+                                <div class="logic-text">
+                                    <strong>Veri Yoksa:</strong> Direkt değiştir, uyarı yok
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>✅ Artılar</h4>
+                            <ul>
+                                <li>En mantıklı yaklaşım</li>
+                                <li>Gereksiz uyarı yok</li>
+                                <li>Sadece gerektiğinde sorar</li>
+                                <li>Kullanıcı deneyimi üst düzey</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>❌ Eksiler</h4>
+                            <ul>
+                                <li>Biraz daha karmaşık kod</li>
+                                <li>Backend kontrolü gerekir</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 Karşılaştırma Tablosu</h2>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Browser Confirm</th>
+                            <th>Inline Banner</th>
+                            <th>Süslü Modal</th>
+                            <th>Akıllı Temizleme</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Görsel Kalite</strong></td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★</span>
+                                    <span class="star-empty">★★★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★</span>
+                                    <span class="star-empty">★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★★</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kullanıcı Kontrolü</strong></td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★</span>
+                                    <span class="star-empty">★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★</span>
+                                    <span class="star-empty">★★★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★★</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Uygulama Hızı</strong></td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★</span>
+                                    <span class="star-empty">★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★</span>
+                                    <span class="star-empty">★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★</span>
+                                    <span class="star-empty">★★★</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mobil Uyumluluk</strong></td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★</span>
+                                    <span class="star-empty">★★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★</span>
+                                    <span class="star-empty">★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★★</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mantıksal Doğruluk</strong></td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★</span>
+                                    <span class="star-empty">★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★</span>
+                                    <span class="star-empty">★★★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★</span>
+                                    <span class="star-empty">★</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="score">
+                                    <span class="star">★★★★★</span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <div class="recommendation">
+                <h3>🏆 ÖNERİ: Seçenek 4 - Akıllı Temizleme</h3>
+                <p>
+                    <strong>Seçenek 4 (Akıllı Temizleme + Süslü Modal)</strong> kombinasyonunu öneriyorum.
+                </p>
+                <p>
+                    <strong style="color: #a78bfa;">Neden?</strong>
+                </p>
+                <ul style="list-style: none; padding-left: 0; margin-top: 15px;">
+                    <li style="padding: 8px 0; padding-left: 24px; position: relative;">
+                        <span style="position: absolute; left: 0; color: #10b981; font-weight: bold;">✓</span>
+                        <strong>Yeni profil eklerken</strong> → Hiç uyarı çıkmaz (gereksiz)
+                    </li>
+                    <li style="padding: 8px 0; padding-left: 24px; position: relative;">
+                        <span style="position: absolute; left: 0; color: #10b981; font-weight: bold;">✓</span>
+                        <strong>Düzenlerken + veri varsa</strong> → Modern modal ile uyarı
+                    </li>
+                    <li style="padding: 8px 0; padding-left: 24px; position: relative;">
+                        <span style="position: absolute; left: 0; color: #10b981; font-weight: bold;">✓</span>
+                        <strong>Veri yoksa</strong> → Direkt değişir, uyarı yok
+                    </li>
+                </ul>
+                <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(167, 139, 250, 0.3);">
+                    <strong>Implementasyon:</strong> Alpine.js modal + Backend'de veri kontrolü
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından hazırlandı - ixtif.com Checkout İyileştirmesi
+        </footer>
+    </div>
+</body>
+</html>

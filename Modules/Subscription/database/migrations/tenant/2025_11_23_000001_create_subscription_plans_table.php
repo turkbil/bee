@@ -22,8 +22,7 @@ return new class extends Migration
             $table->json('billing_cycles')->nullable()->comment('Dinamik fiyat döngüleri: {monthly: {price, duration_days, label...}}');
 
             // Currency & Tax & Display
-            $table->string('currency', 10)->default('TRY')->comment('Para birimi kodu (TRY, USD, EUR) - Legacy');
-            $table->unsignedBigInteger('currency_id')->nullable()->comment('Para birimi ID - currencies tablosu ilişkisi');
+            $table->string('currency', 10)->default('TRY')->comment('Para birimi kodu (TRY, USD, EUR)');
             $table->decimal('tax_rate', 5, 2)->default(20.00)->comment('KDV oranı (%)');
             $table->enum('price_display_mode', ['show', 'hide', 'request'])->default('show')->comment('Fiyat gösterim modu: show=Göster, hide=Gizle, request=Fiyat Sorunuz');
 

@@ -13,24 +13,56 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+
+            // Temel Bilgiler
             $table->string('name')->index();
+            $table->string('surname')->nullable();
             $table->string('email')->unique();
+            $table->string('phone', 20)->nullable();
+            $table->text('bio')->nullable();
+
+            // Hesap Durumu & Aktivite
             $table->boolean('is_active')->default(true)->index();
             $table->timestamp('last_login_at')->nullable()->index();
             $table->timestamp('email_verified_at')->nullable()->index();
+            $table->boolean('has_used_trial')->default(false)->comment('Kullanıcı trial kullandı mı? (Ömür boyu 1 kere)');
+
+            // Güvenlik
             $table->string('password');
-            $table->string('admin_locale', 10)->nullable(); // Admin panel language preference
-            $table->string('tenant_locale', 5)->nullable(); // Tenant site language preference
+            $table->integer('failed_login_attempts')->default(0);
+            $table->timestamp('locked_until')->nullable();
+
+            // Two-Factor Authentication
+            $table->boolean('two_factor_enabled')->default(false);
+            $table->string('two_factor_phone')->nullable();
+
+            // Device Management
+            $table->integer('device_limit')->nullable()->comment('Maksimum cihaz sayısı');
+
+            // Approval System
+            $table->boolean('is_approved')->default(true);
+
+            // Corporate Accounts
+            $table->boolean('is_corporate')->default(false);
+            $table->string('corporate_code')->nullable()->unique();
+            $table->foreignId('parent_user_id')->nullable()->constrained('users')->onDelete('set null');
+
+            // Dil & Tercihler
+            $table->string('admin_locale', 10)->nullable()->comment('Admin panel language preference');
+            $table->string('tenant_locale', 5)->nullable()->comment('Tenant site language preference');
+            $table->json('dashboard_preferences')->nullable()->comment('Dashboard tercihleri');
+
+            // Sistem
             $table->rememberToken()->index();
             $table->timestamps();
-            $table->softDeletes(); // Soft delete için deleted_at kolonu
-            
-            // Tarih alanları için indeks
+            $table->softDeletes();
+
+            // İndeksler
             $table->index('created_at');
             $table->index('updated_at');
             $table->index('admin_locale');
             $table->index('tenant_locale');
-            $table->index('deleted_at'); // Soft delete indeksi
+            $table->index('deleted_at');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

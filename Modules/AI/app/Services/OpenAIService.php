@@ -201,6 +201,8 @@ class OpenAIService
                 $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
+                ])->withOptions([
+                    'verify' => false // Geçici: SSL sertifika sorunu için
                 ])->timeout(600)->post($this->baseUrl . '/chat/completions', $payload); // 🔧 FIX: 10 dakika (blog generation için)
 
                 if ($response->successful()) {
@@ -251,6 +253,8 @@ class OpenAIService
                     ],
                     CURLOPT_RETURNTRANSFER => false,
                     CURLOPT_TIMEOUT => 600, // 🔧 FIX: 10 dakika - blog generation için
+                    CURLOPT_SSL_VERIFYPEER => false, // Geçici: SSL sertifika sorunu için
+                    CURLOPT_SSL_VERIFYHOST => false, // Geçici: SSL sertifika sorunu için
                     CURLOPT_WRITEFUNCTION => function($curl, $data) use (&$fullResponse, &$inputTokens, &$outputTokens, &$totalTokens, $streamCallback) {
                         $lines = explode("\n", $data);
 

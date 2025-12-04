@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Mail\Http\Controllers\MailController;
+// use Modules\Mail\Http\Controllers\MailController; // Disabled: Controller does not exist
 
 /*
 |--------------------------------------------------------------------------
@@ -15,5 +15,5 @@ use Modules\Mail\Http\Controllers\MailController;
 */
 
 Route::group([], function () {
-    Route::resource('mail', MailController::class)->names('mail');
+    // Route::resource('mail', MailController::class)->names('mail'); // Disabled: Controller does not exist
 });

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Mail\Http\Controllers\MailController;
+// use Modules\Mail\Http\Controllers\MailController; // Disabled: Controller does not exist
 
 /*
  *--------------------------------------------------------------------------
@@ -15,5 +15,5 @@ use Modules\Mail\Http\Controllers\MailController;
 */
 
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('mail', MailController::class)->names('mail');
+    // Route::apiResource('mail', MailController::class)->names('mail'); // Disabled: Controller does not exist
 });

@@ -13,116 +13,83 @@ class EnsureQueueWorkersRunning extends Command
     public function handle()
     {
         $this->info('🔧 Queue Worker Durumu Kontrol Ediliyor...');
-        
-        $requiredContainers = [
-            'laravel-queue-general',
-            'laravel-queue-tenant',
-            'laravel-queue-ai',
-            'laravel-horizon'
-        ];
 
-        $restartedContainers = [];
-        
-        foreach ($requiredContainers as $containerName) {
-            $status = $this->checkContainerStatus($containerName);
-            
-            if (!$status['running']) {
-                $this->warn("❌ {$containerName} çalışmıyor. Yeniden başlatılıyor...");
-                
-                if ($this->restartContainer($containerName)) {
-                    $restartedContainers[] = $containerName;
-                    $this->info("✅ {$containerName} başarıyla yeniden başlatıldı");
-                } else {
-                    $this->error("🚨 {$containerName} yeniden başlatılamadı!");
-                }
-            } else {
-                $this->info("✅ {$containerName} çalışıyor");
-            }
+        // Horizon durumunu kontrol et
+        if ($this->isHorizonRunning()) {
+            $this->info('✅ Laravel Horizon çalışıyor');
+            $processCount = $this->getHorizonProcessCount();
+            $this->info("📊 Aktif Horizon Worker: {$processCount}");
+
+            Log::info('Queue health check: Horizon running with ' . $processCount . ' workers');
+
+            $this->info('🎯 Queue Worker Kontrolü Tamamlandı');
+            return Command::SUCCESS;
         }
 
-        if (count($restartedContainers) > 0) {
-            Log::info('Queue workers restarted: ' . implode(', ', $restartedContainers));
-            
-            // Docker compose ile tüm worker'ları yeniden başlat
-            $this->startMissingWorkers();
+        // Horizon çalışmıyorsa restart dene
+        $this->warn('❌ Laravel Horizon çalışmıyor. Yeniden başlatılıyor...');
+
+        try {
+            $output = shell_exec('php ' . base_path('artisan') . ' horizon:terminate 2>&1');
+            sleep(2);
+
+            // Supervisor ile yeniden başlat
+            if ($this->restartHorizonViaSupervisor()) {
+                $this->info('✅ Horizon başarıyla yeniden başlatıldı');
+                Log::info('Horizon restarted successfully');
+            } else {
+                $this->error('🚨 Horizon yeniden başlatılamadı!');
+                Log::error('Failed to restart Horizon');
+            }
+        } catch (\Exception $e) {
+            $this->error('🚨 Horizon restart hatası: ' . $e->getMessage());
+            Log::error('Horizon restart error: ' . $e->getMessage());
         }
 
         $this->info('🎯 Queue Worker Kontrolü Tamamlandı');
-        
         return Command::SUCCESS;
     }
 
-    private function checkContainerStatus($containerName)
+    private function isHorizonRunning()
     {
         try {
-            // Docker container durumu kontrol et
-            $command = "docker inspect --format='{{.State.Status}}' {$containerName} 2>/dev/null";
-            $status = trim(shell_exec($command));
-            
-            return [
-                'running' => $status === 'running',
-                'status' => $status ?: 'not_found'
-            ];
+            // Horizon status komutu ile kontrol et
+            $output = shell_exec('php ' . base_path('artisan') . ' horizon:status 2>&1');
+            return stripos($output, 'running') !== false;
         } catch (\Exception $e) {
-            return ['running' => false, 'status' => 'error'];
-        }
-    }
-
-    private function restartContainer($containerName)
-    {
-        try {
-            // Container'ı yeniden başlat
-            $restartCommand = "docker restart {$containerName} 2>/dev/null";
-            $result = shell_exec($restartCommand);
-            
-            // 3 saniye bekle ve kontrol et
-            sleep(3);
-            $status = $this->checkContainerStatus($containerName);
-            
-            return $status['running'];
-        } catch (\Exception $e) {
-            Log::error("Failed to restart container {$containerName}: " . $e->getMessage());
             return false;
         }
     }
 
-    private function startMissingWorkers()
+    private function getHorizonProcessCount()
     {
         try {
-            $this->info('📦 Eksik worker container\'ları başlatılıyor...');
-            
-            // Docker compose ile queue worker'ları başlat
-            $composeCommand = "cd " . base_path() . " && docker-compose up -d horizon queue-general queue-tenant queue-ai";
-            
-            $output = shell_exec($composeCommand . ' 2>&1');
-            
-            if ($output) {
-                $this->line($output);
-            }
-            
-            // Başlatılan container'ları kontrol et
-            sleep(5);
-            $this->info('🔍 Başlatılan container\'lar kontrol ediliyor...');
-            
-            $requiredContainers = [
-                'laravel-queue-general',
-                'laravel-queue-tenant', 
-                'laravel-queue-ai',
-                'laravel-horizon'
-            ];
-            
-            foreach ($requiredContainers as $container) {
-                $status = $this->checkContainerStatus($container);
-                if ($status['running']) {
-                    $this->info("✅ {$container} başarıyla çalışıyor");
-                } else {
-                    $this->error("❌ {$container} başlatılamadı - Status: {$status['status']}");
-                }
-            }
-            
+            $output = shell_exec('ps aux | grep -c "[h]orizon:work"');
+            return (int) trim($output);
         } catch (\Exception $e) {
-            Log::error('Failed to start missing workers: ' . $e->getMessage());
-            $this->error('Worker başlatma hatası: ' . $e->getMessage());
+            return 0;
+        }
+    }
+
+    private function restartHorizonViaSupervisor()
+    {
+        try {
+            // Supervisor varsa kullan
+            $supervisorStatus = shell_exec('supervisorctl status 2>&1');
+
+            if (stripos($supervisorStatus, 'laravel-worker') !== false) {
+                shell_exec('supervisorctl restart laravel-worker:* 2>&1');
+                sleep(3);
+                return $this->isHorizonRunning();
+            }
+
+            // Supervisor yoksa direkt başlat
+            shell_exec('nohup php ' . base_path('artisan') . ' horizon > /dev/null 2>&1 &');
+            sleep(3);
+            return $this->isHorizonRunning();
+        } catch (\Exception $e) {
+            Log::error('Failed to restart Horizon: ' . $e->getMessage());
+            return false;
         }
     }
 }

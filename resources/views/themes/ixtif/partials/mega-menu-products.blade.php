@@ -5,21 +5,37 @@ if (request()->is('admin/*')) {
     return;
 }
 
+// 🛡️ Tenant context yoksa render etme
+if (!function_exists('tenant') || !tenant()) {
+    return;
+}
+
 use Modules\Shop\app\Models\ShopCategory;
 use Modules\Shop\app\Models\ShopProduct;
 
-// Tüm ana kategorileri çek (Tüm Kategoriler tab'ı için)
-$allMainCategories = ShopCategory::where('is_active', 1)
-    ->whereNull('parent_id')
-    ->orderBy('sort_order', 'asc')
-    ->get();
+try {
+    // Tüm ana kategorileri çek (Tüm Kategoriler tab'ı için)
+    $allMainCategories = ShopCategory::where('is_active', 1)
+        ->whereNull('parent_id')
+        ->orderBy('sort_order', 'asc')
+        ->get();
+} catch (\Exception $e) {
+    // Tenant DB bağlantısı yoksa boş array dön
+    \Log::warning('Mega-menu: Tenant DB connection error', ['error' => $e->getMessage()]);
+    $allMainCategories = collect();
+}
 
-// Sol tab'lar için kategoriler (Reach Truck=6, Otonom=5, Order Picker=4 hariç)
-$mainCategories = ShopCategory::where('is_active', 1)
-    ->whereNull('parent_id')
-    ->whereNotIn('category_id', [4, 5, 6])
-    ->orderBy('sort_order', 'asc')
-    ->get();
+// Sol tab'lar için kategoriler (Reach Truck=6, Otonom=5 hariç)
+try {
+    $mainCategories = ShopCategory::where('is_active', 1)
+        ->whereNull('parent_id')
+        ->whereNotIn('category_id', [5, 6])
+        ->orderBy('sort_order', 'asc')
+        ->get();
+} catch (\Exception $e) {
+    \Log::warning('Mega-menu: Main categories query error', ['error' => $e->getMessage()]);
+    $mainCategories = collect();
+}
 
 // Her kategori için ürünleri hazırla
 $categoryData = [];

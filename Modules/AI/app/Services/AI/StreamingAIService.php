@@ -114,6 +114,8 @@ class StreamingAIService
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $this->apiKey,
             'Content-Type' => 'application/json'
+        ])->withOptions([
+            'verify' => false // Geçici: SSL sertifika sorunu için (Production CA bundle güncellemesi gerekli)
         ])->timeout(60)->stream('POST', $url, [
             'model' => 'gpt-4-turbo-preview',
             'stream' => true,

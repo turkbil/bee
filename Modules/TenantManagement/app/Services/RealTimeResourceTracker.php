@@ -160,7 +160,14 @@ class RealTimeResourceTracker
     {
         try {
             $cacheKey = "response_time_{$tenant->id}_" . Carbon::now()->format('Y-m-d-H');
-            return Cache::get($cacheKey, 0);
+            $value = Cache::get($cacheKey, 0);
+
+            // Array ise ortalama al, numeric değilse 0 döndür
+            if (is_array($value)) {
+                return count($value) > 0 ? round(array_sum($value) / count($value), 2) : 0;
+            }
+
+            return is_numeric($value) ? (float) $value : 0;
         } catch (\Exception $e) {
             return 0;
         }

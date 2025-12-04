@@ -56,7 +56,7 @@
                     <h3 class="text-xl font-bold mb-4 text-green-400">3. Database Durumu</h3>
                     <ul class="space-y-2 text-slate-300 text-sm">
                         <li>✅ Central: 18 field (eşleşiyor)</li>
-                        <li>⚠️ İxtif: 19 field (currency_id fazla)</li>
+                        <li>✅ İxtif: 18 field (eşleşiyor)</li>
                         <li>✅ Muzibu: 18 field (eşleşiyor)</li>
                         <li>✅ Trial field hazır</li>
                     </ul>
@@ -101,11 +101,11 @@
                     <div class="space-y-2 text-sm">
                         <p class="text-slate-300">👥 Users: <span class="text-white font-semibold">5</span></p>
                         <p class="text-slate-300">📋 Plans: <span class="text-white font-semibold">2</span></p>
-                        <p class="text-slate-300">📊 Fields: <span class="text-yellow-400 font-semibold">19 ⚠️</span></p>
+                        <p class="text-slate-300">📊 Fields: <span class="text-green-400 font-semibold">18 ✅</span></p>
                         <div class="mt-4 pt-4 border-t border-slate-700">
                             <p class="text-xs text-green-400">✅ is_trial, trial_days</p>
                             <p class="text-xs text-green-400">✅ has_used_trial</p>
-                            <p class="text-xs text-yellow-400">⚠️ currency_id fazla</p>
+                            <p class="text-xs text-green-400">✅ Temiz (currency_id yok)</p>
                         </div>
                     </div>
                 </div>
@@ -132,22 +132,8 @@
             <h2 class="text-3xl font-bold mb-8 text-yellow-400">⚠️ KALAN İŞLER</h2>
             
             <div class="space-y-6">
-                <!-- 1 -->
-                <div class="bg-yellow-900/20 border border-yellow-800/50 rounded-lg p-6">
                     <div class="flex items-center gap-3 mb-3">
-                        <span class="w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-bold">1</span>
-                        <h3 class="text-xl font-bold text-yellow-400">currency_id Kaldır (İxtif)</h3>
-                    </div>
-                    <p class="text-slate-300 mb-3">İxtif tenant'ında gereksiz currency_id kolonu var</p>
-                    <div class="bg-slate-900/50 rounded p-4 text-sm font-mono text-slate-400">
-tinker: Schema::table('subscription_plans', fn($table) => $table->dropColumn('currency_id'));
-                    </div>
-                </div>
-
-                <!-- 2 -->
-                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-6">
-                    <div class="flex items-center gap-3 mb-3">
-                        <span class="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold">2</span>
+                        <w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-bold">1/span>
                         <h3 class="text-xl font-bold text-blue-400">Subscription Sistemini Aktifleştir</h3>
                     </div>
                     <ul class="space-y-2 text-slate-300 text-sm">
@@ -161,7 +147,7 @@ tinker: Schema::table('subscription_plans', fn($table) => $table->dropColumn('cu
                 <!-- 3 -->
                 <div class="bg-purple-900/20 border border-purple-800/50 rounded-lg p-6">
                     <div class="flex items-center gap-3 mb-3">
-                        <span class="w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center font-bold">3</span>
+                        <w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold">2/span>
                         <h3 class="text-xl font-bold text-purple-400">Event System</h3>
                     </div>
                     <ul class="space-y-2 text-slate-300 text-sm">
@@ -175,7 +161,7 @@ tinker: Schema::table('subscription_plans', fn($table) => $table->dropColumn('cu
                 <!-- 4 -->
                 <div class="bg-red-900/20 border border-red-800/50 rounded-lg p-6">
                     <div class="flex items-center gap-3 mb-3">
-                        <span class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">4</span>
+                        <w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center font-bold">3/span>
                         <h3 class="text-xl font-bold text-red-400">Cache-Free isPremium()</h3>
                     </div>
                     <p class="text-slate-300 mb-3">HER müzik stream isteğinde fresh check (cache YOK!)</p>
@@ -209,7 +195,6 @@ $sub = Subscription::where('user_id', $userId)<br>
                 <div class="bg-yellow-900/20 border border-yellow-800/50 rounded-lg p-6">
                     <h3 class="text-lg font-bold mb-4 text-yellow-400">⚠️ Bekleyen</h3>
                     <ul class="space-y-1 text-sm text-slate-300">
-                        <li>⚠️ İxtif: currency_id kaldır</li>
                         <li>⚠️ Trial plan oluştur</li>
                         <li>⚠️ Subscription flow test</li>
                         <li>⚠️ Cache-free check ekle</li>

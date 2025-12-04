@@ -127,7 +127,7 @@ class BlockService
     private function prepareWidgetContent($widget, $type): string
     {
         $content = '';
-        
+
         if ($type === 'module') {
             return '<div data-widget-module-id="' . $widget->id . '" id="module-widget-' . $widget->id . '" class="module-widget-container">
                 <div id="module-content-' . $widget->id . '" class="module-widget-content-placeholder">
@@ -137,14 +137,16 @@ class BlockService
                 </div>
             </div>';
         }
-        
+
         switch ($type) {
             case 'file':
                 if (!empty($widget->file_path)) {
                     try {
                         $viewPath = 'widgetmanagement::blocks.' . $widget->file_path;
                         if (View::exists($viewPath)) {
-                            $content = View::make($viewPath, ['settings' => []])->render();
+                            // ✅ Settings.json dosyasını yükle
+                            $settings = $this->loadWidgetSettings($widget);
+                            $content = View::make($viewPath, ['settings' => $settings])->render();
                         } else {
                             $content = '<div class="widget-placeholder">Görünüm bulunamadı: ' . $viewPath . '</div>';
                         }
@@ -159,7 +161,7 @@ class BlockService
                     }
                 }
                 break;
-                
+
             case 'dynamic':
             case 'static':
             default:
@@ -170,8 +172,45 @@ class BlockService
                 }
                 break;
         }
-        
+
         return $content;
+    }
+
+    /**
+     * FILE widget için settings schema'sını database'den yükle
+     * Default değerleri döndür
+     */
+    private function loadWidgetSettings($widget): array
+    {
+        $settings = [];
+
+        try {
+            // Database'den settings schema'yı al
+            $settingsSchema = $widget->getSettingsSchema();
+
+            if (empty($settingsSchema)) {
+                return $settings;
+            }
+
+            // Default değerleri al
+            foreach ($settingsSchema as $field) {
+                if (isset($field['name']) && isset($field['properties']['default_value'])) {
+                    $settings[$field['name']] = $field['properties']['default_value'];
+                }
+            }
+
+            Log::info('Widget settings yüklendi (database)', [
+                'widget_id' => $widget->id,
+                'widget_name' => $widget->name,
+                'settings_count' => count($settings)
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Widget settings yükleme hatası: ' . $e->getMessage(), [
+                'widget_id' => $widget->id
+            ]);
+        }
+
+        return $settings;
     }
 
     private function prepareTenantWidgetContent($widget, $tenantWidget, $type): string

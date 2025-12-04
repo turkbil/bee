@@ -18,7 +18,7 @@ class WidgetService
     
     protected $cachePrefix = 'widget_';
     protected $cacheDuration = 1440;
-    protected $useCache = false;
+    protected $useCache = true; // Cache AÇIK (performans iyileştirmesi)
     protected $useHandlebars = false;
     
     protected static $loadedCssFiles = [];

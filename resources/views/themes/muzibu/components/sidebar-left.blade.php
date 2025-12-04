@@ -89,7 +89,8 @@
                 </div>
             </div>
 
-            {{-- Today's Stats --}}
+            {{-- Today's Stats - DEVRE DIŞI (3 şarkı limiti kaldırıldı) --}}
+            {{--
             <div class="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 mb-3 border border-white/20">
                 <p class="text-white/80 text-xs mb-1">Bugün Dinlenen</p>
                 <div class="flex items-baseline gap-1">
@@ -102,6 +103,7 @@
                     </template>
                 </div>
             </div>
+            --}}
 
             {{-- Logout Button --}}
             <button

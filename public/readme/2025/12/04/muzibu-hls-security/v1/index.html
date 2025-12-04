@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müzibu HLS Güvenlik Analizi - Tüm Şarkıları Koruma Planı</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #fbbf24;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-card.success {
+            border-left-color: #10b981;
+        }
+
+        .status-card.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .status-card.danger {
+            border-left-color: #ef4444;
+        }
+
+        .status-card h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .status-card.success h4 { color: #10b981; }
+        .status-card.warning h4 { color: #f59e0b; }
+        .status-card.danger h4 { color: #ef4444; }
+
+        .status-card p {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .plan-item {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .plan-item:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .plan-item h4 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .plan-item p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .plan-item ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .plan-item li {
+            color: #cbd5e1;
+            padding-left: 25px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .plan-item li:before {
+            content: "▸";
+            color: #60a5fa;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #10b981;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .priority-critical { background: #dc2626; color: white; }
+        .priority-high { background: #f59e0b; color: white; }
+        .priority-medium { background: #3b82f6; color: white; }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .check { color: #10b981; font-weight: bold; }
+        .cross { color: #ef4444; font-weight: bold; }
+
+        .alert {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .alert-title {
+            color: #ef4444;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .alert p {
+            color: #fca5a5;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 Müzibu HLS Güvenlik Analizi</h1>
+            <div class="meta">
+                <span>📅 Tarih: 2025-12-04</span>
+                <span>🎯 Tenant: muzibu.com.tr (1001)</span>
+                <span>🚨 Öncelik: KRİTİK</span>
+                <span>👤 Talep: Tüm şarkıları HLS + şifreleme ile koruma</span>
+            </div>
+        </header>
+
+        <!-- Mevcut Durum Analizi -->
+        <section>
+            <h2>📊 Mevcut Durum Analizi</h2>
+
+            <h3>✅ Mevcut Güvenlik Özellikleri (ZATEN AKTIF)</h3>
+            <div class="status-grid">
+                <div class="status-card success">
+                    <h4>✅ HLS Streaming</h4>
+                    <p><span class="tech-term">HLS (HTTP Live Streaming)</span> - Müzik dosyaları küçük parçalar halinde stream edilir, tüm dosya indirilmez.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>✅ AES-128 Şifreleme</h4>
+                    <p><span class="tech-term">AES-128 Encryption</span> - Her şarkı 128-bit anahtar ile şifrelenir, direkt erişim imkansız.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>✅ Signed URL</h4>
+                    <p><span class="tech-term">Token-based authentication</span> - Her stream isteği için geçici token oluşturulur, paylaşım engellenir.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>✅ Rate Limiting</h4>
+                    <p><span class="tech-term">Throttling</span> - Guest: 30/dakika, Üye: 120/dakika, Premium: 300/dakika istek limiti.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>✅ 30 Saniye Preview</h4>
+                    <p>Üye olmayanlar ve normal üyeler sadece 30 saniye dinleyebilir, tam erişim premium üyelere özel.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>✅ Lazy Conversion</h4>
+                    <p>Şarkı ilk kez istendiğinde otomatik HLS'e dönüştürülür, sunucu kaynaklarını optimize eder.</p>
+                </div>
+            </div>
+
+            <h3>⚠️ Güvenlik Açıkları (DÜZELTİLMELİ)</h3>
+            <div class="status-grid">
+                <div class="status-card danger">
+                    <h4>🔴 Tüm Şarkılar HLS Değil</h4>
+                    <p>Henüz dinlenmemiş şarkılar HLS'e dönüştürülmemiş, ilk 30 saniye MP3 olarak serve ediliyor.</p>
+                </div>
+
+                <div class="status-card danger">
+                    <h4>🔴 MP3 Fallback Riski</h4>
+                    <p>HLS dönüşmemişse MP3 dosyası direkt serve edilir, şifresiz erişim riski var.</p>
+                </div>
+
+                <div class="status-card warning">
+                    <h4>🟡 Encryption Key URL Tutarsızlığı</h4>
+                    <p>HLSService <code>/stream/key/{hash}</code> kullanırken, ConvertToHLSJob <code>/api/muzibu/songs/{id}/key</code> kullanıyor.</p>
+                </div>
+
+                <div class="status-card warning">
+                    <h4>🟡 Key Endpoint Authentication Eksik</h4>
+                    <p>HLSService'te <code>TODO: Token validation + rate limiting ekle</code> notu var, şu an sadece basic rate limit mevcut.</p>
+                </div>
+
+                <div class="status-card warning">
+                    <h4>🟡 Signed URL Süresi Uzun</h4>
+                    <p>HLS: 60 dakika, MP3: 30 dakika. Guest/Normal user için çok uzun, paylaşım riski artırıyor.</p>
+                </div>
+
+                <div class="status-card warning">
+                    <h4>🟡 Preview Chunk Kontrolü Yok</h4>
+                    <p>30 saniye preview server-side olarak kontrol edilmiyor, client-side'a güveniliyor (manipüle edilebilir).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Güvenlik Karşılaştırması -->
+        <section>
+            <h2>🔒 MP3 vs HLS Güvenlik Karşılaştırması</h2>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>MP3 (Standart)</th>
+                        <th>HLS + AES-128 (Güvenli)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Dosya İndirilebilir mi?</strong></td>
+                        <td><span class="cross">✗</span> Evet, tüm dosya indirilebilir</td>
+                        <td><span class="check">✓</span> Hayır, sadece şifreli parçalar</td>
+                    </tr>
+                    <tr>
+                        <td><strong>URL Paylaşımı</strong></td>
+                        <td><span class="cross">✗</span> MP3 URL'si paylaşılabilir</td>
+                        <td><span class="check">✓</span> Token geçersiz olur, paylaşılamaz</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hotlink Koruması</strong></td>
+                        <td><span class="cross">✗</span> Yok</td>
+                        <td><span class="check">✓</span> Var, her segment ayrı token</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Şifreleme</strong></td>
+                        <td><span class="cross">✗</span> Yok</td>
+                        <td><span class="check">✓</span> AES-128 (128-bit key)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Preview Kontrolü</strong></td>
+                        <td><span class="cross">✗</span> Client-side (manipüle edilebilir)</td>
+                        <td><span class="check">✓</span> Server-side chunk kontrolü</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DRM Entegrasyonu</strong></td>
+                        <td><span class="cross">✗</span> İmkansız</td>
+                        <td><span class="check">✓</span> Fairplay, Widevine eklenebilir</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kalite Kontrolü</strong></td>
+                        <td><span class="cross">✗</span> Sabit kalite</td>
+                        <td><span class="check">✓</span> Adaptif kalite (bant genişliğine göre)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Kritik Uyarı -->
+        <section>
+            <div class="alert">
+                <div class="alert-title">🚨 KRİTİK GÜVENLİK RİSKİ</div>
+                <p><strong>Sorun:</strong> Henüz HLS'e dönüşmemiş şarkılar MP3 olarak serve ediliyor. Üye olmayan kullanıcılar bile ilk 30 saniye için MP3 URL'sine erişebilir.</p>
+                <p><strong>Risk:</strong> URL paylaşılırsa, kimlik doğrulaması olmadan tüm şarkı indirilebilir.</p>
+                <p><strong>Çözüm:</strong> Tüm şarkıları proaktif olarak HLS + AES-128 ile dönüştür, MP3 fallback'i kaldır.</p>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar -->
+        <section>
+            <h2>🎯 Yapılacaklar - Tüm Şarkıları Koruma Planı</h2>
+
+            <div class="plan-item">
+                <h4>1. Tüm Şarkıları Bulk HLS Dönüşümü <span class="priority priority-critical">Kritik</span></h4>
+                <p>
+                    Sistemdeki <strong>tüm şarkıları</strong> proaktif olarak HLS + AES-128 ile dönüştür. Lazy conversion yerine, 
+                    tüm kütüphane şifreli HLS formatında olmalı.
+                </p>
+                <p><strong>Nasıl Yapılır:</strong></p>
+                <ul>
+                    <li>Artisan command oluştur: <code>php artisan muzibu:convert-all-to-hls</code></li>
+                    <li>Henüz dönüşmemiş şarkıları bul: <code>WHERE hls_converted = 0</code></li>
+                    <li>Her şarkı için ConvertToHLSJob'u queue'ya at (paralel işlem)</li>
+                    <li>Queue worker sayısını artır (4-6 worker optimal)</li>
+                    <li>Progress tracking ekle (kaç/kaç tamamlandı)</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Tüm şarkılar şifreli HLS formatında, MP3 fallback ihtiyacı kalmayacak.</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>2. MP3 Fallback Kaldırma <span class="priority priority-critical">Kritik</span></h4>
+                <p>
+                    HLS dönüşmemişse MP3 serve etme, bunun yerine "Şarkı hazırlanıyor, lütfen bekleyin" mesajı göster.
+                    Kullanıcı beklerken HLS dönüşümü tamamlanır.
+                </p>
+                <p><strong>Değişiklik Yeri:</strong> <code>SongStreamController.php</code> - MP3 serve mantığını kaldır</p>
+                <p><strong>Beklenen Sonuç:</strong> Hiçbir şarkı şifresiz olarak serve edilmeyecek.</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>3. Encryption Key URL Standartlaştırma <span class="priority priority-high">Yüksek</span></h4>
+                <p>
+                    HLSService ve ConvertToHLSJob farklı URL kullanıyor, tek bir standart endpoint belirle.
+                </p>
+                <p><strong>Önerilen URL:</strong> <code>/api/muzibu/songs/{id}/key</code> (mevcut API rotası)</p>
+                <ul>
+                    <li>HLSService.php:212 → URL'yi güncelle</li>
+                    <li>Route: <code>api.muzibu.songs.encryption-key</code> (zaten tanımlı)</li>
+                    <li>SongController'da <code>serveEncryptionKey()</code> method'unu kontrol et</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Tüm şarkılar aynı key endpoint'ini kullanacak, tutarsızlık kalmayacak.</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>4. Key Endpoint Güvenlik Güçlendirme <span class="priority priority-high">Yüksek</span></h4>
+                <p>
+                    Encryption key endpoint'ine ek güvenlik katmanları ekle.
+                </p>
+                <p><strong>Eklenecek Özellikler:</strong></p>
+                <ul>
+                    <li><span class="tech-term">Token Validation</span> - Sadece geçerli stream token'ı olan istekler kabul edilmeli</li>
+                    <li><span class="tech-term">Referer Check</span> - Sadece kendi domain'den gelen istekler kabul edilmeli</li>
+                    <li><span class="tech-term">IP Rate Limiting</span> - Aynı IP'den fazla key isteği engellensin (key harvesting riski)</li>
+                    <li><span class="tech-term">User Agent Check</span> - Bot trafiğini filtrele</li>
+                    <li><span class="tech-term">Logging</span> - Tüm key isteklerini logla (şüpheli aktivite tespiti için)</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> Encryption key sadece yetkili stream istekleri için serve edilecek.</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>5. Signed URL Süresi Optimizasyonu <span class="priority priority-high">Yüksek</span></h4>
+                <p>
+                    Kullanıcı tiplerine göre token sürelerini kısalt.
+                </p>
+                <div class="code-block">
+Guest User:<br>
+- HLS: 10 dakika (şu an 60 dakika)<br>
+- MP3: 5 dakika (şu an 30 dakika)<br>
+- Sebep: Üye değil, paylaşım riski en yüksek<br><br>
+
+Normal User (Premium değil):<br>
+- HLS: 15 dakika (şu an 60 dakika)<br>
+- MP3: 10 dakika (şu an 30 dakika)<br>
+- Sebep: Üye ama premium değil, orta risk<br><br>
+
+Premium User:<br>
+- HLS: 60 dakika (olduğu gibi)<br>
+- MP3: 30 dakika (olduğu gibi)<br>
+- Sebep: Ödeyen müşteri, uzun süre gerekli
+                </div>
+                <p><strong>Değişiklik Yeri:</strong> <code>SongStreamController.php</code> - <code>generateHlsUrl()</code> ve <code>generateStreamUrl()</code> sürelerini user tipine göre ayarla</p>
+                <p><strong>Beklenen Sonuç:</strong> Üye olmayan kullanıcılar token'ı paylaşsa bile kısa sürede geçersiz olacak.</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>6. Server-Side Preview Chunk Kontrolü <span class="priority priority-medium">Orta</span></h4>
+                <p>
+                    30 saniye preview'ı client-side JavaScript'e değil, server-side'a taşı. Sadece ilk X chunk'ı serve et.
+                </p>
+                <p><strong>Nasıl Çalışır:</strong></p>
+                <ul>
+                    <li>30 saniye = 3 chunk (10 saniye/chunk varsayımıyla)</li>
+                    <li>Guest/Normal user için playlist.m3u8'de sadece ilk 3 chunk'ı listele</li>
+                    <li>Premium user için tüm chunk'ları listele</li>
+                    <li>Chunk dosyalarını serve ederken user tipini kontrol et</li>
+                </ul>
+                <p><strong>Beklenen Sonuç:</strong> JavaScript manipüle edilse bile, server sadece izin verilen chunk'ları serve edecek.</p>
+            </div>
+
+            <div class="plan-item">
+                <h4>7. HLS Dönüşüm Sonrası MP3 Silme (Opsiyonel) <span class="priority priority-medium">Orta</span></h4>
+                <p>
+                    HLS dönüşümü tamamlandıktan sonra orijinal MP3 dosyasını sil, disk alanı tasarruf et ve güvenliği artır.
+                </p>
+                <p><strong>Dikkat:</strong> MP3'leri silersen, fallback imkansız hale gelir. Sadece tüm şarkılar HLS'e dönüştükten sonra uygula.</p>
+                <p><strong>Alternatif:</strong> MP3'leri sil yerine, erişimini engelle (storage/muzibu/songs/ klasörüne web erişimini kapat).</p>
+                <p><strong>Beklenen Sonuç:</strong> Disk alanı %40-50 azalır, orijinal dosyalara erişim tamamen engellenir.</p>
+            </div>
+        </section>
+
+        <!-- Öncelik Sıralaması -->
+        <section>
+            <h2>📋 Uygulama Öncelik Sırası</h2>
+
+            <div class="plan-item">
+                <h4>Aşama 1: Tüm Şarkıları HLS'e Dönüştür (1-2 gün)</h4>
+                <ul>
+                    <li>Bulk conversion command oluştur</li>
+                    <li>Queue worker'ları artır</li>
+                    <li>Dönüşüm başlat (arka planda çalışır)</li>
+                    <li>Progress takip et</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Aşama 2: Güvenlik Yamalarını Uygula (1 gün)</h4>
+                <ul>
+                    <li>MP3 fallback'i kaldır</li>
+                    <li>Key URL standardize et</li>
+                    <li>Signed URL sürelerini ayarla</li>
+                    <li>Key endpoint güvenliğini güçlendir</li>
+                </ul>
+            </div>
+
+            <div class="plan-item">
+                <h4>Aşama 3: İleri Seviye Özellikler (Opsiyonel)</h4>
+                <ul>
+                    <li>Server-side preview chunk kontrolü</li>
+                    <li>Orijinal MP3 dosyalarını silme/erişim engelleme</li>
+                    <li>DRM entegrasyonu (Fairplay, Widevine)</li>
+                    <li>Forensic watermarking (kullanıcı ID'si audio'ya gömülür)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Beklenen Sonuçlar -->
+        <section>
+            <h2>🎉 Beklenen Sonuçlar</h2>
+
+            <div class="status-grid">
+                <div class="status-card success">
+                    <h4>🔒 %100 Şifreli Kütüphane</h4>
+                    <p>Tüm şarkılar AES-128 ile şifreli, hiçbir dosya direkt indirilemez.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>🚫 URL Paylaşımı İmkansız</h4>
+                    <p>Signed URL'ler kısa sürede geçersiz olur, paylaşım işe yaramaz.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>👤 Kullanıcı Tipine Göre Erişim</h4>
+                    <p>Guest/Normal: 30 saniye preview, Premium: Sınırsız dinleme.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>📊 Server-Side Kontrol</h4>
+                    <p>JavaScript manipüle edilse bile, server izin verilen chunk'ları serve eder.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>🛡️ Key Endpoint Koruması</h4>
+                    <p>Encryption key sadece yetkili stream istekleri için verilir.</p>
+                </div>
+
+                <div class="status-card success">
+                    <h4>💾 Disk Alanı Tasarrufu</h4>
+                    <p>MP3'leri silerseniz %40-50 disk alanı kazanırsınız.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Notlar -->
+        <section>
+            <h2>🔧 Teknik Notlar</h2>
+
+            <div class="plan-item">
+                <h4>FFmpeg Kurulumu</h4>
+                <p>HLS dönüşümü için FFmpeg gerekli. Sistemde yüklü olduğundan emin olun:</p>
+                <div class="code-block">
+ffmpeg -version<br>
+# FFmpeg version 4.2.4 veya üzeri olmalı
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>Disk Alanı Hesaplama</h4>
+                <p>HLS dönüşümü her şarkı için yaklaşık %20 daha fazla alan kullanır:</p>
+                <div class="code-block">
+MP3: 5 MB → HLS: 6 MB (segment'ler + playlist + key files)<br>
+Toplam kütüphane: 10 GB MP3 → 12 GB HLS<br>
+MP3'leri silersen: 10 GB geri kazanırsın
+                </div>
+            </div>
+
+            <div class="plan-item">
+                <h4>Queue İşleme Süresi</h4>
+                <p>Bulk dönüşüm süresi şarkı sayısına ve sunucu gücüne bağlı:</p>
+                <div class="code-block">
+1 şarkı dönüşümü: ~30 saniye (3-4 dakikalık şarkı için)<br>
+4 worker (paralel): Saatte ~480 şarkı<br>
+1000 şarkı: ~2 saat<br>
+10,000 şarkı: ~20 saat
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 📅 2025-12-04 | 🎯 Müzibu Tenant 1001
+        </footer>
+    </div>
+</body>
+</html>

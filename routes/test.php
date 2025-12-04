@@ -31,6 +31,19 @@ Route::middleware('tenant')->group(function () {
     Route::view('design/deluxe-industrial/v12', 'design.deluxe-industrial.v12')->name('design.deluxe-industrial.v12');
     Route::view('design/deluxe-industrial/v13', 'design.deluxe-industrial.v13')->name('design.deluxe-industrial.v13');
 
+    // SERVICE HUB - Horizontal Service Slider
+    Route::view('design/service-hub', 'design.service-hub')->name('design.service-hub');
+
+    // HERO SLIDER - Homepage Hero as Horizontal Slider
+    Route::view('design/hero-slider', 'design.hero-slider')->name('design.hero-slider');
+
+    // ========================================
+    // HERO WIDGET TEST - Widget Render Test
+    // ========================================
+    Route::get('test/hero-widget', function () {
+        return view('test.hero-widget');
+    })->name('test.hero-widget');
+
     // ========================================
     // ADMIN UI DESIGN ALTERNATIVES - Product Manage
     // ========================================

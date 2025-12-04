@@ -128,8 +128,8 @@
     {{-- Create Playlist Modal --}}
     <x-muzibu.create-playlist-modal />
 
-    {{-- Play Limits Modals --}}
-    @include('themes.muzibu.components.play-limits-modals')
+    {{-- Play Limits Modals - DEVRE DIŞI (3 şarkı limiti kaldırıldı) --}}
+    {{-- @include('themes.muzibu.components.play-limits-modals') --}}
     {{-- Device limit modal devre dışı - Backend handlePostLoginDeviceLimit() otomatik hallediyor --}}
     {{-- @include('themes.muzibu.components.device-limit-modal') --}}
 
@@ -178,7 +178,7 @@
                 email: "{{ auth()->user()->email }}",
                 is_premium: {{ auth()->user()->isPremium() ? 'true' : 'false' }}
             } @else null @endif,
-            todayPlayedCount: {{ auth()->check() ? auth()->user()->getTodayPlayedCount() : 0 }},
+            // todayPlayedCount: {{ auth()->check() ? auth()->user()->getTodayPlayedCount() : 0 }}, // DEVRE DIŞI
             tenantId: {{ tenant('id') }}
         };
 

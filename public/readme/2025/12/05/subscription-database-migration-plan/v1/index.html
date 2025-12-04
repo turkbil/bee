@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Database Migration Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Subscription Database Migration Plan
+            </h1>
+            <p class="text-slate-400 text-lg">Tablo Birleştirme - Eksik/Fazla Field Analizi & Migration Planı</p>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-05</span>
+                <span>🎯 3 Tenant DB Analizi</span>
+                <span>🔧 Migration Hazır</span>
+            </div>
+        </header>
+
+        <!-- ÖNEMLİ NOT -->
+        <section class="mb-16">
+            <div class="bg-yellow-900/30 border-2 border-yellow-600 rounded-lg p-8">
+                <h2 class="text-2xl font-bold mb-4 text-yellow-400">⚠️ ÖNEMLİ: Deneme Aşamasındayız</h2>
+                <div class="space-y-3 text-slate-300">
+                    <p class="text-lg">Şu anda <strong class="text-white">plan tablolarında veri olmasına gerek yok</strong>, denemeler yapıyoruz.</p>
+                    <p><strong class="text-yellow-300">Hedef:</strong> Tüm tabloları aynı tarza/yapıya getirmek</p>
+                    <p><strong class="text-yellow-300">Strateji:</strong> Manage sayfasında kullanılan field'leri baz alarak tüm DB'leri birleştirmek</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Manage Sayfası Baz Alındı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Manage Sayfası Analizi (Baz Yapı)</h2>
+            
+            <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-8">
+                <h3 class="text-2xl font-bold text-green-300 mb-6">SubscriptionPlanManageComponent.php</h3>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-bold text-white mb-3">Çoklu Dil Alanları (JSON):</h4>
+                        <ul class="space-y-2 text-slate-300 ml-6 list-disc">
+                            <li><strong class="text-yellow-300">title</strong> → JSON → {tr: "...", en: "..."}</li>
+                            <li><strong class="text-yellow-300">description</strong> → JSON → {tr: "...", en: "..."}</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-bold text-white mb-3">Dil-Neutral Alanlar:</h4>
+                        <ul class="space-y-2 text-slate-300 ml-6 list-disc">
+                            <li><strong class="text-yellow-300">slug</strong> → string → unique</li>
+                            <li><strong class="text-yellow-300">currency</strong> → string → TRY/USD/EUR</li>
+                            <li><strong class="text-yellow-300">tax_rate</strong> → decimal(5,2) → %20.00</li>
+                            <li><strong class="text-yellow-300">price_display_mode</strong> → enum → show/hide/request</li>
+                            <li><strong class="text-yellow-300">device_limit</strong> → integer → 1,2,3...</li>
+                            <li><strong class="text-yellow-300">is_featured</strong> → boolean</li>
+                            <li><strong class="text-yellow-300">is_active</strong> → boolean</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-lg font-bold text-white mb-3">JSON Alanlar:</h4>
+                        <ul class="space-y-2 text-slate-300 ml-6 list-disc">
+                            <li><strong class="text-yellow-300">features</strong> → JSON array → ["fas fa-music|Özellik 1", ...]</li>
+                            <li><strong class="text-yellow-300">billing_cycles</strong> → JSON → {1-aylik: {...}, 12-aylik: {...}}</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-6 mt-6">
+                        <p class="text-lg font-semibold text-white mb-2">Billing Cycles Yapısı:</p>
+                        <ul class="space-y-1 text-slate-300 text-sm ml-6 list-disc">
+                            <li>label → {tr, en}</li>
+                            <li>price → decimal</li>
+                            <li>compare_price → decimal (nullable)</li>
+                            <li>duration_days → integer</li>
+                            <li>trial_days → integer (nullable)</li>
+                            <li>badge → {text, color}</li>
+                            <li>promo_text → {tr, en}</li>
+                            <li>sort_order → integer</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Tenant Karşılaştırma -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">📊 3 Tenant Mevcut Durum</h2>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <!-- Central -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-purple-700">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">Central (tuufi_4ekim)</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-green-900/30 rounded p-3">
+                            <p class="text-green-400 font-semibold mb-2">✅ VAR:</p>
+                            <ul class="text-slate-300 space-y-1 text-xs">
+                                <li>title, slug, description (JSON)</li>
+                                <li>features (JSON)</li>
+                                <li>currency, trial_days</li>
+                                <li>device_limit</li>
+                                <li>billing_cycles (JSON)</li>
+                                <li>is_featured, is_active, is_public</li>
+                                <li>sort_order</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/30 rounded p-3">
+                            <p class="text-red-400 font-semibold mb-2">❌ EKSİK:</p>
+                            <ul class="text-slate-300 space-y-1 text-xs">
+                                <li>tax_rate</li>
+                                <li>price_display_mode</li>
+                                <li>is_trial (boolean)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-yellow-900/30 rounded p-3">
+                            <p class="text-yellow-400 font-semibold mb-2">⚠️ FAZLA (Kullanılmayan):</p>
+                            <ul class="text-slate-300 space-y-1 text-xs">
+                                <li>max_products, max_orders</li>
+                                <li>max_storage_mb</li>
+                                <li>custom_limits (JSON)</li>
+                                <li>has_analytics</li>
+                                <li>has_priority_support</li>
+                                <li>has_api_access</li>
+                                <li>enabled_features (JSON)</li>
+                                <li>badge_text, highlight_color</li>
+                                <li>terms, notes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ixtif -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-blue-700">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">Tenant 2 (ixtif.com)</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-green-900/30 rounded p-3">
+                            <p class="text-green-400 font-semibold mb-2">✅ VAR:</p>
+                            <ul class="text-slate-300 space-y-1 text-xs">
+                                <li>title, slug, description (JSON)</li>
+                                <li>features (JSON)</li>
+                                <li>currency, currency_id</li>
+                                <li>tax_rate ✅</li>
+                                <li>price_display_mode ✅</li>
+                                <li>trial_days, device_limit</li>
+                                <li>billing_cycles (JSON)</li>
+                                <li>is_featured, is_active</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/30 rounded p-3">
+                            <p class="text-red-400 font-semibold mb-2">❌ EKSİK:</p>
+                            <ul class="text-slate-300 space-y-1 text-xs">
+                                <li>is_trial (boolean)</li>
+                                <li>sort_order (sıralama için)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-yellow-900/30 rounded p-3">
+                            <p class="text-yellow-400 font-semibold mb-2">⚠️ FAZLA:</p>
+                            <ul class="text-slate-300 space-y-1 text-xs">
+                                <li>custom_limits, enabled_features</li>
+                                <li>is_public, subscribers_count</li>
+                                <li>metadata</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Muzibu -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-green-700">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">Tenant 1001 (muzibu)</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="bg-green-900/30 rounded p-3">
+                            <p class="text-green-400 font-semibold mb-2">✅ VAR:</p>
+                            <ul class="text-slate-300 space-y-1 text-xs">
+                                <li>title, slug, description (JSON)</li>
+                                <li>features (JSON)</li>
+                                <li>currency</li>
+                                <li>trial_days, device_limit</li>
+                                <li>billing_cycles (JSON)</li>
+                                <li>is_featured, is_active</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/30 rounded p-3">
+                            <p class="text-red-400 font-semibold mb-2">❌ EKSİK:</p>
+                            <ul class="text-slate-300 space-y-1 text-xs">
+                                <li>tax_rate</li>
+                                <li>price_display_mode</li>
+                                <li>is_trial (boolean)</li>
+                                <li>sort_order</li>
+                            </ul>
+                        </div>
+                        <div class="bg-yellow-900/30 rounded p-3">
+                            <p class="text-yellow-400 font-semibold mb-2">⚠️ FAZLA (Legacy):</p>
+                            <ul class="text-slate-300 space-y-1 text-xs">
+                                <li>price_daily, price_weekly</li>
+                                <li>price_monthly, price_quarterly</li>
+                                <li>price_yearly</li>
+                                <li>compare_price_monthly/yearly</li>
+                                <li>has_trial (cycle bazlı - artık gereksiz)</li>
+                                <li>requires_payment_method</li>
+                                <li>default_billing_cycle</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hedef Yapı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🎯 Hedef: Unified Tablo Yapısı</h2>
+
+            <div class="bg-purple-900/20 border-l-4 border-purple-500 rounded-lg p-8">
+                <h3 class="text-2xl font-bold text-purple-300 mb-6">subscription_plans Standardı</h3>
+
+                <div class="space-y-6">
+                    <div class="bg-slate-900/50 rounded p-6">
+                        <h4 class="text-lg font-bold text-white mb-4">✅ Tutulacak Field'ler (Manage Sayfası Kullanıyor):</h4>
+                        <div class="grid md:grid-cols-2 gap-4 text-slate-300 text-sm">
+                            <div>
+                                <p class="font-semibold text-green-400 mb-2">Temel:</p>
+                                <ul class="ml-6 list-disc space-y-1">
+                                    <li>subscription_plan_id (PK)</li>
+                                    <li>title (JSON)</li>
+                                    <li>slug (unique)</li>
+                                    <li>description (JSON)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-green-400 mb-2">Pricing & Tax:</p>
+                                <ul class="ml-6 list-disc space-y-1">
+                                    <li>currency (TRY/USD/EUR)</li>
+                                    <li>tax_rate (decimal 5,2)</li>
+                                    <li>price_display_mode (enum)</li>
+                                    <li>billing_cycles (JSON)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-green-400 mb-2">Features:</p>
+                                <ul class="ml-6 list-disc space-y-1">
+                                    <li>features (JSON array)</li>
+                                    <li>device_limit (integer)</li>
+                                    <li>trial_days (integer) - global</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-green-400 mb-2">Status & Display:</p>
+                                <ul class="ml-6 list-disc space-y-1">
+                                    <li>is_trial (boolean) ⭐ YENİ!</li>
+                                    <li>is_featured (boolean)</li>
+                                    <li>is_active (boolean)</li>
+                                    <li>sort_order (integer)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-900/20 rounded p-6">
+                        <h4 class="text-lg font-bold text-red-400 mb-4">❌ Kaldırılacak Field'ler:</h4>
+                        <div class="grid md:grid-cols-2 gap-4 text-slate-300 text-sm">
+                            <div>
+                                <p class="font-semibold text-yellow-300 mb-2">Legacy Pricing (Muzibu):</p>
+                                <ul class="ml-6 list-disc space-y-1">
+                                    <li>price_daily, price_weekly</li>
+                                    <li>price_monthly, price_quarterly, price_yearly</li>
+                                    <li>compare_price_monthly, compare_price_yearly</li>
+                                    <li>default_billing_cycle</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-yellow-300 mb-2">Kullanılmayan (Central):</p>
+                                <ul class="ml-6 list-disc space-y-1">
+                                    <li>max_products, max_orders</li>
+                                    <li>max_storage_mb</li>
+                                    <li>custom_limits, enabled_features</li>
+                                    <li>has_analytics, has_priority_support</li>
+                                    <li>has_api_access</li>
+                                    <li>badge_text, highlight_color, terms, notes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-900/20 rounded p-6">
+                        <h4 class="text-lg font-bold text-blue-400 mb-4">➕ Eklenecek Field'ler:</h4>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex gap-3">
+                                <span class="text-blue-400 font-bold">1.</span>
+                                <span><strong class="text-yellow-300">is_trial</strong> → boolean → default: false (Hangi plan trial planı?)</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-blue-400 font-bold">2.</span>
+                                <span><strong class="text-yellow-300">tax_rate</strong> → decimal(5,2) → default: 20.00 (Central'da yok)</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-blue-400 font-bold">3.</span>
+                                <span><strong class="text-yellow-300">price_display_mode</strong> → enum(show,hide,request) → default: show (Central'da yok)</span>
+                            </li>
+                            <li class="flex gap-3">
+                                <span class="text-blue-400 font-bold">4.</span>
+                                <span><strong class="text-yellow-300">sort_order</strong> → integer → default: 0 (Muzibu'da yok)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Users Tablosu -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">👤 Users Tablosu (Central DB)</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-red-900/20 border-2 border-red-600 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-4">❌ Mevcut Durum</h3>
+                    <p class="text-slate-300 mb-4"><strong class="text-white">has_used_trial</strong> field'i YOK!</p>
+                    <p class="text-slate-400 text-sm">Kullanıcı trial kullandı mı kontrol edilemiyor.</p>
+                </div>
+
+                <div class="bg-green-900/20 border-2 border-green-600 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-400 mb-4">✅ Hedef Yapı</h3>
+                    <p class="text-slate-300 mb-2"><strong class="text-yellow-300">has_used_trial</strong> eklenecek:</p>
+                    <ul class="text-slate-300 text-sm ml-6 list-disc space-y-1">
+                        <li>Type: boolean</li>
+                        <li>Default: false</li>
+                        <li>Nullable: false</li>
+                        <li>Kullanıcı trial başlatınca → true</li>
+                        <li>Ömür boyu değişmez</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Migration Planı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">🔧 Migration Planı - Adım Adım</h2>
+
+            <div class="space-y-4">
+                <!-- Central DB Migration -->
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-300 mb-2">Central DB (tuufi_4ekim) - subscription_plans</h3>
+                            <div class="space-y-3 text-slate-300">
+                                <p><strong class="text-green-400">➕ EKLE:</strong></p>
+                                <ul class="ml-6 list-disc space-y-1 text-sm">
+                                    <li>tax_rate → decimal(5,2) → default: 20.00</li>
+                                    <li>price_display_mode → enum(show,hide,request) → default: show</li>
+                                    <li>is_trial → boolean → default: false</li>
+                                </ul>
+                                <p class="mt-3"><strong class="text-red-400">❌ SİL:</strong></p>
+                                <ul class="ml-6 list-disc space-y-1 text-sm">
+                                    <li>max_products, max_orders, max_storage_mb</li>
+                                    <li>custom_limits, enabled_features</li>
+                                    <li>has_analytics, has_priority_support, has_api_access</li>
+                                    <li>badge_text, highlight_color, terms, notes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ixtif DB Migration -->
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300 mb-2">Tenant 2 (tenant_ixtif) - subscription_plans</h3>
+                            <div class="space-y-3 text-slate-300">
+                                <p><strong class="text-green-400">➕ EKLE:</strong></p>
+                                <ul class="ml-6 list-disc space-y-1 text-sm">
+                                    <li>is_trial → boolean → default: false</li>
+                                    <li>sort_order → integer → default: 0</li>
+                                </ul>
+                                <p class="mt-3"><strong class="text-red-400">❌ SİL:</strong></p>
+                                <ul class="ml-6 list-disc space-y-1 text-sm">
+                                    <li>custom_limits, enabled_features</li>
+                                    <li>is_public, subscribers_count</li>
+                                    <li>metadata</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Muzibu DB Migration -->
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-300 mb-2">Tenant 1001 (tenant_muzibu_1528d0) - subscription_plans</h3>
+                            <div class="space-y-3 text-slate-300">
+                                <p><strong class="text-green-400">➕ EKLE:</strong></p>
+                                <ul class="ml-6 list-disc space-y-1 text-sm">
+                                    <li>tax_rate → decimal(5,2) → default: 20.00</li>
+                                    <li>price_display_mode → enum(show,hide,request) → default: show</li>
+                                    <li>is_trial → boolean → default: false</li>
+                                    <li>sort_order → integer → default: 0</li>
+                                </ul>
+                                <p class="mt-3"><strong class="text-red-400">❌ SİL (LEGACY):</strong></p>
+                                <ul class="ml-6 list-disc space-y-1 text-sm">
+                                    <li>price_daily, price_weekly, price_monthly</li>
+                                    <li>price_quarterly, price_yearly</li>
+                                    <li>compare_price_monthly, compare_price_yearly</li>
+                                    <li>has_trial (artık is_trial kullanılacak)</li>
+                                    <li>requires_payment_method</li>
+                                    <li>default_billing_cycle</li>
+                                    <li>max_products, max_orders, max_storage_mb</li>
+                                    <li>custom_limits, enabled_features</li>
+                                    <li>has_analytics, has_priority_support, has_api_access</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Migration -->
+                <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-300 mb-2">Central DB (tuufi_4ekim) - users</h3>
+                            <div class="space-y-3 text-slate-300">
+                                <p><strong class="text-green-400">➕ EKLE:</strong></p>
+                                <ul class="ml-6 list-disc space-y-1 text-sm">
+                                    <li>has_used_trial → boolean → default: false → nullable: false</li>
+                                    <li>Mevcut 8 kullanıcı için → default false set edilecek</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Son Tablo Yapısı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-pink-400">🎉 Son Tablo Yapısı (3 DB Unified)</h2>
+
+            <div class="bg-pink-900/20 border-2 border-pink-600 rounded-lg p-8">
+                <h3 class="text-2xl font-bold text-pink-300 mb-6">subscription_plans (Final Schema)</h3>
+
+                <div class="grid md:grid-cols-2 gap-6 text-slate-300 text-sm">
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <p class="font-semibold text-white mb-3">Temel Fields:</p>
+                        <ul class="space-y-1 ml-4 list-disc">
+                            <li>subscription_plan_id (PK, auto_increment)</li>
+                            <li>title (JSON)</li>
+                            <li>slug (unique)</li>
+                            <li>description (JSON, nullable)</li>
+                            <li>features (JSON, nullable)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <p class="font-semibold text-white mb-3">Pricing & Currency:</p>
+                        <ul class="space-y-1 ml-4 list-disc">
+                            <li>currency (string, default: TRY)</li>
+                            <li>tax_rate (decimal 5,2, default: 20.00)</li>
+                            <li>price_display_mode (enum, default: show)</li>
+                            <li>billing_cycles (JSON, nullable)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <p class="font-semibold text-white mb-3">Limits & Features:</p>
+                        <ul class="space-y-1 ml-4 list-disc">
+                            <li>trial_days (integer, default: 0)</li>
+                            <li>device_limit (integer, default: 1)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <p class="font-semibold text-white mb-3">Status & Display:</p>
+                        <ul class="space-y-1 ml-4 list-disc">
+                            <li>is_trial (boolean, default: false) ⭐</li>
+                            <li>is_featured (boolean, default: false)</li>
+                            <li>is_active (boolean, default: true)</li>
+                            <li>sort_order (integer, default: 0)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <p class="font-semibold text-white mb-3">Timestamps:</p>
+                        <ul class="space-y-1 ml-4 list-disc">
+                            <li>created_at</li>
+                            <li>updated_at</li>
+                            <li>deleted_at (soft delete)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-green-900/30 rounded border-l-4 border-green-500">
+                    <p class="text-green-300 font-semibold">✅ Sonuç:</p>
+                    <p class="text-slate-300 mt-2">Central, İxtif, Muzibu - <strong class="text-white">tüm DB'ler aynı yapıda!</strong> Manage sayfası sorunsuz çalışacak.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Database Migration Plan</p>
+            <p class="mt-2">📊 Manage Sayfası Baz Alındı | 3 Tenant Unified</p>
+        </footer>
+    </div>
+</body>
+</html>

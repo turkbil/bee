@@ -22,6 +22,9 @@ return new class extends Migration
             // Primary Key
             $table->id('product_id');
 
+            // Sort Order
+            $table->integer('sort_order')->default(0)->index()->comment('Sıralama düzeni');
+
             // Relations
             $table->unsignedBigInteger('category_id')->comment('Kategori ID - shop_categories ilişkisi');
             $table->unsignedBigInteger('brand_id')->nullable()->comment('Marka ID - shop_brands ilişkisi');
@@ -42,6 +45,11 @@ return new class extends Migration
             $table->json('short_description')->nullable()->comment('Kısa açıklama (maksimum 160 karakter): {"tr": "Kısa açıklama", "en": "Short description", "vs.": "..."}');
             $table->json('body')->nullable()->comment('Detaylı açıklama (Rich text HTML): {"tr": "<p>Detaylı açıklama</p>", "en": "<p>Detailed description</p>", "vs.": "..."}');
 
+            // AI Embedding
+            $table->json('embedding')->nullable()->comment('AI embedding vector (1536 dimensions - OpenAI text-embedding-3-small)');
+            $table->timestamp('embedding_generated_at')->nullable()->comment('Embedding oluşturulma zamanı');
+            $table->string('embedding_model', 50)->default('text-embedding-3-small')->comment('Kullanılan embedding modeli');
+
             // Product Type & Condition
             $table->enum('product_type', ['physical', 'digital', 'service', 'membership', 'bundle'])
                 ->default('physical')
@@ -52,11 +60,15 @@ return new class extends Migration
                 ->comment('Ürün durumu: new=Sıfır, used=İkinci el, refurbished=Yenilenmiş');
 
             // Pricing
-            $table->boolean('price_on_request')->default(false)->index()->comment('Fiyat sorunuz aktif mi? (B2B için)');
-            $table->decimal('base_price', 12, 2)->nullable()->comment('Temel fiyat (₺)');
+            $table->enum('price_display_mode', ['show', 'hide', 'request'])
+                ->default('show')
+                ->comment('Fiyat gösterim modu: show=Göster, hide=Gizle, request=Fiyat Sorunuz');
+            $table->decimal('base_price', 12, 2)->nullable()->comment('Temel fiyat (₺) - KDV Hariç');
+            $table->decimal('tax_rate', 5, 2)->default(20.00)->comment('KDV oranı (%)');
+            $table->unsignedBigInteger('currency_id')->nullable()->comment('Para birimi ID - currencies tablosu ilişkisi');
             $table->decimal('compare_at_price', 12, 2)->nullable()->comment('İndirim öncesi fiyat (₺)');
             $table->decimal('cost_price', 12, 2)->nullable()->comment('Maliyet fiyatı (₺) - Kar hesabı için');
-            $table->string('currency', 3)->default('TRY')->comment('Para birimi (ISO 4217: TRY, USD, EUR)');
+            $table->string('currency', 3)->default('TRY')->comment('Para birimi kodu (ISO 4217: TRY, USD, EUR) - Legacy');
 
             // Deposit & Installment (B2B)
             $table->boolean('deposit_required')->default(false)->comment('Kapora gerekli mi?');
@@ -101,6 +113,9 @@ return new class extends Migration
             $table->boolean('is_active')->default(true)->index()->comment('Aktif/Pasif durumu');
             $table->boolean('is_featured')->default(false)->index()->comment('Öne çıkan ürün');
             $table->boolean('is_bestseller')->default(false)->index()->comment('Çok satan ürün');
+            $table->boolean('show_on_homepage')->default(false)->index()->comment('Anasayfada gösterilsin mi?');
+            $table->integer('homepage_sort_order')->nullable()->index()->comment('Anasayfada gösterim sırası (null = sıralanmamış)');
+            $table->json('badges')->nullable()->comment('Ürün etiketleri/badge\'leri - JSON array: [{"type":"new_arrival","label":{"tr":"Yeni"},"color":"green","icon":"sparkles","priority":1,"is_active":true,"value":null}]');
             $table->integer('view_count')->default(0)->comment('Görüntülenme sayısı');
             $table->integer('sales_count')->default(0)->comment('Satış sayısı');
             $table->timestamp('published_at')->nullable()->index()->comment('Yayınlanma tarihi');
@@ -109,6 +124,7 @@ return new class extends Migration
             $table->json('warranty_info')->nullable()->comment('Garanti bilgisi: {"period":24,"unit":"month","details":"..."}');
             $table->json('shipping_info')->nullable()->comment('Kargo bilgisi: {"weight_limit":50,"size_limit":"large","free_shipping":false}');
             $table->json('tags')->nullable()->comment('Etiketler (JSON array): ["tag1", "tag2", "tag3"]');
+            $table->json('custom_json_fields')->nullable()->comment('Tenant tarafından tanımlanan özel JSON kategorileri - Dinamik yapı');
 
             // Timestamps
             $table->timestamps();

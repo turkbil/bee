@@ -94,8 +94,8 @@
                                 {{ tenant_trans('front.logout') }}
                             </button>
 
-                            {{-- Play Limits Widget --}}
-                            @include('themes.muzibu.components.play-limits-widget')
+                            {{-- Play Limits Widget - DEVRE DIŞI (3 şarkı limiti kaldırıldı) --}}
+                            {{-- @include('themes.muzibu.components.play-limits-widget') --}}
 
                             {{-- Cache Clear Button (All Users) --}}
                             <div class="flex gap-2 mt-3 pt-3 border-t border-white/10">

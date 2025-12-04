@@ -20,6 +20,9 @@ class SubscriptionPlanManageComponent extends Component
     // Dil-neutral inputs
     public $inputs = [
         'slug' => '',
+        'currency' => 'TRY',
+        'tax_rate' => 20.00,
+        'price_display_mode' => 'show',
         'device_limit' => 1,
         'is_featured' => false,
         'is_active' => true,
@@ -84,6 +87,9 @@ class SubscriptionPlanManageComponent extends Component
         // Dil-neutral alanlar
         $this->inputs = [
             'slug' => $plan->slug ?? '',
+            'currency' => $plan->currency ?? 'TRY',
+            'tax_rate' => (float) ($plan->tax_rate ?? 20.00),
+            'price_display_mode' => $plan->price_display_mode ?? 'show',
             'device_limit' => (int) ($plan->device_limit ?? 1),
             'is_featured' => (bool) $plan->is_featured,
             'is_active' => (bool) $plan->is_active,
@@ -124,6 +130,9 @@ class SubscriptionPlanManageComponent extends Component
     {
         return [
             'inputs.slug' => 'required|string|max:255|unique:subscription_plans,slug,' . $this->planId . ',subscription_plan_id',
+            'inputs.currency' => 'required|string|in:TRY,USD,EUR',
+            'inputs.tax_rate' => 'required|numeric|min:0|max:100',
+            'inputs.price_display_mode' => 'required|string|in:show,hide,request',
             'inputs.device_limit' => 'required|integer|min:1',
             'inputs.is_featured' => 'boolean',
             'inputs.is_active' => 'boolean',
@@ -162,6 +171,42 @@ class SubscriptionPlanManageComponent extends Component
         $this->dispatch('toast', [
             'title' => __('admin.success'),
             'message' => 'Cycle eklendi!',
+            'type' => 'success'
+        ]);
+    }
+
+    /**
+     * Cycle güncelle
+     */
+    public function updateCycle($cycleKey, $cycleData)
+    {
+        if (!isset($this->cycles[$cycleKey])) {
+            return;
+        }
+
+        $this->cycles[$cycleKey] = [
+            'label' => [
+                'tr' => $cycleData['label_tr'] ?? '',
+                'en' => $cycleData['label_en'] ?? $cycleData['label_tr'] ?? '',
+            ],
+            'price' => (float) ($cycleData['price'] ?? 0),
+            'compare_price' => !empty($cycleData['compare_price']) ? (float) $cycleData['compare_price'] : null,
+            'duration_days' => (int) ($cycleData['duration_days'] ?? 30),
+            'trial_days' => !empty($cycleData['trial_days']) ? (int) $cycleData['trial_days'] : null,
+            'badge' => [
+                'text' => $cycleData['badge_text'] ?? null,
+                'color' => $cycleData['badge_color'] ?? null,
+            ],
+            'promo_text' => [
+                'tr' => $cycleData['promo_text_tr'] ?? null,
+                'en' => $cycleData['promo_text_en'] ?? null,
+            ],
+            'sort_order' => (int) ($cycleData['sort_order'] ?? $this->cycles[$cycleKey]['sort_order'] ?? 999),
+        ];
+
+        $this->dispatch('toast', [
+            'title' => __('admin.success'),
+            'message' => 'Cycle güncellendi!',
             'type' => 'success'
         ]);
     }
@@ -223,6 +268,9 @@ class SubscriptionPlanManageComponent extends Component
             'title' => $titleArray,
             'description' => $descriptionArray,
             'slug' => $this->inputs['slug'],
+            'currency' => $this->inputs['currency'],
+            'tax_rate' => $this->inputs['tax_rate'],
+            'price_display_mode' => $this->inputs['price_display_mode'],
             'billing_cycles' => $this->cycles,
             'device_limit' => $this->inputs['device_limit'],
             'features' => $featuresArray,

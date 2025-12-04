@@ -21,11 +21,14 @@ class TenantWidget extends Model
     ];
     
     /**
-     * Merkezi widget
+     * Merkezi widget (cross-database relationship)
+     * Widget central DB'de olduğu için connection belirtilmeli
      */
     public function widget(): BelongsTo
     {
-        return $this->belongsTo(Widget::class);
+        // Widget model'i CentralConnection trait kullandığı için
+        // otomatik olarak central connection kullanır
+        return $this->belongsTo(Widget::class, 'widget_id');
     }
     
     /**

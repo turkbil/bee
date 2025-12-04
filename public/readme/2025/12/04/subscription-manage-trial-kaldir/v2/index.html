@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trial Alanlarını Kaldırma - Basit Anlatım</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #fbbf24;
+        }
+        
+        .section {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #60a5fa;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            color: #1f2937;
+        }
+        
+        .box h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .before { border: 3px solid #ef4444; }
+        .after { border: 3px solid #10b981; }
+        
+        .field {
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.95rem;
+        }
+        
+        .field strong {
+            color: #374151;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .removed {
+            background: #fee2e2;
+            border: 2px dashed #ef4444;
+            color: #dc2626;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        
+        .arrow {
+            text-align: center;
+            font-size: 3rem;
+            color: #fbbf24;
+            margin: 20px 0;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            border: 3px solid #10b981;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .summary h3 {
+            color: #10b981;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        ul {
+            padding-left: 25px;
+            margin: 15px 0;
+        }
+        
+        li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Trial Alanlarını Kaldırma</h1>
+
+        <!-- Bölüm 1 -->
+        <div class="section">
+            <h2>1️⃣ Cycle Kartı (Liste Görünümü)</h2>
+            <p style="margin-bottom: 20px;">Admin panelde plan cycle'larını listelerken görünen kartlar:</p>
+            
+            <div class="comparison">
+                <div class="box before">
+                    <h3>❌ ŞU AN (Trial Var)</h3>
+                    
+                    <div class="field">
+                        <strong>⏰ Süre:</strong> 30 gün
+                    </div>
+                    
+                    <div class="field">
+                        <strong>💰 Fiyat:</strong> ₺49.90
+                    </div>
+                    
+                    <div class="field" style="background: #fef3c7; border: 2px solid #fbbf24;">
+                        <strong>🎁 Deneme:</strong> 7 gün
+                    </div>
+                </div>
+
+                <div class="box after">
+                    <h3>✅ OLACAK (Trial Yok)</h3>
+                    
+                    <div class="field">
+                        <strong>⏰ Süre:</strong> 30 gün
+                    </div>
+                    
+                    <div class="field">
+                        <strong>💰 Fiyat:</strong> ₺49.90
+                    </div>
+                    
+                    <div class="removed">
+                        🎁 Deneme badge'i KALDIRILDI
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <!-- Bölüm 2 -->
+        <div class="section">
+            <h2>2️⃣ Cycle Düzenle (Edit Modal)</h2>
+            <p style="margin-bottom: 20px;">Var olan bir cycle'ı düzenlerken açılan popup:</p>
+            
+            <div class="comparison">
+                <div class="box before">
+                    <h3>❌ ŞU AN (3 Alan)</h3>
+                    
+                    <div class="field">
+                        <strong>Fiyat (₺)</strong>
+                        <input type="text" value="49.90" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    
+                    <div class="field">
+                        <strong>Üstü Çizili Fiyat (₺)</strong>
+                        <input type="text" placeholder="120.00" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    
+                    <div class="field" style="background: #fee2e2; border: 2px solid #ef4444;">
+                        <strong>Deneme Süresi (gün)</strong>
+                        <input type="text" value="7" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                </div>
+
+                <div class="box after">
+                    <h3>✅ OLACAK (2 Alan)</h3>
+                    
+                    <div class="field">
+                        <strong>Fiyat (₺)</strong>
+                        <input type="text" value="49.90" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    
+                    <div class="field">
+                        <strong>Üstü Çizili Fiyat (₺)</strong>
+                        <input type="text" placeholder="120.00" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    
+                    <div class="removed">
+                        Deneme Süresi alanı KALDIRILDI
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <!-- Bölüm 3 -->
+        <div class="section">
+            <h2>3️⃣ Yeni Cycle Ekle (New Modal)</h2>
+            <p style="margin-bottom: 20px;">Yeni bir cycle eklerken açılan popup:</p>
+            
+            <div class="comparison">
+                <div class="box before">
+                    <h3>❌ ŞU AN (3 Alan)</h3>
+                    
+                    <div class="field">
+                        <strong>Fiyat (₺)</strong>
+                        <input type="text" placeholder="49.90" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    
+                    <div class="field">
+                        <strong>Üstü Çizili Fiyat (₺)</strong>
+                        <input type="text" placeholder="120.00" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    
+                    <div class="field" style="background: #fee2e2; border: 2px solid #ef4444;">
+                        <strong>Deneme Süresi (gün) <span style="background: #9ca3af; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; color: white;">Opsiyonel</span></strong>
+                        <input type="text" placeholder="7" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                </div>
+
+                <div class="box after">
+                    <h3>✅ OLACAK (2 Alan)</h3>
+                    
+                    <div class="field">
+                        <strong>Fiyat (₺)</strong>
+                        <input type="text" placeholder="49.90" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    
+                    <div class="field">
+                        <strong>Üstü Çizili Fiyat (₺)</strong>
+                        <input type="text" placeholder="120.00" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                    
+                    <div class="removed">
+                        Deneme Süresi alanı KALDIRILDI
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Özet -->
+        <div class="summary">
+            <h3>✅ ÖZET: Ne Değişecek?</h3>
+            <div style="text-align: left; color: #e2e8f0; max-width: 600px; margin: 0 auto;">
+                <ul>
+                    <li><strong>Cycle kartlarında:</strong> "🎁 7 gün deneme" badge'i görünmeyecek</li>
+                    <li><strong>Cycle düzenlerken:</strong> "Deneme Süresi" input alanı olmayacak</li>
+                    <li><strong>Yeni cycle eklerken:</strong> "Deneme Süresi" input alanı olmayacak</li>
+                </ul>
+                
+                <p style="margin-top: 20px; padding: 15px; background: rgba(59, 130, 246, 0.2); border-radius: 8px; border-left: 4px solid #3b82f6;">
+                    💡 <strong>Neden?</strong><br>
+                    Trial artık cycle'larda değil, <strong>ayrı bir "Trial Planı"</strong> olacak. 
+                    Böylece kullanıcı başına 1 kere trial garantisi sağlanacak.
+                </p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; color: #94a3b8;">
+            🤖 Claude AI | 2025-12-04
+        </div>
+    </div>
+</body>
+</html>

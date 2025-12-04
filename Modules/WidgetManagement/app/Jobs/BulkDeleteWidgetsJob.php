@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\WidgetManagement\app\Models\Widget;
 use Spatie\Activitylog\Models\Activity;
+use App\Models\User;
 
 class BulkDeleteWidgetsJob implements ShouldQueue
 {
@@ -30,6 +31,18 @@ class BulkDeleteWidgetsJob implements ShouldQueue
     public function handle(): void
     {
         try {
+            // Kullanıcı yetkisi kontrolü
+            $user = User::find($this->userId);
+
+            if (!$user) {
+                throw new \Exception("Kullanıcı bulunamadı (ID: {$this->userId})");
+            }
+
+            // Widget silme yetkisi kontrolü
+            if (!$user->hasRole(['root', 'admin']) && !$user->hasPermissionTo('widget-delete')) {
+                throw new \Exception("Kullanıcının widget silme yetkisi yok");
+            }
+
             // Tenant context ayarla
             if (!empty($this->tenantId) && $this->tenantId !== 'central') {
                 $tenant = \App\Models\Tenant::find($this->tenantId);
@@ -138,18 +151,14 @@ class BulkDeleteWidgetsJob implements ShouldQueue
 
     private function isProtectedWidget($widget): bool
     {
-        // Sistem widget'ları veya default widget'lar korumalı olabilir
-        if (isset($widget->is_system) && $widget->is_system) {
-            return true;
-        }
-
-        if (isset($widget->is_default) && $widget->is_default) {
+        // Core widget'lar korumalı (migration'da is_core field var)
+        if ($widget->is_core) {
             return true;
         }
 
         // Özel widget türleri korumalı olabilir
         $protectedTypes = ['system', 'core', 'essential'];
-        if (isset($widget->type) && in_array($widget->type, $protectedTypes)) {
+        if (in_array($widget->type, $protectedTypes)) {
             return true;
         }
 

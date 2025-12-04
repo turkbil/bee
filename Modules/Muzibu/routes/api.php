@@ -62,6 +62,17 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/{id}/key', [SongController::class, 'serveEncryptionKey'])
             ->name('api.muzibu.songs.encryption-key')
             ->middleware('throttle.user:api'); // Rate limit to prevent key harvesting
+
+        // 🎯 Dynamic Playlist (User tipine göre 4 chunk: 3 çal + 1 buffer)
+        Route::get('/{id}/playlist', [SongController::class, 'dynamicPlaylist'])
+            ->name('api.muzibu.songs.dynamic-playlist')
+            ->middleware('throttle.user:stream');
+
+        // 🔒 Chunk Serve (Token-based authorization)
+        Route::get('/{id}/chunk/{chunkName}', [SongController::class, 'serveChunk'])
+            ->name('api.muzibu.songs.serve-chunk')
+            ->middleware('throttle.user:stream');
+
         Route::get('/{id}/conversion-status', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'checkConversionStatus'])
             ->name('api.muzibu.songs.conversion-status')
             ->middleware('throttle.user:api');

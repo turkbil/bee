@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Slider - İnteraktif Özellikler Rehberi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 60px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .intro {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 50px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .intro h2 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 35px;
+            border-radius: 16px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+            border-left-color: #60a5fa;
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+
+        .feature-description {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .feature-details {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .feature-details h4 {
+            color: #fbbf24;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-details ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-details li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #94a3b8;
+        }
+
+        .feature-details li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-top: 15px;
+            border: 1px solid #334155;
+        }
+
+        .code-block code {
+            color: #10b981;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+        }
+
+        .visual-demo {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .visual-demo img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 2px solid #334155;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .highlight {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .location-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎛️ Hero Slider - İnteraktif Özellikler</h1>
+            <div class="meta">
+                📅 Tarih: 2025-12-04 | 🎯 Efekt: Fade | 👤 Design Playground
+            </div>
+        </header>
+
+        <div class="intro">
+            <h2>📌 Genel Bakış</h2>
+            <p>Hero slider'a eklenen tüm interaktif özellikler aşağıda detaylı olarak açıklanmıştır. Her özelliğin ne işe yaradığını, nasıl kullanıldığını ve hangi parametrelerin ne yaptığını öğrenebilirsiniz.</p>
+            <p style="margin-top: 15px;"><span class="highlight">Test URL:</span> <a href="https://ixtif.com/design/hero-slider" style="color: #60a5fa;">https://ixtif.com/design/hero-slider</a></p>
+        </div>
+
+        <div class="feature-grid">
+
+            <!-- Feature 1: Efekt Seçici -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-icon">🎨</span>
+                    <div>
+                        <h3 class="feature-title">Efekt Seçici <span class="feature-badge">TEMEL</span></h3>
+                        <span class="location-badge">📍 Sol üst kontrol paneli</span>
+                    </div>
+                </div>
+                <p class="feature-description">
+                    Slider geçiş efektini değiştirmenizi sağlar. 9 farklı efekt arasından seçim yapabilirsiniz.
+                </p>
+                <div class="feature-details">
+                    <h4>🎯 Ne işe yarar?</h4>
+                    <ul>
+                        <li>Slide'ların geçiş animasyonunu değiştirir</li>
+                        <li>Her efekt farklı bir görsel deneyim sunar</li>
+                        <li>Anında değişim - swiper yeniden başlatılır</li>
+                    </ul>
+                    <h4 style="margin-top: 20px;">⚙️ Mevcut Efektler:</h4>
+                    <ul>
+                        <li><strong>Slide:</strong> Klasik yatay kayma</li>
+                        <li><strong>Fade:</strong> Solma/belirme (varsayılan)</li>
+                        <li><strong>Cube:</strong> 3D küp döndürme</li>
+                        <li><strong>Coverflow:</strong> Galeri/carousel efekti</li>
+                        <li><strong>Flip:</strong> Kart çevirme</li>
+                        <li><strong>Cards:</strong> Kart destesi efekti</li>
+                        <li><strong>Creative: Wave:</strong> Dalga hareketi</li>
+                        <li><strong>Creative: Zoom:</strong> Derinlik efekti</li>
+                        <li><strong>Creative: Rotate:</strong> Döndürme efekti</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 2: Speed Control -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-icon">⚡</span>
+                    <div>
+                        <h3 class="feature-title">Fade Hızı Kontrolü <span class="feature-badge">HIZLI</span></h3>
+                        <span class="location-badge">📍 Sol üst kontrol paneli</span>
+                    </div>
+                </div>
+                <p class="feature-description">
+                    Slide geçişlerinin ne kadar hızlı/yavaş olacağını ayarlar. Slider ile 300ms - 2000ms arası ayarlayabilirsiniz.
+                </p>
+                <div class="feature-details">
+                    <h4>🎯 Ne işe yarar?</h4>
+                    <ul>
+                        <li>Geçiş animasyonunun süresini kontrol eder</li>
+                        <li>300ms = Çok hızlı, keskin geçiş</li>
+                        <li>800ms = Normal, dengeli geçiş (varsayılan)</li>
+                        <li>2000ms = Çok yavaş, sinematik geçiş</li>
+                    </ul>
+                    <h4 style="margin-top: 20px;">💡 Nasıl Kullanılır?</h4>
+                    <ul>
+                        <li>Slider'ı sola/sağa kaydırın</li>
+                        <li>Anlık olarak gösterir: <span class="highlight">800ms</span></li>
+                        <li>Değişiklik anında uygulanır</li>
+                    </ul>
+                </div>
+                <div class="code-block">
+                    <code>swiper.params.speed = 800; // Milisaniye cinsinden</code>
+                </div>
+            </div>
+
+            <!-- Feature 3: Autoplay Delay -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-icon">⏱️</span>
+                    <div>
+                        <h3 class="feature-title">Otomatik Geçiş Süresi <span class="feature-badge">SÜRE</span></h3>
+                        <span class="location-badge">📍 Sol üst kontrol paneli</span>
+                    </div>
+                </div>
+                <p class="feature-description">
+                    Her slide'ın ne kadar süre ekranda kalacağını belirler. 2 saniye - 10 saniye arası ayarlanabilir.
+                </p>
+                <div class="feature-details">
+                    <h4>🎯 Ne işe yarar?</h4>
+                    <ul>
+                        <li>Otomatik geçiş bekleme süresini kontrol eder</li>
+                        <li>2s = Hızlı, dinamik sunum</li>
+                        <li>5s = Dengeli, rahat okuma (varsayılan)</li>
+                        <li>10s = Yavaş, detaylı inceleme</li>
+                    </ul>
+                    <h4 style="margin-top: 20px;">🔄 Progress Bar İle Senkron:</h4>
+                    <ul>
+                        <li>Linear progress bar bu süreye göre doluyor</li>
+                        <li>Circular progress (pagination) da bu süreyi kullanıyor</li>
+                        <li>Süreyi değiştirince tüm progress'ler güncelleniyor</li>
+                    </ul>
+                </div>
+                <div class="code-block">
+                    <code>swiper.params.autoplay.delay = 5000; // 5 saniye</code>
+                </div>
+            </div>
+
+            <!-- Feature 4: Easing Function -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-icon">📊</span>
+                    <div>
+                        <h3 class="feature-title">Easing (Yumuşatma) <span class="feature-badge">GELİŞMİŞ</span></h3>
+                        <span class="location-badge">📍 Sol üst kontrol paneli</span>
+                    </div>
+                </div>
+                <p class="feature-description">
+                    Geçiş animasyonunun hız eğrisini değiştirir. Animasyonun başlangıç ve bitiş hızını kontrol eder.
+                </p>
+                <div class="feature-details">
+                    <h4>🎯 Easing Türleri:</h4>
+                    <ul>
+                        <li><strong>Linear:</strong> Sabit hız - Baştan sona aynı hızda</li>
+                        <li><strong>Ease:</strong> Yumuşak - Başlangıç ve bitişte yavaş (varsayılan)</li>
+                        <li><strong>Ease-In:</strong> Yavaş başla - Hızlanarak bitir</li>
+                        <li><strong>Ease-Out:</strong> Hızlı başla - Yavaşlayarak bitir</li>
+                        <li><strong>Ease-In-Out:</strong> Hem yavaş başla, hem yavaş bitir</li>
+                    </ul>
+                    <h4 style="margin-top: 20px;">💡 Hangi Durumda Kullanılır?</h4>
+                    <ul>
+                        <li><span class="highlight">Ease:</span> En doğal, çoğu durumda ideal</li>
+                        <li><span class="highlight">Linear:</span> Mekanik, teknik sunumlar</li>
+                        <li><span class="highlight">Ease-Out:</span> Dinamik, enerji verici</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 5: Progress Bar Pagination -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-icon">⭕</span>
+                    <div>
+                        <h3 class="feature-title">Progress Bar Pagination <span class="feature-badge">EN ETKİLİ</span></h3>
+                        <span class="location-badge">📍 Sayfanın alt ortası</span>
+                    </div>
+                </div>
+                <p class="feature-description">
+                    Her slide'ı temsil eden dairesel bullet'lar. Aktif slide'ın bullet'i etrafında dönen bir progress ring var - autoplay süresi dolana kadar doluyor.
+                </p>
+                <div class="feature-details">
+                    <h4>🎯 Ne işe yarar?</h4>
+                    <ul>
+                        <li>Kaç slide var gösterir (6 adet bullet)</li>
+                        <li>Hangi slide'dayız gösterir (mavi/büyük olan)</li>
+                        <li>Ne kadar süre kaldı gösterir (dönen ring)</li>
+                        <li>Bullet'a tıklayarak o slide'a atlayabilirsiniz</li>
+                    </ul>
+                    <h4 style="margin-top: 20px;">🎨 Görsel Özellikler:</h4>
+                    <ul>
+                        <li>Pasif bullet: Gri çember, küçük nokta</li>
+                        <li>Aktif bullet: Mavi çember, büyük nokta, dönen ring</li>
+                        <li>Ring 360° dönüp bitince → sonraki slide</li>
+                        <li>Dark mode'da renkler otomatik değişiyor</li>
+                    </ul>
+                </div>
+                <div class="code-block">
+                    <code>/* CSS Animation */
+animation: progressRing 5000ms linear forwards;</code>
+                </div>
+            </div>
+
+            <!-- Feature 6: Linear Progress Bar -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-icon">📈</span>
+                    <div>
+                        <h3 class="feature-title">Linear Progress Bar <span class="feature-badge">GÖRSEL</span></h3>
+                        <span class="location-badge">📍 Sayfanın en üstü</span>
+                    </div>
+                </div>
+                <p class="feature-description">
+                    Sayfanın en üstünde tam genişlikte mavi-mor gradient bir çubuk. Her slide için soldan sağa doluyor.
+                </p>
+                <div class="feature-details">
+                    <h4>🎯 Ne işe yarar?</h4>
+                    <ul>
+                        <li>Otomatik geçiş ilerlemesini gösterir</li>
+                        <li>0%'dan başlar, 100%'e kadar doluyor</li>
+                        <li>Slide değişince sıfırlanıp yeniden başlıyor</li>
+                        <li>Görsel geri sayım etkisi yaratıyor</li>
+                    </ul>
+                    <h4 style="margin-top: 20px;">⚙️ Teknik Detay:</h4>
+                    <ul>
+                        <li>50ms aralıklarla güncelleniyor (smooth)</li>
+                        <li>Autoplay delay süresine göre hız ayarlıyor</li>
+                        <li>Play/Pause ile durduruluyor/devam ediyor</li>
+                    </ul>
+                </div>
+                <div class="code-block">
+                    <code>// JavaScript ile anlık güncelleme
+progressBar.style.width = progress + '%';</code>
+                </div>
+            </div>
+
+            <!-- Feature 7: Play/Pause Button -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-icon">⏯️</span>
+                    <div>
+                        <h3 class="feature-title">Play/Pause Butonu <span class="feature-badge">KONTROL</span></h3>
+                        <span class="location-badge">📍 Sol üst kontrol paneli</span>
+                    </div>
+                </div>
+                <p class="feature-description">
+                    Otomatik slide geçişini durdurmanıza/devam ettirmenize yarar. Mavi gradient buton, tıklanabilir.
+                </p>
+                <div class="feature-details">
+                    <h4>🎯 Ne işe yarar?</h4>
+                    <ul>
+                        <li>Autoplay'i durdurur/başlatır</li>
+                        <li>Durdurulunca: ▶️ OYNAT gösterir</li>
+                        <li>Çalışıyorken: ⏸️ DURAKLAT gösterir</li>
+                        <li>Progress bar'lar da durur/devam eder</li>
+                    </ul>
+                    <h4 style="margin-top: 20px;">💡 Kullanım Senaryosu:</h4>
+                    <ul>
+                        <li>Kullanıcı bir slide'ı detaylı okumak istediğinde</li>
+                        <li>Form doldururken otomatik geçişi durdurmak</li>
+                        <li>Video/görsel'i daha uzun incelemek</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 8: Slide Counter -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-icon">🔢</span>
+                    <div>
+                        <h3 class="feature-title">Slide Sayacı <span class="feature-badge">BİLGİ</span></h3>
+                        <span class="location-badge">📍 Sağ üst köşe</span>
+                    </div>
+                </div>
+                <p class="feature-description">
+                    Kaçıncı slide'dasınız ve toplam kaç slide var gösterir. Örnek: <span class="highlight">3 / 6</span>
+                </p>
+                <div class="feature-details">
+                    <h4>🎯 Ne işe yarar?</h4>
+                    <ul>
+                        <li>Mevcut slide numarasını gösterir (1-6 arası)</li>
+                        <li>Toplam slide sayısını gösterir (6)</li>
+                        <li>Her slide geçişinde otomatik güncellenir</li>
+                        <li>Kullanıcı nerede olduğunu anlar</li>
+                    </ul>
+                    <h4 style="margin-top: 20px;">🎨 Tasarım:</h4>
+                    <ul>
+                        <li>Beyaz/koyu arka plan (dark mode uyumlu)</li>
+                        <li>Büyük mavi rakam (3xl font)</li>
+                        <li>Alt tarafta "SLIDE" yazısı</li>
+                        <li>Mavi border ile vurgulu</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 9: Loop Toggle -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <span class="feature-icon">🔄</span>
+                    <div>
+                        <h3 class="feature-title">Sonsuz Döngü Toggle <span class="feature-badge">AYAR</span></h3>
+                        <span class="location-badge">📍 Sol üst kontrol paneli (en alt)</span>
+                    </div>
+                </div>
+                <p class="feature-description">
+                    Slider'ın sonsuz döngüde çalışıp çalışmayacağını belirler. Toggle switch ile açıp/kapatabilirsiniz.
+                </p>
+                <div class="feature-details">
+                    <h4>🎯 Ne işe yarar?</h4>
+                    <ul>
+                        <li><strong>Açık (varsayılan):</strong> Son slide'dan sonra ilk slide'a döner</li>
+                        <li><strong>Kapalı:</strong> Son slide'da durur, tekrar başlatmaz</li>
+                    </ul>
+                    <h4 style="margin-top: 20px;">💡 Ne Zaman Kapatılır?</h4>
+                    <ul>
+                        <li>Lineer bir sunum varsa (başlangıç → son)</li>
+                        <li>Son slide'da CTA (harekete geçirici çağrı) varsa</li>
+                        <li>Tutorial/onboarding amaçlıysa</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>🤖 Claude AI tarafından oluşturuldu</p>
+            <p style="margin-top: 10px;">📅 2025-12-04</p>
+        </footer>
+    </div>
+</body>
+</html>

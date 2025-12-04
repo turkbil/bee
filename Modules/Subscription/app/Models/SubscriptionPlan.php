@@ -20,27 +20,18 @@ class SubscriptionPlan extends BaseModel
         'features',
         'billing_cycles', // Dinamik cycles (15 gün, 1 ay, 2 ay...)
         'currency',
+        'currency_id',
+        'tax_rate',
+        'price_display_mode',
         'trial_days',
         'device_limit',
-        'requires_payment_method',
-        'max_products',
-        'max_orders',
-        'max_storage_mb',
         'custom_limits',
-        'has_analytics',
-        'has_priority_support',
-        'has_api_access',
         'enabled_features',
         'sort_order',
         'is_featured',
-        'is_popular',
-        'badge_text',
-        'highlight_color',
         'is_active',
         'is_public',
         'subscribers_count',
-        'terms',
-        'notes',
         'metadata',
     ];
 
@@ -52,12 +43,8 @@ class SubscriptionPlan extends BaseModel
         'custom_limits' => 'array',
         'enabled_features' => 'array',
         'metadata' => 'array',
-        'requires_payment_method' => 'boolean',
-        'has_analytics' => 'boolean',
-        'has_priority_support' => 'boolean',
-        'has_api_access' => 'boolean',
+        'tax_rate' => 'decimal:2',
         'is_featured' => 'boolean',
-        'is_popular' => 'boolean',
         'is_active' => 'boolean',
         'is_public' => 'boolean',
     ];
@@ -78,6 +65,11 @@ class SubscriptionPlan extends BaseModel
         return $this->hasMany(Subscription::class, 'plan_id', 'subscription_plan_id');
     }
 
+    public function currency()
+    {
+        return $this->belongsTo(\Modules\Shop\App\Models\ShopCurrency::class, 'currency_id', 'currency_id');
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -92,11 +84,6 @@ class SubscriptionPlan extends BaseModel
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);
-    }
-
-    public function scopePopular($query)
-    {
-        return $query->where('is_popular', true);
     }
 
     public function scopeOrdered($query)
@@ -169,5 +156,37 @@ class SubscriptionPlan extends BaseModel
     public function getActiveSubscribersCountAttribute(): int
     {
         return $this->subscriptions()->where('status', 'active')->count();
+    }
+
+    /**
+     * Belirli bir cycle'ın KDV dahil fiyatını hesapla
+     */
+    public function getCyclePriceWithTax(string $cycleKey): ?float
+    {
+        $cycle = $this->getCycle($cycleKey);
+        if (!$cycle || !isset($cycle['price'])) {
+            return null;
+        }
+
+        $price = (float) $cycle['price'];
+        $taxRate = $this->tax_rate ?? 20.0;
+
+        return $price * (1 + $taxRate / 100);
+    }
+
+    /**
+     * Belirli bir cycle'ın KDV tutarını hesapla
+     */
+    public function getCycleTaxAmount(string $cycleKey): ?float
+    {
+        $cycle = $this->getCycle($cycleKey);
+        if (!$cycle || !isset($cycle['price'])) {
+            return null;
+        }
+
+        $price = (float) $cycle['price'];
+        $taxRate = $this->tax_rate ?? 20.0;
+
+        return $price * ($taxRate / 100);
     }
 }

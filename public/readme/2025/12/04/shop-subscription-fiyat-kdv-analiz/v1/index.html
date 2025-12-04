@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop & Subscription Modülleri - Fiyat & KDV Analizi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 30px 0 20px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            margin: 20px 0 15px;
+            color: #93c5fd;
+        }
+
+        .status-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #3b82f6;
+        }
+
+        .status-good {
+            border-left-color: #10b981;
+        }
+
+        .status-warning {
+            border-left-color: #f59e0b;
+        }
+
+        .status-error {
+            border-left-color: #ef4444;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 20px;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .error-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cbd5e1;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+
+        .badge-success { background: #10b981; color: white; }
+        .badge-warning { background: #f59e0b; color: white; }
+        .badge-error { background: #ef4444; color: white; }
+        .badge-info { background: #3b82f6; color: white; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 15px;
+            text-align: left;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #334155;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .icon {
+            font-size: 1.3rem;
+            margin-right: 8px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Shop & Subscription Modülleri Analizi</h1>
+            <div class="meta">
+                <div class="meta-item">📅 Tarih: 2025-12-04</div>
+                <div class="meta-item">🎯 Odak: Fiyat, KDV, Currency Yapıları</div>
+                <div class="meta-item">👤 Talep: Kapsamlı analiz + eksikler</div>
+            </div>
+        </header>
+
+        <!-- ÖZET -->
+        <section>
+            <h2>🎯 Yönetici Özeti</h2>
+
+            <div class="grid-2">
+                <div class="status-card status-good">
+                    <h3>✅ Shop Modülü</h3>
+                    <p><strong>DURUM:</strong> <span class="badge badge-success">İYİ</span></p>
+                    <ul>
+                        <li>KDV yapısı eksiksiz</li>
+                        <li>Currency ilişkisi mevcut</li>
+                        <li>Frontend görüntüleme ayarlanabilir</li>
+                        <li>Runtime fiyat hesaplamaları çalışıyor</li>
+                    </ul>
+                </div>
+
+                <div class="status-card status-error">
+                    <h3>❌ Subscription Modülü</h3>
+                    <p><strong>DURUM:</strong> <span class="badge badge-error">EKSİKLER VAR</span></p>
+                    <ul>
+                        <li>❌ KDV yapısı eksik</li>
+                        <li>❌ Currency foreign key yok</li>
+                        <li>❌ Schema karmaşıklığı (iki sistem bir arada)</li>
+                        <li>❌ Kullanılmayan kolonlar mevcut</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SHOP MODÜLÜ DETAYLI ANALİZ -->
+        <section>
+            <h2>🛒 Shop Modülü - Detaylı Analiz</h2>
+
+            <h3>✅ Database Yapısı (shop_products)</h3>
+
+            <h4>Fiyat & KDV Kolonları</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kolon</th>
+                        <th>Tip</th>
+                        <th>Açıklama</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>base_price</code></td>
+                        <td>DECIMAL(12,2)</td>
+                        <td>Temel fiyat (KDV Hariç)</td>
+                        <td><span class="badge badge-success">✓ İYİ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>tax_rate</code></td>
+                        <td>DECIMAL(5,2)</td>
+                        <td>KDV oranı (% - varsayılan 20)</td>
+                        <td><span class="badge badge-success">✓ İYİ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>compare_at_price</code></td>
+                        <td>DECIMAL(12,2)</td>
+                        <td>İndirim öncesi fiyat</td>
+                        <td><span class="badge badge-success">✓ İYİ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>cost_price</code></td>
+                        <td>DECIMAL(12,2)</td>
+                        <td>Maliyet fiyatı (kar hesabı için)</td>
+                        <td><span class="badge badge-success">✓ İYİ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>currency_id</code></td>
+                        <td>BIGINT UNSIGNED</td>
+                        <td>Para birimi ID (currencies foreign key)</td>
+                        <td><span class="badge badge-success">✓ İYİ</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>currency</code></td>
+                        <td>VARCHAR(3)</td>
+                        <td>Para birimi kodu (TRY, USD, EUR) - Legacy</td>
+                        <td><span class="badge badge-warning">⚠ Legacy</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>price_display_mode</code></td>
+                        <td>ENUM</td>
+                        <td>show/hide/request</td>
+                        <td><span class="badge badge-success">✓ İYİ</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 NOT:</strong> <code>currency</code> kolonu legacy kalıyor, yeni sistem <code>currency_id</code> foreign key kullanıyor. İleride currency kolonu kaldırılabilir.
+            </div>
+
+            <h4>Model Accessor'ları (ShopProduct.php)</h4>
+            <div class="success-box">
+                <strong>✅ Runtime Hesaplamalar Mevcut:</strong>
+                <ul>
+                    <li><code>getPriceWithTaxAttribute()</code> - KDV dahil fiyat hesaplama</li>
+                    <li><code>getTaxAmountAttribute()</code> - KDV tutarı hesaplama</li>
+                    <li><code>getDiscountPercentageAttribute()</code> - İndirim yüzdesi</li>
+                    <li><code>getFinalPriceAttribute()</code> - Son fiyat</li>
+                </ul>
+            </div>
+
+            <h4>Frontend Görüntüleme (show.blade.php - satır 42-56)</h4>
+            <div class="success-box">
+                <strong>✅ Ayarlanabilir KDV Gösterimi:</strong>
+                <ul>
+                    <li>Settings kontrolü: <code>shop_product_tax</code></li>
+                    <li><strong>true =</strong> KDV dahil fiyat gösterilir</li>
+                    <li><strong>false =</strong> KDV hariç + "KDV" etiketi gösterilir</li>
+                    <li>Compare price için de aynı mantık uygulanıyor</li>
+                </ul>
+            </div>
+
+            <h3>📋 Sonuç: Shop Modülü</h3>
+            <div class="success-box">
+                <p><strong>✅ DURUM: EKSİKSİZ</strong></p>
+                <p>Shop modülünde fiyat ve KDV yapısı profesyonel bir şekilde tasarlanmış. Database, model ve frontend uyumlu çalışıyor.</p>
+            </div>
+        </section>
+
+        <!-- SUBSCRIPTION MODÜLÜ DETAYLI ANALİZ -->
+        <section>
+            <h2>💳 Subscription Modülü - Detaylı Analiz</h2>
+
+            <h3>❌ Kritik Problemler</h3>
+
+            <div class="error-box">
+                <h4>🚨 Problem 1: Schema Karmaşıklığı</h4>
+                <p><strong>İki farklı sistem bir arada:</strong></p>
+                <ul>
+                    <li><strong>Migration'da:</strong> <code>billing_cycles</code> JSON kolonu (dinamik yapı)</li>
+                    <li><strong>Tenant DB'de:</strong> Sabit kolonlar var:
+                        <ul>
+                            <li><code>price_daily</code></li>
+                            <li><code>price_weekly</code></li>
+                            <li><code>price_monthly</code></li>
+                            <li><code>price_quarterly</code></li>
+                            <li><code>price_yearly</code></li>
+                        </ul>
+                    </li>
+                </ul>
+                <p><strong>❓ Soru:</strong> Hangi sistem kullanılıyor? Frontend <code>billing_cycles</code> JSON kullanıyor, ama sabit kolonlar da DB'de mevcut!</p>
+            </div>
+
+            <div class="error-box">
+                <h4>🚨 Problem 2: KDV Yapısı Eksik</h4>
+                <p><strong>Shop ile karşılaştırma:</strong></p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Shop Modülü</th>
+                            <th>Subscription Modülü</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>tax_rate</code> kolonu</td>
+                            <td><span class="badge badge-success">✓ VAR</span></td>
+                            <td><span class="badge badge-error">❌ YOK</span></td>
+                        </tr>
+                        <tr>
+                            <td>KDV dahil fiyat hesaplama</td>
+                            <td><span class="badge badge-success">✓ VAR</span></td>
+                            <td><span class="badge badge-error">❌ YOK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Frontend KDV gösterimi</td>
+                            <td><span class="badge badge-success">✓ VAR</span></td>
+                            <td><span class="badge badge-error">❌ YOK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Settings ile kontrol</td>
+                            <td><span class="badge badge-success">✓ VAR</span></td>
+                            <td><span class="badge badge-error">❌ YOK</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>⚠️ Sonuç:</strong> Subscription fiyatları KDV dahil mi hariç mi belirsiz! Kullanıcı ve muhasebeye yönelik ciddi problem.</p>
+            </div>
+
+            <div class="error-box">
+                <h4>🚨 Problem 3: Currency Yapısı Tutarsız</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Özellik</th>
+                            <th>Shop Modülü</th>
+                            <th>Subscription Modülü</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>currency_id</code> (foreign key)</td>
+                            <td><span class="badge badge-success">✓ VAR</span></td>
+                            <td><span class="badge badge-error">❌ YOK</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>currency</code> (string)</td>
+                            <td><span class="badge badge-warning">Legacy (var)</span></td>
+                            <td><span class="badge badge-warning">⚠ Sadece Bu Var</span></td>
+                        </tr>
+                        <tr>
+                            <td>ShopCurrency relation</td>
+                            <td><span class="badge badge-success">✓ VAR</span></td>
+                            <td><span class="badge badge-error">❌ YOK</span></td>
+                        </tr>
+                        <tr>
+                            <td>Currency symbol çekme</td>
+                            <td><span class="badge badge-success">✓ Dinamik</span></td>
+                            <td><span class="badge badge-error">❌ Sabit (₺)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>⚠️ Sonuç:</strong> Subscription sadece TRY kullanıyor gibi görünüyor. Multi-currency desteği eksik!</p>
+            </div>
+
+            <h3>🗑️ Kullanılmayan / Gereksiz Kolonlar</h3>
+
+            <div class="warning-box">
+                <h4>⚠️ Şüpheli Kolonlar</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kolon</th>
+                            <th>Durum</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>price_daily</code></td>
+                            <td><span class="badge badge-warning">?</span></td>
+                            <td>billing_cycles JSON kullanılıyorsa gereksiz</td>
+                        </tr>
+                        <tr>
+                            <td><code>price_weekly</code></td>
+                            <td><span class="badge badge-warning">?</span></td>
+                            <td>billing_cycles JSON kullanılıyorsa gereksiz</td>
+                        </tr>
+                        <tr>
+                            <td><code>price_monthly</code></td>
+                            <td><span class="badge badge-warning">?</span></td>
+                            <td>billing_cycles JSON kullanılıyorsa gereksiz</td>
+                        </tr>
+                        <tr>
+                            <td><code>price_quarterly</code></td>
+                            <td><span class="badge badge-warning">?</span></td>
+                            <td>billing_cycles JSON kullanılıyorsa gereksiz</td>
+                        </tr>
+                        <tr>
+                            <td><code>price_yearly</code></td>
+                            <td><span class="badge badge-warning">?</span></td>
+                            <td>billing_cycles JSON kullanılıyorsa gereksiz</td>
+                        </tr>
+                        <tr>
+                            <td><code>compare_price_monthly</code></td>
+                            <td><span class="badge badge-error">❌</span></td>
+                            <td>Tutarsız! Sadece monthly ve yearly var, diğerleri yok</td>
+                        </tr>
+                        <tr>
+                            <td><code>compare_price_yearly</code></td>
+                            <td><span class="badge badge-error">❌</span></td>
+                            <td>Tutarsız! Sadece monthly ve yearly var, diğerleri yok</td>
+                        </tr>
+                        <tr>
+                            <td><code>default_billing_cycle</code></td>
+                            <td><span class="badge badge-warning">?</span></td>
+                            <td>Frontend'de kullanılmıyor gibi görünüyor</td>
+                        </tr>
+                        <tr>
+                            <td><code>has_trial</code></td>
+                            <td><span class="badge badge-warning">?</span></td>
+                            <td>trial_days > 0 kontrolü yeterli, ayrı boolean gereksiz</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>💡 Öneri:</strong> Hangi sistem kullanılacak net belirlenmeli. JSON kullanılıyorsa sabit kolonlar kaldırılmalı. Sabit kolonlar kullanılıyorsa JSON kaldırılmalı.</p>
+            </div>
+
+            <h3>📋 Sonuç: Subscription Modülü</h3>
+            <div class="error-box">
+                <p><strong>❌ DURUM: CİDDİ EKSİKLER VAR</strong></p>
+                <ul>
+                    <li>KDV yapısı tamamen eksik</li>
+                    <li>Currency ilişkisi yok (foreign key eksik)</li>
+                    <li>Schema karmaşık (iki sistem çakışıyor)</li>
+                    <li>Kullanılmayan kolonlar DB'yi şişiriyor</li>
+                    <li>Shop modülü ile tutarsız</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ÖNERİLER -->
+        <section>
+            <h2>💡 Öneriler & Çözüm Yol Haritası</h2>
+
+            <h3>🎯 1. Subscription Modülü - KDV Yapısı Eklenmeli</h3>
+            <div class="info-box">
+                <h4>Database Değişiklikleri:</h4>
+                <ul>
+                    <li>✅ <code>tax_rate</code> kolonu ekle (DECIMAL 5,2, default 20.00)</li>
+                    <li>✅ billing_cycles JSON içindeki her cycle'a <code>tax_rate</code> eklenebilir (opsiyonel)</li>
+                    <li>✅ Global tax_rate plan seviyesinde, cycle seviyesinde override mümkün</li>
+                </ul>
+
+                <h4>Model Değişiklikleri (SubscriptionPlan.php):</h4>
+                <ul>
+                    <li>✅ <code>getPriceWithTaxAttribute()</code> accessor ekle</li>
+                    <li>✅ <code>getTaxAmountAttribute()</code> accessor ekle</li>
+                    <li>✅ <code>getCyclePriceWithTax($cycleKey)</code> metodu ekle</li>
+                </ul>
+
+                <h4>Frontend Değişiklikleri:</h4>
+                <ul>
+                    <li>✅ Settings'e <code>subscription_tax_display</code> ayarı ekle</li>
+                    <li>✅ KDV dahil/hariç gösterim kontrolü</li>
+                    <li>✅ "KDV Dahil" veya "KDV Hariç + KDV" etiketi</li>
+                </ul>
+            </div>
+
+            <h3>🎯 2. Subscription Modülü - Currency Yapısı Düzenlenmeli</h3>
+            <div class="info-box">
+                <h4>Database Değişiklikleri:</h4>
+                <ul>
+                    <li>✅ <code>currency_id</code> foreign key ekle (BIGINT UNSIGNED)</li>
+                    <li>✅ ShopCurrency tablosu ile ilişki kur</li>
+                    <li>✅ <code>currency</code> kolonu legacy olarak kalsın (backward compatibility)</li>
+                </ul>
+
+                <h4>Model Değişiklikleri:</h4>
+                <ul>
+                    <li>✅ <code>currency()</code> BelongsTo relation ekle</li>
+                    <li>✅ Currency symbol dinamik çekilsin</li>
+                </ul>
+
+                <h4>Frontend Değişiklikleri:</h4>
+                <ul>
+                    <li>✅ Currency symbol sabit (₺) yerine dinamik göster</li>
+                    <li>✅ Multi-currency desteği için hazırlık</li>
+                </ul>
+            </div>
+
+            <h3>🎯 3. Subscription Modülü - Schema Netleştirilmeli</h3>
+            <div class="warning-box">
+                <h4>Karar Verilmeli:</h4>
+                <p><strong>Seçenek A: JSON Sistem (Esnek - Önerilen)</strong></p>
+                <ul>
+                    <li>✅ <code>billing_cycles</code> JSON kolonu kullanılacak</li>
+                    <li>❌ Sabit kolonlar kaldırılacak: price_daily, price_weekly, price_monthly, price_quarterly, price_yearly</li>
+                    <li>❌ compare_price_monthly, compare_price_yearly kaldırılacak (JSON içinde tutulacak)</li>
+                    <li>❌ default_billing_cycle kaldırılacak (frontend kontrol edecek)</li>
+                    <li>✅ Avantaj: Sınırsız cycle ekleme (15 gün, 2 ay, 6 ay...)</li>
+                </ul>
+
+                <p><strong>Seçenek B: Sabit Sistem (Klasik)</strong></p>
+                <ul>
+                    <li>✅ Sabit kolonlar kullanılacak</li>
+                    <li>❌ <code>billing_cycles</code> JSON kaldırılacak</li>
+                    <li>❌ Esneklik azalacak (sadece 5 cycle: daily, weekly, monthly, quarterly, yearly)</li>
+                    <li>✅ Avantaj: SQL sorguları daha kolay</li>
+                </ul>
+
+                <p><strong>💡 Öneri: Seçenek A (JSON)</strong> - Frontend zaten JSON kullanıyor, esnek yapı gerekiyor.</p>
+            </div>
+
+            <h3>🎯 4. Kullanılmayan Kolonlar Temizlenmeli</h3>
+            <div class="info-box">
+                <h4>Kaldırılabilir Kolonlar (JSON sistem kullanılıyorsa):</h4>
+                <ul>
+                    <li>❌ <code>price_daily</code></li>
+                    <li>❌ <code>price_weekly</code></li>
+                    <li>❌ <code>price_monthly</code></li>
+                    <li>❌ <code>price_quarterly</code></li>
+                    <li>❌ <code>price_yearly</code></li>
+                    <li>❌ <code>compare_price_monthly</code></li>
+                    <li>❌ <code>compare_price_yearly</code></li>
+                    <li>❌ <code>default_billing_cycle</code></li>
+                    <li>❌ <code>has_trial</code> (trial_days yeterli)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ÖZET TABLO -->
+        <section>
+            <h2>📊 Karşılaştırmalı Özet</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>Shop Modülü</th>
+                        <th>Subscription Modülü</th>
+                        <th>Aksiyon</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Fiyat Kolonu</td>
+                        <td><code>base_price</code> ✅</td>
+                        <td><code>billing_cycles[].price</code> ✅</td>
+                        <td><span class="badge badge-success">OK</span></td>
+                    </tr>
+                    <tr>
+                        <td>KDV Oranı</td>
+                        <td><code>tax_rate</code> ✅</td>
+                        <td><span class="badge badge-error">❌ YOK</span></td>
+                        <td><span class="badge badge-error">Ekle!</span></td>
+                    </tr>
+                    <tr>
+                        <td>KDV Dahil Fiyat</td>
+                        <td><code>price_with_tax</code> accessor ✅</td>
+                        <td><span class="badge badge-error">❌ YOK</span></td>
+                        <td><span class="badge badge-error">Ekle!</span></td>
+                    </tr>
+                    <tr>
+                        <td>Currency Foreign Key</td>
+                        <td><code>currency_id</code> ✅</td>
+                        <td><span class="badge badge-error">❌ YOK</span></td>
+                        <td><span class="badge badge-error">Ekle!</span></td>
+                    </tr>
+                    <tr>
+                        <td>Currency String</td>
+                        <td><code>currency</code> (legacy) ⚠️</td>
+                        <td><code>currency</code> ✅</td>
+                        <td><span class="badge badge-warning">Legacy tut</span></td>
+                    </tr>
+                    <tr>
+                        <td>Compare Price</td>
+                        <td><code>compare_at_price</code> ✅</td>
+                        <td><code>billing_cycles[].compare_price</code> ✅</td>
+                        <td><span class="badge badge-success">OK</span></td>
+                    </tr>
+                    <tr>
+                        <td>Frontend KDV Gösterim</td>
+                        <td>Ayarlanabilir ✅</td>
+                        <td><span class="badge badge-error">❌ YOK</span></td>
+                        <td><span class="badge badge-error">Ekle!</span></td>
+                    </tr>
+                    <tr>
+                        <td>Schema Tutarlılığı</td>
+                        <td>Net ✅</td>
+                        <td><span class="badge badge-error">❌ Karmaşık</span></td>
+                        <td><span class="badge badge-error">Netleştir!</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu • 2025-12-04
+        </footer>
+    </div>
+</body>
+</html>

@@ -24,6 +24,9 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
 
     public $productId;
 
+    // 🔴 File uploads
+    public $manual_pdf;
+
     // Çoklu dil inputs
     public $multiLangInputs = [];
 
@@ -33,16 +36,35 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
         'category_id' => null,
         'brand_id' => null,
         'sku' => null,
+        'model_number' => null,
         'product_type' => 'physical',
         'condition' => 'new',
         'price_display_mode' => 'show',
         'base_price' => null,
+        'cost_price' => null,
         'compare_at_price' => null,
         'currency' => 'TRY',
         'currency_id' => null,
         'sort_order' => 0,
+        'is_featured' => false,
+        'is_bestseller' => false,
         'show_on_homepage' => false,
+        'published_at' => null,
         'badges' => [],
+        'stock_tracking' => true,
+        'current_stock' => 0,
+        'min_stock' => 5,
+        'allow_backorder' => false,
+        'lead_time_days' => null,
+        'barcode' => null,
+        'weight' => null,
+        'dimensions' => ['length' => null, 'width' => null, 'height' => null],
+        'technical_specs' => [],
+        'video_url' => null,
+        'manual_pdf_url' => null,
+        'warranty_info' => ['period' => null, 'details' => null],
+        'shipping_info' => ['free_shipping' => false, 'size_limit' => null],
+        'tags' => [],
     ];
 
     // Custom JSON Fields (Tenant-defined categories)
@@ -278,17 +300,36 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
                 'category_id' => $product->category_id,
                 'brand_id' => $product->brand_id,
                 'sku' => $product->sku,
+                'model_number' => $product->model_number,
                 'product_type' => $product->product_type,
                 'condition' => $product->condition,
                 'price_display_mode' => $product->price_display_mode ?? 'show',
                 'base_price' => $product->base_price,
+                'cost_price' => $product->cost_price,
                 'compare_at_price' => $product->compare_at_price,
                 'currency' => $product->currency,
                 'currency_id' => $product->currency_id,
                 'is_active' => (bool) $product->is_active,
+                'is_featured' => (bool) $product->is_featured,
+                'is_bestseller' => (bool) $product->is_bestseller,
                 'show_on_homepage' => (bool) $product->show_on_homepage,
+                'published_at' => $product->published_at ? $product->published_at->format('Y-m-d\TH:i') : null,
                 'sort_order' => $product->sort_order ?? 0,
                 'badges' => is_array($product->badges) ? $product->badges : [],
+                'stock_tracking' => (bool) $product->stock_tracking,
+                'current_stock' => $product->current_stock ?? 0,
+                'min_stock' => $product->low_stock_threshold ?? 5,
+                'allow_backorder' => (bool) $product->allow_backorder,
+                'lead_time_days' => $product->lead_time_days,
+                'barcode' => $product->barcode,
+                'weight' => $product->weight,
+                'dimensions' => $product->dimensions ?? ['length' => null, 'width' => null, 'height' => null],
+                'technical_specs' => $product->technical_specs ?? [],
+                'video_url' => $product->video_url,
+                'manual_pdf_url' => $product->manual_pdf_url,
+                'warranty_info' => $product->warranty_info ?? ['period' => null, 'details' => null],
+                'shipping_info' => $product->shipping_info ?? ['free_shipping' => false, 'size_limit' => null],
+                'tags' => $product->tags ?? [],
             ]);
 
             // KDV bilgilerini yükle
@@ -361,20 +402,46 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
             'inputs.category_id' => 'nullable|exists:shop_categories,category_id',
             'inputs.brand_id' => 'nullable|exists:shop_brands,brand_id',
             'inputs.sku' => 'required|string|max:191',
+            'inputs.model_number' => 'nullable|string|max:255',
             'inputs.product_type' => 'required|in:physical,digital,service',
             'inputs.condition' => 'required|in:new,used,refurbished',
             'inputs.currency_id' => 'nullable|exists:shop_currencies,currency_id',
             'inputs.currency' => 'nullable|string|size:3',
             'inputs.price_display_mode' => 'required|in:show,hide,request',
             'inputs.base_price' => 'nullable|numeric|min:0',
+            'inputs.cost_price' => 'nullable|numeric|min:0',
             'inputs.compare_at_price' => 'nullable|numeric|min:0',
+            'inputs.is_featured' => 'boolean',
+            'inputs.is_bestseller' => 'boolean',
             'inputs.show_on_homepage' => 'boolean',
+            'inputs.published_at' => 'nullable|date',
             'inputs.sort_order' => 'nullable|integer|min:0',
             'inputs.badges' => 'nullable|array',
             'inputs.badges.*.type' => 'required|string',
             'inputs.badges.*.color' => 'required|string',
             'inputs.badges.*.priority' => 'nullable|integer',
             'inputs.badges.*.is_active' => 'boolean',
+            'inputs.stock_tracking' => 'boolean',
+            'inputs.current_stock' => 'nullable|integer|min:0',
+            'inputs.min_stock' => 'nullable|integer|min:0',
+            'inputs.allow_backorder' => 'boolean',
+            'inputs.lead_time_days' => 'nullable|integer|min:0',
+            'inputs.barcode' => 'nullable|string|max:255',
+            'inputs.weight' => 'nullable|numeric|min:0',
+            'inputs.dimensions' => 'nullable|array',
+            'inputs.dimensions.length' => 'nullable|numeric|min:0',
+            'inputs.dimensions.width' => 'nullable|numeric|min:0',
+            'inputs.dimensions.height' => 'nullable|numeric|min:0',
+            'inputs.technical_specs' => 'nullable|array',
+            'inputs.video_url' => 'nullable|url|max:500',
+            'inputs.warranty_info' => 'nullable|array',
+            'inputs.warranty_info.period' => 'nullable|integer|min:0',
+            'inputs.warranty_info.details' => 'nullable|string',
+            'inputs.shipping_info' => 'nullable|array',
+            'inputs.shipping_info.free_shipping' => 'nullable|boolean',
+            'inputs.shipping_info.size_limit' => 'nullable|string|in:small,medium,large,xlarge',
+            'inputs.tags' => 'nullable|array',
+            'manual_pdf' => 'nullable|file|mimes:pdf|max:10240',
         ];
 
         // Çoklu dil alanları - ana dil mecburi, diğerleri opsiyonel
@@ -535,6 +602,12 @@ class ShopProductManageComponent extends Component implements AIContentGeneratab
 
         // Safe inputs
         $safeInputs = $this->inputs;
+
+        // 🔴 PDF upload handling
+        if ($this->manual_pdf) {
+            $path = $this->manual_pdf->store('manuals', 'public');
+            $safeInputs['manual_pdf_url'] = \Illuminate\Support\Facades\Storage::url($path);
+        }
 
         // JSON inputs'ları ekle (SADECE custom_json_fields - migration ile statik alanlar kaldırıldı)
         $jsonData = [

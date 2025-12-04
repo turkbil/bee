@@ -14,22 +14,33 @@ class PhoneNumberDetectionService
 {
     /**
      * Türk telefon numarası regex pattern'leri
+     * ULTRA ESNEk: Yanyana 8-12 rakam, boşluk/tire/nokta/parantez her şey kabul!
+     * Hatalı, eksik, fazla rakam - HER ŞEYİ YAKALA!
      */
     private const PHONE_PATTERNS = [
-        // +90 555 123 4567 veya +90 555 123 45 67
-        '/\+90\s?[0-9]{3}\s?[0-9]{3}\s?[0-9]{2}\s?[0-9]{2}/',
+        // +90 ile başlayan (10-13 haneli, ayırıcılarla beraber)
+        // Örnekler: +905551234567, +90 555 123 4567, +90-555-123-4567
+        '/\+90[\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9]?[\s\.\-\(\)\/]*[0-9]?[\s\.\-\(\)\/]*[0-9]?/',
 
-        // 0555 123 4567 veya 0555 123 45 67
-        '/0[0-9]{3}\s?[0-9]{3}\s?[0-9]{2}\s?[0-9]{2}/',
+        // 0 ile başlayan (10-12 haneli, ayırıcılarla beraber)
+        // Örnekler: 05551234567, 0555 123 4567, 0555-123-4567, (0555) 123 45 67
+        '/(?<!\d)0[\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9]?[\s\.\-\(\)\/]*[0-9]?/',
 
-        // 90 555 123 4567
-        '/90\s?[0-9]{3}\s?[0-9]{3}\s?[0-9]{2}\s?[0-9]{2}/',
+        // 90 ile başlayan (ülke kodu, + olmadan)
+        // Örnekler: 905551234567, 90 555 123 4567
+        '/(?<!\d)90[\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9]?[\s\.\-\(\)\/]*[0-9]?/',
 
-        // 05551234567 (boşluksuz)
-        '/0[0-9]{10}/',
+        // 5XX ile başlayan (10 haneli, 0'sız - ayırıcılarla beraber)
+        // Örnekler: 5382640840, 538 264 0840, 538-264-0840, (538) 264 08 40
+        '/(?<!\d)[5][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9][\s\.\-\(\)\/]*[0-9]?[\s\.\-\(\)\/]*[0-9]?(?!\d)/',
 
-        // +905551234567 (boşluksuz)
-        '/\+90[0-9]{10}/',
+        // Yanyana 10-11 rakam (0 veya 5 ile başlayan, boşluksuz)
+        // Örnekler: 5382640840, 05382640840
+        '/(?<!\d)[05][0-9]{9,10}(?!\d)/',
+
+        // Yanyana 8-9 rakam (hatalı ama algılansın)
+        // Örnekler: 82640840 (başındaki 53 eksik)
+        '/(?<!\d)[0-9]{8,9}(?!\d)/',
     ];
 
     /**
@@ -76,24 +87,48 @@ class PhoneNumberDetectionService
 
     /**
      * Telefon numarasını normalize et (temizle ve standart format)
+     * HATA TOLERANSLI: Eksik 0, fazla rakam, yanlış format - her şeyi düzeltir!
      */
     private function normalizePhoneNumber(string $phone): string
     {
-        // Boşlukları ve özel karakterleri temizle
+        // Boşlukları ve özel karakterleri temizle (sadece rakam ve + kalsın)
         $phone = preg_replace('/[^0-9+]/', '', $phone);
 
         // +90 ile başlayanları 0 ile değiştir
         if (str_starts_with($phone, '+90')) {
             $phone = '0' . substr($phone, 3);
-        } elseif (str_starts_with($phone, '90') && strlen($phone) === 12) {
+        } elseif (str_starts_with($phone, '90') && strlen($phone) >= 12) {
+            // 90 ile başlayan (ülke kodu var ama + yok)
             $phone = '0' . substr($phone, 2);
         }
 
-        // 05551234567 formatına çevir (11 haneli)
+        // 10 haneli ise başına 0 ekle (5382640840 → 05382640840)
+        if (strlen($phone) === 10 && str_starts_with($phone, '5')) {
+            $phone = '0' . $phone;
+        }
+
+        // 9 haneli ise (hatalı) başına 05 ekle (382640840 → 05382640840)
+        if (strlen($phone) === 9 && !str_starts_with($phone, '0')) {
+            $phone = '05' . $phone;
+        }
+
+        // 8 haneli ise (çok hatalı) başına 053 ekle
+        if (strlen($phone) === 8) {
+            $phone = '053' . $phone;
+        }
+
+        // 12+ haneli ise (fazla rakam) son 11 karakteri al
+        if (strlen($phone) > 11) {
+            $phone = substr($phone, -11);
+        }
+
+        // 7 haneli ve daha kısa ise (çok eksik) olduğu gibi dön (algılanabilir olsun)
+        // Final check: 11 haneli ve 0 ile başlıyorsa OK
         if (strlen($phone) === 11 && str_starts_with($phone, '0')) {
             return $phone;
         }
 
+        // 10-11 haneli değilse bile dön (log için)
         return $phone;
     }
 

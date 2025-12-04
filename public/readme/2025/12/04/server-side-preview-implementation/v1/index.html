@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server-Side Preview - Implementation Detayları</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #fbbf24;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .comparison-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+            backdrop-filter: blur(10px);
+        }
+
+        .comparison-card.after {
+            border-left-color: #10b981;
+        }
+
+        .comparison-card h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .comparison-card.before h4 {
+            color: #ef4444;
+        }
+
+        .comparison-card.after h4 {
+            color: #10b981;
+        }
+
+        .comparison-card ul {
+            list-style: none;
+        }
+
+        .comparison-card li {
+            color: #cbd5e1;
+            padding-left: 25px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .comparison-card.before li:before {
+            content: "✗";
+            color: #ef4444;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .comparison-card.after li:before {
+            content: "✓";
+            color: #10b981;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .implementation-step {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #8b5cf6;
+            backdrop-filter: blur(10px);
+        }
+
+        .implementation-step h4 {
+            color: #a78bfa;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .implementation-step p {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .code-block .comment {
+            color: #6b7280;
+        }
+
+        .code-block .keyword {
+            color: #c084fc;
+        }
+
+        .code-block .string {
+            color: #10b981;
+        }
+
+        .code-block .function {
+            color: #60a5fa;
+        }
+
+        .code-block .variable {
+            color: #fbbf24;
+        }
+
+        .tech-term {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        .flow-diagram {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+        }
+
+        .flow-number {
+            background: #8b5cf6;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .flow-content h5 {
+            color: #a78bfa;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .flow-content p {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .alert-title {
+            color: #a78bfa;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .alert p {
+            color: #c4b5fd;
+        }
+
+        .file-structure {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .file-structure .folder {
+            color: #60a5fa;
+            margin-left: 20px;
+        }
+
+        .file-structure .file {
+            color: #10b981;
+            margin-left: 40px;
+        }
+
+        .file-structure .new {
+            color: #fbbf24;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: rgba(139, 92, 246, 0.1);
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .check { color: #10b981; font-weight: bold; }
+        .cross { color: #ef4444; font-weight: bold; }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Server-Side Preview Implementation</h1>
+            <div class="meta">
+                <span>📅 Tarih: 2025-12-04</span>
+                <span>🎯 Tenant: muzibu.com.tr (1001)</span>
+                <span>🔒 Güvenlik: Server-Side Chunk Kontrolü</span>
+                <span>👤 Hedef: 30 saniye preview manipülasyonunu engelle</span>
+            </div>
+        </header>
+
+        <!-- Mevcut vs Yeni Sistem -->
+        <section>
+            <h2>📊 Mevcut Sistem vs Yeni Sistem</h2>
+
+            <div class="comparison-grid">
+                <div class="comparison-card before">
+                    <h4>❌ MEVCUT: Client-Side Kontrol</h4>
+                    <ul>
+                        <li>JavaScript 30 saniye sonra durdurur</li>
+                        <li>Tüm chunk'lar playlist'te listelenir</li>
+                        <li>Client chunk URL'lerini görür</li>
+                        <li>JavaScript manipüle edilebilir</li>
+                        <li>DevTools ile chunk'lar indirilebilir</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card after">
+                    <h4>✅ YENİ: Server-Side Kontrol</h4>
+                    <ul>
+                        <li>Server sadece izin verilen chunk'ları listeler</li>
+                        <li>Dynamic M3U8 generation (user tipine göre)</li>
+                        <li>Her chunk isteği sunucuda kontrol edilir</li>
+                        <li>JavaScript manipülasyonu işe yaramaz</li>
+                        <li>Chunk URL'leri signed token içerir</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Akış Diyagramı -->
+        <section>
+            <h2>🔄 Nasıl Çalışır?</h2>
+
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <h5>User Şarkı İster</h5>
+                        <p>Frontend <code>GET /api/muzibu/songs/{id}/stream</code> isteği yapar</p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <h5>Server User Tipini Kontrol Eder</h5>
+                        <p>Guest? Normal User? Premium? → Bu bilgiye göre chunk limiti belirlenir</p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <h5>Dynamic M3U8 Playlist Oluşturulur</h5>
+                        <p>
+                            Guest/Normal → İlk 3 chunk (30 saniye)<br>
+                            Premium → Tüm chunk'lar
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <h5>Chunk URL'leri Signed Token İle Oluşturulur</h5>
+                        <p>Her chunk URL'inde user_id, chunk_index, expiry bilgisi olur</p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">5</div>
+                    <div class="flow-content">
+                        <h5>Client Chunk İsteği Gönderir</h5>
+                        <p>HLS player playlist'teki chunk URL'lerini sırayla ister</p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">6</div>
+                    <div class="flow-content">
+                        <h5>Server Chunk İsteğini Doğrular</h5>
+                        <p>
+                            ✓ Token geçerli mi?<br>
+                            ✓ User bu chunk'ı isteyebilir mi?<br>
+                            ✓ Chunk index izin verilen sınırda mı?
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flow-step">
+                    <div class="flow-number">7</div>
+                    <div class="flow-content">
+                        <h5>Chunk Serve Edilir veya 403 Döner</h5>
+                        <p>
+                            ✅ İzin varsa → Chunk dosyası serve edilir<br>
+                            ❌ İzin yoksa → 403 Forbidden
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Steps -->
+        <section>
+            <h2>🛠️ Implementation Adımları</h2>
+
+            <div class="implementation-step">
+                <h4>Adım 1: Dynamic M3U8 Generator Service Oluştur</h4>
+                <p>
+                    Orijinal <code>playlist.m3u8</code> dosyasını okuyup, user tipine göre modify eden bir servis.
+                </p>
+
+                <div class="file-structure">
+<span class="new">📁 app/Services/Muzibu/</span>
+<span class="file new">└── PlaylistGeneratorService.php (YENİ)</span>
+                </div>
+
+                <div class="code-block">
+<span class="comment">// PlaylistGeneratorService.php</span>
+
+<span class="keyword">public function</span> <span class="function">generatePlaylist</span>(<span class="variable">$song</span>, <span class="variable">$user</span>)
+{
+    <span class="comment">// 1. Orijinal playlist.m3u8'i oku</span>
+    <span class="variable">$originalPlaylist</span> = <span class="function">file_get_contents</span>(<span class="variable">$song</span>-&gt;hls_path);
+    
+    <span class="comment">// 2. User tipine göre chunk limiti belirle</span>
+    <span class="variable">$chunkLimit</span> = <span class="variable">$this</span>-&gt;<span class="function">getChunkLimit</span>(<span class="variable">$user</span>);
+    
+    <span class="comment">// 3. Playlist'i parse et + chunk sayısını sınırla</span>
+    <span class="variable">$modifiedPlaylist</span> = <span class="variable">$this</span>-&gt;<span class="function">limitChunks</span>(
+        <span class="variable">$originalPlaylist</span>, 
+        <span class="variable">$chunkLimit</span>
+    );
+    
+    <span class="comment">// 4. Chunk URL'lerini signed token ile değiştir</span>
+    <span class="variable">$signedPlaylist</span> = <span class="variable">$this</span>-&gt;<span class="function">signChunkUrls</span>(
+        <span class="variable">$modifiedPlaylist</span>, 
+        <span class="variable">$song</span>-&gt;song_id, 
+        <span class="variable">$user</span>
+    );
+    
+    <span class="keyword">return</span> <span class="variable">$signedPlaylist</span>;
+}
+
+<span class="keyword">private function</span> <span class="function">getChunkLimit</span>(<span class="variable">$user</span>)
+{
+    <span class="comment">// Guest veya Normal User</span>
+    <span class="keyword">if</span> (!<span class="variable">$user</span> || !<span class="variable">$user</span>-&gt;<span class="function">isPremium</span>()) {
+        <span class="keyword">return</span> <span class="string">3</span>; <span class="comment">// 3 chunk = 30 saniye (10 saniye/chunk)</span>
+    }
+    
+    <span class="comment">// Premium User</span>
+    <span class="keyword">return</span> <span class="keyword">null</span>; <span class="comment">// Sınırsız (tüm chunk'lar)</span>
+}
+
+<span class="keyword">private function</span> <span class="function">limitChunks</span>(<span class="variable">$playlist</span>, <span class="variable">$limit</span>)
+{
+    <span class="comment">// M3U8 format'ını parse et</span>
+    <span class="variable">$lines</span> = <span class="function">explode</span>(<span class="string">"\n"</span>, <span class="variable">$playlist</span>);
+    <span class="variable">$output</span> = [];
+    <span class="variable">$chunkCount</span> = <span class="string">0</span>;
+    
+    <span class="keyword">foreach</span> (<span class="variable">$lines</span> <span class="keyword">as</span> <span class="variable">$line</span>) {
+        <span class="comment">// #EXTINF satırı → chunk başlangıcı</span>
+        <span class="keyword">if</span> (<span class="function">str_starts_with</span>(<span class="variable">$line</span>, <span class="string">'#EXTINF'</span>)) {
+            <span class="keyword">if</span> (<span class="variable">$limit</span> &amp;&amp; <span class="variable">$chunkCount</span> &gt;= <span class="variable">$limit</span>) {
+                <span class="keyword">break</span>; <span class="comment">// Limit aşıldı, dur!</span>
+            }
+            <span class="variable">$chunkCount</span>++;
+        }
+        
+        <span class="variable">$output</span>[] = <span class="variable">$line</span>;
+    }
+    
+    <span class="comment">// #EXT-X-ENDLIST ekle (playlist sonu)</span>
+    <span class="variable">$output</span>[] = <span class="string">'#EXT-X-ENDLIST'</span>;
+    
+    <span class="keyword">return</span> <span class="function">implode</span>(<span class="string">"\n"</span>, <span class="variable">$output</span>);
+}
+
+<span class="keyword">private function</span> <span class="function">signChunkUrls</span>(<span class="variable">$playlist</span>, <span class="variable">$songId</span>, <span class="variable">$user</span>)
+{
+    <span class="comment">// segment-000.ts → /api/muzibu/songs/{id}/chunk/segment-000.ts?token=xxx</span>
+    <span class="keyword">return</span> <span class="function">preg_replace_callback</span>(
+        <span class="string">'/(segment-\d+\.ts)/'</span>,
+        <span class="keyword">function</span>(<span class="variable">$matches</span>) <span class="keyword">use</span> (<span class="variable">$songId</span>, <span class="variable">$user</span>) {
+            <span class="variable">$chunkName</span> = <span class="variable">$matches</span>[<span class="string">1</span>];
+            <span class="variable">$token</span> = <span class="variable">$this</span>-&gt;<span class="function">generateChunkToken</span>(<span class="variable">$songId</span>, <span class="variable">$chunkName</span>, <span class="variable">$user</span>);
+            <span class="keyword">return</span> <span class="string">"/api/muzibu/songs/{$songId}/chunk/{$chunkName}?token={$token}"</span>;
+        },
+        <span class="variable">$playlist</span>
+    );
+}
+                </div>
+            </div>
+
+            <div class="implementation-step">
+                <h4>Adım 2: Chunk Serve Endpoint + Route Ekle</h4>
+                <p>
+                    Her chunk isteğinde token doğrulama ve yetki kontrolü yapan yeni endpoint.
+                </p>
+
+                <div class="code-block">
+<span class="comment">// routes/api.php (Muzibu)</span>
+
+Route::<span class="function">get</span>(<span class="string">'{id}/chunk/{chunkName}'</span>, [SongController::<span class="keyword">class</span>, <span class="string">'serveChunk'</span>])
+    -&gt;<span class="function">name</span>(<span class="string">'api.muzibu.songs.serve-chunk'</span>)
+    -&gt;<span class="function">middleware</span>([<span class="string">'throttle.user:stream'</span>]); <span class="comment">// Rate limiting</span>
+                </div>
+
+                <div class="code-block">
+<span class="comment">// SongController.php</span>
+
+<span class="keyword">public function</span> <span class="function">serveChunk</span>(<span class="variable">$id</span>, <span class="variable">$chunkName</span>, Request <span class="variable">$request</span>)
+{
+    <span class="comment">// 1. Token doğrula</span>
+    <span class="variable">$token</span> = <span class="variable">$request</span>-&gt;<span class="function">input</span>(<span class="string">'token'</span>);
+    <span class="variable">$tokenData</span> = <span class="variable">$this</span>-&gt;<span class="function">validateChunkToken</span>(<span class="variable">$token</span>);
+    
+    <span class="keyword">if</span> (!<span class="variable">$tokenData</span>) {
+        <span class="function">abort</span>(<span class="string">403</span>, <span class="string">'Invalid or expired token'</span>);
+    }
+    
+    <span class="comment">// 2. Token song_id'si ile URL song_id'si eşleşiyor mu?</span>
+    <span class="keyword">if</span> (<span class="variable">$tokenData</span>[<span class="string">'song_id'</span>] != <span class="variable">$id</span>) {
+        <span class="function">abort</span>(<span class="string">403</span>, <span class="string">'Token mismatch'</span>);
+    }
+    
+    <span class="comment">// 3. Chunk name eşleşiyor mu?</span>
+    <span class="keyword">if</span> (<span class="variable">$tokenData</span>[<span class="string">'chunk_name'</span>] != <span class="variable">$chunkName</span>) {
+        <span class="function">abort</span>(<span class="string">403</span>, <span class="string">'Chunk mismatch'</span>);
+    }
+    
+    <span class="comment">// 4. User bu chunk'ı isteyebilir mi? (Chunk index kontrolü)</span>
+    <span class="variable">$user</span> = <span class="function">auth</span>()-&gt;<span class="function">user</span>();
+    <span class="variable">$chunkIndex</span> = <span class="variable">$this</span>-&gt;<span class="function">extractChunkIndex</span>(<span class="variable">$chunkName</span>); <span class="comment">// segment-005.ts → 5</span>
+    <span class="variable">$maxChunkIndex</span> = <span class="variable">$this</span>-&gt;<span class="function">getMaxChunkIndex</span>(<span class="variable">$user</span>); <span class="comment">// Guest/Normal: 2 (0,1,2 = 3 chunk)</span>
+    
+    <span class="keyword">if</span> (<span class="variable">$maxChunkIndex</span> !== <span class="keyword">null</span> &amp;&amp; <span class="variable">$chunkIndex</span> &gt; <span class="variable">$maxChunkIndex</span>) {
+        Log::<span class="function">warning</span>(<span class="string">'Chunk access denied'</span>, [
+            <span class="string">'user_id'</span> =&gt; <span class="variable">$user</span>?-&gt;id,
+            <span class="string">'song_id'</span> =&gt; <span class="variable">$id</span>,
+            <span class="string">'chunk_index'</span> =&gt; <span class="variable">$chunkIndex</span>,
+            <span class="string">'max_allowed'</span> =&gt; <span class="variable">$maxChunkIndex</span>
+        ]);
+        <span class="function">abort</span>(<span class="string">403</span>, <span class="string">'Preview limit exceeded'</span>);
+    }
+    
+    <span class="comment">// 5. Chunk dosyasını serve et</span>
+    <span class="variable">$song</span> = Song::<span class="function">findOrFail</span>(<span class="variable">$id</span>);
+    <span class="variable">$chunkPath</span> = <span class="function">storage_path</span>(
+        <span class="string">'app/public/muzibu/hls/'</span> . <span class="variable">$song</span>-&gt;song_id . <span class="string">'/'.span> . <span class="variable">$chunkName</span>
+    );
+    
+    <span class="keyword">if</span> (!<span class="function">file_exists</span>(<span class="variable">$chunkPath</span>)) {
+        <span class="function">abort</span>(<span class="string">404</span>, <span class="string">'Chunk not found'</span>);
+    }
+    
+    <span class="keyword">return</span> <span class="function">response</span>()-&gt;<span class="function">file</span>(<span class="variable">$chunkPath</span>, [
+        <span class="string">'Content-Type'</span> =&gt; <span class="string">'video/mp2t'</span>, <span class="comment">// MPEG-TS format</span>
+        <span class="string">'Cache-Control'</span> =&gt; <span class="string">'private, max-age=3600'</span>,
+    ]);
+}
+
+<span class="keyword">private function</span> <span class="function">getMaxChunkIndex</span>(<span class="variable">$user</span>)
+{
+    <span class="comment">// Guest veya Normal User</span>
+    <span class="keyword">if</span> (!<span class="variable">$user</span> || !<span class="variable">$user</span>-&gt;<span class="function">isPremium</span>()) {
+        <span class="keyword">return</span> <span class="string">2</span>; <span class="comment">// Index 0, 1, 2 → 3 chunk</span>
+    }
+    
+    <span class="comment">// Premium User</span>
+    <span class="keyword">return</span> <span class="keyword">null</span>; <span class="comment">// Sınırsız</span>
+}
+                </div>
+            </div>
+
+            <div class="implementation-step">
+                <h4>Adım 3: SongStreamController'ı Güncelle</h4>
+                <p>
+                    Mevcut <code>stream()</code> method'unda, HLS serve ederken dynamic playlist kullan.
+                </p>
+
+                <div class="code-block">
+<span class="comment">// SongStreamController.php - stream() method</span>
+
+<span class="comment">// Eski kod (statik playlist):</span>
+<span class="variable">$streamUrl</span> = <span class="variable">$this</span>-&gt;signedUrlService-&gt;<span class="function">generateHlsUrl</span>(<span class="variable">$songId</span>, <span class="string">60</span>);
+
+<span class="comment">// Yeni kod (dynamic playlist):</span>
+<span class="variable">$streamUrl</span> = <span class="function">route</span>(<span class="string">'api.muzibu.songs.dynamic-playlist'</span>, [
+    <span class="string">'id'</span> =&gt; <span class="variable">$songId</span>,
+    <span class="string">'token'</span> =&gt; <span class="variable">$this</span>-&gt;<span class="function">generatePlaylistToken</span>(<span class="variable">$songId</span>, <span class="variable">$user</span>)
+]);
+                </div>
+
+                <div class="code-block">
+<span class="comment">// Yeni route ekle:</span>
+Route::<span class="function">get</span>(<span class="string">'{id}/playlist'</span>, [SongController::<span class="keyword">class</span>, <span class="string">'dynamicPlaylist'</span>])
+    -&gt;<span class="function">name</span>(<span class="string">'api.muzibu.songs.dynamic-playlist'</span>);
+                </div>
+
+                <div class="code-block">
+<span class="comment">// SongController.php - dynamicPlaylist() method</span>
+
+<span class="keyword">public function</span> <span class="function">dynamicPlaylist</span>(<span class="variable">$id</span>, Request <span class="variable">$request</span>)
+{
+    <span class="comment">// 1. Token doğrula</span>
+    <span class="variable">$token</span> = <span class="variable">$request</span>-&gt;<span class="function">input</span>(<span class="string">'token'</span>);
+    <span class="comment">// ... token validation ...</span>
+    
+    <span class="comment">// 2. Song'u al</span>
+    <span class="variable">$song</span> = Song::<span class="function">findOrFail</span>(<span class="variable">$id</span>);
+    
+    <span class="comment">// 3. Dynamic playlist oluştur</span>
+    <span class="variable">$playlistGenerator</span> = <span class="function">app</span>(PlaylistGeneratorService::<span class="keyword">class</span>);
+    <span class="variable">$playlist</span> = <span class="variable">$playlistGenerator</span>-&gt;<span class="function">generatePlaylist</span>(
+        <span class="variable">$song</span>, 
+        <span class="function">auth</span>()-&gt;<span class="function">user</span>()
+    );
+    
+    <span class="comment">// 4. M3U8 response döndür</span>
+    <span class="keyword">return</span> <span class="function">response</span>(<span class="variable">$playlist</span>, <span class="string">200</span>, [
+        <span class="string">'Content-Type'</span> =&gt; <span class="string">'application/vnd.apple.mpegurl'</span>,
+        <span class="string">'Cache-Control'</span> =&gt; <span class="string">'no-cache, no-store, must-revalidate'</span>,
+    ]);
+}
+                </div>
+            </div>
+
+            <div class="implementation-step">
+                <h4>Adım 4: Chunk Token Generation + Validation</h4>
+                <p>
+                    Her chunk için unique token oluştur ve doğrula.
+                </p>
+
+                <div class="code-block">
+<span class="comment">// SignedUrlService.php (veya yeni ChunkTokenService.php)</span>
+
+<span class="keyword">public function</span> <span class="function">generateChunkToken</span>(
+    <span class="keyword">int</span> <span class="variable">$songId</span>, 
+    <span class="keyword">string</span> <span class="variable">$chunkName</span>, 
+    <span class="variable">$user</span>,
+    <span class="keyword">int</span> <span class="variable">$expiryMinutes</span> = <span class="string">10</span>
+): <span class="keyword">string</span> {
+    <span class="variable">$payload</span> = [
+        <span class="string">'song_id'</span> =&gt; <span class="variable">$songId</span>,
+        <span class="string">'chunk_name'</span> =&gt; <span class="variable">$chunkName</span>,
+        <span class="string">'user_id'</span> =&gt; <span class="variable">$user</span>?-&gt;id,
+        <span class="string">'expires_at'</span> =&gt; <span class="function">now</span>()-&gt;<span class="function">addMinutes</span>(<span class="variable">$expiryMinutes</span>)-&gt;<span class="function">timestamp</span>,
+    ];
+    
+    <span class="comment">// HMAC-SHA256 ile imzala</span>
+    <span class="variable">$signature</span> = <span class="function">hash_hmac</span>(
+        <span class="string">'sha256'</span>, 
+        <span class="function">json_encode</span>(<span class="variable">$payload</span>), 
+        <span class="function">config</span>(<span class="string">'app.key'</span>)
+    );
+    
+    <span class="keyword">return</span> <span class="function">base64_encode</span>(
+        <span class="function">json_encode</span>(<span class="variable">$payload</span>) . <span class="string">'|'</span> . <span class="variable">$signature</span>
+    );
+}
+
+<span class="keyword">public function</span> <span class="function">validateChunkToken</span>(<span class="keyword">string</span> <span class="variable">$token</span>): ?<span class="keyword">array</span>
+{
+    <span class="comment">// 1. Token decode</span>
+    <span class="variable">$decoded</span> = <span class="function">base64_decode</span>(<span class="variable">$token</span>);
+    [<span class="variable">$payloadJson</span>, <span class="variable">$signature</span>] = <span class="function">explode</span>(<span class="string">'|'</span>, <span class="variable">$decoded</span>, <span class="string">2</span>);
+    
+    <span class="comment">// 2. İmza doğrulama</span>
+    <span class="variable">$expectedSignature</span> = <span class="function">hash_hmac</span>(
+        <span class="string">'sha256'</span>, 
+        <span class="variable">$payloadJson</span>, 
+        <span class="function">config</span>(<span class="string">'app.key'</span>)
+    );
+    
+    <span class="keyword">if</span> (!<span class="function">hash_equals</span>(<span class="variable">$expectedSignature</span>, <span class="variable">$signature</span>)) {
+        <span class="keyword">return</span> <span class="keyword">null</span>; <span class="comment">// Invalid signature</span>
+    }
+    
+    <span class="comment">// 3. Payload parse</span>
+    <span class="variable">$payload</span> = <span class="function">json_decode</span>(<span class="variable">$payloadJson</span>, <span class="keyword">true</span>);
+    
+    <span class="comment">// 4. Expiry check</span>
+    <span class="keyword">if</span> (<span class="variable">$payload</span>[<span class="string">'expires_at'</span>] &lt; <span class="function">time</span>()) {
+        <span class="keyword">return</span> <span class="keyword">null</span>; <span class="comment">// Expired</span>
+    }
+    
+    <span class="keyword">return</span> <span class="variable">$payload</span>;
+}
+                </div>
+            </div>
+        </section>
+
+        <!-- Örnek M3U8 Playlist -->
+        <section>
+            <h2>📄 Örnek M3U8 Playlist Farkı</h2>
+
+            <h3>Guest/Normal User İçin (İlk 3 Chunk)</h3>
+            <div class="code-block">
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
+#EXT-X-MEDIA-SEQUENCE:0
+
+<span class="comment"># Chunk 0 (0-10 saniye)</span>
+#EXTINF:10.0,
+/api/muzibu/songs/123/chunk/segment-000.ts?token=eyJ...
+
+<span class="comment"># Chunk 1 (10-20 saniye)</span>
+#EXTINF:10.0,
+/api/muzibu/songs/123/chunk/segment-001.ts?token=eyJ...
+
+<span class="comment"># Chunk 2 (20-30 saniye)</span>
+#EXTINF:10.0,
+/api/muzibu/songs/123/chunk/segment-002.ts?token=eyJ...
+
+<span class="comment"># Playlist sonu (30 saniye)</span>
+#EXT-X-ENDLIST
+            </div>
+
+            <h3>Premium User İçin (Tüm Chunk'lar)</h3>
+            <div class="code-block">
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
+#EXT-X-MEDIA-SEQUENCE:0
+
+<span class="comment"># Chunk 0-30 (0-300 saniye = 5 dakikalık şarkı örneği)</span>
+#EXTINF:10.0,
+/api/muzibu/songs/123/chunk/segment-000.ts?token=eyJ...
+#EXTINF:10.0,
+/api/muzibu/songs/123/chunk/segment-001.ts?token=eyJ...
+<span class="comment">... (28 chunk daha)</span>
+#EXTINF:10.0,
+/api/muzibu/songs/123/chunk/segment-030.ts?token=eyJ...
+
+#EXT-X-ENDLIST
+            </div>
+        </section>
+
+        <!-- Güvenlik Testleri -->
+        <section>
+            <h2>🧪 Güvenlik Test Senaryoları</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test Senaryosu</th>
+                        <th>Beklenen Sonuç</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Guest user 4. chunk'ı isterse</td>
+                        <td>403 Forbidden</td>
+                        <td><span class="check">✓</span> Engellenir</td>
+                    </tr>
+                    <tr>
+                        <td>JavaScript ile 30 saniye limiti kaldırılırsa</td>
+                        <td>Server yine 3 chunk döner</td>
+                        <td><span class="check">✓</span> Etkisiz</td>
+                    </tr>
+                    <tr>
+                        <td>Token expire olduktan sonra chunk isterse</td>
+                        <td>403 Forbidden (Token expired)</td>
+                        <td><span class="check">✓</span> Engellenir</td>
+                    </tr>
+                    <tr>
+                        <td>Chunk token'ı farklı şarkı için kullanılırsa</td>
+                        <td>403 Forbidden (Song ID mismatch)</td>
+                        <td><span class="check">✓</span> Engellenir</td>
+                    </tr>
+                    <tr>
+                        <td>DevTools ile chunk URL'lerini kopyalarsa</td>
+                        <td>Token 10 dakika sonra geçersiz</td>
+                        <td><span class="check">✓</span> Geçici risk</td>
+                    </tr>
+                    <tr>
+                        <td>Premium user'a downgrade olursa</td>
+                        <td>Yeni istek 3 chunk ile sınırlanır</td>
+                        <td><span class="check">✓</span> Dinamik kontrol</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Performans Notları -->
+        <section>
+            <h2>⚡ Performans Notları</h2>
+
+            <div class="implementation-step">
+                <h4>1. Playlist Cache</h4>
+                <p>
+                    Dynamic playlist generation her istekte yapılmamalı. User tipine göre cache'le:
+                </p>
+                <div class="code-block">
+<span class="comment">// Cache key format</span>
+<span class="variable">$cacheKey</span> = <span class="string">"playlist:{$songId}:user_type:{$userType}"</span>;
+
+<span class="comment">// Cache TTL: 10 dakika (token expiry ile aynı)</span>
+Cache::<span class="function">remember</span>(<span class="variable">$cacheKey</span>, <span class="string">600</span>, <span class="keyword">function</span>() {
+    <span class="keyword">return</span> <span class="variable">$playlistGenerator</span>-&gt;<span class="function">generatePlaylist</span>(<span class="variable">$song</span>, <span class="variable">$user</span>);
+});
+                </div>
+            </div>
+
+            <div class="implementation-step">
+                <h4>2. Rate Limiting</h4>
+                <p>
+                    Chunk endpoint'ine sıkı rate limiting uygula:
+                </p>
+                <ul>
+                    <li>Guest: 30 chunk/dakika (maksimum 3 şarkı)</li>
+                    <li>Normal User: 120 chunk/dakika (maksimum 12 şarkı)</li>
+                    <li>Premium: 300 chunk/dakika (sınırsız)</li>
+                </ul>
+            </div>
+
+            <div class="implementation-step">
+                <h4>3. CDN Optimization</h4>
+                <p>
+                    Chunk dosyaları CDN'e cache'lenebilir ama URL'lerde token var, bu CDN'yi bypass eder.
+                    <br><strong>Çözüm:</strong> Token'ı query string yerine custom header'da gönder.
+                </p>
+            </div>
+        </section>
+
+        <!-- Ek Güvenlik Katmanları -->
+        <section>
+            <h2>🛡️ Ek Güvenlik Katmanları (Opsiyonel)</h2>
+
+            <div class="implementation-step">
+                <h4>1. IP-Based Rate Limiting</h4>
+                <p>
+                    Aynı IP'den çok fazla chunk isteği gelirse (örneğin bot), IP'yi geçici olarak engelle.
+                </p>
+            </div>
+
+            <div class="implementation-step">
+                <h4>2. User Agent Validation</h4>
+                <p>
+                    Chunk isteklerinde User Agent kontrolü yap, şüpheli bot trafiğini filtrele.
+                </p>
+            </div>
+
+            <div class="implementation-step">
+                <h4>3. Referer Check</h4>
+                <p>
+                    Chunk istekleri sadece kendi domain'den gelmeli, hotlinking engellenir.
+                </p>
+            </div>
+
+            <div class="implementation-step">
+                <h4>4. Fingerprint Tracking</h4>
+                <p>
+                    Her chunk isteğinde user fingerprint'i (IP + User Agent + Device ID) logla,
+                    anormal aktivite tespiti için analiz et.
+                </p>
+            </div>
+
+            <div class="implementation-step">
+                <h4>5. Dynamic Chunk Duration</h4>
+                <p>
+                    Guest user için chunk süresini 10 saniye yerine 5 saniye yap (daha hassas kontrol).
+                    Bu durumda 30 saniye = 6 chunk olur.
+                </p>
+            </div>
+        </section>
+
+        <!-- Beklenen Sonuçlar -->
+        <section>
+            <h2>🎉 Beklenen Sonuçlar</h2>
+
+            <div class="alert">
+                <div class="alert-title">✅ Server-Side Preview Uygulandıktan Sonra</div>
+                <p><strong>1. JavaScript Manipülasyonu İşe Yaramaz:</strong> Client-side kod değişse bile, server sadece izin verilen chunk'ları serve eder.</p>
+                <p><strong>2. DevTools ile İndirme Engellenir:</strong> Chunk URL'lerinde token var, 10 dakika sonra geçersiz olur.</p>
+                <p><strong>3. URL Paylaşımı İşe Yaramaz:</strong> Token user_id ve chunk_name içerir, başkası kullanamaz.</p>
+                <p><strong>4. Hassas Kontrol:</strong> Chunk index ile saniye-seviye kontrol (10 saniye/chunk).</p>
+                <p><strong>5. Dinamik User Tipine Göre Servis:</strong> Premium'a yükseltme anında etkili olur.</p>
+            </div>
+        </section>
+
+        <!-- Implementation Süresi -->
+        <section>
+            <h2>⏱️ Implementation Süresi Tahmini</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Adım</th>
+                        <th>Süre</th>
+                        <th>Zorluk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1. PlaylistGeneratorService</td>
+                        <td>2-3 saat</td>
+                        <td>Orta</td>
+                    </tr>
+                    <tr>
+                        <td>2. Chunk Serve Endpoint + Route</td>
+                        <td>1-2 saat</td>
+                        <td>Kolay</td>
+                    </tr>
+                    <tr>
+                        <td>3. SongStreamController Güncelleme</td>
+                        <td>1 saat</td>
+                        <td>Kolay</td>
+                    </tr>
+                    <tr>
+                        <td>4. Chunk Token System</td>
+                        <td>2 saat</td>
+                        <td>Orta</td>
+                    </tr>
+                    <tr>
+                        <td>5. Test + Debug</td>
+                        <td>2-3 saat</td>
+                        <td>Orta</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TOPLAM</strong></td>
+                        <td><strong>8-11 saat</strong></td>
+                        <td><strong>1-1.5 gün</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 📅 2025-12-04 | 🎯 Müzibu Tenant 1001
+        </footer>
+    </div>
+</body>
+</html>

@@ -223,6 +223,14 @@
                                                 @endif
                                                 <span class="editable-title pr-4">
                                                     {{ $product->getTranslated('title', $currentSiteLocale) ?? $product->getTranslated('title', 'tr') }}
+
+                                                    {{-- Öne Çıkan & Çok Satan Badge'leri --}}
+                                                    @if($product->is_featured)
+                                                        <span class="badge bg-warning text-dark ms-1" title="Öne Çıkan Ürün">⭐</span>
+                                                    @endif
+                                                    @if($product->is_bestseller)
+                                                        <span class="badge bg-danger ms-1" title="Çok Satan">🔥</span>
+                                                    @endif
                                                 </span>
                                                 <button class="btn btn-sm px-2 py-1 edit-icon ms-2"
                                                     wire:click="startEditingTitle({{ $product->product_id }}, '{{ addslashes($product->getTranslated('title', $currentSiteLocale) ?? $product->getTranslated('title', 'tr')) }}')">

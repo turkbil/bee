@@ -51,35 +51,54 @@ class FileWidgetListComponent extends Component
         // File tipindeki widgetları getir (sayılar için)
         $fileWidgetsQuery = Widget::where('type', 'file')->where('is_active', true);
         
-        // Ana kategorileri getir
+        // File widget IDs'lerini önce çek (tek query)
+        $fileWidgetIds = $fileWidgetsQuery->pluck('id')->toArray();
+
+        // Ana kategorileri getir (EAGER LOADING ile N+1 önlendi)
         $parentCategories = WidgetCategory::whereNull('parent_id')
             ->where('is_active', true)
             ->where('widget_category_id', '!=', 1) // Moduller (1 nolu kategori) hariç tut
-            ->withCount(['widgets' => function($query) use ($fileWidgetsQuery) {
-                $query->whereIn('id', $fileWidgetsQuery->pluck('id'));
+            ->with(['children' => function($query) {
+                $query->where('is_active', true)->orderBy('order');
+            }])
+            ->withCount(['widgets' => function($query) use ($fileWidgetIds) {
+                $query->whereIn('id', $fileWidgetIds);
             }, 'children'])
             ->orderBy('order')
             ->get();
-        
-        // Her ana kategori için toplam widget sayısını hesapla
-        $parentCategories->each(function($category) use ($fileWidgetsQuery) {
-            // Alt kategorilerdeki widget sayısı
-            $childCategoryIds = $category->children->pluck('widget_category_id');
-            $childWidgetsCount = Widget::whereIn('widget_category_id', $childCategoryIds)
-                ->whereIn('id', $fileWidgetsQuery->pluck('id'))
-                ->count();
-            
-            // Ana kategorideki widget sayısı + alt kategorilerdeki widget sayısı
-            $category->total_widgets_count = $category->widgets_count + $childWidgetsCount;
-        });
+
+        // Alt kategorilerdeki widget sayılarını TEK query ile al (N+1 önlendi)
+        $childCategoryIds = $parentCategories->pluck('children')->flatten()->pluck('widget_category_id')->toArray();
+
+        if (!empty($childCategoryIds)) {
+            $childWidgetCounts = Widget::whereIn('widget_category_id', $childCategoryIds)
+                ->whereIn('id', $fileWidgetIds)
+                ->selectRaw('widget_category_id, COUNT(*) as count')
+                ->groupBy('widget_category_id')
+                ->pluck('count', 'widget_category_id');
+
+            // Her ana kategori için toplam widget sayısını hesapla
+            $parentCategories->each(function($category) use ($childWidgetCounts) {
+                $childWidgetsCount = $category->children->sum(function($child) use ($childWidgetCounts) {
+                    return $childWidgetCounts[$child->widget_category_id] ?? 0;
+                });
+
+                $category->total_widgets_count = $category->widgets_count + $childWidgetsCount;
+            });
+        } else {
+            // Alt kategori yoksa sadece kendi widget sayısını kullan
+            $parentCategories->each(function($category) {
+                $category->total_widgets_count = $category->widgets_count;
+            });
+        }
         
         // Eğer bir ana kategori seçilmişse, o kategorinin alt kategorilerini getir
         $childCategories = collect([]);
         if ($this->parentCategoryFilter) {
             $childCategories = WidgetCategory::where('parent_id', $this->parentCategoryFilter)
                 ->where('is_active', true)
-                ->withCount(['widgets' => function($query) use ($fileWidgetsQuery) {
-                    $query->whereIn('id', $fileWidgetsQuery->pluck('id'));
+                ->withCount(['widgets' => function($query) use ($fileWidgetIds) {
+                    $query->whereIn('id', $fileWidgetIds);
                 }])
                 ->orderBy('order')
                 ->get();

@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mod_digishop.sql & urunresimleri - Detaylı Analiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: #38bdf8;
+            margin-bottom: 15px;
+            margin-top: 30px;
+        }
+
+        .info-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-card h4 {
+            color: #60a5fa;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .info-value.large {
+            font-size: 2rem;
+            color: #60a5fa;
+        }
+
+        .warning-box {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .success-box h4 {
+            color: #34d399;
+            margin-bottom: 10px;
+        }
+
+        .danger-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .danger-box h4 {
+            color: #f87171;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(15, 23, 42, 0.8);
+            color: #60a5fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #334155;
+            color: #cbd5e1;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: rgba(51, 65, 85, 0.3);
+        }
+
+        .code {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-primary { background: #3b82f6; color: white; }
+        .badge-success { background: #10b981; color: white; }
+        .badge-warning { background: #f59e0b; color: white; }
+        .badge-danger { background: #ef4444; color: white; }
+        .badge-info { background: #06b6d4; color: white; }
+
+        .product-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .product-list li {
+            padding: 10px;
+            background: rgba(15, 23, 42, 0.5);
+            margin-bottom: 8px;
+            border-radius: 6px;
+            color: #cbd5e1;
+        }
+
+        .product-list li:before {
+            content: "▸";
+            color: #60a5fa;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📦 mod_digishop.sql & urunresimleri</h1>
+            <div class="meta">
+                📅 Analiz Tarihi: 2025-12-04 21:00 |
+                📂 Konum: /var/www/vhosts/tuufi.com/httpdocs/
+            </div>
+        </header>
+
+        <!-- GENEL ÖZET -->
+        <section>
+            <h2>🎯 Genel Özet</h2>
+            
+            <div class="success-box">
+                <h4>✅ Tespit Edilen Sistem</h4>
+                <p><strong>Eski E-Ticaret Sistemi:</strong> Forklift, transpalet ve endüstriyel ekipman yedek parça satışı yapan bir sistem.</p>
+                <p><strong>Muhtemel Site:</strong> litef.com.tr veya benzeri (veritabanı adı: litef_ekim23)</p>
+                <p><strong>Benzerlik:</strong> İxtif.com ile aynı sektör - Endüstriyel ekipman</p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">SQL Dosya Boyutu</div>
+                    <div class="info-value large">63 KB</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Toplam Ürün Sayısı</div>
+                    <div class="info-value large">1,153</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Görsel Dosya Sayısı</div>
+                    <div class="info-value large">4,044</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Görsel Klasörü Boyutu</div>
+                    <div class="info-value large">1.3 GB</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SQL DOSYASI DETAYI -->
+        <section>
+            <h2>🗄️ SQL Dosyası Detayları</h2>
+
+            <div class="info-card">
+                <h4>Veritabanı Bilgileri</h4>
+                <table>
+                    <tr>
+                        <td><strong>Veritabanı Adı</strong></td>
+                        <td>litef_ekim23</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tablo Adı</strong></td>
+                        <td>mod_digishop</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Export Tarihi</strong></td>
+                        <td>2025-12-04 17:07:55</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Satır Sayısı</strong></td>
+                        <td>795 satır</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dosya Boyutu</strong></td>
+                        <td>63 KB</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PHP Sürümü</strong></td>
+                        <td>8.4.14</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MySQL Sürümü</strong></td>
+                        <td>8.0.35</td>
+                    </tr>
+                    <tr>
+                        <td><strong>phpMyAdmin</strong></td>
+                        <td>5.2.2</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="info-card">
+                <h4>Tablo Yapısı (32 Kolon)</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kolon Adı</th>
+                            <th>Tip</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-primary">id</span></td>
+                            <td>INT</td>
+                            <td>Primary Key, AUTO_INCREMENT (1-1153)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-info">cid</span></td>
+                            <td>INT</td>
+                            <td>Kategori ID (muhtemelen)</td>
+                        </tr>
+                        <tr>
+                            <td>product_code</td>
+                            <td>VARCHAR(50)</td>
+                            <td>Ürün kodu</td>
+                        </tr>
+                        <tr>
+                            <td>marka</td>
+                            <td>VARCHAR(60)</td>
+                            <td>Marka (TCM, KOMATSU, STILL vb.)</td>
+                        </tr>
+                        <tr>
+                            <td>seri</td>
+                            <td>VARCHAR(60)</td>
+                            <td>Seri numarası</td>
+                        </tr>
+                        <tr>
+                            <td>model</td>
+                            <td>VARCHAR(60)</td>
+                            <td>Model bilgisi</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-success">title_tr</span></td>
+                            <td>VARCHAR(255)</td>
+                            <td>Ürün başlığı (Türkçe)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-success">slug</span></td>
+                            <td>VARCHAR(255)</td>
+                            <td>SEO dostu URL</td>
+                        </tr>
+                        <tr>
+                            <td>price</td>
+                            <td>DECIMAL(7,2)</td>
+                            <td>Fiyat</td>
+                        </tr>
+                        <tr>
+                            <td>price_type</td>
+                            <td>VARCHAR(22)</td>
+                            <td>Fiyat tipi</td>
+                        </tr>
+                        <tr>
+                            <td>dprice</td>
+                            <td>DECIMAL(7,2)</td>
+                            <td>İndirimli fiyat (discount price)</td>
+                        </tr>
+                        <tr>
+                            <td>token</td>
+                            <td>VARCHAR(60)</td>
+                            <td>Token (muhtemelen güvenlik)</td>
+                        </tr>
+                        <tr>
+                            <td>short_desc_tr</td>
+                            <td>VARCHAR(500)</td>
+                            <td>Kısa açıklama</td>
+                        </tr>
+                        <tr>
+                            <td>body_tr</td>
+                            <td>LONGTEXT</td>
+                            <td>Ürün açıklaması (HTML)</td>
+                        </tr>
+                        <tr>
+                            <td>body2_tr</td>
+                            <td>LONGTEXT</td>
+                            <td>İkinci açıklama alanı</td>
+                        </tr>
+                        <tr>
+                            <td>gallery</td>
+                            <td>SMALLINT</td>
+                            <td>Galeri durumu</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-warning">thumb</span></td>
+                            <td>VARCHAR(255)</td>
+                            <td>Ana görsel</td>
+                        </tr>
+                        <tr>
+                            <td>thumb_1 → thumb_6</td>
+                            <td>VARCHAR(255)</td>
+                            <td>6 ek görsel alanı</td>
+                        </tr>
+                        <tr>
+                            <td>l_thumb</td>
+                            <td>VARCHAR(255)</td>
+                            <td>Büyük thumbnail</td>
+                        </tr>
+                        <tr>
+                            <td>catalog</td>
+                            <td>VARCHAR(255)</td>
+                            <td>Katalog dosyası (PDF?)</td>
+                        </tr>
+                        <tr>
+                            <td>catalog_en</td>
+                            <td>VARCHAR(255)</td>
+                            <td>İngilizce katalog</td>
+                        </tr>
+                        <tr>
+                            <td>likes</td>
+                            <td>TINYINT</td>
+                            <td>Beğeni sayısı</td>
+                        </tr>
+                        <tr>
+                            <td>created</td>
+                            <td>DATETIME</td>
+                            <td>Oluşturulma tarihi</td>
+                        </tr>
+                        <tr>
+                            <td>metakey_tr</td>
+                            <td>VARCHAR(255)</td>
+                            <td>SEO anahtar kelimeler</td>
+                        </tr>
+                        <tr>
+                            <td>metadesc_tr</td>
+                            <td>TEXT</td>
+                            <td>SEO açıklama</td>
+                        </tr>
+                        <tr>
+                            <td>active</td>
+                            <td>TINYINT</td>
+                            <td>Aktiflik durumu (0/1)</td>
+                        </tr>
+                        <tr>
+                            <td>showcase</td>
+                            <td>TINYINT</td>
+                            <td>Vitrin durumu</td>
+                        </tr>
+                        <tr>
+                            <td>sorting</td>
+                            <td>INT</td>
+                            <td>Sıralama</td>
+                        </tr>
+                        <tr>
+                            <td>all_hits / daily_hits / last_visit</td>
+                            <td>SMALLINT / DATE</td>
+                            <td>Ziyaret istatistikleri (genel)</td>
+                        </tr>
+                        <tr>
+                            <td>k_all_hits / k_daily_hits / k_last_visit</td>
+                            <td>SMALLINT / DATE</td>
+                            <td>Ziyaret istatistikleri (K kategorisi?)</td>
+                        </tr>
+                        <tr>
+                            <td>i_all_hits / i_daily_hits / i_last_visit</td>
+                            <td>SMALLINT / DATE</td>
+                            <td>Ziyaret istatistikleri (I kategorisi?)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Eski Teknoloji Tespit Edildi</h4>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li><strong>Engine:</strong> MyISAM (InnoDB yerine - transaction desteği yok)</li>
+                    <li><strong>Charset:</strong> utf8mb3 (utf8mb4 yerine - emoji desteği yok)</li>
+                    <li><strong>Collation:</strong> utf8mb3_turkish_ci / utf8mb3_general_ci</li>
+                    <li><strong>Görsel Sistemi:</strong> 7 ayrı kolon (thumb, thumb_1-6) → Modern media library yok</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ÜRÜN KATEGORİLERİ -->
+        <section>
+            <h2>📦 Ürün Kategorileri</h2>
+
+            <div class="info-card">
+                <h4>Forklift & Endüstriyel Ekipman Parçaları (1,153 Ürün)</h4>
+                
+                <h3>1. Forklift Lastikleri</h3>
+                <ul class="product-list">
+                    <li><strong>Siyah Dolgu Lastikler:</strong> 15x4-1/2-8, 16x6-8, 18x7-8, 5x00-8, 200x50-10, 6x00-9, 6x50-10, 21x8-9, 23x10-12, 27x10-12, 7.00-12, 7.00-15, 7.50-16, 250-15, 8x25-15, 300-15, 355-15, 355x65-15, 9x00-20, 12x00-20</li>
+                    <li><strong>Beyaz Dolgu Lastikler:</strong> 15x4-1/2-8, 18x7-8, 200x50-10, 6x00-9, 6x50-10, 21x8-9, 23x10-12, 27x10-12, 7.00-15, 7.00-12, 7.50-16, 28x9-15, 250-15, 8x25-15, 300-15, 355-15, 355x65-15, 9x00-20, 12x00-20, 16x6-8</li>
+                    <li><strong>Havalı Lastikler:</strong> 200x50-10, 6.50-10, 21x8-9, 23x10-12, 27x10-12, 7.00-12, 7.00-15, 7.50-16, 28x9-15, 8x25-15, 300-15, 355-15, 355x65-15, 9x00-20, 12x00-20, 6.00-9</li>
+                </ul>
+
+                <h3>2. Jant & Şambrel</h3>
+                <ul class="product-list">
+                    <li>Jant çeşitleri (BALKANCAR, BAOLY, CLIFT markaları için)</li>
+                    <li>İç Lastik (Şambrel)</li>
+                    <li>Jant Segman</li>
+                </ul>
+
+                <h3>3. Tekerler</h3>
+                <ul class="product-list">
+                    <li><strong>Denge Tekerleri:</strong> 1529, 1525, 1522, 1526, 1953, STILL ST-EXUSF20, STILL ST-EXU16</li>
+                    <li><strong>Çatal Tekerleri:</strong> STILL ST-EXU16, TCM TC-PSH160SDTV540</li>
+                    <li><strong>Yürüyüş Tekerleri:</strong> 1512, 1513, TCM TC-PLP PTR 200P</li>
+                    <li><strong>Platform Tekerleri:</strong> SK 312, 313, 314, 315, 317, 318</li>
+                </ul>
+
+                <h3>4. Transpalet Tekerleri</h3>
+                <ul class="product-list">
+                    <li><strong>Alüminyum Üzeri Poliüretan:</strong> Bilya Rulmanlı 200x50</li>
+                    <li><strong>Alüminyum Üzeri Kauçuk:</strong> Bilya Rulmanlı 160x45</li>
+                    <li><strong>Poliamid:</strong> Bilya Rulmanlı 170x40, 85x70</li>
+                    <li><strong>Döküm Üzeri Poliüretan:</strong> Bilya Rulmanlı 85x90, 150x50</li>
+                    <li><strong>Poliamid Üzeri Poliüretan:</strong> Bilya Rulmanlı 200x50, 82x72</li>
+                </ul>
+
+                <h3>5. Motor & Hidrolik Parçaları</h3>
+                <ul class="product-list">
+                    <li><strong>Bijon Somun:</strong> TCM FD30T3Z, FD70-2, FD50T2, FD45T2, KOMATSU FD30T-16, TAILIFT FD25</li>
+                    <li><strong>Devirdaim:</strong> KOMATSU FD30T-10, SMZ 4TON, KUBATO V3300/V3600, LİNDE H20, TCM FD30T3Z, ÇİN 3TON, TCM FD50T2</li>
+                    <li><strong>Yakıt Otomatiği:</strong> LİNDE H30D02, ÇUKUROVA 3TON ve çeşitli modeller</li>
+                    <li><strong>Pervane:</strong> Farklı modeller</li>
+                    <li><strong>Şamandıra:</strong> TCM FD30T3Z, FD45T-2, HANGCHA CPCD35N</li>
+                    <li><strong>Silindir Kapak Contası:</strong> Çeşitli modeller</li>
+                    <li><strong>Hidrolik Filtre:</strong> 845, 846, 850, YALE 5TON, LİNDE H25D (emiş filtresi)</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h4>Marka Dağılımı</h4>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">TCM</div>
+                        <div class="info-value">Japon forklift markası</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">KOMATSU</div>
+                        <div class="info-value">Japon iş makinesi</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">STILL</div>
+                        <div class="info-value">Alman forklift markası</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">LİNDE</div>
+                        <div class="info-value">Alman forklift markası</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">HANGCHA</div>
+                        <div class="info-value">Çinli forklift markası</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">YALE</div>
+                        <div class="info-value">Amerikan forklift markası</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">BALKANCAR</div>
+                        <div class="info-value">Bulgar forklift markası</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">TAILIFT</div>
+                        <div class="info-value">Tayvan forklift markası</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GÖRSEL KLASÖRÜ DETAYI -->
+        <section>
+            <h2>🖼️ Urunresimleri Klasörü</h2>
+
+            <div class="info-card">
+                <h4>Klasör İstatistikleri</h4>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Toplam Dosya</div>
+                        <div class="info-value large">4,044</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">WebP Dosya</div>
+                        <div class="info-value large">1,599</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">JPG/PNG Dosya</div>
+                        <div class="info-value large">2,436</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Toplam Boyut</div>
+                        <div class="info-value large">1.3 GB</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h4>Görsel Formatları</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Format</th>
+                            <th>Sayı</th>
+                            <th>Amaç</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-success">WebP</span></td>
+                            <td>1,599 dosya</td>
+                            <td>Modern, optimize edilmiş format (web için ideal)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-info">JPG</span></td>
+                            <td>~2,200 dosya</td>
+                            <td>Orijinal fotoğraflar</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-warning">PNG</span></td>
+                            <td>~236 dosya</td>
+                            <td>Şeffaf görseller, logolar</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-card">
+                <h4>Dosya Adı Örnekleri</h4>
+                <div class="code">
+Dolgu_Siyah.webp
+Dolgu_Siyah_1.webp
+beyal_dolgu.webp
+HavalY_Lastik.webp
+686707814_tn50_0-gigapixel.webp
+BALKANCAR_5.00_X_12_2001-3_JANT_7.00_X_12_LASTYK_YCYN.webp
+IMG_4318.webp (denge tekeri)
+IMG_3954.webp (çatal tekeri)
+sk312-gigapixel.webp (platform tekeri)
+1-10-scaled.jpg
+62559-gigapixel.jpg
+8825441600-iPad-mini-4-128GB-WiFi-Gold-1717-Tablet.png
+                </div>
+            </div>
+
+            <div class="success-box">
+                <h4>✅ Optimize Edilmiş Sistem</h4>
+                <p>Görsellerin <strong>%39.5'i WebP formatına dönüştürülmüş</strong> - Bu modern bir yaklaşım ve web performansı için idealdir.</p>
+                <p><strong>Tarih Aralığı:</strong> 2022-2024 (en son yüklemeler Aralık 2024)</p>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Dosya Adlandırma Karmaşıklığı</h4>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Farklı isimlendirme sistemleri karışık</li>
+                    <li>Türkçe karakterler var (Dolgu_Siyah, HavalY_Lastik)</li>
+                    <li>Bazı dosyalar "-gigapixel" eki ile AI upscale edilmiş</li>
+                    <li>IMG_* formatı en son yüklemeler için kullanılmış</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- TUUFI SİSTEMİNE MİGRASYON -->
+        <section>
+            <h2>🔄 Tuufi Sistemine Migration Senaryosu</h2>
+
+            <div class="danger-box">
+                <h4>🚨 Önemli Uyarı</h4>
+                <p>Bu dosyalar <strong>eski bir e-ticaret sisteminden</strong> export edilmiş. Tuufi sistemine (Laravel + Multi-Tenant) aktarmadan önce <strong>ciddi dönüşüm gerekiyor!</strong></p>
+            </div>
+
+            <div class="info-card">
+                <h4>Migration Süreci (Tavsiye)</h4>
+
+                <h3>1. Veritabanı Dönüşümü</h3>
+                <ul class="product-list">
+                    <li><strong>Tablo Sistemi:</strong> mod_digishop → shop_products (Tuufi Shop modülü)</li>
+                    <li><strong>Engine:</strong> MyISAM → InnoDB (transaction desteği)</li>
+                    <li><strong>Charset:</strong> utf8mb3 → utf8mb4 (emoji desteği)</li>
+                    <li><strong>JSON Yapısı:</strong> Eski kolonlar (body_tr, body2_tr) → Modern JSON field'ler</li>
+                </ul>
+
+                <h3>2. Görsel Sistemi Dönüşümü</h3>
+                <ul class="product-list">
+                    <li><strong>Eski Sistem:</strong> thumb, thumb_1-6 (7 ayrı kolon)</li>
+                    <li><strong>Yeni Sistem:</strong> Laravel Media Library (ilişkisel tablo)</li>
+                    <li><strong>Klasör:</strong> urunresimleri/ → storage/tenant_X/app/public/products/</li>
+                    <li><strong>WebP:</strong> Mevcut WebP'ler kullanılabilir (zaten optimize edilmiş)</li>
+                </ul>
+
+                <h3>3. Kategori Sistemi</h3>
+                <ul class="product-list">
+                    <li><strong>cid</strong> kolonu → shop_categories tablosu ile ilişkilendirilmeli</li>
+                    <li>Mevcut kategoriler analiz edilmeli (Lastik, Jant, Tekerler, Parçalar vb.)</li>
+                    <li>Hiyerarşik kategori yapısı oluşturulmalı</li>
+                </ul>
+
+                <h3>4. Marka & Model Sistemi</h3>
+                <ul class="product-list">
+                    <li><strong>marka</strong> kolonu → shop_brands tablosu</li>
+                    <li><strong>seri + model</strong> → Ürün varyant sistemi veya JSON field</li>
+                    <li>TCM, KOMATSU, STILL, LİNDE vb. markalar shop_brands'a eklenmeli</li>
+                </ul>
+
+                <h3>5. SEO & Çoklu Dil</h3>
+                <ul class="product-list">
+                    <li><strong>Mevcut:</strong> title_tr, metakey_tr, metadesc_tr (sadece Türkçe)</li>
+                    <li><strong>Yeni Sistem:</strong> JSON çoklu dil (tr, en, de vb.)</li>
+                    <li>slug'lar korunmalı (SEO için kritik)</li>
+                </ul>
+
+                <h3>6. Fiyat Sistemi</h3>
+                <ul class="product-list">
+                    <li><strong>price</strong> (7,2) → Tuufi fiyat sistemi (KDV dahil/hariç)</li>
+                    <li><strong>dprice</strong> → İndirimli fiyat sistemi</li>
+                    <li><strong>price_type</strong> → Fiyat tipinin analizi gerekli</li>
+                </ul>
+
+                <h3>7. İstatistikler</h3>
+                <ul class="product-list">
+                    <li>3 farklı hit tracker sistemi var (all_hits, k_*, i_*)</li>
+                    <li>Bu sistemin mantığı anlaşılmalı</li>
+                    <li>Tuufi'de tek istatistik sistemi kullanılıyorsa dönüşüm gerekli</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h4>Otomatik Migration Script İhtiyacı</h4>
+                <div class="code">
+// Örnek Migration Adımları
+
+1. SQL Parse: mod_digishop.sql → 1,153 ürün çek
+2. Kategori Mapping: cid → shop_categories
+3. Marka Oluştur: DISTINCT(marka) → shop_brands
+4. Ürün Insert: her ürün için shop_products
+5. Görsel Kopyala: urunresimleri/ → storage/
+6. Media Attach: Laravel Media Library ile ilişkilendir
+7. SEO Koru: slug'ları aynı tut (301 redirect gerekmez)
+8. Test: Tüm ürünler görünüyor mu?
+9. WebP Check: Görseller yükleniyor mu?
+10. Clean: Gereksiz dosyaları temizle
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Dikkat Edilmesi Gerekenler</h4>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li><strong>Tenant Seçimi:</strong> Bu veriler hangi tenant'a ait? (İxtif, Muzibu, yoksa yeni tenant?)</li>
+                    <li><strong>Duplicate Check:</strong> Aynı ürün zaten varsa tekrar ekleme!</li>
+                    <li><strong>Görsel Boyutu:</strong> 1.3GB'lık dosya tenant storage kotasına sığıyor mu?</li>
+                    <li><strong>URL Yapısı:</strong> Eski site'in URL'leri ile Tuufi'nin URL'leri uyumlu mu?</li>
+                    <li><strong>Price Type:</strong> price_type kolonunun değerlerini analiz et (KDV, döviz vb.)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SONUÇ & TAVSİYELER -->
+        <section>
+            <h2>🎯 Sonuç & Tavsiyeler</h2>
+
+            <div class="success-box">
+                <h4>✅ Değerli Veri</h4>
+                <p><strong>1,153 ürün</strong> ve <strong>4,044 görsel</strong> profesyonelce organize edilmiş bir e-ticaret verisi. Migration için uygun.</p>
+            </div>
+
+            <div class="info-card">
+                <h4>Öncelikli Aksiyonlar</h4>
+                <ul class="product-list">
+                    <li><strong>Tenant Belirle:</strong> Bu veriler hangi tenant için? (İxtif mi, yeni site mi?)</li>
+                    <li><strong>Kategori Mapping:</strong> cid değerlerini analiz et, kategori haritası çıkar</li>
+                    <li><strong>Marka Listesi:</strong> DISTINCT(marka) çek, shop_brands'a ekle</li>
+                    <li><strong>Migration Script Yaz:</strong> SQL import + media copy otomasyonu</li>
+                    <li><strong>Test Environment:</strong> İlk önce test tenant'ında dene</li>
+                    <li><strong>Backup:</strong> Mevcut urunresimleri klasörünü yedekle</li>
+                    <li><strong>SEO Koruma:</strong> slug'lar aynı kalmalı (Google indexing korusun)</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Riskler</h4>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Eski teknoloji (MyISAM, utf8mb3) → Dönüşüm hatası riski</li>
+                    <li>7 farklı thumb kolonu → Media library dönüşümü karmaşık</li>
+                    <li>3 farklı hit tracker → Hangi sistemi kullanacağız?</li>
+                    <li>price_type analizi gerekli → Fiyat sistemi uyumsuz olabilir</li>
+                    <li>1.3GB görsel → Storage limiti aşılabilir</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h4>Sonraki Adımlar</h4>
+                <ol style="padding-left: 20px; margin-top: 10px;">
+                    <li>Kullanıcıdan onay al: "Bu verileri hangi tenant'a aktaralım?"</li>
+                    <li>Kategori haritasını çıkar (cid analizi)</li>
+                    <li>Migration script yaz (Laravel Command)</li>
+                    <li>Test tenant'ında çalıştır</li>
+                    <li>Sonuçları kontrol et (ürün sayısı, görseller)</li>
+                    <li>Production'a aktar</li>
+                    <li>Eski dosyaları arşivle/temizle</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 2025-12-04
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Kullanıcı & Müzik Dinleme Sistemi - Analiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #334155;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #8b5cf6;
+        }
+
+        .info-card {
+            background: rgba(30, 41, 59, 0.5);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateX(5px);
+            background: rgba(30, 41, 59, 0.7);
+        }
+
+        .user-type {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .user-type h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-guest { background: #64748b; color: white; }
+        .badge-member { background: #3b82f6; color: white; }
+        .badge-premium { background: linear-gradient(135deg, #f59e0b, #eab308); color: white; }
+        .badge-trial { background: #10b981; color: white; }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: #cbd5e1;
+        }
+
+        .feature-icon {
+            color: #10b981;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .feature-icon.limited {
+            color: #f59e0b;
+        }
+
+        .feature-icon.blocked {
+            color: #ef4444;
+        }
+
+        .flow-diagram {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            gap: 15px;
+        }
+
+        .flow-step-number {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .flow-step-content {
+            flex: 1;
+        }
+
+        .code-term {
+            background: rgba(59, 130, 246, 0.2);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #60a5fa;
+        }
+
+        .highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #ef4444;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .info-box h4 {
+            color: #60a5fa;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .check {
+            color: #10b981;
+            font-size: 1.2rem;
+        }
+
+        .cross {
+            color: #ef4444;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #334155;
+            color: #64748b;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .meta { flex-direction: column; gap: 10px; }
+            .flow-step { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Muzibu Kullanıcı & Müzik Dinleme Sistemi</h1>
+            <div class="meta">
+                <div class="meta-item">📅 Tarih: 2025-12-04 15:30</div>
+                <div class="meta-item">🎯 Tenant: 1001 (muzibu.com.tr)</div>
+                <div class="meta-item">👤 Talep: Sistem çalışma mantığı analizi</div>
+            </div>
+        </header>
+
+        <section>
+            <h2>📊 Sistem Genel Bakış</h2>
+            <div class="info-card">
+                <p>
+                    Muzibu, <strong>tenant 1001</strong> üzerinde çalışan bir <span class="highlight">müzik streaming platformu</span>dur. 
+                    Sistem, <strong>3 farklı kullanıcı tipi</strong> için farklı dinleme deneyimleri sunar:
+                </p>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">👥</span>
+                        <span><strong>Üye Olmayan (Guest):</strong> Kayıt olmadan müzik keşfi</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🔐</span>
+                        <span><strong>Üye (Normal Member):</strong> Kayıtlı hesap ile sınırlı dinleme</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">⭐</span>
+                        <span><strong>Premium Üye:</strong> Aktif abonelik ile sınırsız dinleme</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>💡 Önemli Bilgi</h4>
+                <p>
+                    Sistem, <span class="code-term">User</span> modelindeki <span class="code-term">isPremium()</span> metodu ile 
+                    kullanıcının premium durumunu kontrol eder. Bu method, <span class="code-term">subscriptions</span> tablosunda 
+                    aktif bir abonelik olup olmadığını sorgualar.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>👥 Kullanıcı Tipleri ve Yetkiler</h2>
+
+            <div class="user-type">
+                <h3>
+                    <span>👤 Üye Olmayan (Guest)</span>
+                    <span class="badge badge-guest">Misafir</span>
+                </h3>
+                <p><strong>Tanım:</strong> Kayıt olmadan siteye erişen ziyaretçiler. Authentication sistemi ile ilişkilendirilmemiş kullanıcılar.</p>
+                
+                <h4 style="margin-top: 20px; color: #cbd5e1;">Dinleme Hakları:</h4>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon limited">⏱️</span>
+                        <span><strong>30 saniye önizleme:</strong> Her şarkıdan sadece ilk 30 saniye dinlenebilir</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon limited">🔒</span>
+                        <span><strong>Tam dinleme yok:</strong> Şarkıyı sonuna kadar dinleyemez</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🎧</span>
+                        <span><strong>Sınırsız önizleme:</strong> İstediği kadar farklı şarkıyı 30 saniye önizleyebilir</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon blocked">❌</span>
+                        <span><strong>Analytics kaydı yok:</strong> Dinleme geçmişi tutulmaz</span>
+                    </li>
+                </ul>
+
+                <div class="flow-diagram">
+                    <p style="color: #94a3b8; margin-bottom: 15px;"><strong>Frontend Davranışı:</strong></p>
+                    <div class="flow-step">
+                        <div class="flow-step-number">1</div>
+                        <div class="flow-step-content">Şarkı başlar ve 30 saniye oynar</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">2</div>
+                        <div class="flow-step-content">30. saniyede player otomatik durur</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">3</div>
+                        <div class="flow-step-content">Ekranda mesaj gösterilir: <em>"Kayıt olun, tam dinleyin"</em></div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Backend Kontrolü</h4>
+                    <p>
+                        <span class="code-term">SongStreamController::stream()</span> methodu, <span class="code-term">auth()->user()</span> 
+                        kontrolü yapar. Guest için <span class="code-term">null</span> döner ve <span class="highlight">status: preview</span> 
+                        response döndürür.
+                    </p>
+                </div>
+            </div>
+
+            <div class="user-type">
+                <h3>
+                    <span>🔐 Üye (Normal Member)</span>
+                    <span class="badge badge-member">Kayıtlı</span>
+                </h3>
+                <p><strong>Tanım:</strong> Kayıt olmuş ancak <strong>premium aboneliği olmayan</strong> kullanıcılar. Email/şifre ile giriş yapmış durumda.</p>
+                
+                <h4 style="margin-top: 20px; color: #cbd5e1;">Dinleme Hakları:</h4>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon limited">⏱️</span>
+                        <span><strong>30 saniye önizleme:</strong> Guest ile aynı - tam dinleme hakkı yok</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">📊</span>
+                        <span><strong>Analytics kaydı:</strong> Dinleme geçmişi <span class="code-term">muzibu_song_plays</span> tablosunda tutulur</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">⭐</span>
+                        <span><strong>Favoriler:</strong> Şarkıları favorilere ekleyebilir</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🎵</span>
+                        <span><strong>Playlist oluşturma:</strong> Kendi playlist'lerini oluşturabilir</span>
+                    </li>
+                </ul>
+
+                <div class="info-box">
+                    <h4>💡 Eski Kural (Şu An Devre Dışı)</h4>
+                    <p>
+                        Eskiden <strong>günde 3 şarkı</strong> limiti vardı. Kullanıcı 60+ saniye dinlediği her şarkı sayılırdı. 
+                        Bu kural <span class="code-term">SongStreamController</span> içinde <strong>comment out edilmiş durumda</strong>.
+                    </p>
+                    <p style="margin-top: 10px;">
+                        <span class="code-term">canPlaySong()</span> ve <span class="code-term">getRemainingPlays()</span> methodları 
+                        hala mevcut ancak kullanılmıyor. Backend şu an <span class="highlight">tüm üyelere 30 saniye preview</span> veriyor.
+                    </p>
+                </div>
+
+                <div class="flow-diagram">
+                    <p style="color: #94a3b8; margin-bottom: 15px;"><strong>Frontend Davranışı:</strong></p>
+                    <div class="flow-step">
+                        <div class="flow-step-number">1</div>
+                        <div class="flow-step-content">Şarkı başlar ve 30 saniye oynar</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">2</div>
+                        <div class="flow-step-content">30. saniyede player otomatik durur</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">3</div>
+                        <div class="flow-step-content">Ekranda mesaj gösterilir: <em>"Premium'a geçin, sınırsız dinleyin"</em></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-type">
+                <h3>
+                    <span>⭐ Premium Üye</span>
+                    <span class="badge badge-premium">Premium</span>
+                    <span class="badge badge-trial">Trial</span>
+                </h3>
+                <p><strong>Tanım:</strong> Aktif <strong>subscription</strong> olan kullanıcılar. İki tip premium durumu var:</p>
+                
+                <div style="margin: 20px 0;">
+                    <h4 style="color: #cbd5e1; margin-bottom: 10px;">Premium Tipleri:</h4>
+                    <ul class="feature-list">
+                        <li>
+                            <span class="feature-icon">💳</span>
+                            <span><strong>Active Subscription:</strong> <span class="code-term">status = 'active'</span> ve <span class="code-term">ends_at > now()</span></span>
+                        </li>
+                        <li>
+                            <span class="feature-icon">🎁</span>
+                            <span><strong>Trial Period:</strong> <span class="code-term">status = 'trial'</span> ve <span class="code-term">trial_ends_at > now()</span></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <h4 style="margin-top: 20px; color: #cbd5e1;">Dinleme Hakları:</h4>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">🎵</span>
+                        <span><strong>Sınırsız dinleme:</strong> Tüm şarkıları sonuna kadar dinleyebilir</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🚀</span>
+                        <span><strong>Yüksek kalite HLS stream:</strong> Adaptif bitrate ile kesintisiz deneyim</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">📊</span>
+                        <span><strong>Detaylı analytics:</strong> Dinleme geçmişi tam detaylı tutulur</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">💾</span>
+                        <span><strong>Offline dinleme:</strong> (Planlanan - şu an aktif değil)</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">⚡</span>
+                        <span><strong>Rate limit:</strong> Dakikada 300 stream request (Guest: 30, Member: 120)</span>
+                    </li>
+                </ul>
+
+                <div class="flow-diagram">
+                    <p style="color: #94a3b8; margin-bottom: 15px;"><strong>Frontend Davranışı:</strong></p>
+                    <div class="flow-step">
+                        <div class="flow-step-number">1</div>
+                        <div class="flow-step-content">Şarkı başlar ve sonuna kadar oynar</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">2</div>
+                        <div class="flow-step-content">Limit kontrolü yok - sınırsız dinleme</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-step-number">3</div>
+                        <div class="flow-step-content">Şarkı bittiğinde otomatik sıradaki şarkıya geçer</div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>💡 Premium Kontrolü</h4>
+                    <p>
+                        <span class="code-term">User::isPremium()</span> methodu, <strong>1 saatlik cache</strong> ile optimize edilmiş. 
+                        Her stream request'inde database'ye gitmeden cache'den kontrol eder. Bu sayede performans optimize edilmiş.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 Kullanıcı Karşılaştırma Tablosu</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>👤 Guest</th>
+                        <th>🔐 Üye</th>
+                        <th>⭐ Premium</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tam Dinleme</strong></td>
+                        <td><span class="cross">✗</span> 30 saniye</td>
+                        <td><span class="cross">✗</span> 30 saniye</td>
+                        <td><span class="check">✓</span> Sınırsız</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Analytics</strong></td>
+                        <td><span class="cross">✗</span> Kayıt yok</td>
+                        <td><span class="check">✓</span> Kayıt var</td>
+                        <td><span class="check">✓</span> Detaylı</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Favoriler</strong></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Playlist Oluşturma</strong></td>
+                        <td><span class="cross">✗</span></td>
+                        <td><span class="check">✓</span></td>
+                        <td><span class="check">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Günlük Limit</strong></td>
+                        <td><span class="check">✓</span> Sınırsız preview</td>
+                        <td><span class="check">✓</span> Sınırsız preview</td>
+                        <td><span class="check">✓</span> Sınırsız</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stream Kalitesi</strong></td>
+                        <td>MP3 (standart)</td>
+                        <td>MP3 (standart)</td>
+                        <td>HLS (adaptif)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rate Limit</strong></td>
+                        <td>30 req/dakika</td>
+                        <td>120 req/dakika</td>
+                        <td>300 req/dakika</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>🔄 Müzik Dinleme Akışı</h2>
+            
+            <h3>1️⃣ Stream URL Alma</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="flow-step-content">
+                        <strong>Frontend → Backend:</strong> <span class="code-term">GET /api/muzibu/songs/{id}/stream</span>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="flow-step-content">
+                        <strong>Backend:</strong> Kullanıcı tipini kontrol eder (<span class="code-term">auth()->user()</span>)
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="flow-step-content">
+                        <strong>Backend:</strong> Premium kontrolü yapar (<span class="code-term">isPremium()</span>)
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="flow-step-content">
+                        <strong>Response:</strong> Stream URL döner (signed URL - güvenlik için)
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="flow-step-content">
+                        <strong>Response:</strong> <span class="code-term">preview_duration</span> alanı ile limit bilgisi gelir (Guest/Üye için 30)
+                    </div>
+                </div>
+            </div>
+
+            <h3>2️⃣ Müzik Çalma (Frontend)</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="flow-step-content">
+                        <strong>Player:</strong> Stream URL ile müzik çalmaya başlar (HLS veya MP3)
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="flow-step-content">
+                        <strong>Timer:</strong> Eğer <span class="code-term">preview_duration</span> varsa, sayaç başlar
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="flow-step-content">
+                        <strong>30. saniye:</strong> Guest/Üye için player otomatik durur, premium için devam eder
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="flow-step-content">
+                        <strong>Her 5 saniyede:</strong> Progress tracking yapılır (backend'e sinyal gönderilir)
+                    </div>
+                </div>
+            </div>
+
+            <h3>3️⃣ Analytics Kaydı</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="flow-step-content">
+                        <strong>Frontend:</strong> 60+ saniye dinleme sonrası <span class="code-term">POST /api/muzibu/songs/{id}/track-progress</span> çağrılır
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="flow-step-content">
+                        <strong>Backend:</strong> <span class="code-term">muzibu_song_plays</span> tablosuna kayıt ekler
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="flow-step-content">
+                        <strong>Bilgiler:</strong> user_id, song_id, ip_address, device_type, created_at
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="flow-step-content">
+                        <strong>Analytics:</strong> Daha sonra raporlama için kullanılır (en çok dinlenenler, günlük istatistik vb.)
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Önemli: Guest Kullanıcılar için Analytics Yok</h4>
+                <p>
+                    Guest kullanıcılar için <span class="code-term">track-progress</span> endpoint'i 
+                    <span class="code-term">auth:sanctum</span> middleware ile korunuyor. Guest'ler dinleme kaydı oluşturamazlar.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>💳 Premium Üyelik Sistemi</h2>
+            
+            <div class="info-card">
+                <h3>Subscription Model</h3>
+                <p>
+                    Premium üyelik, <span class="code-term">subscriptions</span> tablosunda tutulur. 
+                    Her subscription bir kullanıcıya (<span class="code-term">user_id</span>) ve bir plana 
+                    (<span class="code-term">plan_id</span>) bağlıdır.
+                </p>
+            </div>
+
+            <h3>Subscription Durumları</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-step-number">✓</div>
+                    <div class="flow-step-content">
+                        <strong>active:</strong> Aktif abonelik - <span class="code-term">ends_at > now()</span> kontrolü yapılır
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">🎁</div>
+                    <div class="flow-step-content">
+                        <strong>trial:</strong> Deneme süresi - <span class="code-term">trial_ends_at > now()</span> kontrolü yapılır
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">⏸️</div>
+                    <div class="flow-step-content">
+                        <strong>expired:</strong> Süresi dolmuş abonelik - artık premium değil
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">❌</div>
+                    <div class="flow-step-content">
+                        <strong>cancelled:</strong> İptal edilmiş abonelik - artık premium değil
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">⏳</div>
+                    <div class="flow-step-content">
+                        <strong>pending:</strong> Ödeme bekleyen abonelik - henüz aktif değil
+                    </div>
+                </div>
+            </div>
+
+            <h3>Premium Kontrolü (isPremium Method)</h3>
+            <div class="info-card">
+                <p><strong>Kontrol Sırası:</strong></p>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li style="margin-bottom: 10px;">
+                        <strong>Tenant Kontrolü:</strong> Sadece tenant 1001 (Muzibu) için çalışır, diğer tenant'lar için direkt <span class="code-term">false</span>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong>Cache Kontrolü:</strong> 1 saatlik cache varsa, oradan döner (performans için)
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong>Database Kontrolü:</strong> <span class="code-term">subscriptions</span> tablosunda <span class="code-term">status = 'active'</span> ve <span class="code-term">ends_at > now()</span> sorgusu
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong>Fallback:</strong> Eski sistem için <span class="code-term">is_premium</span> kolonu kontrolü (artık kullanılmıyor)
+                    </li>
+                </ol>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Cache Sistemi</h4>
+                <p>
+                    Premium kontrolü, her stream request'inde çağrıldığı için <strong>1 saatlik cache</strong> kullanılıyor. 
+                    Bu sayede database yükü azaltılıyor. Ancak bu, kullanıcı premium'a geçtikten sonra <strong>en fazla 1 saat</strong> 
+                    gecikmeli güncelleme olabileceği anlamına gelir.
+                </p>
+                <p style="margin-top: 10px;">
+                    <strong>Çözüm:</strong> Subscription oluşturulunca/güncellenince cache temizlenir.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🎧 Müzik Stream Teknolojisi</h2>
+            
+            <h3>HLS (HTTP Live Streaming)</h3>
+            <div class="info-card">
+                <p>
+                    Premium kullanıcılar için <strong>HLS streaming</strong> kullanılır. HLS, müzik dosyasını küçük parçalara böler 
+                    ve adaptif bitrate ile kullanıcıya sunar. Bu sayede:
+                </p>
+                <ul class="feature-list" style="margin-top: 15px;">
+                    <li>
+                        <span class="feature-icon">📶</span>
+                        <span><strong>Adaptif kalite:</strong> İnternet hızına göre otomatik kalite ayarı</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">⚡</span>
+                        <span><strong>Hızlı başlangıç:</strong> Tüm dosya indirilmeden müzik başlar</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🔒</span>
+                        <span><strong>Güvenlik:</strong> Dosya direkt indirilemez, sadece stream edilir</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">💾</span>
+                        <span><strong>Düşük bant genişliği:</strong> Sadece oynatılan kısım indirilir</span>
+                    </li>
+                </ul>
+            </div>
+
+            <h3>MP3 Direct Stream</h3>
+            <div class="info-card">
+                <p>
+                    Guest ve normal üyeler için <strong>MP3 direct stream</strong> kullanılır. Basit HTTP stream ile müzik servis edilir. 
+                    Frontend, 30. saniyede otomatik durdurur.
+                </p>
+            </div>
+
+            <h3>Lazy HLS Conversion</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">
+                    <div class="flow-step-number">1</div>
+                    <div class="flow-step-content">
+                        Şarkı ilk kez çalınmak istendiğinde, HLS'e dönüşmemiş mi kontrol edilir
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">2</div>
+                    <div class="flow-step-content">
+                        Eğer dönüşmemişse, <span class="code-term">ConvertToHLSJob</span> queue'ya eklenir
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">3</div>
+                    <div class="flow-step-content">
+                        Kullanıcıya geçici olarak MP3 stream URL döndürülür
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">4</div>
+                    <div class="flow-step-content">
+                        Job arka planda çalışır, FFmpeg ile şarkıyı HLS'e çevirir
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">5</div>
+                    <div class="flow-step-content">
+                        Dönüşüm tamamlandıktan sonra, <span class="code-term">hls_converted = true</span> işaretlenir
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-step-number">6</div>
+                    <div class="flow-step-content">
+                        Bir sonraki çalışta HLS URL döndürülür
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>💡 Neden Lazy Loading?</h4>
+                <p>
+                    Tüm şarkıları önceden HLS'e çevirmek hem disk alanı hem de işlemci açısından maliyetli. 
+                    Lazy loading sayesinde, sadece <strong>gerçekten dinlenen şarkılar</strong> dönüştürülür.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>🔐 Güvenlik & Rate Limiting</h2>
+            
+            <div class="info-card">
+                <h3>Signed URLs</h3>
+                <p>
+                    Tüm stream URL'leri <span class="code-term">SignedUrlService</span> ile imzalanır. Bu sayede:
+                </p>
+                <ul class="feature-list" style="margin-top: 15px;">
+                    <li>
+                        <span class="feature-icon">🔒</span>
+                        <span><strong>Tahmin edilemezlik:</strong> URL'ler hash içerir, tahmin edilemez</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">⏱️</span>
+                        <span><strong>Zamanlı geçerlilik:</strong> URL'ler belirli süre sonra geçersiz olur (MP3: 30dk, HLS: 60dk)</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">🚫</span>
+                        <span><strong>Kopyalanamaz:</strong> URL kopyalanıp paylaşılsa bile, süre dolunca geçersiz olur</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3>Rate Limiting (throttle.user:stream)</h3>
+                <table class="comparison-table" style="margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th>Kullanıcı Tipi</th>
+                            <th>Request Limiti</th>
+                            <th>Açıklama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>👤 Guest</td>
+                            <td><strong>30 req/dakika</strong></td>
+                            <td>Bot koruması ve sunucu yükünü azaltma</td>
+                        </tr>
+                        <tr>
+                            <td>🔐 Üye</td>
+                            <td><strong>120 req/dakika</strong></td>
+                            <td>Normal kullanım için yeterli</td>
+                        </tr>
+                        <tr>
+                            <td>⭐ Premium</td>
+                            <td><strong>300 req/dakika</strong></td>
+                            <td>Yüksek kalite stream için yeterli</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Rate Limit Aşımı</h4>
+                <p>
+                    Kullanıcı rate limit'i aşarsa, <strong>429 Too Many Requests</strong> hatası döner. 
+                    Frontend, bu durumda kullanıcıya uygun mesaj gösterir ve 1 dakika bekler.
+                </p>
+            </div>
+        </section>
+
+        <footer>
+            🤖 Claude AI tarafından oluşturuldu | 📅 2025-12-04
+        </footer>
+    </div>
+</body>
+</html>

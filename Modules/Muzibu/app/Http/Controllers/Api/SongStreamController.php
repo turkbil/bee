@@ -62,8 +62,8 @@ class SongStreamController extends Controller
                 // 🚀 CACHE: Song already from cache, no need to refresh
 
                 if ($song->hls_converted && !empty($song->hls_path)) {
-                    // 🔐 SIGNED HLS URL (60 dakika - chunked streaming için uzun)
-                    $streamUrl = $this->signedUrlService->generateHlsUrl($songId, 60);
+                    // 🎯 DYNAMIC PLAYLIST (4 chunk: 3 çal + 1 buffer)
+                    $streamUrl = route('api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
                     $streamType = 'hls';
                     // 🔐 MP3 fallback (signed URL)
                     $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
@@ -77,10 +77,13 @@ class SongStreamController extends Controller
                 return response()->json([
                     'status' => 'preview',
                     'message' => 'Kayıt olun, tam dinleyin',
-                    'stream_url' => $streamUrl, // 🔐 SIGNED URL
+                    'stream_url' => $streamUrl, // 🎯 Dynamic playlist URL
                     'stream_type' => $streamType,
                     'fallback_url' => $fallbackUrl, // 🔐 SIGNED MP3 fallback (HLS fails)
                     'preview_duration' => 30,
+                    'preview_chunks' => 3,        // 3 chunk çalacak
+                    'buffer_chunks' => 1,         // 1 chunk buffer
+                    'total_chunks_served' => 4,  // Toplam 4 chunk yüklenecek
                     'is_premium' => false,
                     'song' => [
                         'id' => $song->song_id,
@@ -107,8 +110,8 @@ class SongStreamController extends Controller
                 // 🚀 CACHE: Song already from cache, no need to refresh
 
                 if ($song->hls_converted && !empty($song->hls_path)) {
-                    // 🔐 SIGNED HLS URL (60 dakika)
-                    $streamUrl = $this->signedUrlService->generateHlsUrl($songId, 60);
+                    // 🎯 DYNAMIC PLAYLIST (4 chunk: 3 çal + 1 buffer)
+                    $streamUrl = route('api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
                     $streamType = 'hls';
                     // 🔐 MP3 fallback (signed URL)
                     $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
@@ -122,10 +125,13 @@ class SongStreamController extends Controller
                 return response()->json([
                     'status' => 'preview',
                     'message' => 'Premium\'a geçin, sınırsız dinleyin',
-                    'stream_url' => $streamUrl, // 🔐 SIGNED URL
+                    'stream_url' => $streamUrl, // 🎯 Dynamic playlist URL
                     'stream_type' => $streamType,
                     'fallback_url' => $fallbackUrl, // 🔐 SIGNED MP3 fallback (HLS fails)
                     'preview_duration' => 30,
+                    'preview_chunks' => 3,        // 3 chunk çalacak
+                    'buffer_chunks' => 1,         // 1 chunk buffer
+                    'total_chunks_served' => 4,  // Toplam 4 chunk yüklenecek
                     'is_premium' => false,
                     'song' => [
                         'id' => $song->song_id,

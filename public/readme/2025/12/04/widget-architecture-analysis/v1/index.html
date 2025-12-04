@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Management - Mimari Analiz & İyileştirme Önerileri</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+        h2 {
+            color: #fbbf24;
+            font-size: 2.2rem;
+            margin: 60px 0 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #334155;
+        }
+        h3 {
+            color: #fcd34d;
+            font-size: 1.7rem;
+            margin: 40px 0 20px;
+        }
+        h4 {
+            color: #fde68a;
+            font-size: 1.3rem;
+            margin: 25px 0 15px;
+        }
+        .meta {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-bottom: 50px;
+            padding: 20px;
+            background: rgba(15,23,42,0.5);
+            border-radius: 8px;
+        }
+        .summary {
+            background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(245,158,11,0.1));
+            border-left: 5px solid #fbbf24;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            font-size: 1.1rem;
+        }
+        .current-system {
+            background: rgba(59,130,246,0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .problem {
+            background: rgba(239,68,68,0.1);
+            border-left: 4px solid #ef4444;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .solution {
+            background: rgba(16,185,129,0.1);
+            border-left: 4px solid #10b981;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .recommendation {
+            background: rgba(168,85,247,0.1);
+            border-left: 4px solid #a855f7;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 25px 0;
+        }
+        .compare-box {
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid;
+        }
+        .compare-current {
+            background: rgba(59,130,246,0.05);
+            border-color: #3b82f6;
+        }
+        .compare-proposed {
+            background: rgba(16,185,129,0.05);
+            border-color: #10b981;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: rgba(15,23,42,0.4);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background: rgba(251,191,36,0.2);
+            color: #fbbf24;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+        tr:hover {
+            background: rgba(251,191,36,0.05);
+        }
+        .tag {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin: 0 5px;
+        }
+        .tag-current { background: #3b82f6; color: white; }
+        .tag-missing { background: #ef4444; color: white; }
+        .tag-proposed { background: #10b981; color: white; }
+        .tag-optional { background: #8b5cf6; color: white; }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .feature-card {
+            background: rgba(30,41,59,0.5);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #fbbf24;
+        }
+        .feature-card h4 {
+            margin-top: 0;
+            color: #fbbf24;
+        }
+        ul, ol { margin: 15px 0 15px 30px; }
+        li { margin: 10px 0; }
+        .highlight { color: #fbbf24; font-weight: 600; }
+        .code {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #334155;
+            overflow-x: auto;
+        }
+        .architecture-diagram {
+            background: rgba(15,23,42,0.5);
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 2px solid #334155;
+        }
+        .priority-high { color: #ef4444; font-weight: 700; }
+        .priority-medium { color: #f59e0b; font-weight: 700; }
+        .priority-low { color: #10b981; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Widget Management Sistemi</h1>
+        <h2 style="margin-top: 0; color: #fde68a; font-size: 2rem;">Mimari Analiz & İyileştirme Önerileri</h2>
+        
+        <div class="meta">
+            📅 Tarih: 2025-12-04<br>
+            🎯 Kapsam: Widget Management Mimarisi (Tenant-agnostic)<br>
+            📊 Analiz Tipi: Mimari Eksiklikler & Öneriler<br>
+            🔍 Odak: Widget Türleri, Schema Sistemi, Lifecycle Management
+        </div>
+
+        <div class="summary">
+            <h3 style="margin-top: 0;">📋 Yönetici Özeti</h3>
+            <p>Mevcut Widget Management sistemi <strong>3 widget türü</strong> (MODULE, FILE, CUSTOM) ve <strong>2 schema tipi</strong> (settings, items) ile çalışıyor. Temel işlevsellik var ancak <span class="highlight">7 kritik eksiklik</span> tespit edildi:</p>
+            <ol style="margin-top: 15px;">
+                <li><strong>Widget Versioning</strong> yok (güncelleme riski)</li>
+                <li><strong>Preview/Draft</strong> sistemi yok (production'da test)</li>
+                <li><strong>Conditional Logic</strong> yok (dinamik davranış eksik)</li>
+                <li><strong>Widget Dependencies</strong> yok (çakışma riski)</li>
+                <li><strong>Validation</strong> zayıf (hatalı veri girişi)</li>
+                <li><strong>Widget Variants</strong> yok (responsive yetersiz)</li>
+                <li><strong>Analytics</strong> yok (kullanım takibi yok)</li>
+            </ol>
+        </div>
+
+        <h2>1️⃣ Mevcut Sistem Analizi</h2>
+
+        <h3>1.1. Widget Türleri (Mevcut: 3)</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tür</th>
+                    <th>Açıklama</th>
+                    <th>Veri Kaynağı</th>
+                    <th>Kullanım</th>
+                    <th>Durum</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>MODULE</strong></td>
+                    <td>Backend modülden veri çeker</td>
+                    <td>Database (Blog, Product vb.)</td>
+                    <td>Blog listesi, Ürün kartları</td>
+                    <td><span class="tag tag-current">Mevcut</span></td>
+                </tr>
+                <tr>
+                    <td><strong>FILE</strong></td>
+                    <td>Blade view dosyasından render</td>
+                    <td>View file + schema</td>
+                    <td>Hero, Form, Layout</td>
+                    <td><span class="tag tag-current">Mevcut</span></td>
+                </tr>
+                <tr>
+                    <td><strong>CUSTOM</strong></td>
+                    <td>Kullanıcı HTML/CSS/JS</td>
+                    <td>Widget içi kod</td>
+                    <td>Özel banner, Embed</td>
+                    <td><span class="tag tag-current">Mevcut</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="current-system">
+            <h4>✅ Mevcut Sistemin Güçlü Yanları</h4>
+            <ul>
+                <li><strong>Esneklik:</strong> 3 farklı türle çoğu ihtiyaç karşılanıyor</li>
+                <li><strong>Modülerlik:</strong> MODULE türü ile backend entegrasyonu kolay</li>
+                <li><strong>Özelleştirme:</strong> CUSTOM ile sınırsız esneklik</li>
+                <li><strong>FILE türü:</strong> Yeniden kullanılabilir component mantığı</li>
+            </ul>
+        </div>
+
+        <h3>1.2. Schema Sistemi (Mevcut: 2)</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Schema Tipi</th>
+                    <th>Kullanım</th>
+                    <th>has_items</th>
+                    <th>Örnek</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Settings</strong></td>
+                    <td>Widget genel ayarları</td>
+                    <td>0 veya 1</td>
+                    <td>Renk, başlık, buton metni</td>
+                </tr>
+                <tr>
+                    <td><strong>Items</strong></td>
+                    <td>Döngüde render edilecek veriler</td>
+                    <td>1 (zorunlu)</td>
+                    <td>Slider slides, Gallery images</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="current-system">
+            <h4>✅ Schema Sisteminin Güçlü Yanları</h4>
+            <ul>
+                <li><strong>Basit:</strong> Sadece 2 schema tipi, anlaşılır</li>
+                <li><strong>Yeterli:</strong> Çoğu widget ihtiyacını karşılıyor</li>
+                <li><strong>Form Builder uyumlu:</strong> JSON schema ile form oluşturulabiliyor</li>
+            </ul>
+        </div>
+
+        <h2>2️⃣ Kritik Eksiklikler</h2>
+
+        <h3>2.1. Widget Versioning Sistemi YOK</h3>
+
+        <div class="problem">
+            <h4>❌ Sorun</h4>
+            <p>Widget güncellendiğinde:</p>
+            <ul>
+                <li>Önceki versiyon kaybolur</li>
+                <li>Hatalı güncelleme geri alınamaz</li>
+                <li>Widget kullanan sayfalar aniden bozulabilir</li>
+                <li>A/B test yapılamaz</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h4>✅ Önerilen Çözüm: Semantic Versioning</h4>
+            <div class="code">
+widgets tablosu:<br>
+- version (string): "1.2.3"<br>
+- is_published (boolean)<br>
+- published_at (timestamp)<br>
+<br>
+widget_versions tablosu:<br>
+- id<br>
+- widget_id<br>
+- version<br>
+- settings_schema (snapshot)<br>
+- item_schema (snapshot)<br>
+- content_html/css/js (snapshot)<br>
+- created_at<br>
+- created_by<br>
+<br>
+Mantık:<br>
+- Major (1.x.x): Breaking changes<br>
+- Minor (x.1.x): Yeni özellikler<br>
+- Patch (x.x.1): Bug fixes
+            </div>
+            <p><strong>Faydası:</strong> Rollback, version history, güvenli güncelleme</p>
+        </div>
+
+        <h3>2.2. Preview/Draft Sistemi YOK</h3>
+
+        <div class="problem">
+            <h4>❌ Sorun</h4>
+            <p>Widget değişikliği yaparken:</p>
+            <ul>
+                <li>Değişiklikler <strong>direkt production'da</strong> yayınlanıyor</li>
+                <li>Test etmeden önce canlıya gidiyor</li>
+                <li>Hatalı widget tüm siteyi etkileyebilir</li>
+                <li>Ekip arkadaşı onayı alamıyorsun</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h4>✅ Önerilen Çözüm: Draft/Published Workflow</h4>
+            <div class="code">
+Durum makinesi:<br>
+<br>
+DRAFT → REVIEW → PUBLISHED → ARCHIVED<br>
+&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+&nbsp;&nbsp;←────────────────────────→<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Geri çekme)<br>
+<br>
+widgets tablosu:<br>
+- status: enum('draft', 'review', 'published', 'archived')<br>
+- draft_data (JSON): Taslak değişiklikler<br>
+- published_data (JSON): Canlı versiyon<br>
+- preview_url: Önizleme linki<br>
+<br>
+Özellikler:<br>
+- Draft modda değişiklikler sadece editör görür<br>
+- Preview URL ile paylaşılabilir önizleme<br>
+- Review süreci (approval workflow)<br>
+- Publish butonu ile canlıya alma
+            </div>
+            <p><strong>Faydası:</strong> Güvenli geliştirme, test ortamı, approval süreci</p>
+        </div>
+
+        <h3>2.3. Conditional Logic (Koşullu Görünüm) YOK</h3>
+
+        <div class="problem">
+            <h4>❌ Sorun</h4>
+            <p>Widget'lar her zaman aynı görünüyor:</p>
+            <ul>
+                <li>Kullanıcı tipine göre farklı içerik gösterilemiyor</li>
+                <li>Saate göre değişen banner yapılamıyor</li>
+                <li>Form field'ları conditional olamıyor (biri seçilince diğeri görünsün gibi)</li>
+                <li>Device-based rendering zayıf</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h4>✅ Önerilen Çözüm: Display Rules</h4>
+            <div class="code">
+widget_display_rules tablosu:<br>
+- widget_id<br>
+- rule_type: enum('user', 'time', 'device', 'url', 'custom')<br>
+- conditions (JSON):<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"user_logged_in": true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"user_role": ["admin", "editor"],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"time_range": {"start": "09:00", "end": "17:00"},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"device": ["desktop", "tablet"],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"url_contains": "/products"<br>
+&nbsp;&nbsp;}<br>
+- action: enum('show', 'hide', 'replace')<br>
+<br>
+Settings Schema içinde:<br>
+{<br>
+&nbsp;&nbsp;"field_name": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"type": "text",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"show_if": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"another_field": "value"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+            <p><strong>Faydası:</strong> Dinamik içerik, personalization, better UX</p>
+        </div>
+
+        <h3>2.4. Widget Dependencies (Bağımlılıklar) YOK</h3>
+
+        <div class="problem">
+            <h4>❌ Sorun</h4>
+            <p>Widget'lar arası bağımlılıklar yönetilmiyor:</p>
+            <ul>
+                <li>Slider widget jQuery gerektiriyor ama yüklenmiş mi bilinmiyor</li>
+                <li>İki widget aynı CSS/JS dosyasını yüklüyor (duplicate)</li>
+                <li>Widget silmek istediğinde başka widget'ın ona bağlı olduğu bilinmiyor</li>
+                <li>Widget sıralaması önemli ama kontrol yok</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h4>✅ Önerilen Çözüm: Dependency Management</h4>
+            <div class="code">
+widget_dependencies tablosu:<br>
+- widget_id<br>
+- dependency_type: enum('widget', 'library', 'css', 'js')<br>
+- dependency_name: string<br>
+- version: string (opsiyonel)<br>
+- is_required: boolean<br>
+<br>
+Örnek:<br>
+Widget: "Advanced Slider"<br>
+Dependencies:<br>
+- library: "jQuery" (>= 3.6.0)<br>
+- library: "Swiper.js" (>= 8.0.0)<br>
+- css: "swiper.min.css"<br>
+<br>
+Sistem kontrol eder:<br>
+1. Gerekli kütüphaneler yüklü mü?<br>
+2. Versiyon uyumlu mu?<br>
+3. Çakışan dependency var mı?<br>
+4. Asset'ları sadece 1 kez yükle (deduplication)
+            </div>
+            <p><strong>Faydası:</strong> Hata önleme, performans, güvenli silme</p>
+        </div>
+
+        <h3>2.5. Validation Sistemi Zayıf</h3>
+
+        <div class="problem">
+            <h4>❌ Sorun</h4>
+            <p>Schema validation yetersiz:</p>
+            <ul>
+                <li>Email field'ına text girilebiliyor</li>
+                <li>Required field'lar boş geçilebiliyor</li>
+                <li>Min/max değer kontrolü yok</li>
+                <li>Custom validation rule eklenemiyor</li>
+                <li>Regex pattern desteği yok</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h4>✅ Önerilen Çözüm: Advanced Validation</h4>
+            <div class="code">
+Settings Schema örneği:<br>
+{<br>
+&nbsp;&nbsp;"email": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"type": "email",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"label": "Email Adresi",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"required": true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"validation": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"format": "email",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"error_message": "Geçerli email girin"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;"age": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"type": "number",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"validation": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"min": 18,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"max": 100,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"error_message": "Yaş 18-100 arasında olmalı"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;"phone": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"type": "text",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"validation": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pattern": "^\\+90[0-9]{10}$",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"error_message": "Format: +905xxxxxxxxx"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;"url": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"type": "url",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"validation": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"allowed_domains": ["example.com", "test.com"],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"protocol": "https"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+            <p><strong>Faydası:</strong> Veri kalitesi, güvenlik, better UX</p>
+        </div>
+
+        <h3>2.6. Widget Variants (Varyantlar) YOK</h3>
+
+        <div class="problem">
+            <h4>❌ Sorun</h4>
+            <p>Aynı widget'ın farklı görünümleri yok:</p>
+            <ul>
+                <li>Hero widget mobile/desktop için ayrı ayarlanamıyor</li>
+                <li>Dark/Light mode varyantı yok</li>
+                <li>Language-based variant yok</li>
+                <li>Seasonal variant (yılbaşı teması) yok</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h4>✅ Önerilen Çözüm: Widget Variants System</h4>
+            <div class="code">
+widget_variants tablosu:<br>
+- widget_id<br>
+- variant_name: string (örn: "mobile", "dark-mode", "christmas")<br>
+- variant_type: enum('device', 'theme', 'locale', 'season')<br>
+- settings_override (JSON): Sadece farklı olan ayarlar<br>
+- is_default: boolean<br>
+<br>
+Kullanım:<br>
+// Base widget settings<br>
+{<br>
+&nbsp;&nbsp;"title": "Welcome",<br>
+&nbsp;&nbsp;"font_size": "32px",<br>
+&nbsp;&nbsp;"color": "#000"<br>
+}<br>
+<br>
+// Mobile variant (override)<br>
+{<br>
+&nbsp;&nbsp;"font_size": "24px"  // Sadece değişen<br>
+}<br>
+<br>
+// Dark mode variant<br>
+{<br>
+&nbsp;&nbsp;"color": "#fff",<br>
+&nbsp;&nbsp;"background": "#000"<br>
+}<br>
+<br>
+Sistem otomatik birleştirir (merge)
+            </div>
+            <p><strong>Faydası:</strong> Responsive design, theming, localization</p>
+        </div>
+
+        <h3>2.7. Analytics & Usage Tracking YOK</h3>
+
+        <div class="problem">
+            <h4>❌ Sorun</h4>
+            <p>Widget kullanım istatistikleri yok:</p>
+            <ul>
+                <li>Hangi widget ne kadar kullanılıyor bilinmiyor</li>
+                <li>Widget performance metrikleri yok</li>
+                <li>Hangi widget daha çok tıklanıyor takip edilmiyor</li>
+                <li>Unused widget'ları temizleyemiyorsun</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <h4>✅ Önerilen Çözüm: Widget Analytics</h4>
+            <div class="code">
+widget_analytics tablosu:<br>
+- widget_id<br>
+- metric_type: enum('view', 'click', 'conversion', 'error')<br>
+- metric_value: integer<br>
+- context (JSON): {page_url, user_id, device, etc.}<br>
+- created_at<br>
+<br>
+widget_usage tablosu:<br>
+- widget_id<br>
+- used_in_pages: integer<br>
+- total_views: integer<br>
+- total_clicks: integer<br>
+- avg_render_time: float (ms)<br>
+- last_used_at: timestamp<br>
+<br>
+Dashboard metrikleri:<br>
+- En çok kullanılan widget'lar<br>
+- En iyi performans gösteren widget'lar<br>
+- Hiç kullanılmayan widget'lar (silinebilir)<br>
+- Widget render süreleri (performance)
+            </div>
+            <p><strong>Faydası:</strong> Data-driven decisions, optimization, cleanup</p>
+        </div>
+
+        <h2>3️⃣ Önerilen Yeni Widget Türleri</h2>
+
+        <div class="comparison">
+            <div class="compare-box compare-current">
+                <h4>Mevcut (3 tür)</h4>
+                <ul>
+                    <li>MODULE</li>
+                    <li>FILE</li>
+                    <li>CUSTOM</li>
+                </ul>
+            </div>
+            <div class="compare-box compare-proposed">
+                <h4>Önerilen (7 tür)</h4>
+                <ul>
+                    <li>MODULE <span class="tag tag-current">Mevcut</span></li>
+                    <li>FILE <span class="tag tag-current">Mevcut</span></li>
+                    <li>CUSTOM <span class="tag tag-current">Mevcut</span></li>
+                    <li>API <span class="tag tag-proposed">Yeni</span></li>
+                    <li>IFRAME <span class="tag tag-proposed">Yeni</span></li>
+                    <li>DYNAMIC <span class="tag tag-proposed">Yeni</span></li>
+                    <li>LAYOUT <span class="tag tag-proposed">Yeni</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>API Widget <span class="tag tag-proposed">Yeni</span></h4>
+                <p><strong>Kullanım:</strong> External API'den veri çekip render eder</p>
+                <p><strong>Örnek:</strong></p>
+                <ul>
+                    <li>Weather widget (OpenWeather API)</li>
+                    <li>Currency rates (Exchange rate API)</li>
+                    <li>Social media feed (Twitter/Instagram API)</li>
+                    <li>Stock prices</li>
+                </ul>
+                <p><strong>Schema:</strong></p>
+                <div class="code" style="font-size: 0.8rem;">
+{<br>
+&nbsp;&nbsp;"api_url": "https://api.example.com",<br>
+&nbsp;&nbsp;"api_key": "...",<br>
+&nbsp;&nbsp;"method": "GET",<br>
+&nbsp;&nbsp;"cache_duration": 300,<br>
+&nbsp;&nbsp;"response_mapping": {...}<br>
+}
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h4>IFRAME Widget <span class="tag tag-proposed">Yeni</span></h4>
+                <p><strong>Kullanım:</strong> Güvenli iframe embed</p>
+                <p><strong>Örnek:</strong></p>
+                <ul>
+                    <li>YouTube video</li>
+                    <li>Google Maps</li>
+                    <li>Typeform embed</li>
+                    <li>3rd party tools</li>
+                </ul>
+                <p><strong>Schema:</strong></p>
+                <div class="code" style="font-size: 0.8rem;">
+{<br>
+&nbsp;&nbsp;"iframe_url": "...",<br>
+&nbsp;&nbsp;"width": "100%",<br>
+&nbsp;&nbsp;"height": "400px",<br>
+&nbsp;&nbsp;"sandbox": ["allow-scripts"],<br>
+&nbsp;&nbsp;"allow": ["autoplay"]<br>
+}
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h4>DYNAMIC Widget <span class="tag tag-proposed">Yeni</span></h4>
+                <p><strong>Kullanım:</strong> Real-time veri (WebSocket/SSE)</p>
+                <p><strong>Örnek:</strong></p>
+                <ul>
+                    <li>Live chat widget</li>
+                    <li>Real-time notifications</li>
+                    <li>Live stock ticker</li>
+                    <li>User activity feed</li>
+                </ul>
+                <p><strong>Schema:</strong></p>
+                <div class="code" style="font-size: 0.8rem;">
+{<br>
+&nbsp;&nbsp;"websocket_url": "wss://...",<br>
+&nbsp;&nbsp;"event_name": "new_message",<br>
+&nbsp;&nbsp;"auto_update": true,<br>
+&nbsp;&nbsp;"update_interval": null<br>
+}
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h4>LAYOUT Widget <span class="tag tag-proposed">Yeni</span></h4>
+                <p><strong>Kullanım:</strong> Container widget (içinde widget barındırır)</p>
+                <p><strong>Örnek:</strong></p>
+                <ul>
+                    <li>Tabs (her tab içinde widget)</li>
+                    <li>Accordion (her panel içinde widget)</li>
+                    <li>Grid layout (her cell widget)</li>
+                    <li>Modal (içinde widget)</li>
+                </ul>
+                <p><strong>Schema:</strong></p>
+                <div class="code" style="font-size: 0.8rem;">
+{<br>
+&nbsp;&nbsp;"layout_type": "tabs",<br>
+&nbsp;&nbsp;"children": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"tab_name": "Tab 1",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"widget_id": 123<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;]<br>
+}
+                </div>
+            </div>
+        </div>
+
+        <h2>4️⃣ Önerilen Yeni Schema Tipleri</h2>
+
+        <div class="comparison">
+            <div class="compare-box compare-current">
+                <h4>Mevcut (2 schema)</h4>
+                <ul>
+                    <li><strong>Settings:</strong> Widget ayarları</li>
+                    <li><strong>Items:</strong> Döngü verileri</li>
+                </ul>
+            </div>
+            <div class="compare-box compare-proposed">
+                <h4>Önerilen (5 schema)</h4>
+                <ul>
+                    <li>Settings <span class="tag tag-current">Mevcut</span></li>
+                    <li>Items <span class="tag tag-current">Mevcut</span></li>
+                    <li>Actions <span class="tag tag-proposed">Yeni</span></li>
+                    <li>Events <span class="tag tag-proposed">Yeni</span></li>
+                    <li>State <span class="tag tag-proposed">Yeni</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>4.1. Actions Schema (Etkileşimler)</h3>
+
+        <div class="recommendation">
+            <h4>Actions: Widget'ın yapabileceği işlemler</h4>
+            <div class="code">
+{<br>
+&nbsp;&nbsp;"on_click": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"action": "navigate",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"url": "/products",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"target": "_blank"<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;"on_submit": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"action": "ajax_submit",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"endpoint": "/api/contact",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"method": "POST",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"success_message": "Gönderildi!"<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;"on_error": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"action": "show_notification",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"message": "Hata oluştu",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"type": "error"<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+            <p><strong>Kullanım:</strong> Button click, form submit, image click, hover vb.</p>
+        </div>
+
+        <h3>4.2. Events Schema (Olaylar)</h3>
+
+        <div class="recommendation">
+            <h4>Events: Widget'ın tetikleyeceği/dinleyeceği olaylar</h4>
+            <div class="code">
+{<br>
+&nbsp;&nbsp;"emit_events": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"event_name": "product_added_to_cart",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"trigger": "on_button_click",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"payload": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"product_id": "{{item.id}}",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"quantity": 1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;"listen_events": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"event_name": "cart_updated",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"action": "refresh_widget"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;]<br>
+}
+            </div>
+            <p><strong>Kullanım:</strong> Widget'lar arası iletişim (Shopping cart + Product card)</p>
+        </div>
+
+        <h3>4.3. State Schema (Durum Yönetimi)</h3>
+
+        <div class="recommendation">
+            <h4>State: Widget'ın runtime durumu</h4>
+            <div class="code">
+{<br>
+&nbsp;&nbsp;"initial_state": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"is_open": false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"current_slide": 0,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"items_loaded": false<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;"state_persistence": "session",  // none, session, local<br>
+&nbsp;&nbsp;"state_sync": true  // Tüm widget instance'ları sync olsun mu?<br>
+}
+            </div>
+            <p><strong>Kullanım:</strong> Accordion açık/kapalı, Slider pozisyonu, Form doldurulmuş mu</p>
+        </div>
+
+        <h2>5️⃣ Öncelik Sıralaması</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Özellik</th>
+                    <th>Öncelik</th>
+                    <th>Etki</th>
+                    <th>Zorluk</th>
+                    <th>Süre</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Validation Sistemi</strong></td>
+                    <td><span class="priority-high">YÜKSEK</span></td>
+                    <td>Veri kalitesi, güvenlik</td>
+                    <td>Düşük</td>
+                    <td>2-3 gün</td>
+                </tr>
+                <tr>
+                    <td><strong>Preview/Draft</strong></td>
+                    <td><span class="priority-high">YÜKSEK</span></td>
+                    <td>Güvenli geliştirme</td>
+                    <td>Orta</td>
+                    <td>4-5 gün</td>
+                </tr>
+                <tr>
+                    <td><strong>Widget Versioning</strong></td>
+                    <td><span class="priority-medium">ORTA</span></td>
+                    <td>Rollback, güvenlik</td>
+                    <td>Orta</td>
+                    <td>5-7 gün</td>
+                </tr>
+                <tr>
+                    <td><strong>Actions Schema</strong></td>
+                    <td><span class="priority-medium">ORTA</span></td>
+                    <td>Etkileşim zenginliği</td>
+                    <td>Orta</td>
+                    <td>3-4 gün</td>
+                </tr>
+                <tr>
+                    <td><strong>Widget Variants</strong></td>
+                    <td><span class="priority-medium">ORTA</span></td>
+                    <td>Responsive, theming</td>
+                    <td>Orta-Yüksek</td>
+                    <td>1 hafta</td>
+                </tr>
+                <tr>
+                    <td><strong>API Widget Type</strong></td>
+                    <td><span class="priority-low">DÜŞÜK</span></td>
+                    <td>External entegrasyon</td>
+                    <td>Düşük</td>
+                    <td>2-3 gün</td>
+                </tr>
+                <tr>
+                    <td><strong>Conditional Logic</strong></td>
+                    <td><span class="priority-low">DÜŞÜK</span></td>
+                    <td>Dinamik davranış</td>
+                    <td>Yüksek</td>
+                    <td>1-2 hafta</td>
+                </tr>
+                <tr>
+                    <td><strong>Analytics</strong></td>
+                    <td><span class="priority-low">DÜŞÜK</span></td>
+                    <td>Data-driven decisions</td>
+                    <td>Orta</td>
+                    <td>4-5 gün</td>
+                </tr>
+                <tr>
+                    <td><strong>Widget Dependencies</strong></td>
+                    <td><span class="priority-low">DÜŞÜK</span></td>
+                    <td>Hata önleme</td>
+                    <td>Orta</td>
+                    <td>3-4 gün</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>6️⃣ Kıyaslama: Diğer Sistemler</h2>
+
+        <h3>WordPress (Gutenberg Blocks)</h3>
+        <div class="current-system">
+            <h4>✅ Güçlü Yanları</h4>
+            <ul>
+                <li><strong>Block Patterns:</strong> Hazır kombinasyonlar</li>
+                <li><strong>Block Variations:</strong> Aynı block, farklı stillerde</li>
+                <li><strong>InnerBlocks:</strong> Block içinde block (nested)</li>
+                <li><strong>Block Transforms:</strong> Bir block diğerine dönüşebilir</li>
+            </ul>
+        </div>
+
+        <h3>Webflow</h3>
+        <div class="current-system">
+            <h4>✅ Güçlü Yanları</h4>
+            <ul>
+                <li><strong>Components:</strong> Master component + instances</li>
+                <li><strong>Overrides:</strong> Instance'larda değişiklik yapabilme</li>
+                <li><strong>Responsive:</strong> Breakpoint başına ayar</li>
+                <li><strong>Interactions:</strong> Görsel animation builder</li>
+            </ul>
+        </div>
+
+        <h3>Notion (Blocks)</h3>
+        <div class="current-system">
+            <h4>✅ Güçlü Yanları</h4>
+            <ul>
+                <li><strong>Simplicity:</strong> Her şey bir block</li>
+                <li><strong>Drag & Drop:</strong> Kolay sıralama</li>
+                <li><strong>Inline Editing:</strong> Direkt içerikte düzenleme</li>
+                <li><strong>Block Menu:</strong> "/" ile hızlı ekleme</li>
+            </ul>
+        </div>
+
+        <h2>7️⃣ Sonuç & Öneriler</h2>
+
+        <div class="summary">
+            <h3>🎯 Hemen Yapılması Gerekenler</h3>
+            <ol>
+                <li><strong>Validation Sistemi:</strong> Schema validation rules ekle (hızlı, etkili)</li>
+                <li><strong>Preview Modu:</strong> Draft/Published ayrımı (güvenlik için kritik)</li>
+                <li><strong>Actions Schema:</strong> on_click, on_submit gibi temel etkileşimler</li>
+            </ol>
+
+            <h3>📅 Orta Vadede Yapılabilir</h3>
+            <ol>
+                <li><strong>Widget Versioning:</strong> Güvenli güncelleme için</li>
+                <li><strong>Widget Variants:</strong> Responsive ve theming için</li>
+                <li><strong>API Widget Type:</strong> External data için</li>
+            </ol>
+
+            <h3>🔮 Gelecek İçin</h3>
+            <ol>
+                <li><strong>Conditional Logic:</strong> Karmaşık ama güçlü</li>
+                <li><strong>Analytics:</strong> Data-driven optimizasyon</li>
+                <li><strong>Widget Marketplace:</strong> Community widgets</li>
+            </ol>
+        </div>
+
+        <div style="margin-top: 80px; padding-top: 40px; border-top: 2px solid #334155; text-align: center; color: #64748b;">
+            <p style="font-size: 1.1rem;">🤖 Claude AI - Widget Management Mimari Analizi</p>
+            <p style="margin-top: 10px;">2025-12-04</p>
+        </div>
+    </div>
+</body>
+</html>

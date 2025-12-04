@@ -21,6 +21,20 @@ class WidgetRenderService
         }
     }
 
+    /**
+     * HTML escape helper - XSS koruması
+     */
+    protected function escapeHtml($value)
+    {
+        // Sadece string değerleri escape et
+        if (is_string($value)) {
+            return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
+
+        // Numeric ve boolean değerleri olduğu gibi döndür
+        return $value;
+    }
+
     public function processVariables(string $content, array $settings): string
     {
         if ($this->useHandlebars) {
@@ -38,9 +52,9 @@ class WidgetRenderService
             if (strpos($key, 'widget.') === 0) {
                 $keyWithoutPrefix = substr($key, 7); // "widget." önekini çıkarır
                 if (isset($settings[$key])) {
-                    return $settings[$key];
+                    return $this->escapeHtml($settings[$key]);
                 } elseif (isset($settings[$keyWithoutPrefix])) {
-                    return $settings[$keyWithoutPrefix];
+                    return $this->escapeHtml($settings[$keyWithoutPrefix]);
                 }
             }
             
@@ -95,10 +109,10 @@ class WidgetRenderService
                     if (isset($parts[1]) && isset($value[$parts[1]])) {
                         $value = $value[$parts[1]];
                         $this->debug('processVariables - İlişki değeri bulundu', ['value' => $value]);
-                        return is_scalar($value) ? $value : '';
+                        return is_scalar($value) ? $this->escapeHtml($value) : '';
                     }
                 }
-                
+
                 // Normal yolla ilerlemeye devam et
                 foreach ($parts as $part) {
                     if (isset($value[$part])) {
@@ -109,12 +123,12 @@ class WidgetRenderService
                         return '';
                     }
                 }
-                
-                return is_scalar($value) ? $value : '';
+
+                return is_scalar($value) ? $this->escapeHtml($value) : '';
             }
-            
+
             $this->debug('processVariables - Basit değişken', ['key' => $key, 'value' => isset($settings[$key]) ? $settings[$key] : 'YOK']);
-            return $settings[$key] ?? '';
+            return $this->escapeHtml($settings[$key] ?? '');
         }, $content);
         
         $this->debug('processVariables - Sonuç', ['result_length' => strlen($result)]);
@@ -644,22 +658,22 @@ class WidgetRenderService
                 if (isset($item['_parent'])) {
                     $this->debug('processTemplateItem - Parent verisi var');
                     $parent = $item['_parent'];
-                    
+
                     // Kalan anahtar için parent içinde arama yap
                     if (isset($parent[$remainingKey])) {
                         $value = $parent[$remainingKey];
                         $this->debug('processTemplateItem - Parent değeri bulundu', ['value' => is_scalar($value) ? $value : '[Object]']);
-                        return is_scalar($value) ? $value : '';
+                        return is_scalar($value) ? $this->escapeHtml($value) : '';
                     }
                 }
-                
+
                 return '';
             }
-            
+
             // Özel durum: @first, @last, @index gibi meta değerler
             if (strpos($key, '@') === 0) {
                 $this->debug('processTemplateItem - Meta değer', ['key' => $key, 'value' => isset($item[$key]) ? $item[$key] : 'YOK']);
-                return isset($item[$key]) ? $item[$key] : '';
+                return isset($item[$key]) ? $this->escapeHtml($item[$key]) : '';
             }
             
             // İlişki notasyonu (table_name.title gibi)
@@ -678,18 +692,18 @@ class WidgetRenderService
                         if (isset($item[$relationName][0][$fieldName])) {
                             $value = $item[$relationName][0][$fieldName];
                             $this->debug('processTemplateItem - İlişki koleksiyon ilk elemanı değeri bulundu', ['value' => $value]);
-                            return is_scalar($value) ? $value : '';
+                            return is_scalar($value) ? $this->escapeHtml($value) : '';
                         }
                     } else if (isset($item[$relationName][$fieldName])) {
                         // Direkt obje erişimi
                         $value = $item[$relationName][$fieldName];
                         $this->debug('processTemplateItem - İlişki değeri bulundu', ['value' => $value]);
-                        return is_scalar($value) ? $value : '';
+                        return is_scalar($value) ? $this->escapeHtml($value) : '';
                     }
                 }
-                
+
                 $this->debug('processTemplateItem - İlişki direkt bulunamadı, alternatif aranıyor', ['relationName' => $relationName, 'fieldName' => $fieldName]);
-                
+
                 // 2. Ana veride doğrudan erişim
                 $value = $item;
                 foreach ($parts as $part) {
@@ -702,43 +716,43 @@ class WidgetRenderService
                         break;
                     }
                 }
-                
+
                 if ($value !== null && is_scalar($value)) {
                     $this->debug('processTemplateItem - Değer ana veride bulundu', ['value' => $value]);
-                    return $value;
+                    return $this->escapeHtml($value);
                 }
                 
                 // 3. Tekil/çoğul formatları dene
                 $singularRelation = Str::singular($relationName);
                 $pluralRelation = Str::plural($relationName);
-                
+
                 if ($relationName !== $singularRelation && isset($item[$singularRelation]) && is_array($item[$singularRelation])) {
                     if (isset($item[$singularRelation][$fieldName])) {
                         $value = $item[$singularRelation][$fieldName];
                         $this->debug('processTemplateItem - İlişki tekil formda bulundu', ['singularRelation' => $singularRelation, 'value' => $value]);
-                        return is_scalar($value) ? $value : '';
+                        return is_scalar($value) ? $this->escapeHtml($value) : '';
                     }
                 }
-                
+
                 if ($relationName !== $pluralRelation && isset($item[$pluralRelation]) && is_array($item[$pluralRelation])) {
                     // Çoğul form bir koleksiyon olabilir
                     if (isset($item[$pluralRelation][0]) && is_array($item[$pluralRelation][0])) {
                         if (isset($item[$pluralRelation][0][$fieldName])) {
                             $value = $item[$pluralRelation][0][$fieldName];
                             $this->debug('processTemplateItem - İlişki çoğul form koleksiyon ilk elemanı değeri bulundu', ['value' => $value]);
-                            return is_scalar($value) ? $value : '';
+                            return is_scalar($value) ? $this->escapeHtml($value) : '';
                         }
                     } else if (isset($item[$pluralRelation][$fieldName])) {
                         $value = $item[$pluralRelation][$fieldName];
                         $this->debug('processTemplateItem - İlişki çoğul formda bulundu', ['pluralRelation' => $pluralRelation, 'value' => $value]);
-                        return is_scalar($value) ? $value : '';
+                        return is_scalar($value) ? $this->escapeHtml($value) : '';
                     }
                 }
                 
                 // 4. _parent'ta arama
                 if (isset($item['_parent']) && isset($item['_parent'][$relationName])) {
                     $this->debug('processTemplateItem - Parent içinde aranıyor', ['relationName' => $relationName]);
-                    
+
                     if (is_array($item['_parent'][$relationName])) {
                         // İlişki bir koleksiyon mu?
                         if (isset($item['_parent'][$relationName][0]) && is_array($item['_parent'][$relationName][0])) {
@@ -746,19 +760,19 @@ class WidgetRenderService
                                 if (isset($parentItem[$fieldName])) {
                                     $value = $parentItem[$fieldName];
                                     $this->debug('processTemplateItem - Parent koleksiyonu içinde bulundu', ['value' => $value]);
-                                    return is_scalar($value) ? $value : '';
+                                    return is_scalar($value) ? $this->escapeHtml($value) : '';
                                 }
                             }
-                        } 
+                        }
                         // İlişki tek bir nesne mi?
                         else if (isset($item['_parent'][$relationName][$fieldName])) {
                             $value = $item['_parent'][$relationName][$fieldName];
                             $this->debug('processTemplateItem - Parent objesi içinde bulundu', ['value' => $value]);
-                            return is_scalar($value) ? $value : '';
+                            return is_scalar($value) ? $this->escapeHtml($value) : '';
                         }
                     }
                 }
-                
+
                 // 5. Çoğul/Tekil form varyasyonlarını kontrol et
                 $pluralRelationName = Str::plural($relationName);
                 if ($pluralRelationName !== $relationName && isset($item[$pluralRelationName])) {
@@ -766,18 +780,18 @@ class WidgetRenderService
                         if (isset($item[$pluralRelationName][$fieldName])) {
                             $value = $item[$pluralRelationName][$fieldName];
                             $this->debug('processTemplateItem - Çoğul formda bulundu', ['value' => $value]);
-                            return is_scalar($value) ? $value : '';
+                            return is_scalar($value) ? $this->escapeHtml($value) : '';
                         }
                     }
                 }
-                
+
                 $singularRelationName = Str::singular($relationName);
                 if ($singularRelationName !== $relationName && isset($item[$singularRelationName])) {
                     if (is_array($item[$singularRelationName])) {
                         if (isset($item[$singularRelationName][$fieldName])) {
                             $value = $item[$singularRelationName][$fieldName];
                             $this->debug('processTemplateItem - Tekil formda bulundu', ['value' => $value]);
-                            return is_scalar($value) ? $value : '';
+                            return is_scalar($value) ? $this->escapeHtml($value) : '';
                         }
                     }
                 }
@@ -789,33 +803,33 @@ class WidgetRenderService
                         if (isset($item[$mappedName][$fieldName])) {
                             $value = $item[$mappedName][$fieldName];
                             $this->debug('processTemplateItem - İlişki eşleşmesi ile bulundu', ['mappedName' => $mappedName, 'value' => $value]);
-                            return is_scalar($value) ? $value : '';
+                            return is_scalar($value) ? $this->escapeHtml($value) : '';
                         }
-                        
+
                         // Koleksiyon olabilir mi?
                         if (isset($item[$mappedName][0]) && is_array($item[$mappedName][0])) {
                             if (isset($item[$mappedName][0][$fieldName])) {
                                 $value = $item[$mappedName][0][$fieldName];
                                 $this->debug('processTemplateItem - İlişki eşleşmesi ile koleksiyon ilk elemanında bulundu', ['mappedName' => $mappedName, 'value' => $value]);
-                                return is_scalar($value) ? $value : '';
+                                return is_scalar($value) ? $this->escapeHtml($value) : '';
                             }
                         }
                     }
                 }
-                
+
                 $this->debug('processTemplateItem - İlişki değeri hiçbir yerde bulunamadı', ['key' => $key]);
                 return '';
             }
-            
+
             // Basit değişken erişimi
             if (is_array($item) && isset($item[$key])) {
                 $value = $item[$key];
                 $this->debug('processTemplateItem - Basit değişken bulundu', ['key' => $key, 'value' => is_array($value) ? '[Array]' : (is_scalar($value) ? $value : '[Object]')]);
-                return is_scalar($value) ? $value : '';
+                return is_scalar($value) ? $this->escapeHtml($value) : '';
             } elseif (is_object($item) && isset($item->{$key})) {
                 $value = $item->{$key};
                 $this->debug('processTemplateItem - Nesne özelliği bulundu', ['key' => $key, 'value' => is_scalar($value) ? $value : '[Object]']);
-                return is_scalar($value) ? $value : '';
+                return is_scalar($value) ? $this->escapeHtml($value) : '';
             }
             
             $this->debug('processTemplateItem - Değişken bulunamadı', ['key' => $key]);

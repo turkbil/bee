@@ -1,81 +1,436 @@
-<div x-data="productCard(false, 241)" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all ">
-
-    <div class="flex flex-col">
+<div class="tab-pane fade active show" id="tabs-1" style="border-radius: 0px !important; overflow: hidden !important;" role="tabpanel">
+                        <!--[if BLOCK]><![endif]-->                            <!--[if BLOCK]><![endif]-->                                <div class="row g-3">
+                                    <!--[if BLOCK]><![endif]-->                                        <div class="col-12">
         
-        <div class="relative aspect-square">
-            <a href="https://ixtif.com/shop/ixtif-f4-201-20-ton-li-ion-transpalet" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
-                                    <img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F304%2Fwirabtrr18ttqo4zmlsfa8jrzw2ei7o6ymfknuch.png&amp;w=400&amp;h=400&amp;q=85&amp;f=webp&amp;c=1" alt="İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark p-3 md:p-4 lg:p-6" loading="lazy">
-                            </a>
-
-            
-                            <div class="absolute top-2 left-2 lg:top-3 lg:left-3 z-10 flex flex-col gap-1.5 lg:gap-2 items-start">
-                    
-                                            <div class="w-fit bg-gradient-to-br from-orange-600 to-red-600 text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
-                            -%10
-                        </div>
-                    
-                    
-                                                                    <div class="w-fit bg-gradient-to-br from-red-600 to-rose-600 bg-[length:200%_200%] animate-gradient text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
-                            Çok Satan
-                        </div>
-                                    </div>
-                    </div>
-
+    <!--[if BLOCK]><![endif]-->            <h3 class="card-title text-left mb-0">Meta Tag Ayarları</h3>
+            <!--[if ENDBLOCK]><![endif]-->
+</div>                                                                            <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_default_author" wire:model.defer="values.seo_default_author" class="form-control " placeholder="Yazar adı" style="border-radius: 0.25rem !important;">
+            <label for="seo_default_author">
+                Varsayılan Yazar
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
         
-        <div class="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5">
-                            
-                                <div class="flex items-center gap-2 mb-4 justify-end lg:justify-between">
-                    <span class="hidden lg:flex items-center gap-1.5 text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-[0.1em]">
-                        <i class="fa-solid fa-dolly text-sm"></i>
-                        Transpalet
-                    </span>
-                                    </div>
-                
-                
-                <a href="https://ixtif.com/shop/ixtif-f4-201-20-ton-li-ion-transpalet">
-                    <h3 class="text-base md:text-lg lg:text-xl font-bold line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] text-gray-950 dark:text-gray-50 leading-relaxed group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors tracking-wide">
-                        İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet
-                    </h3>
-                </a>
-            
-            
-            <div class="pt-3 md:pt-4 lg:pt-5 mt-auto flex items-center justify-between gap-3 border-t border-gray-300 dark:border-gray-500">
-                
-                <div class="flex-1 min-w-0">
-                                            
-                                                    <div class="relative inline-block -mb-4 lg:-mb-2">
-                                <span class="text-xs lg:text-sm text-gray-400 dark:text-gray-500 font-medium leading-none">
-                                    2.600 $
-                                </span>
-                                
-                                <span class="absolute inset-0 flex items-center justify-center">
-                                    <span class="w-full h-[1.5px] bg-gradient-to-r from-transparent via-red-500 to-transparent transform rotate-[-8deg] opacity-70"></span>
-                                </span>
-                            </div>
-                        
-                        
-                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 h-8 flex items-center whitespace-nowrap">
-                            $ 2.350
-                                                            <small class="text-xs font-light text-gray-600 dark:text-gray-300 ml-1 align-text-bottom">+ KDV</small>
-                                                    </div>
-                                    </div>
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="url" id="seo_default_author_url" wire:model.defer="values.seo_default_author_url" class="form-control " placeholder="https://example.com/author" style="border-radius: 0.25rem !important;">
+            <label for="seo_default_author_url">
+                Varsayılan Yazar Web Sitesi
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Yazarın web sitesi veya profil sayfası
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_default_author_title" wire:model.defer="values.seo_default_author_title" class="form-control " placeholder="Örn: CEO, Endüstriyel Ekipman Uzmanı" style="border-radius: 0.25rem !important;">
+            <label for="seo_default_author_title">
+                Varsayılan Yazar Ünvanı
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Yazarın ünvanı veya mesleği (Google E-E-A-T için)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <textarea id="seo_default_author_bio" wire:model.defer="values.seo_default_author_bio" class="form-control " placeholder="Örn: 15 yıldır forklift sektöründe uzman..." rows="3" style="height: 120px; border-radius: 0.25rem !important;"></textarea>
+            <label for="seo_default_author_bio">
+                Varsayılan Yazar Biyografisi
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Yazarın kısa özgeçmişi (Google E-E-A-T için)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_default_twitter_site" wire:model.defer="values.seo_default_twitter_site" class="form-control " placeholder="@site" style="border-radius: 0.25rem !important;">
+            <label for="seo_default_twitter_site">
+                Twitter Site Hesabı
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_default_twitter_creator" wire:model.defer="values.seo_default_twitter_creator" class="form-control " placeholder="@creator" style="border-radius: 0.25rem !important;">
+            <label for="seo_default_twitter_creator">
+                Twitter Creator Hesabı
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <!--[if BLOCK]><![endif]-->    <div class="col-12">
+        <div class="alert alert-danger mb-3 w-100" style="border-radius: 0.25rem !important;">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            Bu resim alanı için ayar bulunamadı: seo_default_author_image
+        </div>
+    </div>
+<!--[if ENDBLOCK]><![endif]-->                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                                            <div class="col-12">
+        
+    <!--[if BLOCK]><![endif]-->            <h3 class="card-title text-left mb-0">Analitik Ayarları</h3>
+            <!--[if ENDBLOCK]><![endif]-->
+</div>                                                                            <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_site_google_analytics_code" wire:model.defer="values.seo_site_google_analytics_code" class="form-control " placeholder="G-XXXXXXXXXX" style="border-radius: 0.25rem !important;">
+            <label for="seo_site_google_analytics_code">
+                Google Analytics Kodu
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <textarea id="seo_site_yandex_metrica" wire:model.defer="values.seo_site_yandex_metrica" class="form-control " placeholder="Yandex Metrica kodu" rows="3" style="height: 120px; border-radius: 0.25rem !important;"></textarea>
+            <label for="seo_site_yandex_metrica">
+                Yandex Metrica
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                                            <div class="col-12 mb-2">
+    <hr>
+</div>                                                                            <div class="col-12">
+    <div class="card mb-3" style="--tblr-primary: #066fd1 !important; border-radius: 0.25rem !important; transition: border-radius 0.15s;">
+        <div class="card-header" style="border-radius: 0.25rem 0.25rem 0px 0px !important;">
+            <h3 class="card-title mb-0">Bölüm</h3>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
 
-                
-                                    
-                                            
-                        <button type="button" @click="addToCart()" :disabled="loading || success" class="flex-shrink-0 border-2 border-blue-600 dark:border-blue-400 hover:border-blue-700 dark:hover:border-blue-300 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" :class="{ 'animate-pulse': loading, '!border-green-600 !text-green-600 !bg-green-50 dark:!bg-green-900/20': success }">
-                            <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
-                                <i class="fa-solid text-lg transition-all duration-300 fa-cart-plus" :class="{
-                                       'fa-spinner fa-spin': loading,
-                                       'fa-check scale-125': success,
-                                       'fa-cart-plus': !loading &amp;&amp; !success
-                                   }"></i>
-                            </span>
-                            <span class="max-w-0 overflow-hidden group-hover:max-w-[5rem] transition-all duration-300 text-[10px] font-medium pl-0 group-hover:pl-2 leading-[1.2] flex items-center text-center">
-                                <span class="whitespace-pre-line block" x-html="loading ? 'Ekle' : (success ? 'Tamam!' : 'Sepete&lt;br&gt;Ekle')">Sepete<br>Ekle</span>
-                            </span>
-                        </button>
-                                                </div>
+        <div class="card-body" style="border-radius: 0px 0px 0.25rem 0.25rem !important;">
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
         </div>
     </div>
 </div>
+                                                                            <div class="col-12">
+        
+    <!--[if BLOCK]><![endif]-->            <h4 class="section-title text-left">Google Tag Manager (Ana Yönetim)</h4>
+            <!--[if ENDBLOCK]><![endif]-->
+</div>                                                                            <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-12">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_google_tag_manager_id" wire:model.defer="values.seo_google_tag_manager_id" class="form-control " placeholder="GTM-XXXXXXX" style="border-radius: 0.25rem !important;">
+            <label for="seo_google_tag_manager_id">
+                Google Tag Manager Container ID
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>GTM Container ID (örn: GTM-XXXXXXX). Tüm tracking kodlarını GTM üzerinden yönetin.
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                                            <div class="col-12">
+        
+    <!--[if BLOCK]><![endif]-->            <h4 class="section-title text-left">Google Ads - Dönüşüm Takibi</h4>
+            <!--[if ENDBLOCK]><![endif]-->
+</div>                                                                            <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_google_ads_conversion_id" wire:model.defer="values.seo_google_ads_conversion_id" class="form-control " placeholder="17679808859" style="border-radius: 0.25rem !important;">
+            <label for="seo_google_ads_conversion_id">
+                Google Ads Conversion ID
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Google Ads Conversion Tracking ID (örn: AW-XXXXXXXXXX)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_google_ads_conversion_label" wire:model.defer="values.seo_google_ads_conversion_label" class="form-control " placeholder="JgaPCLyV8LMbENvyse5B" style="border-radius: 0.25rem !important;">
+            <label for="seo_google_ads_conversion_label">
+                Google Ads Conversion Label
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Google Ads Conversion Label (örn: JgaPCLyV8LMbENvyse5B)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_google_ads_form_conversion_label" wire:model.defer="values.seo_google_ads_form_conversion_label" class="form-control " placeholder="Form Label (opsiyonel)" style="border-radius: 0.25rem !important;">
+            <label for="seo_google_ads_form_conversion_label">
+                Google Ads - Form Gönderme Conversion Label
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Form gönderme conversion label (örn: AbC-123xyz)
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                    <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_google_ads_phone_conversion_label" wire:model.defer="values.seo_google_ads_phone_conversion_label" class="form-control " placeholder="Phone Label (opsiyonel)" style="border-radius: 0.25rem !important;">
+            <label for="seo_google_ads_phone_conversion_label">
+                Google Ads - Telefon Tıklama Conversion Label
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Telefon tıklama conversion label
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                                            <div class="col-12">
+        
+    <!--[if BLOCK]><![endif]-->            <h4 class="section-title text-left">Sosyal Medya &amp; Diğer Platformlar</h4>
+            <!--[if ENDBLOCK]><![endif]-->
+</div>                                                                            <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-4">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_facebook_pixel_id" wire:model.defer="values.seo_facebook_pixel_id" class="form-control " placeholder="123456789012345" style="border-radius: 0.25rem !important;">
+            <label for="seo_facebook_pixel_id">
+                Facebook Pixel ID
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Facebook (Meta) Pixel ID (örn: 123456789012345). Facebook/Instagram reklamları için gerekli.
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-4">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_linkedin_partner_id" wire:model.defer="values.seo_linkedin_partner_id" class="form-control " placeholder="123456" style="border-radius: 0.25rem !important;">
+            <label for="seo_linkedin_partner_id">
+                LinkedIn Partner ID
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>LinkedIn Insight Tag Partner ID (örn: 123456). B2B endüstriyel ürünler için önemli!
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-4">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_microsoft_clarity_id" wire:model.defer="values.seo_microsoft_clarity_id" class="form-control " placeholder="abcd1234" style="border-radius: 0.25rem !important;">
+            <label for="seo_microsoft_clarity_id">
+                Microsoft Clarity Project ID
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Microsoft Clarity Project ID (örn: abcd1234). ÜCRETSIZ heatmap ve session replay!
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                                                            <div class="col-12 mb-3">
+    <div class="row g-3">
+        <!--[if BLOCK]><![endif]-->            <!--[if BLOCK]><![endif]-->                <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_twitter_pixel_id" wire:model.defer="values.seo_twitter_pixel_id" class="form-control " placeholder="o1234 (opsiyonel)" style="border-radius: 0.25rem !important;">
+            <label for="seo_twitter_pixel_id">
+                Twitter (X) Pixel ID
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>Twitter (X) Pixel ID. Twitter reklamları için (opsiyonel).
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+                            <div class="col-12 col-md-6">
+                    <!--[if BLOCK]><![endif]-->                        <!--[if BLOCK]><![endif]-->                            <div class="col-12">
+    <div class="mb-3">
+        <div class="form-floating" style="border-radius: 0.25rem !important; overflow: hidden !important;">
+            <input type="text" id="seo_tiktok_pixel_id" wire:model.defer="values.seo_tiktok_pixel_id" class="form-control " placeholder="C1234567890ABCDEF (opsiyonel)" style="border-radius: 0.25rem !important;">
+            <label for="seo_tiktok_pixel_id">
+                TikTok Pixel ID
+                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+            </label>
+            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+        </div>
+        
+        <!--[if BLOCK]><![endif]-->            <div class="form-text mt-2 ms-2">
+                <i class="fas fa-info-circle me-1"></i>TikTok Pixel ID. TikTok reklamları için (opsiyonel).
+            </div>
+        <!--[if ENDBLOCK]><![endif]-->
+        
+        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                        <!--[if ENDBLOCK]><![endif]-->
+                    <!--[if ENDBLOCK]><![endif]-->
+                </div>
+            <!--[if ENDBLOCK]><![endif]-->
+        <!--[if ENDBLOCK]><![endif]-->
+    </div>
+</div>                                    <!--[if ENDBLOCK]><![endif]-->
+                                </div>
+                            <!--[if ENDBLOCK]><![endif]-->
+                        <!--[if ENDBLOCK]><![endif]-->
+                        
+                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
+                    </div>

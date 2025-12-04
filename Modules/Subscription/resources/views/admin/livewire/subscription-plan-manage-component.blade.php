@@ -1,24 +1,27 @@
 @include('subscription::admin.helper')
 
 <div x-data="cycleManager(@entangle('cycles'), @entangle('features'))">
-    <div class="row">
+    <div class="row g-4">
         <div class="col-lg-8">
             {{-- PLAN BİLGİLERİ --}}
-            <div class="card mb-3">
+            <div class="card mb-4 shadow-sm">
                 <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-info-circle text-blue me-2"></i>
-                        {{ __('subscription::admin.plan_information') }}
+                    <h3 class="card-title d-flex align-items-center gap-2 mb-0">
+                        <i class="fas fa-info-circle text-azure"></i>
+                        <span>{{ __('subscription::admin.plan_information') }}</span>
                     </h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     @php
                         $defaultLang = $availableLanguages[0] ?? 'tr';
                     @endphp
 
                     {{-- Plan Adı (TR) --}}
-                    <div class="mb-3">
-                        <label class="form-label required">{{ __('subscription::admin.plan_name') }}</label>
+                    <div class="mb-4">
+                        <label class="form-label required fw-semibold">
+                            <i class="fas fa-tag me-2 text-muted"></i>
+                            {{ __('subscription::admin.plan_name') }}
+                        </label>
                         <input type="text"
                                class="form-control @error('multiLangInputs.'.$defaultLang.'.title') is-invalid @enderror"
                                wire:model="multiLangInputs.{{ $defaultLang }}.title"
@@ -29,22 +32,30 @@
                     </div>
 
                     {{-- Açıklama (TR) --}}
-                    <div class="mb-3">
-                        <label class="form-label">{{ __('admin.description') }}</label>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="fas fa-align-left me-2 text-muted"></i>
+                            {{ __('admin.description') }}
+                        </label>
                         <textarea class="form-control"
                                   wire:model="multiLangInputs.{{ $defaultLang }}.description"
-                                  rows="3"></textarea>
+                                  rows="4"
+                                  placeholder="Plan hakkında kısa açıklama..."></textarea>
                     </div>
 
                     {{-- Slug --}}
-                    <div class="mb-3">
-                        <label class="form-label required">Slug</label>
+                    <div class="mb-4">
+                        <label class="form-label required fw-semibold">
+                            <i class="fas fa-link me-2 text-muted"></i>
+                            Slug
+                        </label>
                         <input type="text"
                                class="form-control @error('inputs.slug') is-invalid @enderror"
                                wire:model="inputs.slug"
                                @if(!$planId) readonly @endif
                                placeholder="premium-plan">
-                        <small class="form-hint">
+                        <small class="form-hint mt-2">
+                            <i class="fas fa-info-circle me-1"></i>
                             @if(!$planId)
                                 Plan adından otomatik oluşturulur
                             @else
@@ -55,180 +66,426 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <hr class="my-4">
+
+                    {{-- Para Birimi & KDV --}}
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-money-bill-wave me-2 text-muted"></i>
+                                    Para Birimi
+                                </label>
+                                <select class="form-select @error('inputs.currency') is-invalid @enderror"
+                                        wire:model="inputs.currency">
+                                    <option value="TRY">₺ TRY (Türk Lirası)</option>
+                                    <option value="USD">$ USD (Amerikan Doları)</option>
+                                    <option value="EUR">€ EUR (Euro)</option>
+                                </select>
+                                @error('inputs.currency')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-percentage me-2 text-muted"></i>
+                                    KDV Oranı (%)
+                                </label>
+                                <input type="number"
+                                       class="form-control @error('inputs.tax_rate') is-invalid @enderror"
+                                       wire:model="inputs.tax_rate"
+                                       placeholder="20"
+                                       min="0"
+                                       max="100"
+                                       step="0.01">
+                                <small class="form-hint mt-1">Türkiye için varsayılan: %20</small>
+                                @error('inputs.tax_rate')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-eye me-2 text-muted"></i>
+                                    Fiyat Gösterim
+                                </label>
+                                <select class="form-select @error('inputs.price_display_mode') is-invalid @enderror"
+                                        wire:model="inputs.price_display_mode">
+                                    <option value="show">Göster</option>
+                                    <option value="hide">Gizle</option>
+                                    <option value="request">Fiyat Sorunuz</option>
+                                </select>
+                                @error('inputs.price_display_mode')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {{-- BILLING CYCLES --}}
-            <div class="card mb-3">
+            <div class="card mb-4 shadow-sm">
                 <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-clock text-warning me-2"></i>
-                        Süre & Fiyat Seçenekleri
+                    <h3 class="card-title d-flex align-items-center gap-2 mb-0">
+                        <i class="fas fa-clock text-warning"></i>
+                        <span>Süre & Fiyat Seçenekleri</span>
                     </h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     {{-- Mevcut Cycles --}}
                     <template x-if="Object.keys(cycles).length > 0">
-                        <div class="mb-3" id="cycles-sortable-list">
-                            <template x-for="(cycle, key) in Object.keys(cycles)" :key="key">
-                                <div class="card mb-2" style="border-left: 3px solid #0d6efd; cursor: move;" :data-cycle-key="key">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                                                <i class="fas fa-grip-vertical text-muted cycle-drag-handle" style="cursor: grab; font-size: 1.2rem;"></i>
-                                            </div>
-                                            <div class="col">
-                                                <h4 class="mb-1" x-text="cycles[key].label?.tr || key"></h4>
-                                                <div class="text-muted small">
-                                                    <span x-text="cycles[key].duration_days"></span> gün •
-                                                    ₺<span x-text="cycles[key].price"></span>
-                                                    <template x-if="cycles[key].compare_price">
-                                                        <span class="text-muted ms-2">
-                                                            (Üstü çizili: ₺<span x-text="cycles[key].compare_price"></span>)
-                                                        </span>
-                                                    </template>
-                                                    <template x-if="cycles[key].badge?.text">
-                                                        <span class="badge ms-2" :class="'bg-' + (cycles[key].badge.color || 'info')" x-text="cycles[key].badge.text"></span>
-                                                    </template>
+                        <div class="mb-4" id="cycles-sortable-list">
+                            <template x-for="(cycle, key, index) in cycles" :key="key">
+                                <div class="card mb-3 shadow-sm"
+                                     style="border-left: 4px solid var(--tblr-primary);"
+                                     :data-cycle-key="key"
+                                     x-data="{ editMode: false, editData: {} }">
+                                    <div class="card-body p-3">
+                                        {{-- VIEW MODE --}}
+                                        <template x-if="!editMode">
+                                            <div>
+                                                <div class="row align-items-start g-3">
+                                                    <div class="col-auto d-flex align-items-center">
+                                                        <i class="fas fa-grip-vertical text-muted cycle-drag-handle me-3"
+                                                           style="cursor: grab; font-size: 1.3rem;"></i>
+                                                        <div class="badge bg-primary d-flex align-items-center justify-content-center"
+                                                             style="font-size: 0.95rem; width: 38px; height: 38px; border-radius: 8px; font-weight: 700;"
+                                                             x-text="'#' + (cycle.sort_order || (index + 1))"></div>
+                                                    </div>
+                                                    <div class="col">
+                                                        {{-- Başlık & Badge --}}
+                                                        <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
+                                                            <h4 class="mb-0 fw-bold" x-text="cycle.label?.tr || key"></h4>
+                                                            <template x-if="cycle.badge?.text">
+                                                                <span class="badge fs-6"
+                                                                      :class="'bg-' + (cycle.badge.color || 'info')"
+                                                                      x-text="cycle.badge.text"></span>
+                                                            </template>
+                                                        </div>
+
+                                                        {{-- Info Badges --}}
+                                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                                            {{-- Gün Sayısı --}}
+                                                            <div class="badge badge-outline text-azure d-flex align-items-center gap-2 px-3 py-2">
+                                                                <i class="fas fa-clock"></i>
+                                                                <span><span x-text="cycle.duration_days"></span> gün</span>
+                                                            </div>
+
+                                                            {{-- Fiyat --}}
+                                                            <div class="badge badge-outline text-green d-flex align-items-center gap-2 px-3 py-2">
+                                                                <i class="fas fa-tag"></i>
+                                                                <span>₺<span x-text="Number(cycle.price).toFixed(2)"></span></span>
+                                                            </div>
+
+                                                            {{-- Eski Fiyat --}}
+                                                            <template x-if="cycle.compare_price">
+                                                                <div class="badge badge-outline text-orange d-flex align-items-center gap-2 px-3 py-2">
+                                                                    <i class="fas fa-percent"></i>
+                                                                    <span>Eski: ₺<span x-text="Number(cycle.compare_price).toFixed(2)"></span></span>
+                                                                </div>
+                                                            </template>
+
+                                                            {{-- Deneme Süresi --}}
+                                                            <template x-if="cycle.trial_days">
+                                                                <div class="badge badge-outline text-purple d-flex align-items-center gap-2 px-3 py-2">
+                                                                    <i class="fas fa-gift"></i>
+                                                                    <span><span x-text="cycle.trial_days"></span> gün deneme</span>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+
+                                                        {{-- Promosyon Yazısı --}}
+                                                        <template x-if="cycle.promo_text?.tr">
+                                                            <div class="mt-2">
+                                                                <div class="badge bg-warning-lt d-inline-flex align-items-center gap-2 px-3 py-2" style="font-size: 0.9rem;">
+                                                                    <i class="fas fa-bullhorn"></i>
+                                                                    <span x-text="cycle.promo_text.tr"></span>
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+
+                                                    {{-- Action Buttons --}}
+                                                    <div class="col-auto">
+                                                        <div class="btn-group">
+                                                            <button type="button"
+                                                                    class="btn btn-icon btn-primary"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="Düzenle"
+                                                                    @click="editMode = true; editData = JSON.parse(JSON.stringify({
+                                                                        label_tr: cycle.label?.tr || '',
+                                                                        label_en: cycle.label?.en || '',
+                                                                        price: cycle.price || '',
+                                                                        compare_price: cycle.compare_price || '',
+                                                                        duration_days: cycle.duration_days || 30,
+                                                                        trial_days: cycle.trial_days || '',
+                                                                        badge_text: cycle.badge?.text || '',
+                                                                        badge_color: cycle.badge?.color || '',
+                                                                        promo_text_tr: cycle.promo_text?.tr || '',
+                                                                        sort_order: cycle.sort_order || (index + 1)
+                                                                    }))">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button type="button"
+                                                                    class="btn btn-icon btn-danger"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="Sil"
+                                                                    @click="if(confirm('Bu cycle\'ı silmek istediğinize emin misiniz?')) removeCycle(key)">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-auto">
-                                                <button type="button"
-                                                        class="btn btn-sm btn-outline-danger"
-                                                        @click="removeCycle(key)">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                        </template>
+
+                                        {{-- EDIT MODE --}}
+                                        <template x-if="editMode">
+                                            <div class="p-4 bg-body-tertiary rounded">
+                                                <div class="d-flex align-items-center mb-4">
+                                                    <i class="fas fa-edit text-primary fs-3 me-3"></i>
+                                                    <h5 class="mb-0 fw-bold">Cycle Düzenle</h5>
+                                                </div>
+
+                                                <div class="row g-3">
+                                                    {{-- Temel Bilgiler --}}
+                                                    <div class="col-12">
+                                                        <div class="card bg-azure-lt mb-3">
+                                                            <div class="card-body p-3">
+                                                                <h6 class="text-azure mb-3 fw-semibold">
+                                                                    <i class="fas fa-info-circle me-2"></i>
+                                                                    Temel Bilgiler
+                                                                </h6>
+                                                                <div class="row g-3">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label required">Süre Adı (TR)</label>
+                                                                        <input type="text" class="form-control" x-model="editData.label_tr" placeholder="Örn: Aylık, Yıllık">
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label required">Gün Sayısı</label>
+                                                                        <input type="number" class="form-control" x-model="editData.duration_days" min="1" placeholder="30">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Fiyatlandırma --}}
+                                                    <div class="col-12">
+                                                        <div class="card bg-green-lt mb-3">
+                                                            <div class="card-body p-3">
+                                                                <h6 class="text-green mb-3 fw-semibold">
+                                                                    <i class="fas fa-tag me-2"></i>
+                                                                    Fiyatlandırma
+                                                                </h6>
+                                                                <div class="row g-3">
+                                                                    <div class="col-md-4">
+                                                                        <label class="form-label required">Fiyat (₺)</label>
+                                                                        <input type="number" class="form-control" x-model="editData.price" step="0.01" placeholder="99.90">
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label class="form-label">Üstü Çizili Fiyat (₺)</label>
+                                                                        <input type="number" class="form-control" x-model="editData.compare_price" step="0.01" placeholder="120.00">
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <label class="form-label">Deneme Süresi (gün)</label>
+                                                                        <input type="number" class="form-control" x-model="editData.trial_days" min="0" placeholder="7">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Ekstra Özellikler --}}
+                                                    <div class="col-12">
+                                                        <div class="card bg-purple-lt mb-3">
+                                                            <div class="card-body p-3">
+                                                                <h6 class="text-purple mb-3 fw-semibold">
+                                                                    <i class="fas fa-star me-2"></i>
+                                                                    Ekstra Özellikler
+                                                                </h6>
+                                                                <div class="row g-3">
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Badge Yazısı</label>
+                                                                        <input type="text" class="form-control" x-model="editData.badge_text" placeholder="Popüler, En Avantajlı">
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <label class="form-label">Badge Rengi</label>
+                                                                        <select class="form-select" x-model="editData.badge_color">
+                                                                            <option value="">Seç</option>
+                                                                            <option value="primary">🔵 Mavi</option>
+                                                                            <option value="success">🟢 Yeşil</option>
+                                                                            <option value="warning">🟡 Sarı</option>
+                                                                            <option value="danger">🔴 Kırmızı</option>
+                                                                            <option value="info">🔷 Açık Mavi</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <label class="form-label">Promosyon Yazısı</label>
+                                                                        <input type="text" class="form-control" x-model="editData.promo_text_tr" placeholder="2 ay bedava!, İlk ay %20 indirim">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- Action Buttons --}}
+                                                <div class="mt-4 d-flex gap-2">
+                                                    <button type="button"
+                                                            class="btn btn-primary px-4"
+                                                            @click="@this.call('updateCycle', key, editData); editMode = false">
+                                                        <i class="fas fa-save me-2"></i>
+                                                        Kaydet
+                                                    </button>
+                                                    <button type="button"
+                                                            class="btn btn-secondary px-4"
+                                                            @click="editMode = false">
+                                                        <i class="fas fa-times me-2"></i>
+                                                        İptal
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </template>
                                     </div>
                                 </div>
                             </template>
                         </div>
                     </template>
 
-                    {{-- Yeni Cycle Ekleme Formu - Organize Edilmiş Versiyon --}}
-                    <div class="card" style="background: #f8f9fa; border: 2px dashed #dee2e6;">
-                        <div class="card-body">
-                            <h4 class="mb-4">
-                                <i class="fas fa-plus-circle text-primary me-2"></i>
-                                Yeni Süre Ekle
+                    {{-- Yeni Cycle Ekleme Formu --}}
+                    <div class="card border-dashed shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4 d-flex align-items-center gap-2">
+                                <i class="fas fa-plus-circle text-primary"></i>
+                                <span>Yeni Süre Ekle</span>
                             </h4>
 
                             {{-- Bölüm 1: Temel Bilgiler --}}
-                            <div class="p-3 mb-3 rounded" style="background: rgba(13, 110, 253, 0.05); border-left: 3px solid #0d6efd;">
-                                <h5 class="text-primary mb-3" style="font-size: 1rem; font-weight: 600;">
-                                    <span class="badge bg-primary me-2">1</span>
-                                    Temel Bilgiler
-                                </h5>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label required">Süre Adı (TR)</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               x-model="newCycle.label_tr"
-                                               placeholder="Örn: Aylık, 15 Günlük, 6 Aylık">
-                                    </div>
-                                    <div class="col-md-6 mb-0">
-                                        <label class="form-label required">Gün Sayısı</label>
-                                        <input type="number"
-                                               class="form-control"
-                                               x-model="newCycle.duration_days"
-                                               placeholder="30"
-                                               min="1">
+                            <div class="card bg-primary-lt mb-3">
+                                <div class="card-body p-3">
+                                    <h6 class="text-primary mb-3 fw-semibold d-flex align-items-center gap-2">
+                                        <span class="badge bg-primary">1</span>
+                                        <span>Temel Bilgiler</span>
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label required">Süre Adı (TR)</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   x-model="newCycle.label_tr"
+                                                   placeholder="Örn: Aylık, 15 Günlük, 6 Aylık">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label required">Gün Sayısı</label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   x-model="newCycle.duration_days"
+                                                   placeholder="30"
+                                                   min="1">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Bölüm 2: Fiyatlandırma --}}
-                            <div class="p-3 mb-3 rounded" style="background: rgba(13, 110, 253, 0.05); border-left: 3px solid #0d6efd;">
-                                <h5 class="text-primary mb-3" style="font-size: 1rem; font-weight: 600;">
-                                    <span class="badge bg-primary me-2">2</span>
-                                    Fiyatlandırma
-                                </h5>
-                                <div class="row">
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label required">Fiyat (₺)</label>
-                                        <input type="number"
-                                               class="form-control"
-                                               x-model="newCycle.price"
-                                               placeholder="99"
-                                               min="0"
-                                               step="0.01">
+                            <div class="card bg-success-lt mb-3">
+                                <div class="card-body p-3">
+                                    <h6 class="text-success mb-3 fw-semibold d-flex align-items-center gap-2">
+                                        <span class="badge bg-success">2</span>
+                                        <span>Fiyatlandırma</span>
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label required">Fiyat (₺)</label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   x-model="newCycle.price"
+                                                   placeholder="99.90"
+                                                   min="0"
+                                                   step="0.01">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">
+                                                Üstü Çizili Fiyat (₺)
+                                                <span class="badge bg-secondary ms-1 badge-sm">Opsiyonel</span>
+                                            </label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   x-model="newCycle.compare_price"
+                                                   placeholder="120.00"
+                                                   min="0"
+                                                   step="0.01">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">
+                                                Deneme Süresi (gün)
+                                                <span class="badge bg-secondary ms-1 badge-sm">Opsiyonel</span>
+                                            </label>
+                                            <input type="number"
+                                                   class="form-control"
+                                                   x-model="newCycle.trial_days"
+                                                   placeholder="7"
+                                                   min="0">
+                                        </div>
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label class="form-label">
-                                            Üstü Çizili Fiyat (₺)
-                                            <span class="badge bg-secondary ms-1" style="font-size: 0.7rem;">Opsiyonel</span>
-                                        </label>
-                                        <input type="number"
-                                               class="form-control"
-                                               x-model="newCycle.compare_price"
-                                               placeholder="120"
-                                               min="0"
-                                               step="0.01">
-                                    </div>
-                                    <div class="col-md-4 mb-0">
-                                        <label class="form-label">
-                                            Deneme Süresi (gün)
-                                            <span class="badge bg-secondary ms-1" style="font-size: 0.7rem;">Opsiyonel</span>
-                                        </label>
-                                        <input type="number"
-                                               class="form-control"
-                                               x-model="newCycle.trial_days"
-                                               placeholder="7"
-                                               min="0">
-                                    </div>
+                                    <small class="form-hint d-flex align-items-center gap-2 mt-2">
+                                        <i class="fas fa-lightbulb"></i>
+                                        <span>Üstü çizili fiyat, kullanıcıya tasarruf miktarını gösterir</span>
+                                    </small>
                                 </div>
-                                <small class="text-muted d-block">
-                                    <i class="fas fa-lightbulb me-1"></i>
-                                    Üstü çizili fiyat, kullanıcıya tasarruf miktarını gösterir
-                                </small>
                             </div>
 
                             {{-- Bölüm 3: Ekstra Özellikler --}}
-                            <div class="p-3 mb-3 rounded" style="background: rgba(13, 110, 253, 0.05); border-left: 3px solid #0d6efd;">
-                                <h5 class="text-primary mb-3" style="font-size: 1rem; font-weight: 600;">
-                                    <span class="badge bg-primary me-2">3</span>
-                                    Ekstra Özellikler
-                                    <span class="badge bg-secondary ms-2" style="font-size: 0.75rem;">Tümü Opsiyonel</span>
-                                </h5>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Badge Yazısı</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               x-model="newCycle.badge_text"
-                                               placeholder="Popüler, En Avantajlı, %20 İndirim">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Badge Rengi</label>
-                                        <select class="form-select" x-model="newCycle.badge_color">
-                                            <option value="">Seç</option>
-                                            <option value="primary">🔵 Mavi</option>
-                                            <option value="success">🟢 Yeşil</option>
-                                            <option value="warning">🟡 Sarı</option>
-                                            <option value="danger">🔴 Kırmızı</option>
-                                            <option value="info">🔷 Açık Mavi</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-12 mb-0">
-                                        <label class="form-label">Promosyon Yazısı</label>
-                                        <input type="text"
-                                               class="form-control"
-                                               x-model="newCycle.promo_text_tr"
-                                               placeholder="2 ay bedava!, İlk ay %20 indirim, Yıllık pakette 2 ay hediye">
+                            <div class="card bg-warning-lt mb-3">
+                                <div class="card-body p-3">
+                                    <h6 class="text-warning mb-3 fw-semibold d-flex align-items-center gap-2">
+                                        <span class="badge bg-warning">3</span>
+                                        <span>Ekstra Özellikler</span>
+                                        <span class="badge bg-secondary badge-sm">Tümü Opsiyonel</span>
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Badge Yazısı</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   x-model="newCycle.badge_text"
+                                                   placeholder="Popüler, En Avantajlı, %20 İndirim">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Badge Rengi</label>
+                                            <select class="form-select" x-model="newCycle.badge_color">
+                                                <option value="">Seç</option>
+                                                <option value="primary">🔵 Mavi</option>
+                                                <option value="success">🟢 Yeşil</option>
+                                                <option value="warning">🟡 Sarı</option>
+                                                <option value="danger">🔴 Kırmızı</option>
+                                                <option value="info">🔷 Açık Mavi</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Promosyon Yazısı</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   x-model="newCycle.promo_text_tr"
+                                                   placeholder="2 ay bedava!, İlk ay %20 indirim, Yıllık pakette 2 ay hediye">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Submit Button --}}
                             <button type="button"
-                                    class="btn btn-primary w-100"
-                                    style="padding: 12px;"
+                                    class="btn btn-primary w-100 py-3"
                                     @click="addCycle()"
                                     :disabled="!newCycle.label_tr || !newCycle.price || !newCycle.duration_days">
                                 <i class="fas fa-check me-2"></i>
-                                Cycle Ekle
+                                <span class="fw-semibold">Cycle Ekle</span>
                             </button>
                         </div>
                     </div>
@@ -236,26 +493,28 @@
             </div>
 
             {{-- ÖZELLİKLER (FEATURES) --}}
-            <div class="card mb-3">
+            <div class="card mb-4 shadow-sm">
                 <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-list-check text-success me-2"></i>
-                        {{ __('subscription::admin.features') }}
+                    <h3 class="card-title d-flex align-items-center gap-2 mb-0">
+                        <i class="fas fa-list-check text-success"></i>
+                        <span>{{ __('subscription::admin.features') }}</span>
                     </h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     {{-- Mevcut Features --}}
                     <template x-if="features.length > 0">
-                        <ul class="list-group mb-3" id="features-sortable-list" x-ref="featureList">
+                        <ul class="list-group mb-4" id="features-sortable-list" x-ref="featureList">
                             <template x-for="(feature, index) in features" :key="index">
-                                <li class="list-group-item d-flex justify-content-between align-items-center" :data-index="index">
-                                    <div class="d-flex align-items-center gap-2 flex-grow-1">
-                                        <i class="fas fa-grip-vertical text-muted feature-drag-handle" style="cursor: grab;"></i>
-                                        <i :class="getFeatureIcon(feature)" class="text-success fs-4"></i>
-                                        <span x-text="getFeatureText(feature)"></span>
+                                <li class="list-group-item d-flex justify-content-between align-items-center py-3" :data-index="index">
+                                    <div class="d-flex align-items-center gap-3 flex-grow-1">
+                                        <i class="fas fa-grip-vertical text-muted feature-drag-handle" style="cursor: grab; font-size: 1.2rem;"></i>
+                                        <i :class="getFeatureIcon(feature)" class="text-success" style="font-size: 1.3rem;"></i>
+                                        <span class="fw-medium" x-text="getFeatureText(feature)"></span>
                                     </div>
                                     <button type="button"
-                                            class="btn btn-sm btn-outline-danger"
+                                            class="btn btn-icon btn-danger"
+                                            data-bs-toggle="tooltip"
+                                            title="Sil"
                                             @click="removeFeature(index)">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -265,28 +524,39 @@
                     </template>
 
                     {{-- Yeni Feature Ekleme --}}
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="form-label">İkon Class</label>
-                            <input type="text"
-                                   class="form-control"
-                                   x-model="newFeature.icon"
-                                   placeholder="fas fa-check">
-                        </div>
-                        <div class="col-md-8">
-                            <label class="form-label">Özellik Metni</label>
-                            <div class="input-group">
-                                <input type="text"
-                                       class="form-control"
-                                       x-model="newFeature.text"
-                                       @keydown.enter.prevent="addFeature"
-                                       placeholder="Sınırsız ürün">
-                                <button type="button"
-                                        class="btn btn-primary"
-                                        @click="addFeature"
-                                        :disabled="!newFeature.text">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                    <div class="card bg-body-tertiary">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-icons me-2 text-muted"></i>
+                                        İkon Class
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           x-model="newFeature.icon"
+                                           placeholder="fas fa-check">
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold">
+                                        <i class="fas fa-text me-2 text-muted"></i>
+                                        Özellik Metni
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control"
+                                               x-model="newFeature.text"
+                                               @keydown.enter.prevent="addFeature"
+                                               placeholder="Sınırsız ürün, 7/24 destek, vb.">
+                                        <button type="button"
+                                                class="btn btn-primary px-4"
+                                                @click="addFeature"
+                                                :disabled="!newFeature.text">
+                                            <i class="fas fa-plus me-1"></i>
+                                            Ekle
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -296,46 +566,89 @@
 
         <div class="col-lg-4">
             {{-- AYARLAR --}}
-            <div class="card mb-3">
+            <div class="card mb-4 shadow-sm sticky-top" style="top: 1rem;">
                 <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-cog text-secondary me-2"></i>
-                        {{ __('admin.settings') }}
+                    <h3 class="card-title d-flex align-items-center gap-2 mb-0">
+                        <i class="fas fa-cog text-secondary"></i>
+                        <span>{{ __('admin.settings') }}</span>
                     </h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     {{-- Cihaz Limiti --}}
-                    <div class="mb-3">
-                        <label class="form-label required">{{ __('subscription::admin.device_limit') }}</label>
+                    <div class="mb-4">
+                        <label class="form-label required fw-semibold">
+                            <i class="fas fa-mobile-alt me-2 text-muted"></i>
+                            {{ __('subscription::admin.device_limit') }}
+                        </label>
                         <input type="number"
                                class="form-control"
                                wire:model="inputs.device_limit"
-                               min="1">
+                               min="1"
+                               placeholder="1">
+                        <small class="form-hint mt-1">Kullanıcı kaç cihazda aynı anda kullanabilir</small>
                     </div>
+
+                    <hr class="my-4">
 
                     {{-- Öne Çıkan --}}
                     <div class="mb-3">
-                        <label class="form-check form-switch">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   wire:model="inputs.is_featured">
-                            <span class="form-check-label">
-                                {{ __('subscription::admin.is_featured') }}
-                            </span>
-                        </label>
+                        <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
+                            <label class="form-selectgroup-item flex-fill">
+                                <input type="checkbox"
+                                       class="form-selectgroup-input"
+                                       wire:model.live="inputs.is_featured">
+                                <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                    <div class="me-3">
+                                        <span class="form-selectgroup-check"></span>
+                                    </div>
+                                    <div class="form-selectgroup-label-content d-flex align-items-center">
+                                        <span class="avatar avatar-sm me-3 bg-warning-lt">
+                                            <i class="fas fa-star text-warning"></i>
+                                        </span>
+                                        <div>
+                                            <div class="font-weight-medium">{{ __('subscription::admin.is_featured') }}</div>
+                                            <div class="text-muted small">Bu plan öne çıkan olarak işaretlenecek</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
                     </div>
 
                     {{-- Aktif --}}
                     <div class="mb-0">
-                        <label class="form-check form-switch">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   wire:model="inputs.is_active">
-                            <span class="form-check-label">
-                                {{ __('admin.active') }}
-                            </span>
-                        </label>
+                        <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
+                            <label class="form-selectgroup-item flex-fill">
+                                <input type="checkbox"
+                                       class="form-selectgroup-input"
+                                       wire:model.live="inputs.is_active">
+                                <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                    <div class="me-3">
+                                        <span class="form-selectgroup-check"></span>
+                                    </div>
+                                    <div class="form-selectgroup-label-content d-flex align-items-center">
+                                        <span class="avatar avatar-sm me-3 bg-success-lt">
+                                            <i class="fas fa-toggle-on text-success"></i>
+                                        </span>
+                                        <div>
+                                            <div class="font-weight-medium">{{ __('admin.active') }}</div>
+                                            <div class="text-muted small">Plan aktif ve satın alınabilir durumda</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
                     </div>
+                </div>
+
+                {{-- Save Button --}}
+                <div class="card-footer bg-body-tertiary p-3">
+                    <button type="button"
+                            class="btn btn-primary w-100 py-3"
+                            wire:click="save">
+                        <i class="fas fa-save me-2"></i>
+                        <span class="fw-semibold">Değişiklikleri Kaydet</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -367,20 +680,17 @@
             },
 
             init() {
-                // Features sortable initialize et
                 this.$nextTick(() => {
                     this.initFeaturesSortable();
                     this.initCyclesSortable();
                 });
 
-                // Features değiştiğinde sortable'ı yeniden init et
                 this.$watch('features', () => {
                     this.$nextTick(() => {
                         this.initFeaturesSortable();
                     });
                 });
 
-                // Cycles değiştiğinde sortable'ı yeniden init et
                 this.$watch('cycles', () => {
                     this.$nextTick(() => {
                         this.initCyclesSortable();
@@ -391,22 +701,18 @@
             initFeaturesSortable() {
                 const listEl = document.getElementById('features-sortable-list');
                 if (listEl && this.features.length > 0) {
-                    // Eski instance'ı destroy et
                     if (listEl.sortableInstance) {
                         listEl.sortableInstance.destroy();
                     }
 
-                    // Yeni Sortable instance oluştur
                     listEl.sortableInstance = new Sortable(listEl, {
                         handle: '.feature-drag-handle',
                         animation: 150,
                         onEnd: (evt) => {
-                            // Yeni sıralamayı al
                             const oldIndex = evt.oldIndex;
                             const newIndex = evt.newIndex;
 
                             if (oldIndex !== newIndex) {
-                                // Array'i yeniden sırala
                                 const item = this.features.splice(oldIndex, 1)[0];
                                 this.features.splice(newIndex, 0, item);
                             }
@@ -418,27 +724,22 @@
             initCyclesSortable() {
                 const listEl = document.getElementById('cycles-sortable-list');
                 if (listEl && Object.keys(this.cycles).length > 0) {
-                    // Eski instance'ı destroy et
                     if (listEl.sortableInstance) {
                         listEl.sortableInstance.destroy();
                     }
 
-                    // Yeni Sortable instance oluştur
                     listEl.sortableInstance = new Sortable(listEl, {
                         handle: '.cycle-drag-handle',
                         animation: 150,
                         onEnd: (evt) => {
-                            // Yeni sıralamayı al
                             const oldIndex = evt.oldIndex;
                             const newIndex = evt.newIndex;
 
                             if (oldIndex !== newIndex) {
-                                // Object'i array'e çevir, sırala, tekrar object'e çevir
                                 const entries = Object.entries(this.cycles);
                                 const [movedEntry] = entries.splice(oldIndex, 1);
                                 entries.splice(newIndex, 0, movedEntry);
 
-                                // Yeni object oluştur
                                 const newCycles = {};
                                 entries.forEach(([key, value], index) => {
                                     newCycles[key] = {...value, sort_order: index + 1};
@@ -458,7 +759,6 @@
 
                 @this.call('addCycle', this.newCycle);
 
-                // Reset form
                 this.newCycle = {
                     label_tr: '',
                     price: '',

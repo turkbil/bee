@@ -62,9 +62,10 @@
                         </th>
                         <th class="w-1"></th>
                         <th>{{ __('subscription::admin.plan_name') }}</th>
-                        <th>{{ __('subscription::admin.price_monthly') }}</th>
-                        <th>{{ __('subscription::admin.price_yearly') }}</th>
-                        <th>{{ __('subscription::admin.trial_days') }}</th>
+                        <th>Fiyat Döngüleri</th>
+                        <th>KDV</th>
+                        <th>Para Birimi</th>
+                        <th>Fiyat Gösterim</th>
                         <th>{{ __('admin.status') }}</th>
                         <th class="w-1"></th>
                     </tr>
@@ -87,14 +88,54 @@
                                 @if($plan->is_featured)
                                 <span class="badge bg-yellow ms-2">{{ __('subscription::admin.featured') }}</span>
                                 @endif
-                                @if($plan->is_popular)
-                                <span class="badge bg-blue ms-2">{{ __('subscription::admin.popular') }}</span>
-                                @endif
                             </div>
                         </td>
-                        <td>{{ number_format($plan->price_monthly, 2) }} ₺</td>
-                        <td>{{ number_format($plan->price_yearly, 2) }} ₺</td>
-                        <td>{{ $plan->trial_days }} {{ __('admin.days') }}</td>
+                        <td>
+                            @php
+                                $cycles = is_array($plan->billing_cycles) ? $plan->billing_cycles : [];
+                                $cycleCount = count($cycles);
+                            @endphp
+                            @if($cycleCount > 0)
+                                <span class="badge bg-blue">{{ $cycleCount }} döngü</span>
+                                <div class="small text-muted mt-1">
+                                    @foreach(array_slice($cycles, 0, 2) as $key => $cycle)
+                                        {{ is_array($cycle['label'] ?? null) ? ($cycle['label']['tr'] ?? $key) : $key }}
+                                        @if(!$loop->last), @endif
+                                    @endforeach
+                                    @if($cycleCount > 2)
+                                        <span class="text-muted">+{{ $cycleCount - 2 }}</span>
+                                    @endif
+                                </div>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
+                        <td>%{{ number_format($plan->tax_rate ?? 20, 2) }}</td>
+                        <td>
+                            @php
+                                $currencySymbol = match($plan->currency) {
+                                    'USD' => '$',
+                                    'EUR' => '€',
+                                    default => '₺'
+                                };
+                            @endphp
+                            {{ $currencySymbol }} {{ $plan->currency }}
+                        </td>
+                        <td>
+                            @php
+                                $displayModeText = match($plan->price_display_mode ?? 'show') {
+                                    'hide' => 'Gizli',
+                                    'request' => 'Fiyat Sorunuz',
+                                    default => 'Göster'
+                                };
+                                $displayModeBadge = match($plan->price_display_mode ?? 'show') {
+                                    'hide' => 'secondary',
+                                    'request' => 'warning',
+                                    default => 'success'
+                                };
+                            @endphp
+                            <span class="badge bg-{{ $displayModeBadge }}">{{ $displayModeText }}</span>
+                        </td>
                         <td>
                             <span class="badge bg-{{ $plan->is_active ? 'success' : 'secondary' }}">
                                 {{ $plan->is_active ? __('admin.active') : __('admin.inactive') }}

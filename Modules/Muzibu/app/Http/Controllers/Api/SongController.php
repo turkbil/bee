@@ -319,4 +319,149 @@ class SongController extends Controller
             abort(500, 'Internal error');
         }
     }
+
+    /**
+     * Dynamic M3U8 Playlist (User tipine göre)
+     * Guest/Normal: 4 chunk (3 çal + 1 buffer)
+     * Premium: Tüm chunk'lar
+     *
+     * @param int $id
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function dynamicPlaylist(int $id, Request $request)
+    {
+        try {
+            // Song'u al
+            $song = Song::where('song_id', $id)
+                ->where('is_active', 1)
+                ->first();
+
+            if (!$song) {
+                abort(404, 'Song not found');
+            }
+
+            // HLS dönüşmüş mü kontrol et
+            if (!$song->hls_converted || empty($song->hls_path)) {
+                abort(404, 'HLS playlist not available');
+            }
+
+            // Dynamic playlist oluştur
+            $playlistGenerator = app(\App\Services\Muzibu\PlaylistGeneratorService::class);
+            $playlist = $playlistGenerator->generatePlaylist($song, auth()->user());
+
+            // M3U8 response
+            return response($playlist, 200, [
+                'Content-Type' => 'application/vnd.apple.mpegurl',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Dynamic playlist error:', [
+                'song_id' => $id,
+                'message' => $e->getMessage()
+            ]);
+            abort(500, 'Internal error');
+        }
+    }
+
+    /**
+     * Serve HLS Chunk (Token-based authorization)
+     *
+     * @param int $id Song ID
+     * @param string $chunkName segment-000.ts
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function serveChunk(int $id, string $chunkName, Request $request)
+    {
+        try {
+            // 1. Token doğrula
+            $token = $request->input('token');
+
+            if (!$token) {
+                abort(403, 'Token required');
+            }
+
+            $chunkTokenService = app(\App\Services\Muzibu\ChunkTokenService::class);
+            $tokenData = $chunkTokenService->validateChunkToken($token);
+
+            if (!$tokenData) {
+                \Log::warning('Invalid chunk token', [
+                    'song_id' => $id,
+                    'chunk_name' => $chunkName
+                ]);
+                abort(403, 'Invalid or expired token');
+            }
+
+            // 2. Token song_id ile URL song_id eşleşiyor mu?
+            if ($tokenData['song_id'] != $id) {
+                \Log::warning('Token song_id mismatch', [
+                    'url_song_id' => $id,
+                    'token_song_id' => $tokenData['song_id']
+                ]);
+                abort(403, 'Token mismatch');
+            }
+
+            // 3. Token chunk_name ile URL chunk_name eşleşiyor mu?
+            if ($tokenData['chunk_name'] != $chunkName) {
+                \Log::warning('Token chunk_name mismatch', [
+                    'url_chunk' => $chunkName,
+                    'token_chunk' => $tokenData['chunk_name']
+                ]);
+                abort(403, 'Chunk mismatch');
+            }
+
+            // 4. User bu chunk'ı isteyebilir mi? (Chunk index kontrolü)
+            $isPremium = $tokenData['is_premium'] ?? false;
+
+            if (!$chunkTokenService->isChunkAllowed($chunkName, $isPremium)) {
+                \Log::warning('Chunk access denied', [
+                    'song_id' => $id,
+                    'chunk_name' => $chunkName,
+                    'is_premium' => $isPremium
+                ]);
+                abort(403, 'Preview limit exceeded');
+            }
+
+            // 5. Song'u al
+            $song = Song::where('song_id', $id)
+                ->where('is_active', 1)
+                ->first();
+
+            if (!$song) {
+                abort(404, 'Song not found');
+            }
+
+            // 6. Chunk dosya yolu (tenant-aware storage)
+            $hlsFolder = dirname($song->hls_path);
+            $chunkPath = storage_path('app/public/' . $hlsFolder . '/' . $chunkName);
+
+            if (!file_exists($chunkPath)) {
+                \Log::error('Chunk file not found', [
+                    'song_id' => $id,
+                    'chunk_name' => $chunkName,
+                    'path' => $chunkPath
+                ]);
+                abort(404, 'Chunk not found');
+            }
+
+            // 7. Chunk serve et
+            return response()->file($chunkPath, [
+                'Content-Type' => 'video/mp2t', // MPEG-TS format
+                'Cache-Control' => 'private, max-age=3600',
+                'Accept-Ranges' => 'bytes',
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Serve chunk error:', [
+                'song_id' => $id,
+                'chunk_name' => $chunkName,
+                'message' => $e->getMessage()
+            ]);
+            abort(500, 'Internal error');
+        }
+    }
 }

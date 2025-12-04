@@ -42,11 +42,6 @@ return new class extends Migration
             // Approval System
             $table->boolean('is_approved')->default(true);
 
-            // Corporate Accounts
-            $table->boolean('is_corporate')->default(false);
-            $table->string('corporate_code')->nullable()->unique();
-            $table->foreignId('parent_user_id')->nullable()->constrained('users')->onDelete('set null');
-
             // Dil & Tercihler
             $table->string('admin_locale', 10)->nullable()->comment('Admin panel language preference');
             $table->string('tenant_locale', 5)->nullable()->comment('Tenant site language preference');

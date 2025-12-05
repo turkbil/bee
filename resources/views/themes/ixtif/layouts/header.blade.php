@@ -156,7 +156,8 @@
 <body class="font-sans antialiased min-h-screen bg-white dark:bg-gray-900 transition-all duration-500 flex flex-col"
       :class="{ 'dark-mode-active': darkMode === 'dark' }"
       data-instant-allow-query-string
-      data-instant-intensity="0">
+      data-instant-intensity="65"
+      data-instant-mousedown-only>
 
     {{-- 🎯 GTM Body Snippet (No-Script Fallback) --}}
     <x-marketing.gtm-body />

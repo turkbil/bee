@@ -754,8 +754,8 @@
 {{-- Web Share API Helper --}}
 <script defer src="{{ asset('js/web-share.js') }}"></script>
 
-{{-- Custom Prefetch - Manuel Implementation (instant.page yerine) --}}
-<script src="{{ asset('js/custom-prefetch.js') }}"></script>
+{{-- instant.page v5.2.0 - Intelligent Preloading --}}
+<script src="{{ asset('js/instantpage.js') }}" type="module"></script>
 
 {{-- Back to Top Button Script --}}
 <script defer src="{{ asset('js/back-to-top.js') }}"></script>

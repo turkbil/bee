@@ -75,7 +75,10 @@
 </head>
 
 <body class="antialiased overflow-x-hidden"
-    x-data="homepage()" x-init="init()">
+    x-data="homepage()" x-init="init()"
+    data-instant-allow-query-string
+    data-instant-intensity="65"
+    data-instant-mousedown-only>
 
     <!-- Hero Section - Full Screen -->
     <section class="min-h-screen flex items-center relative overflow-hidden">
@@ -411,6 +414,9 @@
 
     {{-- GLightbox JS --}}
     <script defer src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js"></script>
+
+    {{-- instant.page v5.2.0 - Intelligent Preloading --}}
+    <script src="{{ asset('js/instantpage.js') }}" type="module"></script>
 
 </body>
 </html>

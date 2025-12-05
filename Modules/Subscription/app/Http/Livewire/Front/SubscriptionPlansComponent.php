@@ -26,6 +26,62 @@ class SubscriptionPlansComponent extends Component
         }
     }
 
+    /**
+     * Start trial subscription instantly (no checkout)
+     */
+    public function startTrial($planId, $cycleKey)
+    {
+        try {
+            // 1. Login kontrolü
+            if (!auth()->check()) {
+                session()->flash('info', 'Deneme sürümünü başlatmak için giriş yapmalısınız.');
+                return redirect()->route('login');
+            }
+
+            // 2. Plan kontrolü
+            $plan = SubscriptionPlan::findOrFail($planId);
+
+            if (!$plan->is_trial) {
+                throw new \Exception('Bu plan deneme planı değil!');
+            }
+
+            // 3. User trial kontrolü
+            if (auth()->user()->has_used_trial) {
+                session()->flash('error', 'Deneme sürümünü daha önce kullandınız.');
+                return;
+            }
+
+            // 4. Subscription oluştur
+            $service = app(\Modules\Subscription\App\Services\SubscriptionService::class);
+            $subscription = $service->createTrialForUser(auth()->user());
+
+            if (!$subscription) {
+                throw new \Exception('Deneme sürümü oluşturulamadı. Lütfen destek ile iletişime geçin.');
+            }
+
+            \Log::info('✅ Trial Subscription Created', [
+                'user_id' => auth()->id(),
+                'subscription_id' => $subscription->subscription_id,
+            ]);
+
+            // 5. Session yenile (premium tanıması için)
+            auth()->user()->refresh();
+            session()->regenerate();
+
+            // 6. Başarı sayfasına yönlendir (FULL PAGE RELOAD)
+            return $this->redirect(route('subscription.success', ['trial' => 1]), navigate: false);
+
+        } catch (\Exception $e) {
+            \Log::error('❌ Trial Subscription ERROR', [
+                'user_id' => auth()->id() ?? null,
+                'plan_id' => $planId ?? null,
+                'error' => $e->getMessage(),
+            ]);
+
+            session()->flash('error', 'Hata: ' . $e->getMessage());
+        }
+    }
+
     public function addToCart($planId, $cycleKey, $autoRenew = true)
     {
         try {

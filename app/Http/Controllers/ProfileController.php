@@ -11,15 +11,56 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Str;
+use App\Services\ThemeService;
 
 class ProfileController extends Controller
 {
+    /**
+     * ThemeService instance
+     */
+    protected ThemeService $themeService;
+
+    /**
+     * Constructor
+     */
+    public function __construct(ThemeService $themeService)
+    {
+        $this->themeService = $themeService;
+    }
+
+    /**
+     * Get theme-aware view path using ThemeService
+     */
+    protected function getThemeView(string $view): string
+    {
+        // ThemeService ile tema-aware view çözümle
+        $theme = $this->themeService->getActiveTheme();
+        $themeName = $theme ? $theme->name : 'simple';
+
+        // 1. Tema view kontrolü
+        $themeView = "themes.{$themeName}.profile.{$view}";
+        if (view()->exists($themeView)) {
+            return $themeView;
+        }
+
+        // 2. Simple tema fallback
+        if ($themeName !== 'simple') {
+            $simpleView = "themes.simple.profile.{$view}";
+            if (view()->exists($simpleView)) {
+                return $simpleView;
+            }
+        }
+
+        // 3. Global fallback
+        return "profile.{$view}";
+    }
+
     /**
      * Display the user's profile form.
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view($this->getThemeView('edit'), [
             'user' => $request->user(),
         ]);
     }
@@ -56,7 +97,7 @@ class ProfileController extends Controller
      */
     public function password(Request $request): View
     {
-        return view('profile.password', [
+        return view($this->getThemeView('password'), [
             'user' => $request->user(),
         ]);
     }
@@ -66,10 +107,10 @@ class ProfileController extends Controller
      */
     public function avatar(Request $request)
     {
-        $response = response()->view('profile.avatar', [
+        $response = response()->view($this->getThemeView('avatar'), [
             'user' => $request->user(),
         ]);
-        
+
         return $response->header('Cache-Control', 'no-cache, no-store, must-revalidate')
                        ->header('Pragma', 'no-cache')
                        ->header('Expires', '0');
@@ -80,7 +121,7 @@ class ProfileController extends Controller
      */
     public function delete(Request $request): View
     {
-        return view('profile.delete', [
+        return view($this->getThemeView('delete'), [
             'user' => $request->user(),
         ]);
     }

@@ -28,6 +28,7 @@ class SubscriptionPlan extends BaseModel
         'custom_limits',
         'enabled_features',
         'sort_order',
+        'is_trial',
         'is_featured',
         'is_active',
         'is_public',
@@ -44,6 +45,7 @@ class SubscriptionPlan extends BaseModel
         'enabled_features' => 'array',
         'metadata' => 'array',
         'tax_rate' => 'decimal:2',
+        'is_trial' => 'boolean',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'is_public' => 'boolean',
@@ -62,7 +64,7 @@ class SubscriptionPlan extends BaseModel
     // Relationships
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class, 'plan_id', 'subscription_plan_id');
+        return $this->hasMany(Subscription::class, 'subscription_plan_id', 'subscription_plan_id');
     }
 
     public function currency()

@@ -22,8 +22,8 @@
                                     <i class="fas fa-user text-primary me-1"></i>
                                     Kullanıcı *
                                 </label>
-                                <select class="form-select @error('customer_id') is-invalid @enderror"
-                                        wire:model="customer_id"
+                                <select class="form-select @error('user_id') is-invalid @enderror"
+                                        wire:model="user_id"
                                         {{ $subscriptionId ? 'disabled' : '' }}>
                                     <option value="">Kullanıcı seçin...</option>
                                     @foreach($users as $user)
@@ -32,7 +32,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('customer_id')
+                                @error('user_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -43,8 +43,8 @@
                                     <i class="fas fa-box text-success me-1"></i>
                                     Abonelik Planı
                                 </label>
-                                <select class="form-select @error('plan_id') is-invalid @enderror"
-                                        wire:model.live="plan_id">
+                                <select class="form-select @error('subscription_plan_id') is-invalid @enderror"
+                                        wire:model.live="subscription_plan_id">
                                     <option value="">Plan seçin...</option>
                                     @foreach($plans as $plan)
                                         <option value="{{ $plan->subscription_plan_id }}">
@@ -52,7 +52,7 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                @error('plan_id')
+                                @error('subscription_plan_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <small class="text-muted">Önce plan seçin, sonra süre seçeneği görünecek</small>
@@ -60,7 +60,7 @@
                         </div>
 
                         {{-- Süre Seçimi (Dynamic Cycles) --}}
-                        @if($plan_id && !empty($available_cycles))
+                        @if($subscription_plan_id && !empty($available_cycles))
                         <div class="row">
                             <div class="col-12 mb-3">
                                 <label class="form-label required">
@@ -73,7 +73,14 @@
                                     @foreach($available_cycles as $key => $cycle)
                                         <option value="{{ $key }}">
                                             {{ $cycle['label']['tr'] ?? $cycle['label']['en'] ?? $key }}
-                                            ({{ $cycle['duration_days'] }} gün • ₺{{ number_format($cycle['price'], 2) }})
+                                            ({{ $cycle['duration_days'] }} gün •
+                                            @if(!empty($cycle['compare_price']) && $cycle['compare_price'] > $cycle['price'])
+                                                <s>{{ $currency === 'USD' ? '$' : ($currency === 'EUR' ? '€' : '₺') }}{{ number_format($cycle['compare_price'], 2) }}</s>
+                                            @endif
+                                            {{ $currency === 'USD' ? '$' : ($currency === 'EUR' ? '€' : '₺') }}{{ number_format($cycle['price'], 2) }})
+                                            @if(!empty($cycle['trial_days']))
+                                                🎁 {{ $cycle['trial_days'] }} gün deneme
+                                            @endif
                                         </option>
                                     @endforeach
                                 </select>
@@ -93,6 +100,11 @@
                                             <i class="fas fa-info-circle me-2 fs-3"></i>
                                             <div>
                                                 <strong>{{ $selectedCycle['label']['tr'] ?? $selectedCycle['label']['en'] }}</strong>
+                                                @if(!empty($selectedCycle['badge']['text']))
+                                                    <span class="badge bg-{{ $selectedCycle['badge']['color'] ?? 'info' }} ms-2">
+                                                        {{ $selectedCycle['badge']['text'] }}
+                                                    </span>
+                                                @endif
                                                 <div class="small mt-1">
                                                     <span class="me-3">
                                                         <i class="fas fa-calendar-days me-1"></i>
@@ -100,7 +112,10 @@
                                                     </span>
                                                     <span class="me-3">
                                                         <i class="fas fa-money-bill-wave me-1"></i>
-                                                        ₺{{ number_format($selectedCycle['price'], 2) }}
+                                                        @if(!empty($selectedCycle['compare_price']) && $selectedCycle['compare_price'] > $selectedCycle['price'])
+                                                            <s>{{ $currency === 'USD' ? '$' : ($currency === 'EUR' ? '€' : '₺') }}{{ number_format($selectedCycle['compare_price'], 2) }}</s>
+                                                        @endif
+                                                        {{ $currency === 'USD' ? '$' : ($currency === 'EUR' ? '€' : '₺') }}{{ number_format($selectedCycle['price'], 2) }}
                                                     </span>
                                                     @if(!empty($selectedCycle['trial_days']))
                                                         <span class="me-3">
@@ -108,19 +123,22 @@
                                                             {{ $selectedCycle['trial_days'] }} gün deneme
                                                         </span>
                                                     @endif
-                                                    @if(!empty($selectedCycle['badge']['text']))
-                                                        <span class="badge bg-{{ $selectedCycle['badge']['color'] ?? 'info' }}">
-                                                            {{ $selectedCycle['badge']['text'] }}
-                                                        </span>
-                                                    @endif
                                                 </div>
+                                                @if(!empty($selectedCycle['promo_text']['tr']))
+                                                    <div class="mt-2">
+                                                        <span class="badge bg-warning text-dark">
+                                                            <i class="fas fa-tag me-1"></i>
+                                                            {{ $selectedCycle['promo_text']['tr'] }}
+                                                        </span>
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             @endif
                         </div>
-                        @elseif($plan_id)
+                        @elseif($subscription_plan_id)
                             <div class="alert alert-warning">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
                                 Bu plan için henüz süre seçeneği tanımlanmamış.

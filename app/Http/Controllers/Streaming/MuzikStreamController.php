@@ -103,6 +103,26 @@ class MuzikStreamController extends Controller
         }
 
         try {
+            // 🎯 SUBSCRIPTION ACCESS CHECK (Phase 5)
+            // Frontend'de 30 saniye kontrolü yapılıyor, burada sadece log
+            if (auth()->check()) {
+                $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
+                $access = $subscriptionService->checkUserAccess(auth()->user());
+
+                Log::info('🎵 Stream access check', [
+                    'user_id' => auth()->id(),
+                    'status' => $access['status'],
+                    'is_trial' => $access['is_trial'] ?? false,
+                    'song_hash' => $songHash,
+                    'file' => $filename,
+                ]);
+
+                // Not: Frontend'de hls.js 30 saniye kontrolü yapıyor
+                // Backend'de hard limit yok - frontend sorumlu
+            } else {
+                Log::info('🎵 Guest stream', ['song_hash' => $songHash, 'file' => $filename]);
+            }
+            // Access check sonu
             // Dosya yolu
             $filePath = storage_path('app/public/' . HLSService::HLS_STORAGE_PATH . '/' . $songHash . '/' . $filename);
 

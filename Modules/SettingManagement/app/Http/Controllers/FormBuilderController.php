@@ -279,27 +279,15 @@ class FormBuilderController extends Controller
             return;
         }
         
-        // Prefix kontrolü ve alan adı oluşturma
+        // ✅ FIX: Layout JSON'daki name değerini AYNEN kullan, prefix ekleme!
+        // Name değeri form builder'da zaten doğru oluşturulmuş (auth_subscription, auth_device_limit vb.)
         $name = $properties['name'];
-        
-        // Grup prefix'i belirle
-        $groupPrefix = '';
-        if (!empty($group->prefix)) {
-            $groupPrefix = $this->slugifyTurkish($group->prefix);
-        } else {
-            $groupPrefix = $this->slugifyTurkish($group->name);
-        }
-        
-        // Eğer name zaten prefix ile başlıyorsa tekrar ekleme
-        if (!Str::startsWith($name, $groupPrefix . '_')) {
-            $name = $groupPrefix . '_' . $this->slugifyTurkish(basename($name));
-        }
-        
+
         // Label kontrolü
         $label = $properties['label'] ?? ucfirst($element['type']);
-        
-        // Key oluşturma
-        $key = $name; // Artık name değeri özel slug fonksiyonu ile oluşturulduğu için doğrudan kullanabiliriz
+
+        // ✅ FIX: Key = name (prefix/slug eklemeden DOĞRUDAN kullan)
+        $key = $name;
         
         // Varsayılan değer
         $defaultValue = $properties['default_value'] ?? null;

@@ -52,7 +52,8 @@ class AuthenticatedSessionController extends Controller
 
         // Tema-aware login view
         $theme = app(\App\Services\ThemeService::class)->getActiveTheme();
-        $viewPath = "themes.{$theme}.auth.login";
+        $themeName = $theme ? $theme->name : 'simple';
+        $viewPath = "themes.{$themeName}.auth.login";
 
         // Fallback: Tema yoksa veya view yoksa default auth.login kullan
         if (!view()->exists($viewPath)) {

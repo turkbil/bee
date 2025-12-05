@@ -1,1 +1,660 @@
+sw.js:137 [Service Worker] Loaded successfully
+sw.js:27 [Service Worker] Installing...
+sw.js:32 [Service Worker] Caching critical assets
+sw.js:43 [Service Worker] Activating...
+?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
+(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
+muzibu-router.js?v=1764947034:30 🚀 Muzibu SPA Router initialized
+player-core.js?v=1764947034:157 Muzibu initialized with Howler.js
+player-core.js?v=1764947034:160 Muzibu initialized Object
+keyboard.js?v=1764947034:46 🎹 Keyboard shortcuts initialized
+player-core.js?v=1764947034:152 Muzibu already initialized, skipping...
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Invalid or unexpected token
 
+Expression: "{
+             favorited: false,
+             count: 0,
+             loading: false,
+             toggleFavorite() {
+                 if (this.loading) return;
+                 this.loading = true;
+
+                 fetch('/api/favorites/toggle', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/json',
+                         'X-CSRF-TOKEN': document.querySelector('meta[name=\"
+
+ <div class=​"flex items-center gap-1 cursor-pointer hover:​scale-110 transition-transform duration-200" x-data=​"{
+             favorited:​ false,
+             count:​ 0,
+             loading:​ false,
+             toggleFavorite()​ {
+                 if (this.loading)​ return;​
+                 this.loading = true;​
+
+                 fetch('/​api/​favorites/​toggle', {
+                     method:​ 'POST',
+                     headers:​ {
+                         'Content-Type':​ 'application/​json',
+                         'X-CSRF-TOKEN':​ document.querySelector('meta[name=\" csrf-token\"]').content, 'accept': 'application json' }, body: json.stringify({ model_class: 'modules\\muzibu\\app\\models\\playlist', model_id: 1 }) .then(response>​…​</div>​flex
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: favorited is not defined
+
+Expression: "favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400'"
+
+ <i :class=​"favorited ? 'fas fa-heart text-red-500' :​ 'far fa-heart text-gray-600 dark:​text-gray-400'" class=​"text-sm transition-colors">​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1127 Uncaught SyntaxError: Invalid or unexpected token
+    at new AsyncFunction (<anonymous>)
+    at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21)
+    at generateFunctionFromString (livewire.js?id=df3a17f2:1184:16)
+    at generateEvaluatorFromString (livewire.js?id=df3a17f2:1189:16)
+    at normalEvaluator (livewire.js?id=df3a17f2:1154:111)
+    at evaluateLater (livewire.js?id=df3a17f2:1144:12)
+    at evaluate (livewire.js?id=df3a17f2:1140:5)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3564:17)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: favorited is not defined
+    at [Alpine] favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-600 dark:text-gray-400' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at handler2 (livewire.js?id=df3a17f2:3533:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+player-core.js?v=1764947034:220 Featured playlists loaded: 10
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(314) }"
+
+ <button x-on:click.stop=​"toggleLike(314)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(314)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(314) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(314)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(315) }"
+
+ <button x-on:click.stop=​"toggleLike(315)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(315)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(315) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(315)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(316) }"
+
+ <button x-on:click.stop=​"toggleLike(316)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(316)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(316) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(316)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(317) }"
+
+ <button x-on:click.stop=​"toggleLike(317)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(317)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(317) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(317)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(318) }"
+
+ <button x-on:click.stop=​"toggleLike(318)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(318)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(318) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(318)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(319) }"
+
+ <button x-on:click.stop=​"toggleLike(319)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(319)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(319) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(319)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(320) }"
+
+ <button x-on:click.stop=​"toggleLike(320)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(320)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(320) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(320)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(321) }"
+
+ <button x-on:click.stop=​"toggleLike(321)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(321)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(321) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(321)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(322) }"
+
+ <button x-on:click.stop=​"toggleLike(322)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(322)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(322) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(322)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "{ 'text-spotify-green': isLiked(323) }"
+
+ <button x-on:click.stop=​"toggleLike(323)​" class=​"text-spotify-text-gray hover:​text-spotify-green transition-colors" :class=​"{ 'text-spotify-green':​ isLiked(323)​ }​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: isLiked is not a function
+
+Expression: "isLiked(323) ? 'fas fa-heart' : 'far fa-heart'"
+
+ <i :class=​"isLiked(323)​ ? 'fas fa-heart' :​ 'far fa-heart'" class>​</i>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/314) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/314) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/315) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/315) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/316) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/316) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/317) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/317) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/318) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/318) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/319) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/319) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/320) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/320) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/321) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/321) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/322) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/322) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] { 'text-spotify-green': isLiked(/323) } (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:56)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: isLiked is not a function
+    at [Alpine] isLiked(/323) ? 'fas fa-heart' : 'far fa-heart' (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3533:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+player-core.js?v=1764947034:1074 🎵 Queue Song API Response: Object
+player-core.js?v=1764947034:1101 Playing song: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/323/playlist.m3u8 Type: hls Preview: null Fallback: https://muzibu.com.tr/api/muzibu/songs/323/serve?expires=1764948849&signature=aeade51bac16181d760cf6aefd1baabe893a0816afd96ff35474fe4e11b89de4&force_mp3=1
+player-core.js?v=1764947034:1206 loadAndPlaySong: Object
+player-core.js?v=1764947034:1522 HLS loaded, duration: 174.941311

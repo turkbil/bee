@@ -14,8 +14,8 @@ use App\Models\User;
 class SubscriptionManageComponent extends Component
 {
     public $subscriptionId;
-    public $customer_id;
-    public $plan_id;
+    public $user_id;
+    public $subscription_plan_id;
     public $cycle_key;
     public $status = 'active';
     public $has_trial = false;
@@ -26,7 +26,9 @@ class SubscriptionManageComponent extends Component
 
     // Computed
     public $price_per_cycle = 0;
+    public $currency = 'TRY';
     public $available_cycles = [];
+    public $selected_cycle_metadata = [];
 
     public function boot()
     {
@@ -50,8 +52,8 @@ class SubscriptionManageComponent extends Component
     {
         $subscription = Subscription::findOrFail($this->subscriptionId);
 
-        $this->customer_id = $subscription->customer_id;
-        $this->plan_id = $subscription->plan_id;
+        $this->user_id = $subscription->user_id;
+        $this->subscription_plan_id = $subscription->subscription_plan_id;
         $this->cycle_key = $subscription->cycle_key;
         $this->status = $subscription->status;
         $this->has_trial = (bool) $subscription->has_trial;
@@ -62,33 +64,47 @@ class SubscriptionManageComponent extends Component
         $this->current_period_end = $subscription->current_period_end?->format('Y-m-d');
 
         // Load plan cycles
-        if ($this->plan_id) {
+        if ($this->subscription_plan_id) {
             $this->loadPlanCycles();
         }
     }
 
     protected function loadPlanCycles()
     {
-        $plan = SubscriptionPlan::find($this->plan_id);
+        $plan = SubscriptionPlan::find($this->subscription_plan_id);
         if ($plan) {
             $this->available_cycles = $plan->getSortedCycles();
         }
     }
 
-    public function updatedPlanId()
+    public function updatedSubscriptionPlanId()
     {
-        if ($this->plan_id) {
-            $this->loadPlanCycles();
+        if ($this->subscription_plan_id) {
+            $plan = SubscriptionPlan::find($this->subscription_plan_id);
 
-            // Reset cycle selection
-            $this->cycle_key = null;
-            $this->price_per_cycle = 0;
+            if ($plan) {
+                // Load plan cycles
+                $this->loadPlanCycles();
 
-            // Auto-select first cycle if available
-            if (!empty($this->available_cycles)) {
-                $firstCycleKey = array_key_first($this->available_cycles);
-                $this->cycle_key = $firstCycleKey;
-                $this->updatedCycleKey();
+                // Set currency from plan
+                $this->currency = $plan->currency ?? 'TRY';
+
+                // Reset cycle selection
+                $this->cycle_key = null;
+                $this->price_per_cycle = 0;
+                $this->selected_cycle_metadata = [];
+
+                // Auto-select first cycle if available
+                if (!empty($this->available_cycles)) {
+                    $firstCycleKey = array_key_first($this->available_cycles);
+                    $this->cycle_key = $firstCycleKey;
+                    $this->updatedCycleKey();
+                }
+
+                // If plan is trial, auto-enable trial
+                if ($plan->is_trial && !$this->subscriptionId) {
+                    $this->has_trial = true;
+                }
             }
         }
     }
@@ -98,10 +114,13 @@ class SubscriptionManageComponent extends Component
         if ($this->cycle_key && !empty($this->available_cycles[$this->cycle_key])) {
             $cycle = $this->available_cycles[$this->cycle_key];
 
-            // Update price
-            $this->price_per_cycle = (float) $cycle['price'];
+            // Store full cycle metadata
+            $this->selected_cycle_metadata = $cycle;
 
-            // Update trial days from cycle (if not manually set)
+            // Update price
+            $this->price_per_cycle = (float) ($cycle['price'] ?? 0);
+
+            // Update trial days from cycle (if not manually set and new subscription)
             if (!$this->subscriptionId && isset($cycle['trial_days']) && $cycle['trial_days'] > 0) {
                 $this->has_trial = true;
                 $this->trial_days = (int) $cycle['trial_days'];
@@ -131,8 +150,8 @@ class SubscriptionManageComponent extends Component
     protected function rules()
     {
         return [
-            'customer_id' => 'required|exists:users,id',
-            'plan_id' => 'required|exists:subscription_plans,subscription_plan_id',
+            'user_id' => 'required|exists:users,id',
+            'subscription_plan_id' => 'required|exists:subscription_plans,subscription_plan_id',
             'cycle_key' => 'required|string',
             'status' => 'required|in:active,trial,paused,cancelled,expired,pending_payment',
             'has_trial' => 'boolean',
@@ -147,7 +166,7 @@ class SubscriptionManageComponent extends Component
     {
         $this->validate();
 
-        $plan = SubscriptionPlan::findOrFail($this->plan_id);
+        $plan = SubscriptionPlan::findOrFail($this->subscription_plan_id);
         $cycle = $plan->getCycle($this->cycle_key);
 
         if (!$cycle) {
@@ -160,19 +179,22 @@ class SubscriptionManageComponent extends Component
         }
 
         $data = [
-            'customer_id' => $this->customer_id,
-            'plan_id' => $plan->subscription_plan_id,
+            'user_id' => $this->user_id,
+            'subscription_plan_id' => $plan->subscription_plan_id,
             'status' => $this->status,
             'cycle_key' => $this->cycle_key,
-            'cycle_metadata' => [
-                'label' => $cycle['label'],
-                'duration_days' => $cycle['duration_days'],
-                'price' => $cycle['price'],
+            'cycle_metadata' => $this->selected_cycle_metadata ?: [
+                'label' => $cycle['label'] ?? [],
+                'duration_days' => $cycle['duration_days'] ?? 30,
+                'price' => $cycle['price'] ?? 0,
                 'compare_price' => $cycle['compare_price'] ?? null,
                 'trial_days' => $cycle['trial_days'] ?? null,
+                'badge' => $cycle['badge'] ?? null,
+                'promo_text' => $cycle['promo_text'] ?? null,
+                'sort_order' => $cycle['sort_order'] ?? 0,
             ],
             'price_per_cycle' => $this->price_per_cycle,
-            'currency' => 'TRY',
+            'currency' => $this->currency,
             'has_trial' => $this->has_trial,
             'trial_days' => $this->has_trial ? $this->trial_days : 0,
             'trial_ends_at' => $this->has_trial ? now()->addDays($this->trial_days) : null,
@@ -193,6 +215,12 @@ class SubscriptionManageComponent extends Component
             } else {
                 Subscription::create($data);
                 $message = 'Abonelik başarıyla oluşturuldu';
+
+                // If trial subscription, mark user as has_used_trial
+                if ($this->has_trial) {
+                    User::where('id', $this->user_id)
+                        ->update(['has_used_trial' => true]);
+                }
             }
 
             $this->dispatch('toast', [

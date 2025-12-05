@@ -52,4 +52,51 @@ class SectorController extends Controller
             return response()->json(['error' => 'Internal error'], 500);
         }
     }
+
+    public function songs(int $id): JsonResponse
+    {
+        try {
+            $sector = Sector::find($id);
+            if (!$sector) {
+                return response()->json(['error' => 'Sector not found'], 404);
+            }
+
+            // Get all songs from all playlists in this sector
+            $songs = collect();
+            foreach ($sector->playlists()->where('is_active', 1)->get() as $playlist) {
+                $playlistSongs = $playlist->songs()->where('is_active', 1)->with('album.artist')->get();
+                $songs = $songs->merge($playlistSongs);
+            }
+
+            // Remove duplicates and map to API format
+            $songs = $songs->unique('song_id')->map(function ($song) {
+                $album = $song->album;
+                $artist = $album?->artist;
+                return [
+                    'song_id' => $song->song_id,
+                    'song_title' => $song->title,
+                    'song_slug' => $song->slug,
+                    'duration' => $song->duration,
+                    'file_path' => $song->file_path,
+                    'hls_path' => $song->hls_path,
+                    'hls_converted' => $song->hls_converted,
+                    'album_id' => $album?->album_id,
+                    'album_title' => $album?->title,
+                    'artist_id' => $artist?->artist_id,
+                    'artist_title' => $artist?->title,
+                ];
+            })->values();
+
+            return response()->json([
+                'sector' => [
+                    'sector_id' => $sector->sector_id,
+                    'title' => $sector->title,
+                ],
+                'songs' => $songs
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Sector songs error:', ['sector_id' => $id, 'message' => $e->getMessage()]);
+            return response()->json(['error' => 'Internal error'], 500);
+        }
+    }
 }

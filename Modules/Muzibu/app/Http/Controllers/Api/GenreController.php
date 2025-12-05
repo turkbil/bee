@@ -56,7 +56,13 @@ class GenreController extends Controller
                 ];
             });
 
-            return response()->json($songs);
+            return response()->json([
+                'genre' => [
+                    'genre_id' => $genre->genre_id,
+                    'title' => $genre->title,
+                ],
+                'songs' => $songs
+            ]);
         } catch (\Exception $e) {
             \Log::error('Genre songs error:', ['genre_id' => $id, 'message' => $e->getMessage()]);
             return response()->json(['error' => 'Internal error'], 500);

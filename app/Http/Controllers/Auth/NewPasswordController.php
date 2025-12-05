@@ -22,7 +22,8 @@ class NewPasswordController extends Controller
     {
         // Tema-aware reset password view
         $theme = app(\App\Services\ThemeService::class)->getActiveTheme();
-        $viewPath = "themes.{$theme}.auth.reset-password";
+        $themeName = $theme ? $theme->name : 'simple';
+        $viewPath = "themes.{$themeName}.auth.reset-password";
 
         // Fallback: Tema yoksa veya view yoksa default kullan
         if (!view()->exists($viewPath)) {

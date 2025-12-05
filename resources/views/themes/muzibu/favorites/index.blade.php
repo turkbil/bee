@@ -64,8 +64,47 @@
                                         </button>
                                     </div>
 
-                                    <div class="absolute top-2 right-2" @click.stop>
-                                        <x-common.favorite-button :model="$item" size="sm" iconOnly="true" />
+                                    <div class="absolute top-2 right-2" x-on:click.stop>
+                                        @auth
+                                        <button
+                                            x-data="{
+                                                favorited: {{ auth()->check() && method_exists($item, 'isFavoritedBy') && $item->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                                                loading: false,
+                                                toggle() {
+                                                    if (this.loading) return;
+                                                    this.loading = true;
+                                                    fetch('/api/favorites/toggle', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
+                                                            'Accept': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({
+                                                            model_class: '{{ addslashes(get_class($item)) }}',
+                                                            model_id: {{ $item->id }}
+                                                        })
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.success) {
+                                                            this.favorited = data.data.is_favorited;
+                                                        }
+                                                    })
+                                                    .catch(error => console.error('Favorite error:', error))
+                                                    .finally(() => this.loading = false);
+                                                }
+                                            }"
+                                            x-on:click="toggle()"
+                                            class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform"
+                                        >
+                                            <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
+                                        </button>
+                                        @else
+                                        <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
+                                            <i class="far fa-heart text-white text-sm"></i>
+                                        </a>
+                                        @endauth
                                     </div>
                                 </div>
 
@@ -82,7 +121,7 @@
 
                         @elseif($item instanceof \Modules\Muzibu\App\Models\Album)
                             <!-- Album Card -->
-                            <a href="{{ route('muzibu.album.show', $item->getTranslation('slug', app()->getLocale())) }}">
+                            <a href="{{ route('muzibu.albums.show', $item->getTranslation('slug', app()->getLocale())) }}">
                                 <div class="relative mb-4">
                                     @if($item->getFirstMedia('album_cover'))
                                         <img src="{{ thumb($item->getFirstMedia('album_cover'), 300, 300, ['scale' => 1]) }}"
@@ -101,8 +140,47 @@
                                         </button>
                                     </div>
 
-                                    <div class="absolute top-2 right-2" @click.stop>
-                                        <x-common.favorite-button :model="$item" size="sm" iconOnly="true" />
+                                    <div class="absolute top-2 right-2" x-on:click.stop>
+                                        @auth
+                                        <button
+                                            x-data="{
+                                                favorited: {{ auth()->check() && method_exists($item, 'isFavoritedBy') && $item->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                                                loading: false,
+                                                toggle() {
+                                                    if (this.loading) return;
+                                                    this.loading = true;
+                                                    fetch('/api/favorites/toggle', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
+                                                            'Accept': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({
+                                                            model_class: '{{ addslashes(get_class($item)) }}',
+                                                            model_id: {{ $item->id }}
+                                                        })
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.success) {
+                                                            this.favorited = data.data.is_favorited;
+                                                        }
+                                                    })
+                                                    .catch(error => console.error('Favorite error:', error))
+                                                    .finally(() => this.loading = false);
+                                                }
+                                            }"
+                                            x-on:click="toggle()"
+                                            class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform"
+                                        >
+                                            <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
+                                        </button>
+                                        @else
+                                        <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
+                                            <i class="far fa-heart text-white text-sm"></i>
+                                        </a>
+                                        @endauth
                                     </div>
                                 </div>
 
@@ -138,8 +216,47 @@
                                         </button>
                                     </div>
 
-                                    <div class="absolute top-2 right-2" @click.stop>
-                                        <x-common.favorite-button :model="$item" size="sm" iconOnly="true" />
+                                    <div class="absolute top-2 right-2" x-on:click.stop>
+                                        @auth
+                                        <button
+                                            x-data="{
+                                                favorited: {{ auth()->check() && method_exists($item, 'isFavoritedBy') && $item->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
+                                                loading: false,
+                                                toggle() {
+                                                    if (this.loading) return;
+                                                    this.loading = true;
+                                                    fetch('/api/favorites/toggle', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
+                                                            'Accept': 'application/json'
+                                                        },
+                                                        body: JSON.stringify({
+                                                            model_class: '{{ addslashes(get_class($item)) }}',
+                                                            model_id: {{ $item->id }}
+                                                        })
+                                                    })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.success) {
+                                                            this.favorited = data.data.is_favorited;
+                                                        }
+                                                    })
+                                                    .catch(error => console.error('Favorite error:', error))
+                                                    .finally(() => this.loading = false);
+                                                }
+                                            }"
+                                            x-on:click="toggle()"
+                                            class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform"
+                                        >
+                                            <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
+                                        </button>
+                                        @else
+                                        <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
+                                            <i class="far fa-heart text-white text-sm"></i>
+                                        </a>
+                                        @endauth
                                     </div>
                                 </div>
 

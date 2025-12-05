@@ -143,7 +143,9 @@ class MuzibuCacheService
         $cacheKey = $this->getCacheKey(self::PREFIX_PLAYLIST, $playlistId);
 
         return Cache::remember($cacheKey, self::TTL_PLAYLIST, function () use ($playlistId) {
-            return Playlist::with(['songs.album.artist'])
+            return Playlist::with(['songs' => function($q) {
+                    $q->where('is_active', 1);
+                }, 'songs.album.artist'])
                 ->where('playlist_id', $playlistId)
                 ->where('is_active', 1)
                 ->first();
@@ -206,7 +208,9 @@ class MuzibuCacheService
         $cacheKey = $this->getCacheKey(self::PREFIX_ALBUM, $albumId);
 
         return Cache::remember($cacheKey, self::TTL_ALBUM, function () use ($albumId) {
-            return Album::with(['artist', 'songs'])
+            return Album::with(['artist', 'songs' => function($q) {
+                    $q->where('is_active', 1);
+                }])
                 ->where('album_id', $albumId)
                 ->where('is_active', 1)
                 ->first();

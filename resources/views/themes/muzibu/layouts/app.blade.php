@@ -96,6 +96,9 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
 
+    {{-- ⚡ instant.page v5.2.0 - Prefetch links on hover for instant page loads --}}
+    <script src="//instant.page/5.2.0" type="module" data-intensity="mousedown"></script>
+
     @livewireStyles
 
     {{-- Custom Styles --}}
@@ -109,16 +112,53 @@
     <audio id="hlsAudio" x-ref="hlsAudio" class="hidden"></audio>
     <audio id="hlsAudioNext" class="hidden"></audio>
 
-    {{-- Main App Grid - Responsive Sidebar Width (ONLY right sidebar width changes) --}}
-    <div class="grid grid-rows-[56px_1fr_65px] 2xl:grid-cols-[220px_1fr_360px] xl:grid-cols-[220px_1fr_340px] lg:grid-cols-[220px_1fr] grid-cols-1 h-screen gap-3 px-3 pb-3">
+    {{-- Main App Grid - Homepage has right sidebar, other pages don't --}}
+    @php
+        $initialIsHomepage = empty(trim(request()->path(), '/'));
+    @endphp
+    <div
+        class="grid grid-rows-[56px_1fr_65px] lg:grid-cols-[220px_1fr] grid-cols-1 h-screen gap-3 px-3 pb-3"
+        x-data="{
+            isHomepage: {{ $initialIsHomepage ? 'true' : 'false' }},
+            checkIsHomepage() {
+                const currentPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+                this.isHomepage = (currentPath === '' || currentPath === '/');
+            }
+        }"
+        x-init="
+            // URL değişikliklerini dinle
+            window.addEventListener('route-changed', (e) => {
+                checkIsHomepage();
+            });
+
+            // SPA navigation sonrası da kontrol et
+            window.addEventListener('popstate', () => {
+                checkIsHomepage();
+            });
+
+            // Her 100ms'de bir kontrol et (güvenlik için)
+            setInterval(() => {
+                checkIsHomepage();
+            }, 100);
+        "
+        :class="{
+            '2xl:grid-cols-[220px_1fr_360px] xl:grid-cols-[220px_1fr_320px]': isHomepage
+        }"
+    >
         @include('themes.muzibu.components.header')
         @include('themes.muzibu.components.sidebar-left')
         @include('themes.muzibu.components.main-content')
-        @include('themes.muzibu.components.sidebar-right')
+
+        {{-- Right Sidebar - Shows on homepage, XL+ screens only --}}
+        <aside class="overflow-y-auto rounded-2xl xl:block" x-show="isHomepage" x-cloak style="display: none;">
+            @include('themes.muzibu.components.sidebar-right')
+        </aside>
+
         @include('themes.muzibu.components.player')
         @include('themes.muzibu.components.queue-overlay')
         @include('themes.muzibu.components.lyrics-overlay')
         @include('themes.muzibu.components.keyboard-shortcuts-overlay')
+        @include('themes.muzibu.components.loading-overlay')
         @include('themes.muzibu.components.bottom-nav')
     </div>
 
@@ -158,6 +198,9 @@
     {{-- 6. UI Components --}}
     <script src="{{ asset('themes/muzibu/js/ui/muzibu-toast.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('themes/muzibu/js/ui/muzibu-theme.js') }}?v={{ time() }}"></script>
+
+    {{-- 7. 🚀 SPA Router (Alpine Store'dan sonra yükle) --}}
+    <script src="{{ asset('themes/muzibu/js/router/muzibu-router.js') }}?v={{ time() }}"></script>
 
     <script>
         // 🔇 Suppress storage access errors (browser privacy/extension related)

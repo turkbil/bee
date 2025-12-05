@@ -226,6 +226,22 @@ function muzibuApp() {
         // 🎯 Favorites functions (toggleFavorite, isFavorite, isLiked) moved to features/favorites.js
 
         async togglePlayPause() {
+            // 🔒 PREVIEW BLOCKED: Play button disabled after preview ends
+            if (this.isPreviewBlocked) {
+                console.log('🔒 Play blocked: Preview ended, upgrading required');
+                this.showToast('Premium\'a geçin, sınırsız dinleyin!', 'warning');
+
+                // Show modal
+                const playLimitsElement = document.querySelector('[x-data*="playLimits"]');
+                if (playLimitsElement) {
+                    const playLimitsComponent = Alpine.$data(playLimitsElement);
+                    if (playLimitsComponent) {
+                        playLimitsComponent.showGuestModal = true;
+                    }
+                }
+                return;
+            }
+
             // Eğer queue boşsa, rastgele şarkılar yükle
             if (this.queue.length === 0 || !this.currentSong) {
                 await this.playRandomSongs();
@@ -760,6 +776,28 @@ function muzibuApp() {
             const percent = (e.clientX - rect.left) / rect.width;
             const newTime = this.duration * percent;
 
+            // 🔒 PREVIEW LIMIT: Guest kullanıcılar sadece 30 saniye dinleyebilir
+            if (this.previewDuration && this.previewDuration > 0) {
+                const maxSeekTime = this.previewDuration; // 30 saniye
+
+                if (newTime > maxSeekTime) {
+                    // 30 saniye sonrasına gitmeye çalışıyor - Blokla!
+                    console.log(`🔒 Seek blocked: Tried to seek to ${newTime.toFixed(1)}s but max is ${maxSeekTime}s`);
+                    this.showToast('Premium\'a geçin, tüm şarkıyı dinleyin!', 'warning');
+
+                    // Modal göster
+                    const playLimitsElement = document.querySelector('[x-data*="playLimits"]');
+                    if (playLimitsElement) {
+                        const playLimitsComponent = Alpine.$data(playLimitsElement);
+                        if (playLimitsComponent) {
+                            playLimitsComponent.showGuestModal = true;
+                        }
+                    }
+
+                    return; // Seek işlemini iptal et
+                }
+            }
+
             if (this.howl && this.duration) {
                 this.howl.seek(newTime);
             }
@@ -842,15 +880,28 @@ function muzibuApp() {
 
         async playAlbum(id) {
             try {
+                // 🚀 INSTANT FEEDBACK: Show loading state immediately
                 this.isLoading = true;
+                this.showToast('Yükleniyor...', 'info');
+
                 const response = await fetch(`/api/muzibu/albums/${id}`);
                 const album = await response.json();
 
                 if (album.songs && album.songs.length > 0) {
-                    this.queue = album.songs;
+                    // 🧹 Clean queue from null/undefined songs
+                    this.queue = this.cleanQueue(album.songs);
+
+                    if (this.queue.length === 0) {
+                        this.showToast('Albümde çalınabilir şarkı bulunamadı', 'error');
+                        return;
+                    }
+
                     this.queueIndex = 0;
                     await this.playSongFromQueue(0);
-                    this.showToast(`${album.album_title.tr} çalınıyor`, 'success');
+
+                    // Safe album title extraction
+                    const albumTitle = album.album_title?.tr || album.album_title?.en || album.album_title || 'Albüm';
+                    this.showToast(`${albumTitle} çalınıyor`, 'success');
                 }
             } catch (error) {
                 console.error('Failed to play album:', error);
@@ -862,19 +913,94 @@ function muzibuApp() {
 
         async playPlaylist(id) {
             try {
+                // 🚀 INSTANT FEEDBACK: Show loading state immediately
                 this.isLoading = true;
+                this.showToast('Yükleniyor...', 'info');
+
                 const response = await fetch(`/api/muzibu/playlists/${id}`);
                 const playlist = await response.json();
 
                 if (playlist.songs && playlist.songs.length > 0) {
-                    this.queue = playlist.songs;
+                    // 🧹 Clean queue from null/undefined songs
+                    this.queue = this.cleanQueue(playlist.songs);
+
+                    if (this.queue.length === 0) {
+                        this.showToast('Playlist\'te çalınabilir şarkı bulunamadı', 'error');
+                        return;
+                    }
+
                     this.queueIndex = 0;
                     await this.playSongFromQueue(0);
-                    this.showToast(`${playlist.title.tr} çalınıyor`, 'success');
+
+                    // Safe playlist title extraction
+                    const playlistTitle = playlist.title?.tr || playlist.title?.en || playlist.title || 'Playlist';
+                    this.showToast(`${playlistTitle} çalınıyor`, 'success');
                 }
             } catch (error) {
                 console.error('Failed to play playlist:', error);
                 this.showToast('Playlist yüklenemedi', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async playGenre(id) {
+            try {
+                // 🚀 INSTANT FEEDBACK: Show loading state immediately
+                this.isLoading = true;
+                this.showToast('Yükleniyor...', 'info');
+
+                const response = await fetch(`/api/muzibu/genres/${id}/songs`);
+                const data = await response.json();
+
+                if (data.songs && data.songs.length > 0) {
+                    this.queue = this.cleanQueue(data.songs);
+
+                    if (this.queue.length === 0) {
+                        this.showToast('Tür\'de çalınabilir şarkı bulunamadı', 'error');
+                        return;
+                    }
+
+                    this.queueIndex = 0;
+                    await this.playSongFromQueue(0);
+
+                    const genreTitle = data.genre?.title?.tr || data.genre?.title?.en || data.genre?.title || 'Tür';
+                    this.showToast(`${genreTitle} çalınıyor`, 'success');
+                }
+            } catch (error) {
+                console.error('Failed to play genre:', error);
+                this.showToast('Tür yüklenemedi', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async playSector(id) {
+            try {
+                // 🚀 INSTANT FEEDBACK: Show loading state immediately
+                this.isLoading = true;
+                this.showToast('Yükleniyor...', 'info');
+
+                const response = await fetch(`/api/muzibu/sectors/${id}/songs`);
+                const data = await response.json();
+
+                if (data.songs && data.songs.length > 0) {
+                    this.queue = this.cleanQueue(data.songs);
+
+                    if (this.queue.length === 0) {
+                        this.showToast('Sektör\'de çalınabilir şarkı bulunamadı', 'error');
+                        return;
+                    }
+
+                    this.queueIndex = 0;
+                    await this.playSongFromQueue(0);
+
+                    const sectorTitle = data.sector?.title?.tr || data.sector?.title?.en || data.sector?.title || 'Sektör';
+                    this.showToast(`${sectorTitle} çalınıyor`, 'success');
+                }
+            } catch (error) {
+                console.error('Failed to play sector:', error);
+                this.showToast('Sektör yüklenemedi', 'error');
             } finally {
                 this.isLoading = false;
             }
@@ -895,6 +1021,13 @@ function muzibuApp() {
                 const song = songs.find(s => s.song_id == id);
 
                 if (song) {
+                    // Determine cover: song.media_id > album.media_id > placeholder
+                    const coverMediaId = song.media_id || song.album?.media_id || null;
+                    const albumCover = coverMediaId ? coverMediaId : '/placeholder-album.jpg';
+
+                    // Enrich song object with cover
+                    song.album_cover = albumCover;
+
                     // Create queue with just this song
                     this.queue = [song];
                     this.queueIndex = 0;
@@ -926,6 +1059,15 @@ function muzibuApp() {
                     }
 
                     const streamData = await streamResponse.json();
+
+                    // 🎯 COVER: Update song cover from stream API
+                    if (streamData.song && streamData.song.cover_url) {
+                        // Extract media_id from cover_url (format: .../thumb/123/600/600)
+                        const coverMatch = streamData.song.cover_url.match(/\/thumb\/(\d+)\//);
+                        if (coverMatch) {
+                            song.album_cover = coverMatch[1]; // Use media_id for thumbmaker
+                        }
+                    }
 
                     // 🔍 DEBUG: Backend response'u logla
                     console.log('🎵 Stream API Response:', {
@@ -978,6 +1120,7 @@ function muzibuApp() {
             this.currentSong = song;
             this.queueIndex = index;
             this.playTracked = false; // 🎵 Reset play tracking for new song
+            this.isPreviewBlocked = false; // 🔓 Reset preview block for new song
 
             // Check if song is favorited
             this.checkFavoriteStatus(song.song_id);
@@ -1100,15 +1243,27 @@ function muzibuApp() {
             // Unblock next/previous when starting a new song
             this.isPreviewBlocked = false;
 
+            // 🎯 Reset intro skip flag for new song
+            this.introSkipped = false;
+
             // Clear progress interval
             if (this.progressInterval) {
                 clearInterval(this.progressInterval);
             }
 
+            // 🎯 Store preview duration in instance for Howler callback access
+            this.previewDuration = previewDuration;
+
             // Use stream type from API if provided, otherwise detect from URL
             let useHls = false;
             if (streamType) {
-                useHls = streamType === 'hls';
+                // 🔒 GUEST PREVIEW: Force MP3 for preview mode (HLS has encryption issues)
+                if (previewDuration && previewDuration > 0) {
+                    useHls = false; // Force MP3 fallback immediately
+                    console.log('🔒 Guest preview mode: Forcing MP3 (skipping HLS)');
+                } else {
+                    useHls = streamType === 'hls';
+                }
             } else {
                 // Fallback: detect from URL
                 const isDirectAudio = url.match(/\.(mp3|ogg|wav|webm|aac|m4a)(\?|$)/i);
@@ -1116,14 +1271,19 @@ function muzibuApp() {
                 useHls = isHlsUrl || !isDirectAudio;
             }
 
-            console.log('loadAndPlaySong:', { url, streamType, useHls });
+            console.log('loadAndPlaySong:', { url, streamType, useHls, previewMode: !!previewDuration });
 
             if (useHls) {
                 this.isHlsStream = true;
                 await this.playHlsStream(url, targetVolume);
             } else {
                 this.isHlsStream = false;
-                await this.playWithHowler(url, targetVolume);
+                // 🔒 GUEST PREVIEW: Use fallback URL if available (faster MP3 loading)
+                const playUrl = (previewDuration && previewDuration > 0 && this.currentFallbackUrl)
+                    ? this.currentFallbackUrl
+                    : url;
+                console.log('🎵 Playing URL:', playUrl);
+                await this.playWithHowler(playUrl, targetVolume);
             }
 
             // 🎵 GUEST PREVIEW: Setup preview duration limits
@@ -1131,30 +1291,19 @@ function muzibuApp() {
                 // Wait a bit for audio to load and get duration
                 setTimeout(() => {
                     const duration = this.duration || 180; // Fallback to 3 minutes
-                    const introSkipSeconds = duration * 0.20; // Skip first 20% (intro)
-                    const fadeStartSeconds = previewDuration - 5; // Start fade-out 5 seconds before end
+
+                    // 🎯 PREVIEW CALCULATION: Play from 0s to previewDuration (30s)
+                    const fadeStartSeconds = previewDuration - 5; // Start fade 5s before end (25s)
 
                     console.log('🎵 Guest Preview Config:', {
                         totalDuration: duration,
-                        previewDuration: previewDuration,
-                        introSkipAt: introSkipSeconds.toFixed(1) + 's',
+                        startFrom: '0s',
+                        playDuration: previewDuration + 's',
                         fadeStartAt: fadeStartSeconds + 's',
                         stopAt: previewDuration + 's'
                     });
 
-                    // INTRO SKIP: Jump to 20% to skip intro
-                    if (this.howl && this.howl.playing()) {
-                        this.howl.seek(introSkipSeconds);
-                        console.log(`🎵 Intro skipped: Jumped to ${introSkipSeconds.toFixed(1)}s (20% of song)`);
-                    } else if (this.hls) {
-                        const audio = this.getActiveHlsAudio();
-                        if (audio && !audio.paused) {
-                            audio.currentTime = introSkipSeconds;
-                            console.log(`🎵 Intro skipped: Jumped to ${introSkipSeconds.toFixed(1)}s (20% of song)`);
-                        }
-                    }
-
-                    // FADE-OUT: Start fade 5 seconds before end (25th second for 30s preview)
+                    // FADE-OUT: Start fade 5 seconds before end (from intro skip point)
                     this.fadeOutTimer = setTimeout(() => {
                         console.log('🎵 Guest preview: Fade-out başladı (son 5 saniye)');
                         const targetVolume = this.isMuted ? 0 : this.volume / 100;
@@ -1169,18 +1318,29 @@ function muzibuApp() {
                         }
                     }, fadeStartSeconds * 1000);
 
-                    // STOP: Stop playback at preview duration end
+                    // STOP: Stop playback after preview duration (from intro skip point)
                     this.previewTimer = setTimeout(() => {
                         console.log('🛑 Guest preview ended - stopping playback');
-                        this.pause();
+
+                        // Pause playback (Howler or HLS)
+                        if (this.howl) {
+                            this.howl.pause();
+                        } else if (this.hls) {
+                            const audio = this.getActiveHlsAudio();
+                            if (audio) audio.pause();
+                        }
+                        this.isPlaying = false;
 
                         // 🔒 Block next/previous buttons
                         this.isPreviewBlocked = true;
 
                         // Show guest modal
-                        const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
-                        if (playLimitsComponent) {
-                            playLimitsComponent.showGuestModal = true;
+                        const playLimitsElement = document.querySelector('[x-data*="playLimits"]');
+                        if (playLimitsElement) {
+                            const playLimitsComponent = Alpine.$data(playLimitsElement);
+                            if (playLimitsComponent) {
+                                playLimitsComponent.showGuestModal = true;
+                            }
                         }
 
                         this.showToast('Premium\'a geçin, sınırsız dinleyin!', 'info');
@@ -1203,9 +1363,12 @@ function muzibuApp() {
                         const currentVolume = this.howl.volume();
                         this.howl.fade(currentVolume, 0, this.fadeOutDuration);
                         this.howl.once('fade', () => {
-                            this.howl.stop();
-                            this.howl.unload();
-                            this.howl = null;
+                            // Check if howl still exists (race condition protection)
+                            if (this.howl) {
+                                this.howl.stop();
+                                this.howl.unload();
+                                this.howl = null;
+                            }
                             resolve();
                         });
                     });
@@ -1247,11 +1410,18 @@ function muzibuApp() {
         async playWithHowler(url, targetVolume) {
             const self = this;
 
+            // 🔍 DEBUG: Log exactly what URL we're about to pass to Howler
+            console.log('🎵 playWithHowler called with URL:', url);
+            console.log('🔍 URL type:', typeof url);
+            console.log('🔍 URL length:', url?.length);
+
             // Determine format from URL or default to mp3
             let format = ['mp3'];
             if (url.includes('.ogg')) format = ['ogg'];
             else if (url.includes('.wav')) format = ['wav'];
             else if (url.includes('.webm')) format = ['webm'];
+
+            console.log('🎵 Creating Howl with src:', [url]);
 
             this.howl = new Howl({
                 src: [url],
@@ -1262,7 +1432,7 @@ function muzibuApp() {
                     self.duration = self.howl.duration();
                     console.log('Howler loaded, duration:', self.duration);
                 },
-                onplay: function() {
+onplay: function() {
                     self.isPlaying = true;
                     self.startProgressTracking('howler');
 
@@ -1281,6 +1451,9 @@ function muzibuApp() {
                 },
                 onloaderror: function(id, error) {
                     console.error('Howler load error:', error);
+                    console.error('🔍 Howler ID:', id);
+                    console.error('🔍 Howler._src:', self.howl?._src);
+                    console.error('🔍 Howler.src():', self.howl?.src());
                     console.error('❌ MP3 playback failed, cannot fallback (already in fallback mode)');
                     self.showToast('Şarkı yüklenemedi', 'error');
                     self.isPlaying = false;
@@ -1314,9 +1487,42 @@ function muzibuApp() {
 
             // Check HLS.js support
             if (Hls.isSupported()) {
+                // Store original chunk URLs with tokens from playlist
+                const chunkUrlsWithTokens = {};
+
                 this.hls = new Hls({
                     enableWorker: true,
-                    lowLatencyMode: false
+                    lowLatencyMode: false,
+                    // Custom XHR setup to preserve query strings (tokens) for chunks only
+                    xhrSetup: function(xhr, url) {
+                        // Skip encryption key URLs - let HLS.js handle them normally
+                        if (url.includes('/stream/key/') || url.includes('/key/')) {
+                            return; // Don't modify encryption key requests
+                        }
+
+                        // HLS.js strips query strings from chunks, we restore them here
+                        // Extract chunk filename from URL
+                        const chunkMatch = url.match(/chunk_\d+\.ts/);
+                        if (chunkMatch && chunkUrlsWithTokens[chunkMatch[0]]) {
+                            // Replace with stored URL that has token
+                            xhr.open('GET', chunkUrlsWithTokens[chunkMatch[0]], true);
+                            return;
+                        }
+                    }
+                });
+
+                // Intercept playlist loading to extract chunk URLs with tokens
+                this.hls.on(Hls.Events.LEVEL_LOADED, function(event, data) {
+                    if (data.details && data.details.fragments) {
+                        data.details.fragments.forEach(function(fragment) {
+                            if (fragment.url) {
+                                const chunkMatch = fragment.url.match(/chunk_\d+\.ts/);
+                                if (chunkMatch) {
+                                    chunkUrlsWithTokens[chunkMatch[0]] = fragment.url;
+                                }
+                            }
+                        });
+                    }
                 });
 
                 this.hls.loadSource(url);
@@ -1349,6 +1555,8 @@ function muzibuApp() {
                         // HLS yüklenemezse MP3'e fallback (SIGNED URL)
                         if (data.type === Hls.ErrorTypes.NETWORK_ERROR && self.currentSong && self.currentFallbackUrl) {
                             console.log('🔄 HLS failed, falling back to signed MP3...');
+                            console.log('🔍 currentFallbackUrl:', self.currentFallbackUrl);
+                            console.log('🔍 currentFallbackUrl type:', typeof self.currentFallbackUrl);
 
                             // Cleanup HLS
                             if (self.hls) {
@@ -1360,6 +1568,7 @@ function muzibuApp() {
                             self.showToast('MP3 ile çalıyor, HLS hazırlanıyor...', 'info');
 
                             // MP3 ile çal (signed URL)
+                            console.log('🔍 About to call playWithHowler with:', self.currentFallbackUrl);
                             self.playWithHowler(self.currentFallbackUrl, targetVolume);
                         } else {
                             self.showToast('Şarkı yüklenemedi', 'error');
@@ -2055,13 +2264,24 @@ function muzibuApp() {
             }
         },
 
+        // 🧹 Clean queue: Remove null/undefined songs
+        cleanQueue(songs) {
+            if (!Array.isArray(songs)) return [];
+            return songs.filter(song => song !== null && song !== undefined && typeof song === 'object');
+        },
+
         toggleTheme() {
             this.isDarkMode = !this.isDarkMode;
             safeStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
             this.showToast(this.isDarkMode ? 'Koyu tema aktif' : 'Açık tema aktif', 'success');
         },
 
-        dragStart(index, event) {
+        dragStart(event, index) {
+            // Guard: Ensure event and dataTransfer exist
+            if (!event || !event.dataTransfer) {
+                console.warn('dragStart: Invalid event or dataTransfer');
+                return;
+            }
             this.draggedIndex = index;
             event.dataTransfer.effectAllowed = 'move';
             event.dataTransfer.setData('text/html', event.target);
@@ -2075,6 +2295,14 @@ function muzibuApp() {
 
         drop(dropIndex) {
             if (this.draggedIndex === null || this.draggedIndex === dropIndex) {
+                this.draggedIndex = null;
+                this.dropTargetIndex = null;
+                return;
+            }
+
+            // Guard: Ensure valid indices and songs exist
+            if (!this.queue[this.draggedIndex] || !this.queue[dropIndex]) {
+                console.warn('drop: Invalid queue indices or undefined songs');
                 this.draggedIndex = null;
                 this.dropTargetIndex = null;
                 return;

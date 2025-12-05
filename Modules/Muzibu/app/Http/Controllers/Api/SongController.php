@@ -191,7 +191,7 @@ class SongController extends Controller
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
      */
-    public function serve(int $id)
+    public function serve(int $id, Request $request)
     {
         try {
             // 🔒 FIXED: Use Eloquent (tenant-aware)
@@ -203,8 +203,11 @@ class SongController extends Controller
                 abort(404, 'Song not found');
             }
 
-            // 🎵 HLS PRIORITY: If HLS converted, serve playlist.m3u8
-            if ($song->hls_converted && !empty($song->hls_path)) {
+            // 🔐 FORCE MP3: If force_mp3 parameter exists, skip HLS (for fallback scenarios)
+            $forceMP3 = $request->has('force_mp3') || $request->has('fallback');
+
+            // 🎵 HLS PRIORITY: If HLS converted AND not forced to MP3, serve playlist.m3u8
+            if ($song->hls_converted && !empty($song->hls_path) && !$forceMP3) {
                 // Build HLS playlist path
                 $hlsPath = storage_path('app/public/' . $song->hls_path);
 
@@ -437,7 +440,13 @@ class SongController extends Controller
 
             // 6. Chunk dosya yolu (tenant-aware storage)
             $hlsFolder = dirname($song->hls_path);
-            $chunkPath = storage_path('app/public/' . $hlsFolder . '/' . $chunkName);
+            // Tenant storage: storage/tenant{id}/app/public/...
+            $tenantId = tenant('id');
+            if ($tenantId) {
+                $chunkPath = storage_path("../tenant{$tenantId}/app/public/{$hlsFolder}/{$chunkName}");
+            } else {
+                $chunkPath = storage_path("app/public/{$hlsFolder}/{$chunkName}");
+            }
 
             if (!file_exists($chunkPath)) {
                 \Log::error('Chunk file not found', [

@@ -4,8 +4,8 @@
 <div class="px-6 py-8">
     {{-- Header --}}
     <div class="mb-8 animate-slide-up">
-        <h1 class="text-4xl font-bold text-white mb-2">Kategoriler</h1>
-        <p class="text-gray-400">Müzik kategorilerini keşfet</p>
+        <h1 class="text-4xl font-bold text-white mb-2">Sektörler</h1>
+        <p class="text-gray-400">Müzik sektörlerini keşfet</p>
     </div>
 
     {{-- Sectors Grid --}}
@@ -28,15 +28,16 @@
 
                         {{-- Play Button Overlay --}}
                         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                            <button class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
+                            <button @click.stop="playSectors({{ $sector->sector_id }})" class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
                                 <i class="fas fa-play ml-1"></i>
                             </button>
                         </div>
 
-                        {{-- Favorite Button --}}
-                        <div class="absolute top-2 right-2" @click.stop>
+                        {{-- Favorite Button - Geçici olarak kaldırıldı (hata veriyor)
+                        <div class="absolute top-2 right-2" x-on:click.stop>
                             <x-common.favorite-button :model="$sector" size="sm" iconOnly="true" />
                         </div>
+                        --}}
                     </div>
 
                     <h3 class="font-semibold text-white mb-1 truncate">
@@ -64,8 +65,8 @@
             <div class="mb-6">
                 <i class="fas fa-th-large text-gray-600 text-6xl"></i>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-2">Henüz kategori yok</h3>
-            <p class="text-gray-400">Yakında yeni kategoriler eklenecek</p>
+            <h3 class="text-2xl font-bold text-white mb-2">Henüz sektör yok</h3>
+            <p class="text-gray-400">Yakında yeni sektörler eklenecek</p>
         </div>
     @endif
 </div>

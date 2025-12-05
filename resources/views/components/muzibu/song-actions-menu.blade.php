@@ -35,15 +35,15 @@
 
         {{-- Go to Album --}}
         @if($song->album)
-        <a href="{{ route('muzibu.album.show', $song->album->getTranslation('slug', app()->getLocale())) }}" class="w-full px-4 py-2.5 text-left hover:bg-white/10 transition-colors flex items-center gap-3 text-white">
+        <a href="{{ route('muzibu.albums.show', $song->album->getTranslation('slug', app()->getLocale())) }}" class="w-full px-4 py-2.5 text-left hover:bg-white/10 transition-colors flex items-center gap-3 text-white">
             <i class="fas fa-compact-disc w-5"></i>
             <span>Albüme Git</span>
         </a>
         @endif
 
-        {{-- Go to Artist --}}
-        @if($song->album && $song->album->artist)
-        <a href="{{ route('muzibu.artist.show', $song->album->artist->getTranslation('slug', app()->getLocale())) }}" class="w-full px-4 py-2.5 text-left hover:bg-white/10 transition-colors flex items-center gap-3 text-white">
+        {{-- Go to Artist - DEVRE DIŞI (artist detail sayfası henüz yok) --}}
+        @if(false && $song->album && $song->album->artist)
+        <a href="#" class="w-full px-4 py-2.5 text-left hover:bg-white/10 transition-colors flex items-center gap-3 text-white">
             <i class="fas fa-user-music w-5"></i>
             <span>Sanatçıya Git</span>
         </a>

@@ -94,6 +94,7 @@ Route::prefix('muzibu')->group(function () {
     Route::prefix('sectors')->middleware('throttle.user:api')->group(function () {
         Route::get('/', [SectorController::class, 'index'])->name('api.muzibu.sectors.index');
         Route::get('/{id}/playlists', [SectorController::class, 'playlists'])->name('api.muzibu.sectors.playlists');
+        Route::get('/{id}/songs', [SectorController::class, 'songs'])->name('api.muzibu.sectors.songs');
     });
 });
 

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Manage Component - Yeni Sistem Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                📊 Subscription Manage Component - Yeni Sistem Analizi
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Admin panelden manuel abonelik oluşturma sayfasını yeni dinamik cycle sistemine uyarlama
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-05</span>
+                <span>🎯 Tenant: muzibu.com.tr</span>
+                <span>👤 Admin Subscription Manage</span>
+            </div>
+        </header>
+
+        <!-- Mevcut Durum -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🔴 Mevcut Durum - Sorunlar</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Sorun 1 -->
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-3">❌ Legacy Billing Cycle</h3>
+                    <p class="text-slate-300 leading-relaxed mb-3">
+                        Component hala eski <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">billing_cycle</code> enum kullanıyor (monthly, yearly...)
+                    </p>
+                    <p class="text-slate-400 text-sm">
+                        <strong class="text-white">Sorun:</strong> Yeni dinamik cycle sistemi (15 gün, 45 gün, deneme-3-gun...) desteklenmiyor!
+                    </p>
+                </div>
+
+                <!-- Sorun 2 -->
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-3">❌ Cycle Metadata Eksik</h3>
+                    <p class="text-slate-300 leading-relaxed mb-3">
+                        <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_key</code> ve 
+                        <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_metadata</code> field'leri tam kullanılmıyor
+                    </p>
+                    <p class="text-slate-400 text-sm">
+                        <strong class="text-white">Sorun:</strong> Seçilen cycle'ın label, badge, promo_text bilgileri kaydedilmiyor!
+                    </p>
+                </div>
+
+                <!-- Sorun 3 -->
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-3">❌ Status Eksiklikleri</h3>
+                    <p class="text-slate-300 leading-relaxed mb-3">
+                        View'da <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">paused</code> ve 
+                        <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">pending_payment</code> status'leri var ama component'te tam desteklenmiyor
+                    </p>
+                    <p class="text-slate-400 text-sm">
+                        <strong class="text-white">Sorun:</strong> Abonelik duraklatma ve ödeme bekleme senaryoları eksik!
+                    </p>
+                </div>
+
+                <!-- Sorun 4 -->
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-3">❌ Trial Plan Mantığı Yok</h3>
+                    <p class="text-slate-300 leading-relaxed mb-3">
+                        Plan'ın <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">is_trial</code> field'i kontrol edilmiyor
+                    </p>
+                    <p class="text-slate-400 text-sm">
+                        <strong class="text-white">Sorun:</strong> Deneme planı seçildiğinde otomatik trial mantığı çalışmıyor!
+                    </p>
+                </div>
+
+                <!-- Sorun 5 -->
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-3">❌ Hardcoded Currency</h3>
+                    <p class="text-slate-300 leading-relaxed mb-3">
+                        <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">currency</code> her zaman 'TRY' olarak hardcoded
+                    </p>
+                    <p class="text-slate-400 text-sm">
+                        <strong class="text-white">Sorun:</strong> Plan'ın currency field'i kullanılmıyor (USD/EUR/TRY desteği yok)!
+                    </p>
+                </div>
+
+                <!-- Sorun 6 -->
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-3">❌ Subscription Number Manuel</h3>
+                    <p class="text-slate-300 leading-relaxed mb-3">
+                        <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">subscription_number</code> model tarafından otomatik oluşturuluyor ama component bunu bilmiyor
+                    </p>
+                    <p class="text-slate-400 text-sm">
+                        <strong class="text-white">Not:</strong> Model boot() içinde zaten generate ediliyor, component'te gereksiz kod var
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yeni Sistem -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Yeni Sistem - Dinamik Cycle Mimarisi</h2>
+
+            <!-- Mimari Akış -->
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-8 border border-slate-700">
+                <h3 class="text-2xl font-bold text-purple-400 mb-6">🔄 Sistem Akışı</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                        <div>
+                            <h4 class="text-lg font-bold text-purple-300 mb-2">Admin Plan Seçer</h4>
+                            <p class="text-slate-300">Plan seçildiğinde plan'ın <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">billing_cycles</code> JSON field'inden tüm cycle'lar çekilir</p>
+                            <div class="mt-2 bg-slate-900 p-3 rounded text-sm text-green-300 font-mono">
+                                $plan->billing_cycles = {<br>
+                                &nbsp;&nbsp;"1-aylik": {label: {tr: "1 Aylık"}, price: 99.90, duration_days: 30},<br>
+                                &nbsp;&nbsp;"12-aylik": {label: {tr: "12 Aylık"}, price: 999.90, duration_days: 365},<br>
+                                &nbsp;&nbsp;"deneme-7-gun": {label: {tr: "7 Günlük Deneme"}, price: 0, duration_days: 7}<br>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                        <div>
+                            <h4 class="text-lg font-bold text-purple-300 mb-2">Cycle Seçimi</h4>
+                            <p class="text-slate-300">Admin dropdown'dan bir cycle seçer (örn: "12-aylik")</p>
+                            <p class="text-slate-400 text-sm mt-2">Seçilen cycle'ın fiyatı, süresi, trial bilgisi otomatik yüklenir</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                        <div>
+                            <h4 class="text-lg font-bold text-purple-300 mb-2">Cycle Metadata Kaydı</h4>
+                            <p class="text-slate-300">Seçilen cycle'ın TÜM bilgileri <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_metadata</code> field'ine JSON olarak kaydedilir</p>
+                            <div class="mt-2 bg-slate-900 p-3 rounded text-sm text-green-300 font-mono">
+                                cycle_key = "12-aylik"<br>
+                                cycle_metadata = {<br>
+                                &nbsp;&nbsp;label: {tr: "12 Aylık", en: "12 Months"},<br>
+                                &nbsp;&nbsp;duration_days: 365,<br>
+                                &nbsp;&nbsp;price: 999.90,<br>
+                                &nbsp;&nbsp;compare_price: 1199.00,<br>
+                                &nbsp;&nbsp;trial_days: null,<br>
+                                &nbsp;&nbsp;badge: {text: "En Popüler", color: "success"},<br>
+                                &nbsp;&nbsp;promo_text: {tr: "2 ay bedava!"},<br>
+                                &nbsp;&nbsp;sort_order: 2<br>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                        <div>
+                            <h4 class="text-lg font-bold text-purple-300 mb-2">Tarih Hesaplaması</h4>
+                            <p class="text-slate-300">Başlangıç tarihi + duration_days = Bitiş tarihi</p>
+                            <div class="mt-2 bg-slate-900 p-3 rounded text-sm text-green-300 font-mono">
+                                started_at = 2025-12-05<br>
+                                duration_days = 365<br>
+                                current_period_end = 2026-12-05<br>
+                                next_billing_date = 2026-12-05
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                        <div>
+                            <h4 class="text-lg font-bold text-purple-300 mb-2">Trial Kontrolü</h4>
+                            <p class="text-slate-300">Eğer cycle'da <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">trial_days</code> varsa veya plan <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">is_trial=true</code> ise:</p>
+                            <div class="mt-2 space-y-1 text-sm text-slate-300">
+                                <p>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">has_trial = true</code></p>
+                                <p>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">trial_days = X</code> set edilir</p>
+                                <p>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">trial_ends_at</code> hesaplanır</p>
+                                <p>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">status = 'trial'</code> olabilir</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yeni Field'lar -->
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-2xl font-bold text-blue-400 mb-6">🆕 Subscription Tablosu - Güncel Field'lar</h3>
+                
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-900 p-4 rounded">
+                        <h4 class="font-bold text-green-300 mb-2">✅ Dinamik Cycle</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><code class="text-yellow-300">cycle_key</code> - Seçilen cycle anahtarı</li>
+                            <li><code class="text-yellow-300">cycle_metadata</code> - Cycle bilgileri (JSON)</li>
+                            <li><code class="text-yellow-300">billing_cycle</code> - Legacy (nullable)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded">
+                        <h4 class="font-bold text-green-300 mb-2">✅ Tarih Yönetimi</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><code class="text-yellow-300">started_at</code> - Başlangıç tarihi</li>
+                            <li><code class="text-yellow-300">current_period_start</code> - Dönem başlangıcı</li>
+                            <li><code class="text-yellow-300">current_period_end</code> - Dönem bitişi</li>
+                            <li><code class="text-yellow-300">next_billing_date</code> - Sonraki fatura</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded">
+                        <h4 class="font-bold text-green-300 mb-2">✅ Trial Yönetimi</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><code class="text-yellow-300">has_trial</code> - Deneme kullandı mı?</li>
+                            <li><code class="text-yellow-300">trial_days</code> - Deneme süresi (gün)</li>
+                            <li><code class="text-yellow-300">trial_ends_at</code> - Deneme bitiş tarihi</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded">
+                        <h4 class="font-bold text-green-300 mb-2">✅ Ödeme & Para Birimi</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><code class="text-yellow-300">price_per_cycle</code> - Döngü fiyatı</li>
+                            <li><code class="text-yellow-300">currency</code> - Para birimi (TRY/USD/EUR)</li>
+                            <li><code class="text-yellow-300">total_paid</code> - Toplam ödenen</li>
+                            <li><code class="text-yellow-300">billing_cycles_completed</code> - Tamamlanan döngü</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded">
+                        <h4 class="font-bold text-green-300 mb-2">✅ Durum Yönetimi</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><code class="text-yellow-300">status</code> - active, trial, paused, cancelled, expired, pending_payment</li>
+                            <li><code class="text-yellow-300">auto_renew</code> - Otomatik yenileme</li>
+                            <li><code class="text-yellow-300">cancelled_at</code> - İptal tarihi</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded">
+                        <h4 class="font-bold text-green-300 mb-2">✅ Diğer</h4>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li><code class="text-yellow-300">subscription_number</code> - Otomatik (SUB-XXX)</li>
+                            <li><code class="text-yellow-300">payment_method_id</code> - Ödeme yöntemi</li>
+                            <li><code class="text-yellow-300">cancellation_reason</code> - İptal nedeni</li>
+                            <li><code class="text-yellow-300">metadata</code> - Ek bilgiler (JSON)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">📋 Yapılacaklar - Component Güncellemesi</h2>
+
+            <!-- Adım 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-300 mb-3">Component: updatedSubscriptionPlanId() Güncelleme</h3>
+                        <p class="text-slate-300 mb-3"><strong class="text-white">Ne Yapılacak:</strong></p>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>✅ Plan seçildiğinde <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">$plan->billing_cycles</code> çek</li>
+                            <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">$this->available_cycles</code> property'sine ata</li>
+                            <li>✅ Plan'ın <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">is_trial</code> field'ini kontrol et</li>
+                            <li>✅ Plan'ın <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">currency</code> field'ini <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">$this->currency</code>'ye ata</li>
+                            <li>✅ İlk cycle'ı otomatik seç (cycle_key)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-green-300 mb-3">Component: updatedCycleKey() İyileştirme</h3>
+                        <p class="text-slate-300 mb-3"><strong class="text-white">Ne Yapılacak:</strong></p>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>✅ Seçilen cycle'ın <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">price</code>'ını <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">$this->price_per_cycle</code>'ye ata</li>
+                            <li>✅ Seçilen cycle'ın <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">duration_days</code>'ını kullanarak bitiş tarihini hesapla</li>
+                            <li>✅ Eğer cycle'da <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">trial_days</code> varsa:
+                                <ul class="ml-6 mt-1 space-y-1 text-slate-400">
+                                    <li>→ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">$this->has_trial = true</code></li>
+                                    <li>→ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">$this->trial_days = X</code></li>
+                                    <li>→ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">$this->status = 'trial'</code> (opsiyonel)</li>
+                                </ul>
+                            </li>
+                            <li>✅ Cycle metadata'yı geçici property'de tut (save'de kullanılacak)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-purple-300 mb-3">Component: save() Metodu Güncelleme</h3>
+                        <p class="text-slate-300 mb-3"><strong class="text-white">Ne Yapılacak:</strong></p>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_key</code> field'ini ekle (seçilen cycle anahtarı)</li>
+                            <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_metadata</code> field'ini ekle (seçilen cycle'ın TÜM bilgileri)</li>
+                            <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">currency</code>'yi plan'dan al (hardcoded 'TRY' KALDIR!)</li>
+                            <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">has_trial</code>, <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">trial_days</code>, <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">trial_ends_at</code> doğru hesapla</li>
+                            <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">current_period_start</code> = <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">started_at</code></li>
+                            <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">next_billing_date</code> = <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">current_period_end</code></li>
+                            <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">billing_cycle</code> field'ini KALDIR (nullable legacy field)</li>
+                            <li>⚠️ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">subscription_number</code> model'de otomatik, component'te GEREKSIZ!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 4 -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-yellow-300 mb-3">View: Cycle Dropdown Güncelleme</h3>
+                        <p class="text-slate-300 mb-3"><strong class="text-white">Ne Yapılacak:</strong></p>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>✅ Cycle dropdown 'da her cycle için:
+                                <ul class="ml-6 mt-1 space-y-1 text-slate-400">
+                                    <li>→ Label: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">{{ $cycle['label']['tr'] }}</code></li>
+                                    <li>→ Duration: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">{{ $cycle['duration_days'] }} gün</code></li>
+                                    <li>→ Price: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">₺{{ $cycle['price'] }}</code></li>
+                                    <li>→ Compare Price: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300 line-through">₺{{ $cycle['compare_price'] }}</code> (eğer varsa)</li>
+                                    <li>→ Trial Days: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">🎁 {{ $cycle['trial_days'] }} gün deneme</code> (eğer varsa)</li>
+                                </ul>
+                            </li>
+                            <li>✅ Seçilen cycle'ın detaylarını preview kartında göster (badge, promo_text...)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 5 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-red-300 mb-3">Component: Yeni Property'ler Ekle</h3>
+                        <p class="text-slate-300 mb-3"><strong class="text-white">Eklenecek Property'ler:</strong></p>
+                        <div class="bg-slate-900 p-3 rounded text-sm text-green-300 font-mono">
+                            public $currency = 'TRY'; // Plan'dan gelecek<br>
+                            public $selected_cycle_metadata = []; // Seçilen cycle bilgileri
+                        </div>
+                        <p class="text-slate-400 text-sm mt-3">
+                            <strong class="text-white">Not:</strong> <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">available_cycles</code> zaten var, güzel!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 6 -->
+            <div class="bg-slate-800/50 border-l-4 border-pink-500 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-pink-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">6</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-pink-300 mb-3">View: Currency Symbol Dinamik</h3>
+                        <p class="text-slate-300 mb-3"><strong class="text-white">Ne Yapılacak:</strong></p>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>✅ Hardcoded <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">₺</code> sembolü yerine dinamik currency kullan</li>
+                            <li>✅ Helper fonksiyon: <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">currency_symbol($currency)</code></li>
+                            <li>✅ Örnek: TRY → ₺, USD → $, EUR → €</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Senaryoları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">🧪 Test Senaryoları</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Test 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">Test 1: Normal Plan (12 Aylık)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ Kullanıcı seç</li>
+                        <li>✅ Plan seç (Premium - 12 Aylık)</li>
+                        <li>✅ Cycle dropdown'da "12 Aylık (365 gün • ₺999.90)" görünmeli</li>
+                        <li>✅ Fiyat otomatik doldurulmalı</li>
+                        <li>✅ Bitiş tarihi = Bugün + 365 gün</li>
+                        <li>✅ Kaydet → <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_key = "12-aylik"</code></li>
+                        <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_metadata</code> doğru kaydedilmeli</li>
+                    </ul>
+                </div>
+
+                <!-- Test 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">Test 2: Trial Plan (Deneme)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ Plan seç (is_trial = true olan plan)</li>
+                        <li>✅ Cycle dropdown'da "3 Günlük Deneme (3 gün • ₺0.00)" görünmeli</li>
+                        <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">has_trial</code> checkbox otomatik aktif olmalı</li>
+                        <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">trial_days = 3</code> otomatik doldurulmalı</li>
+                        <li>✅ Bitiş tarihi = Bugün + 3 gün</li>
+                        <li>✅ Kaydet → <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">trial_ends_at</code> hesaplanmalı</li>
+                        <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">status = 'trial'</code> olabilir</li>
+                    </ul>
+                </div>
+
+                <!-- Test 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">Test 3: Özel Süre (15 Gün)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ Plan'da "15-gunluk" cycle'ı varsa</li>
+                        <li>✅ Cycle dropdown'da görünmeli</li>
+                        <li>✅ duration_days = 15</li>
+                        <li>✅ Bitiş tarihi = Bugün + 15 gün</li>
+                        <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_key = "15-gunluk"</code></li>
+                        <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_metadata</code>'da duration_days doğru</li>
+                    </ul>
+                </div>
+
+                <!-- Test 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">Test 4: Currency (USD Plan)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ Plan'ın currency = 'USD' olsun</li>
+                        <li>✅ Fiyatlar <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">$</code> sembolü ile görünmeli</li>
+                        <li>✅ Kaydet → <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">currency = 'USD'</code></li>
+                        <li>✅ Hardcoded 'TRY' kullanılmamalı!</li>
+                    </ul>
+                </div>
+
+                <!-- Test 5 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">Test 5: Badge & Promo Text</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ Cycle'da badge varsa (örn: "En Popüler")</li>
+                        <li>✅ Preview kartında badge gösterilmeli</li>
+                        <li>✅ promo_text varsa (örn: "2 ay bedava!")</li>
+                        <li>✅ Preview kartında promo gösterilmeli</li>
+                        <li>✅ Kaydet → <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_metadata</code>'da badge + promo kaydedilmeli</li>
+                    </ul>
+                </div>
+
+                <!-- Test 6 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">Test 6: Edit (Mevcut Subscription)</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✅ Mevcut subscription'ı aç (edit)</li>
+                        <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_key</code> doğru yüklensin</li>
+                        <li>✅ <code class="bg-slate-700 px-2 py-1 rounded text-yellow-300">cycle_metadata</code> preview'da gösterilsin</li>
+                        <li>✅ Cycle değiştirilirse yeni metadata kaydedilsin</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/50 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-300">📌 Özet - Kritik Değişiklikler</h2>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <h3 class="font-bold text-green-300 mb-3 text-lg">✅ Eklenenler</h3>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li>• <code class="text-yellow-300">cycle_key</code> field</li>
+                            <li>• <code class="text-yellow-300">cycle_metadata</code> field</li>
+                            <li>• Dinamik currency</li>
+                            <li>• Trial plan mantığı</li>
+                            <li>• Badge & promo preview</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-red-300 mb-3 text-lg">❌ Kaldırılanlar</h3>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li>• Legacy <code class="text-yellow-300">billing_cycle</code> enum</li>
+                            <li>• Hardcoded 'TRY' currency</li>
+                            <li>• Manuel <code class="text-yellow-300">subscription_number</code></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-yellow-300 mb-3 text-lg">⚡ İyileştirmeler</h3>
+                        <ul class="space-y-1 text-sm text-slate-300">
+                            <li>• Cycle dropdown daha bilgilendirici</li>
+                            <li>• Otomatik tarih hesaplama</li>
+                            <li>• Trial otomatik set</li>
+                            <li>• Currency symbol dinamik</li>
+                            <li>• Metadata preview kartı</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Subscription Manage Component Analizi</p>
+            <p class="mt-2">Tailwind CSS ile tasarlandı</p>
+        </footer>
+    </div>
+</body>
+</html>

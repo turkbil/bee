@@ -13,6 +13,7 @@ class CartPage extends Component
     public $items = [];
     public int $itemCount = 0;
     public float $subtotal = 0;
+    public float $taxAmount = 0;
     public float $total = 0;
 
     protected $listeners = ['cartUpdated' => 'loadCart'];
@@ -37,11 +38,13 @@ class CartPage extends Component
             $this->items = $this->cart->items()->where('is_active', true)->get();
             $this->itemCount = $this->items->sum('quantity');
             $this->subtotal = (float) $this->cart->subtotal;
+            $this->taxAmount = (float) $this->cart->tax_amount;
             $this->total = (float) $this->cart->total;
         } else {
             $this->items = collect([]);
             $this->itemCount = 0;
             $this->subtotal = 0.0;
+            $this->taxAmount = 0.0;
             $this->total = 0.0;
         }
     }
@@ -128,7 +131,20 @@ class CartPage extends Component
 
     public function render()
     {
-        return view('cart::livewire.front.cart-page')
-            ->layout('themes.ixtif.layouts.app');
+        // Tema-aware view ve layout
+        $theme = tenant()->theme ?? 'ixtif';
+
+        // Önce tema-specific view'ı dene, yoksa default kullan
+        $viewPath = "themes.{$theme}.cart.cart";
+        $defaultViewPath = 'cart::livewire.front.cart-page';
+
+        // Layout - Tema-aware
+        $layoutPath = "themes.{$theme}.layouts.app";
+
+        if (view()->exists($viewPath)) {
+            return view($viewPath)->layout($layoutPath);
+        }
+
+        return view($defaultViewPath)->layout($layoutPath);
     }
 }

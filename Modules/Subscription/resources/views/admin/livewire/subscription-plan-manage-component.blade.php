@@ -284,18 +284,20 @@
                                                                     Fiyatlandırma
                                                                 </h6>
                                                                 <div class="row g-3">
-                                                                    <div class="col-md-4">
+                                                                    <div :class="@js($inputs['is_trial']) ? 'col-md-4' : 'col-md-6'">
                                                                         <label class="form-label required">Fiyat (₺)</label>
                                                                         <input type="number" class="form-control" x-model="editData.price" step="0.01" placeholder="99.90">
                                                                     </div>
-                                                                    <div class="col-md-4">
+                                                                    <div :class="@js($inputs['is_trial']) ? 'col-md-4' : 'col-md-6'">
                                                                         <label class="form-label">Üstü Çizili Fiyat (₺)</label>
                                                                         <input type="number" class="form-control" x-model="editData.compare_price" step="0.01" placeholder="120.00">
                                                                     </div>
-                                                                    <div class="col-md-4">
-                                                                        <label class="form-label">Deneme Süresi (gün)</label>
-                                                                        <input type="number" class="form-control" x-model="editData.trial_days" min="0" placeholder="7">
-                                                                    </div>
+                                                                    <template x-if="@js($inputs['is_trial'])">
+                                                                        <div class="col-md-4">
+                                                                            <label class="form-label">Deneme Süresi (gün)</label>
+                                                                            <input type="number" class="form-control" x-model="editData.trial_days" min="0" placeholder="7">
+                                                                        </div>
+                                                                    </template>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -358,12 +360,26 @@
                         </div>
                     </template>
 
+                    {{-- Deneme Üyeliği Uyarısı --}}
+                    <template x-if="@js($inputs['is_trial']) && Object.keys(cycles).length >= 1">
+                        <div class="alert alert-warning d-flex align-items-center gap-3 mb-0">
+                            <i class="fas fa-info-circle fs-3"></i>
+                            <div>
+                                <h4 class="alert-title">Deneme Üyeliği Limiti</h4>
+                                <div class="text-muted">Deneme üyeliği için sadece 1 süre eklenebilir. Daha fazla ekleme yapılamaz.</div>
+                            </div>
+                        </div>
+                    </template>
+
                     {{-- Yeni Cycle Ekleme Formu --}}
-                    <div class="card border-dashed shadow-sm">
+                    <div class="card border-dashed shadow-sm" x-show="!@js($inputs['is_trial']) || Object.keys(cycles).length < 1">
                         <div class="card-body p-4">
                             <h4 class="mb-4 d-flex align-items-center gap-2">
                                 <i class="fas fa-plus-circle text-primary"></i>
                                 <span>Yeni Süre Ekle</span>
+                                <template x-if="@js($inputs['is_trial'])">
+                                    <span class="badge bg-info">Deneme Üyeliği</span>
+                                </template>
                             </h4>
 
                             {{-- Bölüm 1: Temel Bilgiler --}}
@@ -401,7 +417,7 @@
                                         <span>Fiyatlandırma</span>
                                     </h6>
                                     <div class="row g-3">
-                                        <div class="col-md-4">
+                                        <div :class="@js($inputs['is_trial']) ? 'col-md-4' : 'col-md-6'">
                                             <label class="form-label required">Fiyat (₺)</label>
                                             <input type="number"
                                                    class="form-control"
@@ -410,7 +426,7 @@
                                                    min="0"
                                                    step="0.01">
                                         </div>
-                                        <div class="col-md-4">
+                                        <div :class="@js($inputs['is_trial']) ? 'col-md-4' : 'col-md-6'">
                                             <label class="form-label">
                                                 Üstü Çizili Fiyat (₺)
                                                 <span class="badge bg-secondary ms-1 badge-sm">Opsiyonel</span>
@@ -422,17 +438,19 @@
                                                    min="0"
                                                    step="0.01">
                                         </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label">
-                                                Deneme Süresi (gün)
-                                                <span class="badge bg-secondary ms-1 badge-sm">Opsiyonel</span>
-                                            </label>
-                                            <input type="number"
-                                                   class="form-control"
-                                                   x-model="newCycle.trial_days"
-                                                   placeholder="7"
-                                                   min="0">
-                                        </div>
+                                        <template x-if="@js($inputs['is_trial'])">
+                                            <div class="col-md-4">
+                                                <label class="form-label">
+                                                    Deneme Süresi (gün)
+                                                    <span class="badge bg-info ms-1 badge-sm">Deneme Üyeliği</span>
+                                                </label>
+                                                <input type="number"
+                                                       class="form-control"
+                                                       x-model="newCycle.trial_days"
+                                                       placeholder="7"
+                                                       min="0">
+                                            </div>
+                                        </template>
                                     </div>
                                     <small class="form-hint d-flex align-items-center gap-2 mt-2">
                                         <i class="fas fa-lightbulb"></i>
@@ -589,6 +607,31 @@
                     </div>
 
                     <hr class="my-4">
+
+                    {{-- Deneme Üyeliği --}}
+                    <div class="mb-3">
+                        <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
+                            <label class="form-selectgroup-item flex-fill">
+                                <input type="checkbox"
+                                       class="form-selectgroup-input"
+                                       wire:model.live="inputs.is_trial">
+                                <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                    <div class="me-3">
+                                        <span class="form-selectgroup-check"></span>
+                                    </div>
+                                    <div class="form-selectgroup-label-content d-flex align-items-center">
+                                        <span class="avatar avatar-sm me-3 bg-info-lt">
+                                            <i class="fas fa-gift text-info"></i>
+                                        </span>
+                                        <div>
+                                            <div class="font-weight-medium">Deneme Üyeliği</div>
+                                            <div class="text-muted small">Bu plan deneme üyeliği için (max 1 süre)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
 
                     {{-- Öne Çıkan --}}
                     <div class="mb-3">

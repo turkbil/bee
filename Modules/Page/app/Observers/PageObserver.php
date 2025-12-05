@@ -214,6 +214,10 @@ class PageObserver
         if (function_exists('responsecache')) {
             responsecache()->forget(route('page.show', $page->slug));
         }
+
+        // ✅ Sitemap cache'ini temizle (gerçek zamanlı güncelleme için)
+        $tenantId = tenant()?->id ?? 'central';
+        Cache::forget("sitemap_xml_{$tenantId}");
     }
 
     /**
@@ -259,6 +263,10 @@ class PageObserver
         if ($page->seoSetting) {
             $page->seoSetting->delete();
         }
+
+        // ✅ Sitemap cache'ini temizle (gerçek zamanlı güncelleme için)
+        $tenantId = tenant()?->id ?? 'central';
+        Cache::forget("sitemap_xml_{$tenantId}");
 
         // Activity log
         if (function_exists('log_activity')) {

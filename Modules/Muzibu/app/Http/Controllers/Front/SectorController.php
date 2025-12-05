@@ -10,9 +10,21 @@ class SectorController extends Controller
 {
     public function index()
     {
+        // Only show sectors with at least 1 active playlist (that has active songs)
         $sectors = Sector::where('is_active', 1)
-            ->withCount('playlists')
-            ->paginate(20);
+            ->whereHas('playlists', function($q) {
+                $q->where('is_active', 1)
+                  ->whereHas('songs', function($sq) {
+                      $sq->where('is_active', 1);
+                  });
+            })
+            ->withCount(['playlists' => function($q) {
+                $q->where('is_active', 1)
+                  ->whereHas('songs', function($sq) {
+                      $sq->where('is_active', 1);
+                  });
+            }])
+            ->paginate(200);
 
         return view('themes.muzibu.sectors.index', compact('sectors'));
     }
@@ -26,11 +38,56 @@ class SectorController extends Controller
             ->where('is_active', 1)
             ->firstOrFail();
 
+        // Only show playlists with active songs
         $playlists = $sector->playlists()
             ->where('muzibu_playlists.is_active', 1)
-            ->withCount('songs')
+            ->whereHas('songs', function($q) {
+                $q->where('is_active', 1);
+            })
+            ->withCount(['songs' => function($q) {
+                $q->where('is_active', 1);
+            }])
             ->get();
 
         return view('themes.muzibu.sectors.show', compact('sector', 'playlists'));
+    }
+
+    public function apiIndex()
+    {
+        // Only show sectors with at least 1 active playlist (that has active songs)
+        $sectors = Sector::where('is_active', 1)
+            ->whereHas('playlists', function($q) {
+                $q->where('is_active', 1)
+                  ->whereHas('songs', function($sq) {
+                      $sq->where('is_active', 1);
+                  });
+            })
+            ->withCount(['playlists' => function($q) {
+                $q->where('is_active', 1)
+                  ->whereHas('songs', function($sq) {
+                      $sq->where('is_active', 1);
+                  });
+            }])
+            ->paginate(200);
+        $html = view('themes.muzibu.partials.sectors-grid', compact('sectors'))->render();
+        return response()->json(['html' => $html, 'meta' => ['title' => 'Sektörler - Muzibu', 'description' => 'Tüm sektörleri keşfedin']]);
+    }
+
+    public function apiShow($slug)
+    {
+        $sector = Sector::where(function($q) use ($slug) { $q->where('slug->tr', $slug)->orWhere('slug->en', $slug); })->where('is_active', 1)->firstOrFail();
+        $playlists = $sector->playlists()
+            ->where('muzibu_playlists.is_active', 1)
+            ->whereHas('songs', function($q) {
+                $q->where('is_active', 1);
+            })
+            ->withCount(['songs' => function($q) {
+                $q->where('is_active', 1);
+            }])
+            ->get();
+        $html = view('themes.muzibu.partials.sector-detail', compact('sector', 'playlists'))->render();
+        $titleJson = @json_decode($sector->title);
+        $title = $titleJson && isset($titleJson->tr) ? $titleJson->tr : $sector->title;
+        return response()->json(['html' => $html, 'meta' => ['title' => $title . ' - Muzibu', 'description' => 'Sektör detaylarını inceleyin']]);
     }
 }

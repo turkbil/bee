@@ -187,6 +187,10 @@ class PortfolioObserver
         if (function_exists('responsecache')) {
             responsecache()->forget(route('portfolio.show', $portfolio->slug));
         }
+
+        // ✅ Sitemap cache'ini temizle (gerçek zamanlı güncelleme için)
+        $tenantId = tenant()?->id ?? 'central';
+        Cache::forget("sitemap_xml_{$tenantId}");
     }
 
     /**
@@ -226,6 +230,10 @@ class PortfolioObserver
 
         // Cache temizle
         $this->clearPortfolioCaches($portfolio->portfolio_id);
+
+        // ✅ Sitemap cache'ini temizle (gerçek zamanlı güncelleme için)
+        $tenantId = tenant()?->id ?? 'central';
+        Cache::forget("sitemap_xml_{$tenantId}");
 
         // SEO ayarlarını da sil
         if ($portfolio->seoSetting) {

@@ -25,8 +25,11 @@ class AlbumController extends Controller
         try {
             $perPage = $request->input('per_page', 20);
 
-            //🔒 FIXED: Use Eloquent (tenant-aware)
+            //🔒 FIXED: Use Eloquent (tenant-aware) + Only albums with active songs
             $albums = Album::where('is_active', 1)
+                ->whereHas('songs', function($q) {
+                    $q->where('is_active', 1);
+                })
                 ->with('artist')
                 ->paginate($perPage);
 
@@ -40,7 +43,7 @@ class AlbumController extends Controller
                     'artist_id' => $album->artist?->artist_id,
                     'artist_title' => $album->artist?->title,
                     'artist_slug' => $album->artist?->slug,
-                    'song_count' => $album->songs()->count(),
+                    'song_count' => $album->songs()->where('is_active', 1)->count(),
                 ];
             });
 
@@ -130,7 +133,7 @@ class AlbumController extends Controller
                         'artist_id' => $album->artist?->artist_id,
                         'artist_title' => $album->artist?->title,
                         'artist_slug' => $album->artist?->slug,
-                        'song_count' => $album->songs()->count(),
+                        'song_count' => $album->songs()->where('is_active', 1)->count(),
                     ];
                 });
 

@@ -136,12 +136,26 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
+
+            // Active subscription bilgisini al
+            $activeSubscription = $user->subscriptions()
+                ->where('status', 'active')
+                ->where(function($q) {
+                    $q->whereNull('ends_at')
+                      ->orWhere('ends_at', '>', now());
+                })
+                ->first();
+
             return response()->json([
                 'authenticated' => true,
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
+                    'is_premium' => $user->isPremium(),
+                    'trial_ends_at' => $activeSubscription && $activeSubscription->trial_ends_at
+                        ? $activeSubscription->trial_ends_at->toIso8601String()
+                        : null,
                 ]
             ]);
         }

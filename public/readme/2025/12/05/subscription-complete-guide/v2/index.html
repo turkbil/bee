@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Sistemi - ULTIMATE KILAVUZ v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b-2 border-emerald-500">
+            <div class="flex items-center gap-4 mb-4">
+                <h1 class="text-5xl font-black bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    📚 Subscription Sistemi
+                </h1>
+                <span class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-full shadow-lg">
+                    ULTIMATE KILAVUZ v2
+                </span>
+            </div>
+            <p class="text-slate-300 text-xl mb-4">Tüm Bilgiler Tek Sayfada - Master Plan + Settings + Kullanıcı Durumları + Device Hierarchy</p>
+            <div class="mt-4 flex flex-wrap gap-4 text-sm text-slate-400">
+                <span>📅 2025-12-05</span>
+                <span>🎯 Basit & Net & Minimal</span>
+                <span>✅ Production Ready</span>
+                <span>🔥 v2: Trial Plan Dinamik</span>
+            </div>
+        </header>
+
+        <!-- V2 DEĞİŞİKLİKLER -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-red-900/40 to-orange-900/40 border-2 border-orange-500 rounded-xl p-8">
+                <h2 class="text-3xl font-bold mb-6 text-orange-400">🆕 v2 Değişiklikler (Trial Plan Dinamik)</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-6 border border-red-700/50">
+                        <h3 class="text-red-400 font-bold mb-4 text-lg">❌ v1 (YANLIŞ)</h3>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>❌ "7 gün sabit" ifadesi</li>
+                            <li>❌ Trial her zaman otomatik başlar</li>
+                            <li>❌ Hardcode 7 gün</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border border-green-700/50">
+                        <h3 class="text-green-400 font-bold mb-4 text-lg">✅ v2 (DOĞRU)</h3>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>✅ Trial plan yoksa → Trial YOK!</li>
+                            <li>✅ Trial süresi → Plan cycle'dan (7, 14, 30 gün olabilir)</li>
+                            <li>✅ Trial plan'da TEK cycle olacak</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-blue-900/30 rounded-lg p-4 border border-blue-700/50">
+                    <p class="text-blue-400 font-bold mb-2">💡 Kritik:</p>
+                    <p class="text-slate-300"><code class="bg-slate-800 px-2 py-1 rounded">is_trial=true</code> olan plan YOKSA trial sistemi devreye GİRMEZ! Plan varsa cycle'daki gün sayısı trial süresidir.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- İÇİNDEKİLER -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">📑 İçindekiler</h2>
+            
+            <div class="grid md:grid-cols-3 gap-4">
+                <a href="#master-plan" class="bg-slate-800/50 hover:bg-slate-800 rounded-lg p-6 border border-emerald-700/50 transition">
+                    <h3 class="text-lg font-bold text-emerald-400 mb-2">1️⃣ ULTIMATE Master Plan</h3>
+                    <p class="text-slate-400 text-sm">Stratejik kararlar + Settings yaklaşımı</p>
+                </a>
+
+                <a href="#settings" class="bg-slate-800/50 hover:bg-slate-800 rounded-lg p-6 border border-purple-700/50 transition">
+                    <h3 class="text-lg font-bold text-purple-400 mb-2">2️⃣ Settings (2 Ayar)</h3>
+                    <p class="text-slate-400 text-sm">auth_subscription, auth_device_limit</p>
+                </a>
+
+                <a href="#hardcode" class="bg-slate-800/50 hover:bg-slate-800 rounded-lg p-6 border border-blue-700/50 transition">
+                    <h3 class="text-lg font-bold text-blue-400 mb-2">3️⃣ Hardcode Değerler</h3>
+                    <p class="text-slate-400 text-sm">30 saniye preview</p>
+                </a>
+
+                <a href="#trial-plan" class="bg-slate-800/50 hover:bg-slate-800 rounded-lg p-6 border border-orange-700/50 transition">
+                    <h3 class="text-lg font-bold text-orange-400 mb-2">🆕 Trial Plan Sistemi</h3>
+                    <p class="text-slate-400 text-sm">is_trial plan + dinamik süre</p>
+                </a>
+
+                <a href="#user-states" class="bg-slate-800/50 hover:bg-slate-800 rounded-lg p-6 border border-green-700/50 transition">
+                    <h3 class="text-lg font-bold text-green-400 mb-2">4️⃣ Kullanıcı Durumları</h3>
+                    <p class="text-slate-400 text-sm">Guest, Trial, Premium, Expired</p>
+                </a>
+
+                <a href="#device-hierarchy" class="bg-slate-800/50 hover:bg-slate-800 rounded-lg p-6 border border-cyan-700/50 transition">
+                    <h3 class="text-lg font-bold text-cyan-400 mb-2">5️⃣ Device Hierarchy</h3>
+                    <p class="text-slate-400 text-sm">User → Plan → Setting</p>
+                </a>
+
+                <a href="#quick-summary" class="bg-slate-800/50 hover:bg-slate-800 rounded-lg p-6 border border-yellow-700/50 transition">
+                    <h3 class="text-lg font-bold text-yellow-400 mb-2">⚡ Hızlı Özet</h3>
+                    <p class="text-slate-400 text-sm">Tüm önemli noktalar tek bakışta</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- 1. ULTIMATE MASTER PLAN -->
+        <section id="master-plan" class="mb-16">
+            <h2 class="text-4xl font-bold mb-8 text-emerald-400">1️⃣ ULTIMATE Master Plan</h2>
+            
+            <!-- Stratejik Kararlar -->
+            <div class="bg-blue-900/20 border border-blue-700/50 rounded-xl p-8 mb-8">
+                <h3 class="text-2xl font-bold text-blue-400 mb-6">🎯 Stratejik Kararlar</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="text-lg font-bold text-green-400 mb-4">✅ Kabul Edilen Kararlar</h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>✅ Trial plan varsa otomatik başlar</li>
+                            <li>✅ Trial süresi → Plan cycle'dan (dinamik)</li>
+                            <li>✅ is_trial checkbox (slug değil)</li>
+                            <li>✅ has_used_trial kontrolü (tek kullanım)</li>
+                            <li>✅ 30 saniye preview (hardcode)</li>
+                            <li>✅ Request-level fresh check (cache yok)</li>
+                            <li>✅ Event-based system (Observer pattern)</li>
+                            <li>✅ Hibrit sistem (Lazy + Cron)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="text-lg font-bold text-purple-400 mb-4">🔧 Teknik Mimari</h4>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li>📦 SubscriptionService (core logic)</li>
+                            <li>🔔 Event System (SubscriptionExpired vb.)</li>
+                            <li>⏱️ Cron Job (expire check, daily)</li>
+                            <li>🎯 Request-level check (stale önleme)</li>
+                            <li>🗄️ Database: 18 field (unified)</li>
+                            <li>🔐 SettingsManagement (tenant-aware)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Yaklaşımı -->
+            <div class="bg-gradient-to-r from-emerald-900/40 to-green-900/40 border-2 border-emerald-500 rounded-xl p-8">
+                <h3 class="text-2xl font-bold text-emerald-400 mb-6">📋 Settings Yaklaşımı</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-red-900/20 border border-red-700 rounded-lg p-6">
+                        <p class="text-red-400 font-bold mb-3">❌ Reddedilen: tenants.data JSON</p>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Duplicate çözüm</li>
+                            <li>• SettingsManagement zaten var</li>
+                            <li>• Tenant-aware değil</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-green-900/20 border border-green-700 rounded-lg p-6">
+                        <p class="text-green-400 font-bold mb-3">✅ Kabul: SettingsManagement</p>
+                        <ul class="text-sm text-slate-300 space-y-2">
+                            <li>• Bu iş için tasarlanmış</li>
+                            <li>• 3-layer system</li>
+                            <li>• Tenant-aware otomatik</li>
+                            <li>• Admin UI hazır</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/30 rounded-lg p-6 border border-blue-700/50">
+                    <p class="text-blue-400 font-bold mb-3">💡 3-Layer System</p>
+                    <ul class="space-y-2 text-slate-300 text-sm">
+                        <li>1️⃣ <strong>settings_groups</strong> (CENTRAL DB) → Grup tanımı</li>
+                        <li>2️⃣ <strong>settings</strong> (CENTRAL DB) → Setting tanımı + default_value</li>
+                        <li>3️⃣ <strong>settings_values</strong> (TENANT DB) → Tenant'a özel değer</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. SETTINGS -->
+        <section id="settings" class="mb-16">
+            <h2 class="text-4xl font-bold mb-8 text-purple-400">2️⃣ Settings (SADECE 2 AYAR - Minimal Yaklaşım)</h2>
+            
+            <div class="space-y-8">
+                <!-- auth_subscription -->
+                <div class="bg-gradient-to-r from-emerald-900/40 to-green-900/40 border-2 border-emerald-500 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-6">
+                        <span class="w-14 h-14 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-2xl flex-shrink-0">1</span>
+                        <div class="flex-1">
+                            <h3 class="text-3xl font-bold text-emerald-400 mb-3">auth_subscription</h3>
+                            <p class="text-slate-300 text-lg">Ücretli Üyelik Sistemi (Ana Anahtar - Trial Dahil)</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-slate-400 mb-2">Setting ID</p>
+                            <p class="text-white font-bold text-lg">211</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-slate-400 mb-2">Type</p>
+                            <p class="text-white font-bold text-lg">select</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-slate-400 mb-2">Values</p>
+                            <p class="text-white font-bold text-lg">0 / 1</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-slate-400 mb-2">Muzibu Status</p>
+                            <p class="text-green-400 font-bold text-lg">1 (AKTİF)</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 mb-4">
+                        <h4 class="text-white font-bold mb-4 text-lg">📋 Ne Yapar?</h4>
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <span class="text-emerald-400 text-xl">✅</span>
+                                <span><strong>1 (Açık):</strong> Subscription modülü aktif → Trial plan varsa otomatik başlar, Premium kontrolleri çalışır</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-red-400 text-xl">❌</span>
+                                <span><strong>0 (Kapalı):</strong> Subscription modülü tamamen kapalı → Herkes sınırsız kullanır (free model)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-orange-900/30 rounded-lg p-4 border border-orange-700/50">
+                        <p class="text-orange-400 font-bold mb-2">🔥 v2 Önemli Değişiklik:</p>
+                        <p class="text-slate-300">Bu ayar 1 OLSA BİLE trial planı yoksa trial başlamaz! Trial plan (<code class="bg-slate-800 px-2 py-1 rounded">is_trial=true</code>) olmalı.</p>
+                    </div>
+                </div>
+
+                <!-- auth_device_limit -->
+                <div class="bg-gradient-to-r from-blue-900/40 to-cyan-900/40 border-2 border-blue-500 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-6">
+                        <span class="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-2xl flex-shrink-0">2</span>
+                        <div class="flex-1">
+                            <h3 class="text-3xl font-bold text-blue-400 mb-3">auth_device_limit</h3>
+                            <p class="text-slate-300 text-lg">Cihaz Limit Kontrolü (Global Fallback)</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-4 gap-4 mb-6">
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-slate-400 mb-2">Setting ID</p>
+                            <p class="text-white font-bold text-lg">212</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-slate-400 mb-2">Type</p>
+                            <p class="text-white font-bold text-lg">number</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-slate-400 mb-2">Default</p>
+                            <p class="text-white font-bold text-lg">1</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded-lg p-4">
+                            <p class="text-xs text-slate-400 mb-2">Önerilen</p>
+                            <p class="text-yellow-400 font-bold text-lg">1-3 arası</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 mb-4">
+                        <h4 class="text-white font-bold mb-4 text-lg">📋 Ne Yapar?</h4>
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-400 text-xl">📱</span>
+                                <span><strong>Global Fallback:</strong> User ve Plan'da device_limit yoksa bu değer kullanılır (son çare)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-purple-400 text-xl">🔢</span>
+                                <span><strong>3-Layer Hierarşi:</strong> <code class="bg-slate-800 px-2 py-1 rounded">user.device_limit</code> → <code class="bg-slate-800 px-2 py-1 rounded">plan.device_limit</code> → <code class="bg-slate-800 px-2 py-1 rounded text-blue-400">auth_device_limit (setting)</code></span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-cyan-900/30 rounded-lg p-4 border border-cyan-700/50">
+                        <p class="text-cyan-400 font-bold mb-2">💡 Detaylı Bilgi:</p>
+                        <p class="text-slate-300">Detaylı hiyerarşi için <a href="#device-hierarchy" class="text-cyan-400 underline hover:text-cyan-300">Device Limit Hierarchy</a> bölümüne bak</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. HARDCODE DEĞERLER -->
+        <section id="hardcode" class="mb-16">
+            <h2 class="text-4xl font-bold mb-8 text-blue-400">3️⃣ Hardcode Değerler (SADECE 30 SANİYE)</h2>
+            
+            <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-700/50 rounded-xl p-8">
+                <div class="flex items-start gap-4">
+                    <span class="text-5xl">🎵</span>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-purple-400 mb-3">30 Saniye Preview Duration</h3>
+                        <p class="text-slate-300 mb-4">Abonelik yoksa veya biterse müzik 30 saniye çalışır (Guest & Expired kullanıcılar)</p>
+                        
+                        <div class="bg-slate-900/50 rounded-lg p-4 font-mono text-sm text-green-400 mb-4">
+const PREVIEW_DURATION = 30; // saniye
+                        </div>
+
+                        <div class="bg-green-900/30 rounded-lg p-4 border border-green-700/50">
+                            <p class="text-green-400 font-bold mb-2">✅ Neden Hardcode?</p>
+                            <p class="text-slate-300 text-sm">Bu değer değişmeyecek, ayar olarak yönetmeye gerek yok. Kullanıcı: "muzibu 30 saniye kuralı kalıcı değiştirmeye gerek yok. hardcode olsun"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-orange-900/30 rounded-lg p-6 border border-orange-700/50">
+                <h3 class="text-xl font-bold text-orange-400 mb-4">🔥 v2: Çıkarılan Hardcode'lar</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-red-400 font-bold mb-2">❌ "7 gün trial" (v1'de vardı)</p>
+                        <p class="text-slate-300 text-sm">Artık hardcode değil, trial plan'ın cycle'ından gelir (dinamik)</p>
+                    </div>
+                    <div>
+                        <p class="text-red-400 font-bold mb-2">❌ "Otomatik trial başlatma" (v1'de vardı)</p>
+                        <p class="text-slate-300 text-sm">Trial plan varsa başlar, yoksa başlamaz (koşullu)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRIAL PLAN SİSTEMİ (YENİ BÖLÜM) -->
+        <section id="trial-plan" class="mb-16">
+            <h2 class="text-4xl font-bold mb-8 text-orange-400">🆕 Trial Plan Sistemi (v2)</h2>
+            
+            <div class="bg-gradient-to-r from-orange-900/40 to-red-900/40 border-2 border-orange-500 rounded-xl p-8 mb-8">
+                <h3 class="text-2xl font-bold text-orange-400 mb-6">🎯 Nasıl Çalışır?</h3>
+                
+                <div class="space-y-6">
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="text-white font-bold mb-4 text-lg">1️⃣ Trial Plan Kontrolü</h4>
+                        <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-green-400 mb-4">
+$trialPlan = SubscriptionPlan::where('is_trial', true)<br>
+&nbsp;&nbsp;->where('is_active', true)<br>
+&nbsp;&nbsp;->first();<br>
+<br>
+if (!$trialPlan) {<br>
+&nbsp;&nbsp;// Trial sistemi yok, direkt return<br>
+&nbsp;&nbsp;return null;<br>
+}
+                        </div>
+                        <p class="text-slate-300 text-sm"><strong>Kritik:</strong> <code class="bg-slate-800 px-2 py-1 rounded">is_trial=true</code> olan plan yoksa trial sistemi çalışmaz!</p>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="text-white font-bold mb-4 text-lg">2️⃣ Trial Süresi Hesaplama</h4>
+                        <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-blue-400 mb-4">
+$cycles = $trialPlan->billing_cycles; // JSON decode<br>
+$firstCycle = array_values($cycles)[0];<br>
+$trialDays = $firstCycle['duration_days']; // 7, 14, 30 vs.
+                        </div>
+                        <p class="text-slate-300 text-sm"><strong>Dinamik:</strong> Trial plan'ın cycle'ında yazılan gün sayısı kullanılır (7, 14, 30 olabilir)</p>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="text-white font-bold mb-4 text-lg">3️⃣ Trial Plan Yapısı (Örnek JSON)</h4>
+                        <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-purple-400 overflow-x-auto">
+{<br>
+&nbsp;&nbsp;"subscription_plan_id": 1,<br>
+&nbsp;&nbsp;"title": {"tr": "Deneme", "en": "Trial"},<br>
+&nbsp;&nbsp;"slug": "deneme",<br>
+&nbsp;&nbsp;"is_trial": true,<br>
+&nbsp;&nbsp;"is_active": true,<br>
+&nbsp;&nbsp;"billing_cycles": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"deneme-7-gun": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"name": {"tr": "7 Günlük Deneme"},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"duration_days": 7,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"price": 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+                        <p class="text-slate-300 text-sm mt-4"><strong>Önemli:</strong> Trial plan'da SADECE 1 cycle olmalı (deneme süresi)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Örnekler -->
+            <div>
+                <h3 class="text-2xl font-bold text-orange-400 mb-6">📝 Örnek Senaryolar</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-6 border border-green-700/50">
+                        <h4 class="text-green-400 font-bold mb-4">✅ Trial Plan Var (7 gün)</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><span class="text-slate-400">is_trial:</span> <span class="text-green-400 font-bold">true</span></p>
+                            <p><span class="text-slate-400">cycle duration_days:</span> <span class="text-green-400 font-bold">7</span></p>
+                            <p class="pt-2 border-t border-slate-700"><span class="text-white font-bold">SONUÇ:</span> <span class="text-green-400 font-bold">7 gün trial verilir</span></p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border border-blue-700/50">
+                        <h4 class="text-blue-400 font-bold mb-4">✅ Trial Plan Var (14 gün)</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><span class="text-slate-400">is_trial:</span> <span class="text-blue-400 font-bold">true</span></p>
+                            <p><span class="text-slate-400">cycle duration_days:</span> <span class="text-blue-400 font-bold">14</span></p>
+                            <p class="pt-2 border-t border-slate-700"><span class="text-white font-bold">SONUÇ:</span> <span class="text-blue-400 font-bold">14 gün trial verilir</span></p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border border-red-700/50">
+                        <h4 class="text-red-400 font-bold mb-4">❌ Trial Plan Yok</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><span class="text-slate-400">is_trial=true plan:</span> <span class="text-red-400 font-bold">BULUNAMADI</span></p>
+                            <p><span class="text-slate-400">auth_subscription:</span> <span class="text-green-400">1 (açık olsa bile)</span></p>
+                            <p class="pt-2 border-t border-slate-700"><span class="text-white font-bold">SONUÇ:</span> <span class="text-red-400 font-bold">Trial sistemi YOK</span></p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6 border border-purple-700/50">
+                        <h4 class="text-purple-400 font-bold mb-4">✅ Trial Plan Var (30 gün)</h4>
+                        <div class="space-y-2 text-sm">
+                            <p><span class="text-slate-400">is_trial:</span> <span class="text-purple-400 font-bold">true</span></p>
+                            <p><span class="text-slate-400">cycle duration_days:</span> <span class="text-purple-400 font-bold">30</span></p>
+                            <p class="pt-2 border-t border-slate-700"><span class="text-white font-bold">SONUÇ:</span> <span class="text-purple-400 font-bold">30 gün trial verilir</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. KULLANICI DURUMLARI -->
+        <section id="user-states" class="mb-16">
+            <h2 class="text-4xl font-bold mb-8 text-green-400">4️⃣ Kullanıcı Durumları (4 Durum)</h2>
+            
+            <div class="space-y-6">
+                <!-- GUEST -->
+                <div class="bg-gradient-to-r from-slate-900/40 to-slate-800/40 border-2 border-slate-500 rounded-xl p-6">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="w-14 h-14 bg-slate-600 text-white rounded-full flex items-center justify-center font-bold text-2xl">👤</span>
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-300">GUEST (Misafir)</h3>
+                            <p class="text-slate-400">Kayıt olmamış, siteyi gezinen kullanıcı</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">Dinleme:</p>
+                            <p class="text-yellow-400 text-2xl font-bold">30 saniye</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">Özellikler:</p>
+                            <p class="text-red-400">Playlist ❌ | Favori ❌</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">CTA:</p>
+                            <p class="text-blue-400">"Sınırsız dinlemek için üye ol!"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRIAL -->
+                <div class="bg-gradient-to-r from-green-900/40 to-emerald-900/40 border-2 border-green-500 rounded-xl p-6">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="w-14 h-14 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-2xl">🆓</span>
+                        <div>
+                            <h3 class="text-2xl font-bold text-green-400">TRIAL (Deneme Üyesi)</h3>
+                            <p class="text-slate-300">Yeni kayıt, trial plan süresince deneme (7-30 gün)</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">Dinleme:</p>
+                            <p class="text-green-400 text-2xl font-bold">Sınırsız (X gün)</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">Özellikler:</p>
+                            <p class="text-green-400">Playlist ✅ | Favori ✅</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">CTA:</p>
+                            <p class="text-yellow-400">"X gün kaldı, Premium'a geç!"</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-orange-900/30 rounded-lg p-4 border border-orange-700/50">
+                        <p class="text-orange-400 font-bold mb-2">🔥 v2: Dinamik Süre</p>
+                        <p class="text-slate-300 text-sm">Trial süresi trial plan'ın cycle'ındaki <code class="bg-slate-800 px-2 py-1 rounded">duration_days</code> değeridir (7, 14, 30 vs.)</p>
+                    </div>
+                </div>
+
+                <!-- PREMIUM -->
+                <div class="bg-gradient-to-r from-purple-900/40 to-pink-900/40 border-2 border-purple-500 rounded-xl p-6">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="w-14 h-14 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-2xl">👑</span>
+                        <div>
+                            <h3 class="text-2xl font-bold text-purple-400">PREMIUM (Ücretli Üye)</h3>
+                            <p class="text-slate-300">Ödeme yapmış, aktif premium aboneliği var</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">Dinleme:</p>
+                            <p class="text-purple-400 text-2xl font-bold">Sınırsız (Ömür boyu)</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">Özellikler:</p>
+                            <p class="text-purple-400">TÜM Özellikler ✅</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">CTA:</p>
+                            <p class="text-blue-400">"Premium üyesiniz, keyifle dinleyin!"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXPIRED -->
+                <div class="bg-gradient-to-r from-red-900/40 to-rose-900/40 border-2 border-red-500 rounded-xl p-6">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-2xl">⏰</span>
+                        <div>
+                            <h3 class="text-2xl font-bold text-red-400">EXPIRED (Süresi Bitmiş)</h3>
+                            <p class="text-slate-300">Trial veya Premium süresi dolmuş, ödeme yapılmamış</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">Dinleme:</p>
+                            <p class="text-yellow-400 text-2xl font-bold">30 saniye</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">Özellikler:</p>
+                            <p class="text-red-400">Playlist ❌ | Favori ❌</p>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <p class="text-white font-bold mb-2">CTA:</p>
+                            <p class="text-red-400">"Aboneliğiniz sona erdi! HEMEN YENİLE!"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hızlı Tablo -->
+            <div class="mt-10">
+                <h3 class="text-2xl font-bold mb-6 text-cyan-400">📊 Hızlı Referans Tablosu</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full bg-slate-900/50 rounded-lg overflow-hidden">
+                        <thead class="bg-slate-800">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-white">Durum</th>
+                                <th class="px-6 py-4 text-left text-white">Dinleme</th>
+                                <th class="px-6 py-4 text-left text-white">Süre</th>
+                                <th class="px-6 py-4 text-left text-white">Playlist</th>
+                                <th class="px-6 py-4 text-left text-white">CTA</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800">
+                            <tr>
+                                <td class="px-6 py-4 text-slate-300 font-bold">👤 GUEST</td>
+                                <td class="px-6 py-4 text-yellow-400 font-bold">30 saniye</td>
+                                <td class="px-6 py-4 text-slate-400">-</td>
+                                <td class="px-6 py-4 text-red-400">❌</td>
+                                <td class="px-6 py-4 text-blue-400">Üye ol</td>
+                            </tr>
+                            <tr class="bg-green-900/20">
+                                <td class="px-6 py-4 text-green-400 font-bold">🆓 TRIAL</td>
+                                <td class="px-6 py-4 text-green-400 font-bold">Sınırsız</td>
+                                <td class="px-6 py-4 text-green-400">7-30 gün (plan'dan)</td>
+                                <td class="px-6 py-4 text-green-400">✅</td>
+                                <td class="px-6 py-4 text-yellow-400">Premium'a geç</td>
+                            </tr>
+                            <tr class="bg-purple-900/20">
+                                <td class="px-6 py-4 text-purple-400 font-bold">👑 PREMIUM</td>
+                                <td class="px-6 py-4 text-purple-400 font-bold">Sınırsız</td>
+                                <td class="px-6 py-4 text-purple-400">Ömür boyu</td>
+                                <td class="px-6 py-4 text-purple-400">✅</td>
+                                <td class="px-6 py-4 text-blue-400">Keyifle dinle</td>
+                            </tr>
+                            <tr class="bg-red-900/20">
+                                <td class="px-6 py-4 text-red-400 font-bold">⏰ EXPIRED</td>
+                                <td class="px-6 py-4 text-yellow-400 font-bold">30 saniye</td>
+                                <td class="px-6 py-4 text-slate-400">-</td>
+                                <td class="px-6 py-4 text-red-400">❌</td>
+                                <td class="px-6 py-4 text-red-400 font-bold">HEMEN YENİLE!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. DEVICE LIMIT HIERARCHY -->
+        <section id="device-hierarchy" class="mb-16">
+            <h2 class="text-4xl font-bold mb-8 text-cyan-400">5️⃣ Device Limit Hierarchy (3-Layer Fallback)</h2>
+            
+            <div class="bg-cyan-900/20 border border-cyan-700/50 rounded-xl p-8 mb-8">
+                <h3 class="text-2xl font-bold text-cyan-400 mb-6">🎯 Nasıl Çalışır?</h3>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="px-8 py-4 bg-green-600 text-white rounded-lg font-bold min-w-[250px] text-center text-lg">1️⃣ user.device_limit</div>
+                        <span class="text-3xl">→</span>
+                        <div class="flex-1 text-slate-300 text-lg">En yüksek öncelik (VIP, Test, Ban kullanıcıları için override)</div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="px-8 py-4 bg-blue-600 text-white rounded-lg font-bold min-w-[250px] text-center text-lg">2️⃣ plan.device_limit</div>
+                        <span class="text-3xl">→</span>
+                        <div class="flex-1 text-slate-300 text-lg">Plan'ın default değeri (Normal kullanıcılar için)</div>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="px-8 py-4 bg-purple-600 text-white rounded-lg font-bold min-w-[250px] text-center text-lg">3️⃣ auth_device_limit</div>
+                        <span class="text-3xl">→</span>
+                        <div class="flex-1 text-slate-300 text-lg">Global fallback (Son çare, setting)</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-blue-900/30 rounded-lg p-4 border border-blue-700/50">
+                    <p class="text-blue-400 font-bold mb-2">💡 Mantık:</p>
+                    <p class="text-slate-300">Üstten alta inerken ilk NULL OLMAYAN değer kullanılır. NULL ise bir sonraki katmana geç.</p>
+                </div>
+            </div>
+
+            <!-- Kod -->
+            <div class="bg-slate-900/50 rounded-xl p-8 border border-cyan-700/50 mb-8">
+                <h3 class="text-2xl font-bold text-cyan-400 mb-4">💻 Kod İmplementasyonu</h3>
+                <div class="bg-slate-900 rounded-lg p-6 font-mono text-sm text-green-400 overflow-x-auto">
+public function getDeviceLimit(User $user): int<br>
+{<br>
+&nbsp;&nbsp;// 1. User override (özel durumlar - VIP/Test/Ban)<br>
+&nbsp;&nbsp;if ($user->device_limit !== null) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return $user->device_limit;<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;// 2. Plan default (normal akış - çoğu kullanıcı buradan)<br>
+&nbsp;&nbsp;$sub = $user->activeSubscription();<br>
+&nbsp;&nbsp;if ($sub && $sub->plan->device_limit) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return $sub->plan->device_limit;<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;// 3. Global fallback (son çare - setting)<br>
+&nbsp;&nbsp;return setting('auth_device_limit', 1);<br>
+}
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. HIZLI ÖZET -->
+        <section id="quick-summary" class="mb-16">
+            <h2 class="text-4xl font-bold mb-8 text-yellow-400">⚡ Hızlı Özet (v2 - Trial Dinamik)</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-emerald-900/20 border border-emerald-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-emerald-400">📋 ULTIMATE Master Plan</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>✅ Trial plan varsa otomatik başlar</li>
+                        <li>✅ Trial süresi → Plan cycle'dan (DİNAMİK)</li>
+                        <li>✅ is_trial checkbox</li>
+                        <li>✅ has_used_trial kontrolü</li>
+                        <li>✅ 30 saniye preview</li>
+                        <li>✅ Request-level check</li>
+                        <li>✅ SettingsManagement (3-layer)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-purple-900/20 border border-purple-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-purple-400">⚙️ Settings (2 Adet)</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>1️⃣ <strong>auth_subscription</strong> (0/1)</li>
+                        <li>&nbsp;&nbsp;&nbsp;→ Ana anahtar (trial plan gerekli!)</li>
+                        <li>2️⃣ <strong>auth_device_limit</strong> (number)</li>
+                        <li>&nbsp;&nbsp;&nbsp;→ Global fallback</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-900/20 border border-blue-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-blue-400">🔧 Hardcode (1 Adet)</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>1️⃣ <strong>30 saniye</strong> - Preview süresi</li>
+                        <li class="pt-2 text-red-400">❌ 7 gün (v1) → DİNAMİK (v2)</li>
+                        <li class="text-red-400">❌ Auto-start (v1) → KOŞULLU (v2)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-orange-900/20 border border-orange-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-orange-400">🆕 Trial Plan (v2)</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>✅ <code class="bg-slate-800 px-2 py-1 rounded">is_trial=true</code> plan gerekli</li>
+                        <li>✅ Plan yoksa trial YOK</li>
+                        <li>✅ Süre: cycle'dan <code class="bg-slate-800 px-2 py-1 rounded">duration_days</code></li>
+                        <li>✅ Tek cycle (7, 14, 30 gün vs.)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-green-400">👥 Kullanıcı (4 Durum)</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>👤 <strong>GUEST</strong> - 30 saniye</li>
+                        <li>🆓 <strong>TRIAL</strong> - X gün (plan'dan)</li>
+                        <li>👑 <strong>PREMIUM</strong> - Ömür boyu</li>
+                        <li>⏰ <strong>EXPIRED</strong> - 30 saniye</li>
+                    </ul>
+                </div>
+
+                <div class="bg-cyan-900/20 border border-cyan-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-cyan-400">📱 Device Hierarchy</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>1️⃣ <strong>user.device_limit</strong> - Öncelikli</li>
+                        <li>2️⃣ <strong>plan.device_limit</strong> - Normal</li>
+                        <li>3️⃣ <strong>auth_device_limit</strong> - Fallback</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Tailwind CSS</p>
+            <p class="mt-2">Tarih: 2025-12-05 | ULTIMATE KILAVUZ v2</p>
+            <p class="mt-2 text-xs">v2: Trial plan dinamik sistemi eklendi - Plan yoksa trial yok!</p>
+        </footer>
+    </div>
+</body>
+</html>

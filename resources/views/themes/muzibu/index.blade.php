@@ -70,24 +70,29 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($featuredPlaylists as $playlist)
-        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
-            <div class="relative mb-3">
-                <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
-                    @if($playlist->coverMedia)
-                        <img src="{{ thumb($playlist->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" loading="lazy" class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center text-4xl">🎵</div>
-                    @endif
+        <div class="group relative flex-shrink-0 w-[190px]">
+            <a class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+               wire:navigate
+               href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}">
+                <div class="relative mb-3">
+                    <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
+                        @if($playlist->coverMedia)
+                            <img src="{{ thumb($playlist->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" loading="lazy" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-4xl">🎵</div>
+                        @endif
+                    </div>
                 </div>
-                {{-- Play button on hover --}}
-                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                    <i class="fas fa-play text-black ml-0.5"></i>
-                </div>
-            </div>
-            <h3 class="font-semibold text-white truncate mb-1 text-sm">
-                {{ getLocaleTitle($playlist->title, 'Playlist') }}
-            </h3>
-            <p class="text-xs text-muzibu-text-gray truncate">{{ $playlist->songs()->count() }} şarkı</p>
+                <h3 class="font-semibold text-white truncate mb-1 text-sm">
+                    {{ getLocaleTitle($playlist->title, 'Playlist') }}
+                </h3>
+                <p class="text-xs text-muzibu-text-gray truncate">{{ $playlist->songs()->count() }} şarkı</p>
+            </a>
+            {{-- Play button OUTSIDE <a> tag --}}
+            <button class="absolute top-[12px] right-[12px] w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
+                    @click="playPlaylist({{ $playlist->playlist_id }})">
+                <i class="fas fa-play text-black ml-0.5"></i>
+            </button>
         </div>
         @endforeach
     </div>
@@ -140,26 +145,31 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($newReleases as $album)
-        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
-            <div class="relative mb-3">
-                <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
-                    @if($album->coverMedia)
-                        <img src="{{ thumb($album->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($album->title, 'Album') }}" loading="lazy" class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center text-4xl">🎸</div>
-                    @endif
+        <div class="group relative flex-shrink-0 w-[190px]">
+            <a class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+               wire:navigate
+               href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}">
+                <div class="relative mb-3">
+                    <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
+                        @if($album->coverMedia)
+                            <img src="{{ thumb($album->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($album->title, 'Album') }}" loading="lazy" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-4xl">🎸</div>
+                        @endif
+                    </div>
                 </div>
-                {{-- Play button on hover --}}
-                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                    <i class="fas fa-play text-black ml-0.5"></i>
-                </div>
-            </div>
-            <h3 class="font-semibold text-white truncate mb-1 text-sm">
-                {{ getLocaleTitle($album->title, 'Album') }}
-            </h3>
-            <p class="text-xs text-muzibu-text-gray truncate">
-                {{ $album->artist ? (is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}
-            </p>
+                <h3 class="font-semibold text-white truncate mb-1 text-sm">
+                    {{ getLocaleTitle($album->title, 'Album') }}
+                </h3>
+                <p class="text-xs text-muzibu-text-gray truncate">
+                    {{ $album->artist ? (is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}
+                </p>
+            </a>
+            {{-- Play button OUTSIDE <a> tag --}}
+            <button class="absolute top-[12px] right-[12px] w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
+                    @click="playAlbum({{ $album->album_id }})">
+                <i class="fas fa-play text-black ml-0.5"></i>
+            </button>
         </div>
         @endforeach
     </div>
@@ -326,26 +336,31 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($genres as $genre)
-        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
-            <div class="relative mb-3">
-                <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl"
-                     style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
-                    <div class="absolute inset-0 flex items-center justify-center text-6xl opacity-30">
-                        🎵
-                    </div>
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
-                        <i class="fas fa-play text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
+        <div class="group relative flex-shrink-0 w-[190px]">
+            <a class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+               wire:navigate
+               href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}">
+                <div class="relative mb-3">
+                    <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl"
+                         style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
+                        <div class="absolute inset-0 flex items-center justify-center text-6xl opacity-30">
+                            🎵
+                        </div>
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                            <i class="fas fa-play text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
                     </div>
                 </div>
-                {{-- Play button on hover --}}
-                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                    <i class="fas fa-play text-black ml-0.5"></i>
-                </div>
-            </div>
-            <h3 class="font-semibold text-white truncate mb-1 text-sm">
-                {{ getLocaleTitle($genre->title, 'Genre') }}
-            </h3>
-            <p class="text-xs text-muzibu-text-gray truncate">{{ $genre->songs()->count() }} şarkı</p>
+                <h3 class="font-semibold text-white truncate mb-1 text-sm">
+                    {{ getLocaleTitle($genre->title, 'Genre') }}
+                </h3>
+                <p class="text-xs text-muzibu-text-gray truncate">{{ $genre->songs()->count() }} şarkı</p>
+            </a>
+            {{-- Play button OUTSIDE <a> tag --}}
+            <button class="absolute top-[12px] right-[12px] w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
+                    @click="playGenre({{ $genre->genre_id }})">
+                <i class="fas fa-play text-black ml-0.5"></i>
+            </button>
         </div>
         @endforeach
     </div>

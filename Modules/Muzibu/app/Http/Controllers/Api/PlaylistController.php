@@ -28,8 +28,11 @@ class PlaylistController extends Controller
             $perPage = $request->input('per_page', 20);
             $sectorId = $request->input('sector_id');
 
-            //🔒 FIXED: Use Eloquent (tenant-aware)
-            $query = Playlist::where('is_active', 1);
+            //🔒 FIXED: Use Eloquent (tenant-aware) + Only playlists with active songs
+            $query = Playlist::where('is_active', 1)
+                ->whereHas('songs', function($q) {
+                    $q->where('is_active', 1);
+                });
 
             // Filter by sector
             if ($sectorId) {
@@ -52,7 +55,7 @@ class PlaylistController extends Controller
                     'is_system' => $playlist->is_system,
                     'is_public' => $playlist->is_public,
                     'is_active' => $playlist->is_active,
-                    'song_count' => $playlist->songs()->count(),
+                    'song_count' => $playlist->songs()->where('is_active', 1)->count(),
                 ];
             });
 
@@ -145,7 +148,7 @@ class PlaylistController extends Controller
                         'description' => $playlist->description,
                         'media_id' => $playlist->media_id,
                 'cover_url' => $playlist->getCoverUrl(200, 200),
-                        'song_count' => $playlist->songs()->count(),
+                        'song_count' => $playlist->songs()->where('is_active', 1)->count(),
                     ];
                 });
 

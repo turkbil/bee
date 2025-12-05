@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Log;
 /**
  * Playlist Generator Service
  *
- * User tipine göre dynamic M3U8 playlist olu_turur
- * Guest/Normal User: 4 chunk (3 çal + 1 buffer)
- * Premium User: Tüm chunk'lar
+ * User tipine gï¿½re dynamic M3U8 playlist olu_turur
+ * Guest/Normal User: 4 chunk (3 ï¿½al + 1 buffer)
+ * Premium User: Tï¿½m chunk'lar
  */
 class PlaylistGeneratorService
 {
@@ -22,8 +22,13 @@ class PlaylistGeneratorService
      */
     public function generatePlaylist($song, $user = null): string
     {
-        // Orijinal playlist path
-        $playlistPath = storage_path('app/public/' . $song->hls_path);
+        // Orijinal playlist path (tenant-aware)
+        $tenantId = tenant('id');
+        if ($tenantId) {
+            $playlistPath = storage_path("../tenant{$tenantId}/app/public/{$song->hls_path}");
+        } else {
+            $playlistPath = storage_path("app/public/{$song->hls_path}");
+        }
 
         if (!file_exists($playlistPath)) {
             Log::error('Playlist file not found', [
@@ -36,10 +41,10 @@ class PlaylistGeneratorService
         // Orijinal playlist oku
         $originalPlaylist = file_get_contents($playlistPath);
 
-        // User tipine göre chunk limiti belirle
+        // User tipine gï¿½re chunk limiti belirle
         $chunkLimit = $this->getChunkLimit($user);
 
-        // Playlist'i limit'e göre filter et
+        // Playlist'i limit'e gï¿½re filter et
         $filteredPlaylist = $this->limitChunks($originalPlaylist, $chunkLimit);
 
         // Chunk URL'lerini signed token ile dei_tir
@@ -49,7 +54,7 @@ class PlaylistGeneratorService
     }
 
     /**
-     * User tipine göre chunk limiti
+     * User tipine gï¿½re chunk limiti
      *
      * @param \App\Models\User|null $user
      * @return int|null Chunk limit (null = s1n1rs1z)
@@ -58,7 +63,7 @@ class PlaylistGeneratorService
     {
         // Guest veya Normal User (Premium deil)
         if (!$user || !$user->isPremium()) {
-            // 4 chunk = 3 çalacak (30 saniye) + 1 buffer (10 saniye)
+            // 4 chunk = 3 ï¿½alacak (30 saniye) + 1 buffer (10 saniye)
             return 4;
         }
 
@@ -67,7 +72,7 @@ class PlaylistGeneratorService
     }
 
     /**
-     * Playlist'i chunk limitine göre filtrele
+     * Playlist'i chunk limitine gï¿½re filtrele
      *
      * @param string $playlist M3U8 content
      * @param int|null $limit Chunk limit (null = limit yok)
@@ -75,7 +80,7 @@ class PlaylistGeneratorService
      */
     protected function limitChunks(string $playlist, ?int $limit): string
     {
-        // Limit yoksa olduu gibi döndür
+        // Limit yoksa olduu gibi dï¿½ndï¿½r
         if ($limit === null) {
             return $playlist;
         }
@@ -109,8 +114,8 @@ class PlaylistGeneratorService
                 continue;
             }
 
-            // Chunk dosya sat1r1 (segment-XXX.ts)
-            if ($inChunk && (str_ends_with($line, '.ts') || str_contains($line, 'segment'))) {
+            // Chunk dosya sat1r1 (segment-XXX.ts veya chunk_XXX.ts)
+            if ($inChunk && (str_ends_with($line, '.ts') || str_contains($line, 'segment') || str_contains($line, 'chunk_'))) {
                 $output[] = $line;
                 $inChunk = false;
                 continue;
@@ -145,9 +150,9 @@ class PlaylistGeneratorService
     {
         $chunkTokenService = app(\App\Services\Muzibu\ChunkTokenService::class);
 
-        // segment-000.ts, segment-001.ts vb. tüm chunk dosyalar1n1 bul
+        // segment-000.ts veya chunk_000.ts vb. tï¿½m chunk dosyalar1n1 bul
         $playlist = preg_replace_callback(
-            '/(segment-\d+\.ts)/',
+            '/((?:segment-|chunk_)\d+\.ts)/',
             function($matches) use ($songId, $user, $chunkTokenService) {
                 $chunkName = $matches[1];
 
@@ -169,8 +174,8 @@ class PlaylistGeneratorService
     }
 
     /**
-     * Chunk index'i chunk dosya ad1ndan ç1kar
-     * segment-005.ts ’ 5
+     * Chunk index'i chunk dosya ad1ndan ï¿½1kar
+     * segment-005.ts ï¿½ 5
      *
      * @param string $chunkName
      * @return int

@@ -9,7 +9,7 @@
         </button>
 
         {{-- Logo with animation - Settings powered --}}
-        <a href="{{ route('muzibu.home') }}" class="text-2xl font-bold group flex items-center">
+        <a href="/" @click.prevent="navigateTo('/')" class="text-2xl font-bold group flex items-center">
             @php
                 // LogoService kullan - Settings'den logo çek
                 $logoService = app(\App\Services\LogoService::class);
@@ -95,16 +95,16 @@
 
     <div class="flex items-center gap-5">
         {{-- Premium Button (non-premium only) - SPA Reactive --}}
-        <a
+        <button
             x-show="isLoggedIn && (!currentUser?.is_premium)"
             x-cloak
-            href="#premium"
+            @click.prevent="navigateTo('/subscription/plans')"
             class="hidden sm:flex items-center gap-2 px-4 py-2 border border-muzibu-coral/40 hover:border-muzibu-coral hover:bg-muzibu-coral/10 rounded-full text-muzibu-coral text-sm font-semibold transition-all duration-300"
         >
             <i class="fas fa-crown text-xs"></i>
             <span class="hidden md:inline">Premium'a Geç</span>
             <span class="md:hidden">Premium</span>
-        </a>
+        </button>
 
         {{-- Notification with badge - SPA Reactive --}}
         <button
@@ -137,6 +137,8 @@
                 <div class="px-4 py-3 border-b border-white/10">
                     <p class="text-white font-semibold text-sm" x-text="currentUser?.name || 'Kullanıcı'"></p>
                     <p class="text-zinc-400 text-xs" x-text="currentUser?.email || ''"></p>
+
+                    {{-- Premium Badge --}}
                     <div
                         x-show="currentUser?.is_premium"
                         class="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-full"
@@ -144,28 +146,59 @@
                         <i class="fas fa-crown text-yellow-400 text-xs"></i>
                         <span class="text-yellow-400 text-xs font-semibold">Premium Üye</span>
                     </div>
+
+                    {{-- Trial Subscription Widget --}}
+                    @auth
+                        @php
+                            $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
+                            $access = $subscriptionService->checkUserAccess(auth()->user());
+                            $isTrial = $access['is_trial'] ?? false;
+                            $expiresAt = $access['expires_at'] ?? null;
+                            $daysRemaining = $expiresAt ? now()->diffInDays($expiresAt) : 0;
+                        @endphp
+
+                        @if($isTrial && $expiresAt)
+                            <div class="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-full">
+                                <i class="fas fa-gift text-green-400 text-xs"></i>
+                                <span class="text-green-400 text-xs font-semibold">
+                                    Trial: {{ $daysRemaining }} gün kaldı
+                                </span>
+                            </div>
+                        @endif
+                    @endauth
                 </div>
-                <a href="#profile" class="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
+
+                {{-- Dashboard Link --}}
+                <button @click.prevent="navigateTo('/dashboard'); userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
+                    <i class="fas fa-th-large w-5"></i>
+                    <span>Kullanıcı Paneli</span>
+                </button>
+
+                {{-- Profile Link --}}
+                <button @click.prevent="navigateTo('/profile'); userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
                     <i class="fas fa-user w-5"></i>
                     <span>Profil</span>
-                </a>
-                <a href="#settings" class="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
-                    <i class="fas fa-cog w-5"></i>
-                    <span>Ayarlar</span>
-                </a>
-                <a
+                </button>
+
+                <div class="h-px bg-white/10 my-1"></div>
+
+                {{-- Premium Link (non-premium only) --}}
+                <button
                     x-show="!currentUser?.is_premium"
-                    href="#premium"
-                    class="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-yellow-400 text-sm transition-colors"
+                    @click.prevent="navigateTo('/subscription/plans'); userMenuOpen = false"
+                    class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors"
                 >
                     <i class="fas fa-crown w-5"></i>
                     <span>Premium'a Geç</span>
-                </a>
+                </button>
+
                 <div class="h-px bg-white/10 my-1"></div>
-                <a href="#" @click.prevent="logout()" class="flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-red-400 text-sm transition-colors">
+
+                {{-- Logout --}}
+                <button @click.prevent="logout()" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-500/10 text-red-400 text-sm transition-colors">
                     <i class="fas fa-sign-out-alt w-5"></i>
                     <span>Çıkış Yap</span>
-                </a>
+                </button>
             </div>
         </div>
 

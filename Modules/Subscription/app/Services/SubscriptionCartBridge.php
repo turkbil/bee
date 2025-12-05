@@ -95,31 +95,39 @@ class SubscriptionCartBridge
      */
     protected function getSubscriptionPriceInfo(SubscriptionPlan $plan, array $cycle): array
     {
-        // Cycle'dan fiyat al
-        $price = $cycle['price'] ?? 0;
+        // Cycle'dan fiyat al (KDV dahil!)
+        $priceWithTax = $cycle['price'] ?? 0;
         $comparePrice = $cycle['compare_price'] ?? null;
 
-        // Discount amount hesapla
+        // Compare price sadece görsel gösterim için - cart hesabına dahil edilmez!
         $discountAmount = 0;
-        if ($comparePrice && $comparePrice > $price) {
-            $discountAmount = $comparePrice - $price;
-        }
 
         // Currency (default TRY)
         $currency = $plan->currency ?? 'TRY';
 
+        // Tax rate
+        $taxRate = $plan->tax_rate ?? 20;
+
+        // Subscription fiyatları KDV DAHİL gelir!
+        // KDV'yi ayrıştır: KDV hariç fiyat = KDV dahil fiyat / (1 + KDV oranı)
+        $priceWithoutTax = $priceWithTax / (1 + ($taxRate / 100));
+
         Log::info('🛒 SubscriptionCartBridge - Price Info', [
             'plan_id' => $plan->subscription_plan_id,
-            'unit_price' => $price,
-            'currency' => $currency,
+            'price_with_tax' => $priceWithTax,
+            'price_without_tax' => $priceWithoutTax,
+            'tax_rate' => $taxRate,
+            'note' => 'Subscription fiyatları KDV dahil - KDV ayrıştırıldı',
+            'compare_price' => $comparePrice,
             'discount_amount' => $discountAmount,
         ]);
 
         return [
-            'unit_price' => $price,
+            'unit_price' => $priceWithoutTax, // KDV hariç fiyat
+            'compare_price' => $comparePrice, // Sadece UI için
             'currency' => $currency,
             'discount_amount' => $discountAmount,
-            'tax_rate' => 0, // Subscription fiyatları KDV dahil, ayrıca KDV ekleme!
+            'tax_rate' => $taxRate, // %20
         ];
     }
 

@@ -161,4 +161,140 @@ class SubscriptionService
                 ->sum('price_per_cycle'),
         ];
     }
+
+    /**
+     * Get trial plan (is_trial = true)
+     * @return SubscriptionPlan|null
+     */
+    public function getTrialPlan(): ?SubscriptionPlan
+    {
+        return SubscriptionPlan::where('is_trial', true)
+            ->where('is_active', true)
+            ->first();
+    }
+
+    /**
+     * Get trial duration from trial plan's cycle
+     * @return int|null
+     */
+    public function getTrialDuration(): ?int
+    {
+        $trialPlan = $this->getTrialPlan();
+        if (!$trialPlan) {
+            return null;
+        }
+
+        $cycles = $trialPlan->billing_cycles;
+        if (!$cycles || !is_array($cycles)) {
+            return null;
+        }
+
+        $firstCycle = array_values($cycles)[0];
+        return $firstCycle['duration_days'] ?? null;
+    }
+
+    /**
+     * Create trial subscription for user
+     * @param User $user
+     * @return Subscription|null
+     */
+    public function createTrialForUser(User $user): ?Subscription
+    {
+        // 1. Setting kontrolü
+        if (!setting('auth_subscription')) {
+            return null;
+        }
+
+        // 2. Trial plan kontrolü
+        $trialPlan = $this->getTrialPlan();
+        if (!$trialPlan) {
+            return null;
+        }
+
+        // 3. has_used_trial kontrolü
+        if ($user->has_used_trial) {
+            return null;
+        }
+
+        // 4. Subscription oluştur
+        $duration = $this->getTrialDuration();
+        if (!$duration) {
+            return null;
+        }
+
+        // Trial plan'dan ilk cycle bilgisini al
+        $cycles = $trialPlan->billing_cycles;
+        $firstCycle = array_values($cycles)[0];
+
+        $subscription = Subscription::create([
+            'user_id' => $user->id,
+            'subscription_plan_id' => $trialPlan->subscription_plan_id,
+            'status' => 'active',
+            'started_at' => now(),
+            'current_period_start' => now(),
+            'current_period_end' => now()->addDays($duration),
+            'price_per_cycle' => 0, // Trial ücretsiz
+            'currency' => $trialPlan->currency ?? 'TRY',
+            'cycle_key' => array_keys($cycles)[0] ?? 'deneme-7-gun',
+            'cycle_metadata' => $firstCycle,
+            'has_trial' => true,
+            'trial_days' => $duration,
+            'trial_ends_at' => now()->addDays($duration),
+        ]);
+
+        // 5. has_used_trial = true
+        $user->update(['has_used_trial' => true]);
+
+        return $subscription;
+    }
+
+    /**
+     * Get device limit for user (3-layer hierarchy)
+     * @param User $user
+     * @return int
+     */
+    public function getDeviceLimit(User $user): int
+    {
+        // 1. User override (özel durumlar - VIP/Test/Ban)
+        if ($user->device_limit !== null) {
+            return $user->device_limit;
+        }
+
+        // 2. Plan default (normal akış - çoğu kullanıcı buradan)
+        $sub = $user->activeSubscription()->first();
+        if ($sub && $sub->plan && $sub->plan->device_limit) {
+            return $sub->plan->device_limit;
+        }
+
+        // 3. Global fallback (son çare - setting)
+        return setting('auth_device_limit', 1);
+    }
+
+    /**
+     * Check user access (FRESH - no cache!)
+     * @param User $user
+     * @return array
+     */
+    public function checkUserAccess(User $user): array
+    {
+        // 1. Subscription kontrolü (FRESH - cache yok!)
+        $sub = Subscription::where('user_id', $user->id)
+            ->where('status', 'active')
+            ->where('current_period_end', '>', now())
+            ->first();
+
+        if ($sub) {
+            return [
+                'status' => 'unlimited',
+                'is_trial' => $sub->plan->is_trial ?? false,
+                'expires_at' => $sub->current_period_end,
+            ];
+        }
+
+        // 2. Abonelik yok/bitti
+        return [
+            'status' => 'preview',
+            'duration' => 30, // saniye
+        ];
+    }
 }

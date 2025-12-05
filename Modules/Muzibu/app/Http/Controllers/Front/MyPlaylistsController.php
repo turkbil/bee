@@ -18,8 +18,19 @@ class MyPlaylistsController extends Controller
             ->where('is_system', false)
             ->withCount('songs')
             ->latest()
-            ->paginate(20);
+            ->paginate(200);
 
         return view('themes.muzibu.playlists.my-playlists', compact('playlists'));
+    }
+
+    public function apiIndex()
+    {
+        if (!auth()->check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $playlists = Playlist::where('user_id', auth()->id())->where('is_system', false)->withCount('songs')->latest()->paginate(200);
+        $html = view('themes.muzibu.partials.my-playlists-grid', compact('playlists'))->render();
+        return response()->json(['html' => $html, 'meta' => ['title' => 'Çalma Listelerim - Muzibu', 'description' => 'Oluşturduğunuz çalma listeleri']]);
     }
 }

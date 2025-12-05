@@ -17,7 +17,8 @@ class PasswordResetLinkController extends Controller
     {
         // Tema-aware forgot password view
         $theme = app(\App\Services\ThemeService::class)->getActiveTheme();
-        $viewPath = "themes.{$theme}.auth.forgot-password";
+        $themeName = $theme ? $theme->name : 'simple';
+        $viewPath = "themes.{$themeName}.auth.forgot-password";
 
         // Fallback: Tema yoksa veya view yoksa default kullan
         if (!view()->exists($viewPath)) {

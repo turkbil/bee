@@ -43,7 +43,7 @@
                             </div>
 
                             <!-- Favorite Button -->
-                            <div class="absolute top-2 right-2" @click.stop>
+                            <div class="absolute top-2 right-2" x-on:click.stop>
                                 <x-common.favorite-button :model="$playlist" size="sm" iconOnly="true" />
                             </div>
 
@@ -79,7 +79,7 @@
                     </a>
 
                     <!-- Playlist Actions Menu -->
-                    <div class="mt-3 pt-3 border-t border-gray-700 flex items-center justify-between" @click.stop>
+                    <div class="mt-3 pt-3 border-t border-gray-700 flex items-center justify-between" x-on:click.stop>
                         <div class="flex items-center space-x-2">
                             <!-- Edit Button -->
                             <a href="{{ route('muzibu.playlist.edit', $playlist->playlist_id) }}"

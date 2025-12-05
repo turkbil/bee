@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Modülü - Tüm Ayarlar (v3)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-indigo-700/50">
+            <div class="flex items-center gap-4 mb-4">
+                <h1 class="text-5xl font-bold bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    🎯 Subscription Settings
+                </h1>
+                <span class="px-4 py-2 bg-emerald-600 text-white font-bold rounded-full">FULL LIST v3</span>
+            </div>
+            <p class="text-slate-300 text-xl">Subscription Modülü İçin Gerekli Tüm Ayarlar</p>
+            <div class="mt-4 flex gap-4 text-sm text-slate-400">
+                <span>📅 2025-12-05</span>
+                <span>🎯 SettingsManagement Yaklaşımı</span>
+                <span>📋 8 Ayar Belirlendi</span>
+            </div>
+        </header>
+
+        <!-- AYARLAR KURALLARI -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">📐 Ayarlar vs Plan Fields - KURAL</h2>
+            
+            <div class="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-700/50 rounded-xl p-8">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Settings'e Gir -->
+                    <div class="bg-green-900/30 rounded-lg p-6 border border-green-700/50">
+                        <h3 class="text-xl font-bold text-green-400 mb-4">✅ Settings'e Girmeli</h3>
+                        <ul class="space-y-2 text-slate-300 text-sm">
+                            <li>✅ <strong>Tenant-specific</strong> ayarlar</li>
+                            <li>✅ <strong>Global</strong> davranış ayarları</li>
+                            <li>✅ <strong>Feature toggle</strong> (aktif/pasif)</li>
+                            <li>✅ <strong>Entegrasyon</strong> ayarları (payment gateway)</li>
+                        </ul>
+                        <div class="mt-4 bg-slate-900/50 rounded p-3 text-xs text-slate-400">
+                            <strong>Örnek:</strong> subscription_enabled, trial_auto_start, payment_gateway
+                        </div>
+                    </div>
+
+                    <!-- Plan'a Gir -->
+                    <div class="bg-red-900/30 rounded-lg p-6 border border-red-700/50">
+                        <h3 class="text-xl font-bold text-red-400 mb-4">❌ Settings'e GİRMEMELİ</h3>
+                        <ul class="space-y-2 text-slate-300 text-sm">
+                            <li>❌ <strong>Plan-specific</strong> veriler</li>
+                            <li>❌ <strong>Kullanıcı seçimi</strong> olan şeyler</li>
+                            <li>❌ <strong>Dinamik</strong> değerler</li>
+                            <li>❌ <strong>Plan tablosunda</strong> zaten varsa</li>
+                        </ul>
+                        <div class="mt-4 bg-slate-900/50 rounded p-3 text-xs text-slate-400">
+                            <strong>Örnek:</strong> trial_days (plan cycle'da), device_limit (plan field), currency (plan field)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-blue-900/30 rounded-lg p-6 border border-blue-700/50">
+                    <p class="text-blue-400 font-bold mb-3">💡 Altın Kural:</p>
+                    <p class="text-slate-300">"Bu ayar tüm planlar için aynı mı?" → <strong class="text-green-400">EVET</strong> ise Settings'e gir, <strong class="text-red-400">HAYIR</strong> ise Plan field'ı kullan!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TÜM AYARLAR -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-emerald-400">📋 Subscription Modülü Ayarları (8 Adet)</h2>
+            
+            <div class="space-y-6">
+                <!-- 1. subscription_enabled -->
+                <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-700/50 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">1</span>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-green-400 mb-2">subscription_enabled</h3>
+                            <p class="text-slate-300 text-sm mb-4">Subscription modülünü aktif/pasif et (ana anahtar)</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Type</p>
+                                    <p class="text-white font-bold">boolean</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Default</p>
+                                    <p class="text-white font-bold">false</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Gerekli</p>
+                                    <p class="text-red-400 font-bold">ZORUNLU</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 bg-slate-800/50 rounded p-4">
+                                <p class="text-xs text-slate-400 mb-2">Kullanım:</p>
+                                <code class="text-green-400 text-sm">setting('subscription_enabled') // true/false</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. subscription_trial_enabled -->
+                <div class="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 border border-blue-700/50 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">2</span>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-blue-400 mb-2">subscription_trial_enabled</h3>
+                            <p class="text-slate-300 text-sm mb-4">Trial özelliğini aktif/pasif et (tenant bazında)</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Type</p>
+                                    <p class="text-white font-bold">boolean</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Default</p>
+                                    <p class="text-white font-bold">true</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Gerekli</p>
+                                    <p class="text-yellow-400 font-bold">ÖNERİLEN</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 bg-yellow-900/30 rounded p-4 border border-yellow-700/50">
+                                <p class="text-xs text-yellow-400 mb-2">💡 Not:</p>
+                                <p class="text-slate-300 text-sm">Trial süresi (7 gün) → Trial plan'ın cycle'ından alınır (Settings'e GİRMEZ!)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. subscription_trial_auto_start -->
+                <div class="bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-700/50 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">3</span>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-purple-400 mb-2">subscription_trial_auto_start</h3>
+                            <p class="text-slate-300 text-sm mb-4">Kayıt sonrası trial otomatik başlasın mı?</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Type</p>
+                                    <p class="text-white font-bold">boolean</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Default</p>
+                                    <p class="text-white font-bold">true</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Gerekli</p>
+                                    <p class="text-yellow-400 font-bold">ÖNERİLEN</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 bg-green-900/30 rounded p-4 border border-green-700/50">
+                                <p class="text-xs text-green-400 mb-2">✅ ULTIMATE PLAN Kararı:</p>
+                                <p class="text-slate-300 text-sm">true olmalı → Friction azaltma, yüksek conversion!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. subscription_device_check_enabled -->
+                <div class="bg-gradient-to-r from-orange-900/30 to-red-900/30 border border-orange-700/50 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="w-10 h-10 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">4</span>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-orange-400 mb-2">subscription_device_check_enabled</h3>
+                            <p class="text-slate-300 text-sm mb-4">Device limit kontrolü aktif mi?</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Type</p>
+                                    <p class="text-white font-bold">boolean</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Default</p>
+                                    <p class="text-white font-bold">true</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Gerekli</p>
+                                    <p class="text-yellow-400 font-bold">ÖNERİLEN</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 bg-yellow-900/30 rounded p-4 border border-yellow-700/50">
+                                <p class="text-xs text-yellow-400 mb-2">💡 Not:</p>
+                                <p class="text-slate-300 text-sm">Device limit sayısı → Plan'daki device_limit field'ından (Settings'e GİRMEZ!)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. subscription_payment_gateway -->
+                <div class="bg-gradient-to-r from-indigo-900/30 to-blue-900/30 border border-indigo-700/50 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">5</span>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-indigo-400 mb-2">subscription_payment_gateway</h3>
+                            <p class="text-slate-300 text-sm mb-4">Hangi ödeme gateway'i kullanılacak?</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Type</p>
+                                    <p class="text-white font-bold">select</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Default</p>
+                                    <p class="text-white font-bold">stripe</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Gerekli</p>
+                                    <p class="text-red-400 font-bold">ZORUNLU</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 bg-slate-800/50 rounded p-4">
+                                <p class="text-xs text-slate-400 mb-2">Options:</p>
+                                <div class="flex gap-2 flex-wrap">
+                                    <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded">stripe</span>
+                                    <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded">iyzico</span>
+                                    <span class="px-3 py-1 bg-purple-600 text-white text-xs rounded">paytr</span>
+                                    <span class="px-3 py-1 bg-green-600 text-white text-xs rounded">paypal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. subscription_payment_test_mode -->
+                <div class="bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-700/50 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="w-10 h-10 bg-yellow-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">6</span>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-yellow-400 mb-2">subscription_payment_test_mode</h3>
+                            <p class="text-slate-300 text-sm mb-4">Ödeme test modunda mı?</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Type</p>
+                                    <p class="text-white font-bold">boolean</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Default</p>
+                                    <p class="text-white font-bold">true</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Gerekli</p>
+                                    <p class="text-yellow-400 font-bold">ÖNERİLEN</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 bg-red-900/30 rounded p-4 border border-red-700/50">
+                                <p class="text-xs text-red-400 mb-2">⚠️ Uyarı:</p>
+                                <p class="text-slate-300 text-sm">Production'a geçmeden önce false yap!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. subscription_grace_period_days -->
+                <div class="bg-gradient-to-r from-pink-900/30 to-red-900/30 border border-pink-700/50 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="w-10 h-10 bg-pink-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">7</span>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-pink-400 mb-2">subscription_grace_period_days</h3>
+                            <p class="text-slate-300 text-sm mb-4">Abonelik bitişinden sonra kaç gün grace period?</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Type</p>
+                                    <p class="text-white font-bold">number</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Default</p>
+                                    <p class="text-white font-bold">3</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Gerekli</p>
+                                    <p class="text-green-400 font-bold">OPSİYONEL</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 bg-blue-900/30 rounded p-4 border border-blue-700/50">
+                                <p class="text-xs text-blue-400 mb-2">💡 Ne İşe Yarar?</p>
+                                <p class="text-slate-300 text-sm">Ödeme gecikirse kullanıcıya 3 gün süre ver, sonra blokla</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. subscription_preview_duration_seconds -->
+                <div class="bg-gradient-to-r from-emerald-900/30 to-green-900/30 border border-emerald-700/50 rounded-xl p-8">
+                    <div class="flex items-start gap-4 mb-4">
+                        <span class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">8</span>
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold text-emerald-400 mb-2">subscription_preview_duration_seconds</h3>
+                            <p class="text-slate-300 text-sm mb-4">Abonelik yoksa kaç saniye preview? (Müzik için)</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Type</p>
+                                    <p class="text-white font-bold">number</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Default</p>
+                                    <p class="text-white font-bold">30</p>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-4">
+                                    <p class="text-xs text-slate-400 mb-1">Gerekli</p>
+                                    <p class="text-red-400 font-bold">ZORUNLU (Muzibu)</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 bg-green-900/30 rounded p-4 border border-green-700/50">
+                                <p class="text-xs text-green-400 mb-2">✅ ULTIMATE PLAN Kararı:</p>
+                                <p class="text-slate-300 text-sm">Trial/Premium bitince → 30 saniye preview + "Upgrade" mesajı</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLAN'DAN ALINANLAR -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">❌ Settings'e GİRMEYEN (Plan Field'larından Alınacak)</h2>
+            
+            <div class="bg-red-900/20 border border-red-700/50 rounded-xl p-8">
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl">❌</span>
+                        <div>
+                            <p class="text-white font-bold">trial_days (Trial süresi)</p>
+                            <p class="text-slate-400 text-sm">Trial plan'ın billing_cycles['7-gunluk']['duration_days'] → 7</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl">❌</span>
+                        <div>
+                            <p class="text-white font-bold">device_limit (Cihaz limiti)</p>
+                            <p class="text-slate-400 text-sm">Plan'daki device_limit field → Her plan farklı olabilir</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl">❌</span>
+                        <div>
+                            <p class="text-white font-bold">currency (Para birimi)</p>
+                            <p class="text-slate-400 text-sm">Plan'daki currency field → TRY, USD, EUR</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl">❌</span>
+                        <div>
+                            <p class="text-white font-bold">tax_rate (KDV oranı)</p>
+                            <p class="text-slate-400 text-sm">Plan'daki tax_rate field → %20, %18, vb</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-slate-900/50 rounded-lg p-6">
+                    <p class="text-yellow-400 font-bold mb-3">💡 Neden Plan Field'ı?</p>
+                    <p class="text-slate-300">Bu değerler <strong>plan-specific</strong> (her plan farklı olabilir). Settings tenant-specific (tüm planlar aynı). <strong>Karıştırma!</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- IMPLEMENTATION -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">🛠️ Implementation</h2>
+            
+            <div class="space-y-6">
+                <!-- Seeder -->
+                <div class="bg-slate-800/50 rounded-xl p-8 border border-cyan-700/50">
+                    <h3 class="text-xl font-bold text-cyan-400 mb-4">Seeder Örneği</h3>
+                    
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-green-400 overflow-x-auto">
+// database/seeders/SubscriptionSettingsSeeder.php<br>
+<br>
+$group = SettingGroup::create([<br>
+  &nbsp;&nbsp;'name' => 'Modül Ayarları',<br>
+  &nbsp;&nbsp;'slug' => 'module-settings',<br>
+  &nbsp;&nbsp;'icon' => 'fas fa-puzzle-piece',<br>
+]);<br>
+<br>
+Setting::create([<br>
+  &nbsp;&nbsp;'group_id' => $group->id,<br>
+  &nbsp;&nbsp;'label' => 'Subscription Modülü',<br>
+  &nbsp;&nbsp;'key' => 'subscription_enabled',<br>
+  &nbsp;&nbsp;'type' => 'boolean',<br>
+  &nbsp;&nbsp;'default_value' => false,<br>
+]);<br>
+<br>
+Setting::create([<br>
+  &nbsp;&nbsp;'group_id' => $group->id,<br>
+  &nbsp;&nbsp;'label' => 'Trial Aktif',<br>
+  &nbsp;&nbsp;'key' => 'subscription_trial_enabled',<br>
+  &nbsp;&nbsp;'type' => 'boolean',<br>
+  &nbsp;&nbsp;'default_value' => true,<br>
+]);<br>
+<br>
+// ... 6 ayar daha
+                    </div>
+                </div>
+
+                <!-- Tenant Aktivasyon -->
+                <div class="bg-slate-800/50 rounded-xl p-8 border border-purple-700/50">
+                    <h3 class="text-xl font-bold text-purple-400 mb-4">Tenant 1001 (Muzibu) Aktivasyon</h3>
+                    
+                    <div class="bg-slate-900 rounded-lg p-4 font-mono text-sm text-purple-400">
+// Tinker veya admin panel<br>
+<br>
+setting_update('subscription_enabled', true);<br>
+setting_update('subscription_trial_enabled', true);<br>
+setting_update('subscription_trial_auto_start', true);<br>
+setting_update('subscription_payment_gateway', 'iyzico');<br>
+setting_update('subscription_preview_duration_seconds', 30);
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖZET -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-emerald-400">📊 Özet</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border border-green-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-green-400">✅ Settings'e Giren (8 Adet)</h3>
+                    <ol class="space-y-1 text-sm text-slate-300 list-decimal list-inside">
+                        <li>subscription_enabled</li>
+                        <li>subscription_trial_enabled</li>
+                        <li>subscription_trial_auto_start</li>
+                        <li>subscription_device_check_enabled</li>
+                        <li>subscription_payment_gateway</li>
+                        <li>subscription_payment_test_mode</li>
+                        <li>subscription_grace_period_days</li>
+                        <li>subscription_preview_duration_seconds</li>
+                    </ol>
+                </div>
+
+                <div class="bg-red-900/20 border border-red-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold mb-4 text-red-400">❌ Plan Field (4 Adet)</h3>
+                    <ul class="space-y-1 text-sm text-slate-300">
+                        <li>• trial_days → billing_cycles</li>
+                        <li>• device_limit → plan.device_limit</li>
+                        <li>• currency → plan.currency</li>
+                        <li>• tax_rate → plan.tax_rate</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Tailwind CSS</p>
+            <p class="mt-2">Tarih: 2025-12-05 | Versiyon: v3 (Full Settings List)</p>
+        </footer>
+    </div>
+</body>
+</html>

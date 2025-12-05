@@ -35,6 +35,7 @@ return new class extends Migration
             $table->integer('sort_order')->default(0)->comment('Sıralama düzeni');
             $table->boolean('is_featured')->default(false)->comment('Öne çıkan plan mı?');
             $table->boolean('is_active')->default(true)->comment('Aktif mi?');
+            $table->boolean('is_public')->default(true)->comment('Herkese açık mı?');
             $table->timestamps();
             $table->softDeletes();
         });

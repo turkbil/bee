@@ -67,6 +67,40 @@ class DeleteModal extends Component
                     'class' => "Modules\\Thememanagement\\App\\Models\\Theme",
                     'key' => 'theme_id'
                 ],
+                // Muzibu Modülleri
+                'album' => [
+                    'class' => "Modules\\Muzibu\\App\\Models\\Album",
+                    'key' => 'album_id'
+                ],
+                'artist' => [
+                    'class' => "Modules\\Muzibu\\App\\Models\\Artist",
+                    'key' => 'artist_id'
+                ],
+                'song' => [
+                    'class' => "Modules\\Muzibu\\App\\Models\\Song",
+                    'key' => 'song_id'
+                ],
+                'playlist' => [
+                    'class' => "Modules\\Muzibu\\App\\Models\\Playlist",
+                    'key' => 'playlist_id'
+                ],
+                'genre' => [
+                    'class' => "Modules\\Muzibu\\App\\Models\\Genre",
+                    'key' => 'genre_id'
+                ],
+                'sector' => [
+                    'class' => "Modules\\Muzibu\\App\\Models\\Sector",
+                    'key' => 'sector_id'
+                ],
+                'radio' => [
+                    'class' => "Modules\\Muzibu\\App\\Models\\Radio",
+                    'key' => 'radio_id'
+                ],
+                // Subscription Modülü
+                'subscription-plan' => [
+                    'class' => "Modules\\Subscription\\App\\Models\\SubscriptionPlan",
+                    'key' => 'subscription_plan_id'
+                ],
             ];
 
             // Modül mapping'de var mı kontrol et

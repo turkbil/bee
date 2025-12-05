@@ -63,10 +63,10 @@ class SongStreamController extends Controller
 
                 if ($song->hls_converted && !empty($song->hls_path)) {
                     // 🎯 DYNAMIC PLAYLIST (4 chunk: 3 çal + 1 buffer)
-                    $streamUrl = route('api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
+                    $streamUrl = route('api.api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
                     $streamType = 'hls';
-                    // 🔐 MP3 fallback (signed URL)
-                    $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
+                    // 🔐 MP3 fallback (signed URL, force MP3 output)
+                    $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30, true);
                 } else {
                     // 🔐 SIGNED MP3 URL (30 dakika)
                     $streamUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
@@ -111,10 +111,10 @@ class SongStreamController extends Controller
 
                 if ($song->hls_converted && !empty($song->hls_path)) {
                     // 🎯 DYNAMIC PLAYLIST (4 chunk: 3 çal + 1 buffer)
-                    $streamUrl = route('api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
+                    $streamUrl = route('api.api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
                     $streamType = 'hls';
-                    // 🔐 MP3 fallback (signed URL)
-                    $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
+                    // 🔐 MP3 fallback (signed URL, force MP3 output)
+                    $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30, true);
                 } else {
                     // 🔐 SIGNED MP3 URL (30 dakika)
                     $streamUrl = $this->signedUrlService->generateStreamUrl($songId, 30);
@@ -188,7 +188,7 @@ class SongStreamController extends Controller
                 'message' => 'HLS stream ready',
                 'stream_url' => $this->signedUrlService->generateHlsUrl($songId, 60), // 🔐 SIGNED HLS URL
                 'stream_type' => 'hls',
-                'fallback_url' => $this->signedUrlService->generateStreamUrl($songId, 30), // 🔐 SIGNED MP3 fallback
+                'fallback_url' => $this->signedUrlService->generateStreamUrl($songId, 30, true), // 🔐 SIGNED MP3 fallback (force MP3)
                 'hls_converting' => false,
                 'remaining' => $user->getRemainingPlays(),
                 'is_premium' => $user->isPremium(), // 🔄 Frontend sync için güncel durum

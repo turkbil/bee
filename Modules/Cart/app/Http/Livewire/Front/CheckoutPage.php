@@ -1318,6 +1318,7 @@ class CheckoutPage extends Component
             'contact_last_name' => 'required|string|max:255',
             'contact_email' => 'required|email|max:255',
             'contact_phone' => 'required|string|max:20',
+            'billing_profile_id' => 'required|exists:billing_profiles,billing_profile_id',
             'agree_all' => 'accepted',
             'selectedPaymentMethodId' => 'required|exists:payment_methods,payment_method_id',
             'selectedGateway' => 'nullable|string|in:paytr,bank_transfer', // Yeni gateway sistemi
@@ -1357,6 +1358,7 @@ class CheckoutPage extends Component
                 'contact_email.required' => 'E-posta adresi zorunludur',
                 'contact_email.email' => 'Geçerli bir e-posta adresi giriniz',
                 'contact_phone.required' => 'Telefon zorunludur',
+                'billing_profile_id.required' => 'Fatura bilgileri seçmelisiniz',
                 'billing_address_id.required' => 'Fatura adresi seçmelisiniz',
                 'shipping_address_id.required' => 'Teslimat adresi seçmelisiniz',
                 'shipping_address_line_1.required' => 'Adres zorunludur',
@@ -1415,7 +1417,7 @@ class CheckoutPage extends Component
 
             // Adresleri al
             $billingAddress = Address::find($this->billing_address_id);
-            $shippingAddress = Address::find($this->shipping_address_id);
+            $shippingAddress = $this->shipping_address_id ? Address::find($this->shipping_address_id) : null;
 
             // Sipariş oluştur
             $order = Order::create([
@@ -1432,7 +1434,7 @@ class CheckoutPage extends Component
                 'billing_address' => $billingAddress ? $billingAddress->toSnapshot() : null,
                 'shipping_address' => $shippingAddress ? $shippingAddress->toSnapshot() : null,
 
-                'customer_notes' => $shippingAddress->delivery_notes ?? null,
+                'customer_notes' => $shippingAddress?->delivery_notes ?? null,
                 'subtotal' => $this->subtotal,
                 'tax_amount' => $this->taxAmount,
                 'shipping_cost' => 0,
@@ -1441,7 +1443,7 @@ class CheckoutPage extends Component
                 'currency' => 'TRY',
                 'status' => 'pending',
                 'payment_status' => 'pending',
-                'requires_shipping' => true,
+                'requires_shipping' => $this->requiresShipping,
 
                 'agreed_terms' => $this->agree_all,
                 'agreed_privacy' => $this->agree_all,
@@ -1693,7 +1695,20 @@ class CheckoutPage extends Component
 
     public function render()
     {
-        return view('cart::livewire.front.checkout-page')
-            ->layout('themes.ixtif.layouts.app');
+        // Tema-aware view ve layout
+        $theme = tenant()->theme ?? 'ixtif';
+
+        // Önce tema-specific view'ı dene, yoksa default kullan
+        $viewPath = "themes.{$theme}.cart.checkout";
+        $defaultViewPath = 'cart::livewire.front.checkout-page';
+
+        // Layout - Tema-aware
+        $layoutPath = "themes.{$theme}.layouts.app";
+
+        if (view()->exists($viewPath)) {
+            return view($viewPath)->layout($layoutPath);
+        }
+
+        return view($defaultViewPath)->layout($layoutPath);
     }
 }

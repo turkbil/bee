@@ -61,12 +61,14 @@
 <div class="col-{{ $width }}">
     <div class="mb-3">
         <div class="form-floating">
-            <select 
+            <select
                 id="{{ $fieldName }}"
-                wire:model.defer="values.{{ $fieldName }}" 
+                wire:model.defer="values.{{ $fieldName }}"
                 class="form-select @error('values.' . $fieldName) is-invalid @enderror"
                 @if($isRequired) required @endif>
-                <option value="">{{ $placeholder }}</option>
+                @if(!$isRequired)
+                    <option value="">{{ $placeholder }}</option>
+                @endif
                 @foreach($options as $key => $option)
                     @php
                         // Option'ı array'e çevir (stdClass veya object olabilir)

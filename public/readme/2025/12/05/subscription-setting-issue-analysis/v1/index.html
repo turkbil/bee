@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Ayarları Sorun Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                🔴 Subscription Ayarları - Sorun Analizi
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Değişikliklerin görünmemesi ve database kayıt sorunları
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-05</span>
+                <span>🎯 Tenant: muzibu.com.tr (Tenant 1001)</span>
+                <span>⚙️ SettingManagement Modülü</span>
+            </div>
+        </header>
+
+        <!-- Problem Özeti -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🚨 Tespit Edilen Problemler</h2>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-6">
+                    <div class="text-4xl mb-4">❌</div>
+                    <h3 class="text-xl font-bold text-red-300 mb-2">Problem 1</h3>
+                    <p class="text-slate-300">Varsayılan değerler <strong>görünmüyor</strong></p>
+                    <p class="text-slate-400 text-sm mt-2">Form yüklendiğinde select ve number alanları boş</p>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-6">
+                    <div class="text-4xl mb-4">💾</div>
+                    <h3 class="text-xl font-bold text-red-300 mb-2">Problem 2</h3>
+                    <p class="text-slate-300">Değişiklikler <strong>kayıt olmuyor</strong></p>
+                    <p class="text-slate-400 text-sm mt-2">Save işlemi başarılı görünüyor ama DB ye yazılmıyor</p>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-6">
+                    <div class="text-4xl mb-4">🔄</div>
+                    <h3 class="text-xl font-bold text-red-300 mb-2">Problem 3</h3>
+                    <p class="text-slate-300">Sayfa yenilemede <strong>kaybolma</strong></p>
+                    <p class="text-slate-400 text-sm mt-2">F5 sonrası yeni değerler görünmüyor</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sistem Mimarisi Analizi -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🏗️ Sistem Mimarisi (Multi-Tenant)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-8 mb-8">
+                <h3 class="text-2xl font-bold mb-6 text-blue-300">Database Dağılımı</h3>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Central Database -->
+                    <div class="border-l-4 border-blue-500 pl-6">
+                        <h4 class="text-xl font-bold text-blue-300 mb-4">📊 Central DB (tuufi_4ekim)</h4>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400 font-mono">✓</span>
+                                <div>
+                                    <strong class="text-white">settings</strong>
+                                    <p class="text-slate-400">Ayar tanımları (label, type, options, default_value)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400 font-mono">✓</span>
+                                <div>
+                                    <strong class="text-white">settings_groups</strong>
+                                    <p class="text-slate-400">Grup tanımları + Layout JSON</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-red-400 font-mono">✓</span>
+                                <div>
+                                    <strong class="text-white">settings_values</strong>
+                                    <p class="text-slate-400">Sadece <strong class="text-red-300">Tenant 1 (Central)</strong> için değerler</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tenant Database -->
+                    <div class="border-l-4 border-purple-500 pl-6">
+                        <h4 class="text-xl font-bold text-purple-300 mb-4">📊 Tenant DB (tenant_muzibu_1528d0)</h4>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400 font-mono">✓</span>
+                                <div>
+                                    <strong class="text-white">settings_values</strong>
+                                    <p class="text-slate-400">Tenant 1001 için değerler (sadece 3 kayıt var!)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-yellow-400 font-mono">⚠</span>
+                                <div>
+                                    <strong class="text-yellow-300">Subscription ayarları YOK!</strong>
+                                    <p class="text-slate-400">Setting ID 211, 212 için hiç kayıt yok</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-6">
+                <h4 class="text-lg font-bold text-blue-300 mb-3">🔍 Database İçerik Dökümü</h4>
+                <div class="grid md:grid-cols-2 gap-6 font-mono text-xs">
+                    <div>
+                        <p class="text-slate-400 mb-2">Central DB:</p>
+                        <div class="bg-slate-900 p-3 rounded">
+                            <code class="text-green-400">settings (211, 212) → Tanımlar ✓</code><br>
+                            <code class="text-green-400">settings_groups (23) → Layout ✓</code><br>
+                            <code class="text-red-400">settings_values → Tenant 1001 için YOK!</code>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 mb-2">Tenant DB (muzibu):</p>
+                        <div class="bg-slate-900 p-3 rounded">
+                            <code class="text-yellow-400">settings_values → Sadece 3 kayıt</code><br>
+                            <code class="text-slate-400">  ID 1: setting_id=1 (site_name)</code><br>
+                            <code class="text-slate-400">  ID 2: setting_id=90</code><br>
+                            <code class="text-slate-400">  ID 3: setting_id=91</code><br>
+                            <code class="text-red-400">  Setting 211, 212 → KAYIT YOK!</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kod Akışı Analizi -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🔬 Kod Akışı Analizi</h2>
+
+            <div class="space-y-6">
+                <!-- Mount İşlemi -->
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-yellow-300 mb-3">mount() - Sayfa Yüklendiğinde</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="bg-slate-900/50 p-4 rounded">
+                                    <p class="text-slate-300 mb-2"><strong class="text-white">Yapılan:</strong></p>
+                                    <code class="text-sm text-green-400 block">
+                                        1. Settings çekiliyor (Setting::where('group_id', 23)->get())<br>
+                                        2. Her setting için SettingValue::where('setting_id', X)->first()<br>
+                                        3. Value varsa → value, yoksa → default_value<br>
+                                        4. $this->values[$settingId] = finalValue
+                                    </code>
+                                </div>
+
+                                <div class="bg-red-900/30 border border-red-700 p-4 rounded">
+                                    <p class="text-red-300 mb-2"><strong>🚨 Problem:</strong></p>
+                                    <code class="text-sm text-slate-300 block">
+                                        Setting ID 211, 212 için SettingValue YOK!<br>
+                                        → default_value kullanılmalı<br>
+                                        → Ancak Blade template default_value göstermiyor!<br>
+                                        → Select placeholder="Seçiniz" boş kalıyor
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blade Rendering -->
+                <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-orange-300 mb-3">Blade Template - Form Rendering</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="bg-slate-900/50 p-4 rounded">
+                                    <p class="text-slate-300 mb-2"><strong class="text-white">select.blade.php (Satır 46-58):</strong></p>
+                                    <code class="text-sm text-yellow-400 block whitespace-pre-wrap">
+@php
+// Mevcut değeri belirle
+if(isset($values[$fieldName])) {
+    $fieldValue = $values[$fieldName]; ← BU ÇALIŞIYOR
+} elseif(isset($settings) && is_object($settings)) {
+    $cleanFieldName = str_replace('setting.', '', $fieldName);
+    $fieldValue = $settings[$cleanFieldName] ?? $defaultValue; ← BU ÇALIŞMIYOR
+} else {
+    $fieldValue = $defaultValue; ← BU ÇALIŞMIYOR
+}
+
+// values için varsayılan değeri ayarla
+if (!isset($values[$fieldName])) {
+    $values[$fieldName] = $fieldValue; ← BU ÇALIŞMIYOR (Livewire wire:model.defer)
+}
+@endphp
+                                    </code>
+                                </div>
+
+                                <div class="bg-red-900/30 border border-red-700 p-4 rounded">
+                                    <p class="text-red-300 mb-2"><strong>🚨 Sorun:</strong></p>
+                                    <div class="text-sm text-slate-300 space-y-2">
+                                        <p>1. <code class="text-yellow-400">$values[$fieldName]</code> key olarak <strong>'auth_subscription'</strong> kullanılıyor</p>
+                                        <p>2. Ancak mount() içinde <code class="text-yellow-400">$values[$settingId]</code> → numeric key (211, 212)</p>
+                                        <p>3. String key ile numeric key <strong class="text-red-300">EŞLEŞMIYOR!</strong></p>
+                                        <p>4. Blade: <code class="text-slate-400">isset($values['auth_subscription'])</code> → <strong>FALSE</strong></p>
+                                        <p>5. Sonuç: <code class="text-slate-400">$fieldValue</code> hiç ayarlanmıyor → SELECT BOŞ!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save İşlemi -->
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-green-300 mb-3">save() - Kaydetme İşlemi</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="bg-slate-900/50 p-4 rounded">
+                                    <p class="text-slate-300 mb-2"><strong class="text-white">ValuesComponent::save() (Satır 306-454):</strong></p>
+                                    <code class="text-sm text-green-400 block whitespace-pre-wrap">
+foreach ($this->values as $settingId => $value) {
+    // String key'leri filtrele (sadece numeric ID'leri işle)
+    if (!is_numeric($settingId)) {
+        continue; ← BU ATLIYOR!
+    }
+
+    $setting = Setting::find($settingId);
+    ...
+    $settingValue = SettingValue::updateOrCreate(
+        ['setting_id' => $settingId],
+        ['value' => $value]
+    );
+}
+                                    </code>
+                                </div>
+
+                                <div class="bg-red-900/30 border border-red-700 p-4 rounded">
+                                    <p class="text-red-300 mb-2"><strong>🚨 Sorun:</strong></p>
+                                    <div class="text-sm text-slate-300 space-y-2">
+                                        <p>1. Layout form elementi <code class="text-yellow-400">wire:model.defer="values.auth_subscription"</code> kullanıyor</p>
+                                        <p>2. Değişiklik yapınca: <code class="text-green-400">$values['auth_subscription'] = '1'</code></p>
+                                        <p>3. Ancak save() içinde: <code class="text-red-400">if (!is_numeric($settingId)) continue;</code></p>
+                                        <p>4. String key <strong class="text-red-300">ATLANIYOR!</strong> → Database'e hiç yazılmıyor!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- updatedValues -->
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-purple-300 mb-3">updatedValues() - Değer Değişikliği</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="bg-slate-900/50 p-4 rounded">
+                                    <p class="text-slate-300 mb-2"><strong class="text-white">ValuesComponent::updatedValues() (Satır 67-102):</strong></p>
+                                    <code class="text-sm text-blue-400 block whitespace-pre-wrap">
+public function updatedValues($value, $key)
+{
+    // String key ise numeric ID'ye çevir ve sync et
+    if (!is_numeric($key)) {
+        $setting = Setting::where('key', $key)->first(); ← BU ÇALIŞMIYOR!
+        if ($setting) {
+            $numericKey = $setting->id;
+            $this->values[$numericKey] = $value; ← İKİLİ KEY
+            $this->values[$key] = $value;
+        }
+    }
+}
+                                    </code>
+                                </div>
+
+                                <div class="bg-red-900/30 border border-red-700 p-4 rounded">
+                                    <p class="text-red-300 mb-2"><strong>🚨 Kritik Problem:</strong></p>
+                                    <div class="text-sm text-slate-300 space-y-2">
+                                        <p>1. Layout form: <code class="text-yellow-400">name="auth_subscription"</code></p>
+                                        <p>2. Ancak Setting key: <code class="text-red-400">"auth_subscription_auth_subscription"</code> (Prefix eklenmiş!)</p>
+                                        <p>3. <code class="text-slate-400">Setting::where('key', 'auth_subscription')</code> → <strong class="text-red-300">NULL!</strong></p>
+                                        <p>4. Numeric key sync <strong class="text-red-300">ÇALIŞMIYOR!</strong></p>
+                                        <p>5. Sonuç: Değer sadece string key'de kalıyor, save() atlanıyor!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kök Nedenler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🎯 Kök Nedenler (Root Causes)</h2>
+
+            <div class="space-y-4">
+                <div class="bg-red-900/30 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-4xl">1️⃣</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">Setting Key Mismatch (Eşleşmeme)</h3>
+                            <div class="bg-slate-900/50 p-4 rounded mt-3 font-mono text-sm">
+                                <p class="text-slate-400 mb-2">Layout JSON:</p>
+                                <code class="text-green-400">name: "auth_subscription"</code>
+                                <p class="text-slate-400 mt-4 mb-2">Database (settings tablosu):</p>
+                                <code class="text-red-400">key: "auth_subscription_auth_subscription"</code>
+                                <p class="text-yellow-300 mt-4">→ Bu yüzden Setting::where('key', 'auth_subscription')->first() → NULL!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/30 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-4xl">2️⃣</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">Dual Key System Karmaşası</h3>
+                            <div class="bg-slate-900/50 p-4 rounded mt-3">
+                                <p class="text-slate-300 mb-3">Sistem hem numeric ID hem string key kullanıyor:</p>
+                                <ul class="space-y-2 text-sm">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-yellow-400">•</span>
+                                        <span><code class="text-blue-400">$values[211]</code> → mount() tarafında numeric key</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-yellow-400">•</span>
+                                        <span><code class="text-green-400">$values['auth_subscription']</code> → Layout form tarafında string key</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-red-400">•</span>
+                                        <span>İki key birbiriyle <strong class="text-red-300">senkronize olmuyor!</strong></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/30 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-4xl">3️⃣</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">Blade Template Default Value Sorunu</h3>
+                            <div class="bg-slate-900/50 p-4 rounded mt-3">
+                                <p class="text-slate-300 mb-3">select.blade.php içinde:</p>
+                                <div class="font-mono text-xs space-y-2">
+                                    <p class="text-slate-400">1. <code class="text-yellow-400">$values[$fieldName]</code> kontrol ediliyor</p>
+                                    <p class="text-slate-400">2. Yoksa <code class="text-yellow-400">$settings[$cleanFieldName]</code> kontrol ediliyor</p>
+                                    <p class="text-red-400">3. Ancak <code>$settings</code> bir Collection veya array değil, başka bir yapı!</p>
+                                    <p class="text-red-400">4. <code>is_object($settings)</code> kontrolü yanlış çalışıyor</p>
+                                    <p class="text-yellow-300 mt-2">→ Sonuç: default_value hiç kullanılmıyor!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/30 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-4xl">4️⃣</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">save() String Key Filtreleme</h3>
+                            <div class="bg-slate-900/50 p-4 rounded mt-3 font-mono text-sm">
+                                <code class="text-red-400">if (!is_numeric($settingId)) continue;</code>
+                                <p class="text-slate-300 mt-3">→ Bu satır string key'leri atlıyor!</p>
+                                <p class="text-yellow-300 mt-2">→ Layout form'daki değişiklikler database'e yazılmıyor!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İzlenen Akış -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">🔄 Sistemde İzlenen Akış</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-8">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-blue-500 text-white px-4 py-2 rounded font-bold">Sayfa Yükleme</div>
+                        <div class="flex-1 border-t-2 border-dashed border-slate-600"></div>
+                    </div>
+
+                    <div class="pl-8 space-y-3 text-sm">
+                        <p class="text-slate-300">1️⃣ mount() çalışıyor</p>
+                        <p class="text-slate-400 pl-6">→ Settings çekiliyor (ID: 211, 212)</p>
+                        <p class="text-slate-400 pl-6">→ SettingValue sorgusu: <code class="text-red-400">NULL</code> (kayıt yok)</p>
+                        <p class="text-slate-400 pl-6">→ <code class="text-yellow-400">$values[211] = 'disabled'</code> (default_value)</p>
+                        <p class="text-slate-400 pl-6">→ <code class="text-yellow-400">$values[212] = '1'</code> (default_value)</p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="bg-purple-500 text-white px-4 py-2 rounded font-bold">Blade Render</div>
+                        <div class="flex-1 border-t-2 border-dashed border-slate-600"></div>
+                    </div>
+
+                    <div class="pl-8 space-y-3 text-sm">
+                        <p class="text-slate-300">2️⃣ select.blade.php çalışıyor</p>
+                        <p class="text-slate-400 pl-6">→ <code class="text-yellow-400">$fieldName = 'auth_subscription'</code> (Layout JSON'dan)</p>
+                        <p class="text-slate-400 pl-6">→ Kontrol: <code class="text-red-400">isset($values['auth_subscription'])</code> → FALSE!</p>
+                        <p class="text-slate-400 pl-6">→ Fallback kontrol başarısız</p>
+                        <p class="text-slate-400 pl-6">→ SELECT <strong class="text-red-300">BOŞ GÖRÜNÜYOR!</strong></p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="bg-green-500 text-white px-4 py-2 rounded font-bold">Kullanıcı Değişiklik Yapıyor</div>
+                        <div class="flex-1 border-t-2 border-dashed border-slate-600"></div>
+                    </div>
+
+                    <div class="pl-8 space-y-3 text-sm">
+                        <p class="text-slate-300">3️⃣ Select'ten "Açık" seçiliyor</p>
+                        <p class="text-slate-400 pl-6">→ wire:model.defer: <code class="text-green-400">$values['auth_subscription'] = '1'</code></p>
+                        <p class="text-slate-400 pl-6">→ updatedValues() tetikleniyor</p>
+                        <p class="text-slate-400 pl-6">→ <code class="text-red-400">Setting::where('key', 'auth_subscription')</code> → NULL!</p>
+                        <p class="text-slate-400 pl-6">→ Sync <strong class="text-red-300">ÇALIŞMIYOR!</strong></p>
+                        <p class="text-slate-400 pl-6">→ Değer sadece: <code class="text-yellow-400">$values['auth_subscription'] = '1'</code></p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="bg-orange-500 text-white px-4 py-2 rounded font-bold">Kaydet Butonu</div>
+                        <div class="flex-1 border-t-2 border-dashed border-slate-600"></div>
+                    </div>
+
+                    <div class="pl-8 space-y-3 text-sm">
+                        <p class="text-slate-300">4️⃣ save() çalışıyor</p>
+                        <p class="text-slate-400 pl-6">→ foreach: <code class="text-yellow-400">$settingId = 'auth_subscription'</code></p>
+                        <p class="text-slate-400 pl-6">→ <code class="text-red-400">if (!is_numeric($settingId)) continue;</code></p>
+                        <p class="text-slate-400 pl-6">→ String key <strong class="text-red-300">ATLANIYOR!</strong></p>
+                        <p class="text-slate-400 pl-6">→ Database'e <strong class="text-red-300">HİÇ YAZILMIYOR!</strong></p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="bg-red-500 text-white px-4 py-2 rounded font-bold">Sayfa Yenileme (F5)</div>
+                        <div class="flex-1 border-t-2 border-dashed border-slate-600"></div>
+                    </div>
+
+                    <div class="pl-8 space-y-3 text-sm">
+                        <p class="text-slate-300">5️⃣ mount() tekrar çalışıyor</p>
+                        <p class="text-slate-400 pl-6">→ SettingValue sorgusu: <code class="text-red-400">NULL</code> (hala yok!)</p>
+                        <p class="text-slate-400 pl-6">→ <code class="text-yellow-400">$values[211] = 'disabled'</code> (default_value)</p>
+                        <p class="text-slate-400 pl-6">→ Değişiklikler <strong class="text-red-300">KAYBOLDU!</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">📋 Özet</h2>
+
+            <div class="bg-yellow-900/20 border border-yellow-700 rounded-lg p-8">
+                <h3 class="text-2xl font-bold text-yellow-300 mb-6">Ana Sorunlar</h3>
+                <div class="space-y-4 text-slate-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-red-400 text-xl">❌</span>
+                        <div>
+                            <p class="font-bold text-white">Setting Key Uyumsuzluğu</p>
+                            <p class="text-sm text-slate-400">Layout JSON: <code>auth_subscription</code> vs Database: <code>auth_subscription_auth_subscription</code></p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-red-400 text-xl">❌</span>
+                        <div>
+                            <p class="font-bold text-white">Dual Key Sync Hatası</p>
+                            <p class="text-sm text-slate-400">Numeric key (211) ile string key ('auth_subscription') senkronize olmuyor</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-red-400 text-xl">❌</span>
+                        <div>
+                            <p class="font-bold text-white">Default Value Render Hatası</p>
+                            <p class="text-sm text-slate-400">Blade template default_value'yu gösteremiyor</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="text-red-400 text-xl">❌</span>
+                        <div>
+                            <p class="font-bold text-white">Save Filtreleme Hatası</p>
+                            <p class="text-sm text-slate-400">String key'ler save() içinde atlanıyor</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+            <p class="mt-2">Detaylı sistem analizi ve sorun tespiti raporu</p>
+        </footer>
+    </div>
+</body>
+</html>

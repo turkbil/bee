@@ -151,6 +151,10 @@ class ShopProductObserver
         if (function_exists('responsecache')) {
             responsecache()->forget($product->getUrl());
         }
+
+        // ✅ Sitemap cache'ini temizle (gerçek zamanlı güncelleme için)
+        $tenantId = tenant()?->id ?? 'central';
+        Cache::forget("sitemap_xml_{$tenantId}");
     }
 
     public function deleting(ShopProduct $product): bool
@@ -170,6 +174,10 @@ class ShopProductObserver
     public function deleted(ShopProduct $product): void
     {
         $this->clearProductCaches($product->product_id);
+
+        // ✅ Sitemap cache'ini temizle (gerçek zamanlı güncelleme için)
+        $tenantId = tenant()?->id ?? 'central';
+        Cache::forget("sitemap_xml_{$tenantId}");
 
         if (function_exists('log_activity')) {
             log_activity($product, 'silindi');

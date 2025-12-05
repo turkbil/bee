@@ -204,7 +204,13 @@ class Kernel extends ConsoleKernel
 
         // 🔐 SUBSCRIPTION MANAGEMENT CRONS
 
-        // Trial Expiry Check - Günlük 09:00
+        // Check Expired Subscriptions - Günlük 06:00 (yeni unified command)
+        $schedule->command('subscription:check-expired')
+                 ->dailyAt('06:00')
+                 ->withoutOverlapping()
+                 ->appendOutputTo(storage_path('logs/subscription-check.log'));
+
+        // Trial Expiry Check - Günlük 09:00 (eski komut - backward compat)
         $schedule->command('subscription:check-trial')
                  ->dailyAt('09:00')
                  ->withoutOverlapping()

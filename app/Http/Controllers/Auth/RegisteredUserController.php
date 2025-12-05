@@ -21,7 +21,8 @@ class RegisteredUserController extends Controller
     {
         // Tema-aware register view
         $theme = app(\App\Services\ThemeService::class)->getActiveTheme();
-        $viewPath = "themes.{$theme}.auth.register";
+        $themeName = $theme ? $theme->name : 'simple';
+        $viewPath = "themes.{$themeName}.auth.register";
 
         // Fallback: Tema yoksa veya view yoksa default auth.register kullan
         if (!view()->exists($viewPath)) {
@@ -53,7 +54,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-        
+
         // Kayıt log'u
         activity()
             ->causedBy($user)
@@ -63,6 +64,12 @@ class RegisteredUserController extends Controller
                 $activity->event = 'kayıt oldu';
             })
             ->log("\"{$user->name}\" kayıt oldu");
+
+        // Trial subscription başlat (auth_subscription açıksa ve trial plan varsa)
+        if (setting('auth_subscription')) {
+            $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
+            $subscriptionService->createTrialForUser($user);
+        }
 
         return redirect(route('dashboard', absolute: false));
     }

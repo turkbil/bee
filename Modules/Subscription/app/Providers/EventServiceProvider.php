@@ -11,7 +11,14 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    protected $listen = [
+        \Modules\Subscription\App\Events\SubscriptionExpired::class => [
+            \Modules\Subscription\App\Listeners\SendSubscriptionExpiredNotification::class,
+        ],
+        \Modules\Subscription\App\Events\TrialEnding::class => [
+            \Modules\Subscription\App\Listeners\SendTrialEndingNotification::class,
+        ],
+    ];
 
     /**
      * Indicates if events should be discovered.

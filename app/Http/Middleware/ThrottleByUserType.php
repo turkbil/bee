@@ -132,9 +132,11 @@ class ThrottleByUserType
      */
     protected function addHeaders(Response $response, int $maxAttempts, int $remainingAttempts): Response
     {
-        return $response
-            ->header('X-RateLimit-Limit', $maxAttempts)
-            ->header('X-RateLimit-Remaining', max(0, $remainingAttempts));
+        // BinaryFileResponse doesn't have ->header() method, use ->headers->set() instead
+        $response->headers->set('X-RateLimit-Limit', $maxAttempts);
+        $response->headers->set('X-RateLimit-Remaining', max(0, $remainingAttempts));
+
+        return $response;
     }
 
     /**

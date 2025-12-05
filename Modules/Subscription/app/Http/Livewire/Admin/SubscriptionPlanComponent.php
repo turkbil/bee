@@ -87,7 +87,7 @@ class SubscriptionPlanComponent extends Component
 
             foreach ($list as $item) {
                 if (isset($item['id']) && isset($item['order'])) {
-                    SubscriptionPlan::where('id', $item['id'])
+                    SubscriptionPlan::where('subscription_plan_id', $item['id'])
                         ->update(['sort_order' => $item['order']]);
                 }
             }

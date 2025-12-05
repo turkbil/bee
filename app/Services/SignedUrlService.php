@@ -10,12 +10,13 @@ class SignedUrlService
 {
     /**
      * Generate signed URL for song stream
-     * 
+     *
      * @param int $songId
      * @param int $expiresInMinutes (default: 30 dakika)
+     * @param bool $forceMP3 Force MP3 output even if HLS available (for fallback)
      * @return string
      */
-    public function generateStreamUrl(int $songId, int $expiresInMinutes = 30): string
+    public function generateStreamUrl(int $songId, int $expiresInMinutes = 30, bool $forceMP3 = false): string
     {
         $expiration = Carbon::now()->addMinutes($expiresInMinutes);
         $expires = $expiration->timestamp;
@@ -31,7 +32,13 @@ class SignedUrlService
         // Signature: hash(baseUrl + songId + expires + app_key)
         $signature = hash_hmac('sha256', $baseUrl . $songId . $expires, config('app.key'));
 
-        return $baseUrl . '?expires=' . $expires . '&signature=' . $signature;
+        // 🎵 Build URL with force_mp3 flag if needed (for HLS fallback)
+        $url = $baseUrl . '?expires=' . $expires . '&signature=' . $signature;
+        if ($forceMP3) {
+            $url .= '&force_mp3=1';
+        }
+
+        return $url;
     }
 
     /**

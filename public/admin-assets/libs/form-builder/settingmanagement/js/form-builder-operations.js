@@ -411,7 +411,52 @@ document.addEventListener("DOMContentLoaded", function() {
         });
       }
       
-      // Varsayılan değer radio butonları
+      // Varsayılan değer select (SELECT elementi için)
+      const defaultValueSelect = window.propertiesPanel.querySelector('select[name="default_value"]');
+      if (defaultValueSelect) {
+        // Mevcut içeriği temizle, sadece ilk option'ı koru
+        const firstOption = defaultValueSelect.querySelector('option:first-child');
+        defaultValueSelect.innerHTML = '';
+        defaultValueSelect.appendChild(firstOption);
+
+        // Options varsa doldur
+        if (properties.options && properties.options.length) {
+          properties.options.forEach((option, index) => {
+            const optValue = window.getOptionValue ? window.getOptionValue(option) : option.value;
+            const optLabel = window.getOptionLabel ? window.getOptionLabel(option) : option.label;
+
+            const selectOption = document.createElement('option');
+            selectOption.value = optValue;
+            selectOption.textContent = optLabel;
+
+            // Varsayılan değeri seç
+            if (option.is_default || properties.default_value === optValue) {
+              selectOption.selected = true;
+            }
+
+            defaultValueSelect.appendChild(selectOption);
+          });
+        }
+
+        // Değişikliği dinle
+        defaultValueSelect.addEventListener('change', function() {
+          const selectedValue = this.value;
+
+          // Tüm seçeneklerin varsayılan değerini sıfırla
+          if (properties.options) {
+            properties.options.forEach(option => {
+              option.is_default = option.value === selectedValue;
+            });
+          }
+
+          // Varsayılan değeri güncelle
+          properties.default_value = selectedValue;
+
+          window.updateElementContent();
+        });
+      }
+
+      // Varsayılan değer radio butonları (RADIO elementi için)
       const defaultValueContainer = window.propertiesPanel.querySelector('.default-value-radio-container');
       if (defaultValueContainer) {
         // Mevcut içeriği temizle
@@ -442,24 +487,24 @@ document.addEventListener("DOMContentLoaded", function() {
             radioLabel.className = 'form-check-label';
             radioLabel.htmlFor = `default_value_${optValue}`;
             radioLabel.textContent = optLabel;
-            
+
             radioDiv.appendChild(radioInput);
             radioDiv.appendChild(radioLabel);
             defaultValueContainer.appendChild(radioDiv);
-            
+
             // Değişikliği dinle
             radioInput.addEventListener('change', function() {
               if (this.checked) {
                 const selectedValue = this.value;
-                
+
                 // Tüm seçeneklerin varsayılan değerini sıfırla
                 properties.options.forEach(option => {
                   option.is_default = option.value === selectedValue;
                 });
-                
+
                 // Varsayılan değeri güncelle
                 properties.default_value = selectedValue;
-                
+
                 window.updateElementContent();
               }
             });

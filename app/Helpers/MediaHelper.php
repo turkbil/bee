@@ -71,23 +71,30 @@ if (!function_exists('thumb')) {
      * Media thumbnail URL'i döndür
      *
      * @param \Spatie\MediaLibrary\MediaCollections\Models\Media|null $media
-     * @param string|array|null $conversionOrProfile
-     * @param array $overrides
+     * @param string|array|int|null $conversionOrProfile Profile name, options array, or width (int)
+     * @param array|int|null $overrides Additional options or height (int)
      * @return string Thumbnail URL
      *
      * @example thumb($media)
      * @example thumb($media, 'medium')
      * @example thumb($media, ['width' => 400, 'height' => 300])
+     * @example thumb($media, 400, 300) // width, height
      */
-    function thumb($media, string|array|null $conversionOrProfile = null, array $overrides = []): string
+    function thumb($media, string|array|int|null $conversionOrProfile = null, array|int|null $overrides = []): string
     {
         if (!$media) {
             return asset('admin-assets/images/placeholder.jpg');
         }
 
+        // Handle thumb($media, width, height) shorthand
+        if (is_int($conversionOrProfile) && is_int($overrides)) {
+            $url = thumbmaker($media, ['width' => $conversionOrProfile, 'height' => $overrides]);
+            return $url ?: $media->getUrl('thumb');
+        }
+
         // Dynamic thumbmaker usage when array options or overrides are provided
-        if (is_array($conversionOrProfile) || !empty($overrides)) {
-            $url = thumbmaker($media, $conversionOrProfile, $overrides);
+        if (is_array($conversionOrProfile) || (!empty($overrides) && is_array($overrides))) {
+            $url = thumbmaker($media, $conversionOrProfile, is_array($overrides) ? $overrides : []);
             return $url ?: $media->getUrl('thumb');
         }
 
@@ -97,7 +104,7 @@ if (!function_exists('thumb')) {
 
         // When a named conversion/profile is provided
         if (is_string($conversionOrProfile)) {
-            $url = thumbmaker($media, $conversionOrProfile, $overrides);
+            $url = thumbmaker($media, $conversionOrProfile, is_array($overrides) ? $overrides : []);
             return $url ?: $media->getUrl($conversionOrProfile);
         }
 

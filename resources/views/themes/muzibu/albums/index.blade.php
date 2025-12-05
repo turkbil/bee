@@ -28,13 +28,14 @@
 
                         {{-- Play Button Overlay --}}
                         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                            <button class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
+                            <button @click.stop="playAlbum({{ $album->album_id }})"
+                                    class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
                                 <i class="fas fa-play ml-1"></i>
                             </button>
                         </div>
 
                         {{-- Favorite Button --}}
-                        <div class="absolute top-2 right-2" @click.stop>
+                        <div class="absolute top-2 right-2" x-on:click.stop>
                             <x-common.favorite-button :model="$album" size="sm" iconOnly="true" />
                         </div>
                     </div>

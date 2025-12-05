@@ -43,6 +43,9 @@ class MuzibuServiceProvider extends ServiceProvider
 
         // Livewire Component Kayıtları
         $this->registerLivewireComponents();
+
+        // View Composers - Sidebar için featured playlists
+        $this->registerViewComposers();
     }
 
     /**
@@ -82,6 +85,18 @@ class MuzibuServiceProvider extends ServiceProvider
 
         // Corporate Account Components
         Livewire::component('muzibu::admin.corporate-account-component', \Modules\Muzibu\App\Http\Livewire\Admin\CorporateAccountComponent::class);
+    }
+
+    /**
+     * Register view composers
+     */
+    protected function registerViewComposers(): void
+    {
+        // Sidebar için featured playlists'i tüm sayfalarda sağla
+        view()->composer(
+            'themes.muzibu.layouts.app',
+            \Modules\Muzibu\App\View\Composers\SidebarComposer::class
+        );
     }
 
     /**

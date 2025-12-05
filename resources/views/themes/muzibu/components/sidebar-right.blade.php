@@ -1,16 +1,18 @@
-{{-- RIGHT SIDEBAR - FEATURED PLAYLISTS (Responsive Width) --}}
-<aside class="muzibu-right-sidebar hidden xl:block">
+{{-- RIGHT SIDEBAR - FEATURED PLAYLISTS (Server Rendered) --}}
+<aside class="muzibu-right-sidebar">
     <div class="mb-6 px-3">
         <h3 class="text-lg font-bold bg-gradient-to-r from-white via-zinc-100 to-muzibu-text-gray bg-clip-text text-transparent">
             Sizin İçin
         </h3>
     </div>
 
-    {{-- Featured Playlists (Blade Render - same as main) --}}
+    {{-- Featured Playlists --}}
     @if(isset($featuredPlaylists) && $featuredPlaylists->count() > 0)
     <div class="space-y-0">
         @foreach($featuredPlaylists as $playlist)
-        <div class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer transition-all group">
+        <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
+           @click.prevent="navigateTo('/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}')"
+           class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer transition-all group">
             <div class="w-12 h-12 rounded bg-gradient-to-br from-purple-500 to-pink-600 flex-shrink-0 overflow-hidden relative">
                 @if($playlist->coverMedia)
                     <img src="{{ thumb($playlist->coverMedia, 48, 48, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover" loading="lazy">
@@ -29,7 +31,7 @@
                     {{ $playlist->songs()->count() }} şarkı
                 </p>
             </div>
-        </div>
+        </a>
         @endforeach
     </div>
     @else

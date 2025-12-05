@@ -18,8 +18,8 @@ class Subscription extends BaseModel
     protected $attributes = [];
 
     protected $fillable = [
-        'customer_id',
-        'plan_id',
+        'user_id',
+        'subscription_plan_id',
         'subscription_number',
         'status',
         'billing_cycle', // Deprecated - backward compatibility
@@ -31,6 +31,8 @@ class Subscription extends BaseModel
         'trial_days',
         'trial_ends_at',
         'started_at',
+        'starts_at', // Alias for started_at
+        'ends_at', // Alias for current_period_end
         'current_period_start',
         'current_period_end',
         'next_billing_date',
@@ -66,17 +68,17 @@ class Subscription extends BaseModel
     // Relationships
     public function user()
     {
-        return $this->belongsTo(User::class, 'customer_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function customer()
     {
-        return $this->belongsTo(User::class, 'customer_id');
+        return $this->belongsTo(User::class, 'user_id'); // Alias for user()
     }
 
     public function plan()
     {
-        return $this->belongsTo(SubscriptionPlan::class, 'plan_id', 'subscription_plan_id');
+        return $this->belongsTo(SubscriptionPlan::class, 'subscription_plan_id', 'subscription_plan_id');
     }
 
     // Scopes
@@ -251,7 +253,7 @@ class Subscription extends BaseModel
      */
     public function scopeHasUsedTrial($query, int $userId): bool
     {
-        return self::where('customer_id', $userId)
+        return self::where('user_id', $userId)
             ->where('has_trial', true)
             ->exists();
     }
@@ -261,7 +263,7 @@ class Subscription extends BaseModel
      */
     public static function userHasUsedTrial(int $userId): bool
     {
-        return self::where('customer_id', $userId)
+        return self::where('user_id', $userId)
             ->where('has_trial', true)
             ->exists();
     }

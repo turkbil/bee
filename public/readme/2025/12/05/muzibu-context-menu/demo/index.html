@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Context Menu - Canlı Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        [x-cloak] { display: none !important; }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .play-button-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover .play-button-hover {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        /* Long Press Feedback */
+        .long-press-active {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white min-h-screen">
+
+    <!-- Alpine Data -->
+    <div x-data="muzibuDemo()" x-init="initContextMenu()">
+
+        <!-- Top Bar -->
+        <div class="bg-gray-800/50 border-b border-white/10 backdrop-blur-lg sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <i class="fas fa-music text-orange-500 text-2xl"></i>
+                        <h1 class="text-2xl font-bold">Muzibu Context Menu Demo</h1>
+                    </div>
+                    <div class="flex items-center gap-4 text-sm text-gray-400">
+                        <span><i class="fas fa-mouse-pointer"></i> Sağ tık yapın</span>
+                        <span><i class="fas fa-hand-pointer"></i> Hover yapın</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 py-8">
+
+            <!-- Instructions -->
+            <div class="bg-gradient-to-r from-orange-900/20 to-red-900/20 border border-orange-700/50 rounded-lg p-6 mb-8">
+                <h2 class="text-xl font-bold text-orange-300 mb-2 flex items-center gap-2">
+                    <i class="fas fa-info-circle"></i>
+                    Nasıl Kullanılır?
+                </h2>
+                <ul class="text-gray-300 space-y-2">
+                    <li><i class="fas fa-check text-orange-500"></i> <strong>Desktop:</strong> Kartlara sağ tık yapın</li>
+                    <li><i class="fas fa-check text-orange-500"></i> <strong>Mobil:</strong> Kartları 500ms basılı tutun (long press)</li>
+                    <li><i class="fas fa-check text-orange-500"></i> Kartların üzerine hover yapın (play butonu çıkar)</li>
+                    <li><i class="fas fa-check text-orange-500"></i> Context menu'den action seçin (console'da görürsünüz)</li>
+                </ul>
+            </div>
+
+            <!-- Şarkılar -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <i class="fas fa-music text-pink-500"></i>
+                    Şarkılar
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <template x-for="song in songs" :key="song.id">
+                        <div @contextmenu.prevent.stop="openContextMenu($event, 'song', song)"
+                             @touchstart="handleTouchStart($event, 'song', song)"
+                             @touchend="handleTouchEnd($event)"
+                             @touchmove="handleTouchMove($event)"
+                             class="card-hover bg-gray-800 rounded-lg p-4 cursor-pointer relative group">
+                            <div class="relative mb-3">
+                                <div class="aspect-square bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-music text-white text-3xl opacity-60"></i>
+                                </div>
+                                <!-- Play Button (Hover) -->
+                                <button @click="playSong(song)"
+                                        class="play-button-hover absolute bottom-2 right-2 bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg opacity-0 scale-75">
+                                    <i class="fas fa-play ml-0.5"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-semibold text-white truncate" x-text="song.title"></h3>
+                            <p class="text-xs text-gray-400 truncate" x-text="song.artist"></p>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <!-- Albümler -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <i class="fas fa-compact-disc text-blue-500"></i>
+                    Albümler
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <template x-for="album in albums" :key="album.id">
+                        <div @contextmenu.prevent.stop="openContextMenu($event, 'album', album)"
+                             @touchstart="handleTouchStart($event, 'album', album)"
+                             @touchend="handleTouchEnd($event)"
+                             @touchmove="handleTouchMove($event)"
+                             class="card-hover bg-gray-800 rounded-lg p-4 cursor-pointer relative group">
+                            <div class="relative mb-3">
+                                <div class="aspect-square bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-compact-disc text-white text-4xl opacity-60"></i>
+                                </div>
+                                <!-- Play Button (Hover) -->
+                                <button @click="playAlbum(album)"
+                                        class="play-button-hover absolute bottom-2 right-2 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg opacity-0 scale-75">
+                                    <i class="fas fa-play ml-0.5 text-lg"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-semibold text-white truncate" x-text="album.title"></h3>
+                            <p class="text-xs text-gray-400 truncate" x-text="album.artist"></p>
+                            <p class="text-xs text-gray-500 mt-1" x-text="album.year"></p>
+                        </div>
+                    </template>
+                </div>
+            </section>
+
+            <!-- Playlistler -->
+            <section>
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <i class="fas fa-list-music text-purple-500"></i>
+                    Playlistler
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <template x-for="playlist in playlists" :key="playlist.id">
+                        <div @contextmenu.prevent.stop="openContextMenu($event, 'playlist', playlist)"
+                             @touchstart="handleTouchStart($event, 'playlist', playlist)"
+                             @touchend="handleTouchEnd($event)"
+                             @touchmove="handleTouchMove($event)"
+                             class="card-hover bg-gray-800 rounded-lg p-4 cursor-pointer relative group">
+                            <div class="relative mb-3">
+                                <div class="aspect-square bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-list-music text-white text-4xl opacity-60"></i>
+                                </div>
+                                <!-- Play Button (Hover) -->
+                                <button @click="playPlaylist(playlist)"
+                                        class="play-button-hover absolute bottom-2 right-2 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg opacity-0 scale-75">
+                                    <i class="fas fa-play ml-0.5 text-lg"></i>
+                                </button>
+                                <!-- Owner Badge -->
+                                <div x-show="playlist.isMine" class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+                            <h3 class="font-semibold text-white truncate" x-text="playlist.title"></h3>
+                            <p class="text-xs text-gray-400" x-text="playlist.songCount + ' şarkı'"></p>
+                        </div>
+                    </template>
+                </div>
+            </section>
+        </div>
+
+        <!-- Context Menu -->
+        <div x-show="contextMenu.visible"
+             x-cloak
+             @click.outside="contextMenu.visible = false"
+             @keydown.escape.window="contextMenu.visible = false"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             :style="`position: fixed; left: ${contextMenu.x}px; top: ${contextMenu.y}px; z-index: 9999;`"
+             class="bg-gray-800 rounded-lg shadow-2xl border border-white/20 py-2 min-w-[250px] animate-fade-in-up">
+
+            <!-- Context Menu Header -->
+            <div class="px-4 py-2 border-b border-white/10">
+                <p class="text-xs text-gray-400 uppercase font-semibold" x-text="contextMenu.type"></p>
+                <p class="text-sm text-white font-semibold truncate" x-text="contextMenu.data?.title"></p>
+            </div>
+
+            <!-- Actions -->
+            <template x-for="(action, index) in contextMenu.actions" :key="index">
+                <div>
+                    <!-- Divider -->
+                    <div x-show="action.divider" class="border-t border-white/10 my-2"></div>
+
+                    <!-- Action Button -->
+                    <button x-show="!action.divider"
+                            @click="executeAction(action.action); contextMenu.visible = false"
+                            class="w-full px-4 py-2.5 text-left hover:bg-white/10 transition-all duration-200 flex items-center gap-3 text-white text-sm group">
+                        <i :class="`fas ${action.icon} w-5 text-gray-400 group-hover:text-orange-500 transition-colors`"></i>
+                        <span class="group-hover:translate-x-0.5 transition-transform" x-text="action.label"></span>
+                        <i x-show="action.submenu" class="fas fa-chevron-right ml-auto text-xs text-gray-500"></i>
+                    </button>
+                </div>
+            </template>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="fixed bottom-4 right-4 z-50 space-y-2">
+            <template x-for="toast in toasts" :key="toast.id">
+                <div x-show="toast.visible"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     :class="toast.type === 'success' ? 'bg-green-600' : 'bg-orange-600'"
+                     class="px-6 py-4 rounded-lg shadow-2xl text-white max-w-sm">
+                    <div class="flex items-center gap-3">
+                        <i :class="toast.type === 'success' ? 'fa-check-circle' : 'fa-info-circle'" class="fas text-xl"></i>
+                        <p x-text="toast.message"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- Rating Modal -->
+        <div x-show="ratingModal.open"
+             x-cloak
+             class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div @click="ratingModal.open = false" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+            <div class="relative bg-gray-800 rounded-lg shadow-2xl border border-white/20 max-w-md w-full p-6">
+                <!-- Content Info Header -->
+                <div class="mb-6 pb-6 border-b border-white/20">
+                    <div class="flex items-center gap-4">
+                        <!-- Icon/Cover -->
+                        <div class="flex-shrink-0">
+                            <div :class="{
+                                'bg-gradient-to-br from-pink-500 to-purple-600': contextMenu.type === 'song',
+                                'bg-gradient-to-br from-blue-500 to-cyan-600': contextMenu.type === 'album',
+                                'bg-gradient-to-br from-purple-500 to-indigo-600': contextMenu.type === 'playlist'
+                            }" class="w-16 h-16 rounded-lg flex items-center justify-center">
+                                <i :class="{
+                                    'fa-music': contextMenu.type === 'song',
+                                    'fa-compact-disc': contextMenu.type === 'album',
+                                    'fa-list-music': contextMenu.type === 'playlist'
+                                }" class="fas text-white text-2xl opacity-80"></i>
+                            </div>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs uppercase font-semibold mb-1" :class="{
+                                'text-pink-400': contextMenu.type === 'song',
+                                'text-blue-400': contextMenu.type === 'album',
+                                'text-purple-400': contextMenu.type === 'playlist'
+                            }">
+                                <i :class="{
+                                    'fa-music': contextMenu.type === 'song',
+                                    'fa-compact-disc': contextMenu.type === 'album',
+                                    'fa-list-music': contextMenu.type === 'playlist'
+                                }" class="fas mr-1"></i>
+                                <span x-text="{
+                                    'song': 'Şarkıya Puan Ver',
+                                    'album': 'Albüme Puan Ver',
+                                    'playlist': 'Playliste Puan Ver'
+                                }[contextMenu.type]"></span>
+                            </p>
+                            <h3 class="text-lg font-bold text-white truncate" x-text="contextMenu.data?.title"></h3>
+                            <p class="text-sm text-gray-400 truncate" x-text="contextMenu.data?.artist || (contextMenu.data?.songCount + ' şarkı')"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-white mb-6 text-center">Puanınızı Verin</h3>
+
+                <!-- Stars -->
+                <div class="flex items-center justify-center gap-2 mb-6">
+                    <template x-for="star in [1,2,3,4,5]" :key="star">
+                        <button @click="ratingModal.rating = star"
+                                @mouseover="ratingModal.hoverRating = star"
+                                @mouseleave="ratingModal.hoverRating = 0"
+                                type="button"
+                                class="text-4xl transition-all duration-200 hover:scale-110">
+                            <i :class="star <= (ratingModal.hoverRating || ratingModal.rating) ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-500'"></i>
+                        </button>
+                    </template>
+                </div>
+
+                <p class="text-center text-gray-300 mb-6" x-show="ratingModal.rating > 0">
+                    <span x-text="ratingModal.rating"></span> yıldız seçtiniz
+                </p>
+
+                <!-- Comment -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Yorumunuz (opsiyonel)</label>
+                    <textarea x-model="ratingModal.comment"
+                              rows="4"
+                              class="w-full bg-gray-900 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                              placeholder="Bu içerik hakkında düşünceleriniz..."></textarea>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-3">
+                    <button @click="ratingModal.open = false"
+                            type="button"
+                            class="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                        İptal
+                    </button>
+                    <button @click="submitRating()"
+                            :disabled="ratingModal.rating === 0"
+                            :class="ratingModal.rating === 0 ? 'opacity-50 cursor-not-allowed' : ''"
+                            type="button"
+                            class="flex-1 px-4 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors font-semibold">
+                        Puanı Gönder
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Playlist Select Modal -->
+        <div x-show="playlistModal.open"
+             x-cloak
+             class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div @click="playlistModal.open = false" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+            <div class="relative bg-gray-800 rounded-lg shadow-2xl border border-white/20 max-w-2xl w-full p-6">
+                <!-- Content Info Header -->
+                <div class="mb-6 pb-4 border-b border-white/20">
+                    <div class="flex items-center gap-3">
+                        <div :class="{
+                            'bg-gradient-to-br from-pink-500 to-purple-600': contextMenu.type === 'song',
+                            'bg-gradient-to-br from-blue-500 to-cyan-600': contextMenu.type === 'album'
+                        }" class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i :class="{
+                                'fa-music': contextMenu.type === 'song',
+                                'fa-compact-disc': contextMenu.type === 'album'
+                            }" class="fas text-white text-xl opacity-80"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-lg font-bold text-white truncate" x-text="contextMenu.data?.title"></h3>
+                            <p class="text-sm text-gray-400 truncate" x-text="contextMenu.data?.artist"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-list-music text-orange-500"></i>
+                    Hangi Playliste Eklemek İstersiniz?
+                </h3>
+
+                <!-- Create New -->
+                <button @click="createNewPlaylist()"
+                        class="w-full mb-4 px-4 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors font-semibold flex items-center justify-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    Yeni Playlist Oluştur
+                </button>
+
+                <!-- Playlists -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+                    <template x-for="playlist in playlists" :key="playlist.id">
+                        <button @click="addToPlaylist(playlist)"
+                                class="group bg-gray-900 hover:bg-gray-700 rounded-lg p-4 transition-all duration-300 text-left">
+                            <div class="aspect-square bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg mb-3 flex items-center justify-center">
+                                <i class="fas fa-list-music text-white text-2xl opacity-60"></i>
+                            </div>
+                            <h4 class="text-white font-semibold truncate" x-text="playlist.title"></h4>
+                            <p class="text-xs text-gray-400" x-text="playlist.songCount + ' şarkı'"></p>
+                        </button>
+                    </template>
+                </div>
+
+                <button @click="playlistModal.open = false"
+                        class="mt-6 w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                    Kapat
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function muzibuDemo() {
+            return {
+                // Demo Data
+                songs: [
+                    { id: 1, title: 'Yalnızlık', artist: 'Sezen Aksu', album: 'Klasikler', isFavorite: false },
+                    { id: 2, title: 'Gel Ey Seher', artist: 'Cem Adrian', album: 'Emir', isFavorite: true },
+                    { id: 3, title: 'İstanbul İstanbul', artist: 'Ferhat Göçer', album: 'Şarkılar', isFavorite: false },
+                    { id: 4, title: 'Yaz Yaz Yaz', artist: 'Edis', album: 'Benim İçin Üzülme', isFavorite: false },
+                    { id: 5, title: 'Paramparça', artist: 'Bengü', album: 'Hoşgeldin', isFavorite: true },
+                    { id: 6, title: 'Aşkın Ateşi', artist: 'Ajda Pekkan', album: 'Süperstar', isFavorite: false },
+                ],
+
+                albums: [
+                    { id: 1, title: 'Klasikler', artist: 'Sezen Aksu', year: 2010, songCount: 14 },
+                    { id: 2, title: 'Emir', artist: 'Cem Adrian', year: 2015, songCount: 12 },
+                    { id: 3, title: 'Şarkılar', artist: 'Ferhat Göçer', year: 2018, songCount: 10 },
+                    { id: 4, title: 'Süperstar', artist: 'Ajda Pekkan', year: 2005, songCount: 16 },
+                ],
+
+                playlists: [
+                    { id: 1, title: 'Çalışırken Dinlenenler', songCount: 45, isMine: true },
+                    { id: 2, title: 'Romantik Şarkılar', songCount: 32, isMine: true },
+                    { id: 3, title: 'Yolculuk Mix', songCount: 28, isMine: false },
+                    { id: 4, title: 'Sabah Motivasyonu', songCount: 19, isMine: true },
+                ],
+
+                // Context Menu State
+                contextMenu: {
+                    visible: false,
+                    x: 0,
+                    y: 0,
+                    type: null,
+                    data: null,
+                    actions: []
+                },
+
+                // Rating Modal
+                ratingModal: {
+                    open: false,
+                    rating: 0,
+                    hoverRating: 0,
+                    comment: ''
+                },
+
+                // Playlist Modal
+                playlistModal: {
+                    open: false
+                },
+
+                // Toast
+                toasts: [],
+                toastId: 0,
+
+                // Touch/Long Press
+                touchTimer: null,
+                touchStartPos: { x: 0, y: 0 },
+
+                // Methods
+                initContextMenu() {
+                    // Global context menu prevention
+                    document.addEventListener('contextmenu', (e) => {
+                        // Allow context menu for inputs (paste)
+                        if (e.target.matches('input, textarea, [contenteditable="true"]')) {
+                            return;
+                        }
+
+                        // Prevent browser context menu
+                        e.preventDefault();
+                    }, false);
+                },
+
+                handleTouchStart(event, type, data) {
+                    // Store touch position
+                    const touch = event.touches[0];
+                    this.touchStartPos = { x: touch.clientX, y: touch.clientY };
+
+                    // Clear any existing timer
+                    if (this.touchTimer) {
+                        clearTimeout(this.touchTimer);
+                    }
+
+                    // Add visual feedback
+                    event.currentTarget.classList.add('long-press-active');
+
+                    // Start timer for long press (500ms)
+                    this.touchTimer = setTimeout(() => {
+                        // Trigger context menu
+                        const fakeEvent = {
+                            pageX: touch.pageX,
+                            pageY: touch.pageY,
+                            preventDefault: () => {}
+                        };
+                        this.openContextMenu(fakeEvent, type, data);
+
+                        // Vibrate if supported (mobil feedback)
+                        if ('vibrate' in navigator) {
+                            navigator.vibrate(50);
+                        }
+
+                        // Remove visual feedback
+                        event.currentTarget.classList.remove('long-press-active');
+                    }, 500);
+                },
+
+                handleTouchEnd(event) {
+                    // Clear timer if touch ends before 500ms
+                    if (this.touchTimer) {
+                        clearTimeout(this.touchTimer);
+                        this.touchTimer = null;
+                    }
+
+                    // Remove visual feedback
+                    event.currentTarget.classList.remove('long-press-active');
+                },
+
+                handleTouchMove(event) {
+                    // If user moves finger, cancel long press
+                    const touch = event.touches[0];
+                    const deltaX = Math.abs(touch.clientX - this.touchStartPos.x);
+                    const deltaY = Math.abs(touch.clientY - this.touchStartPos.y);
+
+                    // If moved more than 10px, cancel
+                    if (deltaX > 10 || deltaY > 10) {
+                        if (this.touchTimer) {
+                            clearTimeout(this.touchTimer);
+                            this.touchTimer = null;
+                        }
+                        event.currentTarget.classList.remove('long-press-active');
+                    }
+                },
+
+                openContextMenu(event, type, data) {
+                    const menuWidth = 250;
+                    const menuHeight = 400;
+
+                    this.contextMenu.x = (event.pageX + menuWidth > window.innerWidth)
+                        ? window.innerWidth - menuWidth - 10
+                        : event.pageX;
+
+                    this.contextMenu.y = (event.pageY + menuHeight > window.innerHeight)
+                        ? window.innerHeight - menuHeight - 10
+                        : event.pageY;
+
+                    this.contextMenu.type = type;
+                    this.contextMenu.data = data;
+                    this.contextMenu.actions = this.getActionsForType(type, data);
+                    this.contextMenu.visible = true;
+                },
+
+                getActionsForType(type, data) {
+                    const actions = {
+                        song: [
+                            { icon: 'fa-play', label: 'Çal', action: 'play' },
+                            { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
+                            { icon: 'fa-heart', label: data.isFavorite ? 'Favorilerden Çıkar' : 'Favorilere Ekle', action: 'toggleFavorite' },
+                            { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                            { divider: true },
+                            { icon: 'fa-list-music', label: 'Playliste Ekle', action: 'addToPlaylist', submenu: true },
+                            { divider: true },
+                            { icon: 'fa-compact-disc', label: 'Albüme Git', action: 'goToAlbum' },
+                            { icon: 'fa-user-music', label: 'Sanatçıya Git', action: 'goToArtist' },
+                            { icon: 'fa-share-alt', label: 'Paylaş', action: 'share' }
+                        ],
+                        album: [
+                            { icon: 'fa-play', label: 'Çal', action: 'play' },
+                            { icon: 'fa-plus-circle', label: 'Sıraya Ekle (Tüm)', action: 'addToQueue' },
+                            { icon: 'fa-heart', label: 'Favorilere Ekle', action: 'toggleFavorite' },
+                            { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                            { icon: 'fa-list-music', label: 'Playliste Ekle (Tüm)', action: 'addToPlaylist' },
+                            { divider: true },
+                            { icon: 'fa-user-music', label: 'Sanatçıya Git', action: 'goToArtist' },
+                            { icon: 'fa-share-alt', label: 'Paylaş', action: 'share' }
+                        ],
+                        playlist: [
+                            { icon: 'fa-play', label: 'Çal', action: 'play' },
+                            { icon: 'fa-plus-circle', label: 'Sıraya Ekle (Tüm)', action: 'addToQueue' },
+                            { icon: 'fa-heart', label: 'Favorilere Ekle', action: 'toggleFavorite' },
+                            { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                            { divider: true },
+                            ...(data.isMine ? [
+                                { icon: 'fa-edit', label: 'Düzenle', action: 'edit' },
+                                { icon: 'fa-trash-alt', label: 'Sil', action: 'delete' }
+                            ] : []),
+                            { icon: 'fa-share-alt', label: 'Paylaş', action: 'share' }
+                        ]
+                    };
+
+                    return actions[type] || [];
+                },
+
+                executeAction(action) {
+                    const { type, data } = this.contextMenu;
+
+                    console.log(`🎯 Action: ${action} | Type: ${type} | Data:`, data);
+
+                    switch(action) {
+                        case 'play':
+                            this.showToast(`▶️ Çalıyor: ${data.title}`, 'success');
+                            break;
+                        case 'addToQueue':
+                            this.showToast(`➕ Sıraya eklendi: ${data.title}`, 'success');
+                            break;
+                        case 'toggleFavorite':
+                            const isFav = data.isFavorite;
+                            data.isFavorite = !isFav;
+                            this.showToast(isFav ? '💔 Favorilerden çıkarıldı' : '❤️ Favorilere eklendi', 'success');
+                            break;
+                        case 'rate':
+                            this.ratingModal.open = true;
+                            this.ratingModal.rating = 0;
+                            this.ratingModal.comment = '';
+                            break;
+                        case 'addToPlaylist':
+                            this.playlistModal.open = true;
+                            break;
+                        case 'share':
+                            this.showToast(`🔗 Link kopyalandı: ${data.title}`, 'success');
+                            break;
+                        case 'goToAlbum':
+                            this.showToast(`💿 Albüme gidiliyor: ${data.album}`, 'info');
+                            break;
+                        case 'goToArtist':
+                            this.showToast(`🎤 Sanatçıya gidiliyor: ${data.artist}`, 'info');
+                            break;
+                        case 'edit':
+                            this.showToast(`✏️ Düzenleme sayfası açılıyor`, 'info');
+                            break;
+                        case 'delete':
+                            this.showToast(`🗑️ Silindi: ${data.title}`, 'success');
+                            break;
+                    }
+                },
+
+                playSong(song) {
+                    this.showToast(`▶️ Çalıyor: ${song.title}`, 'success');
+                    console.log('🎵 Playing song:', song);
+                },
+
+                playAlbum(album) {
+                    this.showToast(`▶️ Albüm çalıyor: ${album.title}`, 'success');
+                    console.log('💿 Playing album:', album);
+                },
+
+                playPlaylist(playlist) {
+                    this.showToast(`▶️ Playlist çalıyor: ${playlist.title}`, 'success');
+                    console.log('🎵 Playing playlist:', playlist);
+                },
+
+                submitRating() {
+                    const { rating, comment } = this.ratingModal;
+                    console.log('⭐ Rating submitted:', { rating, comment, item: this.contextMenu.data });
+                    this.showToast(`⭐ ${rating} yıldız puanınız kaydedildi!`, 'success');
+                    this.ratingModal.open = false;
+                },
+
+                createNewPlaylist() {
+                    console.log('➕ Creating new playlist...');
+                    this.showToast('➕ Yeni playlist oluştur modal açıldı', 'info');
+                },
+
+                addToPlaylist(playlist) {
+                    console.log('📋 Adding to playlist:', playlist, 'Item:', this.contextMenu.data);
+                    this.showToast(`📋 "${this.contextMenu.data.title}" playliste eklendi: ${playlist.title}`, 'success');
+                    this.playlistModal.open = false;
+                },
+
+                showToast(message, type = 'info') {
+                    const id = this.toastId++;
+                    const toast = { id, message, type, visible: true };
+                    this.toasts.push(toast);
+
+                    setTimeout(() => {
+                        toast.visible = false;
+                        setTimeout(() => {
+                            this.toasts = this.toasts.filter(t => t.id !== id);
+                        }, 200);
+                    }, 3000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

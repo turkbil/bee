@@ -138,7 +138,7 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getCoverUrlAttribute(): string
     {
-        $coverUrl = $this->getFirstMediaUrl('cover');
+        $coverUrl = $this->getFirstMediaUrl('hero');
 
         if (empty($coverUrl)) {
             return '';
@@ -231,7 +231,7 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
     protected function getMediaConfig(): array
     {
         return [
-            'cover' => [
+            'hero' => [
                 'type' => 'image',
                 'single_file' => true,
                 'max_items' => 1,

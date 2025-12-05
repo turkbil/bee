@@ -16,8 +16,9 @@ Route::get('/cart', \Modules\Cart\App\Http\Livewire\Front\CartPage::class)->name
 Route::get('/shop/checkout', \Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew::class)->name('shop.checkout');
 Route::get('/shop/payment/{orderNumber}', [\Modules\Shop\App\Http\Controllers\PaymentPageController::class, 'show'])->name('shop.payment.page');
 
-// 👑 SUBSCRIPTION PLANS (tek route yeterli)
+// 👑 SUBSCRIPTION PLANS
 Route::get('/subscription/plans', \Modules\Subscription\App\Http\Livewire\Front\SubscriptionPlansComponent::class)->name('subscription.plans');
+Route::middleware('auth')->get('/subscription/success', \Modules\Subscription\App\Http\Controllers\Front\SubscriptionSuccessController::class)->name('subscription.success');
 
 // 💳 PAYMENT ROUTES
 Route::get('/payment/success', [\Modules\Payment\App\Http\Controllers\PaymentSuccessController::class, 'show'])->name('payment.success');
@@ -78,6 +79,7 @@ Route::middleware([InitializeTenancy::class])
         Route::get('/genres/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'show'])->name('muzibu.genres.show');
         Route::get('/sectors', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'index'])->name('muzibu.sectors.index');
         Route::get('/sectors/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'show'])->name('muzibu.sectors.show');
+        Route::get('/radios', [\Modules\Muzibu\app\Http\Controllers\Front\RadioController::class, 'index'])->name('muzibu.radios.index');
     });
 
 // 🎵 MUZIBU STREAMING ROUTES - EN ÖNCE TANIMLANMALI (high priority)
@@ -405,6 +407,26 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/dashboard', function () {
+    // ThemeService ile tema-aware dashboard view
+    $themeService = app(\App\Services\ThemeService::class);
+    $theme = $themeService->getActiveTheme();
+    $themeName = $theme ? $theme->name : 'simple';
+
+    // 1. Tema dashboard view kontrolü
+    $themeDashboard = "themes.{$themeName}.dashboard";
+    if (view()->exists($themeDashboard)) {
+        return view($themeDashboard);
+    }
+
+    // 2. Simple tema fallback
+    if ($themeName !== 'simple') {
+        $simpleDashboard = 'themes.simple.dashboard';
+        if (view()->exists($simpleDashboard)) {
+            return view($simpleDashboard);
+        }
+    }
+
+    // 3. Global dashboard fallback
     return view('dashboard');
 })->middleware(['site', 'auth', 'verified'])->name('dashboard');
 
@@ -671,7 +693,32 @@ Route::middleware([InitializeTenancy::class, 'site'])
     });
 
 
-// Basit thumbmaker link servisi
+// Thumbmaker - Query String Format (src=...&w=...&h=...)
+Route::get('/thumbmaker', [\Modules\MediaManagement\App\Http\Controllers\ThumbmakerController::class, 'generate'])
+    ->name('thumbmaker.generate');
+
+// Thumbmaker - Short Format (/thumb/{media_id}/{width}/{height})
+Route::get('/thumb/{mediaId}/{width?}/{height?}', function ($mediaId, $width = null, $height = null) {
+    try {
+        $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::findOrFail($mediaId);
+        $url = $media->getUrl();
+
+        // Thumbmaker'a yönlendir
+        $params = array_filter([
+            'src' => $url,
+            'w' => $width,
+            'h' => $height,
+            'f' => 'webp',
+            'c' => 1,
+        ]);
+
+        return redirect('/thumbmaker?' . http_build_query($params));
+    } catch (\Exception $e) {
+        abort(404, 'Media not found');
+    }
+})->where(['mediaId' => '\d+', 'width' => '\d+', 'height' => '\d+'])->name('thumb.short');
+
+// Basit thumbmaker link servisi (Encoded format)
 Route::get('/thumbmaker/{encoded}/{width?}/{height?}/{quality?}', \App\Http\Controllers\ThumbmakerLinkController::class)
     ->where(['encoded' => '[A-Za-z0-9-_]+', 'width' => '\d+', 'height' => '\d+', 'quality' => '\d+']);
 

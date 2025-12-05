@@ -8,11 +8,11 @@
     <div class="mb-3">
         <h3 class="px-4 text-xs font-bold text-muzibu-text-gray uppercase tracking-wider mb-2">Kitaplığım</h3>
         <nav class="space-y-1">
-            <a href="{{ route('muzibu.my-playlists') }}" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/my-playlists" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-list w-5 text-base"></i>
                 <span class="font-medium text-sm">Playlistlerim</span>
             </a>
-            <a href="{{ route('muzibu.favorites') }}" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/favorites" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-heart w-5 text-base"></i>
                 <span class="font-medium text-sm">Favorilerim</span>
             </a>
@@ -25,21 +25,25 @@
     <div class="mb-3">
         <h3 class="px-4 text-xs font-bold text-muzibu-text-gray uppercase tracking-wider mb-2">Keşfet</h3>
         <nav class="space-y-1">
-            <a href="{{ route('muzibu.playlists.index') }}" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/playlists" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-fire w-5 text-base"></i>
                 <span class="font-medium text-sm">Popüler Playlistler</span>
             </a>
-            <a href="{{ route('muzibu.albums.index') }}" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/albums" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-compact-disc w-5 text-base"></i>
                 <span class="font-medium text-sm">Albümler</span>
             </a>
-            <a href="{{ route('muzibu.genres.index') }}" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/genres" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-music w-5 text-base"></i>
                 <span class="font-medium text-sm">Türler</span>
             </a>
-            <a href="{{ route('muzibu.sectors.index') }}" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/sectors" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-compass w-5 text-base"></i>
-                <span class="font-medium text-sm">Kategoriler</span>
+                <span class="font-medium text-sm">Sektörler</span>
+            </a>
+            <a href="/radios" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+                <i class="fas fa-radio w-5 text-base"></i>
+                <span class="font-medium text-sm">Canlı Radyolar</span>
             </a>
         </nav>
     </div>
@@ -77,12 +81,58 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <h3 class="text-white font-bold text-sm truncate" x-text="currentUser?.name || 'Kullanıcı'"></h3>
-                    <template x-if="currentUser?.is_premium">
+
+                    {{-- Premium (Deneme Süresi Var) --}}
+                    <template x-if="currentUser?.is_premium && currentUser?.trial_ends_at">
+                        <div class="text-white/90 text-xs">
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-gift text-yellow-300"></i>
+                                <span>Deneme Üyesi</span>
+                            </div>
+                            <p class="text-white/70 text-[10px] mt-0.5"
+                               x-data="{ timeLeft: '' }"
+                               x-init="
+                                   const updateTime = () => {
+                                       const now = new Date();
+                                       const trial = new Date(currentUser.trial_ends_at);
+                                       const diff = trial - now;
+
+                                       if (diff <= 0) {
+                                           timeLeft = 'Deneme süresi bitti';
+                                           return;
+                                       }
+
+                                       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                                       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+                                       if (days > 0) {
+                                           timeLeft = days + ' gün ' + hours + ' saat kaldı';
+                                       } else if (hours > 0) {
+                                           timeLeft = hours + ' saat ' + minutes + ' dakika kaldı';
+                                       } else {
+                                           timeLeft = minutes + ' dakika kaldı';
+                                       }
+                                   };
+                                   updateTime();
+                                   setInterval(updateTime, 60000); // Her dakika güncelle
+                               "
+                            >
+                                <i class="fas fa-clock mr-1"></i>
+                                <span x-text="timeLeft"></span>
+                            </p>
+                        </div>
+                    </template>
+
+                    {{-- Premium (Ücretli) --}}
+                    <template x-if="currentUser?.is_premium && !currentUser?.trial_ends_at">
                         <p class="text-white/90 text-xs flex items-center gap-1">
                             <i class="fas fa-crown text-yellow-300"></i>
                             <span>Premium</span>
                         </p>
                     </template>
+
+                    {{-- Ücretsiz --}}
                     <template x-if="!currentUser?.is_premium">
                         <p class="text-white/90 text-xs">Ücretsiz Üye</p>
                     </template>

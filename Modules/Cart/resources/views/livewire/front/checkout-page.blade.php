@@ -21,7 +21,7 @@
     showNewShippingForm: false,
     showBillingAddressForm: {{ !$requiresShipping ? 'true' : 'false' }},
     showNewBillingForm: false,
-    paymentMethod: 'card',
+    selectedPaymentMethodId: {{ $selectedPaymentMethodId ?? 'null' }},
     agreeAll: {{ $agree_all ? 'true' : 'false' }},
 
     // Delete State
@@ -50,6 +50,7 @@
         // Dijital ürün ise veya toggle kapalıysa fatura adresini kullan
         $wire.set('billing_address_id', (this.requiresShipping && this.billingSameAsShipping) ? this.shippingAddressId : this.billingAddressId);
         $wire.set('billing_same_as_shipping', this.billingSameAsShipping);
+        $wire.set('selectedPaymentMethodId', this.selectedPaymentMethodId);
         $wire.set('agree_all', this.agreeAll);
     },
 
@@ -930,56 +931,46 @@
                             <i class="fa-solid fa-wallet text-gray-500 mr-2"></i>Ödeme Yöntemi
                         </h3>
                         <div class="space-y-3">
-                            <div @click="paymentMethod = 'card'" class="cursor-pointer">
-                                <div class="p-4 rounded-xl border-2 transition-all"
-                                     :class="paymentMethod === 'card' ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:border-gray-500'">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
-                                             :class="paymentMethod === 'card' ? 'bg-blue-500/20' : 'bg-gray-700'">
-                                            <i class="fa-solid fa-credit-card" :class="paymentMethod === 'card' ? 'text-blue-400' : 'text-gray-400'"></i>
+                            @foreach($paymentMethods as $method)
+                                <div @click="selectedPaymentMethodId = {{ $method->payment_method_id }}" class="cursor-pointer">
+                                    <div class="p-4 rounded-xl border-2 transition-all"
+                                         :class="selectedPaymentMethodId === {{ $method->payment_method_id }} ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:border-gray-500'">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
+                                                 :class="selectedPaymentMethodId === {{ $method->payment_method_id }} ? 'bg-blue-500/20' : 'bg-gray-700'">
+                                                <i class="fa-solid {{ $method->gateway === 'paytr' ? 'fa-credit-card' : 'fa-money-bill-transfer' }}"
+                                                   :class="selectedPaymentMethodId === {{ $method->payment_method_id }} ? 'text-blue-400' : 'text-gray-400'"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <span class="text-sm font-semibold" :class="selectedPaymentMethodId === {{ $method->payment_method_id }} ? 'text-blue-400' : 'text-white'">{{ $method->getTranslated('title') }}</span>
+                                                @if($method->gateway === 'paytr')
+                                                    <p class="text-xs text-gray-500">Visa, Mastercard, Troy</p>
+                                                @endif
+                                            </div>
+                                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
+                                                 :class="selectedPaymentMethodId === {{ $method->payment_method_id }} ? 'border-blue-500 bg-blue-500' : 'border-gray-600'">
+                                                <i class="fa-solid fa-check text-[10px] text-white" x-show="selectedPaymentMethodId === {{ $method->payment_method_id }}"></i>
+                                            </div>
                                         </div>
-                                        <div class="flex-1">
-                                            <span class="text-sm font-semibold" :class="paymentMethod === 'card' ? 'text-blue-400' : 'text-white'">Kredi Kartı</span>
-                                            <p class="text-xs text-gray-500">Visa, Mastercard, Troy</p>
-                                        </div>
-                                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
-                                             :class="paymentMethod === 'card' ? 'border-blue-500 bg-blue-500' : 'border-gray-600'">
-                                            <i class="fa-solid fa-check text-[10px] text-white" x-show="paymentMethod === 'card'"></i>
-                                        </div>
+                                        @if($method->gateway === 'manual')
+                                            <div x-show="selectedPaymentMethodId === {{ $method->payment_method_id }}" x-cloak class="mt-4 pt-4 border-t border-gray-600 text-sm text-gray-400">
+                                                <p><strong class="text-gray-200">Banka:</strong> Türkiye İş Bankası</p>
+                                                <p><strong class="text-gray-200">Hesap:</strong> İXTİF A.Ş.</p>
+                                                <p class="mt-2"><strong class="text-gray-200">IBAN:</strong></p>
+                                                <code class="block bg-gray-700 px-3 py-2 rounded-lg mt-1 text-xs font-mono">TR51 0006 4000 0011 0372 5092 58</code>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
-                            </div>
-                            <div @click="paymentMethod = 'bank'" class="cursor-pointer">
-                                <div class="p-4 rounded-xl border-2 transition-all"
-                                     :class="paymentMethod === 'bank' ? 'border-blue-500 bg-blue-500/10' : 'border-gray-700 hover:border-gray-500'">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
-                                             :class="paymentMethod === 'bank' ? 'bg-blue-500/20' : 'bg-gray-700'">
-                                            <i class="fa-solid fa-money-bill-transfer" :class="paymentMethod === 'bank' ? 'text-blue-400' : 'text-gray-400'"></i>
-                                        </div>
-                                        <div class="flex-1">
-                                            <span class="text-sm font-semibold" :class="paymentMethod === 'bank' ? 'text-blue-400' : 'text-white'">Havale / EFT</span>
-                                        </div>
-                                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
-                                             :class="paymentMethod === 'bank' ? 'border-blue-500 bg-blue-500' : 'border-gray-600'">
-                                            <i class="fa-solid fa-check text-[10px] text-white" x-show="paymentMethod === 'bank'"></i>
-                                        </div>
-                                    </div>
-                                    <div x-show="paymentMethod === 'bank'" x-cloak class="mt-4 pt-4 border-t border-gray-600 text-sm text-gray-400">
-                                        <p><strong class="text-gray-200">Banka:</strong> Türkiye İş Bankası</p>
-                                        <p><strong class="text-gray-200">Hesap:</strong> İXTİF A.Ş.</p>
-                                        <p class="mt-2"><strong class="text-gray-200">IBAN:</strong></p>
-                                        <code class="block bg-gray-700 px-3 py-2 rounded-lg mt-1 text-xs font-mono">TR51 0006 4000 0011 0372 5092 58</code>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
+                        @error('selectedPaymentMethodId') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
                     </div>
 
                     {{-- Sözleşmeler --}}
                     <div class="p-5 border-b border-gray-700">
                         <label class="flex items-start gap-3 cursor-pointer">
-                            <input type="checkbox" x-model="agreeAll"
+                            <input type="checkbox" wire:model.live="agree_all"
                                    class="w-5 h-5 mt-0.5 rounded border-gray-600 text-gray-400 focus:ring-gray-500 bg-gray-700">
                             <span class="text-sm text-gray-400 leading-relaxed">
                                 <a href="/on-bilgilendirme" target="_blank" class="text-white hover:underline">Ön Bilgilendirme Formu</a>'nu ve
@@ -1007,12 +998,16 @@
                     @endif
 
                     {{-- Ödeme Butonu --}}
-                    <div class="p-5">
-                        <button @click="submitOrder()" :disabled="!agreeAll"
-                                :class="agreeAll ? 'bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/30' : 'bg-gray-600 cursor-not-allowed'"
+                    <div class="p-5" x-data="{ localAgreeAll: @entangle('agree_all').live }">
+                        <button wire:click="proceedToPayment"
+                                wire:loading.attr="disabled"
+                                :disabled="!localAgreeAll"
+                                :class="localAgreeAll ? 'bg-green-600 hover:bg-green-700 shadow-lg shadow-green-600/30' : 'bg-gray-600 cursor-not-allowed'"
                                 class="w-full text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 text-lg">
-                            <i class="fa-solid fa-lock"></i>
-                            <span x-text="paymentMethod === 'card' ? 'Kredi Kartı ile Öde' : 'Siparişi Tamamla'"></span>
+                            <i class="fa-solid fa-lock" wire:loading.remove></i>
+                            <i class="fa-solid fa-spinner fa-spin" wire:loading></i>
+                            <span wire:loading.remove>Ödemeye Geç</span>
+                            <span wire:loading>İşleniyor...</span>
                         </button>
                         <p class="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-1">
                             <i class="fa-solid fa-shield-halved text-green-500"></i>

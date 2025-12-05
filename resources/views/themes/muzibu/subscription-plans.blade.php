@@ -1,172 +1,196 @@
-<div class="min-h-screen bg-spotify-black py-12 px-4">
+<div>
+<style>
+@keyframes gradient-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.animate-gradient {
+    animation: gradient-shift 3s ease infinite;
+    background-size: 200% 200%;
+}
+
+.gradient-text {
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+</style>
+
+<div class="min-h-screen bg-gradient-to-b from-spotify-black via-[#0a0a0a] to-spotify-black py-4 px-4">
     <div class="max-w-7xl mx-auto">
 
         {{-- Header --}}
         <div class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold text-white mb-3">
-                {{ __("Üyelik Planları") }}
+            <h1 class="text-5xl md:text-6xl font-black text-white mb-4 tracking-tight">
+                <span class="bg-gradient-to-r from-muzibu-coral via-pink-500 to-purple-500 gradient-text">Sınırsız</span> Müzik Keyfi
             </h1>
-            <p class="text-lg text-gray-400">
-                {{ __("Size en uygun planı seçin") }}
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                Size en uygun planı seçin, sınırsız müzik dinlemenin keyfini çıkarın
             </p>
         </div>
 
-        {{-- Plans Loop --}}
-        @foreach($plans as $planIndex => $plan)
-            @php
-                $cycles = $plan->getSortedCycles();
-                $cycleCount = count($cycles);
+        {{-- Plans Grid - YAN YANA --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            @foreach($plans as $planIndex => $plan)
+                @if($plan->is_trial && $userHasUsedTrial)
+                    @continue
+                @endif
 
-                // Grid sütun sayısı
-                $gridCols = match($cycleCount) {
-                    1 => "grid-cols-1",
-                    2 => "md:grid-cols-2",
-                    3 => "md:grid-cols-3",
-                    default => "md:grid-cols-2 lg:grid-cols-4"
-                };
-            @endphp
+                @php
+                    $cycles = $plan->billing_cycles ?? [];
+                    $firstCycleKey = array_key_first($cycles);
+                    if (!$firstCycleKey) continue;
 
-            {{-- Billing Cycles Grid --}}
-            <div class="grid grid-cols-1 {{ $gridCols }} gap-6 mb-12">
-                @foreach($cycles as $cycleKey => $cycle)
-                    @php
-                        $cycleLabel = $cycle["label"]["tr"] ?? $cycle["label"]["en"] ?? $cycleKey;
-                        $price = $cycle["price"];
-                        $comparePrice = $cycle["compare_price"] ?? null;
-                        $durationDays = $cycle["duration_days"];
-                        $trialDays = $cycle["trial_days"] ?? null;
-                        $badge = $cycle["badge"] ?? null;
-                        $promoText = $cycle["promo_text"]["tr"] ?? $cycle["promo_text"]["en"] ?? null;
+                    $cycle = $cycles[$firstCycleKey];
+                    $price = $cycle['price'] ?? 0;
+                    $durationDays = $cycle['duration_days'] ?? 0;
+                    $monthlyPrice = $durationDays > 0 ? round(($price / $durationDays) * 30) : $price;
 
-                        // Badge renk (Spotify style)
-                        $badgeColorClass = match($badge["color"] ?? null) {
-                            "success" => "bg-spotify-green",
-                            "warning" => "bg-yellow-500",
-                            "danger" => "bg-red-500",
-                            "info" => "bg-cyan-500",
-                            default => "bg-spotify-green"
-                        };
+                    $gradients = [
+                        'from-emerald-500 to-teal-600',
+                        'from-blue-500 to-indigo-600',
+                        'from-purple-500 to-pink-600',
+                        'from-orange-500 to-red-600',
+                        'from-yellow-500 to-amber-600',
+                    ];
+                    $gradient = $gradients[$planIndex % count($gradients)];
+                @endphp
 
-                        // Featured plan
-                        $featuredClass = $plan->is_featured ? "border-spotify-green scale-105" : "border-transparent";
-                    @endphp
-
-                    <div class="relative bg-spotify-dark rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-spotify-green/20 flex flex-col border-2 {{ $featuredClass }}">
-
-                        {{-- Badges --}}
-                        @if($badge && !empty($badge["text"]))
-                        <div class="absolute top-3 right-3 z-10">
-                            <div class="{{ $badgeColorClass }} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg uppercase">
-                                {{ $badge["text"] }}
-                            </div>
-                        </div>
-                        @endif
-
-                        {{-- Header --}}
-                        <div class="p-6 bg-gradient-to-br from-spotify-gray to-spotify-dark">
-                            <h2 class="text-2xl font-bold text-spotify-green mb-2">
-                                {{ $plan->getTranslated("title") }}
-                            </h2>
-                            <p class="text-sm text-gray-400 mb-3">
-                                {{ $plan->getTranslated("description") }}
-                            </p>
-                            <span class="inline-block px-3 py-1 bg-spotify-gray text-white text-xs font-semibold rounded-full">
-                                {{ $cycleLabel }} · {{ $durationDays }} gün
-                            </span>
-                        </div>
-
-                        {{-- Price --}}
-                        <div class="p-6 bg-spotify-dark text-center">
-                            <div class="text-4xl font-black text-spotify-green mb-2">
-                                ₺{{ number_format($price, 0, ",", ".") }}
-                            </div>
-
-                            @if($comparePrice)
-                            <div class="text-sm line-through text-gray-500 mb-1">
-                                ₺{{ number_format($comparePrice, 0, ",", ".") }}
-                            </div>
-                            <div class="text-sm font-semibold text-spotify-green-light mb-2">
-                                ₺{{ number_format($comparePrice - $price, 0, ",", ".") }} tasarruf
-                            </div>
-                            @endif
-
-                            @if($trialDays && !$userHasUsedTrial)
-                            <div class="inline-block mt-2 px-4 py-2 bg-spotify-green text-black text-sm font-bold rounded-full shadow-lg shadow-spotify-green/50">
-                                🎁 {{ $trialDays }} gün deneme
-                            </div>
-                            @endif
-
-                            @if($promoText)
-                            <div class="mt-2 px-4 py-2 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-lg border border-yellow-500/30">
-                                🎉 {{ $promoText }}
-                            </div>
-                            @endif
-                        </div>
-
-                        {{-- Features --}}
-                        @php
-                            $features = $plan->features ?? [];
-                        @endphp
-                        @if($features && is_array($features) && count($features) > 0)
-                        <div class="p-6 flex-1 bg-spotify-dark">
-                            <ul class="space-y-3">
-                                @foreach($features as $feature)
-                                @php
-                                    if (str_contains($feature, "|")) {
-                                        [$icon, $text] = explode("|", $feature, 2);
-                                    } else {
-                                        $icon = "fas fa-check-circle";
-                                        $text = $feature;
-                                    }
-                                @endphp
-                                <li class="flex items-start gap-3 text-sm">
-                                    <i class="{{ $icon }} text-spotify-green flex-shrink-0 mt-0.5"></i>
-                                    <span class="text-gray-300">{{ $text }}</span>
-                                </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
-
-                        {{-- CTA --}}
-                        <div class="p-6 bg-spotify-gray">
-                            <button wire:click="addToCart({{ $plan->subscription_plan_id }}, '{{ $cycleKey }}', true)"
-                                    wire:loading.attr="disabled"
-                                    wire:loading.class="opacity-50 cursor-not-allowed"
-                                    class="block w-full bg-spotify-green hover:bg-spotify-green-light text-black font-bold py-3.5 px-6 rounded-full transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-spotify-green/50 disabled:scale-100">
-                                <span wire:loading.remove>
-                                    <i class="fas fa-shopping-cart mr-2"></i>{{ __("Satın Al") }}
-                                </span>
-                                <span wire:loading>
-                                    <i class="fas fa-spinner fa-spin mr-2"></i>{{ __("Ekleniyor...") }}
-                                </span>
-                            </button>
+                <div class="relative group transition-all duration-300 hover:scale-105">
+                    @if($plan->is_featured)
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                        <div class="px-4 py-1.5 bg-gradient-to-r {{ $gradient }} text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1 animate-gradient">
+                            <i class="fas fa-star"></i>
+                            <span>POPÜLER</span>
                         </div>
                     </div>
-                @endforeach
-            </div>
-        @endforeach
+                    @endif
 
-        {{-- No Plans --}}
+                    <div class="relative bg-gradient-to-br from-spotify-gray to-[#0a0a0a] rounded-3xl overflow-hidden border-2 {{ $plan->is_featured ? 'border-muzibu-coral shadow-2xl shadow-muzibu-coral/30 ring-2 ring-muzibu-coral/20' : 'border-white/10' }} transition-all duration-300 hover:border-muzibu-coral/50 flex flex-col h-full min-h-[550px]">
+
+                        <div class="h-1.5 bg-gradient-to-r {{ $gradient }} @if($plan->is_featured) animate-gradient @endif"></div>
+
+                        <div class="p-6 flex-1 flex flex-col">
+
+                            <div class="mb-6">
+                                <h3 class="text-2xl font-bold text-white mb-2">
+                                    {{ $plan->getTranslated('title') }}
+                                </h3>
+                                @if($plan->is_trial)
+                                    <p class="text-sm text-emerald-400 font-semibold flex items-center gap-2">
+                                        <i class="fas fa-gift"></i>
+                                        {{ $durationDays }} Gün Ücretsiz Deneme
+                                    </p>
+                                @else
+                                    <p class="text-sm text-gray-400">
+                                        {{ $durationDays }} Gün Premium Erişim
+                                    </p>
+                                @endif
+                            </div>
+
+                            <div class="mb-8">
+                                @if($plan->is_trial)
+                                    <div class="text-5xl font-black text-emerald-400">
+                                        ÜCRETSİZ
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-2">{{ $durationDays }} gün boyunca</p>
+                                @else
+                                    @php
+                                        $comparePrice = $cycle['compare_price'] ?? null;
+                                    @endphp
+
+                                    @if($comparePrice)
+                                        <div class="relative inline-block mb-2">
+                                            <span class="text-xl font-semibold text-gray-500/70">
+                                                {{ number_format($comparePrice, 0, ',', '.') }}₺
+                                            </span>
+                                            <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-red-500 to-red-600 transform -translate-y-1/2 rotate-[-5deg]"></div>
+                                        </div>
+                                    @endif
+
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-5xl font-black bg-gradient-to-r {{ $gradient }} gradient-text @if($plan->is_featured) animate-gradient @endif">
+                                            {{ number_format($price, 0, ',', '.') }}
+                                        </span>
+                                        <span class="text-2xl @if($plan->is_featured) bg-gradient-to-r {{ $gradient }} gradient-text @else text-gray-400 @endif">₺</span>
+                                    </div>
+                                    <p class="text-sm text-gray-400 mt-2">
+                                        <span class="text-white font-semibold">{{ number_format($monthlyPrice, 0, ',', '.') }}₺</span>/ay
+                                    </p>
+
+                                    @if($comparePrice)
+                                        @php
+                                            $discount = round((($comparePrice - $price) / $comparePrice) * 100);
+                                        @endphp
+                                        <div class="inline-flex items-center gap-1.5 mt-3 px-3 py-1.5 bg-gradient-to-r from-emerald-500/20 to-green-500/20 text-emerald-400 text-xs font-bold rounded-full border border-emerald-500/40 shadow-lg shadow-emerald-500/10">
+                                            <i class="fas fa-tag"></i>
+                                            <span>%{{ $discount }} Tasarruf</span>
+                                        </div>
+                                    @endif
+                                @endif
+                            </div>
+
+                            <div class="flex-1 space-y-3 mb-6">
+                                @php
+                                    $features = $plan->features ?? [];
+                                @endphp
+                                @foreach($features as $feature)
+                                    <div class="flex items-center gap-3 text-sm text-gray-300">
+                                        <i class="fas fa-check-circle text-emerald-400"></i>
+                                        <span>{{ $feature }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <button
+                                @if($plan->is_trial)
+                                    wire:click="startTrial({{ $plan->subscription_plan_id }}, '{{ $firstCycleKey }}')"
+                                @else
+                                    wire:click="addToCart({{ $plan->subscription_plan_id }}, '{{ $firstCycleKey }}', true)"
+                                @endif
+                                wire:loading.attr="disabled"
+                                wire:loading.class="opacity-50 cursor-not-allowed"
+                                class="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg {{ $plan->is_featured ? 'bg-gradient-to-r from-muzibu-coral via-pink-500 to-purple-500 gradient-text text-white hover:shadow-muzibu-coral/50 animate-gradient' : 'bg-white text-spotify-black hover:bg-gray-100' }}">
+                                <span wire:loading.remove>
+                                    @if($plan->is_trial)
+                                        <i class="fas fa-gift mr-2"></i>Ücretsiz Başla
+                                    @else
+                                        <i class="fas fa-crown mr-2"></i>Premium'a Geç
+                                    @endif
+                                </span>
+                                <span wire:loading>
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>Yükleniyor...
+                                </span>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
         @if($plans->count() === 0)
-        <div class="text-center py-16">
-            <div class="text-gray-700 text-6xl mb-4">
+        <div class="text-center py-20">
+            <div class="text-gray-700 text-7xl mb-6">
                 <i class="fas fa-crown"></i>
             </div>
-            <h3 class="text-xl font-bold text-gray-300 mb-2">
-                {{ __("Henüz Aktif Plan Yok") }}
+            <h3 class="text-2xl font-bold text-white mb-3">
+                Henüz Aktif Plan Yok
             </h3>
-            <p class="text-gray-500">
-                {{ __("Yakında yeni planlar eklenecek") }}
+            <p class="text-gray-500 text-lg">
+                Yakında yeni planlar eklenecek
             </p>
         </div>
         @endif
-
-        {{-- Footer --}}
-        <div class="text-center mt-10">
-            <p class="text-gray-500 text-sm">
-                💡 {{ __("30 gün para iade garantisi") }}
-            </p>
-        </div>
     </div>
+</div>
 </div>

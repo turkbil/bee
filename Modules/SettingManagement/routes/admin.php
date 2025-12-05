@@ -43,25 +43,25 @@ Route::middleware(['admin', 'tenant'])
                     ->middleware(['module.permission:settingmanagement,update', 'root.access'])
                     ->name('tenant.settings');
 
-                // Form Builder routes - Livewire yaklaşımıyla
+                // Form Builder routes - Sadece root kullanıcılar
                 // İndex rotası kaldırıldı
 
                 Route::get('/form-builder/{groupId}', FormBuilderComponent::class)
-                    ->middleware('module.permission:settingmanagement,update')
+                    ->middleware(['module.permission:settingmanagement,update', 'root.access'])
                     ->name('form-builder.edit');
 
                 // Form Builder form kayıt işlemi için POST route
                 Route::post('/form-builder/{groupId}/save', [FormBuilderController::class, 'save'])
-                    ->middleware('module.permission:settingmanagement,update')
+                    ->middleware(['module.permission:settingmanagement,update', 'root.access'])
                     ->name('form-builder.save');
 
                 // Form Builder API endpoints
                 Route::get('/form-builder/{groupId}/load', [FormBuilderController::class, 'load'])
-                    ->middleware('module.permission:settingmanagement,view')
+                    ->middleware(['module.permission:settingmanagement,view', 'root.access'])
                     ->name('form-builder.load');
-                    
+
                 Route::get('/api/settings', [FormBuilderController::class, 'getSettings'])
-                    ->middleware('module.permission:settingmanagement,view')
+                    ->middleware(['module.permission:settingmanagement,view', 'root.access'])
                     ->name('api.settings');
                     
                 // Grup bilgisi endpoint'i

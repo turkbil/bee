@@ -106,7 +106,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function subscription()
     {
-        return $this->hasOne(Subscription::class, 'customer_id')
+        return $this->hasOne(Subscription::class, 'user_id')
             ->whereIn('status', ['active', 'trial']);
     }
 
@@ -115,7 +115,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class, 'customer_id');
+        return $this->hasMany(Subscription::class, 'user_id');
     }
 
     /**
@@ -448,5 +448,16 @@ class User extends Authenticatable implements HasMedia
 
         // Fallback: Eski sistem (trial_ends_at kolonu)
         return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+    }
+
+    /**
+     * Get active subscription (for device limit hierarchy)
+     * Returns hasOne relation for eager loading support
+     */
+    public function activeSubscription()
+    {
+        return $this->hasOne(\Modules\Subscription\App\Models\Subscription::class, 'user_id')
+            ->where('status', 'active')
+            ->where('current_period_end', '>', now());
     }
 }

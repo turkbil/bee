@@ -24,6 +24,7 @@ class SubscriptionPlanManageComponent extends Component
         'tax_rate' => 20.00,
         'price_display_mode' => 'show',
         'device_limit' => 1,
+        'is_trial' => false,
         'is_featured' => false,
         'is_active' => true,
     ];
@@ -91,6 +92,7 @@ class SubscriptionPlanManageComponent extends Component
             'tax_rate' => (float) ($plan->tax_rate ?? 20.00),
             'price_display_mode' => $plan->price_display_mode ?? 'show',
             'device_limit' => (int) ($plan->device_limit ?? 1),
+            'is_trial' => (bool) $plan->is_trial,
             'is_featured' => (bool) $plan->is_featured,
             'is_active' => (bool) $plan->is_active,
         ];
@@ -146,6 +148,16 @@ class SubscriptionPlanManageComponent extends Component
      */
     public function addCycle($cycleData)
     {
+        // Deneme üyeliğiyse sadece 1 cycle'a izin ver
+        if ($this->inputs['is_trial'] && count($this->cycles) >= 1) {
+            $this->dispatch('toast', [
+                'title' => __('admin.error'),
+                'message' => 'Deneme üyeliği için sadece 1 süre eklenebilir!',
+                'type' => 'error'
+            ]);
+            return;
+        }
+
         $cycleKey = \Str::slug($cycleData['label_tr'] ?? 'cycle');
 
         $this->cycles[$cycleKey] = [
@@ -274,6 +286,7 @@ class SubscriptionPlanManageComponent extends Component
             'billing_cycles' => $this->cycles,
             'device_limit' => $this->inputs['device_limit'],
             'features' => $featuresArray,
+            'is_trial' => $this->inputs['is_trial'],
             'is_featured' => $this->inputs['is_featured'],
             'is_active' => $this->inputs['is_active'],
         ];

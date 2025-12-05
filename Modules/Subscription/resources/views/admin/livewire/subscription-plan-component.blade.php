@@ -85,6 +85,11 @@
                                     <div class="font-weight-medium">{{ $plan->title_text }}</div>
                                     <div class="text-muted small">{{ $plan->slug }}</div>
                                 </div>
+                                @if($plan->is_trial)
+                                <span class="badge bg-success ms-2">
+                                    <i class="fas fa-gift me-1"></i>Trial
+                                </span>
+                                @endif
                                 @if($plan->is_featured)
                                 <span class="badge bg-yellow ms-2">{{ __('subscription::admin.featured') }}</span>
                                 @endif

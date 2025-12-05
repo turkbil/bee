@@ -11,8 +11,23 @@
 
         {{-- Content (Gradient ile birlikte scroll yapar) --}}
         <div class="relative z-10">
-            {{ $slot ?? '' }}
-            @yield('content')
+            {{-- 🚀 SPA Loading Skeleton --}}
+            <div x-show="$store.player.isLoading" x-cloak class="spa-loading-skeleton">
+                @include('themes.muzibu.partials.loading-skeleton')
+            </div>
+
+            {{-- 🚀 SPA Content Wrapper --}}
+            <div
+                class="spa-content-wrapper"
+                id="spaContent"
+                x-show="!$store.player.isLoading"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 transform translate-y-4"
+                x-transition:enter-end="opacity-100 transform translate-y-0"
+            >
+                {{ $slot ?? '' }}
+                @yield('content')
+            </div>
         </div>
     </div>
 </main>

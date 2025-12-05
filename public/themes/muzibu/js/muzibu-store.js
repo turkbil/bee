@@ -62,8 +62,27 @@ document.addEventListener('alpine:init', () => {
     Alpine.store('player', {
         isPlaying: false,
         currentSong: null,
+        isLoading: false, // SPA loading state için
         showToast(message, type) {
             Alpine.store('toast').show(message, type);
+        }
+    });
+
+    // 🚀 Router Store (SPA Navigation)
+    Alpine.store('router', {
+        currentRoute: '/',
+        isLoading: false,
+
+        navigateTo(url) {
+            if (window.muzibuRouter) {
+                window.muzibuRouter.navigateTo(url);
+            }
+        },
+
+        clearCache() {
+            if (window.muzibuRouter) {
+                window.muzibuRouter.clearCache();
+            }
         }
     });
 });

@@ -69,10 +69,20 @@ class FormBuilderComponent extends Component
         $extractedSettings = [];
         $this->extractSettingsRecursive($layout['elements'], $extractedSettings);
 
+        \Log::info("🔍 syncSettingsFromLayout başladı", [
+            'groupId' => $groupId,
+            'extracted_count' => count($extractedSettings),
+            'extracted_keys' => array_column($extractedSettings, 'name')
+        ]);
+
         // Mevcut settings'leri al
         $existingSettings = Setting::where('group_id', $groupId)
             ->get()
             ->keyBy('key');
+
+        \Log::info("🔍 Mevcut settings", [
+            'existing_keys' => $existingSettings->keys()->toArray()
+        ]);
 
         $sortOrder = 10;
 
@@ -83,10 +93,34 @@ class FormBuilderComponent extends Component
                 continue;
             }
 
+            \Log::info("🔍 Processing setting", [
+                'key' => $key,
+                'label' => $settingData['label'] ?? null
+            ]);
+
             // Eğer setting varsa güncelle, yoksa oluştur
+            $setting = null;
+
+            // 1. Exact match kontrolü
             if (isset($existingSettings[$key])) {
-                // Mevcut setting'i güncelle
                 $setting = $existingSettings[$key];
+                \Log::info("Setting bulundu (exact match): {$key}");
+            }
+            // 2. Fuzzy match kontrolü (prefix/suffix toleransı)
+            elseif ($fuzzyMatch = $this->findFuzzyMatchSetting($existingSettings, $key)) {
+                $setting = $fuzzyMatch;
+
+                // Key'i düzelt (yanlış prefix/suffix varsa)
+                if ($setting->key !== $key) {
+                    $oldKey = $setting->key;
+                    $setting->update(['key' => $key]);
+                    \Log::info("Setting key düzeltildi: {$oldKey} → {$key}");
+                }
+            }
+
+            // Setting bulundu mu? (exact veya fuzzy match)
+            if ($setting) {
+                // Mevcut setting'i güncelle
                 $updateData = [
                     'label' => $settingData['label'] ?? $setting->label,
                     'type' => $settingData['type'] ?? $setting->type,
@@ -127,6 +161,43 @@ class FormBuilderComponent extends Component
 
             $sortOrder += 10;
         }
+    }
+
+    /**
+     * Fuzzy matching ile setting bul (prefix/suffix toleransı)
+     *
+     * @param \Illuminate\Support\Collection $existingSettings
+     * @param string $targetKey
+     * @return \Modules\SettingManagement\App\Models\Setting|null
+     */
+    protected function findFuzzyMatchSetting($existingSettings, $targetKey)
+    {
+        // 1. Prefix/suffix içeren key'leri ara
+        // Örn: "auth_subscription_auth_subscription" → "auth_subscription"
+        foreach ($existingSettings as $existingKey => $setting) {
+            if (str_contains($existingKey, $targetKey)) {
+                \Log::info("Fuzzy match bulundu (contains): {$existingKey} contains {$targetKey}");
+                return $setting;
+            }
+        }
+
+        // 2. Partial match (similarity > 60%)
+        $bestMatch = null;
+        $bestPercent = 0;
+
+        foreach ($existingSettings as $existingKey => $setting) {
+            similar_text($existingKey, $targetKey, $percent);
+            if ($percent > 60 && $percent > $bestPercent) {
+                $bestMatch = $setting;
+                $bestPercent = $percent;
+            }
+        }
+
+        if ($bestMatch) {
+            \Log::info("Fuzzy match bulundu (similarity {$bestPercent}%): {$bestMatch->key} ≈ {$targetKey}");
+        }
+
+        return $bestMatch;
     }
 
     /**

@@ -179,18 +179,26 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function coverMedia()
     {
-        return $this->belongsTo(\Modules\MediaManagement\App\Models\Media::class, 'media_id');
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class, 'media_id');
     }
 
     /**
      * Song cover URL'i (Thumbmaker helper ile)
+     * Önce kendi media_id'sine bakar, yoksa albümün media_id'sini kullanır
      */
     public function getCoverUrl(?int $width = 600, ?int $height = 600): ?string
     {
-        if (!$this->media_id) {
-            return null;
+        // Önce kendi görseli var mı kontrol et
+        if ($this->media_id && $this->coverMedia) {
+            return thumb($this->coverMedia, $width, $height);
         }
-        return thumb($this->coverMedia, $width, $height);
+
+        // Yoksa albümün görselini kullan
+        if ($this->album && $this->album->media_id && $this->album->coverMedia) {
+            return thumb($this->album->coverMedia, $width, $height);
+        }
+
+        return null;
     }
 
     /**
@@ -392,7 +400,7 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
     protected function getMediaConfig(): array
     {
         return [
-            'cover' => [
+            'hero' => [
                 'type' => 'image',
                 'single_file' => true,
                 'max_items' => 1,

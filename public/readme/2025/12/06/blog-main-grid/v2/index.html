@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v2 - Ultra Detaylı Ulusal Haber Sitesi Grid Tasarımı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .scroll-animation {
+            animation: scroll-left 30s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <div class="max-w-[1600px] mx-auto">
+
+        <!-- ===== SON DAKİKA ŞERİDİ ===== -->
+        <div class="bg-red-600 text-white py-2 overflow-hidden sticky top-0 z-50 shadow-lg">
+            <div class="flex items-center gap-4">
+                <div class="bg-white text-red-600 px-4 py-1 font-black uppercase text-sm flex-shrink-0">
+                    ⚡ Son Dakika
+                </div>
+                <div class="flex gap-8 scroll-animation whitespace-nowrap">
+                    <span>🔴 Türkiye'nin en büyük lojistik merkezi açıldı</span>
+                    <span>•</span>
+                    <span>💰 Forklift fiyatlarında yeni dönem başlıyor</span>
+                    <span>•</span>
+                    <span>⚡ Elektrikli transpalet satışları %200 arttı</span>
+                    <span>•</span>
+                    <span>🔴 Türkiye'nin en büyük lojistik merkezi açıldı</span>
+                    <span>•</span>
+                    <span>💰 Forklift fiyatlarında yeni dönem başlıyor</span>
+                    <span>•</span>
+                    <span>⚡ Elektrikli transpalet satışları %200 arttı</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ANA LAYOUT: SOL İÇERİK + SAĞ SİDEBAR ===== -->
+        <div class="grid lg:grid-cols-4 gap-6 p-6">
+
+            <!-- ===== SOL: ANA İÇERİK (3 Kolon) ===== -->
+            <div class="lg:col-span-3 space-y-8">
+
+                <!-- ===== MANŞET BÖLÜMÜ ===== -->
+                <section class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="bg-gradient-to-r from-red-600 to-red-500 text-white px-4 py-2 font-bold text-lg">
+                        🔥 MANŞET
+                    </div>
+
+                    <div class="p-4">
+                        <div class="grid lg:grid-cols-2 gap-4">
+                            <!-- Ana Manşet (Büyük) -->
+                            <div class="relative rounded-lg overflow-hidden border-4 border-red-500 group cursor-pointer">
+                                <div class="h-96 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white/20 text-9xl">
+                                    🏗️
+                                </div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                                <div class="absolute top-3 left-3">
+                                    <span class="px-3 py-1 bg-red-600 text-white text-xs font-bold uppercase rounded-full">
+                                        ⭐ Günün Manşeti
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-0 left-0 right-0 p-6">
+                                    <h2 class="text-3xl font-black text-white mb-3 leading-tight group-hover:text-yellow-300 transition-colors">
+                                        İstanbul'da 500.000 m² Dev Lojistik Merkezi Açıldı - Tam Otomatik Sistem
+                                    </h2>
+                                    <p class="text-white/90 mb-3">
+                                        200 elektrikli forklift ve AGV sistemleri ile donatılan merkez, günde 100.000 ton yük kapasitesine sahip...
+                                    </p>
+                                    <div class="flex items-center gap-4 text-white/80 text-sm">
+                                        <span>📅 Bugün, 09:15</span>
+                                        <span>👁️ 28.5k</span>
+                                        <span>⏱️ 12 dk</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Yan Manşetler (3 Orta Boy) -->
+                            <div class="space-y-4">
+                                <!-- Yan Manşet 1 -->
+                                <div class="relative rounded-lg overflow-hidden border-2 border-gray-200 group cursor-pointer hover:border-blue-500 transition-all">
+                                    <div class="h-28 bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center text-white/20 text-5xl">
+                                        ⚡
+                                    </div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                    <div class="absolute top-2 left-2">
+                                        <span class="px-2 py-1 bg-green-600 text-white text-xs font-bold rounded">Enerji</span>
+                                    </div>
+                                    <div class="absolute bottom-0 left-0 right-0 p-3">
+                                        <h3 class="text-base font-bold text-white mb-1 group-hover:text-yellow-300 transition-colors line-clamp-2">
+                                            Lityum Batarya Teknolojisinde Çığır Açan Gelişme
+                                        </h3>
+                                        <div class="text-xs text-white/80">📅 2 saat önce · 👁️ 15.2k</div>
+                                    </div>
+                                </div>
+
+                                <!-- Yan Manşet 2 -->
+                                <div class="relative rounded-lg overflow-hidden border-2 border-gray-200 group cursor-pointer hover:border-orange-500 transition-all">
+                                    <div class="h-28 bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center text-white/20 text-5xl">
+                                        💰
+                                    </div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                    <div class="absolute top-2 left-2">
+                                        <span class="px-2 py-1 bg-orange-600 text-white text-xs font-bold rounded">Ekonomi</span>
+                                    </div>
+                                    <div class="absolute bottom-0 left-0 right-0 p-3">
+                                        <h3 class="text-base font-bold text-white mb-1 group-hover:text-yellow-300 transition-colors line-clamp-2">
+                                            2025 Forklift Fiyatları: Pazar Analizi ve Öngörüler
+                                        </h3>
+                                        <div class="text-xs text-white/80">📅 4 saat önce · 👁️ 18.7k</div>
+                                    </div>
+                                </div>
+
+                                <!-- Yan Manşet 3 -->
+                                <div class="relative rounded-lg overflow-hidden border-2 border-gray-200 group cursor-pointer hover:border-purple-500 transition-all">
+                                    <div class="h-28 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white/20 text-5xl">
+                                        🤖
+                                    </div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                    <div class="absolute top-2 left-2">
+                                        <span class="px-2 py-1 bg-purple-600 text-white text-xs font-bold rounded">Teknoloji</span>
+                                    </div>
+                                    <div class="absolute bottom-0 left-0 right-0 p-3">
+                                        <h3 class="text-base font-bold text-white mb-1 group-hover:text-yellow-300 transition-colors line-clamp-2">
+                                            Yapay Zeka ile Depo Yönetimi: Verimlilik %60 Arttı
+                                        </h3>
+                                        <div class="text-xs text-white/80">📅 5 saat önce · 👁️ 12.3k</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== ENDÜSTRİ HABERLERİ ===== -->
+                <section class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 font-bold flex items-center justify-between">
+                        <span>🏭 Endüstri</span>
+                        <a href="#" class="text-xs hover:underline">Tümünü Gör →</a>
+                    </div>
+
+                    <div class="p-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Endüstri 1 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white/20 text-5xl">
+                                🚜
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded">Endüstri</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Reach Truck Sistemleri: Dar Koridor Çözümleri
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 6 saat önce</span>
+                                    <span>👁️ 8.2k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Endüstri 2 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white/20 text-5xl">
+                                📊
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-indigo-600 text-white text-xs font-bold rounded">Endüstri</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    WMS Yazılımları: Akıllı Depo Yönetim Sistemleri
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 7 saat önce</span>
+                                    <span>👁️ 6.5k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Endüstri 3 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white/20 text-5xl">
+                                🏗️
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-cyan-600 text-white text-xs font-bold rounded">Endüstri</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    İnşaat Sektöründe Forklift Kullanımı Artıyor
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 8 saat önce</span>
+                                    <span>👁️ 5.8k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Endüstri 4 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white/20 text-5xl">
+                                ⚙️
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-sky-600 text-white text-xs font-bold rounded">Endüstri</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Yedek Parça Tedarik Zinciri: Kritik İpuçları
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 9 saat önce</span>
+                                    <span>👁️ 4.9k</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== TEKNOLOJİ HABERLERİ ===== -->
+                <section class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 font-bold flex items-center justify-between">
+                        <span>🤖 Teknoloji</span>
+                        <a href="#" class="text-xs hover:underline">Tümünü Gör →</a>
+                    </div>
+
+                    <div class="p-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Teknoloji 1 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-purple-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white/20 text-5xl">
+                                🤖
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-purple-600 text-white text-xs font-bold rounded">Teknoloji</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    AGV Sistemleri: Otonom Araç Teknolojisi
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 10 saat önce</span>
+                                    <span>👁️ 9.8k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Teknoloji 2 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-purple-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white/20 text-5xl">
+                                🔋
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-pink-600 text-white text-xs font-bold rounded">Teknoloji</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Hidrojen Yakıt Hücreli Forklifler Geliyor
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 11 saat önce</span>
+                                    <span>👁️ 7.3k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Teknoloji 3 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-purple-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white/20 text-5xl">
+                                📱
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-violet-600 text-white text-xs font-bold rounded">Teknoloji</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    IoT Sensörler ile Filo Takip Sistemleri
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 12 saat önce</span>
+                                    <span>👁️ 6.1k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Teknoloji 4 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-purple-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-fuchsia-500 to-pink-600 flex items-center justify-center text-white/20 text-5xl">
+                                🔌
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-fuchsia-600 text-white text-xs font-bold rounded">Teknoloji</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Kablosuz Şarj İstasyonları: Geleceğin Teknolojisi
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 13 saat önce</span>
+                                    <span>👁️ 5.4k</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== EKONOMİ HABERLERİ ===== -->
+                <section class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="bg-gradient-to-r from-orange-600 to-red-600 text-white px-4 py-2 font-bold flex items-center justify-between">
+                        <span>💰 Ekonomi</span>
+                        <a href="#" class="text-xs hover:underline">Tümünü Gör →</a>
+                    </div>
+
+                    <div class="p-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Ekonomi 1 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-orange-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white/20 text-5xl">
+                                📈
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-orange-600 text-white text-xs font-bold rounded">Ekonomi</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Sektör Büyüme Raporu: 2024 Verileri Açıklandı
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 14 saat önce</span>
+                                    <span>👁️ 11.2k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ekonomi 2 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-orange-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center text-white/20 text-5xl">
+                                💵
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-red-600 text-white text-xs font-bold rounded">Ekonomi</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Döviz Kurları Forklift Fiyatlarını Nasıl Etkiliyor?
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 15 saat önce</span>
+                                    <span>👁️ 8.9k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ekonomi 3 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-orange-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white/20 text-5xl">
+                                🏦
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-amber-600 text-white text-xs font-bold rounded">Ekonomi</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Kiralama vs Satın Alma: Maliyet Karşılaştırması
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 16 saat önce</span>
+                                    <span>👁️ 7.6k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ekonomi 4 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-orange-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center text-white/20 text-5xl">
+                                📊
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-yellow-600 text-white text-xs font-bold rounded">Ekonomi</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    İthalat-İhracat Dengesi: Sektör Perspektifi
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 17 saat önce</span>
+                                    <span>👁️ 6.3k</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== VİDEO GALERİ ===== -->
+                <section class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 font-bold flex items-center justify-between">
+                        <span>🎥 Video Haberler</span>
+                        <a href="#" class="text-xs hover:underline">Tümünü Gör →</a>
+                    </div>
+
+                    <div class="p-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Video 1 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-green-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white text-5xl">
+                                ▶️
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-green-600 text-white text-xs font-bold rounded">Video</span>
+                                </div>
+                                <div class="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                    5:32
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Forklift Operatörü Eğitimi: Uygulamalı Rehber
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 18 saat önce</span>
+                                    <span>👁️ 12.8k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Video 2 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-green-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-5xl">
+                                ▶️
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-emerald-600 text-white text-xs font-bold rounded">Video</span>
+                                </div>
+                                <div class="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                    8:15
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Dev Lojistik Merkezi Turu: İçeriden Görüntüler
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 19 saat önce</span>
+                                    <span>👁️ 16.5k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Video 3 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-green-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center text-white text-5xl">
+                                ▶️
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-teal-600 text-white text-xs font-bold rounded">Video</span>
+                                </div>
+                                <div class="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                    3:47
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Elektrikli Transpalet Test Sürüşü
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 20 saat önce</span>
+                                    <span>👁️ 9.2k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Video 4 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-green-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-5xl">
+                                ▶️
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-cyan-600 text-white text-xs font-bold rounded">Video</span>
+                                </div>
+                                <div class="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                    6:23
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    AGV Sistemi Nasıl Çalışır? Detaylı Anlatım
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 21 saat önce</span>
+                                    <span>👁️ 11.4k</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== EDİTÖR SEÇİMİ ===== -->
+                <section class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 font-bold flex items-center justify-between">
+                        <span>⭐ Editör Seçimi</span>
+                        <a href="#" class="text-xs hover:underline">Tümünü Gör →</a>
+                    </div>
+
+                    <div class="p-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Editör 1 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white/20 text-5xl">
+                                🎯
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-indigo-600 text-white text-xs font-bold rounded">Özel</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    2025 Trendleri: Forklift Sektörünü Bekleyen 5 Değişim
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 22 saat önce</span>
+                                    <span>👁️ 14.9k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Editör 2 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white/20 text-5xl">
+                                📚
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-purple-600 text-white text-xs font-bold rounded">Özel</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Forklift Satın Alma Rehberi: Kapsamlı Kılavuz
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 23 saat önce</span>
+                                    <span>👁️ 19.3k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Editör 3 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white/20 text-5xl">
+                                🔍
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-violet-600 text-white text-xs font-bold rounded">Özel</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    İkinci El Forklift Alırken Dikkat Edilmesi Gerekenler
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 Dün</span>
+                                    <span>👁️ 15.7k</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Editör 4 -->
+                        <div class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-indigo-500 hover:shadow-lg transition-all cursor-pointer">
+                            <div class="relative h-32 bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center text-white/20 text-5xl">
+                                💎
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-fuchsia-600 text-white text-xs font-bold rounded">Özel</span>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-sm mb-2 line-clamp-2 leading-tight">
+                                    Dünyadan Örnek Depo Tasarımları: İlham Veren Projeler
+                                </h4>
+                                <div class="text-xs text-gray-500 flex items-center justify-between">
+                                    <span>📅 Dün</span>
+                                    <span>👁️ 12.1k</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- ===== SAĞ: SİDEBAR (1 Kolon) ===== -->
+            <div class="space-y-6">
+
+                <!-- EN ÇOK OKUNANLAR -->
+                <section class="bg-white rounded-xl shadow-md overflow-hidden sticky top-20">
+                    <div class="bg-gradient-to-r from-red-600 to-pink-600 text-white px-4 py-2 font-bold">
+                        🔥 En Çok Okunanlar
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <!-- En Çok 1 -->
+                        <div class="flex gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-red-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                1
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    Türkiye'nin en büyük lojistik merkezi açıldı
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 28.5k</div>
+                            </div>
+                        </div>
+
+                        <!-- En Çok 2 -->
+                        <div class="flex gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-orange-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                2
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    Forklift satın alma rehberi 2025
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 19.3k</div>
+                            </div>
+                        </div>
+
+                        <!-- En Çok 3 -->
+                        <div class="flex gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-amber-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                3
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    2025 forklift fiyatları analizi
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 18.7k</div>
+                            </div>
+                        </div>
+
+                        <!-- En Çok 4 -->
+                        <div class="flex gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-yellow-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                4
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    Dev lojistik merkezi video turu
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 16.5k</div>
+                            </div>
+                        </div>
+
+                        <!-- En Çok 5 -->
+                        <div class="flex gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-lime-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                5
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    İkinci el forklift alırken dikkat edilmesi gerekenler
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 15.7k</div>
+                            </div>
+                        </div>
+
+                        <!-- En Çok 6 -->
+                        <div class="flex gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-green-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                6
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    Lityum batarya teknolojisi
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 15.2k</div>
+                            </div>
+                        </div>
+
+                        <!-- En Çok 7 -->
+                        <div class="flex gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-emerald-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                7
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    2025 trendleri: Forklift sektörü
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 14.9k</div>
+                            </div>
+                        </div>
+
+                        <!-- En Çok 8 -->
+                        <div class="flex gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-teal-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                8
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    Forklift operatörü eğitimi
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 12.8k</div>
+                            </div>
+                        </div>
+
+                        <!-- En Çok 9 -->
+                        <div class="flex gap-3 pb-3 border-b border-gray-100 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-cyan-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                9
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    Yapay zeka ile depo yönetimi
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 12.3k</div>
+                            </div>
+                        </div>
+
+                        <!-- En Çok 10 -->
+                        <div class="flex gap-3 hover:bg-gray-50 p-2 -m-2 rounded cursor-pointer">
+                            <div class="bg-sky-600 text-white font-black text-lg w-8 h-8 flex items-center justify-center rounded flex-shrink-0">
+                                10
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h5 class="font-bold text-xs leading-tight mb-1 line-clamp-2">
+                                    Dünyadan örnek depo tasarımları
+                                </h5>
+                                <div class="text-xs text-gray-500">👁️ 12.1k</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SON EKLENENLER -->
+                <section class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 font-bold">
+                        🕒 Son Eklenenler
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <div class="pb-3 border-b border-gray-100">
+                            <h5 class="font-bold text-xs mb-1 line-clamp-2">Hidrojen yakıt hücreli forklifler</h5>
+                            <div class="text-xs text-gray-500">📅 30 dk önce</div>
+                        </div>
+                        <div class="pb-3 border-b border-gray-100">
+                            <h5 class="font-bold text-xs mb-1 line-clamp-2">IoT sensörler ile filo takibi</h5>
+                            <div class="text-xs text-gray-500">📅 1 saat önce</div>
+                        </div>
+                        <div class="pb-3 border-b border-gray-100">
+                            <h5 class="font-bold text-xs mb-1 line-clamp-2">Kablosuz şarj istasyonları</h5>
+                            <div class="text-xs text-gray-500">📅 2 saat önce</div>
+                        </div>
+                        <div class="pb-3 border-b border-gray-100">
+                            <h5 class="font-bold text-xs mb-1 line-clamp-2">Lityum batarya yeni dönem</h5>
+                            <div class="text-xs text-gray-500">📅 2 saat önce</div>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-xs mb-1 line-clamp-2">WMS yazılımları rehberi</h5>
+                            <div class="text-xs text-gray-500">📅 3 saat önce</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- POPÜLER KATEGORİLER -->
+                <section class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 font-bold">
+                        📂 Popüler Kategoriler
+                    </div>
+
+                    <div class="p-4 space-y-2">
+                        <a href="#" class="flex items-center justify-between p-2 hover:bg-blue-50 rounded transition-colors">
+                            <span class="text-sm font-semibold">🏭 Endüstri</span>
+                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">248</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-between p-2 hover:bg-purple-50 rounded transition-colors">
+                            <span class="text-sm font-semibold">🤖 Teknoloji</span>
+                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">195</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-between p-2 hover:bg-orange-50 rounded transition-colors">
+                            <span class="text-sm font-semibold">💰 Ekonomi</span>
+                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">167</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-between p-2 hover:bg-green-50 rounded transition-colors">
+                            <span class="text-sm font-semibold">♻️ Çevre</span>
+                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">142</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-between p-2 hover:bg-red-50 rounded transition-colors">
+                            <span class="text-sm font-semibold">🛡️ Güvenlik</span>
+                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">128</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-between p-2 hover:bg-yellow-50 rounded transition-colors">
+                            <span class="text-sm font-semibold">⚙️ Bakım</span>
+                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">115</span>
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+
+        <!-- ===== TEKNİK NOTLAR ===== -->
+        <div class="p-6 bg-blue-50 border-l-4 border-blue-600 mx-6 mb-6 rounded-r-xl">
+            <h3 class="font-bold text-blue-900 mb-4 text-lg">🔧 Teknik Uygulama Detayları</h3>
+
+            <div class="space-y-3 text-sm text-blue-800">
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 Yapı:</span>
+                    <span>Sol 3 kolon (Ana içerik) + Sağ 1 kolon (Sidebar). Responsive: Mobilde tek kolon.</span>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 Son Dakika:</span>
+                    <span>Sticky şerit (top: 0), kayan animasyon, son 3 blog başlığı gösterilir.</span>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 Manşet:</span>
+                    <span>İlk 4 blog: 1 büyük (2 kolon) + 3 orta (1 kolon). Sadece sayfa 1'de gösterilir.</span>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 Kategoriler:</span>
+                    <span>Blog category'ye göre dinamik bölümler. Her kategori 4 kart gösterir, "Tümünü Gör" linki.</span>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 Sidebar:</span>
+                    <span>Sticky (top: 80px). En Çok Okunanlar (view_count DESC), Son Eklenenler (created_at DESC).</span>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 Infinite Scroll:</span>
+                    <span>Mevcut sistem çalışır. Sonraki sayfalarda manşet gösterilmez, grid devam eder.</span>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 Görseller:</span>
+                    <span>Thumbmaker kullan. Manşet: 800x600, Orta: 600x400, Kompakt: 400x300, Sidebar: 100x75.</span>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 İçerik Yoğunluğu:</span>
+                    <span>İlk yüklemede ~30 blog gösterilir (4 manşet + 6 kategori × 4 kart + sidebar 10).</span>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 Video Kartları:</span>
+                    <span>Video blog'larda oynatma ikonu (▶️) ve süre badge'i gösterilir.</span>
+                </div>
+
+                <div class="flex items-start gap-3">
+                    <span class="font-bold min-w-[140px]">📌 Performance:</span>
+                    <span>Lazy loading (loading="lazy"), WebP görseller, minimal DB sorgusu (eager load kullan).</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

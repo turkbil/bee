@@ -3,10 +3,10 @@
     {{-- Song Info --}}
     <div class="flex items-center gap-3">
         <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex items-center justify-center text-2xl flex-shrink-0 shadow-lg overflow-hidden">
-            <template x-if="currentSong && currentSong.album_cover && !currentSong.album_cover.includes('placeholder')">
+            <template x-if="currentSong && currentSong.album_cover && typeof currentSong.album_cover === 'string' && !currentSong.album_cover.includes('placeholder')">
                 <img :src="`{{ url('') }}/thumb/${currentSong.album_cover}/56/56`" :alt="currentSong.song_title" class="w-full h-full object-cover">
             </template>
-            <template x-if="!currentSong || !currentSong.album_cover || currentSong.album_cover.includes('placeholder')">
+            <template x-if="!currentSong || !currentSong.album_cover || typeof currentSong.album_cover !== 'string' || currentSong.album_cover.includes('placeholder')">
                 <span>🎵</span>
             </template>
         </div>

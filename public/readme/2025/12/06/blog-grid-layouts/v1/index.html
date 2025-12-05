@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v1 - Dense Photo Grid (Kompakt, Tüm Fotoğraflı)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                📸 v1: Dense Photo Grid
+            </h1>
+            <p class="text-slate-400 text-lg">Kompakt - Tüm Kartlar Fotoğraflı - Günde 24 Blog İçin Optimize</p>
+            <div class="mt-4 px-4 py-2 bg-green-500/20 border border-green-500 rounded-lg inline-block">
+                <span class="text-green-400 font-bold">✅ 4 Kolon Grid - En Fazla İçerik Görünür</span>
+            </div>
+        </header>
+
+        <!-- Dense Photo Grid Preview -->
+        <div class="bg-slate-800/50 rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-blue-400">🎨 Tasarım Önizleme (4 Kolon Dense)</h2>
+
+            <!-- 4 Column Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+
+                <!-- Photo Card 1 -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-blue-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-blue-500 to-cyan-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">🏗️</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded">Endüstri</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-blue-400 transition-colors line-clamp-2 leading-tight">
+                            Forklift Bakım Rehberi 2025
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 2 saat önce</span>
+                            <span>👁️ 1.2k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Card 2 -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-green-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-green-500 to-emerald-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">⚡</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded">Enerji</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-green-400 transition-colors line-clamp-2 leading-tight">
+                            Elektrikli Transpalet Avantajları
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 4 saat önce</span>
+                            <span>👁️ 850</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Card 3 -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-orange-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-orange-500 to-red-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">🔧</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded">Bakım</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-orange-400 transition-colors line-clamp-2 leading-tight">
+                            Lityum Batarya Sistemleri
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 6 saat önce</span>
+                            <span>👁️ 2.1k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Card 4 -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-pink-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-pink-500 to-purple-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">📦</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-pink-500 text-white text-xs font-bold rounded">Lojistik</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-pink-400 transition-colors line-clamp-2 leading-tight">
+                            Depo Optimizasyon İpuçları
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 8 saat önce</span>
+                            <span>👁️ 1.5k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Card 5 -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-cyan-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-cyan-500 to-blue-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">🏭</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-cyan-500 text-white text-xs font-bold rounded">Sanayi</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-cyan-400 transition-colors line-clamp-2 leading-tight">
+                            Akıllı Depo Yönetim Sistemleri
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 10 saat önce</span>
+                            <span>👁️ 3.2k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Card 6 -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-yellow-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-yellow-500 to-orange-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">🛡️</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-yellow-500 text-white text-xs font-bold rounded">Güvenlik</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-yellow-400 transition-colors line-clamp-2 leading-tight">
+                            İş Güvenliği Standartları
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 12 saat önce</span>
+                            <span>👁️ 1.8k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Card 7 -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-purple-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-purple-500 to-indigo-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">🎓</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-purple-500 text-white text-xs font-bold rounded">Eğitim</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-purple-400 transition-colors line-clamp-2 leading-tight">
+                            Operatör Ehliyeti Rehberi
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 14 saat önce</span>
+                            <span>👁️ 2.5k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Card 8 -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-red-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-red-500 to-pink-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">💰</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded">Ekonomi</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-red-400 transition-colors line-clamp-2 leading-tight">
+                            2025 Ekipman Fiyat Trendleri
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 16 saat önce</span>
+                            <span>👁️ 3.5k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More cards... (12 more = 20 total visible) -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-teal-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-teal-500 to-cyan-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">🌍</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-teal-500 text-white text-xs font-bold rounded">Çevre</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-teal-400 transition-colors line-clamp-2 leading-tight">
+                            Emisyon Hedefleri ve Sektör
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 18 saat önce</span>
+                            <span>👁️ 1.1k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-indigo-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-indigo-500 to-purple-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">🤖</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-indigo-500 text-white text-xs font-bold rounded">Otomasyon</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-indigo-400 transition-colors line-clamp-2 leading-tight">
+                            AGV Sistemleri ve Gelecek
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 20 saat önce</span>
+                            <span>👁️ 2.8k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-lime-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-lime-500 to-green-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">📊</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-lime-500 text-white text-xs font-bold rounded">Analiz</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-lime-400 transition-colors line-clamp-2 leading-tight">
+                            Sektör Büyüme Raporu 2024
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 22 saat önce</span>
+                            <span>👁️ 1.9k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-amber-500 transition-all hover:scale-[1.02] group cursor-pointer">
+                    <div class="relative h-44 bg-gradient-to-br from-amber-500 to-yellow-600">
+                        <div class="absolute inset-0 flex items-center justify-center text-white/20 text-6xl">⚙️</div>
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-amber-500 text-white text-xs font-bold rounded">Teknoloji</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm mb-2 group-hover:text-amber-400 transition-colors line-clamp-2 leading-tight">
+                            IoT Sensörler ve Verimlilik
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-slate-500">
+                            <span>📅 Dün</span>
+                            <span>👁️ 1.3k</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-8">
+                <button class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg transition-all">
+                    Daha Fazla Yükle (24 blog daha) →
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Features -->
+        <div class="bg-slate-800/50 rounded-2xl p-8">
+            <h2 class="text-2xl font-bold mb-6 text-blue-400">✨ Özellikler</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">📸</span>
+                    <div>
+                        <h3 class="font-bold mb-1">Tüm Kartlar Fotoğraflı</h3>
+                        <p class="text-sm text-slate-400">Her kart 176px yükseklik görsel içerir</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">📊</span>
+                    <div>
+                        <h3 class="font-bold mb-1">4 Kolon Dense Grid</h3>
+                        <p class="text-sm text-slate-400">En fazla içerik görünür (günde 24 blog)</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">⚡</span>
+                    <div>
+                        <h3 class="font-bold mb-1">Kompakt & Hızlı</h3>
+                        <p class="text-sm text-slate-400">Küçük padding, hızlı scroll</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">🎯</span>
+                    <div>
+                        <h3 class="font-bold mb-1">Kategori Badge</h3>
+                        <p class="text-sm text-slate-400">Her kartta renkli kategori etiketi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-slate-500 text-sm">
+            🤖 Claude AI - Dense Photo Grid v1
+        </footer>
+    </div>
+</body>
+</html>

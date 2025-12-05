@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Ana Grid - Gazete Tarzı Tasarım</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto p-8">
+        <!-- Header -->
+        <header class="mb-12 pb-6 border-b-4 border-blue-600">
+            <h1 class="text-4xl font-black text-gray-900 dark:text-white mb-2">
+                📰 Blog Ana Grid - Gazete/Haber Sitesi Tarzı
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400">Slider'dan sonraki ana içerik alanı tasarımı</p>
+        </header>
+
+        <!-- ===== ÖNE ÇIKAN HABERLER (Featured Section) ===== -->
+        <section class="mb-12 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-fire text-red-500"></i>
+                Öne Çıkan Haberler
+            </h2>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- MANŞET (Sol 2 Kolon - Büyük) -->
+                <div class="lg:col-span-2 bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden border-4 border-red-500">
+                    <div class="relative h-96 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white/20 text-9xl">
+                        🏗️
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+
+                        <!-- MANŞET Badge -->
+                        <div class="absolute top-4 left-4">
+                            <span class="px-4 py-2 bg-red-600 text-white text-xs font-bold uppercase rounded-full shadow-lg">
+                                ⭐ MANŞET
+                            </span>
+                        </div>
+
+                        <!-- Content (Overlay) -->
+                        <div class="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 class="text-3xl font-black text-white mb-3 leading-tight">
+                                Türkiye'nin En Büyük Lojistik Merkezi Açıldı - 500.000 m² Alan
+                            </h3>
+                            <p class="text-white/90 text-base mb-4">
+                                İstanbul'da tam otomatik depo sistemleri ile donatılmış dev lojistik merkezi hizmete girdi. 200 elektrikli forklift kullanılacak...
+                            </p>
+                            <div class="flex items-center gap-4 text-white/80 text-sm">
+                                <span>📅 Bugün, 14:30</span>
+                                <span>👁️ 12.5k görüntülenme</span>
+                                <span>⏱️ 8 dk okuma</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YAN HABERLER (Sağ 1 Kolon - Küçük Horizontal Cards) -->
+                <div class="space-y-4">
+                    <!-- Yan Haber 1 -->
+                    <div class="flex gap-4 bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-all hover:shadow-lg">
+                        <div class="w-32 h-24 flex-shrink-0 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white/30 text-4xl">
+                            ⚡
+                        </div>
+                        <div class="flex-1 p-3 min-w-0">
+                            <h4 class="font-bold text-sm text-gray-900 dark:text-white line-clamp-2 leading-tight mb-2">
+                                Lityum Batarya Teknolojisinde Yeni Dönem Başlıyor
+                            </h4>
+                            <div class="text-xs text-gray-500">
+                                📅 3 saat önce · 👁️ 5.8k
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yan Haber 2 -->
+                    <div class="flex gap-4 bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-all hover:shadow-lg">
+                        <div class="w-32 h-24 flex-shrink-0 bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white/30 text-4xl">
+                            🔧
+                        </div>
+                        <div class="flex-1 p-3 min-w-0">
+                            <h4 class="font-bold text-sm text-gray-900 dark:text-white line-clamp-2 leading-tight mb-2">
+                                AB Emisyon Hedefleri: Forklift Sektörüne Etkisi
+                            </h4>
+                            <div class="text-xs text-gray-500">
+                                📅 6 saat önce · 👁️ 4.2k
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yan Haber 3 -->
+                    <div class="flex gap-4 bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-all hover:shadow-lg">
+                        <div class="w-32 h-24 flex-shrink-0 bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white/30 text-4xl">
+                            🎓
+                        </div>
+                        <div class="flex-1 p-3 min-w-0">
+                            <h4 class="font-bold text-sm text-gray-900 dark:text-white line-clamp-2 leading-tight mb-2">
+                                SRC-4 Operatör Ehliyeti: Sınav Hazırlık Kılavuzu
+                            </h4>
+                            <div class="text-xs text-gray-500">
+                                📅 8 saat önce · 👁️ 3.1k
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yan Haber 4 -->
+                    <div class="flex gap-4 bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-blue-500 transition-all hover:shadow-lg">
+                        <div class="w-32 h-24 flex-shrink-0 bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white/30 text-4xl">
+                            💰
+                        </div>
+                        <div class="flex-1 p-3 min-w-0">
+                            <h4 class="font-bold text-sm text-gray-900 dark:text-white line-clamp-2 leading-tight mb-2">
+                                2025 Forklift Fiyat Trendleri ve Pazar Analizi
+                            </h4>
+                            <div class="text-xs text-gray-500">
+                                📅 10 saat önce · 👁️ 6.5k
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== DİĞER HABERLER (Dense 4 Kolon Grid) ===== -->
+        <section class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-newspaper"></i>
+                Diğer Haberler
+            </h2>
+
+            <!-- 4 Kolon Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+                <!-- Kompakt Card 1 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 hover:border-blue-500 hover:shadow-xl transition-all">
+                    <div class="relative h-40 bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white/20 text-6xl">
+                        🏭
+                        <!-- Kategori Badge -->
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded shadow-lg">
+                                Endüstri
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
+                            Akıllı Depo Yönetim Sistemleri ile Verimlilik %40 Arttı
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>📅 12 saat önce</span>
+                            <span>👁️ 2.1k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kompakt Card 2 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 hover:border-green-500 hover:shadow-xl transition-all">
+                    <div class="relative h-40 bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white/20 text-6xl">
+                        ♻️
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-green-600 text-white text-xs font-bold rounded shadow-lg">
+                                Çevre
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
+                            Sürdürülebilir Depo Sertifikaları: LEED ve BREEAM
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>📅 14 saat önce</span>
+                            <span>👁️ 1.8k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kompakt Card 3 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 hover:border-orange-500 hover:shadow-xl transition-all">
+                    <div class="relative h-40 bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white/20 text-6xl">
+                        🛡️
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-orange-600 text-white text-xs font-bold rounded shadow-lg">
+                                Güvenlik
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
+                            İş Güvenliği Standartları Güncellendi: Yeni Şartlar
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>📅 16 saat önce</span>
+                            <span>👁️ 3.5k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kompakt Card 4 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 hover:border-purple-500 hover:shadow-xl transition-all">
+                    <div class="relative h-40 bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white/20 text-6xl">
+                        🤖
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-purple-600 text-white text-xs font-bold rounded shadow-lg">
+                                Otomasyon
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
+                            AGV Sistemleri: Otonom Taşıma Araçlarının Geleceği
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>📅 18 saat önce</span>
+                            <span>👁️ 2.8k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kompakt Card 5 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 hover:border-pink-500 hover:shadow-xl transition-all">
+                    <div class="relative h-40 bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white/20 text-6xl">
+                        📦
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-pink-600 text-white text-xs font-bold rounded shadow-lg">
+                                Lojistik
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
+                            Depo Optimizasyon Teknikleri ve İpuçları 2025
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>📅 20 saat önce</span>
+                            <span>👁️ 1.9k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kompakt Card 6 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 hover:border-yellow-500 hover:shadow-xl transition-all">
+                    <div class="relative h-40 bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center text-white/20 text-6xl">
+                        ⚙️
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-yellow-600 text-white text-xs font-bold rounded shadow-lg">
+                                Bakım
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
+                            Kış Aylarında Forklift Bakım Rehberi ve Öneriler
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>📅 22 saat önce</span>
+                            <span>👁️ 1.5k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kompakt Card 7 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 hover:border-teal-500 hover:shadow-xl transition-all">
+                    <div class="relative h-40 bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center text-white/20 text-6xl">
+                        📊
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-teal-600 text-white text-xs font-bold rounded shadow-lg">
+                                Analiz
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
+                            Sektör Büyüme Raporu 2024: Detaylı İstatistikler
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>📅 Dün</span>
+                            <span>👁️ 4.2k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kompakt Card 8 -->
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 hover:border-indigo-500 hover:shadow-xl transition-all">
+                    <div class="relative h-40 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white/20 text-6xl">
+                        💡
+                        <div class="absolute top-2 left-2">
+                            <span class="px-2 py-1 bg-indigo-600 text-white text-xs font-bold rounded shadow-lg">
+                                İpucu
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-sm text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
+                            Forklift Satın Alma Kararı: Kapsamlı Rehber
+                        </h3>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <span>📅 Dün</span>
+                            <span>👁️ 3.7k</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Load More Button -->
+            <div class="mt-8 text-center">
+                <button class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-all">
+                    Daha Fazla Yükle (16 blog daha) →
+                </button>
+                <p class="text-sm text-gray-500 mt-2">Infinite scroll ile otomatik yüklenir</p>
+            </div>
+        </section>
+
+        <!-- Teknik Notlar -->
+        <section class="mt-12 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border-2 border-blue-200 dark:border-blue-800">
+            <h2 class="text-xl font-bold text-blue-900 dark:text-blue-300 mb-4">🔧 Teknik Detaylar</h2>
+            <div class="space-y-3 text-sm text-blue-800 dark:text-blue-200">
+                <div class="flex items-start gap-2">
+                    <span class="font-bold">📌 Featured Section:</span>
+                    <span>İlk sayfa + 5+ blog varsa gösterilir. İlk 5 blog burada kullanılır.</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="font-bold">📌 Dense Grid:</span>
+                    <span>Geri kalan bloglar 4 kolon grid'de gösterilir (ilk 5 atlanır).</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="font-bold">📌 Responsive:</span>
+                    <span>Mobil: 1 kolon, Tablet: 2 kolon, Desktop: 3 kolon, XL: 4 kolon</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="font-bold">📌 Infinite Scroll:</span>
+                    <span>Mevcut infinite scroll sistemi çalışmaya devam eder.</span>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="font-bold">📌 Görseller:</span>
+                    <span>Manşet: 800x600px, Yan haber: 300x200px, Grid: 400x300px (Thumbmaker)</span>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

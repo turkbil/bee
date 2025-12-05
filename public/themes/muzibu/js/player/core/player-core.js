@@ -147,9 +147,9 @@ function muzibuApp() {
         },
 
         init() {
-            // Prevent double initialization
+            // ✅ Prevent double initialization (component-level, not window-level)
             if (this._initialized) {
-                console.log('Muzibu already initialized, skipping...');
+                console.log('⚠️ Already initialized, skipping...');
                 return;
             }
             this._initialized = true;
@@ -242,10 +242,15 @@ function muzibuApp() {
         async preloadLastPlayedSong() {
             try {
                 const response = await fetch('/api/muzibu/songs/last-played');
+
+                // Silently skip if endpoint not found
+                if (!response.ok) {
+                    return;
+                }
+
                 const data = await response.json();
 
                 if (!data.last_played) {
-                    console.log('No last played song found');
                     return;
                 }
 
@@ -279,7 +284,7 @@ function muzibuApp() {
                 }
 
             } catch (error) {
-                console.error('Failed to preload last played song:', error);
+                // Silently ignore errors (endpoint may not exist yet)
             }
         },
 
@@ -355,6 +360,14 @@ function muzibuApp() {
                 // 🎵 AUTO-START: Queue boşsa Genre'den başla (infinite loop garantisi)
                 console.log('🎵 Auto-starting music from Genre (infinite loop)...');
 
+                // ✅ Alpine store check (Livewire navigate sonrası store undefined olabilir)
+                const muzibuStore = Alpine.store('muzibu');
+                if (!muzibuStore) {
+                    console.error('❌ Alpine.store("muzibu") not available yet - Using fallback');
+                    await this.fallbackToPopularSongs();
+                    return;
+                }
+
                 // En popüler genre'yi bul ve oradan başlat
                 const genresResponse = await fetch('/api/muzibu/genres');
                 const genres = await genresResponse.json();
@@ -364,7 +377,7 @@ function muzibuApp() {
                     const firstGenre = genres[0];
 
                     // Genre context'i ayarla
-                    Alpine.store('muzibu').setPlayContext({
+                    muzibuStore.setPlayContext({
                         type: 'genre',
                         id: firstGenre.genre_id,
                         offset: 0,
@@ -372,7 +385,7 @@ function muzibuApp() {
                     });
 
                     // Genre'den şarkıları yükle
-                    const songs = await Alpine.store('muzibu').refillQueue(0, 15);
+                    const songs = await muzibuStore.refillQueue(0, 15);
 
                     if (songs && songs.length > 0) {
                         this.queue = songs;
@@ -427,6 +440,9 @@ function muzibuApp() {
         // 💾 FULL STATE BACKUP: Save complete player state to localStorage
         saveQueueState() {
             try {
+                // ✅ Alpine store check
+                const muzibuStore = Alpine.store('muzibu');
+
                 const state = {
                     queue: this.queue,
                     queueIndex: this.queueIndex,
@@ -436,17 +452,24 @@ function muzibuApp() {
                     repeatMode: this.repeatMode,
                     volume: this.volume,
                     isPlaying: this.isPlaying,
-                    playContext: Alpine.store('muzibu')?.getPlayContext() || null
+                    playContext: muzibuStore?.getPlayContext() || null
                 };
-                safeStorage.setItem('muzibu_full_state', JSON.stringify(state));
-                console.log('💾 Full state saved:', {
-                    queue: state.queue.length,
-                    index: state.queueIndex,
-                    song: state.currentSong?.song_title?.tr || state.currentSong?.song_title,
-                    time: Math.floor(state.currentTime),
-                    volume: state.volume,
-                    playing: state.isPlaying
-                });
+
+                // ✅ localStorage access check (cross-origin/iframe hatası önleme)
+                try {
+                    safeStorage.setItem('muzibu_full_state', JSON.stringify(state));
+                    console.log('💾 Full state saved:', {
+                        queue: state.queue.length,
+                        index: state.queueIndex,
+                        song: state.currentSong?.song_title?.tr || state.currentSong?.song_title,
+                        time: Math.floor(state.currentTime),
+                        volume: state.volume,
+                        playing: state.isPlaying
+                    });
+                } catch (storageError) {
+                    // localStorage access denied (cross-origin, iframe, private mode)
+                    console.warn('⚠️ localStorage access denied:', storageError.message);
+                }
             } catch (error) {
                 console.error('❌ Failed to save state:', error);
             }
@@ -455,7 +478,15 @@ function muzibuApp() {
         // 💾 FULL STATE RESTORATION: Load complete player state from localStorage
         async loadQueueState() {
             try {
-                const saved = safeStorage.getItem('muzibu_full_state');
+                // ✅ localStorage access check
+                let saved;
+                try {
+                    saved = safeStorage.getItem('muzibu_full_state');
+                } catch (storageError) {
+                    console.warn('⚠️ localStorage access denied:', storageError.message);
+                    return;
+                }
+
                 if (!saved) {
                     console.log('💾 No saved state found - Fresh start');
                     return;
@@ -471,9 +502,10 @@ function muzibuApp() {
                 this.repeatMode = state.repeatMode || 'off';
                 this.volume = state.volume || 1.0;
 
-                // Restore play context
-                if (state.playContext && Alpine.store('muzibu')) {
-                    Alpine.store('muzibu').updatePlayContext(state.playContext);
+                // ✅ Restore play context (Alpine store check)
+                const muzibuStore = Alpine.store('muzibu');
+                if (state.playContext && muzibuStore) {
+                    muzibuStore.updatePlayContext(state.playContext);
                 }
 
                 console.log('💾 Full state restored:', {

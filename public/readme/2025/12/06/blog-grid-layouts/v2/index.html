@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v2 - Photo List (Horizontal Cards)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                📋 v2: Photo List Layout
+            </h1>
+            <p class="text-slate-400 text-lg">Horizontal Cards - Görsel + Text - Yoğun İçerik</p>
+            <div class="mt-4 px-4 py-2 bg-green-500/20 border border-green-500 rounded-lg inline-block">
+                <span class="text-green-400 font-bold">✅ Liste Görünümü - Hızlı Tarama</span>
+            </div>
+        </header>
+
+        <div class="bg-slate-800/50 rounded-2xl p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-green-400">🎨 Horizontal Photo Cards</h2>
+
+            <div class="space-y-4">
+                <!-- Horizontal Card 1 -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-green-500 transition-all group cursor-pointer">
+                    <div class="flex gap-4">
+                        <div class="w-48 h-32 flex-shrink-0 bg-gradient-to-br from-blue-500 to-cyan-600 relative">
+                            <div class="absolute inset-0 flex items-center justify-center text-white/20 text-5xl">🏗️</div>
+                        </div>
+                        <div class="flex-1 p-4 min-w-0">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded">Endüstri</span>
+                                <span class="text-xs text-slate-500">📅 2 saat önce · 👁️ 1.2k</span>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2 group-hover:text-green-400 transition-colors line-clamp-2">
+                                Forklift Bakım Rehberi 2025: Kapsamlı Kılavuz
+                            </h3>
+                            <p class="text-slate-400 text-sm line-clamp-2 leading-relaxed">
+                                Endüstriyel forklift bakımı için en güncel rehber. Güvenlik standartları ve verimlilik ipuçları...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daha fazla horizontal kartlar... -->
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-orange-500 transition-all group cursor-pointer">
+                    <div class="flex gap-4">
+                        <div class="w-48 h-32 flex-shrink-0 bg-gradient-to-br from-orange-500 to-red-600 relative">
+                            <div class="absolute inset-0 flex items-center justify-center text-white/20 text-5xl">⚡</div>
+                        </div>
+                        <div class="flex-1 p-4 min-w-0">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded">Enerji</span>
+                                <span class="text-xs text-slate-500">📅 4 saat önce · 👁️ 850</span>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2 group-hover:text-orange-400 transition-colors line-clamp-2">
+                                Lityum Batarya Teknolojisinde Yeni Dönem
+                            </h3>
+                            <p class="text-slate-400 text-sm line-clamp-2 leading-relaxed">
+                                Hızlı şarj ve uzun ömür: Yeni nesil lityum-iyon bataryalar ile tanışın...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/80 rounded-lg overflow-hidden border border-slate-700 hover:border-purple-500 transition-all group cursor-pointer">
+                    <div class="flex gap-4">
+                        <div class="w-48 h-32 flex-shrink-0 bg-gradient-to-br from-purple-500 to-pink-600 relative">
+                            <div class="absolute inset-0 flex items-center justify-center text-white/20 text-5xl">🎓</div>
+                        </div>
+                        <div class="flex-1 p-4 min-w-0">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-2 py-1 bg-purple-500 text-white text-xs font-bold rounded">Eğitim</span>
+                                <span class="text-xs text-slate-500">📅 6 saat önce · 👁️ 2.1k</span>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2 group-hover:text-purple-400 transition-colors line-clamp-2">
+                                SRC-4 Operatör Ehliyeti: Sınav Hazırlık Kılavuzu
+                            </h3>
+                            <p class="text-slate-400 text-sm line-clamp-2 leading-relaxed">
+                                Forklift operatör belgesi nasıl alınır? Sınav soruları ve eğitim süreci...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-6">
+                <button class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg">
+                    21 blog daha yükle →
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-slate-800/50 rounded-2xl p-8">
+            <h2 class="text-2xl font-bold mb-6 text-green-400">✨ Özellikler</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">📸</span>
+                    <div>
+                        <h3 class="font-bold mb-1">Horizontal Photo Cards</h3>
+                        <p class="text-sm text-slate-400">192x128px görsel + detaylı text</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">📋</span>
+                    <div>
+                        <h3 class="font-bold mb-1">Liste Görünümü</h3>
+                        <p class="text-sm text-slate-400">Hızlı tarama, çok içerik</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

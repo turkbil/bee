@@ -51,6 +51,7 @@ Route::prefix('muzibu')->group(function () {
     Route::prefix('songs')->group(function () {
         Route::get('/recent', [SongController::class, 'recent'])->name('api.muzibu.songs.recent')->middleware(['auth:sanctum', 'throttle.user:api']);
         Route::get('/popular', [SongController::class, 'popular'])->name('api.muzibu.songs.popular')->middleware('throttle.user:api');
+        Route::get('/last-played', [SongController::class, 'lastPlayed'])->name('api.muzibu.songs.last-played')->middleware('throttle.user:api');
         Route::post('/{id}/track-play', [SongController::class, 'trackPlay'])->name('api.muzibu.songs.track-play')->middleware(['auth:sanctum', 'throttle.user:api']);
 
         // Premium Limit System - SongStreamController (HLS conversion logic) - STRICT STREAM THROTTLE

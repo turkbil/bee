@@ -4,16 +4,17 @@ sw.js:32 [Service Worker] Caching critical assets
 sw.js:43 [Service Worker] Activating...
 ?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
 (anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-muzibu-router.js?v=1764972019:30 🚀 Muzibu SPA Router initialized
-player-core.js?v=1764972019:157 Muzibu initialized with Howler.js
-player-core.js?v=1764972019:160 Muzibu initialized Object
-keyboard.js?v=1764972019:46 🎹 Keyboard shortcuts initialized
+(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
+muzibu-router.js?v=1764977095:30 🚀 Muzibu SPA Router initialized
+player-core.js?v=1764977095:157 Muzibu initialized with Howler.js
+player-core.js?v=1764977095:160 Muzibu initialized Object
+keyboard.js?v=1764977095:46 🎹 Keyboard shortcuts initialized
 livewire.js?id=df3a17f2:1123 Alpine Expression Error: this.startQueueMonitor is not a function
 
 Expression: "init() {
-            // Prevent double initialization
+            // ✅ Prevent double initialization (component-level, not window-level)
             if (this._initialized) {
-                console.log('Muzibu already initialized, skipping...');
+                console.log('⚠️ Already initialized, skipping...');
                 return;
             }
             this._initialized = true;
@@ -40,6 +41,15 @@ Expression: "init() {
 
             // 🎯 QUEUE CHECKER: Monitor queue and auto-refill (PHASE 4)
             this.startQueueMonitor();
+
+            // 💾 FULL STATE RESTORATION: Tarayıcı kapansa bile kaldığı yerden devam et
+            this.loadQueueState();
+
+            // 🎵 BACKGROUND PLAYBACK: Tarayıcı minimize olsa bile çalsın
+            this.enableBackgroundPlayback();
+
+            // 💾 AUTO-SAVE: State değişikliklerini otomatik kaydet
+            this.setupAutoSave();
 
             // SPA Navigation: Handle browser back/forward
             window.addEventListener('popstate', (e) => {
@@ -85,10 +95,21 @@ Expression: "init() {
 
  <html lang=​"tr" x-data=​"muzibuApp()​" x-init=​"init()​" class=​"dark">​<head>​…​</head>​<body class=​"bg-black text-white">​…​</body>​</html>​
 handleError @ livewire.js?id=df3a17f2:1123
-player-core.js?v=1764972019:152 Muzibu already initialized, skipping...
+tryCatch @ livewire.js?id=df3a17f2:1118
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1764977095:152 ⚠️ Already initialized, skipping...
 (index):3872 🔄 Livewire navigated - Re-initializing Alpine...
 livewire.js?id=df3a17f2:1127 Uncaught TypeError: this.startQueueMonitor is not a function
-    at Proxy.init (player-core.js?v=1764972019:178:18)
+    at Proxy.init (player-core.js?v=1764977095:178:18)
     at livewire.js?id=df3a17f2:1160:25
     at tryCatch (livewire.js?id=df3a17f2:1116:14)
     at evaluate (livewire.js?id=df3a17f2:1140:34)
@@ -98,55 +119,94 @@ livewire.js?id=df3a17f2:1127 Uncaught TypeError: this.startQueueMonitor is not a
     at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
     at initTree (livewire.js?id=df3a17f2:1479:5)
     at livewire.js?id=df3a17f2:1428:7
+init @ player-core.js?v=1764977095:178
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
 (index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
 (index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
 (index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+player-core.js?v=1764977095:235 Featured playlists loaded: 10
 /api/muzibu/songs/last-played:1  Failed to load resource: the server responded with a status of 404 ()
-player-core.js?v=1764972019:273 Failed to preload last played song: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
-preloadLastPlayedSong @ player-core.js?v=1764972019:273
-player-core.js?v=1764972019:226 Featured playlists loaded: 10
-muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
-muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
-muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
-muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
-muzibu-store.js?v=1764972019:354 🎯 Context Menu Action: rate | Type: album Proxy(Object)
-muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
-muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
-muzibu-store.js?v=1764972019:354 🎯 Context Menu Action: addToQueue | Type: album Proxy(Object)
-player-core.js?v=1764972019:1228 🎵 Queue Song API Response: Object
-player-core.js?v=1764972019:1255 Playing song: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/410/playlist.m3u8 Type: hls Preview: null Fallback: https://muzibu.com.tr/api/muzibu/songs/410/serve?expires=1764973851&signature=51377d82facce4646e4b778fde19d46327c0ddb6480ca1d55c9d64ad150d5c08&force_mp3=1
-player-core.js?v=1764972019:1360 loadAndPlaySong: Object
-player-core.js?v=1764972019:1573 🔍 HLS Autoplay: true
-player-core.js?v=1764972019:1648 HLS fatal error: Object
-(anonymous) @ player-core.js?v=1764972019:1648
-player-core.js?v=1764972019:1652 🔄 HLS failed, falling back to signed MP3...
-player-core.js?v=1764972019:1653 🔍 currentFallbackUrl: https://muzibu.com.tr/api/muzibu/songs/410/serve?expires=1764973851&signature=51377d82facce4646e4b778fde19d46327c0ddb6480ca1d55c9d64ad150d5c08&force_mp3=1
-player-core.js?v=1764972019:1654 🔍 currentFallbackUrl type: string
-player-core.js?v=1764972019:1673 🔍 About to call playWithHowler with: https://muzibu.com.tr/api/muzibu/songs/410/serve?expires=1764973851&signature=51377d82facce4646e4b778fde19d46327c0ddb6480ca1d55c9d64ad150d5c08&force_mp3=1
-player-core.js?v=1764972019:1491 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/410/serve?expires=1764973851&signature=51377d82facce4646e4b778fde19d46327c0ddb6480ca1d55c9d64ad150d5c08&force_mp3=1
-player-core.js?v=1764972019:1492 🔍 URL type: string
-player-core.js?v=1764972019:1493 🔍 URL length: 154
-player-core.js?v=1764972019:1494 🔍 Autoplay: true
-player-core.js?v=1764972019:1502 🎵 Creating Howl with src: Array(1)
-player-core.js?v=1764972019:1635 HLS play error: AbortError: The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22
-(anonymous) @ player-core.js?v=1764972019:1635
-player-core.js?v=1764972019:1512 Howler loaded, duration: 138.7
-player-core.js?v=1764972019:1228 🎵 Queue Song API Response: Object
-player-core.js?v=1764972019:1255 Playing song: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/397/playlist.m3u8 Type: hls Preview: null Fallback: https://muzibu.com.tr/api/muzibu/songs/397/serve?expires=1764973868&signature=e7e93eed94b66e374b7305de848c557a673eaa0c84419c01711218461e544128&force_mp3=1
-player-core.js?v=1764972019:1360 loadAndPlaySong: Object
-player-core.js?v=1764972019:1573 🔍 HLS Autoplay: true
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: this.preloadFirstInQueue is not a function
+player-core.js?v=1764977095:361 🎵 Auto-starting music from Genre (infinite loop)...
+player-core.js?v=1764977095:366 ❌ Alpine.store("muzibu") not available yet - Using fallback
+playRandomSongs @ player-core.js?v=1764977095:366
+player-core.js?v=1764977095:1347 🎵 Queue Song API Response: Object
+player-core.js?v=1764977095:1374 Playing song: https://muzibu.com.tr/api/muzibu/songs/391/serve?expires=1764978945&signature=f2673ad9a10fc7f5a970a76b828cbf91c675c47007c0b19546356b1567e75abb Type: mp3 Preview: null Fallback: null
+player-core.js?v=1764977095:1479 loadAndPlaySong: Object
+player-core.js?v=1764977095:1490 🎵 Playing URL: https://muzibu.com.tr/api/muzibu/songs/391/serve?expires=1764978945&signature=f2673ad9a10fc7f5a970a76b828cbf91c675c47007c0b19546356b1567e75abb
+player-core.js?v=1764977095:1610 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/391/serve?expires=1764978945&signature=f2673ad9a10fc7f5a970a76b828cbf91c675c47007c0b19546356b1567e75abb
+player-core.js?v=1764977095:1611 🔍 URL type: string
+player-core.js?v=1764977095:1612 🔍 URL length: 142
+player-core.js?v=1764977095:1613 🔍 Autoplay: true
+player-core.js?v=1764977095:1621 🎵 Creating Howl with src: Array(1)
+player-core.js?v=1764977095:1631 Howler loaded, duration: 155.3
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: currentSong.album_cover.includes is not a function
 
-Expression: "nextTrack()"
+Expression: "currentSong && currentSong.album_cover && !currentSong.album_cover.includes('placeholder')"
 
- <button class=​"text-muzibu-text-gray hover:​text-white transition-all" @click=​"nextTrack()​">​…​</button>​
+ <template x-if=​"currentSong && currentSong.album_cover && !currentSong.album_cover.includes('placeholder')​">​…​</template>​
 handleError @ livewire.js?id=df3a17f2:1123
-livewire.js?id=df3a17f2:1127 Uncaught TypeError: this.preloadFirstInQueue is not a function
-    at Proxy.nextTrack (player-core.js?v=1764972019:464:22)
-player-core.js?v=1764972019:464 Uncaught (in promise) TypeError: this.preloadFirstInQueue is not a function
-    at Proxy.nextTrack (player-core.js?v=1764972019:464:22)
-player-core.js?v=1764972019:1648 HLS fatal error: {type: 'networkError', details: 'keyLoadError', fatal: true, frag: Proxy(e), response: undefined, …}
-(anonymous) @ player-core.js?v=1764972019:1648
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3856
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+flushJobs @ livewire.js?id=df3a17f2:744
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: currentSong.album_cover.includes is not a function
+
+Expression: "!currentSong || !currentSong.album_cover || currentSong.album_cover.includes('placeholder')"
+
+ <template x-if=​"!currentSong || !currentSong.album_cover || currentSong.album_cover.includes('placeholder')​">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3856
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+flushJobs @ livewire.js?id=df3a17f2:744
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: currentSong.album_cover.includes is not a function
+    at [Alpine] currentSong && currentSong.album_cover && !currentSong.album_cover.includes(/'placeholder') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:99)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3856:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+[Alpine] currentSong && currentSong.album_cover && !currentSong.album_cover.includes('placeholder') @ VM2943:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3856
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+flushJobs @ livewire.js?id=df3a17f2:744
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: currentSong.album_cover.includes is not a function
+    at [Alpine] !currentSong || !currentSong.album_cover || currentSong.album_cover.includes(/'placeholder') (eval at safeAsyncFunction (https://muzibu.com.tr/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:100)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3856:19
+    at Array.reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at flushJobs (livewire.js?id=df3a17f2:744:15)
+[Alpine] !currentSong || !currentSong.album_cover || currentSong.album_cover.includes('placeholder') @ VM2944:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3856
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+flushJobs @ livewire.js?id=df3a17f2:744
+player-core.js?v=1764977095:1270 🎵 Stream API Response: {status: 'ready', preview_duration: undefined, is_premium: true, message: 'HLS stream ready'}
+player-core.js?v=1764977095:1479 loadAndPlaySong: {url: 'https://muzibu.com.tr/storage/tenant1001/muzibu/hls/317/playlist.m3u8', streamType: 'hls', useHls: true, previewMode: false}
+player-core.js?v=1764977095:1692 🔍 HLS Autoplay: true
+player-core.js?v=1764977095:1767 HLS fatal error: {type: 'networkError', details: 'keyLoadError', fatal: true, frag: Proxy(e), response: undefined, …}
+(anonymous) @ player-core.js?v=1764977095:1767
 o.emit @ index.js:203
 e.emit @ hls.ts:287
 e.trigger @ hls.ts:298
@@ -169,24 +229,43 @@ e.emit @ hls.ts:287
 e.trigger @ hls.ts:298
 r.handleFragLoadError @ base-stream-controller.ts:838
 (anonymous) @ base-stream-controller.ts:784
-player-core.js?v=1764972019:1652 🔄 HLS failed, falling back to signed MP3...
-player-core.js?v=1764972019:1653 🔍 currentFallbackUrl: https://muzibu.com.tr/api/muzibu/songs/397/serve?expires=1764973868&signature=e7e93eed94b66e374b7305de848c557a673eaa0c84419c01711218461e544128&force_mp3=1
-player-core.js?v=1764972019:1654 🔍 currentFallbackUrl type: string
-player-core.js?v=1764972019:1673 🔍 About to call playWithHowler with: https://muzibu.com.tr/api/muzibu/songs/397/serve?expires=1764973868&signature=e7e93eed94b66e374b7305de848c557a673eaa0c84419c01711218461e544128&force_mp3=1
-player-core.js?v=1764972019:1491 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/397/serve?expires=1764973868&signature=e7e93eed94b66e374b7305de848c557a673eaa0c84419c01711218461e544128&force_mp3=1
-player-core.js?v=1764972019:1492 🔍 URL type: string
-player-core.js?v=1764972019:1493 🔍 URL length: 154
-player-core.js?v=1764972019:1494 🔍 Autoplay: true
-player-core.js?v=1764972019:1502 🎵 Creating Howl with src: ['https://muzibu.com.tr/api/muzibu/songs/397/serve?e…c557a673eaa0c84419c01711218461e544128&force_mp3=1']
-player-core.js?v=1764972019:1635 HLS play error: AbortError: The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22
-(anonymous) @ player-core.js?v=1764972019:1635
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
+Promise.catch
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
 o.emit @ index.js:203
 e.emit @ hls.ts:287
 e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-player-core.js?v=1764972019:1512 Howler loaded, duration: 193
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1764977095:1734
+loadAndPlaySong @ player-core.js?v=1764977095:1483
+await in loadAndPlaySong
+playSong @ player-core.js?v=1764977095:1296
+await in playSong
+[Alpine] playSong(317) @ VM2864:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185

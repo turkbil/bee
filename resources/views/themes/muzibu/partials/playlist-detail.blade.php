@@ -92,7 +92,7 @@
                 <span class="text-sm font-medium text-gray-400" x-text="count + ' favori'"></span>
             </button>
             @else
-            <a href="{{ route('login') }}" class="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
+            <a href="{{ route('login') }}" wire:navigate class="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
                 <i class="far fa-heart text-2xl"></i>
                 <span class="text-sm font-medium">{{ method_exists($playlist, 'favoritesCount') ? $playlist->favoritesCount() : 0 }} favori</span>
             </a>
@@ -118,8 +118,42 @@
 
         <div class="space-y-0">
             @foreach($songs as $index => $song)
-                <div class="group grid grid-cols-[40px_50px_1fr_60px] md:grid-cols-[40px_50px_6fr_4fr_100px_60px] gap-2 sm:gap-4 px-2 sm:px-4 py-2 sm:py-3 rounded-lg hover:bg-white/10 transition-all cursor-pointer items-center"
-                     @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
+                <div
+                    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'song', {
+                        id: {{ $song->song_id }},
+                        title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+                        artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
+                        album_id: {{ $song->album ? $song->album->id : 'null' }},
+                        is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                    })"
+                    x-data="{
+                        touchTimer: null,
+                        touchStartPos: { x: 0, y: 0 }
+                    }"
+                    x-on:touchstart="
+                        touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+                        touchTimer = setTimeout(() => {
+                            if (navigator.vibrate) navigator.vibrate(50);
+                            $store.contextMenu.openContextMenu({
+                                clientX: $event.touches[0].clientX,
+                                clientY: $event.touches[0].clientY
+                            }, 'song', {
+                                id: {{ $song->song_id }},
+                                title: '{{ addslashes($song->getTranslation('title', app()->getLocale())) }}',
+                                artist: '{{ $song->artist ? addslashes($song->artist->getTranslation('title', app()->getLocale())) : '' }}',
+                                album_id: {{ $song->album ? $song->album->id : 'null' }},
+                                is_favorite: {{ auth()->check() && method_exists($song, 'isFavoritedBy') && $song->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+                            });
+                        }, 500);
+                    "
+                    x-on:touchend="clearTimeout(touchTimer)"
+                    x-on:touchmove="
+                        const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 ||
+                                     Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
+                        if (moved) clearTimeout(touchTimer);
+                    "
+                    class="group grid grid-cols-[40px_50px_1fr_60px] md:grid-cols-[40px_50px_6fr_4fr_100px_60px] gap-2 sm:gap-4 px-2 sm:px-4 py-2 sm:py-3 rounded-lg hover:bg-white/10 transition-all cursor-pointer items-center"
+                    @click="$dispatch('play-song', { songId: {{ $song->song_id }} })">
                     {{-- Number/Play Icon --}}
                     <div class="text-center flex-shrink-0">
                         <span class="text-gray-400 text-xs sm:text-sm group-hover:hidden">{{ $index + 1 }}</span>
@@ -151,8 +185,8 @@
                     {{-- Album - Desktop Only --}}
                     <div class="hidden md:block truncate" @click.stop>
                         @if($song->album)
-                            <a href="/albums/{{ $song->album->getTranslation('slug', app()->getLocale()) }}"
-                               @click.prevent="$store.router.navigateTo('/albums/{{ $song->album->getTranslation('slug', app()->getLocale()) }}')"
+                            <a href="/albums/{{ $song->album->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+                               
                                class="text-sm text-gray-400 hover:text-white hover:underline transition-colors">
                                 {{ $song->album->getTranslation('title', app()->getLocale()) }}
                             </a>

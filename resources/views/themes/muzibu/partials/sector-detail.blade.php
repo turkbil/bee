@@ -92,7 +92,7 @@
                 <span class="text-sm font-medium text-gray-400" x-text="count + ' favori'"></span>
             </button>
             @else
-            <a href="{{ route('login') }}" class="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
+            <a href="{{ route('login') }}" wire:navigate class="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
                 <i class="far fa-heart text-2xl"></i>
                 <span class="text-sm font-medium">{{ method_exists($sector, 'favoritesCount') ? $sector->favoritesCount() : 0 }} favori</span>
             </a>
@@ -108,8 +108,8 @@
     @if($playlists && $playlists->count() > 0)
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             @foreach($playlists as $playlist)
-                <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
-                   @click.prevent="navigateTo('/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}')"
+                <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+                   
                    class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300">
                     <div class="relative mb-4">
                         @if($playlist->getFirstMedia('cover'))
@@ -168,7 +168,7 @@
                                 <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
                             </button>
                             @else
-                            <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
+                            <a href="{{ route('login') }}" wire:navigate class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
                                 <i class="far fa-heart text-white text-sm"></i>
                             </a>
                             @endauth

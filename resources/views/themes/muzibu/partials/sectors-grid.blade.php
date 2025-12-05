@@ -9,8 +9,8 @@
     @if($sectors && $sectors->count() > 0)
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 animate-slide-up" style="animation-delay: 100ms">
             @foreach($sectors as $sector)
-                <a href="/sectors/{{ $sector->getTranslation('slug', app()->getLocale()) }}"
-                   @click.prevent="navigateTo('/sectors/{{ $sector->getTranslation('slug', app()->getLocale()) }}')"
+                <a href="/sectors/{{ $sector->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+                   
                    class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300">
                     <div class="relative mb-4">
                         @if($sector->getFirstMedia('cover'))
@@ -69,7 +69,7 @@
                                 <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
                             </button>
                             @else
-                            <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
+                            <a href="{{ route('login') }}" wire:navigate class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
                                 <i class="far fa-heart text-white text-sm"></i>
                             </a>
                             @endauth

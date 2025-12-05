@@ -8,29 +8,29 @@
     {{-- Modern Filter Tabs --}}
     <div class="mb-8 sm:mb-10">
         <nav class="flex gap-2 sm:gap-4 overflow-x-auto scrollbar-hide pb-2" x-data="{ activeTab: '{{ $type }}' }">
-            <a href="/favorites?type=all"
-               @click.prevent="$store.router.navigateTo('/favorites?type=all')"
+            <a href="/favorites?type=all" wire:navigate
+               
                class="flex-shrink-0 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-200"
                :class="activeTab === 'all' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-heart mr-2"></i>
                 Tümü
             </a>
-            <a href="/favorites?type=songs"
-               @click.prevent="$store.router.navigateTo('/favorites?type=songs')"
+            <a href="/favorites?type=songs" wire:navigate
+               
                class="flex-shrink-0 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-200"
                :class="activeTab === 'songs' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-music mr-2"></i>
                 Şarkılar
             </a>
-            <a href="/favorites?type=albums"
-               @click.prevent="$store.router.navigateTo('/favorites?type=albums')"
+            <a href="/favorites?type=albums" wire:navigate
+               
                class="flex-shrink-0 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-200"
                :class="activeTab === 'albums' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-compact-disc mr-2"></i>
                 Albümler
             </a>
-            <a href="/favorites?type=playlists"
-               @click.prevent="$store.router.navigateTo('/favorites?type=playlists')"
+            <a href="/favorites?type=playlists" wire:navigate
+               
                class="flex-shrink-0 px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-all duration-200"
                :class="activeTab === 'playlists' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-list-music mr-2"></i>
@@ -107,7 +107,7 @@
                                             <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
                                         </button>
                                         @else
-                                        <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
+                                        <a href="{{ route('login') }}" wire:navigate class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
                                             <i class="far fa-heart text-white text-sm"></i>
                                         </a>
                                         @endauth
@@ -127,8 +127,8 @@
 
                         @elseif($item instanceof \Modules\Muzibu\App\Models\Album)
                             <!-- Album Card -->
-                            <a href="/albums/{{ $item->getTranslation('slug', app()->getLocale()) }}"
-                               @click.prevent="navigateTo('/albums/{{ $item->getTranslation('slug', app()->getLocale()) }}')">
+                            <a href="/albums/{{ $item->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+                               >
                                 <div class="relative mb-4">
                                     @if($item->getFirstMedia('album_cover'))
                                         <img src="{{ thumb($item->getFirstMedia('album_cover'), 300, 300, ['scale' => 1]) }}"
@@ -184,7 +184,7 @@
                                             <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
                                         </button>
                                         @else
-                                        <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
+                                        <a href="{{ route('login') }}" wire:navigate class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
                                             <i class="far fa-heart text-white text-sm"></i>
                                         </a>
                                         @endauth
@@ -204,8 +204,8 @@
 
                         @elseif($item instanceof \Modules\Muzibu\App\Models\Playlist)
                             <!-- Playlist Card -->
-                            <a href="/playlists/{{ $item->getTranslation('slug', app()->getLocale()) }}"
-                               @click.prevent="navigateTo('/playlists/{{ $item->getTranslation('slug', app()->getLocale()) }}')">
+                            <a href="/playlists/{{ $item->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+                               >
                                 <div class="relative mb-4">
                                     @if($item->getFirstMedia('cover'))
                                         <img src="{{ thumb($item->getFirstMedia('cover'), 300, 300, ['scale' => 1]) }}"
@@ -261,7 +261,7 @@
                                             <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
                                         </button>
                                         @else
-                                        <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
+                                        <a href="{{ route('login') }}" wire:navigate class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
                                             <i class="far fa-heart text-white text-sm"></i>
                                         </a>
                                         @endauth
@@ -311,8 +311,8 @@
             <p class="text-sm sm:text-base md:text-lg text-gray-400 mb-6 sm:mb-8 max-w-md mx-auto">
                 Beğendiğin içerikleri favorilere ekleyerek kolayca ulaşabilirsin
             </p>
-            <a href="/"
-               @click.prevent="$store.router.navigateTo('/')"
+            <a href="/" wire:navigate
+               
                class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-muzibu-coral text-white font-bold rounded-full hover:bg-opacity-90 hover:scale-105 transition-all duration-200 shadow-xl hover:shadow-2xl text-sm sm:text-base">
                 <i class="fas fa-home mr-2"></i>
                 Ana Sayfaya Dön

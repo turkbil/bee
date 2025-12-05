@@ -286,11 +286,28 @@ class SongStreamController extends Controller
             }
 
             $song = Song::findOrFail($songId);
+            $userId = auth()->id();
+
+            // 🔒 Duplicate kontrolü: Aynı kullanıcı + şarkı için son 60 saniyede kayıt var mı?
+            $recentPlay = \DB::table('muzibu_song_plays')
+                ->where('song_id', $songId)
+                ->where('user_id', $userId)
+                ->where('created_at', '>=', now()->subSeconds(60))
+                ->first();
+
+            // Eğer son 60 saniyede zaten kayıt varsa, duplicate kayıt ekleme
+            if ($recentPlay) {
+                return response()->json([
+                    'success' => true,
+                    'duplicate_prevented' => true,
+                    'remaining' => -1
+                ]);
+            }
 
             // 60+ saniye dinlendi, kayıt ekle (Analytics için)
             \DB::table('muzibu_song_plays')->insert([
                 'song_id' => $songId,
-                'user_id' => auth()->id(),
+                'user_id' => $userId,
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'device_type' => $this->detectDevice($request),

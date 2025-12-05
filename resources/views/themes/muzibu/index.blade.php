@@ -189,8 +189,8 @@
                 {{-- Play Button Overlay --}}
                 <div class="relative">
                     <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
-                        @if($song->album && $song->album->media_id)
-                            <img src="{{ thumb($song->album->media_id, 56, 56, ['scale' => 1]) }}" alt="{{ getLocaleTitle($song->title, 'Song') }}" class="w-full h-full object-cover">
+                        @if($song->album && $song->album->coverMedia)
+                            <img src="{{ thumb($song->album->coverMedia, 56, 56, ['scale' => 1]) }}" alt="{{ getLocaleTitle($song->title, 'Song') }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-xl">
                                 🎵
@@ -247,8 +247,8 @@
                 {{-- Play Button Overlay --}}
                 <div class="relative">
                     <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
-                        @if($song->album && $song->album->media_id)
-                            <img src="{{ thumb($song->album->media_id, 56, 56, ['scale' => 1]) }}" alt="{{ getLocaleTitle($song->title, 'Song') }}" class="w-full h-full object-cover">
+                        @if($song->album && $song->album->coverMedia)
+                            <img src="{{ thumb($song->album->coverMedia, 56, 56, ['scale' => 1]) }}" alt="{{ getLocaleTitle($song->title, 'Song') }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-xl">
                                 🎵

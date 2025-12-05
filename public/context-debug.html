@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Context Menu Debug</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('contextMenu', {
+                visible: false,
+                x: 0,
+                y: 0,
+                type: '',
+                data: {},
+                openContextMenu(event, type, data) {
+                    console.log('🎯 Context Menu Triggered!', { event, type, data });
+                    event.preventDefault();
+                    this.visible = true;
+                    this.x = event.clientX;
+                    this.y = event.clientY;
+                    this.type = type;
+                    this.data = data;
+                }
+            });
+        });
+    </script>
+</head>
+<body class="bg-black text-white p-8">
+    <h1 class="text-2xl mb-4">Context Menu Debug Test</h1>
+    
+    <div class="mb-8">
+        <h2 class="text-xl mb-2">Test 1: Basit DIV</h2>
+        <div 
+            class="p-4 bg-white/10 rounded cursor-pointer"
+            x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {id: 1, title: 'Test Playlist'})"
+        >
+            Bu div'e sağ tıkla
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h2 class="text-xl mb-2">Test 2: Click event'li DIV (Gerçek senaryo)</h2>
+        <div 
+            class="p-4 bg-white/10 rounded cursor-pointer"
+            x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {id: 2, title: 'Akşam Üstü'})"
+            x-on:click="console.log('Clicked!')"
+        >
+            Bu div'e sağ tıkla (click event'li)
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div 
+        x-show="$store.contextMenu.visible"
+        x-on:click.outside="$store.contextMenu.visible = false"
+        :style="`position: fixed; left: ${$store.contextMenu.x}px; top: ${$store.contextMenu.y}px; z-index: 9999;`"
+        class="bg-gray-800 rounded-lg shadow-xl p-4 min-w-[200px]"
+    >
+        <div class="text-white">
+            <strong x-text="$store.contextMenu.data.title"></strong>
+            <div class="text-sm text-gray-400 mt-2">
+                Type: <span x-text="$store.contextMenu.type"></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

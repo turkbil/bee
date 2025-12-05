@@ -11,7 +11,7 @@
     <div class="space-y-0">
         @foreach($featuredPlaylists as $playlist)
         <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
-           @click.prevent="navigateTo('/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}')"
+           wire:navigate
            class="flex items-center gap-3 p-2 hover:bg-white/10 rounded cursor-pointer transition-all group">
             <div class="w-12 h-12 rounded bg-gradient-to-br from-purple-500 to-pink-600 flex-shrink-0 overflow-hidden relative">
                 @if($playlist->coverMedia)

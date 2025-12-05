@@ -1,518 +1,154 @@
-<div style="display: flex; flex-wrap: wrap; gap: 1.5rem;">
+?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
+(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
+(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
+muzibu-router.js?v=1764964188:30 🚀 Muzibu SPA Router initialized
+player-core.js?v=1764964188:157 Muzibu initialized with Howler.js
+player-core.js?v=1764964188:160 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
+keyboard.js?v=1764964188:46 🎹 Keyboard shortcuts initialized
+player-core.js?v=1764964188:152 Muzibu already initialized, skipping...
+(index):3830 ✅ Alpine initialized
+(index):3832 ✅ Context Menu Store ready
+(index):3773 🔄 Livewire navigated - Re-initializing Alpine...
+(index):3782 🎯 Found spa-content-wrapper, initializing...
+(index):3784 ✨ Alpine re-initialized (spa-content-wrapper)
+(index):3790 🔧 Manually initializing element: <html lang=​"tr" x-data=​"muzibuApp()​" x-init=​"init()​" class=​"dark">​<head>​…​</head>​<body class=​"bg-black text-white">​…​</body>​</html>​
+(index):3790 🔧 Manually initializing element: <div class=​"grid grid-rows-[56px_1fr_65px]​ lg:​grid-cols-[220px_1fr]​ grid-cols-1 h-screen gap-3 px-3 pb-3 2xl:​grid-cols-[220px_1fr_360px]​ xl:​grid-cols-[220px_1fr_320px]​" x-data=​"{
+            isHomepage:​ true,
+            checkIsHomepage()​ {
+                const currentPath = window.location.pathname.replace(/​^\/​+|\/​+$/​g, '')​;​
+                this.isHomepage = (currentPath === '' || currentPath === '/​')​;​
+            }​
+        }​" x-init=​"
+            /​/​ URL değişikliklerini dinle
+            window.addEventListener('route-changed', (e)​ => {
+                checkIsHomepage()​;​
+            }​)​;​
 
-            
-            <div style="flex: 2; min-width: 300px;">
+            /​/​ SPA navigation sonrası da kontrol et
+            window.addEventListener('popstate', ()​ => {
+                checkIsHomepage()​;​
+            }​)​;​
 
+            /​/​ Her 100ms'de bir kontrol et (güvenlik için)​
+            setInterval(()​ => {
+                checkIsHomepage()​;​
+            }​, 100)​;​
+        " :class=​"{
+            '2xl:​grid-cols-[220px_1fr_360px]​ xl:​grid-cols-[220px_1fr_320px]​':​ isHomepage
+        }​">​…​</div>​grid
+(index):3790 🔧 Manually initializing element: <button @click=​"clearCache()​" class=​"w-9 h-9 bg-white/​5 hover:​bg-muzibu-coral/​20 rounded-lg flex items-center justify-center text-muzibu-text-gray hover:​text-muzibu-coral transition-all duration-300 group" title=​"Cache Temizle" x-data=​"{
+                clearCache()​ {
+                    fetch('/​admin/​cache/​clear', {
+                        method:​ 'POST',
+                        headers:​ {
+                            'Content-Type':​ 'application/​json',
+                            'X-CSRF-TOKEN':​ document.querySelector('meta[name=csrf-token]​')​.content
+                        }​
+                    }​)​
+                    .then(response => response.json()​)​
+                    .then(data => {
+                        console.log('Cache cleared:​', data)​;​
+                        window.location.reload()​;​
+                    }​)​
+                    .catch(error => {
+                        console.error('Cache clear error:​', error)​;​
+                        window.location.reload()​;​
+                    }​)​;​
+                }​
+            }​">​…​</button>​flex
+(index):3790 🔧 Manually initializing element: <div x-show=​"isLoggedIn" class=​"relative" x-data=​"{ userMenuOpen:​ false }​">​…​</div>​
+(index):3790 🔧 Manually initializing element: <div class=​"mb-4 relative group/​scroll" x-data=​"{
+    scrollContainer:​ null,
+    scrollInterval:​ null,
+    startAutoScroll(direction)​ {
+        this.scrollInterval = setInterval(()​ => {
+            this.scrollContainer.scrollBy({ left:​ direction === 'right' ? 20 :​ -20 }​)​;​
+        }​, 50)​;​
+    }​,
+    stopAutoScroll()​ {
+        if (this.scrollInterval)​ {
+            clearInterval(this.scrollInterval)​;​
+            this.scrollInterval = null;​
+        }​
+    }​
+}​" x-init=​"scrollContainer = $refs.scrollContainer">​…​</div>​
+(index):3790 🔧 Manually initializing element: <div class=​"mb-6 relative group/​scroll" x-data=​"{
+    scrollContainer:​ null,
+    scrollInterval:​ null,
+    startAutoScroll(direction)​ {
+        this.scrollInterval = setInterval(()​ => {
+            this.scrollContainer.scrollBy({ left:​ direction === 'right' ? 20 :​ -20 }​)​;​
+        }​, 50)​;​
+    }​,
+    stopAutoScroll()​ {
+        if (this.scrollInterval)​ {
+            clearInterval(this.scrollInterval)​;​
+            this.scrollInterval = null;​
+        }​
+    }​
+}​" x-init=​"scrollContainer = $refs.scrollContainer">​…​</div>​
+(index):3790 🔧 Manually initializing element: <div class=​"mb-3 relative group/​scroll" x-data=​"{
+    scrollContainer:​ null,
+    scrollInterval:​ null,
+    startAutoScroll(direction)​ {
+        this.scrollInterval = setInterval(()​ => {
+            this.scrollContainer.scrollBy({ left:​ direction === 'right' ? 20 :​ -20 }​)​;​
+        }​, 50)​;​
+    }​,
+    stopAutoScroll()​ {
+        if (this.scrollInterval)​ {
+            clearInterval(this.scrollInterval)​;​
+            this.scrollInterval = null;​
+        }​
+    }​
+}​" x-init=​"scrollContainer = $refs.scrollContainer">​…​</div>​
+(index):3790 🔧 Manually initializing element: <div x-data=​"{ open:​ false, title:​ '', description:​ '', loading:​ false }​" @open-create-playlist-modal.window=​"open = true;​ title = '';​ description = ''" x-show=​"open" @keydown.escape.window=​"open = false" class=​"fixed inset-0 z-[9999]​ flex items-center justify-center p-4" data-teleport-target=​"true" style=​"display:​ none;​">​…​</div>​
+(index):3820 ✨ Alpine re-initialization complete
+(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+player-core.js?v=1764964188:232  GET https://muzibu.com.tr/api/muzibu/songs/last-played 404 (Not Found)
+preloadLastPlayedSong @ player-core.js?v=1764964188:232
+init @ player-core.js?v=1764964188:166
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1764964188:270 Failed to preload last played song: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+preloadLastPlayedSong @ player-core.js?v=1764964188:270
+await in preloadLastPlayedSong
+init @ player-core.js?v=1764964188:166
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+player-core.js?v=1764964188:223 Featured playlists loaded: 10
+  // İlk yüklemede HTML'i göster
+  console.log(document.querySelector('#spaContent').innerHTML.substring(0, 500));
+VM5869:2 
                 
-                                <div x-data="{ editContact: false }" data-has-alpine-state="true">
-                    
-                    <!--[if BLOCK]><![endif]-->                    <div x-show="!editContact" class="flex items-center justify-between py-3 px-4 mb-4 bg-spotify-gray rounded-xl">
-                        <p class="text-sm text-gray-400">
-                            <span class="text-white font-medium">Nurullah Okatan</span>
-                            <span class="mx-2">•</span>
-                            <span>nurullah@nurullah.net</span>
-                            <span class="mx-2">•</span>
-                            <span>05322160754</span>
-                        </p>
-                        <button @click="editContact = true" class="text-gray-400 hover:text-white p-1">
-                            <i class="fa-solid fa-pen text-xs"></i>
-                        </button>
-                    </div>
-                    <!--[if ENDBLOCK]><![endif]-->
+                <div class="px-6 py-8">
 
-                    
-                    <div x-show="editContact" class="bg-spotify-gray rounded-2xl p-5 mb-4" style="display: none;">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-sm font-medium text-gray-300">İletişim Bilgileri</span>
-                            <button x-show="contactFirstName &amp;&amp; contactLastName &amp;&amp; contactEmail &amp;&amp; contactPhone" @click="editContact = false" class="text-gray-400 hover:text-white">
-                                <i class="fa-solid fa-times"></i>
-                            </button>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">Ad <span class="text-red-500">*</span></label>
-                                <input type="text" x-model="contactFirstName" value="Nurullah" class="w-full px-3 py-2.5 bg-spotify-gray border border-white/10 rounded-lg text-white text-sm">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">Soyad <span class="text-red-500">*</span></label>
-                                <input type="text" x-model="contactLastName" value="Okatan" class="w-full px-3 py-2.5 bg-spotify-gray border border-white/10 rounded-lg text-white text-sm">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">E-posta <span class="text-red-500">*</span></label>
-                                <!--[if BLOCK]><![endif]-->                                    <input type="email" x-model="contactEmail" value="nurullah@nurullah.net" readonly="" class="w-full px-3 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-gray-400 text-sm cursor-not-allowed">
-                                <!--[if ENDBLOCK]><![endif]-->
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">Telefon <span class="text-red-500">*</span></label>
-                                <input type="tel" x-model="contactPhone" value="05322160754" placeholder="05XX XXX XX XX" class="w-full px-3 py-2.5 bg-spotify-gray border border-white/10 rounded-lg text-white text-sm">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                
-                <div class="bg-spotify-gray rounded-2xl p-6 mb-4">
-                    <div class="flex items-center justify-between mb-5">
-                        <h2 class="text-lg font-semibold text-white flex items-center">
-                            <i class="fa-solid fa-file-invoice text-gray-500 mr-3"></i>
-                            Fatura Bilgileri
-                        </h2>
-                        <button @click="editBillingProfileMode = false; showNewBillingProfile = !showNewBillingProfile; $wire.set('edit_billing_profile_id', null); $wire.set('new_billing_profile_title', ''); $wire.set('new_billing_profile_type', 'individual'); $wire.set('new_billing_profile_identity_number', ''); $wire.set('new_billing_profile_company_name', ''); $wire.set('new_billing_profile_tax_number', ''); $wire.set('new_billing_profile_tax_office', ''); newBillingProfileType = 'individual'; showTypeSwitchWarning = false; pendingType = null" class="text-sm text-gray-400 hover:text-white px-3 py-1.5 rounded-lg hover:bg-gray-700">
-                            <i class="fa-solid fa-plus mr-1"></i>Ekle
-                        </button>
-                    </div>
-
-                    
-                    <!--[if BLOCK]><![endif]-->                        <div class="space-y-2 mb-4">
-                            <!--[if BLOCK]><![endif]-->                                <div wire:key="billing-profile-1" class="relative group">
-                                    <label class="block cursor-pointer" @click="selectBillingProfile(1)">
-                                        <div class="p-3 rounded-xl border-2 transition-all border-gray-400 bg-spotify-gray" :class="billingProfileId == 1 ? 'border-gray-400 bg-spotify-gray' : 'border-white/10 hover:border-gray-500'">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex items-center gap-3 flex-1 min-w-0">
-                                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-700 flex-shrink-0">
-                                                        <i class="fa-solid fa-user text-gray-400"></i>
-                                                    </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <div class="flex items-center gap-2">
-                                                            <span class="text-sm font-medium text-white truncate">
-                                                                Nurullah 
-                                                            </span>
-                                                            <span class="text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded flex-shrink-0">
-                                                                Bireysel
-                                                            </span>
-                                                        </div>
-                                                        <p class="text-xs text-gray-500 mt-0.5 truncate">
-                                                            <!--[if BLOCK]><![endif]-->                                                                TC: 12312312312
-                                                            <!--[if ENDBLOCK]><![endif]-->
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div class="flex items-center gap-2 flex-shrink-0">
-                                                    
-                                                    <button @click.stop="
-                                                        editBillingProfileMode = true;
-                                                        showNewBillingProfile = true;
-                                                        newBillingProfileType = 'individual';
-                                                        $wire.set('edit_billing_profile_id', 1);
-                                                        $wire.set('new_billing_profile_title', 'Nurullah ');
-                                                        $wire.set('new_billing_profile_type', 'individual');
-                                                        $wire.set('new_billing_profile_identity_number', '12312312312');
-                                                        $wire.set('new_billing_profile_company_name', '');
-                                                        $wire.set('new_billing_profile_tax_number', '');
-                                                        $wire.set('new_billing_profile_tax_office', '');
-                                                    " class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-muzibu-coral/20 rounded text-blue-400 hover:text-blue-300" title="Düzenle">
-                                                        <i class="fas fa-edit text-xs"></i>
-                                                    </button>
-                                                    
-                                                    <button @click.stop="showDeleteWarning = true; deleteTargetId = 1; deleteTargetType = 'billing_profile'; deleteTargetTitle = 'Nurullah '" class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300" title="Sil">
-                                                        <i class="fas fa-trash text-xs"></i>
-                                                    </button>
-                                                    
-                                                    <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center border-white bg-white" :class="billingProfileId == 1 ? 'border-white bg-white' : 'border-gray-600'">
-                                                        <i class="fa-solid fa-check text-[10px] text-gray-900 opacity-100" :class="billingProfileId == 1 ? 'opacity-100' : 'opacity-0'"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                            <!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                    <!--[if ENDBLOCK]><![endif]-->
-
-                    
-                    <div x-show="showNewBillingProfile" x-transition="" class="space-y-4 pt-3 border-t border-white/10" style="display: none;">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-300">
-                                <span x-show="!editBillingProfileMode">Yeni Profil</span>
-                                <span x-show="editBillingProfileMode" style="display: none;">Profil Düzenle</span>
-                            </span>
-                            <button @click="showNewBillingProfile = false; editBillingProfileMode = false; $wire.set('edit_billing_profile_id', null); $wire.set('new_billing_profile_title', ''); $wire.set('new_billing_profile_type', 'individual'); $wire.set('new_billing_profile_identity_number', ''); $wire.set('new_billing_profile_company_name', ''); $wire.set('new_billing_profile_tax_number', ''); $wire.set('new_billing_profile_tax_office', ''); showTypeSwitchWarning = false; pendingType = null" class="text-gray-400 hover:text-white">
-                                <i class="fa-solid fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="flex gap-2">
-                            <button type="button" @click="checkTypeSwitch('individual')" :class="newBillingProfileType === 'individual' ? 'bg-gray-600 text-white' : 'bg-gray-700 text-gray-400'" class="flex-1 py-2.5 text-sm font-medium rounded-lg bg-gray-600 text-white">
-                                <i class="fa-solid fa-user mr-1.5"></i>Bireysel
-                            </button>
-                            <button type="button" @click="checkTypeSwitch('corporate')" :class="newBillingProfileType === 'corporate' ? 'bg-gray-600 text-white' : 'bg-gray-700 text-gray-400'" class="flex-1 py-2.5 text-sm font-medium rounded-lg bg-gray-700 text-gray-400">
-                                <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
-                            </button>
-                        </div>
-
-                        
-                        <div x-show="showTypeSwitchWarning" x-transition="" class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3" style="display: none;">
-                            <p class="text-sm text-yellow-400">
-                                <i class="fa-solid fa-exclamation-triangle mr-2"></i>
-                                <span x-show="pendingType === 'individual'" style="display: none;">
-                                    <strong>Bireysel'e</strong> geçerseniz <strong>Kurumsal bilgiler silinecektir</strong> (Şirket ünvanı, Vergi no, Vergi dairesi).
-                                </span>
-                                <span x-show="pendingType === 'corporate'" style="display: none;">
-                                    <strong>Kurumsal'a</strong> geçerseniz <strong>Bireysel bilgiler silinecektir</strong> (TC Kimlik No).
-                                </span>
-                            </p>
-                            <div class="flex gap-2 mt-3">
-                                <button type="button" @click="confirmTypeSwitch()" class="px-4 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded-lg transition-colors">
-                                    <i class="fa-solid fa-check mr-1"></i>Evet, Devam Et
-                                </button>
-                                <button type="button" @click="cancelTypeSwitch()" class="px-4 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors">
-                                    <i class="fa-solid fa-times mr-1"></i>İptal
-                                </button>
-                            </div>
-                        </div>
-                        <div x-show="newBillingProfileType === 'individual'">
-                            <label class="block text-xs text-gray-400 mb-1">Kayıt Adı <span class="text-gray-500">(Daha sonra kullanmak için)</span> <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="new_billing_profile_title" placeholder="Örn: Evim, İşyerim" class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm ">
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                        <div x-show="newBillingProfileType === 'individual'">
-                            <label class="block text-xs text-gray-400 mb-1">TC Kimlik No <span class="text-gray-500">(Opsiyonel)</span></label>
-                            <input type="text" wire:model="new_billing_profile_identity_number" placeholder="XXXXXXXXXXX" maxlength="11" class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm ">
-                            <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                        <div x-show="newBillingProfileType === 'corporate'" class="space-y-3" style="display: none;">
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">Şirket Ünvanı <span class="text-red-500">*</span></label>
-                                <input type="text" wire:model="new_billing_profile_company_name" placeholder="ABC Ltd. Şti." class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm ">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Vergi No <span class="text-red-500">*</span></label>
-                                    <input type="text" wire:model="new_billing_profile_tax_number" maxlength="10" class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm ">
-                                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Vergi Dairesi <span class="text-red-500">*</span></label>
-                                    <input type="text" wire:model="new_billing_profile_tax_office" class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm ">
-                                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex justify-end">
-                            <button wire:click="saveNewBillingProfile" wire:loading.attr="disabled" wire:target="saveNewBillingProfile" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 disabled:bg-gray-700 disabled:cursor-wait text-white text-sm font-medium rounded-lg">
-                                <span wire:loading.remove="" wire:target="saveNewBillingProfile"><i class="fa-solid fa-check mr-1"></i>Kaydet</span>
-                                <span wire:loading="" wire:target="saveNewBillingProfile"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Kaydediliyor...</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                </div>
-
-                
-                <!--[if BLOCK]><![endif]-->                
-                <div class="bg-spotify-gray rounded-2xl p-6 mb-4">
-                    <div class="flex items-center justify-between mb-5">
-                        <h2 class="text-lg font-semibold text-white flex items-center">
-                            <i class="fa-solid fa-file-invoice text-gray-500 mr-3"></i>
-                            Fatura Adresi
-                        </h2>
-                        <button @click="showBillingAddressForm = !showBillingAddressForm; showNewBillingForm = false" class="text-sm text-gray-400 hover:text-white px-3 py-1.5 rounded-lg hover:bg-gray-700">
-                            <i class="fa-solid fa-pen mr-1"></i>Değiştir
-                        </button>
-                    </div>
-
-                    
-                    <div x-show="!showBillingAddressForm" style="display: none;">
-                        <!--[if BLOCK]><![endif]-->                            <p class="text-sm text-gray-400">
-                                <span class="text-white font-medium">Türk Bilişim</span>
-                                <span class="mx-2">•</span>
-                                Manzara Adalar, Kartal/İstanbul
-                            </p>
-                        <!--[if ENDBLOCK]><![endif]-->
-                    </div>
-
-                    
-                    <div x-show="showBillingAddressForm" class="space-y-3">
-                        <!--[if BLOCK]><![endif]-->                            <div class="space-y-2">
-                                <!--[if BLOCK]><![endif]-->                                    <label class="block cursor-pointer" @click="billingAddressId = 1">
-                                        <div class="p-3 rounded-xl border-2 transition-all border-gray-400 bg-spotify-gray" :class="billingAddressId == 1 ? 'border-gray-400 bg-spotify-gray' : 'border-white/10 hover:border-gray-500'">
-                                            <div class="flex items-center justify-between">
-                                                <div>
-                                                    <span class="text-sm font-medium text-white">Türk Bilişim</span>
-                                                    <p class="text-xs text-gray-500 mt-1">Manzara Adalar, Kartal / İstanbul</p>
-                                                </div>
-                                                <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center border-white bg-white" :class="billingAddressId == 1 ? 'border-white bg-white' : 'border-gray-600'">
-                                                    <i class="fa-solid fa-check text-[10px] text-gray-900 opacity-100" :class="billingAddressId == 1 ? 'opacity-100' : 'opacity-0'"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </label>
-                                <!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                        <!--[if ENDBLOCK]><![endif]-->
-
-                        <button x-show="!showNewBillingForm" @click="showNewBillingForm = true" class="text-sm text-gray-400 hover:text-white">
-                            <i class="fa-solid fa-plus mr-1"></i>Adres Ekle
-                        </button>
-
-                        
-                        <div x-show="showNewBillingForm" x-transition="" class="space-y-3 pt-3 border-t border-white/10" style="display: none;">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-gray-300">Yeni Adres</span>
-                                <button @click="showNewBillingForm = false" class="text-gray-400 hover:text-white" title="Kapat">
-                                    <i class="fa-solid fa-times"></i>
-                                </button>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">Adres Adı <span class="text-red-500">*</span></label>
-                                <input type="text" wire:model="new_billing_address_title" placeholder="Örn: Şirket" class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm ">
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
-                                    <select wire:model="new_billing_address_city" id="billing_city" @change="
-                                                fetch('/api/get-districts/' + $event.target.value)
-                                                    .then(r =&gt; r.json())
-                                                    .then(data =&gt; {
-                                                        let select = document.getElementById('billing_district');
-                                                        select.innerHTML = '&lt;option value=\'\'&gt;Seçin&lt;/option&gt;';
-                                                        data.forEach(d =&gt; {
-                                                            select.innerHTML += '&lt;option value=\'' + d + '\'&gt;' + d + '&lt;/option&gt;';
-                                                        });
-                                                    });
-                                            " class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm ">
-                                        <option value="">Seçin</option>
-                                        <!--[if BLOCK]><![endif]-->                                            <option value="Adana">Adana</option>
-                                                                                    <option value="Adıyaman">Adıyaman</option>
-                                                                                    <option value="Afyonkarahisar">Afyonkarahisar</option>
-                                                                                    <option value="Ağrı">Ağrı</option>
-                                                                                    <option value="Aksaray">Aksaray</option>
-                                                                                    <option value="Amasya">Amasya</option>
-                                                                                    <option value="Ankara">Ankara</option>
-                                                                                    <option value="Antalya">Antalya</option>
-                                                                                    <option value="Ardahan">Ardahan</option>
-                                                                                    <option value="Artvin">Artvin</option>
-                                                                                    <option value="Aydın">Aydın</option>
-                                                                                    <option value="Balıkesir">Balıkesir</option>
-                                                                                    <option value="Bartın">Bartın</option>
-                                                                                    <option value="Batman">Batman</option>
-                                                                                    <option value="Bayburt">Bayburt</option>
-                                                                                    <option value="Bilecik">Bilecik</option>
-                                                                                    <option value="Bingöl">Bingöl</option>
-                                                                                    <option value="Bitlis">Bitlis</option>
-                                                                                    <option value="Bolu">Bolu</option>
-                                                                                    <option value="Burdur">Burdur</option>
-                                                                                    <option value="Bursa">Bursa</option>
-                                                                                    <option value="Çanakkale">Çanakkale</option>
-                                                                                    <option value="Çankırı">Çankırı</option>
-                                                                                    <option value="Çorum">Çorum</option>
-                                                                                    <option value="Denizli">Denizli</option>
-                                                                                    <option value="Diyarbakır">Diyarbakır</option>
-                                                                                    <option value="Düzce">Düzce</option>
-                                                                                    <option value="Edirne">Edirne</option>
-                                                                                    <option value="Elazığ">Elazığ</option>
-                                                                                    <option value="Erzincan">Erzincan</option>
-                                                                                    <option value="Erzurum">Erzurum</option>
-                                                                                    <option value="Eskişehir">Eskişehir</option>
-                                                                                    <option value="Gaziantep">Gaziantep</option>
-                                                                                    <option value="Giresun">Giresun</option>
-                                                                                    <option value="Gümüşhane">Gümüşhane</option>
-                                                                                    <option value="Hakkari">Hakkari</option>
-                                                                                    <option value="Hatay">Hatay</option>
-                                                                                    <option value="Iğdır">Iğdır</option>
-                                                                                    <option value="Isparta">Isparta</option>
-                                                                                    <option value="İstanbul">İstanbul</option>
-                                                                                    <option value="İzmir">İzmir</option>
-                                                                                    <option value="Kahramanmaraş">Kahramanmaraş</option>
-                                                                                    <option value="Karabük">Karabük</option>
-                                                                                    <option value="Karaman">Karaman</option>
-                                                                                    <option value="Kars">Kars</option>
-                                                                                    <option value="Kastamonu">Kastamonu</option>
-                                                                                    <option value="Kayseri">Kayseri</option>
-                                                                                    <option value="Kilis">Kilis</option>
-                                                                                    <option value="Kırıkkale">Kırıkkale</option>
-                                                                                    <option value="Kırklareli">Kırklareli</option>
-                                                                                    <option value="Kırşehir">Kırşehir</option>
-                                                                                    <option value="Kocaeli">Kocaeli</option>
-                                                                                    <option value="Konya">Konya</option>
-                                                                                    <option value="Kütahya">Kütahya</option>
-                                                                                    <option value="Malatya">Malatya</option>
-                                                                                    <option value="Manisa">Manisa</option>
-                                                                                    <option value="Mardin">Mardin</option>
-                                                                                    <option value="Mersin">Mersin</option>
-                                                                                    <option value="Muğla">Muğla</option>
-                                                                                    <option value="Muş">Muş</option>
-                                                                                    <option value="Nevşehir">Nevşehir</option>
-                                                                                    <option value="Niğde">Niğde</option>
-                                                                                    <option value="Ordu">Ordu</option>
-                                                                                    <option value="Osmaniye">Osmaniye</option>
-                                                                                    <option value="Rize">Rize</option>
-                                                                                    <option value="Sakarya">Sakarya</option>
-                                                                                    <option value="Samsun">Samsun</option>
-                                                                                    <option value="Şanlıurfa">Şanlıurfa</option>
-                                                                                    <option value="Siirt">Siirt</option>
-                                                                                    <option value="Sinop">Sinop</option>
-                                                                                    <option value="Sivas">Sivas</option>
-                                                                                    <option value="Şırnak">Şırnak</option>
-                                                                                    <option value="Tekirdağ">Tekirdağ</option>
-                                                                                    <option value="Tokat">Tokat</option>
-                                                                                    <option value="Trabzon">Trabzon</option>
-                                                                                    <option value="Tunceli">Tunceli</option>
-                                                                                    <option value="Uşak">Uşak</option>
-                                                                                    <option value="Van">Van</option>
-                                                                                    <option value="Yalova">Yalova</option>
-                                                                                    <option value="Yozgat">Yozgat</option>
-                                                                                    <option value="Zonguldak">Zonguldak</option>
-                                        <!--[if ENDBLOCK]><![endif]-->
-                                    </select>
-                                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                    <select wire:model="new_billing_address_district" id="billing_district" class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm ">
-                                        <option value="">Önce il seçin</option>
-                                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                                    </select>
-                                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1">Posta Kodu</label>
-                                    <input type="text" wire:model="new_billing_address_postal" class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs text-gray-400 mb-1">Adres <span class="text-red-500">*</span></label>
-                                <textarea wire:model="new_billing_address_line" rows="2" placeholder="Mahalle, sokak, bina no, daire" class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm resize-none "></textarea>
-                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                            </div>
-                            <div class="flex justify-end">
-                                <button wire:click="saveNewAddress('billing')" wire:loading.attr="disabled" wire:target="saveNewAddress" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 disabled:bg-gray-700 disabled:cursor-wait text-white text-sm font-medium rounded-lg">
-                                    <span wire:loading.remove="" wire:target="saveNewAddress"><i class="fa-solid fa-check mr-1"></i>Kaydet</span>
-                                    <span wire:loading="" wire:target="saveNewAddress"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Kaydediliyor...</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!--[if BLOCK]><![endif]-->                        <div x-show="!showNewBillingForm" class="flex justify-end pt-3">
-                            <button @click="showBillingAddressForm = false" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white text-sm font-medium rounded-lg">
-                                <i class="fa-solid fa-check mr-1"></i>Tamam
-                            </button>
-                        </div>
-                        <!--[if ENDBLOCK]><![endif]-->
-                    </div>
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                </div>
-                <!--[if ENDBLOCK]><![endif]-->
-
-            </div>
-
-            
-            <div style="flex: 1; min-width: 280px;">
-                <div class="bg-spotify-gray rounded-2xl sticky top-6 overflow-hidden">
-
-                    
-                    <div class="p-5 border-b border-white/10 bg-gray-900/50">
-                        <h2 class="text-lg font-semibold text-white flex items-center">
-                            <i class="fa-solid fa-receipt text-gray-500 mr-3"></i>
-                            Sipariş Özeti
-                        </h2>
-                    </div>
-
-                    
-                    <div class="p-5 border-b border-white/10 space-y-3">
-                        <div class="flex justify-between text-gray-400">
-                            <span>Ara Toplam (1 Ürün)</span>
-                            <span class="font-medium text-white">708 ₺</span>
-                        </div>
-                        <div class="flex justify-between text-gray-400">
-                            <span>KDV (%20)</span>
-                            <span class="font-medium text-white">142 ₺</span>
-                        </div>
-                        <div class="flex justify-between pt-3 border-t border-white/10">
-                            <span class="text-lg font-bold text-white">Toplam</span>
-                            <span class="text-xl font-bold text-white">849 ₺</span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="p-5 border-b border-white/10">
-                        <h3 class="text-sm font-semibold text-white mb-4">
-                            <i class="fa-solid fa-wallet text-gray-500 mr-2"></i>Ödeme Yöntemi
-                        </h3>
-                        <div class="space-y-3">
-                            <!--[if BLOCK]><![endif]-->                                <div @click="selectedPaymentMethodId = 1" class="cursor-pointer">
-                                    <div class="p-4 rounded-xl border-2 transition-all border-muzibu-coral bg-muzibu-coral/10" :class="selectedPaymentMethodId === 1 ? 'border-muzibu-coral bg-muzibu-coral/10' : 'border-white/10 hover:border-gray-500'">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors bg-muzibu-coral/20" :class="selectedPaymentMethodId === 1 ? 'bg-muzibu-coral/20' : 'bg-gray-700'">
-                                                <i class="fa-solid fa-credit-card text-muzibu-coral" :class="selectedPaymentMethodId === 1 ? 'text-muzibu-coral' : 'text-gray-400'"></i>
-                                            </div>
-                                            <div class="flex-1">
-                                                <span class="text-sm font-semibold text-muzibu-coral" :class="selectedPaymentMethodId === 1 ? 'text-muzibu-coral' : 'text-white'">Kredi Kartı</span>
-                                                <!--[if BLOCK]><![endif]-->                                                    <p class="text-xs text-gray-500">Visa, Mastercard, Troy</p>
-                                                <!--[if ENDBLOCK]><![endif]-->
-                                            </div>
-                                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all border-muzibu-coral bg-muzibu-coral" :class="selectedPaymentMethodId === 1 ? 'border-muzibu-coral bg-muzibu-coral' : 'border-gray-600'">
-                                                <i class="fa-solid fa-check text-[10px] text-white" x-show="selectedPaymentMethodId === 1"></i>
-                                            </div>
-                                        </div>
-                                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                                    </div>
-                                </div>
-                                                            <div @click="selectedPaymentMethodId = 2" class="cursor-pointer">
-                                    <div class="p-4 rounded-xl border-2 transition-all border-white/10 hover:border-gray-500" :class="selectedPaymentMethodId === 2 ? 'border-muzibu-coral bg-muzibu-coral/10' : 'border-white/10 hover:border-gray-500'">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors bg-gray-700" :class="selectedPaymentMethodId === 2 ? 'bg-muzibu-coral/20' : 'bg-gray-700'">
-                                                <i class="fa-solid fa-money-bill-transfer text-gray-400" :class="selectedPaymentMethodId === 2 ? 'text-muzibu-coral' : 'text-gray-400'"></i>
-                                            </div>
-                                            <div class="flex-1">
-                                                <span class="text-sm font-semibold text-white" :class="selectedPaymentMethodId === 2 ? 'text-muzibu-coral' : 'text-white'">Havale / EFT</span>
-                                                <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                                            </div>
-                                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all border-gray-600" :class="selectedPaymentMethodId === 2 ? 'border-muzibu-coral bg-muzibu-coral' : 'border-gray-600'">
-                                                <i class="fa-solid fa-check text-[10px] text-white" x-show="selectedPaymentMethodId === 2" style="display: none;"></i>
-                                            </div>
-                                        </div>
-                                        <!--[if BLOCK]><![endif]-->                                            <div x-show="selectedPaymentMethodId === 2" class="mt-4 pt-4 border-t border-white/10 text-sm text-gray-400" style="display: none;">
-                                                <p><strong class="text-gray-200">Banka:</strong> Türkiye İş Bankası</p>
-                                                <p><strong class="text-gray-200">Hesap:</strong> Muzibu</p>
-                                                <p class="mt-2"><strong class="text-gray-200">IBAN:</strong></p>
-                                                <code class="block bg-gray-700 px-3 py-2 rounded-lg mt-1 text-xs font-mono">TR51 0006 4000 0011 0372 5092 58</code>
-                                            </div>
-                                        <!--[if ENDBLOCK]><![endif]-->
-                                    </div>
-                                </div>
-                            <!--[if ENDBLOCK]><![endif]-->
-                        </div>
-                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                    </div>
-
-                    
-                    <div class="p-5 border-b border-white/10">
-                        <label class="flex items-start gap-3 cursor-pointer">
-                            <input type="checkbox" wire:model="agree_all" class="w-5 h-5 mt-0.5 rounded border-gray-600 text-gray-400 focus:ring-gray-500 bg-gray-700">
-                            <span class="text-sm text-gray-400 leading-relaxed">
-                                <a href="/on-bilgilendirme" target="_blank" class="text-white hover:underline">Ön Bilgilendirme Formu</a>'nu ve
-                                <a href="/mesafeli-satis" target="_blank" class="text-white hover:underline">Mesafeli Satış Sözleşmesi</a>'ni kabul ediyorum.
-                                <span class="text-red-500">*</span>
-                            </span>
-                        </label>
-                        <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-                    </div>
-
-                    
-                    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-
-                    
-                    <div class="p-5">
-                        <button wire:click="proceedToPayment" wire:loading.attr="disabled" disabled="" class="w-full text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 text-lg bg-gray-600 cursor-not-allowed">
-                            <i class="fa-solid fa-lock" wire:loading.remove=""></i>
-                            <i class="fa-solid fa-spinner fa-spin" wire:loading=""></i>
-                            <span wire:loading.remove="">Ödemeye Geç</span>
-                            <span wire:loading="">İşleniyor...</span>
-                        </button>
-                        <p class="text-center text-xs text-gray-500 mt-4 flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-shield-halved text-green-500"></i>
-                            256-bit SSL ile güvenli ödeme
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
+<div class="mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                <div class="group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16">
+            <div class="w-16 h-16 flex-shrink-0">
+                                    <img src="https://muzibu.com.tr/thumbmaker?src=https%3A%2F%2Fmuzibu.com.tr%2Fstorage%2Ftenant1001%2F2
+undefined

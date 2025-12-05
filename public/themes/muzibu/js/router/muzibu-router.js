@@ -48,6 +48,14 @@ window.muzibuRouter = {
     async navigateTo(url, pushState = true) {
         console.log('🔄 Navigating to:', url);
 
+        // 🏠 Ana sayfa için full page reload (SPA değil, Laravel blade render)
+        if (url === '/' || url === '') {
+            if (pushState) {
+                window.location.href = '/';
+            }
+            return;
+        }
+
         // Loading başlat
         this.isLoading = true;
         this.contentLoaded = false;
@@ -118,6 +126,27 @@ window.muzibuRouter = {
         const mainContent = document.querySelector('#mainContent .spa-content-wrapper');
         if (mainContent) {
             mainContent.innerHTML = data.html;
+
+            // 🎯 Alpine.js re-initialize (yeni eklenen element'ler için)
+            if (window.Alpine) {
+                // Alpine v3+ için nextTick kullanarak DOM'un hazır olmasını bekle
+                setTimeout(() => {
+                    try {
+                        // Alpine.initTree yerine destroyTree + initTree kombinasyonu
+                        window.Alpine.destroyTree(mainContent);
+                        window.Alpine.initTree(mainContent);
+                        console.log('✨ Alpine re-initialized for new content');
+                    } catch (e) {
+                        console.warn('Alpine init error:', e);
+                        // Fallback: Tüm x-data elementleri için manuel init
+                        mainContent.querySelectorAll('[x-data]').forEach(el => {
+                            if (!el.__x) {
+                                window.Alpine.initTree(el);
+                            }
+                        });
+                    }
+                }, 50);
+            }
         } else {
             console.warn('⚠️ .spa-content-wrapper bulunamadı!');
         }

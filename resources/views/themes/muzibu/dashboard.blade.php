@@ -78,26 +78,26 @@
         <h2 class="text-xl font-bold text-white mb-6">Hızlı İşlemler</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button @click.prevent="navigateTo('/'); userMenuOpen = false"
-                    class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-lg transition-all duration-300 group">
+            <a href="/" wire:navigate
+                    class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-home text-3xl text-muzibu-coral mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Anasayfa</h3>
                 <p class="text-muzibu-text-gray text-sm">Müzik keşfet</p>
-            </button>
+            </a>
 
-            <button @click.prevent="navigateTo('/profile'); userMenuOpen = false"
-                    class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-lg transition-all duration-300 group">
+            <a href="/profile" wire:navigate
+                    class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-user text-3xl text-muzibu-coral mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Profil</h3>
                 <p class="text-muzibu-text-gray text-sm">Bilgilerini düzenle</p>
-            </button>
+            </a>
 
-            <button @click.prevent="navigateTo('/subscription/plans'); userMenuOpen = false"
-                    class="p-6 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 hover:border-yellow-500/50 rounded-lg transition-all duration-300 group">
+            <a href="/subscription/plans" wire:navigate
+                    class="block p-6 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 hover:border-yellow-500/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-crown text-3xl text-yellow-400 mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Premium'a Geç</h3>
                 <p class="text-yellow-400 text-sm">Sınırsız müzik</p>
-            </button>
+            </a>
         </div>
     </div>
 
@@ -107,36 +107,36 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {{-- Profile Edit --}}
-            <button @click.prevent="navigateTo('/profile')"
-                    class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-lg transition-all duration-300 group">
+            <a href="/profile" wire:navigate
+                    class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-user-pen text-2xl text-muzibu-coral mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Profil Bilgileri</h3>
                 <p class="text-muzibu-text-gray text-sm">Ad, soyad, email</p>
-            </button>
+            </a>
 
             {{-- Avatar --}}
-            <button @click.prevent="navigateTo('/profile/avatar')"
-                    class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/50 rounded-lg transition-all duration-300 group">
+            <a href="/profile/avatar" wire:navigate
+                    class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-camera text-2xl text-purple-400 mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Avatar</h3>
                 <p class="text-muzibu-text-gray text-sm">Profil fotoğrafı</p>
-            </button>
+            </a>
 
             {{-- Password --}}
-            <button @click.prevent="navigateTo('/profile/password')"
-                    class="p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-yellow-500/50 rounded-lg transition-all duration-300 group">
+            <a href="/profile/password" wire:navigate
+                    class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-yellow-500/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-key text-2xl text-yellow-400 mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Şifre</h3>
                 <p class="text-muzibu-text-gray text-sm">Şifre değiştir</p>
-            </button>
+            </a>
 
             {{-- Delete Account --}}
-            <button @click.prevent="navigateTo('/profile/delete')"
-                    class="p-6 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 rounded-lg transition-all duration-300 group">
+            <a href="/profile/delete" wire:navigate
+                    class="block p-6 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-trash-alt text-2xl text-red-400 mb-3"></i>
                 <h3 class="text-red-400 font-semibold mb-2">Hesabı Sil</h3>
                 <p class="text-red-400/70 text-sm">Kalıcı olarak sil</p>
-            </button>
+            </a>
         </div>
     </div>
 </div>

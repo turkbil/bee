@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('contextMenu', {
+                visible: false,
+                x: 0,
+                y: 0,
+                openContextMenu(event, type, data) {
+                    console.log('🎯 Context Menu Triggered!', { type, data });
+                    event.preventDefault();
+                    this.visible = true;
+                    this.x = event.clientX;
+                    this.y = event.clientY;
+                    alert('Context menu açıldı: ' + data.title);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Context Menu Test</h1>
+    
+    <div style="padding: 20px; background: #eee; margin: 20px;">
+        <h2>Test 1: Basit Div</h2>
+        <div 
+            x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'test', {id: 1, title: 'Test Item'})"
+            style="padding: 20px; background: white; cursor: pointer;">
+            Bu div'e sağ tıkla
+        </div>
+    </div>
+
+    <div style="padding: 20px; background: #eee; margin: 20px;">
+        <h2>Test 2: Link (a tag)</h2>
+        <a 
+            href="#"
+            x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'test', {id: 2, title: 'Link Item'})"
+            style="display: block; padding: 20px; background: white; text-decoration: none; color: black;">
+            Bu link'e sağ tıkla
+        </a>
+    </div>
+
+    <div style="padding: 20px; background: #eee; margin: 20px;">
+        <h2>Test 3: Wire Navigate Simülasyonu</h2>
+        <a 
+            href="/albums/test"
+            data-wire-navigate
+            x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'test', {id: 3, title: 'Wire Nav Item'})"
+            style="display: block; padding: 20px; background: white; text-decoration: none; color: black;">
+            Bu wire:navigate link'e sağ tıkla
+        </a>
+    </div>
+
+    <div x-show="$store.contextMenu.visible" 
+         style="position: fixed; background: white; border: 1px solid black; padding: 10px; z-index: 9999;"
+         :style="`left: ${$store.contextMenu.x}px; top: ${$store.contextMenu.y}px`"
+         x-on:click.outside="$store.contextMenu.visible = false">
+        <div>Context Menu Açık!</div>
+        <button x-on:click="$store.contextMenu.visible = false">Kapat</button>
+    </div>
+</body>
+</html>

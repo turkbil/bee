@@ -156,7 +156,7 @@
             <!-- Playlistler -->
             <section>
                 <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <i class="fas fa-list-music text-purple-500"></i>
+                    <i class="fas fa-list text-purple-500"></i>
                     Playlistler
                 </h2>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -168,16 +168,21 @@
                              class="card-hover bg-gray-800 rounded-lg p-4 cursor-pointer relative group">
                             <div class="relative mb-3">
                                 <div class="aspect-square bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-list-music text-white text-4xl opacity-60"></i>
+                                    <i class="fas fa-list text-white text-4xl opacity-60"></i>
                                 </div>
                                 <!-- Play Button (Hover) -->
                                 <button @click="playPlaylist(playlist)"
                                         class="play-button-hover absolute bottom-2 right-2 bg-orange-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg opacity-0 scale-75">
                                     <i class="fas fa-play ml-0.5 text-lg"></i>
                                 </button>
-                                <!-- Owner Badge -->
-                                <div x-show="playlist.isMine" class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                                <!-- Badge -->
+                                <div x-show="playlist.isMine" class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                                     <i class="fas fa-user"></i>
+                                    <span>Benim</span>
+                                </div>
+                                <div x-show="!playlist.isMine" class="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Sistem</span>
                                 </div>
                             </div>
                             <h3 class="font-semibold text-white truncate" x-text="playlist.title"></h3>
@@ -200,10 +205,10 @@
              x-transition:leave-start="opacity-100 scale-100"
              x-transition:leave-end="opacity-0 scale-95"
              :style="`position: fixed; left: ${contextMenu.x}px; top: ${contextMenu.y}px; z-index: 9999;`"
-             class="bg-gray-800 rounded-lg shadow-2xl border border-white/20 py-2 min-w-[250px] animate-fade-in-up">
+             class="bg-gray-800 rounded-lg shadow-2xl border border-white/20 py-1 min-w-[280px] max-h-[500px] overflow-y-auto animate-fade-in-up">
 
-            <!-- Context Menu Header -->
-            <div class="px-4 py-2 border-b border-white/10">
+            <!-- Context Menu Header (Kompakt) -->
+            <div class="px-3 py-1.5 border-b border-white/10">
                 <p class="text-xs text-gray-400 uppercase font-semibold" x-text="contextMenu.type"></p>
                 <p class="text-sm text-white font-semibold truncate" x-text="contextMenu.data?.title"></p>
             </div>
@@ -212,15 +217,35 @@
             <template x-for="(action, index) in contextMenu.actions" :key="index">
                 <div>
                     <!-- Divider -->
-                    <div x-show="action.divider" class="border-t border-white/10 my-2"></div>
+                    <div x-show="action.divider" class="border-t border-white/10 my-1"></div>
 
-                    <!-- Action Button -->
-                    <button x-show="!action.divider"
+                    <!-- Row (2 buttons side by side) -->
+                    <div x-show="!action.divider && action.row"
+                         class="grid grid-cols-2 gap-1 px-1">
+                        <template x-for="btn in action.buttons" :key="btn.action">
+                            <button @click="executeAction(btn.action); contextMenu.visible = false"
+                                    :class="btn.debug ? 'bg-orange-900/20 hover:bg-orange-900/40' : 'hover:bg-white/10'"
+                                    class="px-2 py-1.5 rounded transition-all duration-200 flex items-center justify-start gap-2 text-white text-xs group">
+                                <i :class="`fas ${btn.icon} transition-colors text-xs`"
+                                   :class="btn.debug ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500'"></i>
+                                <span class="group-hover:translate-x-0.5 transition-transform truncate"
+                                      :class="btn.debug ? 'text-orange-300 font-mono text-[10px]' : ''"
+                                      x-text="btn.label"></span>
+                            </button>
+                        </template>
+                    </div>
+
+                    <!-- Single Action Button -->
+                    <button x-show="!action.divider && !action.row"
                             @click="executeAction(action.action); contextMenu.visible = false"
-                            class="w-full px-4 py-2.5 text-left hover:bg-white/10 transition-all duration-200 flex items-center gap-3 text-white text-sm group">
-                        <i :class="`fas ${action.icon} w-5 text-gray-400 group-hover:text-orange-500 transition-colors`"></i>
-                        <span class="group-hover:translate-x-0.5 transition-transform" x-text="action.label"></span>
-                        <i x-show="action.submenu" class="fas fa-chevron-right ml-auto text-xs text-gray-500"></i>
+                            :class="action.debug ? 'bg-orange-900/20 hover:bg-orange-900/40' : 'hover:bg-white/10'"
+                            class="w-full px-3 py-1.5 text-left transition-all duration-200 flex items-center gap-2 text-white text-xs group">
+                        <i :class="`fas ${action.icon} transition-colors text-xs`"
+                           :class="action.debug ? 'text-orange-500' : 'text-gray-400 group-hover:text-orange-500'"></i>
+                        <span class="group-hover:translate-x-0.5 transition-transform"
+                              :class="action.debug ? 'text-orange-300 font-mono text-[10px]' : ''"
+                              x-text="action.label"></span>
+                        <i x-show="action.submenu" class="fas fa-chevron-right ml-auto text-[10px] text-gray-500"></i>
                     </button>
                 </div>
             </template>
@@ -266,7 +291,7 @@
                                 <i :class="{
                                     'fa-music': contextMenu.type === 'song',
                                     'fa-compact-disc': contextMenu.type === 'album',
-                                    'fa-list-music': contextMenu.type === 'playlist'
+                                    'fa-list': contextMenu.type === 'playlist'
                                 }" class="fas text-white text-2xl opacity-80"></i>
                             </div>
                         </div>
@@ -281,7 +306,7 @@
                                 <i :class="{
                                     'fa-music': contextMenu.type === 'song',
                                     'fa-compact-disc': contextMenu.type === 'album',
-                                    'fa-list-music': contextMenu.type === 'playlist'
+                                    'fa-list': contextMenu.type === 'playlist'
                                 }" class="fas mr-1"></i>
                                 <span x-text="{
                                     'song': 'Şarkıya Puan Ver',
@@ -357,7 +382,8 @@
                         }" class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0">
                             <i :class="{
                                 'fa-music': contextMenu.type === 'song',
-                                'fa-compact-disc': contextMenu.type === 'album'
+                                'fa-compact-disc': contextMenu.type === 'album',
+                                'fa-list': contextMenu.type === 'playlist'
                             }" class="fas text-white text-xl opacity-80"></i>
                         </div>
                         <div class="flex-1 min-w-0">
@@ -368,7 +394,7 @@
                 </div>
 
                 <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <i class="fas fa-list-music text-orange-500"></i>
+                    <i class="fas fa-list text-orange-500"></i>
                     Hangi Playliste Eklemek İstersiniz?
                 </h3>
 
@@ -379,16 +405,19 @@
                     Yeni Playlist Oluştur
                 </button>
 
-                <!-- Playlists -->
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+                <!-- Playlists (List View) -->
+                <div class="max-h-96 overflow-y-auto bg-gray-900 rounded-lg">
                     <template x-for="playlist in playlists" :key="playlist.id">
                         <button @click="addToPlaylist(playlist)"
-                                class="group bg-gray-900 hover:bg-gray-700 rounded-lg p-4 transition-all duration-300 text-left">
-                            <div class="aspect-square bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg mb-3 flex items-center justify-center">
-                                <i class="fas fa-list-music text-white text-2xl opacity-60"></i>
+                                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-700 transition-colors text-left border-b border-white/5 last:border-0">
+                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-list text-white text-sm opacity-80"></i>
                             </div>
-                            <h4 class="text-white font-semibold truncate" x-text="playlist.title"></h4>
-                            <p class="text-xs text-gray-400" x-text="playlist.songCount + ' şarkı'"></p>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-white font-semibold truncate" x-text="playlist.title"></h4>
+                                <p class="text-xs text-gray-400" x-text="playlist.songCount + ' şarkı'"></p>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-500 text-xs"></i>
                         </button>
                     </template>
                 </div>
@@ -427,6 +456,12 @@
                     { id: 2, title: 'Romantik Şarkılar', songCount: 32, isMine: true },
                     { id: 3, title: 'Yolculuk Mix', songCount: 28, isMine: false },
                     { id: 4, title: 'Sabah Motivasyonu', songCount: 19, isMine: true },
+                    { id: 5, title: 'Akşam Dinleti', songCount: 67, isMine: true },
+                    { id: 6, title: 'Spor Müzikleri', songCount: 54, isMine: true },
+                    { id: 7, title: 'Türkçe Pop Hits', songCount: 89, isMine: false },
+                    { id: 8, title: 'Nostalji 90\'lar', songCount: 103, isMine: true },
+                    { id: 9, title: 'Chill Vibes', songCount: 41, isMine: true },
+                    { id: 10, title: 'Konsantrasyon', songCount: 25, isMine: true },
                 ],
 
                 // Context Menu State
@@ -462,16 +497,9 @@
 
                 // Methods
                 initContextMenu() {
-                    // Global context menu prevention
-                    document.addEventListener('contextmenu', (e) => {
-                        // Allow context menu for inputs (paste)
-                        if (e.target.matches('input, textarea, [contenteditable="true"]')) {
-                            return;
-                        }
-
-                        // Prevent browser context menu
-                        e.preventDefault();
-                    }, false);
+                    // Context menu sadece kartlarda engellensin
+                    // Diğer yerlerde (boş alan, header, footer) Chrome'un "İncele" çalışsın
+                    // @contextmenu.prevent.stop zaten kartlara eklendi, buradan global engeli kaldırıyoruz
                 },
 
                 handleTouchStart(event, type, data) {
@@ -489,10 +517,10 @@
 
                     // Start timer for long press (500ms)
                     this.touchTimer = setTimeout(() => {
-                        // Trigger context menu
+                        // Trigger context menu (clientX/clientY kullan, position: fixed için)
                         const fakeEvent = {
-                            pageX: touch.pageX,
-                            pageY: touch.pageY,
+                            clientX: touch.clientX,
+                            clientY: touch.clientY,
                             preventDefault: () => {}
                         };
                         this.openContextMenu(fakeEvent, type, data);
@@ -538,13 +566,18 @@
                     const menuWidth = 250;
                     const menuHeight = 400;
 
-                    this.contextMenu.x = (event.pageX + menuWidth > window.innerWidth)
-                        ? window.innerWidth - menuWidth - 10
-                        : event.pageX;
+                    // position: fixed kullanıldığı için clientX/clientY kullan (viewport bazlı)
+                    const x = event.clientX || event.pageX;
+                    const y = event.clientY || event.pageY;
 
-                    this.contextMenu.y = (event.pageY + menuHeight > window.innerHeight)
+                    // Viewport sınırlarını kontrol et (sağ/alt taşma önle)
+                    this.contextMenu.x = (x + menuWidth > window.innerWidth)
+                        ? window.innerWidth - menuWidth - 10
+                        : x;
+
+                    this.contextMenu.y = (y + menuHeight > window.innerHeight)
                         ? window.innerHeight - menuHeight - 10
-                        : event.pageY;
+                        : y;
 
                     this.contextMenu.type = type;
                     this.contextMenu.data = data;
@@ -555,38 +588,54 @@
                 getActionsForType(type, data) {
                     const actions = {
                         song: [
-                            { icon: 'fa-play', label: 'Çal', action: 'play' },
-                            { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
-                            { icon: 'fa-heart', label: data.isFavorite ? 'Favorilerden Çıkar' : 'Favorilere Ekle', action: 'toggleFavorite' },
-                            { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                            // Row 1: Çal + Sıraya Ekle (yanyana)
+                            { row: true, buttons: [
+                                { icon: 'fa-play', label: 'Çal', action: 'play' },
+                                { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' }
+                            ]},
+                            // Row 2: Favori + Puan Ver (yanyana)
+                            { row: true, buttons: [
+                                { icon: 'fa-heart', label: data.isFavorite ? 'Çıkar' : 'Favori', action: 'toggleFavorite' },
+                                { icon: 'fa-star', label: 'Puan Ver', action: 'rate' }
+                            ]},
                             { divider: true },
-                            { icon: 'fa-list-music', label: 'Playliste Ekle', action: 'addToPlaylist', submenu: true },
-                            { divider: true },
-                            { icon: 'fa-compact-disc', label: 'Albüme Git', action: 'goToAlbum' },
-                            { icon: 'fa-user-music', label: 'Sanatçıya Git', action: 'goToArtist' },
-                            { icon: 'fa-share-alt', label: 'Paylaş', action: 'share' }
+                            { icon: 'fa-list', label: 'Playliste Ekle', action: 'addToPlaylist', submenu: true },
+                            { icon: 'fa-compact-disc', label: 'Albüme Git', action: 'goToAlbum' }
                         ],
                         album: [
-                            { icon: 'fa-play', label: 'Çal', action: 'play' },
-                            { icon: 'fa-plus-circle', label: 'Sıraya Ekle (Tüm)', action: 'addToQueue' },
-                            { icon: 'fa-heart', label: 'Favorilere Ekle', action: 'toggleFavorite' },
-                            { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
-                            { icon: 'fa-list-music', label: 'Playliste Ekle (Tüm)', action: 'addToPlaylist' },
+                            // Row 1: Çal + Sıraya Ekle
+                            { row: true, buttons: [
+                                { icon: 'fa-play', label: 'Çal', action: 'play' },
+                                { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' }
+                            ]},
+                            // Row 2: Favori + Puan Ver
+                            { row: true, buttons: [
+                                { icon: 'fa-heart', label: 'Favori', action: 'toggleFavorite' },
+                                { icon: 'fa-star', label: 'Puan Ver', action: 'rate' }
+                            ]},
                             { divider: true },
-                            { icon: 'fa-user-music', label: 'Sanatçıya Git', action: 'goToArtist' },
-                            { icon: 'fa-share-alt', label: 'Paylaş', action: 'share' }
+                            { icon: 'fa-list', label: 'Playliste Ekle (Tüm)', action: 'addToPlaylist' }
                         ],
                         playlist: [
-                            { icon: 'fa-play', label: 'Çal', action: 'play' },
-                            { icon: 'fa-plus-circle', label: 'Sıraya Ekle (Tüm)', action: 'addToQueue' },
-                            { icon: 'fa-heart', label: 'Favorilere Ekle', action: 'toggleFavorite' },
-                            { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                            // Row 1: Çal + Sıraya Ekle
+                            { row: true, buttons: [
+                                { icon: 'fa-play', label: 'Çal', action: 'play' },
+                                { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' }
+                            ]},
+                            // Row 2: Favori + Puan Ver
+                            { row: true, buttons: [
+                                { icon: 'fa-heart', label: 'Favori', action: 'toggleFavorite' },
+                                { icon: 'fa-star', label: 'Puan Ver', action: 'rate' }
+                            ]},
                             { divider: true },
                             ...(data.isMine ? [
+                                // Kullanıcının playlistinde: Düzenle + Sil
                                 { icon: 'fa-edit', label: 'Düzenle', action: 'edit' },
                                 { icon: 'fa-trash-alt', label: 'Sil', action: 'delete' }
-                            ] : []),
-                            { icon: 'fa-share-alt', label: 'Paylaş', action: 'share' }
+                            ] : [
+                                // Sistem playlistinde: Kopyala
+                                { icon: 'fa-copy', label: 'Playlistimi Kopyala', action: 'copy' }
+                            ])
                         ]
                     };
 
@@ -618,20 +667,24 @@
                         case 'addToPlaylist':
                             this.playlistModal.open = true;
                             break;
-                        case 'share':
-                            this.showToast(`🔗 Link kopyalandı: ${data.title}`, 'success');
-                            break;
                         case 'goToAlbum':
                             this.showToast(`💿 Albüme gidiliyor: ${data.album}`, 'info');
-                            break;
-                        case 'goToArtist':
-                            this.showToast(`🎤 Sanatçıya gidiliyor: ${data.artist}`, 'info');
                             break;
                         case 'edit':
                             this.showToast(`✏️ Düzenleme sayfası açılıyor`, 'info');
                             break;
                         case 'delete':
-                            this.showToast(`🗑️ Silindi: ${data.title}`, 'success');
+                            // Onay uyarısı göster
+                            if (confirm(`"${data.title}" playlistini silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz!`)) {
+                                this.showToast(`🗑️ Silindi: ${data.title}`, 'success');
+                                console.log('🗑️ Playlist deleted:', data);
+                            } else {
+                                this.showToast('❌ Silme işlemi iptal edildi', 'info');
+                            }
+                            break;
+                        case 'copy':
+                            this.showToast(`📋 "${data.title}" playlistinize kopyalandı`, 'success');
+                            console.log('📋 Playlist copied to user playlists:', data);
                             break;
                     }
                 },

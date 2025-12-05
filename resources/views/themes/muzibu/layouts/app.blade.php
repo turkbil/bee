@@ -96,8 +96,8 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
 
-    {{-- ⚡ instant.page v5.2.0 - Prefetch links on hover for instant page loads --}}
-    <script src="//instant.page/5.2.0" type="module" data-intensity="mousedown"></script>
+    {{-- ⚡ instant.page v5.2.0 - Ultra Fast Prefetch (hover + 50ms delay) --}}
+    <script src="//instant.page/5.2.0" type="module" data-intensity="hover" data-delay="50"></script>
 
     @livewireStyles
 
@@ -176,6 +176,11 @@
     {{-- Session Check --}}
     @include('themes.muzibu.components.session-check')
 
+    {{-- Context Menu System --}}
+    @include('themes.muzibu.components.context-menu')
+    @include('themes.muzibu.components.rating-modal')
+    @include('themes.muzibu.components.playlist-select-modal')
+
     {{-- 🎯 MODULAR JAVASCRIPT ARCHITECTURE --}}
 
     {{-- 1. Core Utilities (önce yükle - diğerleri bağımlı) --}}
@@ -235,6 +240,77 @@
     </script>
 
     @livewireScripts
+
+    {{-- 🎯 Livewire Navigation Hook - Alpine Re-Init --}}
+    <script>
+        // Livewire navigation sonrası Alpine'i re-initialize et
+        document.addEventListener('livewire:navigated', () => {
+            console.log('🔄 Livewire navigated - Re-initializing Alpine...');
+
+            // Alpine.js re-init için kısa bir gecikme
+            setTimeout(() => {
+                if (window.Alpine) {
+                    try {
+                        // Yöntem 1: SPA content wrapper'daki tüm element'leri init et
+                        const spaContent = document.querySelector('.spa-content-wrapper');
+                        if (spaContent) {
+                            console.log('🎯 Found spa-content-wrapper, initializing...');
+                            window.Alpine.initTree(spaContent);
+                            console.log('✨ Alpine re-initialized (spa-content-wrapper)');
+                        }
+
+                        // Yöntem 2: Tüm yeni x-data element'leri manuel init et
+                        document.querySelectorAll('[x-data]').forEach(el => {
+                            if (!el.__x) {
+                                console.log('🔧 Manually initializing element:', el);
+                                window.Alpine.initTree(el);
+                            }
+                        });
+
+                        // Yöntem 3: Context menu event'lerini manuel ekle (fallback)
+                        document.querySelectorAll('[x-on\\:contextmenu], [\\@contextmenu]').forEach(el => {
+                            if (!el.hasAttribute('data-context-initialized')) {
+                                console.log('🖱️ Adding manual context menu to:', el);
+                                el.setAttribute('data-context-initialized', 'true');
+                                el.addEventListener('contextmenu', function(e) {
+                                    console.log('🎯 Manual context menu triggered!');
+                                    // x-on:contextmenu attribute'unu oku ve eval et
+                                    const handler = el.getAttribute('x-on:contextmenu.prevent.stop') ||
+                                                  el.getAttribute('@contextmenu.prevent.stop');
+                                    if (handler) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        try {
+                                            // Alpine magic'i kullan
+                                            const fn = new Function('$event', '$store', handler);
+                                            fn.call(el, e, window.Alpine.store);
+                                        } catch (err) {
+                                            console.error('Context menu handler error:', err);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                        console.log('✨ Alpine re-initialization complete');
+                    } catch (e) {
+                        console.error('❌ Alpine re-init error:', e);
+                    }
+                }
+            }, 100);
+        });
+
+        // İlk yüklemede de context menu store'un hazır olduğunu kontrol et
+        document.addEventListener('alpine:initialized', () => {
+            console.log('✅ Alpine initialized');
+            if (window.Alpine.store('contextMenu')) {
+                console.log('✅ Context Menu Store ready');
+            } else {
+                console.error('❌ Context Menu Store not found!');
+            }
+        });
+    </script>
+
     @yield('scripts')
 </body>
 </html>

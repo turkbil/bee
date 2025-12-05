@@ -106,6 +106,53 @@ class SongController extends Controller
     }
 
     /**
+     * Get last played song for current user (or guest from localStorage)
+     * 🎯 Preload system: Load last song in PAUSE mode for instant playback
+     *
+     * @return JsonResponse
+     */
+    public function lastPlayed(): JsonResponse
+    {
+        try {
+            $userId = auth()->id();
+
+            // Get last played song from muzibu_song_plays table
+            $lastPlay = \DB::table('muzibu_song_plays')
+                ->where('user_id', $userId)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if (!$lastPlay) {
+                return response()->json(['last_played' => null]);
+            }
+
+            // 🚀 CACHE: Get song from Redis
+            $song = $this->cacheService->getSong($lastPlay->song_id);
+
+            if (!$song || !$song->is_active) {
+                return response()->json(['last_played' => null]);
+            }
+
+            // Return minimal song data for preload
+            return response()->json([
+                'last_played' => [
+                    'song_id' => $song->song_id,
+                    'song_title' => $song->getTranslated('title', app()->getLocale()),
+                    'artist_title' => $song->getTranslated('artist', app()->getLocale()),
+                    'album_title' => $song->album ? $song->album->getTranslated('title', app()->getLocale()) : null,
+                    'album_cover' => $song->getCoverUrl(600, 600),
+                    'duration' => $song->duration,
+                    'played_at' => $lastPlay->created_at,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Last played song error:', ['message' => $e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Track song play
      *
      * @param Request $request

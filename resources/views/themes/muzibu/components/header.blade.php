@@ -9,7 +9,7 @@
         </button>
 
         {{-- Logo with animation - Settings powered --}}
-        <a href="/" @click.prevent="navigateTo('/')" class="text-2xl font-bold group flex items-center">
+        <a href="/" wire:navigate class="text-2xl font-bold group flex items-center">
             @php
                 // LogoService kullan - Settings'den logo çek
                 $logoService = app(\App\Services\LogoService::class);
@@ -95,16 +95,17 @@
 
     <div class="flex items-center gap-5">
         {{-- Premium Button (non-premium only) - SPA Reactive --}}
-        <button
+        <a
+            href="/subscription/plans"
+            wire:navigate
             x-show="isLoggedIn && (!currentUser?.is_premium)"
             x-cloak
-            @click.prevent="navigateTo('/subscription/plans')"
             class="hidden sm:flex items-center gap-2 px-4 py-2 border border-muzibu-coral/40 hover:border-muzibu-coral hover:bg-muzibu-coral/10 rounded-full text-muzibu-coral text-sm font-semibold transition-all duration-300"
         >
             <i class="fas fa-crown text-xs"></i>
             <span class="hidden md:inline">Premium'a Geç</span>
             <span class="md:hidden">Premium</span>
-        </button>
+        </a>
 
         {{-- Notification with badge - SPA Reactive --}}
         <button
@@ -169,28 +170,30 @@
                 </div>
 
                 {{-- Dashboard Link --}}
-                <button @click.prevent="navigateTo('/dashboard'); userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
+                <a href="/dashboard" wire:navigate @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
                     <i class="fas fa-th-large w-5"></i>
                     <span>Kullanıcı Paneli</span>
-                </button>
+                </a>
 
                 {{-- Profile Link --}}
-                <button @click.prevent="navigateTo('/profile'); userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
+                <a href="/profile" wire:navigate @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
                     <i class="fas fa-user w-5"></i>
                     <span>Profil</span>
-                </button>
+                </a>
 
                 <div class="h-px bg-white/10 my-1"></div>
 
                 {{-- Premium Link (non-premium only) --}}
-                <button
+                <a
+                    href="/subscription/plans"
+                    wire:navigate
                     x-show="!currentUser?.is_premium"
-                    @click.prevent="navigateTo('/subscription/plans'); userMenuOpen = false"
+                    @click="userMenuOpen = false"
                     class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors"
                 >
                     <i class="fas fa-crown w-5"></i>
                     <span>Premium'a Geç</span>
-                </button>
+                </a>
 
                 <div class="h-px bg-white/10 my-1"></div>
 

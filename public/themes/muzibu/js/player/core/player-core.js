@@ -162,6 +162,9 @@ function muzibuApp() {
             // Load featured playlists on init
             this.loadFeaturedPlaylists();
 
+            // 🎯 PRELOAD: Load last played song in PAUSE mode (instant playback)
+            this.preloadLastPlayedSong();
+
             // Initialize keyboard shortcuts
             this.initKeyboard();
 
@@ -220,6 +223,51 @@ function muzibuApp() {
                 console.log('Featured playlists loaded:', playlists.length);
             } catch (error) {
                 console.error('Failed to load playlists:', error);
+            }
+        },
+
+        // 🎯 PRELOAD: Load last played song in PAUSE mode for instant playback
+        async preloadLastPlayedSong() {
+            try {
+                const response = await fetch('/api/muzibu/songs/last-played');
+                const data = await response.json();
+
+                if (!data.last_played) {
+                    console.log('No last played song found');
+                    return;
+                }
+
+                const song = data.last_played;
+                console.log('🎵 Preloading last played song:', song.song_title);
+
+                // Add to queue (single song)
+                this.queue = [song];
+                this.queueIndex = 0;
+                this.currentSong = song;
+
+                // Load song stream URL
+                const streamResponse = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
+                const streamData = await streamResponse.json();
+
+                // Load audio in PAUSE mode
+                if (streamData.stream_url) {
+                    const useHls = streamData.stream_type === 'hls';
+
+                    // Load but DON'T play
+                    if (useHls) {
+                        this.isHlsStream = true;
+                        await this.playHlsStream(streamData.stream_url, 0, true); // autoplay: false
+                    } else {
+                        this.isHlsStream = false;
+                        await this.playWithHowler(streamData.stream_url, 0, true); // autoplay: false
+                    }
+
+                    this.isPlaying = false; // Ensure paused
+                    console.log('✅ Last played song preloaded (PAUSED, ready to play)');
+                }
+
+            } catch (error) {
+                console.error('Failed to preload last played song:', error);
             }
         },
 
@@ -378,8 +426,17 @@ function muzibuApp() {
             }
 
             if (this.queueIndex > 0) {
+                // 🚨 INSTANT PLAY: Cancel crossfade (manual track change)
+                this.isCrossfading = false;
+
+                // ⚡ INSTANT STOP: Stop current track immediately before loading next
+                await this.stopCurrentPlayback();
+
                 this.queueIndex--;
                 await this.playSongFromQueue(this.queueIndex);
+
+                // 🎯 Preload first song in queue (after track change)
+                this.preloadFirstInQueue();
             }
         },
 
@@ -390,9 +447,18 @@ function muzibuApp() {
                 return;
             }
 
+            // 🚨 INSTANT PLAY: Cancel crossfade (manual track change)
+            this.isCrossfading = false;
+
+            // ⚡ INSTANT STOP: Stop current track immediately before loading next
+            await this.stopCurrentPlayback();
+
             if (this.queueIndex < this.queue.length - 1) {
                 this.queueIndex++;
                 await this.playSongFromQueue(this.queueIndex);
+
+                // 🎯 Preload first song in queue (after track change)
+                this.preloadFirstInQueue();
             } else if (this.repeatMode === 'all' || this.b2bMode) {
                 // 💾 B2B mode: infinite loop (auto-restart)
                 this.queueIndex = 0;
@@ -896,6 +962,9 @@ function muzibuApp() {
                         return;
                     }
 
+                    // 🎯 Preload first song in queue
+                    this.preloadFirstInQueue();
+
                     this.queueIndex = 0;
                     await this.playSongFromQueue(0);
 
@@ -928,6 +997,9 @@ function muzibuApp() {
                         this.showToast('Playlist\'te çalınabilir şarkı bulunamadı', 'error');
                         return;
                     }
+
+                    // 🎯 Preload first song in queue
+                    this.preloadFirstInQueue();
 
                     this.queueIndex = 0;
                     await this.playSongFromQueue(0);
@@ -1008,6 +1080,9 @@ function muzibuApp() {
 
         async playSong(id) {
             try {
+                // 🚨 INSTANT PLAY: Cancel crossfade (manual song change)
+                this.isCrossfading = false;
+
                 // Stop current playback FIRST before loading new song
                 await this.stopCurrentPlayback();
 
@@ -1131,8 +1206,16 @@ function muzibuApp() {
                 // ❌ FIX: Generic error handling - response.ok sadece network hatalarını kontrol eder
                 // Backend'den gelen status'ü JSON'dan okuyacağız
                 if (!response.ok) {
-                    // Generic error message (network, auth, etc.)
-                    this.showToast('Şarkı yüklenemedi, lütfen tekrar deneyin', 'error');
+                    // 🚨 AUTO-SKIP: Hatalı şarkıyı atla, sonrakine geç
+                    this.showToast(`Şarkı yüklenemedi (${response.status}), sonrakine geçiliyor...`, 'warning');
+
+                    // Sonraki şarkıya geç (eğer varsa)
+                    if (this.queueIndex < this.queue.length - 1) {
+                        await this.nextTrack();
+                    } else {
+                        // Queue sonu, oynatıcıyı durdur
+                        this.isPlaying = false;
+                    }
                     return;
                 }
 
@@ -1359,19 +1442,10 @@ function muzibuApp() {
             if (this.howl) {
                 if (this.howl.playing()) {
                     wasStopped = true;
-                    await new Promise(resolve => {
-                        const currentVolume = this.howl.volume();
-                        this.howl.fade(currentVolume, 0, this.fadeOutDuration);
-                        this.howl.once('fade', () => {
-                            // Check if howl still exists (race condition protection)
-                            if (this.howl) {
-                                this.howl.stop();
-                                this.howl.unload();
-                                this.howl = null;
-                            }
-                            resolve();
-                        });
-                    });
+                    // 🚀 INSTANT STOP: No fade, immediate stop
+                    this.howl.stop();
+                    this.howl.unload();
+                    this.howl = null;
                 } else {
                     this.howl.unload();
                     this.howl = null;
@@ -1383,7 +1457,7 @@ function muzibuApp() {
                 const audio = this.getActiveHlsAudio();
                 if (audio && !audio.paused) {
                     wasStopped = true;
-                    await this.fadeAudioElement(audio, audio.volume, 0, this.fadeOutDuration);
+                    // 🚀 INSTANT STOP: No fade, immediate pause
                     audio.pause();
                 }
                 this.hls.destroy();
@@ -1407,13 +1481,14 @@ function muzibuApp() {
         },
 
         // Play using Howler.js (for MP3, etc.)
-        async playWithHowler(url, targetVolume) {
+        async playWithHowler(url, targetVolume, autoplay = true) {
             const self = this;
 
             // 🔍 DEBUG: Log exactly what URL we're about to pass to Howler
             console.log('🎵 playWithHowler called with URL:', url);
             console.log('🔍 URL type:', typeof url);
             console.log('🔍 URL length:', url?.length);
+            console.log('🔍 Autoplay:', autoplay);
 
             // Determine format from URL or default to mp3
             let format = ['mp3'];
@@ -1428,6 +1503,7 @@ function muzibuApp() {
                 format: format,
                 html5: true,
                 volume: 0,
+                autoplay: autoplay,
                 onload: function() {
                     self.duration = self.howl.duration();
                     console.log('Howler loaded, duration:', self.duration);
@@ -1470,13 +1546,19 @@ onplay: function() {
                 }
             });
 
-            this.howl.play();
-            this.howl.fade(0, targetVolume, this.fadeOutDuration);
-            this.isPlaying = true;
+            if (autoplay) {
+                this.howl.play();
+                this.howl.fade(0, targetVolume, this.fadeOutDuration);
+                this.isPlaying = true;
+            } else {
+                // Preload mode: loaded but paused
+                this.isPlaying = false;
+                console.log('Howler loaded (PAUSED, ready to play)');
+            }
         },
 
         // Play using HLS.js (for HLS streams)
-        async playHlsStream(url, targetVolume) {
+        async playHlsStream(url, targetVolume, autoplay = true) {
             const self = this;
             const audio = this.$refs.hlsAudio;
 
@@ -1484,6 +1566,8 @@ onplay: function() {
                 console.error('HLS audio element not found');
                 return;
             }
+
+            console.log('🔍 HLS Autoplay:', autoplay);
 
             // Check HLS.js support
             if (Hls.isSupported()) {
@@ -1530,22 +1614,30 @@ onplay: function() {
 
                 this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     audio.volume = 0;
-                    audio.play().then(() => {
-                        self.isPlaying = true;
-                        self.fadeAudioElement(audio, 0, targetVolume, self.fadeOutDuration);
-                        self.startProgressTracking('hls');
 
-                        // Dispatch event for play-limits (HLS)
-                        window.dispatchEvent(new CustomEvent('player:play', {
-                            detail: {
-                                songId: self.currentSong?.song_id,
-                                isLoggedIn: self.isLoggedIn
-                            }
-                        }));
-                    }).catch(e => {
-                        console.error('HLS play error:', e);
-                        self.showToast('Çalma hatası', 'error');
-                    });
+                    if (autoplay) {
+                        audio.play().then(() => {
+                            self.isPlaying = true;
+                            self.fadeAudioElement(audio, 0, targetVolume, self.fadeOutDuration);
+                            self.startProgressTracking('hls');
+
+                            // Dispatch event for play-limits (HLS)
+                            window.dispatchEvent(new CustomEvent('player:play', {
+                                detail: {
+                                    songId: self.currentSong?.song_id,
+                                    isLoggedIn: self.isLoggedIn
+                                }
+                            }));
+                        }).catch(e => {
+                            console.error('HLS play error:', e);
+                            self.showToast('Çalma hatası', 'error');
+                        });
+                    } else {
+                        // Preload mode: load but don't play
+                        self.duration = audio.duration || 0;
+                        self.isPlaying = false;
+                        console.log('HLS loaded (PAUSED, ready to play)');
+                    }
                 });
 
                 this.hls.on(Hls.Events.ERROR, function(event, data) {
@@ -1557,6 +1649,13 @@ onplay: function() {
                             console.log('🔄 HLS failed, falling back to signed MP3...');
                             console.log('🔍 currentFallbackUrl:', self.currentFallbackUrl);
                             console.log('🔍 currentFallbackUrl type:', typeof self.currentFallbackUrl);
+
+                            // 🛑 Stop HLS audio element first (prevent AbortError)
+                            if (audio) {
+                                audio.pause();
+                                audio.src = '';
+                                audio.load();
+                            }
 
                             // Cleanup HLS
                             if (self.hls) {
@@ -2379,6 +2478,67 @@ function playLimits() {
         handleGuestLogin() {
             this.showGuestModal = false;
             window.location.href = '/login';
+        },
+
+        /**
+         * 🎯 QUEUE PRELOAD: Queue'daki ilk şarkının HLS'ini arka planda yükle
+         * Sıra değişse bile ilk şarkı her zaman hazır (instant play)
+         */
+        async preloadFirstInQueue() {
+            // Queue boşsa veya sadece mevcut şarkı varsa skip
+            if (!this.queue || this.queue.length <= 1) return;
+
+            // İlk şarkıyı al (mevcut şarkı değilse)
+            const firstSong = this.queue[0];
+            if (!firstSong || !firstSong.song_id) return;
+
+            // Mevcut çalan şarkıyı preload etmeye gerek yok
+            if (this.currentSong && firstSong.song_id === this.currentSong.song_id) return;
+
+            // Preload yap (hover ile aynı mantık)
+            await this.preloadSongOnHover(firstSong.song_id);
+        },
+
+        /**
+         * 🚀 HOVER PRELOAD: Mouse şarkı kartına gelince HLS chunk ön yükleme
+         * Bandwidth tasarrufu + instant play
+         *
+         * @param {number} songId - Ön yüklenecek şarkı ID
+         */
+        async preloadSongOnHover(songId) {
+            // Zaten preload edilmiş mi kontrol et
+            if (this.preloadedSongs && this.preloadedSongs.has(songId)) {
+                console.log('🎵 Song already preloaded:', songId);
+                return;
+            }
+
+            try {
+                console.log('🔄 Preloading song on hover:', songId);
+
+                // Stream URL'i al (HLS varsa HLS, yoksa MP3)
+                const response = await fetch(`/api/muzibu/songs/${songId}/stream`);
+                if (!response.ok) return;
+
+                const data = await response.json();
+
+                // HLS varsa ilk chunk'ı preload et
+                if (data.stream_type === 'hls' && data.stream_url) {
+                    // HLS playlist fetch et (bu otomatik olarak ilk chunk'ı da çeker)
+                    const hlsResponse = await fetch(data.stream_url);
+                    if (hlsResponse.ok) {
+                        console.log('✅ HLS preloaded:', songId);
+
+                        // Preload edildi olarak işaretle
+                        if (!this.preloadedSongs) {
+                            this.preloadedSongs = new Set();
+                        }
+                        this.preloadedSongs.add(songId);
+                    }
+                }
+            } catch (error) {
+                // Preload hataları sessizce ignore et (kritik değil)
+                console.debug('Preload error (ignored):', error);
+            }
         }
     }
 }

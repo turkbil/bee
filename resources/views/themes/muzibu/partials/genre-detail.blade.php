@@ -92,7 +92,7 @@
                 <span class="text-sm font-medium text-gray-400" x-text="count + ' favori'"></span>
             </button>
             @else
-            <a href="{{ route('login') }}" class="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
+            <a href="{{ route('login') }}" wire:navigate class="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
                 <i class="far fa-heart text-2xl"></i>
                 <span class="text-sm font-medium">{{ method_exists($genre, 'favoritesCount') ? $genre->favoritesCount() : 0 }} favori</span>
             </a>
@@ -155,8 +155,8 @@
                     {{-- Artist - Desktop Only --}}
                     <div class="hidden md:block truncate" @click.stop>
                         @if($song->artist)
-                            <a href="/artists/{{ $song->artist->getTranslation('slug', app()->getLocale()) }}"
-                               @click.prevent="$store.router.navigateTo('/artists/{{ $song->artist->getTranslation('slug', app()->getLocale()) }}')"
+                            <a href="/artists/{{ $song->artist->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+                               
                                class="text-sm text-gray-400 hover:text-white hover:underline transition-colors">
                                 {{ $song->artist->getTranslation('title', app()->getLocale()) }}
                             </a>

@@ -6,7 +6,130 @@
 @extends('themes.' . $themeName . '.layouts.app')
 
 @section('module_content')
-    <div class="relative" x-data="blogsInfiniteScroll()" x-init="init()">
+    <div class="relative" x-data="{ ...blogsInfiniteScroll(), ...heroSlider() }" x-init="init(); initHero()">
+
+        {{-- FULL SCREEN HERO SLIDER --}}
+        @if($items->count() >= 4)
+        <section class="relative w-full overflow-hidden bg-black" style="height: 85vh; min-height: 600px;">
+            {{-- Slides Container --}}
+            <div class="absolute inset-0">
+                @foreach($items->take(4) as $index => $heroItem)
+                    @php
+                        $currentLocale = app()->getLocale();
+                        $slugData = $heroItem->getRawOriginal('slug');
+                        if (is_string($slugData)) {
+                            $slugData = json_decode($slugData, true) ?: [];
+                        }
+                        $slug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $heroItem->blog_id;
+                        $title = $heroItem->getTranslated('title', $currentLocale);
+                        $body = $heroItem->getTranslated('body', $currentLocale);
+                        $excerpt = $heroItem->getCleanExcerpt($currentLocale) ?: \Illuminate\Support\Str::limit(strip_tags($body), 200);
+                        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                        $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+                        $defaultLocale = get_tenant_default_locale();
+                        $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                        $heroUrl = url($localePrefix . '/' . $slugPrefix . '/' . $slug);
+                        $heroMedia = getFirstMediaWithFallback($heroItem);
+                        $heroImage = $heroMedia ? thumb($heroMedia, 1920, 1080, ['quality' => 95, 'format' => 'webp']) : asset('images/blog-default.jpg');
+                    @endphp
+
+                    {{-- Slide {{ $index + 1 }} --}}
+                    <div x-show="heroIndex === {{ $index }}"
+                         x-transition:enter="transition ease-out duration-700"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-500"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="absolute inset-0"
+                         style="display: {{ $index === 0 ? 'block' : 'none' }};">
+
+                        {{-- Background Image --}}
+                        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $heroImage }}');">
+                            {{-- Minimal Overlay - Bottom Only --}}
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+                        </div>
+
+                        {{-- Content (Sabit Height - Kayma Yok) --}}
+                        <div class="absolute inset-0 flex items-end">
+                            <div class="container mx-auto px-4 sm:px-6 lg:px-8 pb-8 md:pb-12">
+                                <div class="max-w-4xl">
+                                    {{-- Category Badge (Sabit Pozisyon) --}}
+                                    <div style="height: 40px;" class="mb-2">
+                                        @if($heroItem->categories && $heroItem->categories->first())
+                                            <span class="inline-block px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-bold uppercase tracking-wider rounded-lg shadow-lg">
+                                                {{ $heroItem->categories->first()->getTranslated('title', $currentLocale) }}
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    {{-- Title (Gazete Tarzı, Dikkat Çekici Gradient) --}}
+                                    <a href="{{ $heroUrl }}" class="block group">
+                                        <div style="height: 200px;" class="mb-4 flex items-end">
+                                            <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[1.1] line-clamp-2 transition-all duration-500" style="background: linear-gradient(135deg, #ffffff 0%, #60a5fa 50%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; filter: drop-shadow(0 4px 20px rgba(0,0,0,0.8)); font-weight: 900; background-size: 200% 200%; animation: gradientShift 5s ease infinite;">
+                                                {{ $title }}
+                                            </h1>
+                                        </div>
+                                    </a>
+
+                                    {{-- Date Badge (Sabit Pozisyon) --}}
+                                    <div style="height: 36px;" class="mb-6">
+                                        <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm md:text-base font-medium rounded-lg shadow-lg">
+                                            <i class="far fa-clock"></i>
+                                            {{ $heroItem->created_at->locale('tr')->diffForHumans() }}
+                                        </span>
+                                    </div>
+
+                                    {{-- Excerpt (Sabit Height, Sadece Desktop) --}}
+                                    <div style="height: 84px;" class="hidden md:block mb-8">
+                                        <p class="text-lg lg:text-xl text-white/90 leading-relaxed line-clamp-3" style="text-shadow: 0 2px 10px rgba(0,0,0,0.6);">
+                                            {{ $excerpt }}
+                                        </p>
+                                    </div>
+
+                                    {{-- Navigation (Sabit Pozisyon) --}}
+                                    <div class="flex items-center gap-3">
+                                        {{-- Prev Button --}}
+                                        <button @click="prevHero()"
+                                                class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-sm border border-white/10 flex items-center justify-center transition-all">
+                                            <i class="fas fa-chevron-left text-white/70 text-xs"></i>
+                                        </button>
+
+                                        {{-- Dots --}}
+                                        <div class="flex items-center gap-2">
+                                            @foreach($items->take(4) as $dotIndex => $dot)
+                                                <button @click="heroIndex = {{ $dotIndex }}; resetAutoPlay()"
+                                                        :class="heroIndex === {{ $dotIndex }} ? 'w-10 md:w-12 bg-white' : 'w-2 md:w-3 bg-white/50 hover:bg-white/70'"
+                                                        class="h-2 md:h-3 rounded-full transition-all duration-300"></button>
+                                            @endforeach
+                                        </div>
+
+                                        {{-- Next Button --}}
+                                        <button @click="nextHero()"
+                                                class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-sm border border-white/10 flex items-center justify-center transition-all">
+                                            <i class="fas fa-chevron-right text-white/70 text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+
+        {{-- Gradient Animation CSS --}}
+        <style>
+            @keyframes gradientShift {
+                0%, 100% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+            }
+        </style>
+        @endif
 
         {{-- Categories Slider (Shop tarzı) --}}
         @if(isset($categories) && $categories->count() > 0)
@@ -221,6 +344,39 @@
     </div>
 
     <script>
+        function heroSlider() {
+            return {
+                heroIndex: 0,
+                heroInterval: null,
+
+                initHero() {
+                    this.startAutoPlay();
+                },
+
+                startAutoPlay() {
+                    if (this.heroInterval) {
+                        clearInterval(this.heroInterval);
+                    }
+                    this.heroInterval = setInterval(() => {
+                        this.nextHero();
+                    }, 5000);
+                },
+
+                resetAutoPlay() {
+                    this.startAutoPlay();
+                },
+
+                nextHero() {
+                    this.heroIndex = (this.heroIndex + 1) % 4;
+                },
+
+                prevHero() {
+                    this.heroIndex = this.heroIndex === 0 ? 3 : this.heroIndex - 1;
+                    this.resetAutoPlay();
+                }
+            }
+        }
+
         function blogsInfiniteScroll() {
             return {
                 loading: false,

@@ -37,7 +37,14 @@
                             <!-- Play Button Overlay -->
                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
                                 <button class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110"
-                                        @click.prevent="$dispatch('play-playlist', { playlistId: {{ $playlist->playlist_id }} })">
+                                        @click.prevent="
+                                            $store.player.setPlayContext({
+                                                type: 'user_playlist',
+                                                id: {{ $playlist->playlist_id }},
+                                                name: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}'
+                                            });
+                                            $dispatch('play-playlist', { playlistId: {{ $playlist->playlist_id }} });
+                                        ">
                                     <i class="fas fa-play ml-1"></i>
                                 </button>
                             </div>

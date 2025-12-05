@@ -63,8 +63,158 @@ document.addEventListener('alpine:init', () => {
         isPlaying: false,
         currentSong: null,
         isLoading: false, // SPA loading state için
+        playContext: null, // Current play context (genre, album, playlist, etc.)
+
         showToast(message, type) {
             Alpine.store('toast').show(message, type);
+        },
+
+        /**
+         * Set play context for infinite queue system
+         * @param {Object} context - Context object
+         * @param {string} context.type - Context type (genre, album, playlist, sector, radio, popular, recent, favorites, artist, search)
+         * @param {number} context.id - Context ID
+         * @param {string} context.name - Context name (for display)
+         * @param {*} context.* - Additional context-specific data
+         */
+        setPlayContext(context) {
+            // Validate context
+            const validTypes = ['genre', 'album', 'playlist', 'user_playlist', 'sector', 'radio', 'popular', 'recent', 'favorites', 'artist', 'search'];
+            if (!validTypes.includes(context.type)) {
+                console.warn('⚠️ Invalid context type:', context.type);
+                return;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('muzibu_play_context', JSON.stringify(context));
+
+            // Update Alpine store (reactive)
+            this.playContext = context;
+
+            console.log('🎯 Play Context Set:', context);
+        },
+
+        /**
+         * Get current play context
+         * @returns {Object|null} Context object or null
+         */
+        getPlayContext() {
+            if (this.playContext) {
+                return this.playContext;
+            }
+
+            const stored = localStorage.getItem('muzibu_play_context');
+            if (stored) {
+                this.playContext = JSON.parse(stored);
+                return this.playContext;
+            }
+
+            return null;
+        },
+
+        /**
+         * Update play context (for offset, etc.)
+         * @param {Object} updates - Fields to update
+         */
+        updatePlayContext(updates) {
+            const currentContext = this.getPlayContext();
+            if (!currentContext) {
+                console.warn('⚠️ No context to update');
+                return;
+            }
+
+            const newContext = { ...currentContext, ...updates };
+            this.setPlayContext(newContext);
+
+            console.log('🔄 Play Context Updated:', newContext);
+        },
+
+        /**
+         * Clear play context
+         */
+        clearPlayContext() {
+            localStorage.removeItem('muzibu_play_context');
+            this.playContext = null;
+            console.log('🗑️ Play Context Cleared');
+        },
+
+        /**
+         * Refill queue based on current context
+         * @param {number} currentOffset - Current offset (how many songs played from this context)
+         * @param {number} limit - How many songs to fetch (default: 15)
+         * @returns {Promise<Array>} Array of songs
+         */
+        async refillQueue(currentOffset = 0, limit = 15) {
+            const context = this.getPlayContext();
+
+            if (!context) {
+                console.warn('⚠️ No play context - cannot refill queue');
+                return [];
+            }
+
+            try {
+                console.log('🔄 Refilling queue...', { context, currentOffset, limit });
+
+                const response = await fetch('/api/muzibu/queue/refill', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    },
+                    body: JSON.stringify({
+                        type: context.type,
+                        id: context.id,
+                        offset: currentOffset,
+                        limit: limit,
+                        subType: context.subType,
+                        source: context.source,
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // 🔄 CONTEXT TRANSITION: Backend suggested transition to Genre (infinite loop)
+                if (data.transition) {
+                    console.log('🔄 Context Transition:', data.transition);
+                    console.log(`📢 ${data.transition.reason}`);
+
+                    // Update play context to Genre (infinite music guaranteed)
+                    this.updatePlayContext({
+                        type: data.transition.type,
+                        id: data.transition.id,
+                        offset: 0, // Reset offset for new context
+                        subType: null,
+                        source: `transition_from_${context.type}`
+                    });
+
+                    // Show toast to user
+                    this.showToast(`Müzik bitmesin! ${data.transition.name} çalıyor`, 'info');
+                }
+
+                if (data.success && data.songs && data.songs.length > 0) {
+                    console.log(`✅ Queue refilled: ${data.songs.length} songs`, data.songs);
+
+                    // Update context offset for next refill (unless transition happened)
+                    if (!data.transition) {
+                        this.updatePlayContext({ offset: currentOffset + data.songs.length });
+                    }
+
+                    return data.songs;
+                } else {
+                    console.warn('⚠️ No songs returned from API');
+                    return [];
+                }
+
+            } catch (error) {
+                console.error('❌ Queue refill error:', error);
+                this.showToast('Şarkılar yüklenirken hata oluştu', 'error');
+                return [];
+            }
         }
     });
 
@@ -145,53 +295,52 @@ document.addEventListener('alpine:init', () => {
         getActionsForType(type, data) {
             const actions = {
                 song: [
-                    // Row 1: Çal + Sıraya Ekle
-                    { row: true, buttons: [
-                        { icon: 'fa-play', label: 'Çal', action: 'play' },
-                        { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' }
-                    ]},
-                    // Row 2: Favori + Puan Ver
-                    { row: true, buttons: [
-                        { icon: 'fa-heart', label: data.is_favorite ? 'Çıkar' : 'Favori', action: 'toggleFavorite' },
-                        { icon: 'fa-star', label: 'Puan Ver', action: 'rate' }
-                    ]},
+                    // Çal
+                    { icon: 'fa-play', label: 'Çal', action: 'play' },
+                    // Sıraya Ekle
+                    { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
                     { divider: true },
+                    // Favorilerime Ekle
+                    { icon: 'fa-heart', label: data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle', action: 'toggleFavorite' },
+                    { divider: true },
+                    // Puan Ver
+                    { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                    // Playliste Ekle
                     { icon: 'fa-list', label: 'Playliste Ekle', action: 'addToPlaylist', submenu: true },
+                    // Albüme Git
                     { icon: 'fa-compact-disc', label: 'Albüme Git', action: 'goToAlbum' }
                 ],
                 album: [
-                    // Row 1: Çal + Sıraya Ekle
-                    { row: true, buttons: [
-                        { icon: 'fa-play', label: 'Çal', action: 'play' },
-                        { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' }
-                    ]},
-                    // Row 2: Favori + Puan Ver
-                    { row: true, buttons: [
-                        { icon: 'fa-heart', label: 'Favori', action: 'toggleFavorite' },
-                        { icon: 'fa-star', label: 'Puan Ver', action: 'rate' }
-                    ]},
+                    // Çal
+                    { icon: 'fa-play', label: 'Çal', action: 'play' },
+                    // Sıraya Ekle
+                    { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
                     { divider: true },
+                    // Favorilerime Ekle
+                    { icon: 'fa-heart', label: 'Favorilerime Ekle', action: 'toggleFavorite' },
+                    { divider: true },
+                    // Puan Ver
+                    { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                    // Playliste Ekle (Tüm Şarkılar)
                     { icon: 'fa-list', label: 'Playliste Ekle (Tüm)', action: 'addToPlaylist' }
                 ],
                 playlist: [
-                    // Row 1: Çal + Sıraya Ekle
-                    { row: true, buttons: [
-                        { icon: 'fa-play', label: 'Çal', action: 'play' },
-                        { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' }
-                    ]},
-                    // Row 2: Favori + Puan Ver
-                    { row: true, buttons: [
-                        { icon: 'fa-heart', label: 'Favori', action: 'toggleFavorite' },
-                        { icon: 'fa-star', label: 'Puan Ver', action: 'rate' }
-                    ]},
+                    // Çal
+                    { icon: 'fa-play', label: 'Çal', action: 'play' },
+                    // Sıraya Ekle
+                    { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
                     { divider: true },
+                    // Favorilerime Ekle
+                    { icon: 'fa-heart', label: 'Favorilerime Ekle', action: 'toggleFavorite' },
+                    { divider: true },
+                    // Puan Ver
+                    { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                    // Kopyala / Düzenle / Sil
                     ...(data.is_mine ? [
-                        // Kullanıcının playlistinde: Düzenle + Sil
                         { icon: 'fa-edit', label: 'Düzenle', action: 'edit' },
                         { icon: 'fa-trash-alt', label: 'Sil', action: 'delete' }
                     ] : [
-                        // Sistem playlistinde: Kopyala
-                        { icon: 'fa-copy', label: 'Playlistimi Kopyala', action: 'copy' }
+                        { icon: 'fa-copy', label: 'Playlisti Kopyala', action: 'copy' }
                     ])
                 ]
             };

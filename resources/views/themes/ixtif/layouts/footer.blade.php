@@ -4,7 +4,7 @@
     $popularSearches = SearchQuery::getMarkedPopular(10);
 @endphp
 
-<section class="w-full py-12 relative z-10" @mouseenter="$dispatch('close-megamenu')">
+<section class="w-full py-12 relative z-50" @mouseenter="$dispatch('close-megamenu')">
     <div class="container mx-auto px-4 sm:px-4 md:px-2">
         <div class="bg-white/70 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 py-8 md:py-12 px-4 md:px-6 rounded-3xl shadow-2xl relative z-20" style="overflow: visible;">
             <div class="max-w-4xl mx-auto text-center">
@@ -12,7 +12,7 @@
                 <p class="text-base md:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-6 md:mb-8">Binlerce ürün için hemen arayın!</p>
 
                 {{-- Livewire Search Bar with Custom Footer Styling --}}
-                <div class="mb-6" style="position: relative; z-index: 101;">
+                <div class="mb-6 relative">
                     @livewire('search::search-bar-footer', key('footer-search-v3'))
                 </div>
 

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context Transition Rules - Final v3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                ✅ Context Transition Rules - FINAL
+            </h1>
+            <p class="text-2xl text-slate-300 mb-6">
+                10 Context Type - Net Geçiş Kuralları
+            </p>
+            <div class="flex gap-6 text-sm text-slate-400 mb-6">
+                <span>📅 5 Aralık 2025</span>
+                <span>🎯 v3 - Final Transition Rules</span>
+                <span>💾 Zero Migration</span>
+            </div>
+            <div class="bg-green-900/30 border-l-4 border-green-500 rounded-lg p-4">
+                <p class="text-green-200 text-lg font-bold">
+                    ✅ Tüm Geçiş Kuralları Netlileşti!
+                </p>
+            </div>
+        </header>
+
+        <!-- 10 CONTEXT TRANSİTİON RULES -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🔄 10 Context Transition Rules</h2>
+            
+            <!-- Rule 1: Genre -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-blue-300 mb-3">🎭 Genre → Genre</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural:</p>
+                            <p class="text-green-300 text-lg">Genre devam eder</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Örnek:</p>
+                            <p class="text-slate-400 text-sm">
+                                Kullanıcı "Jazz" seçer → Sürekli Jazz şarkıları çalar → Queue bitince yeni Jazz şarkıları çek → ♾️ Infinite Jazz
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Geçiş:</strong> Genre → Genre (sürekli aynı tür)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 2: Album -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-purple-300 mb-3">💿 Album → Album → Genre</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural:</p>
+                            <p class="text-green-300 text-lg">Album devam eder → Bitince genre'ye geç</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Örnek:</p>
+                            <p class="text-slate-400 text-sm">
+                                Kullanıcı "Kind of Blue" albümü seçer → Albümdeki 8 şarkı sırayla çalar → 
+                                <strong class="text-yellow-300">Albüm bitti!</strong> → Genre'ye geç (Jazz) → Sürekli Jazz çalar
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Geçiş:</strong> Album → Genre (albüm bitince tür devam)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 3: Playlist -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-green-300 mb-3">🎵 Playlist → Playlist → Genre</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural:</p>
+                            <p class="text-green-300 text-lg">Playlist devam eder → Bitince genre'ye geç</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Büyük Playlist (500+ şarkı):</p>
+                            <p class="text-slate-400 text-sm">
+                                Offset mekanizması ile 10'ar şarkı yükle → 500 şarkı bitti → 
+                                <strong class="text-yellow-300">Playlist tamamlandı!</strong> → 
+                                Son şarkıların genre'sine geç → Genre devam eder
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Geçiş:</strong> Playlist → Genre (playlist bitince tür devam, LOOP YOK!)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 4: Sector -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-red-300 mb-3">🏢 Sector → Sector Playlists</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural:</p>
+                            <p class="text-green-300 text-lg">Seçilen sektöre bağlı playlistler devam eder</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Örnek:</p>
+                            <p class="text-slate-400 text-sm">
+                                Kullanıcı "Restoran & Kafe" sektörü seçer → Sektöre bağlı 5 playlist var → 
+                                Bu 5 playlist pool'undan rastgele şarkılar çek → ♾️ Infinite sector music
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Geçiş:</strong> Sector → Sector Playlists (sürekli sektör müziği)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 5: Radio -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">5</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-yellow-300 mb-3">📻 Radio → Radio Playlists</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural:</p>
+                            <p class="text-green-300 text-lg">Seçilen radio'ya bağlı playlistler devam eder</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Örnek:</p>
+                            <p class="text-slate-400 text-sm">
+                                Kullanıcı "Chill Radio" seçer → Radio'ya 4 playlist atanmış → 
+                                Bu 4 playlist pool'undan karışık şarkılar çek → ♾️ Infinite radio
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Geçiş:</strong> Radio → Radio Playlists (sürekli radio mix)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 6: Popular -->
+            <div class="bg-slate-800/50 border-l-4 border-pink-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-pink-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">6</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-pink-300 mb-3">🔥 Popular → Popular → Album → Genre</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural:</p>
+                            <p class="text-green-300 text-lg">Popüler devam eder → Bitince son şarkıların albümü → Albüm bitince genre</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Geçiş Akışı:</p>
+                            <div class="space-y-2 text-sm text-slate-400">
+                                <p><strong class="text-white">1.</strong> Popüler şarkılar çalar (play_count DESC)</p>
+                                <p><strong class="text-white">2.</strong> Popüler şarkılar pool'u bitti (örn. top 100)</p>
+                                <p><strong class="text-yellow-300">3.</strong> Son çalan 5 şarkının albümlerini al → En çok tekrar eden albüm</p>
+                                <p><strong class="text-white">4.</strong> O albümden devam et</p>
+                                <p><strong class="text-white">5.</strong> Albüm bitti → Genre'ye geç</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Geçiş:</strong> Popular → Album → Genre (3 aşamalı)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 7: Recent -->
+            <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-orange-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">7</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-orange-300 mb-3">🆕 Recent → Recent (Son ID'den Devam)</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural:</p>
+                            <p class="text-green-300 text-lg">Son eklenenler devam eder → Bitince son ID'den eklemeye devam eder</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Örnek:</p>
+                            <div class="space-y-2 text-sm text-slate-400">
+                                <p><strong class="text-white">1.</strong> Son eklenen 100 şarkı çalar (created_at DESC, song_id > 5000)</p>
+                                <p><strong class="text-white">2.</strong> 100 şarkı bitti</p>
+                                <p><strong class="text-yellow-300">3.</strong> Son şarkının ID'si: 5000</p>
+                                <p><strong class="text-white">4.</strong> Daha eski şarkıları çek (song_id < 5000, created_at DESC, limit 10)</p>
+                                <p><strong class="text-white">5.</strong> ♾️ Infinite recent (geriye doğru gider)</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Geçiş:</strong> Recent → Recent (son ID takibi ile sürekli)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 8: Favorites -->
+            <div class="bg-slate-800/50 border-l-4 border-cyan-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-cyan-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">8</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-cyan-300 mb-3">❤️ Favorites → Favorites → Album → Genre</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural:</p>
+                            <p class="text-green-300 text-lg">Favoriler devam eder → Bitince son şarkıların albümü → Albüm bitince genre</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Geçiş Akışı:</p>
+                            <div class="space-y-2 text-sm text-slate-400">
+                                <p><strong class="text-white">1.</strong> Kullanıcının 50 favori şarkısı çalar</p>
+                                <p><strong class="text-white">2.</strong> Favoriler bitti</p>
+                                <p><strong class="text-yellow-300">3.</strong> Son çalan 5 şarkının albümlerini al → En çok tekrar eden albüm</p>
+                                <p><strong class="text-white">4.</strong> O albümden devam et</p>
+                                <p><strong class="text-white">5.</strong> Albüm bitti → Genre'ye geç</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Geçiş:</strong> Favorites → Album → Genre (3 aşamalı)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 9: Artist -->
+            <div class="bg-slate-800/50 border-l-4 border-lime-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-lime-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">9</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-lime-300 mb-3">🎤 Artist → Artist → Album → Genre</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural (Önerilen):</p>
+                            <p class="text-green-300 text-lg">Artist şarkıları devam eder → Bitince son şarkıların albümü → Albüm bitince genre</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Örnek:</p>
+                            <div class="space-y-2 text-sm text-slate-400">
+                                <p><strong class="text-white">1.</strong> Kullanıcı "Miles Davis" seçer</p>
+                                <p><strong class="text-white">2.</strong> Miles Davis'in 120 şarkısı çalar</p>
+                                <p><strong class="text-white">3.</strong> Artist şarkıları bitti</p>
+                                <p><strong class="text-yellow-300">4.</strong> Son 5 şarkının albümlerini al → En çok tekrar eden albüm (örn. Kind of Blue)</p>
+                                <p><strong class="text-white">5.</strong> Kind of Blue albümünden devam et</p>
+                                <p><strong class="text-white">6.</strong> Albüm bitti → Genre'ye geç (Jazz)</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg p-4 mb-4">
+                            <p class="text-yellow-300 font-bold mb-2">❓ Soru:</p>
+                            <p class="text-slate-300 text-sm">
+                                Artist bittikten sonra direkt genre'ye mi geçmeli, yoksa albüm aşaması olmalı mı?
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Önerilen:</strong> Artist → Album → Genre (favorites gibi)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rule 10: Search -->
+            <div class="bg-slate-800/50 border-l-4 border-teal-500 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-teal-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">10</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-teal-300 mb-3">🔍 Search → Search → Album → Genre</h3>
+                        
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural (Önerilen A):</p>
+                            <p class="text-green-300 text-lg">Arama sonuçları devam eder → Bitince son şarkıların albümü → Albüm bitince genre</p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Kural (Alternatif B):</p>
+                            <p class="text-blue-300 text-lg">Arama sonuçları devam eder → Bitince arama query'si genre ise genre'ye geç</p>
+                            <p class="text-slate-400 text-sm mt-2">
+                                Örnek: Kullanıcı "jazz" aradıysa ve sistem "Jazz" genre'sini tespit ettiyse → Genre context'e geç
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded p-4 mb-4">
+                            <p class="text-slate-300 font-bold mb-2">Örnek (A):</p>
+                            <div class="space-y-2 text-sm text-slate-400">
+                                <p><strong class="text-white">1.</strong> Kullanıcı "blue" arar → 35 sonuç</p>
+                                <p><strong class="text-white">2.</strong> 35 şarkı çalar</p>
+                                <p><strong class="text-white">3.</strong> Arama sonuçları bitti</p>
+                                <p><strong class="text-yellow-300">4.</strong> Son 5 şarkının albümlerini al → En çok tekrar eden albüm</p>
+                                <p><strong class="text-white">5.</strong> O albümden devam et</p>
+                                <p><strong class="text-white">6.</strong> Albüm bitti → Genre'ye geç</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg p-4 mb-4">
+                            <p class="text-yellow-300 font-bold mb-2">❓ Soru:</p>
+                            <p class="text-slate-300 text-sm">
+                                Search bittikten sonra hangi mantık daha iyi? A (Album → Genre) mi yoksa B (Smart genre detection)?
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-3">
+                            <p class="text-green-300 text-sm">✅ <strong>Önerilen:</strong> A (Search → Album → Genre) - Daha basit ve tutarlı</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖZET TABLO -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-indigo-400">📊 Özet Tablo - Tüm Geçişler</h2>
+            
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-900/50">
+                        <tr>
+                            <th class="text-left p-4 text-indigo-300">Context</th>
+                            <th class="text-left p-4 text-indigo-300">Devam</th>
+                            <th class="text-left p-4 text-indigo-300">Bitince</th>
+                            <th class="text-left p-4 text-indigo-300">Final</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-blue-300">1. Genre</td>
+                            <td class="p-4">Genre</td>
+                            <td class="p-4">-</td>
+                            <td class="p-4 text-green-300">♾️ Genre</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-purple-300">2. Album</td>
+                            <td class="p-4">Album</td>
+                            <td class="p-4">→ Genre</td>
+                            <td class="p-4 text-green-300">♾️ Genre</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-green-300">3. Playlist</td>
+                            <td class="p-4">Playlist</td>
+                            <td class="p-4">→ Genre</td>
+                            <td class="p-4 text-green-300">♾️ Genre</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-red-300">4. Sector</td>
+                            <td class="p-4">Sector Playlists</td>
+                            <td class="p-4">-</td>
+                            <td class="p-4 text-green-300">♾️ Sector</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-yellow-300">5. Radio</td>
+                            <td class="p-4">Radio Playlists</td>
+                            <td class="p-4">-</td>
+                            <td class="p-4 text-green-300">♾️ Radio</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-pink-300">6. Popular</td>
+                            <td class="p-4">Popular</td>
+                            <td class="p-4">→ Album → Genre</td>
+                            <td class="p-4 text-green-300">♾️ Genre</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-orange-300">7. Recent</td>
+                            <td class="p-4">Recent (son ID)</td>
+                            <td class="p-4">-</td>
+                            <td class="p-4 text-green-300">♾️ Recent</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-cyan-300">8. Favorites</td>
+                            <td class="p-4">Favorites</td>
+                            <td class="p-4">→ Album → Genre</td>
+                            <td class="p-4 text-green-300">♾️ Genre</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-lime-300">9. Artist</td>
+                            <td class="p-4">Artist</td>
+                            <td class="p-4">→ Album → Genre ❓</td>
+                            <td class="p-4 text-yellow-300">❓ Onay bekliyor</td>
+                        </tr>
+                        <tr class="border-t border-slate-700">
+                            <td class="p-4 font-bold text-teal-300">10. Search</td>
+                            <td class="p-4">Search</td>
+                            <td class="p-4">→ Album → Genre ❓</td>
+                            <td class="p-4 text-yellow-300">❓ Onay bekliyor</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                <p class="text-green-300 font-bold mb-2">✅ Sonuç: Tüm Yollar Genre'ye Çıkar!</p>
+                <p class="text-slate-300 text-sm">
+                    8/10 context type'ı sonunda <strong class="text-white">Genre</strong> context'e geçiyor (infinite music).
+                    Sadece <strong class="text-yellow-300">Sector</strong> ve <strong class="text-yellow-300">Radio</strong> kendi içinde dönüyor.
+                </p>
+            </div>
+        </section>
+
+        <!-- SORULAR -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">❓ Onay Bekleyen Kurallar</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-3">Soru 1: Artist Context</h3>
+                    <p class="text-slate-300 mb-4">
+                        Artist şarkıları bittikten sonra:
+                    </p>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-green-300 font-bold mb-1">Seçenek A (Önerilen):</p>
+                            <p class="text-slate-400 text-sm">Artist → Album (son şarkıların) → Genre</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-blue-300 font-bold mb-1">Seçenek B:</p>
+                            <p class="text-slate-400 text-sm">Artist → Genre (direkt)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-3">Soru 2: Search Context</h3>
+                    <p class="text-slate-300 mb-4">
+                        Arama sonuçları bittikten sonra:
+                    </p>
+                    <div class="space-y-3">
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-green-300 font-bold mb-1">Seçenek A (Önerilen):</p>
+                            <p class="text-slate-400 text-sm">Search → Album (son şarkıların) → Genre</p>
+                        </div>
+                        <div class="bg-slate-800/50 rounded p-4">
+                            <p class="text-blue-300 font-bold mb-1">Seçenek B:</p>
+                            <p class="text-slate-400 text-sm">Search → Smart genre detection (eğer "jazz" arattıysa Jazz genre'sine geç)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Context Transition Rules v3 FINAL</p>
+            <p class="mt-2">10 Context Type - Net Geçiş Kuralları</p>
+        </footer>
+    </div>
+</body>
+</html>

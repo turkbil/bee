@@ -10,38 +10,11 @@
 <div class="mb-6">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
         @foreach($featuredPlaylists->take(8) as $playlist)
-        <div class="group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16"
-             x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {
-                 id: {{ $playlist->playlist_id }},
-                 title: {{ json_encode(getLocaleTitle($playlist->title, 'Playlist')) }},
-                 is_favorite: {{ auth()->check() && auth()->user()->hasFavorite('playlist', $playlist->playlist_id) ? 'true' : 'false' }},
-                 is_mine: {{ auth()->check() && $playlist->user_id == auth()->user()->id ? 'true' : 'false' }}
-             })"
-             x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
-             x-on:touchstart="
-                 touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
-                 touchTimer = setTimeout(() => {
-                     if (navigator.vibrate) navigator.vibrate(50);
-                     $store.contextMenu.openContextMenu({
-                         preventDefault: () => {},
-                         clientX: $event.touches[0].clientX,
-                         clientY: $event.touches[0].clientY
-                     }, 'playlist', {
-                         id: {{ $playlist->playlist_id }},
-                         title: {{ json_encode(getLocaleTitle($playlist->title, 'Playlist')) }},
-                         is_favorite: {{ auth()->check() && auth()->user()->hasFavorite('playlist', $playlist->playlist_id) ? 'true' : 'false' }},
-                         is_mine: {{ auth()->check() && $playlist->user_id == auth()->user()->id ? 'true' : 'false' }}
-                     });
-                 }, 500);
-             "
-             x-on:touchend="clearTimeout(touchTimer)"
-             x-on:touchmove="
-                 const deltaX = Math.abs($event.touches[0].clientX - touchStartPos.x);
-                 const deltaY = Math.abs($event.touches[0].clientY - touchStartPos.y);
-                 if (deltaX > 10 || deltaY > 10) {
-                     clearTimeout(touchTimer);
-                 }
-             ">
+        <div class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16"
+             data-playlist-id="{{ $playlist->playlist_id }}"
+             data-playlist-title="{{ e(getLocaleTitle($playlist->title, 'Playlist')) }}"
+             data-is-favorite="{{ auth()->check() && auth()->user()->hasFavorite('playlist', $playlist->playlist_id) ? '1' : '0' }}"
+             data-is-mine="{{ auth()->check() && $playlist->user_id == auth()->user()->id ? '1' : '0' }}">
             <div class="w-16 h-16 flex-shrink-0">
                 @if($playlist->coverMedia)
                     <img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover">
@@ -101,38 +74,11 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($featuredPlaylists as $playlist)
-        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
-             x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {
-                 id: {{ $playlist->playlist_id }},
-                 title: '{{ json_encode(getLocaleTitle($playlist->title, 'Playlist')) }}',
-                 is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
-                 is_mine: {{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }}
-             })"
-             x-data="{
-                 touchTimer: null,
-                 touchStartPos: { x: 0, y: 0 }
-             }"
-             x-on:touchstart="
-                 touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
-                 touchTimer = setTimeout(() => {
-                     if (navigator.vibrate) navigator.vibrate(50);
-                     $store.contextMenu.openContextMenu({
-                         clientX: $event.touches[0].clientX,
-                         clientY: $event.touches[0].clientY
-                     }, 'playlist', {
-                         id: {{ $playlist->playlist_id }},
-                         title: '{{ json_encode(getLocaleTitle($playlist->title, 'Playlist')) }}',
-                         is_favorite: {{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? 'true' : 'false' }},
-                         is_mine: {{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }}
-                     });
-                 }, 500);
-             "
-             x-on:touchend="clearTimeout(touchTimer)"
-             x-on:touchmove="
-                 const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 ||
-                              Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
-                 if (moved) clearTimeout(touchTimer);
-             "
+        <div class="playlist-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+             data-playlist-id="{{ $playlist->playlist_id }}"
+             data-playlist-title="{{ e(getLocaleTitle($playlist->title, 'Playlist')) }}"
+             data-is-favorite="{{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? '1' : '0' }}"
+             data-is-mine="{{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? '1' : '0' }}"
              x-on:click="window.location.href = '/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}'">
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
@@ -144,7 +90,15 @@
                 </div>
                 {{-- Play button on hover --}}
                 <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
-                     @click.stop="playPlaylist({{ $playlist->playlist_id }})">
+                     @click.stop="
+                        $store.player.setPlayContext({
+                            type: 'playlist',
+                            id: {{ $playlist->playlist_id }},
+                            name: '{{ addslashes(getLocaleTitle($playlist->title, 'Playlist')) }}',
+                            source: 'homepage_featured'
+                        });
+                        playPlaylist({{ $playlist->playlist_id }});
+                     ">
                     <i class="fas fa-play text-black ml-0.5"></i>
                 </div>
             </div>
@@ -204,41 +158,12 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($newReleases as $album)
-        <div class="group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
-             wire:navigate
-             href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}"
-             x-on:click="window.location.href = '/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}'"
-             x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'album', {
-                 id: {{ $album->album_id }},
-                 title: '{{ json_encode(getLocaleTitle($album->title, 'Album')) }}',
-                 artist: '{{ $album->artist ? json_encode(is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}',
-                 is_favorite: {{ auth()->check() && auth()->user()->hasFavorite('album', $album->album_id) ? 'true' : 'false' }}
-             })"
-             x-data="{ touchTimer: null, touchStartPos: { x: 0, y: 0 } }"
-             x-on:touchstart="
-                 touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
-                 touchTimer = setTimeout(() => {
-                     if (navigator.vibrate) navigator.vibrate(50);
-                     $store.contextMenu.openContextMenu({
-                         preventDefault: () => {},
-                         clientX: $event.touches[0].clientX,
-                         clientY: $event.touches[0].clientY
-                     }, 'album', {
-                         id: {{ $album->album_id }},
-                         title: '{{ json_encode(getLocaleTitle($album->title, 'Album')) }}',
-                         artist: '{{ $album->artist ? json_encode(is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}',
-                         is_favorite: {{ auth()->check() && auth()->user()->hasFavorite('album', $album->album_id) ? 'true' : 'false' }}
-                     });
-                 }, 500);
-             "
-             x-on:touchend="clearTimeout(touchTimer)"
-             x-on:touchmove="
-                 const deltaX = Math.abs($event.touches[0].clientX - touchStartPos.x);
-                 const deltaY = Math.abs($event.touches[0].clientY - touchStartPos.y);
-                 if (deltaX > 10 || deltaY > 10) {
-                     clearTimeout(touchTimer);
-                 }
-             ">
+        <div class="album-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
+             data-album-id="{{ $album->album_id }}"
+             data-album-title="{{ e(getLocaleTitle($album->title, 'Album')) }}"
+             data-album-artist="{{ $album->artist ? e(is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}"
+             data-is-favorite="{{ auth()->check() && auth()->user()->hasFavorite('album', $album->album_id) ? '1' : '0' }}"
+             x-on:click="window.location.href = '/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}'">
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
                     @if($album->coverMedia)
@@ -249,7 +174,16 @@
                 </div>
                 {{-- Play button on hover --}}
                 <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
-                     x-on:click.stop="playAlbum({{ $album->album_id }})">
+                     x-on:click.stop="
+                        $store.player.setPlayContext({
+                            type: 'recent',
+                            subType: 'album',
+                            id: {{ $album->album_id }},
+                            name: '{{ addslashes(getLocaleTitle($album->title, 'Album')) }}',
+                            source: 'homepage_new_releases'
+                        });
+                        playAlbum({{ $album->album_id }});
+                     ">
                     <i class="fas fa-play text-black ml-0.5"></i>
                 </div>
             </div>
@@ -257,7 +191,7 @@
                 {{ getLocaleTitle($album->title, 'Album') }}
             </h3>
             <p class="text-xs text-muzibu-text-gray truncate">
-                {{ $album->artist ? (is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}
+                {{ $album->artist ? (is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : json_encode('Sanatçı') }}
             </p>
         </div>
         @endforeach
@@ -274,7 +208,17 @@
 
         <div class="grid grid-cols-1">
             @foreach($popularSongs->take(10) as $index => $song)
-            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer" @mouseenter="preloadSongOnHover({{ $song->song_id }})" @click="playSong({{ $song->song_id }})">
+            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer"
+                 @mouseenter="preloadSongOnHover({{ $song->song_id }})"
+                 @click="
+                    $store.player.setPlayContext({
+                        type: 'popular',
+                        id: {{ $song->song_id }},
+                        name: '{{ addslashes(getLocaleTitle($song->title, 'Song')) }}',
+                        source: 'homepage_popular'
+                    });
+                    playSong({{ $song->song_id }});
+                 ">
                 {{-- Play Button Overlay --}}
                 <div class="relative">
                     <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
@@ -332,7 +276,18 @@
 
         <div class="grid grid-cols-1">
             @foreach($popularSongs->slice(10)->take(10) as $index => $song)
-            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer" @mouseenter="preloadSongOnHover({{ $song->song_id }})" @click="playSong({{ $song->song_id }})">
+            <div class="group flex items-center gap-3 px-3 py-2 rounded transition-all bg-transparent hover:bg-white/10 cursor-pointer"
+                 @mouseenter="preloadSongOnHover({{ $song->song_id }})"
+                 @click="
+                    $store.player.setPlayContext({
+                        type: 'recent',
+                        subType: 'song',
+                        id: {{ $song->song_id }},
+                        name: '{{ addslashes(getLocaleTitle($song->title, 'Song')) }}',
+                        source: 'homepage_new_songs'
+                    });
+                    playSong({{ $song->song_id }});
+                 ">
                 {{-- Play Button Overlay --}}
                 <div class="relative">
                     <div class="w-14 h-14 rounded overflow-hidden flex-shrink-0">
@@ -441,7 +396,15 @@
                 </div>
                 {{-- Play button on hover --}}
                 <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
-                     @click.stop="playGenre({{ $genre->genre_id }})">
+                     @click.stop="
+                        $store.player.setPlayContext({
+                            type: 'genre',
+                            id: {{ $genre->genre_id }},
+                            name: '{{ addslashes(getLocaleTitle($genre->title, 'Genre')) }}',
+                            source: 'homepage_genres'
+                        });
+                        playGenre({{ $genre->genre_id }});
+                     ">
                     <i class="fas fa-play text-black ml-0.5"></i>
                 </div>
             </div>

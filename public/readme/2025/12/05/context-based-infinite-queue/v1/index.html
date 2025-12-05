@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context-Based Infinite Queue - Zero Migration Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                🎯 Context-Based Infinite Queue
+            </h1>
+            <p class="text-2xl text-slate-300 mb-6">
+                Kullanıcı Nereden Gelirse Gelsin, Müzik Akışı Devam Eder
+            </p>
+            <div class="flex gap-6 text-sm text-slate-400 mb-6">
+                <span>📅 5 Aralık 2025</span>
+                <span>🎯 Tenant 1001: muzibu.com.tr</span>
+                <span>💾 Zero Migration - Storage Only</span>
+            </div>
+            <div class="bg-green-900/30 border-l-4 border-green-500 rounded-lg p-4">
+                <p class="text-green-200 text-lg font-bold">
+                    ✅ Sıfır Kolon | ✅ Sıfır Migration | ✅ Frontend-Only Solution
+                </p>
+            </div>
+        </header>
+
+        <!-- ANA KONSEPT -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">💡 Ana Konsept: Context Takibi</h2>
+            
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-8 mb-8">
+                <h3 class="text-2xl font-bold text-blue-300 mb-4">Kullanıcı Nereden Geldi?</h3>
+                <p class="text-slate-300 text-lg leading-relaxed mb-6">
+                    Kullanıcı her şarkı çalıştırdığında, <strong class="text-white">hangi sayfadan geldiğini</strong> localStorage'a kaydediyoruz.
+                    Queue azaldığında, <strong class="text-white">aynı context'ten</strong> yeni şarkılar getiriyoruz.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="font-bold text-green-300 mb-3">📱 LocalStorage Kayıt</h4>
+                        <div class="bg-slate-950/50 rounded p-4 text-sm text-green-200 font-mono">
+                            playContext = {<br>
+                            &nbsp;&nbsp;type: "genre",<br>
+                            &nbsp;&nbsp;id: 9,<br>
+                            &nbsp;&nbsp;name: "Jazz"<br>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-lg p-6">
+                        <h4 class="font-bold text-purple-300 mb-3">🔄 Queue Refill</h4>
+                        <div class="bg-slate-950/50 rounded p-4 text-sm text-purple-200">
+                            Context'e bak → type: "genre"<br>
+                            Genre 9'dan rastgele 10 şarkı çek<br>
+                            Queue'ya ekle → Müzik sürüyor!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4 CONTEXT TİPİ -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🎭 4 Context Tipi</h2>
+            
+            <!-- Context 1: Sector -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-red-300 mb-3">🏢 Sektör → Albüm Seçimi</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Senaryo:</h4>
+                            <p class="text-slate-300">
+                                Kullanıcı <strong class="text-red-300">Sectors</strong> sayfasından "Restoran & Kafe" sektörünü seçer →
+                                Sektörün albümlerinden birini tıklar → Albümden şarkı çalar
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">LocalStorage Kaydı:</h4>
+                            <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300 font-mono">
+                                playContext = {<br>
+                                &nbsp;&nbsp;type: "sector",<br>
+                                &nbsp;&nbsp;id: 3,<br>
+                                &nbsp;&nbsp;name: "Restoran & Kafe"<br>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-4">
+                            <p class="text-green-300 text-sm">
+                                ✅ <strong>Sonuç:</strong> Kullanıcı "Restoran & Kafe" sektöründen başladıysa, 
+                                sürekli restoran müziği çalar (Jazz, Bossa, Lounge vb.)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Context 2: Genre -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-blue-300 mb-3">🎭 Tür (Genre) → Şarkı Seçimi</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Senaryo:</h4>
+                            <p class="text-slate-300">
+                                Kullanıcı <strong class="text-blue-300">Genres</strong> sayfasından "Jazz" türünü seçer →
+                                Jazz şarkılarından birini tıklar → Şarkı çalar
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-4">
+                            <p class="text-green-300 text-sm">
+                                ✅ <strong>Sonuç:</strong> Kullanıcı "Jazz" seçtiyse, sürekli Jazz şarkıları çalar. 
+                                Rock/Metal/Pop ASLA karışmaz!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Context 3: Album -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-green-300 mb-3">💿 Albüm → Genre Geçiş</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Senaryo:</h4>
+                            <p class="text-slate-300">
+                                Kullanıcı bir albümden şarkı seçer →
+                                <strong class="text-green-300">Önce albümü bitir, sonra genre'ye geç</strong>
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-4">
+                            <p class="text-green-300 text-sm">
+                                ✅ <strong>Sonuç:</strong> Albüm biter, sonra aynı genre'den müzik devam eder.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Context 4: Radio -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 text-xl">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-purple-300 mb-3">📻 Radio → Playlist Mix</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Senaryo:</h4>
+                            <p class="text-slate-300">
+                                Kullanıcı <strong class="text-purple-300">Radios</strong> sayfasından "Chill Radio" seçer →
+                                Radio'ya atanmış playlist'lerden müzik çalar
+                            </p>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-4">
+                            <p class="text-green-300 text-sm">
+                                ✅ <strong>Sonuç:</strong> Radio'ya atanmış tüm playlist'lerden karışık müzik çalar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AVANTAJLAR -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Avantajlar</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="font-bold text-green-300 mb-3">🚀 Zero Database Changes</h3>
+                    <p class="text-slate-300 text-sm">
+                        Hiç kolon ekleme, hiç migration. Mevcut tablolar aynen kullanılıyor.
+                    </p>
+                </div>
+
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="font-bold text-green-300 mb-3">⚡ Frontend-Only</h3>
+                    <p class="text-slate-300 text-sm">
+                        Context takibi tamamen frontend'de. Backend sadece context'e göre query atar.
+                    </p>
+                </div>
+
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="font-bold text-green-300 mb-3">🎯 User Context Aware</h3>
+                    <p class="text-slate-300 text-sm">
+                        Kullanıcı nereden gelirse gelsin, o context'ten müzik devam eder.
+                    </p>
+                </div>
+
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="font-bold text-green-300 mb-3">♾️ Infinite Music</h3>
+                    <p class="text-slate-300 text-sm">
+                        Queue sürekli dolu kalır, müzik hiç durmaz.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- İMPLEMENTASYON -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-pink-400">📋 Implementation Planı</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-slate-800/50 border-l-4 border-pink-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-pink-300 mb-3">Phase 1: Frontend Helpers (30 dk)</h3>
+                    <p class="text-slate-300 text-sm">setPlayContext() ve getPlayContext() fonksiyonları</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">Phase 2: Blade Şablonları (1 saat)</h3>
+                    <p class="text-slate-300 text-sm">Genres, Sectors, Albums, Radios sayfalarına setPlayContext ekle</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-300 mb-3">Phase 3: Backend API (2 saat)</h3>
+                    <p class="text-slate-300 text-sm">POST /api/muzibu/queue/refill endpoint - 4 context type logic</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-300 mb-3">Phase 4: Frontend Queue (1.5 saat)</h3>
+                    <p class="text-slate-300 text-sm">refillQueue() async function + setInterval checker</p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-3">Phase 5: Test (1 saat)</h3>
+                    <p class="text-slate-300 text-sm">4 context type testi</p>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-gradient-to-r from-green-900/50 to-blue-900/50 border border-green-500 rounded-lg p-6">
+                <p class="text-xl text-green-300 font-bold">
+                    ⏱️ Toplam Süre: ~6 saat
+                </p>
+                <p class="text-slate-300 mt-2">
+                    Zero migration, zero kolon, sadece frontend + 1 API endpoint!
+                </p>
+            </div>
+        </section>
+
+        <!-- ÖZET -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-blue-500 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-300">🎯 Özet</h2>
+                <div class="space-y-4 text-slate-300 text-lg">
+                    <p>
+                        <strong class="text-white">1.</strong> Kullanıcı <strong class="text-green-300">nereden gelirse gelsin</strong>, context kaydediyoruz
+                    </p>
+                    <p>
+                        <strong class="text-white">2.</strong> Queue azalınca, <strong class="text-blue-300">aynı context'ten</strong> yeni şarkılar getiriyoruz
+                    </p>
+                    <p>
+                        <strong class="text-white">3.</strong> 4 context type: <strong class="text-yellow-300">Genre, Sector, Album, Radio</strong>
+                    </p>
+                    <p>
+                        <strong class="text-white">4.</strong> <strong class="text-red-300">Sıfır kolon, sıfır migration</strong> - sadece frontend + 1 API!
+                    </p>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-blue-500">
+                    <p class="text-2xl text-green-300 font-bold">
+                        ✅ En basit, en mantıklı çözüm!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Context-Based Infinite Queue System</p>
+            <p class="mt-2">🎯 Zero Migration | Frontend-Only | User Context Aware</p>
+        </footer>
+    </div>
+</body>
+</html>

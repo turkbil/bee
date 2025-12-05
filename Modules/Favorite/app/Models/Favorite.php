@@ -51,4 +51,34 @@ class Favorite extends Model
     {
         return $query->where('favoritable_type', $modelType);
     }
+
+    /**
+     * Check if user has favorited an item (TENANT-AWARE)
+     *
+     * @param int|null $userId
+     * @param string $type (song, album, playlist)
+     * @param int $itemId
+     * @return bool
+     */
+    public static function check(?int $userId, string $type, int $itemId): bool
+    {
+        if (!$userId) {
+            return false;
+        }
+
+        $modelMap = [
+            'song' => \Modules\Muzibu\App\Models\Song::class,
+            'album' => \Modules\Muzibu\App\Models\Album::class,
+            'playlist' => \Modules\Muzibu\App\Models\Playlist::class,
+        ];
+
+        if (!isset($modelMap[$type])) {
+            return false;
+        }
+
+        return self::where('user_id', $userId)
+            ->where('favoritable_type', $modelMap[$type])
+            ->where('favoritable_id', $itemId)
+            ->exists();
+    }
 }

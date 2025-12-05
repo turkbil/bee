@@ -254,45 +254,18 @@
                         // Yöntem 1: SPA content wrapper'daki tüm element'leri init et
                         const spaContent = document.querySelector('.spa-content-wrapper');
                         if (spaContent) {
-                            console.log('🎯 Found spa-content-wrapper, initializing...');
                             window.Alpine.initTree(spaContent);
-                            console.log('✨ Alpine re-initialized (spa-content-wrapper)');
                         }
 
                         // Yöntem 2: Tüm yeni x-data element'leri manuel init et
                         document.querySelectorAll('[x-data]').forEach(el => {
                             if (!el.__x) {
-                                console.log('🔧 Manually initializing element:', el);
                                 window.Alpine.initTree(el);
                             }
                         });
 
-                        // Yöntem 3: Context menu event'lerini manuel ekle (fallback)
-                        document.querySelectorAll('[x-on\\:contextmenu], [\\@contextmenu]').forEach(el => {
-                            if (!el.hasAttribute('data-context-initialized')) {
-                                console.log('🖱️ Adding manual context menu to:', el);
-                                el.setAttribute('data-context-initialized', 'true');
-                                el.addEventListener('contextmenu', function(e) {
-                                    console.log('🎯 Manual context menu triggered!');
-                                    // x-on:contextmenu attribute'unu oku ve eval et
-                                    const handler = el.getAttribute('x-on:contextmenu.prevent.stop') ||
-                                                  el.getAttribute('@contextmenu.prevent.stop');
-                                    if (handler) {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        try {
-                                            // Alpine magic'i kullan
-                                            const fn = new Function('$event', '$store', handler);
-                                            fn.call(el, e, window.Alpine.store);
-                                        } catch (err) {
-                                            console.error('Context menu handler error:', err);
-                                        }
-                                    }
-                                });
-                            }
-                        });
-
-                        console.log('✨ Alpine re-initialization complete');
+                        // Yöntem 3: Context menu event'lerini manuel ekle (fallback) - ARTIK GEREKSİZ
+                        // Native event listener yaklaşımı kullanıyoruz (init.js)
                     } catch (e) {
                         console.error('❌ Alpine re-init error:', e);
                     }
@@ -300,16 +273,16 @@
             }, 100);
         });
 
-        // İlk yüklemede de context menu store'un hazır olduğunu kontrol et
+        // İlk yüklemede context menu store'u kontrol et (sessiz)
         document.addEventListener('alpine:initialized', () => {
-            console.log('✅ Alpine initialized');
-            if (window.Alpine.store('contextMenu')) {
-                console.log('✅ Context Menu Store ready');
-            } else {
+            if (!window.Alpine.store('contextMenu')) {
                 console.error('❌ Context Menu Store not found!');
             }
         });
     </script>
+
+    {{-- 🎯 Context Menu Init - SPA Safe --}}
+    <script src="{{ asset('themes/muzibu/js/context-menu/init.js') }}?v={{ filemtime(public_path('themes/muzibu/js/context-menu/init.js')) }}"></script>
 
     @yield('scripts')
 </body>

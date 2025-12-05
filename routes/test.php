@@ -37,6 +37,11 @@ Route::middleware('tenant')->group(function () {
     // HERO SLIDER - Homepage Hero as Horizontal Slider
     Route::view('design/hero-slider', 'design.hero-slider')->name('design.hero-slider');
 
+    // BLOG LAYOUTS - News Magazine Style Designs
+    Route::view('design/blog-layouts/v1', 'design.blog-layouts.v1')->name('design.blog-layouts.v1');
+    Route::view('design/blog-layouts/v2', 'design.blog-layouts.v2')->name('design.blog-layouts.v2');
+    Route::view('design/blog-layouts/v3', 'design.blog-layouts.v3')->name('design.blog-layouts.v3');
+
     // ========================================
     // HERO WIDGET TEST - Widget Render Test
     // ========================================

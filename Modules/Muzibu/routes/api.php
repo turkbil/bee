@@ -7,6 +7,7 @@ use Modules\Muzibu\app\Http\Controllers\Api\SongController;
 use Modules\Muzibu\app\Http\Controllers\Api\GenreController;
 use Modules\Muzibu\app\Http\Controllers\Api\SectorController;
 use Modules\Muzibu\app\Http\Controllers\Api\DeviceController;
+use Modules\Muzibu\app\Http\Controllers\Api\QueueRefillController;
 
 /*
  *--------------------------------------------------------------------------
@@ -96,6 +97,11 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/{id}/playlists', [SectorController::class, 'playlists'])->name('api.muzibu.sectors.playlists');
         Route::get('/{id}/songs', [SectorController::class, 'songs'])->name('api.muzibu.sectors.songs');
     });
+
+    // Queue Refill - Context-based infinite queue system
+    Route::post('/queue/refill', [QueueRefillController::class, 'refill'])
+        ->name('api.muzibu.queue.refill')
+        ->middleware('throttle.user:api');
 });
 
 // Device Management (Tenant 1001 only) - Outside muzibu prefix

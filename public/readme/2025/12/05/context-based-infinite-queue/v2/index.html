@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Context Taxonomy - Homepage + Large Playlists</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                📋 Complete Context Taxonomy v2
+            </h1>
+            <p class="text-2xl text-slate-300 mb-6">
+                Anasayfa, Sidebar, Large Playlists - Tüm Senaryolar
+            </p>
+            <div class="flex gap-6 text-sm text-slate-400 mb-6">
+                <span>📅 5 Aralık 2025</span>
+                <span>🎯 v2 - Homepage + 500 Şarkılık Playlist</span>
+                <span>💾 Zero Migration</span>
+            </div>
+            <div class="bg-yellow-900/30 border-l-4 border-yellow-500 rounded-lg p-4">
+                <p class="text-yellow-200 font-bold">
+                    ⚠️ SORUN: Anasayfa section'ları, sidebar linkleri, 500+ şarkılı playlist'ler için context YOK!
+                </p>
+            </div>
+        </header>
+
+        <!-- ANASAYFA CONTEXT MAPPING -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🏠 Anasayfa Context Mapping</h2>
+            
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-8">
+                <h3 class="text-xl font-bold text-blue-300 mb-4">Anasayfa Yapısı</h3>
+                <p class="text-slate-300 mb-4">
+                    Anasayfada birçok section var: Yeni Albümler, Popüler Şarkılar, Önerilen Playlistler, Son Eklenenler vb.
+                    Her section'dan şarkı çalınırsa <strong class="text-white">farklı context</strong> uygulanmalı!
+                </p>
+            </div>
+
+            <!-- Section 1: Yeni Albümler -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-purple-300 mb-3">💿 Yeni Albümler (New Releases)</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Senaryo:</h4>
+                            <p class="text-slate-300 text-sm">
+                                Anasayfadaki "Yeni Albümler" section'ından kullanıcı bir albüme tıklar → Şarkı çalar
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Context Stratejisi:</h4>
+                            <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                                <strong class="text-purple-300">Seçenek A: Album Context (Önerilen ✅)</strong><br>
+                                <code class="bg-slate-950/50 px-2 py-1 rounded text-green-300">
+                                    {type: "album", id: 45, genreId: 9}
+                                </code><br>
+                                <span class="text-slate-400">→ Albüm biter, sonra genre'ye geç</span>
+                                <br><br>
+                                <strong class="text-blue-300">Seçenek B: Discovery Context</strong><br>
+                                <code class="bg-slate-950/50 px-2 py-1 rounded text-blue-300">
+                                    {type: "discovery", section: "new-releases"}
+                                </code><br>
+                                <span class="text-slate-400">→ Yeni albümlerden karışık şarkılar getir</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-4">
+                            <p class="text-green-300 text-sm">
+                                ✅ <strong>Önerilen:</strong> Seçenek A (Album context) - Kullanıcı bir albüm seçti, albümü dinlesin
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Popüler Şarkılar -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-red-300 mb-3">🔥 Popüler Şarkılar (Popular Songs)</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Senaryo:</h4>
+                            <p class="text-slate-300 text-sm">
+                                Anasayfadaki "Popüler Şarkılar" section'ından tek bir şarkı seçilir
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Context Stratejisi:</h4>
+                            <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                                <strong class="text-red-300">Seçenek A: Popular Context (Önerilen ✅)</strong><br>
+                                <code class="bg-slate-950/50 px-2 py-1 rounded text-green-300">
+                                    {type: "popular", period: "weekly"}
+                                </code><br>
+                                <span class="text-slate-400">→ Popüler şarkılardan devam et (play_count sıralaması)</span>
+                                <br><br>
+                                <strong class="text-blue-300">Seçenek B: Album Context</strong><br>
+                                <code class="bg-slate-950/50 px-2 py-1 rounded text-blue-300">
+                                    {type: "album", id: şarkının albumId}
+                                </code><br>
+                                <span class="text-slate-400">→ Şarkının albümünden devam et</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-4">
+                            <p class="text-green-300 text-sm">
+                                ✅ <strong>Önerilen:</strong> Seçenek A (Popular context) - Kullanıcı popüler müzik istiyorsa popüler devam etsin
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Önerilen Playlistler -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-green-300 mb-3">🎵 Önerilen Playlistler (Featured Playlists)</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Senaryo:</h4>
+                            <p class="text-slate-300 text-sm">
+                                Anasayfadaki "Önerilen Playlistler" section'ından bir playlist seçilir
+                            </p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Context Stratejisi:</h4>
+                            <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                                <strong class="text-green-300">Playlist Context (Tek seçenek ✅)</strong><br>
+                                <code class="bg-slate-950/50 px-2 py-1 rounded text-green-300">
+                                    {type: "playlist", id: 23, name: "Chill Vibes"}
+                                </code><br>
+                                <span class="text-slate-400">→ Playlist'teki şarkılar biter, tekrar baştan döner (loop)</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-900/20 rounded-lg p-4">
+                            <p class="text-green-300 text-sm">
+                                ✅ Playlist seçildi, playlist'ten devam et
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Son Eklenenler -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-yellow-300 mb-3">🆕 Son Eklenenler (Recently Added)</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Context Stratejisi:</h4>
+                            <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                                <strong class="text-yellow-300">Recent Context (Önerilen ✅)</strong><br>
+                                <code class="bg-slate-950/50 px-2 py-1 rounded text-green-300">
+                                    {type: "recent", order: "created_at DESC"}
+                                </code><br>
+                                <span class="text-slate-400">→ Yeni eklenen şarkılardan devam et</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Favorilerim -->
+            <div class="bg-slate-800/50 border-l-4 border-pink-500 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-pink-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">5</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-pink-300 mb-3">❤️ Favorilerim (My Favorites)</h3>
+                        
+                        <div class="mb-4">
+                            <h4 class="font-bold text-white mb-2">Context Stratejisi:</h4>
+                            <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300">
+                                <strong class="text-pink-300">Favorites Context (Önerilen ✅)</strong><br>
+                                <code class="bg-slate-950/50 px-2 py-1 rounded text-green-300">
+                                    {type: "favorites", userId: 123}
+                                </code><br>
+                                <span class="text-slate-400">→ Kullanıcının favori şarkılarından devam et</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SIDEBAR NAVIGATION CONTEXT -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">📱 Sidebar Navigation Context</h2>
+            
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-8">
+                <h3 class="text-xl font-bold text-cyan-300 mb-4">Sidebar Links</h3>
+                <p class="text-slate-300 mb-4">
+                    Sol taraftaki navigation menu'deki linkler. Her link farklı bir context type'a işaret eder.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Sidebar Item 1 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h4 class="font-bold text-blue-300 mb-3">🏠 Home / Anasayfa</h4>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Anasayfa'ya tıklanırsa context temizlenmez, son context devam eder
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-xs text-slate-400">
+                        Context: Değişmez (mevcut context korunur)
+                    </div>
+                </div>
+
+                <!-- Sidebar Item 2 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h4 class="font-bold text-purple-300 mb-3">🎭 Genres / Türler</h4>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Genres sayfasına git → Context belirlenmez (kullanıcı genre seçene kadar)
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-xs text-slate-400">
+                        Context: null (genre seçilene kadar)
+                    </div>
+                </div>
+
+                <!-- Sidebar Item 3 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h4 class="font-bold text-green-300 mb-3">💿 Albums / Albümler</h4>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Albums sayfasına git → Context belirlenmez
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-xs text-slate-400">
+                        Context: null (albüm seçilene kadar)
+                    </div>
+                </div>
+
+                <!-- Sidebar Item 4 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h4 class="font-bold text-yellow-300 mb-3">🎵 Playlists</h4>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Playlists sayfasına git → Context belirlenmez
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-xs text-slate-400">
+                        Context: null (playlist seçilene kadar)
+                    </div>
+                </div>
+
+                <!-- Sidebar Item 5 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h4 class="font-bold text-red-300 mb-3">🏢 Sectors / Sektörler</h4>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Sectors sayfasına git → Context belirlenmez
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-xs text-slate-400">
+                        Context: null (sector seçilene kadar)
+                    </div>
+                </div>
+
+                <!-- Sidebar Item 6 -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h4 class="font-bold text-pink-300 mb-3">📻 Radios</h4>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Radios sayfasına git → Context belirlenmez
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-3 text-xs text-slate-400">
+                        Context: null (radio seçilene kadar)
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-6">
+                <p class="text-blue-300 font-bold mb-2">💡 Sidebar Kuralı:</p>
+                <p class="text-slate-300 text-sm">
+                    Sidebar'daki linkler sadece sayfalar arası geçiş yapar. Context, kullanıcı şarkı/albüm/playlist 
+                    <strong class="text-white">ÇALANA KADAR</strong> belirlenmez.
+                </p>
+            </div>
+        </section>
+
+        <!-- BÜYÜK PLAYLIST STRATEJİSİ (500+ ŞARKI) -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">🚨 500+ Şarkılı Playlist Stratejisi</h2>
+            
+            <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-8 mb-8">
+                <h3 class="text-2xl font-bold text-red-300 mb-4">Problem: Performance</h3>
+                <p class="text-slate-300 mb-4">
+                    Bazı playlist'ler 500 hatta 1000 şarkı içerebilir. Tüm şarkıları queue'ya yüklemek:
+                </p>
+                <ul class="space-y-2 text-slate-300 text-sm">
+                    <li>❌ Memory problemi (500 şarkı x metadata = çok veri)</li>
+                    <li>❌ API response çok büyük (JSON 5MB+)</li>
+                    <li>❌ Frontend render yavaşlar</li>
+                    <li>❌ Kullanıcı zaten 500 şarkıyı görmeyecek</li>
+                </ul>
+            </div>
+
+            <!-- Çözüm: Chunk Strategy -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <h3 class="text-2xl font-bold text-green-300 mb-4">✅ Çözüm: Chunk Strategy</h3>
+                
+                <div class="mb-6">
+                    <h4 class="font-bold text-white mb-3">Strateji:</h4>
+                    <ol class="space-y-3 text-slate-300 text-sm">
+                        <li>
+                            <strong class="text-white">1. İlk yükleme:</strong> Playlist'ten sadece ilk <strong class="text-green-300">15 şarkı</strong> çek
+                        </li>
+                        <li>
+                            <strong class="text-white">2. Queue azalınca:</strong> Playlist'ten sıradaki 10 şarkıyı çek (offset mekanizması)
+                        </li>
+                        <li>
+                            <strong class="text-white">3. Playlist bitti mi?</strong> Eğer 500 şarkı bittiyse başa dön (loop) veya benzer playlist'lerden devam et
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-bold text-white mb-3">Context Yapısı (Playlist için):</h4>
+                    <div class="bg-slate-900/50 rounded p-4 font-mono text-sm text-slate-300">
+                        playContext = {<br>
+                        &nbsp;&nbsp;type: "playlist",<br>
+                        &nbsp;&nbsp;id: 23,<br>
+                        &nbsp;&nbsp;name: "Epic Playlist (500 songs)",<br>
+                        &nbsp;&nbsp;totalSongs: 500,<br>
+                        &nbsp;&nbsp;currentOffset: 15, <span class="text-slate-500">// Şu ana kadar 15 şarkı yüklendi</span><br>
+                        &nbsp;&nbsp;loop: true <span class="text-slate-500">// Playlist bitince başa dön</span><br>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-bold text-white mb-3">Backend API Logic:</h4>
+                    <div class="bg-slate-900/50 rounded p-4 text-xs text-slate-300 overflow-x-auto">
+<pre>
+case 'playlist':
+    $playlist = Playlist::find($context['id']);
+    $totalSongs = $playlist->songs()->count();
+    $currentOffset = $context['currentOffset'] ?? 0;
+    
+    // Sıradaki 10 şarkıyı çek
+    $songs = $playlist->songs()
+        ->skip($currentOffset)
+        ->take(10)
+        ->get();
+    
+    // Eğer playlist bitti ve loop aktifse başa dön
+    if ($songs->isEmpty() && $context['loop']) {
+        $songs = $playlist->songs()->take(10)->get();
+        $newOffset = 10;
+    } else {
+        $newOffset = $currentOffset + $songs->count();
+    }
+    
+    return [
+        'songs' => $songs,
+        'newOffset' => $newOffset,
+        'totalSongs' => $totalSongs,
+        'hasMore' => $newOffset < $totalSongs
+    ];
+</pre>
+                    </div>
+                </div>
+
+                <div class="bg-green-900/20 rounded-lg p-4">
+                    <p class="text-green-300 text-sm">
+                        ✅ <strong>Sonuç:</strong> 500 şarkılı playlist olsa bile, her seferinde sadece 10-15 şarkı yüklenir. 
+                        Memory ve performance problem yok!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Alternatif: Rastgele Çalma -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                <h3 class="text-2xl font-bold text-blue-300 mb-4">🔀 Alternatif: Shuffle Mode</h3>
+                
+                <div class="mb-4">
+                    <p class="text-slate-300 text-sm mb-3">
+                        Kullanıcı "Shuffle" modunu aktif ederse:
+                    </p>
+                    <div class="bg-slate-900/50 rounded p-4 text-xs text-slate-300">
+<pre>
+case 'playlist':
+    $playlist = Playlist::find($context['id']);
+    
+    // Rastgele 10 şarkı çek (offset yok!)
+    $songs = $playlist->songs()
+        ->inRandomOrder()
+        ->take(10)
+        ->get();
+    
+    return ['songs' => $songs];
+</pre>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/20 rounded-lg p-4">
+                    <p class="text-blue-300 text-sm">
+                        💡 Shuffle mode'da offset yok, her seferinde rastgele 10 şarkı
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAM CONTEXT TAKSONOMİSİ -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-indigo-400">📊 Tam Context Taksonomisi</h2>
+            
+            <div class="bg-slate-800/50 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-indigo-300 mb-4">10 Context Type</h3>
+                <p class="text-slate-300 text-sm mb-4">
+                    Sistem genelinde kullanılacak TÜM context tipleri:
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-blue-500">
+                    <h4 class="font-bold text-blue-300 mb-2">1. genre</h4>
+                    <code class="text-xs text-slate-400">{type: "genre", id: 9}</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-green-500">
+                    <h4 class="font-bold text-green-300 mb-2">2. album</h4>
+                    <code class="text-xs text-slate-400">{type: "album", id: 45, genreId: 9}</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-purple-500">
+                    <h4 class="font-bold text-purple-300 mb-2">3. playlist</h4>
+                    <code class="text-xs text-slate-400">{type: "playlist", id: 23, currentOffset: 0}</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-red-500">
+                    <h4 class="font-bold text-red-300 mb-2">4. sector</h4>
+                    <code class="text-xs text-slate-400">{type: "sector", id: 3}</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-yellow-500">
+                    <h4 class="font-bold text-yellow-300 mb-2">5. radio</h4>
+                    <code class="text-xs text-slate-400">{type: "radio", id: 5, playlists: [12,15]}</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-pink-500">
+                    <h4 class="font-bold text-pink-300 mb-2">6. popular</h4>
+                    <code class="text-xs text-slate-400">{type: "popular", period: "weekly"}</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-orange-500">
+                    <h4 class="font-bold text-orange-300 mb-2">7. recent</h4>
+                    <code class="text-xs text-slate-400">{type: "recent", order: "created_at DESC"}</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-cyan-500">
+                    <h4 class="font-bold text-cyan-300 mb-2">8. favorites</h4>
+                    <code class="text-xs text-slate-400">{type: "favorites", userId: 123}</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-lime-500">
+                    <h4 class="font-bold text-lime-300 mb-2">9. artist</h4>
+                    <code class="text-xs text-slate-400">{type: "artist", id: 67}</code>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border-l-4 border-teal-500">
+                    <h4 class="font-bold text-teal-300 mb-2">10. search</h4>
+                    <code class="text-xs text-slate-400">{type: "search", query: "jazz"}</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- IMPLEMENTATION UPDATE -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-pink-400">🔧 Implementation Güncellemesi</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-slate-800/50 border-l-4 border-pink-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-pink-300 mb-3">Phase 1: Context Helpers (1 saat) ⬆️</h3>
+                    <div class="text-slate-300 text-sm space-y-2">
+                        <p>✅ setPlayContext() - 10 context type desteği</p>
+                        <p>✅ getPlayContext()</p>
+                        <p>✅ updatePlayContext() - offset güncelleme için</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">Phase 2: Blade Updates (2 saat) ⬆️</h3>
+                    <div class="text-slate-300 text-sm space-y-2">
+                        <p>✅ home.blade.php - 5 section için context</p>
+                        <p>✅ genres, albums, playlists, sectors, radios</p>
+                        <p>✅ favorites, search results</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-300 mb-3">Phase 3: Backend API (3 saat) ⬆️</h3>
+                    <div class="text-slate-300 text-sm space-y-2">
+                        <p>✅ 10 context type için switch-case</p>
+                        <p>✅ Playlist offset mekanizması</p>
+                        <p>✅ Shuffle mode desteği</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-300 mb-3">Phase 4: Frontend Queue (2 saat) ⬆️</h3>
+                    <div class="text-slate-300 text-sm space-y-2">
+                        <p>✅ refillQueue() - offset update logic</p>
+                        <p>✅ Large playlist handling</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-yellow-300 mb-3">Phase 5: Test (2 saat) ⬆️</h3>
+                    <div class="text-slate-300 text-sm space-y-2">
+                        <p>✅ 10 context type testi</p>
+                        <p>✅ 500 şarkılı playlist testi</p>
+                        <p>✅ Anasayfa section testleri</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-gradient-to-r from-red-900/50 to-orange-900/50 border border-red-500 rounded-lg p-6">
+                <p class="text-xl text-red-300 font-bold mb-2">
+                    ⏱️ Toplam Süre: ~10 saat (v1: 6 saat → v2: 10 saat)
+                </p>
+                <p class="text-slate-300 text-sm">
+                    Anasayfa section'ları + 500+ şarkılı playlist desteği eklendi
+                </p>
+            </div>
+        </section>
+
+        <!-- ÖZET -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-blue-900/50 to-purple-900/50 border border-blue-500 rounded-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-300">🎯 v2 Özeti</h2>
+                <div class="space-y-4 text-slate-300 text-lg">
+                    <p>
+                        <strong class="text-white">1.</strong> <strong class="text-green-300">Anasayfa 5 section</strong> için context mapping (Yeni Albümler, Popüler, Önerilen, vb.)
+                    </p>
+                    <p>
+                        <strong class="text-white">2.</strong> <strong class="text-blue-300">Sidebar navigation</strong> context kuralları (sayfa değiştir, context korun)
+                    </p>
+                    <p>
+                        <strong class="text-white">3.</strong> <strong class="text-orange-300">500+ şarkılı playlist</strong> için chunk strategy (offset mekanizması)
+                    </p>
+                    <p>
+                        <strong class="text-white">4.</strong> <strong class="text-purple-300">10 context type</strong> taksonomisi (genre, album, playlist, sector, radio, popular, recent, favorites, artist, search)
+                    </p>
+                    <p>
+                        <strong class="text-white">5.</strong> <strong class="text-red-300">Hala sıfır migration!</strong> Sadece frontend + 1 API endpoint
+                    </p>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-blue-500">
+                    <p class="text-2xl text-green-300 font-bold">
+                        ✅ Tüm senaryolar kapsandı!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Complete Context Taxonomy v2</p>
+            <p class="mt-2">Anasayfa + Sidebar + 500+ Şarkılı Playlist</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -45,7 +45,15 @@
                     <div class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300 cursor-pointer">
                         @if($item instanceof \Modules\Muzibu\App\Models\Song)
                             <!-- Song Card -->
-                            <div @click="$dispatch('play-song', { songId: {{ $item->song_id }} })">
+                            <div @click="
+                                $store.player.setPlayContext({
+                                    type: 'favorites',
+                                    subType: 'song',
+                                    id: {{ $item->song_id }},
+                                    name: '{{ addslashes($item->getTranslation('title', app()->getLocale())) }}'
+                                });
+                                $dispatch('play-song', { songId: {{ $item->song_id }} });
+                            ">
                                 <div class="relative mb-4">
                                     @if($item->album && $item->album->getFirstMedia('album_cover'))
                                         <img src="{{ thumb($item->album->getFirstMedia('album_cover'), 300, 300, ['scale' => 1]) }}"
@@ -135,7 +143,15 @@
                                     @endif
 
                                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                                        <button class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
+                                        <button @click.prevent="
+                                            $store.player.setPlayContext({
+                                                type: 'favorites',
+                                                subType: 'album',
+                                                id: {{ $item->album_id }},
+                                                name: '{{ addslashes($item->getTranslation('title', app()->getLocale())) }}'
+                                            });
+                                            playAlbum({{ $item->album_id }});
+                                        " class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
                                             <i class="fas fa-play ml-1"></i>
                                         </button>
                                     </div>
@@ -211,7 +227,15 @@
                                     @endif
 
                                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                                        <button class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
+                                        <button @click.prevent="
+                                            $store.player.setPlayContext({
+                                                type: 'favorites',
+                                                subType: 'playlist',
+                                                id: {{ $item->playlist_id }},
+                                                name: '{{ addslashes($item->getTranslation('title', app()->getLocale())) }}'
+                                            });
+                                            playPlaylist({{ $item->playlist_id }});
+                                        " class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
                                             <i class="fas fa-play ml-1"></i>
                                         </button>
                                     </div>

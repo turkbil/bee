@@ -20,11 +20,19 @@
                     {{-- Large Play Button Overlay --}}
                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
                         <button
-                            @click="$dispatch('play-radio', {
-                                radioId: {{ $radio->radio_id }},
-                                title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
-                                streamUrl: '{{ $radio->stream_url }}'
-                            })"
+                            @click="
+                                $store.player.setPlayContext({
+                                    type: 'radio',
+                                    id: {{ $radio->radio_id }},
+                                    name: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
+                                    streamUrl: '{{ $radio->stream_url }}'
+                                });
+                                $dispatch('play-radio', {
+                                    radioId: {{ $radio->radio_id }},
+                                    title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
+                                    streamUrl: '{{ $radio->stream_url }}'
+                                });
+                            "
                             class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-110 transition-all duration-300 bg-muzibu-coral hover:bg-opacity-90 text-white rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-2xl hover:scale-125 hover:shadow-muzibu-coral/50"
                         >
                             <i class="fas fa-play text-2xl sm:text-3xl ml-1"></i>

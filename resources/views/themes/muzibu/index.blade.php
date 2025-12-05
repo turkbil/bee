@@ -10,7 +10,11 @@
 <div class="mb-6">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
         @foreach($featuredPlaylists->take(8) as $playlist)
-        <div class="group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16">
+        <div class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16"
+             data-playlist-id="{{ $playlist->playlist_id }}"
+             data-playlist-title="{{ getLocaleTitle($playlist->title, 'Playlist') }}"
+             data-is-favorite="{{ \Modules\Favorite\App\Models\Favorite::check(auth()->id(), 'playlist', $playlist->playlist_id) ? '1' : '0' }}"
+             data-is-mine="{{ auth()->check() && $playlist->user_id == auth()->user()->id ? '1' : '0' }}">
             <div class="w-16 h-16 flex-shrink-0">
                 @if($playlist->coverMedia)
                     <img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover">
@@ -70,7 +74,11 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($featuredPlaylists as $playlist)
-        <div class="group relative flex-shrink-0 w-[190px]">
+        <div class="playlist-card group relative flex-shrink-0 w-[190px]"
+             data-playlist-id="{{ $playlist->playlist_id }}"
+             data-playlist-title="{{ getLocaleTitle($playlist->title, 'Playlist') }}"
+             data-is-favorite="{{ \Modules\Favorite\App\Models\Favorite::check(auth()->id(), 'playlist', $playlist->playlist_id) ? '1' : '0' }}"
+             data-is-mine="{{ auth()->check() && $playlist->user_id == auth()->user()->id ? '1' : '0' }}">
             <a class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
                wire:navigate
                href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}">
@@ -145,7 +153,11 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($newReleases as $album)
-        <div class="group relative flex-shrink-0 w-[190px]">
+        <div class="album-card group relative flex-shrink-0 w-[190px]"
+             data-album-id="{{ $album->album_id }}"
+             data-album-title="{{ getLocaleTitle($album->title, 'Album') }}"
+             data-album-artist="{{ $album->artist ? (is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}"
+             data-is-favorite="{{ \Modules\Favorite\App\Models\Favorite::check(auth()->id(), 'album', $album->album_id) ? '1' : '0' }}">
             <a class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
                wire:navigate
                href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}">

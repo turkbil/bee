@@ -174,6 +174,18 @@ function muzibuApp() {
                 this.contentLoaded = true;
             }, 500);
 
+            // 🎯 QUEUE CHECKER: Monitor queue and auto-refill (PHASE 4)
+            this.startQueueMonitor();
+
+            // 💾 FULL STATE RESTORATION: Tarayıcı kapansa bile kaldığı yerden devam et
+            this.loadQueueState();
+
+            // 🎵 BACKGROUND PLAYBACK: Tarayıcı minimize olsa bile çalsın
+            this.enableBackgroundPlayback();
+
+            // 💾 AUTO-SAVE: State değişikliklerini otomatik kaydet
+            this.setupAutoSave();
+
             // SPA Navigation: Handle browser back/forward
             window.addEventListener('popstate', (e) => {
                 if (e.state && e.state.url) {
@@ -340,7 +352,56 @@ function muzibuApp() {
             try {
                 this.isLoading = true;
 
-                // Popüler şarkılardan rastgele 50 şarkı al
+                // 🎵 AUTO-START: Queue boşsa Genre'den başla (infinite loop garantisi)
+                console.log('🎵 Auto-starting music from Genre (infinite loop)...');
+
+                // En popüler genre'yi bul ve oradan başlat
+                const genresResponse = await fetch('/api/muzibu/genres');
+                const genres = await genresResponse.json();
+
+                if (genres && genres.length > 0) {
+                    // İlk genre'yi al (veya rastgele)
+                    const firstGenre = genres[0];
+
+                    // Genre context'i ayarla
+                    Alpine.store('muzibu').setPlayContext({
+                        type: 'genre',
+                        id: firstGenre.genre_id,
+                        offset: 0,
+                        source: 'auto_start'
+                    });
+
+                    // Genre'den şarkıları yükle
+                    const songs = await Alpine.store('muzibu').refillQueue(0, 15);
+
+                    if (songs && songs.length > 0) {
+                        this.queue = songs;
+                        this.queueIndex = 0;
+                        await this.playSongFromQueue(0);
+                        this.showToast(`🎵 ${firstGenre.title?.tr || firstGenre.title} çalıyor`, 'success');
+                    } else {
+                        // Fallback: Popular songs
+                        await this.fallbackToPopularSongs();
+                    }
+                } else {
+                    // Fallback: Popular songs
+                    await this.fallbackToPopularSongs();
+                }
+
+                this.isLoading = false;
+            } catch (error) {
+                console.error('Failed to start auto-play:', error);
+                // Fallback: Popular songs
+                await this.fallbackToPopularSongs();
+                this.isLoading = false;
+            }
+        },
+
+        /**
+         * 🔄 Fallback: Genre bulunamazsa popular songs
+         */
+        async fallbackToPopularSongs() {
+            try {
                 const response = await fetch('/api/muzibu/songs/popular?limit=50');
                 const songs = await response.json();
 
@@ -351,19 +412,19 @@ function muzibuApp() {
                     this.queue = shuffled;
                     this.queueIndex = 0;
                     await this.playSongFromQueue(0);
-                    this.showToast('Rastgele çalma başladı!', 'success');
+                    this.showToast('Popüler şarkılar çalıyor!', 'success');
                 } else {
                     this.showToast('Şarkı bulunamadı', 'error');
                 }
             } catch (error) {
-                console.error('Failed to play random songs:', error);
+                console.error('Failed to play fallback songs:', error);
                 this.showToast('Şarkılar yüklenemedi', 'error');
             } finally {
                 this.isLoading = false;
             }
         },
 
-        // 💾 Queue Persistence: Save queue state to localStorage
+        // 💾 FULL STATE BACKUP: Save complete player state to localStorage
         saveQueueState() {
             try {
                 const state = {
@@ -372,21 +433,31 @@ function muzibuApp() {
                     currentSong: this.currentSong,
                     currentTime: this.currentTime,
                     shuffle: this.shuffle,
-                    repeatMode: this.repeatMode
+                    repeatMode: this.repeatMode,
+                    volume: this.volume,
+                    isPlaying: this.isPlaying,
+                    playContext: Alpine.store('muzibu')?.getPlayContext() || null
                 };
-                safeStorage.setItem('queue_state', JSON.stringify(state));
-                console.log('💾 Queue state saved');
+                safeStorage.setItem('muzibu_full_state', JSON.stringify(state));
+                console.log('💾 Full state saved:', {
+                    queue: state.queue.length,
+                    index: state.queueIndex,
+                    song: state.currentSong?.song_title?.tr || state.currentSong?.song_title,
+                    time: Math.floor(state.currentTime),
+                    volume: state.volume,
+                    playing: state.isPlaying
+                });
             } catch (error) {
-                console.error('Failed to save queue state:', error);
+                console.error('❌ Failed to save state:', error);
             }
         },
 
-        // 💾 Queue Persistence: Load queue state from localStorage
+        // 💾 FULL STATE RESTORATION: Load complete player state from localStorage
         async loadQueueState() {
             try {
-                const saved = safeStorage.getItem('queue_state');
+                const saved = safeStorage.getItem('muzibu_full_state');
                 if (!saved) {
-                    console.log('💾 No saved queue state found');
+                    console.log('💾 No saved state found - Fresh start');
                     return;
                 }
 
@@ -398,23 +469,42 @@ function muzibuApp() {
                 this.currentSong = state.currentSong || null;
                 this.shuffle = state.shuffle || false;
                 this.repeatMode = state.repeatMode || 'off';
+                this.volume = state.volume || 1.0;
 
-                console.log('💾 Queue state restored:', {
-                    queueLength: this.queue.length,
-                    queueIndex: this.queueIndex,
-                    currentSong: this.currentSong?.song_title?.tr
+                // Restore play context
+                if (state.playContext && Alpine.store('muzibu')) {
+                    Alpine.store('muzibu').updatePlayContext(state.playContext);
+                }
+
+                console.log('💾 Full state restored:', {
+                    queue: this.queue.length,
+                    index: this.queueIndex,
+                    song: this.currentSong?.song_title?.tr || this.currentSong?.song_title,
+                    volume: this.volume,
+                    wasPlaying: state.isPlaying
                 });
 
-                // Auto-play from saved position (optional - kullanıcı isterse aktif edilebilir)
-                // if (this.currentSong && this.queue.length > 0) {
-                //     await this.playSongFromQueue(this.queueIndex);
-                //     if (state.currentTime > 0) {
-                //         this.seekTo(state.currentTime);
-                //     }
-                // }
+                // 🎵 AUTO-RESUME: Tarayıcı kapansa bile kaldığı yerden devam et
+                if (state.isPlaying && this.currentSong && this.queue.length > 0) {
+                    console.log('🎵 Auto-resuming from saved position...');
+
+                    // 2 saniye bekle (sayfa tamamen yüklensin)
+                    setTimeout(async () => {
+                        // Queue'dan şarkıyı çal
+                        await this.playSongFromQueue(this.queueIndex);
+
+                        // Kaldığı yerden devam et (currentTime restore)
+                        if (state.currentTime > 0) {
+                            setTimeout(() => {
+                                this.seekTo(state.currentTime);
+                                console.log(`⏩ Resumed from ${Math.floor(state.currentTime)}s`);
+                            }, 1000);
+                        }
+                    }, 2000);
+                }
 
             } catch (error) {
-                console.error('Failed to load queue state:', error);
+                console.error('❌ Failed to load state:', error);
             }
         },
 
@@ -2481,22 +2571,53 @@ function playLimits() {
         },
 
         /**
-         * 🎯 QUEUE PRELOAD: Queue'daki ilk şarkının HLS'ini arka planda yükle
-         * Sıra değişse bile ilk şarkı her zaman hazır (instant play)
+         * 🎯 AGGRESSIVE PRELOAD: Queue'daki ilk 3 şarkının HLS'ini arka planda yükle
+         * Şarkı geçişlerinde 0ms gecikme için (PHASE 4 - Priority 3)
          */
         async preloadFirstInQueue() {
-            // Queue boşsa veya sadece mevcut şarkı varsa skip
+            // Backward compatibility: Still works as before (preloads first song)
+            await this.preloadNextThreeSongs();
+        },
+
+        /**
+         * 🚀 AGGRESSIVE PRELOAD: İlk 3 şarkıyı preload et (0ms transition)
+         */
+        async preloadNextThreeSongs() {
+            // Queue kontrolü
             if (!this.queue || this.queue.length <= 1) return;
 
-            // İlk şarkıyı al (mevcut şarkı değilse)
-            const firstSong = this.queue[0];
-            if (!firstSong || !firstSong.song_id) return;
+            // Mevcut queueIndex'ten sonraki 3 şarkıyı al
+            const currentIndex = this.queueIndex || 0;
+            const songsToPreload = [];
 
-            // Mevcut çalan şarkıyı preload etmeye gerek yok
-            if (this.currentSong && firstSong.song_id === this.currentSong.song_id) return;
+            // İlk 3 şarkıyı topla (mevcut şarkıdan sonra)
+            for (let i = 1; i <= 3; i++) {
+                const nextIndex = currentIndex + i;
+                if (nextIndex < this.queue.length) {
+                    const song = this.queue[nextIndex];
+                    if (song && song.song_id) {
+                        songsToPreload.push(song);
+                    }
+                }
+            }
 
-            // Preload yap (hover ile aynı mantık)
-            await this.preloadSongOnHover(firstSong.song_id);
+            // Boş liste kontrolü
+            if (songsToPreload.length === 0) {
+                console.log('🔍 No songs to preload (queue too short)');
+                return;
+            }
+
+            console.log(`🚀 Aggressive Preload: Loading next ${songsToPreload.length} songs...`);
+
+            // Paralel preload (3 şarkıyı aynı anda yükle)
+            const preloadPromises = songsToPreload.map(song =>
+                this.preloadSongOnHover(song.song_id)
+            );
+
+            // Tüm preload'lar tamamlanana kadar bekle (ama hata olsa bile devam et)
+            await Promise.allSettled(preloadPromises);
+
+            console.log(`✅ Aggressive Preload completed: ${songsToPreload.length} songs ready`);
         },
 
         /**
@@ -2539,6 +2660,169 @@ function playLimits() {
                 // Preload hataları sessizce ignore et (kritik değil)
                 console.debug('Preload error (ignored):', error);
             }
+        },
+
+        /**
+         * 🎯 QUEUE MONITOR: setInterval ile queue durumunu kontrol et
+         * Her 10 saniyede queue kontrol edilir, 3 şarkıya düşerse otomatik refill
+         */
+        startQueueMonitor() {
+            // Mevcut interval varsa temizle
+            if (this.queueMonitorInterval) {
+                clearInterval(this.queueMonitorInterval);
+            }
+
+            // Her 10 saniyede kontrol et
+            this.queueMonitorInterval = setInterval(() => {
+                this.checkAndRefillQueue();
+            }, 10000); // 10 saniye
+
+            console.log('✅ Queue Monitor started (checks every 10s)');
+        },
+
+        /**
+         * 🔄 QUEUE REFILL CHECKER: Queue 3 şarkıya düştüyse otomatik refill
+         */
+        async checkAndRefillQueue() {
+            try {
+                // Queue kontrolü
+                const queueLength = this.queue.length - this.queueIndex;
+
+                // Debug log (her 10 saniyede)
+                console.log(`🔍 Queue Check: ${queueLength} songs remaining (queueIndex: ${this.queueIndex}/${this.queue.length})`);
+
+                // Eğer 3 veya daha az şarkı kaldıysa refill et
+                if (queueLength <= 3) {
+                    console.warn('⚠️ Queue running low! Auto-refilling...');
+
+                    // Context var mı kontrol et
+                    const context = Alpine.store('muzibu')?.getPlayContext();
+
+                    if (!context) {
+                        console.warn('⚠️ No play context - cannot auto-refill queue');
+                        return;
+                    }
+
+                    // Mevcut offset'i hesapla (kaç şarkı çalındı)
+                    const currentOffset = context.offset || 0;
+
+                    // Alpine store'dan refillQueue çağır
+                    const newSongs = await Alpine.store('muzibu').refillQueue(currentOffset, 15);
+
+                    if (newSongs && newSongs.length > 0) {
+                        // Queue'ya ekle (mevcut queue'nun sonuna)
+                        this.queue = [...this.queue, ...newSongs];
+                        console.log(`✅ Auto-refilled: ${newSongs.length} songs added (Total queue: ${this.queue.length})`);
+
+                        // İlk şarkıyı preload et
+                        this.preloadFirstInQueue();
+                    } else {
+                        console.warn('⚠️ Auto-refill returned empty - queue might end soon!');
+
+                        // Context Transition: Eğer queue boşsa Genre'ye geç
+                        if (context.type !== 'genre') {
+                            console.log('🔄 Queue empty - attempting context transition to genre...');
+                            // TODO: Context transition logic (Phase 4 - Priority 4)
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('❌ Queue check error:', error);
+            }
+        },
+
+
+        /**
+         * 🎵 BACKGROUND PLAYBACK: Tarayıcı minimize olsa bile müzik çalsın
+         * Page Visibility API kullanarak arka planda çalmaya devam et
+         */
+        enableBackgroundPlayback() {
+            try {
+                // Page Visibility API - Tarayıcı minimize/hidden olunca bile çalmaya devam et
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        console.log('📱 Page hidden - Background playback active');
+                        // Müzik çalmaya devam etsin (hiçbir şey yapma, otomatik devam eder)
+                    } else {
+                        console.log('👀 Page visible - Welcome back!');
+                        // Sayfa görünür olunca sync yap
+                        this.syncPlayerState();
+                    }
+                });
+
+                // Audio tag'ine background playback özelliği ekle
+                if (this.audio) {
+                    // Modern browsers için background playback hints
+                    this.audio.setAttribute('playsinline', '');
+                    this.audio.setAttribute('webkit-playsinline', '');
+                }
+
+                console.log('✅ Background playback enabled (works when minimized)');
+
+            } catch (error) {
+                console.error('❌ Background playback error:', error);
+            }
+        },
+
+        /**
+         * 🔄 Player state sync (sayfa visible olunca)
+         */
+        syncPlayerState() {
+            // UI'ı güncelle
+            if (this.audio) {
+                this.isPlaying = !this.audio.paused;
+                this.currentTime = this.audio.currentTime || 0;
+            }
+        },
+
+        /**
+         * 💾 AUTO-SAVE: State değişikliklerini izle ve otomatik kaydet
+         * $watch ile queue, song, volume, shuffle, repeat değişikliklerini takip et
+         */
+        setupAutoSave() {
+            // Queue değiştiğinde kaydet
+            this.$watch('queue', () => {
+                this.saveQueueState();
+            });
+
+            // Queue index değiştiğinde kaydet
+            this.$watch('queueIndex', () => {
+                this.saveQueueState();
+            });
+
+            // Şarkı değiştiğinde kaydet
+            this.$watch('currentSong', () => {
+                this.saveQueueState();
+            });
+
+            // Playing/pause durumu değiştiğinde kaydet
+            this.$watch('isPlaying', () => {
+                this.saveQueueState();
+            });
+
+            // Volume değiştiğinde kaydet
+            this.$watch('volume', () => {
+                this.saveQueueState();
+            });
+
+            // Shuffle değiştiğinde kaydet
+            this.$watch('shuffle', () => {
+                this.saveQueueState();
+            });
+
+            // Repeat mode değiştiğinde kaydet
+            this.$watch('repeatMode', () => {
+                this.saveQueueState();
+            });
+
+            // 🕒 Her 5 saniyede bir currentTime'ı kaydet (progress tracking)
+            setInterval(() => {
+                if (this.isPlaying && this.currentSong) {
+                    this.saveQueueState();
+                }
+            }, 5000);
+
+            console.log('✅ Auto-save enabled (state saved on every change)');
         }
     }
 }

@@ -1,143 +1,192 @@
+sw.js:137 [Service Worker] Loaded successfully
+sw.js:27 [Service Worker] Installing...
+sw.js:32 [Service Worker] Caching critical assets
+sw.js:43 [Service Worker] Activating...
 ?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
 (anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-muzibu-router.js?v=1764964222:30 🚀 Muzibu SPA Router initialized
-player-core.js?v=1764964222:157 Muzibu initialized with Howler.js
-player-core.js?v=1764964222:160 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
-keyboard.js?v=1764964222:46 🎹 Keyboard shortcuts initialized
-player-core.js?v=1764964222:152 Muzibu already initialized, skipping...
-(index):3830 ✅ Alpine initialized
-(index):3832 ✅ Context Menu Store ready
-(index):3773 🔄 Livewire navigated - Re-initializing Alpine...
-(index):3782 🎯 Found spa-content-wrapper, initializing...
-(index):3784 ✨ Alpine re-initialized (spa-content-wrapper)
-(index):3790 🔧 Manually initializing element: <html lang=​"tr" x-data=​"muzibuApp()​" x-init=​"init()​" class=​"dark">​<head>​…​</head>​<body class=​"bg-black text-white">​…​</body>​</html>​
-(index):3790 🔧 Manually initializing element: <div class=​"grid grid-rows-[56px_1fr_65px]​ lg:​grid-cols-[220px_1fr]​ grid-cols-1 h-screen gap-3 px-3 pb-3 2xl:​grid-cols-[220px_1fr_360px]​ xl:​grid-cols-[220px_1fr_320px]​" x-data=​"{
-            isHomepage:​ true,
-            checkIsHomepage()​ {
-                const currentPath = window.location.pathname.replace(/​^\/​+|\/​+$/​g, '')​;​
-                this.isHomepage = (currentPath === '' || currentPath === '/​')​;​
-            }​
-        }​" x-init=​"
-            /​/​ URL değişikliklerini dinle
-            window.addEventListener('route-changed', (e)​ => {
-                checkIsHomepage()​;​
-            }​)​;​
+muzibu-router.js?v=1764972019:30 🚀 Muzibu SPA Router initialized
+player-core.js?v=1764972019:157 Muzibu initialized with Howler.js
+player-core.js?v=1764972019:160 Muzibu initialized Object
+keyboard.js?v=1764972019:46 🎹 Keyboard shortcuts initialized
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: this.startQueueMonitor is not a function
 
-            /​/​ SPA navigation sonrası da kontrol et
-            window.addEventListener('popstate', ()​ => {
-                checkIsHomepage()​;​
-            }​)​;​
+Expression: "init() {
+            // Prevent double initialization
+            if (this._initialized) {
+                console.log('Muzibu already initialized, skipping...');
+                return;
+            }
+            this._initialized = true;
 
-            /​/​ Her 100ms'de bir kontrol et (güvenlik için)​
-            setInterval(()​ => {
-                checkIsHomepage()​;​
-            }​, 100)​;​
-        " :class=​"{
-            '2xl:​grid-cols-[220px_1fr_360px]​ xl:​grid-cols-[220px_1fr_320px]​':​ isHomepage
-        }​">​…​</div>​grid
-(index):3790 🔧 Manually initializing element: <button @click=​"clearCache()​" class=​"w-9 h-9 bg-white/​5 hover:​bg-muzibu-coral/​20 rounded-lg flex items-center justify-center text-muzibu-text-gray hover:​text-muzibu-coral transition-all duration-300 group" title=​"Cache Temizle" x-data=​"{
-                clearCache()​ {
-                    fetch('/​admin/​cache/​clear', {
-                        method:​ 'POST',
-                        headers:​ {
-                            'Content-Type':​ 'application/​json',
-                            'X-CSRF-TOKEN':​ document.querySelector('meta[name=csrf-token]​')​.content
-                        }​
-                    }​)​
-                    .then(response => response.json()​)​
-                    .then(data => {
-                        console.log('Cache cleared:​', data)​;​
-                        window.location.reload()​;​
-                    }​)​
-                    .catch(error => {
-                        console.error('Cache clear error:​', error)​;​
-                        window.location.reload()​;​
-                    }​)​;​
-                }​
-            }​">​…​</button>​flex
-(index):3790 🔧 Manually initializing element: <div x-show=​"isLoggedIn" class=​"relative" x-data=​"{ userMenuOpen:​ false }​">​…​</div>​
-(index):3790 🔧 Manually initializing element: <div class=​"mb-4 relative group/​scroll" x-data=​"{
-    scrollContainer:​ null,
-    scrollInterval:​ null,
-    startAutoScroll(direction)​ {
-        this.scrollInterval = setInterval(()​ => {
-            this.scrollContainer.scrollBy({ left:​ direction === 'right' ? 20 :​ -20 }​)​;​
-        }​, 50)​;​
-    }​,
-    stopAutoScroll()​ {
-        if (this.scrollInterval)​ {
-            clearInterval(this.scrollInterval)​;​
-            this.scrollInterval = null;​
-        }​
-    }​
-}​" x-init=​"scrollContainer = $refs.scrollContainer">​…​</div>​
-(index):3790 🔧 Manually initializing element: <div class=​"mb-6 relative group/​scroll" x-data=​"{
-    scrollContainer:​ null,
-    scrollInterval:​ null,
-    startAutoScroll(direction)​ {
-        this.scrollInterval = setInterval(()​ => {
-            this.scrollContainer.scrollBy({ left:​ direction === 'right' ? 20 :​ -20 }​)​;​
-        }​, 50)​;​
-    }​,
-    stopAutoScroll()​ {
-        if (this.scrollInterval)​ {
-            clearInterval(this.scrollInterval)​;​
-            this.scrollInterval = null;​
-        }​
-    }​
-}​" x-init=​"scrollContainer = $refs.scrollContainer">​…​</div>​
-(index):3790 🔧 Manually initializing element: <div class=​"mb-3 relative group/​scroll" x-data=​"{
-    scrollContainer:​ null,
-    scrollInterval:​ null,
-    startAutoScroll(direction)​ {
-        this.scrollInterval = setInterval(()​ => {
-            this.scrollContainer.scrollBy({ left:​ direction === 'right' ? 20 :​ -20 }​)​;​
-        }​, 50)​;​
-    }​,
-    stopAutoScroll()​ {
-        if (this.scrollInterval)​ {
-            clearInterval(this.scrollInterval)​;​
-            this.scrollInterval = null;​
-        }​
-    }​
-}​" x-init=​"scrollContainer = $refs.scrollContainer">​…​</div>​
-(index):3790 🔧 Manually initializing element: <div x-data=​"{ open:​ false, title:​ '', description:​ '', loading:​ false }​" @open-create-playlist-modal.window=​"open = true;​ title = '';​ description = ''" x-show=​"open" @keydown.escape.window=​"open = false" class=​"fixed inset-0 z-[9999]​ flex items-center justify-center p-4" data-teleport-target=​"true" style=​"display:​ none;​">​…​</div>​
-(index):3820 ✨ Alpine re-initialization complete
+            console.log('Muzibu initialized with Howler.js');
+
+            // User already loaded from Laravel backend (no need for API check)
+            console.log('Muzibu initialized', { isLoggedIn: this.isLoggedIn, user: this.currentUser });
+
+            // Load featured playlists on init
+            this.loadFeaturedPlaylists();
+
+            // 🎯 PRELOAD: Load last played song in PAUSE mode (instant playback)
+            this.preloadLastPlayedSong();
+
+            // Initialize keyboard shortcuts
+            this.initKeyboard();
+
+            // Show content after loading (KRITIK - Alpine.js x-show için)
+            setTimeout(() => {
+                this.isLoading = false;
+                this.contentLoaded = true;
+            }, 500);
+
+            // 🎯 QUEUE CHECKER: Monitor queue and auto-refill (PHASE 4)
+            this.startQueueMonitor();
+
+            // SPA Navigation: Handle browser back/forward
+            window.addEventListener('popstate', (e) => {
+                if (e.state && e.state.url) {
+                    this.loadPage(e.state.url, false);
+                }
+            });
+
+            // SPA Navigation: Intercept all internal links
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (!link) return;
+
+                const href = link.getAttribute('href');
+
+                // Skip if no href, hash link, or has download/target attribute
+                if (!href ||
+                    href.startsWith('#') ||
+                    link.hasAttribute('download') ||
+                    link.hasAttribute('target')) {
+                    return;
+                }
+
+                // Check if external link (different domain)
+                if (href.startsWith('http') || href.startsWith('//')) {
+                    try {
+                        const linkUrl = new URL(href, window.location.origin);
+                        // If same domain, use SPA navigation
+                        if (linkUrl.origin !== window.location.origin) {
+                            return; // External link, let it navigate normally
+                        }
+                    } catch (e) {
+                        return; // Invalid URL, let it navigate normally
+                    }
+                }
+
+                // Internal link - use SPA navigation
+                console.log('🚀 SPA Navigation:', href);
+                e.preventDefault();
+                this.navigateTo(href);
+            });
+        }"
+
+ <html lang=​"tr" x-data=​"muzibuApp()​" x-init=​"init()​" class=​"dark">​<head>​…​</head>​<body class=​"bg-black text-white">​…​</body>​</html>​
+handleError @ livewire.js?id=df3a17f2:1123
+player-core.js?v=1764972019:152 Muzibu already initialized, skipping...
+(index):3872 🔄 Livewire navigated - Re-initializing Alpine...
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: this.startQueueMonitor is not a function
+    at Proxy.init (player-core.js?v=1764972019:178:18)
+    at livewire.js?id=df3a17f2:1160:25
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at evaluate (livewire.js?id=df3a17f2:1140:34)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3571:29)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+    at stopDeferring (livewire.js?id=df3a17f2:1286:7)
+    at deferHandlingDirectives (livewire.js?id=df3a17f2:1289:5)
+    at initTree (livewire.js?id=df3a17f2:1479:5)
+    at livewire.js?id=df3a17f2:1428:7
 (index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
 (index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
 (index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-  <div x-on:contextmenu="..." x-data="{ touchTimer... }">
-VM6229:1 Uncaught SyntaxError: Unexpected token '<'
-player-core.js?v=1764964222:232  GET https://muzibu.com.tr/api/muzibu/songs/last-played 404 (Not Found)
-preloadLastPlayedSong @ player-core.js?v=1764964222:232
-init @ player-core.js?v=1764964222:166
-(anonymous) @ livewire.js?id=df3a17f2:1160
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3571
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-player-core.js?v=1764964222:270 Failed to preload last played song: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
-preloadLastPlayedSong @ player-core.js?v=1764964222:270
-await in preloadLastPlayedSong
-init @ player-core.js?v=1764964222:166
-(anonymous) @ livewire.js?id=df3a17f2:1160
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3571
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-player-core.js?v=1764964222:223 Featured playlists loaded: 10
+/api/muzibu/songs/last-played:1  Failed to load resource: the server responded with a status of 404 ()
+player-core.js?v=1764972019:273 Failed to preload last played song: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+preloadLastPlayedSong @ player-core.js?v=1764972019:273
+player-core.js?v=1764972019:226 Featured playlists loaded: 10
+muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
+muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
+muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
+muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
+muzibu-store.js?v=1764972019:354 🎯 Context Menu Action: rate | Type: album Proxy(Object)
+muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
+muzibu-store.js?v=1764972019:270 🎯 Context Menu Opened: Object
+muzibu-store.js?v=1764972019:354 🎯 Context Menu Action: addToQueue | Type: album Proxy(Object)
+player-core.js?v=1764972019:1228 🎵 Queue Song API Response: Object
+player-core.js?v=1764972019:1255 Playing song: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/410/playlist.m3u8 Type: hls Preview: null Fallback: https://muzibu.com.tr/api/muzibu/songs/410/serve?expires=1764973851&signature=51377d82facce4646e4b778fde19d46327c0ddb6480ca1d55c9d64ad150d5c08&force_mp3=1
+player-core.js?v=1764972019:1360 loadAndPlaySong: Object
+player-core.js?v=1764972019:1573 🔍 HLS Autoplay: true
+player-core.js?v=1764972019:1648 HLS fatal error: Object
+(anonymous) @ player-core.js?v=1764972019:1648
+player-core.js?v=1764972019:1652 🔄 HLS failed, falling back to signed MP3...
+player-core.js?v=1764972019:1653 🔍 currentFallbackUrl: https://muzibu.com.tr/api/muzibu/songs/410/serve?expires=1764973851&signature=51377d82facce4646e4b778fde19d46327c0ddb6480ca1d55c9d64ad150d5c08&force_mp3=1
+player-core.js?v=1764972019:1654 🔍 currentFallbackUrl type: string
+player-core.js?v=1764972019:1673 🔍 About to call playWithHowler with: https://muzibu.com.tr/api/muzibu/songs/410/serve?expires=1764973851&signature=51377d82facce4646e4b778fde19d46327c0ddb6480ca1d55c9d64ad150d5c08&force_mp3=1
+player-core.js?v=1764972019:1491 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/410/serve?expires=1764973851&signature=51377d82facce4646e4b778fde19d46327c0ddb6480ca1d55c9d64ad150d5c08&force_mp3=1
+player-core.js?v=1764972019:1492 🔍 URL type: string
+player-core.js?v=1764972019:1493 🔍 URL length: 154
+player-core.js?v=1764972019:1494 🔍 Autoplay: true
+player-core.js?v=1764972019:1502 🎵 Creating Howl with src: Array(1)
+player-core.js?v=1764972019:1635 HLS play error: AbortError: The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22
+(anonymous) @ player-core.js?v=1764972019:1635
+player-core.js?v=1764972019:1512 Howler loaded, duration: 138.7
+player-core.js?v=1764972019:1228 🎵 Queue Song API Response: Object
+player-core.js?v=1764972019:1255 Playing song: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/397/playlist.m3u8 Type: hls Preview: null Fallback: https://muzibu.com.tr/api/muzibu/songs/397/serve?expires=1764973868&signature=e7e93eed94b66e374b7305de848c557a673eaa0c84419c01711218461e544128&force_mp3=1
+player-core.js?v=1764972019:1360 loadAndPlaySong: Object
+player-core.js?v=1764972019:1573 🔍 HLS Autoplay: true
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: this.preloadFirstInQueue is not a function
+
+Expression: "nextTrack()"
+
+ <button class=​"text-muzibu-text-gray hover:​text-white transition-all" @click=​"nextTrack()​">​…​</button>​
+handleError @ livewire.js?id=df3a17f2:1123
+livewire.js?id=df3a17f2:1127 Uncaught TypeError: this.preloadFirstInQueue is not a function
+    at Proxy.nextTrack (player-core.js?v=1764972019:464:22)
+player-core.js?v=1764972019:464 Uncaught (in promise) TypeError: this.preloadFirstInQueue is not a function
+    at Proxy.nextTrack (player-core.js?v=1764972019:464:22)
+player-core.js?v=1764972019:1648 HLS fatal error: {type: 'networkError', details: 'keyLoadError', fatal: true, frag: Proxy(e), response: undefined, …}
+(anonymous) @ player-core.js?v=1764972019:1648
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+setTimeout
+e.tickImmediate @ task-loop.ts:119
+r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
+r.onError @ stream-controller.ts:895
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+player-core.js?v=1764972019:1652 🔄 HLS failed, falling back to signed MP3...
+player-core.js?v=1764972019:1653 🔍 currentFallbackUrl: https://muzibu.com.tr/api/muzibu/songs/397/serve?expires=1764973868&signature=e7e93eed94b66e374b7305de848c557a673eaa0c84419c01711218461e544128&force_mp3=1
+player-core.js?v=1764972019:1654 🔍 currentFallbackUrl type: string
+player-core.js?v=1764972019:1673 🔍 About to call playWithHowler with: https://muzibu.com.tr/api/muzibu/songs/397/serve?expires=1764973868&signature=e7e93eed94b66e374b7305de848c557a673eaa0c84419c01711218461e544128&force_mp3=1
+player-core.js?v=1764972019:1491 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/397/serve?expires=1764973868&signature=e7e93eed94b66e374b7305de848c557a673eaa0c84419c01711218461e544128&force_mp3=1
+player-core.js?v=1764972019:1492 🔍 URL type: string
+player-core.js?v=1764972019:1493 🔍 URL length: 154
+player-core.js?v=1764972019:1494 🔍 Autoplay: true
+player-core.js?v=1764972019:1502 🎵 Creating Howl with src: ['https://muzibu.com.tr/api/muzibu/songs/397/serve?e…c557a673eaa0c84419c01711218461e544128&force_mp3=1']
+player-core.js?v=1764972019:1635 HLS play error: AbortError: The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22
+(anonymous) @ player-core.js?v=1764972019:1635
+setTimeout
+e.tickImmediate @ task-loop.ts:119
+r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
+r.onError @ stream-controller.ts:895
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+player-core.js?v=1764972019:1512 Howler loaded, duration: 193

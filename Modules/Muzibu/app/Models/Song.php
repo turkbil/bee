@@ -9,13 +9,14 @@ use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
 
 class Song extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, Searchable;
 
     protected $table = 'muzibu_songs';
     protected $primaryKey = 'song_id';
@@ -45,11 +46,7 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         'file_path',
         'hls_path',
         'encryption_key',
-        'is_encrypted',
-        'hls_converted_at',
-        'hls_converted',
-        'bitrate',
-        'metadata',
+        'encryption_iv',
         'media_id',
         'is_featured',
         'play_count',
@@ -61,11 +58,6 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         'slug' => 'array',
         'lyrics' => 'array',
         'duration' => 'integer',
-        'bitrate' => 'integer',
-        'metadata' => 'array',
-        'is_encrypted' => 'boolean',
-        'hls_converted' => 'boolean',
-        'hls_converted_at' => 'datetime',
         'is_featured' => 'boolean',
         'play_count' => 'integer',
         'is_active' => 'boolean',
@@ -429,10 +421,10 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/muzibu/song/{$slug}");
+            return url("/song/{$slug}");
         }
 
-        return url("/{$locale}/muzibu/song/{$slug}");
+        return url("/{$locale}/song/{$slug}");
     }
 
     /**
@@ -452,7 +444,7 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getHlsUrl(): ?string
     {
-        if (!$this->hls_converted || !$this->hls_path) {
+        if (!$this->hls_path) {
             return null;
         }
 
@@ -464,7 +456,15 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function needsHlsConversion(): bool
     {
-        return $this->file_path && !$this->hls_converted;
+        return $this->file_path && !$this->hls_path;
+    }
+
+    /**
+     * Check if song is encrypted
+     */
+    public function isEncrypted(): bool
+    {
+        return !empty($this->encryption_key);
     }
 
     /**
@@ -483,59 +483,126 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
-     * Get formatted bitrate (e.g., "320 kbps")
+     * Extract bitrate from audio file using getID3 (runtime)
      */
-    public function getFormattedBitrate(): ?string
-    {
-        if (!$this->bitrate) {
-            return null;
-        }
-
-        return $this->bitrate . ' kbps';
-    }
-
-    /**
-     * Extract metadata using getID3
-     */
-    public function extractMetadata(): bool
+    public function getBitrate(): int
     {
         if (!$this->file_path) {
-            return false;
+            return 256; // Fallback
         }
 
         try {
             $getID3 = new \getID3;
-            $filePath = \Storage::disk('public')->path($this->file_path);
+            $filePath = file_exists($this->file_path) ? $this->file_path : \Storage::disk('public')->path($this->file_path);
 
             if (!file_exists($filePath)) {
-                return false;
+                return 256; // Fallback
             }
 
             $fileInfo = $getID3->analyze($filePath);
 
-            // Extract metadata
-            $this->duration = isset($fileInfo['playtime_seconds']) ? (int) $fileInfo['playtime_seconds'] : null;
-            $this->bitrate = isset($fileInfo['audio']['bitrate']) ? (int) ($fileInfo['audio']['bitrate'] / 1000) : null;
+            // Extract bitrate (convert from bps to kbps)
+            if (isset($fileInfo['audio']['bitrate'])) {
+                return (int) ($fileInfo['audio']['bitrate'] / 1000);
+            }
 
-            // Store additional metadata
-            $this->metadata = [
-                'sample_rate' => $fileInfo['audio']['sample_rate'] ?? null,
-                'channels' => $fileInfo['audio']['channels'] ?? null,
-                'channel_mode' => $fileInfo['audio']['channelmode'] ?? null,
-                'filesize' => $fileInfo['filesize'] ?? null,
-                'mime_type' => $fileInfo['mime_type'] ?? null,
-            ];
-
-            $this->save();
-
-            return true;
+            return 256; // Fallback
         } catch (\Exception $e) {
-            \Log::error('Muzibu: Metadata extraction failed', [
+            \Log::warning('Muzibu: Bitrate extraction failed, using fallback', [
                 'song_id' => $this->song_id,
                 'error' => $e->getMessage()
             ]);
 
-            return false;
+            return 256; // Fallback
         }
+    }
+
+    /**
+     * Get formatted bitrate (e.g., "320 kbps")
+     */
+    public function getFormattedBitrate(): string
+    {
+        return $this->getBitrate() . ' kbps';
+    }
+
+    /**
+     * Get the indexable data array for the model (Meilisearch)
+     */
+    public function toSearchableArray(): array
+    {
+        // Get active languages from tenant_languages table
+        // Fallback to default tenant connection if no tenant context
+        try {
+            $connection = (tenant() && !tenant()->central) ? 'tenant' : 'mysql';
+            $langCodes = \DB::connection($connection)
+                ->table('tenant_languages')
+                ->where('is_active', 1)
+                ->pluck('code')
+                ->toArray();
+        } catch (\Exception $e) {
+            // Fallback: Use default languages if table doesn't exist
+            $langCodes = ['tr', 'en'];
+        }
+
+        $data = [
+            'id' => $this->song_id,
+            'duration' => $this->duration,
+            'play_count' => $this->play_count,
+            'is_featured' => $this->is_featured,
+            'is_active' => $this->is_active,
+            'created_at' => $this->created_at?->timestamp,
+        ];
+
+        // Index all active languages
+        foreach ($langCodes as $langCode) {
+            $data["title_{$langCode}"] = $this->getTranslated('title', $langCode);
+            $data["lyrics_{$langCode}"] = $this->getTranslated('lyrics', $langCode);
+        }
+
+        // Related data
+        if ($this->album) {
+            foreach ($langCodes as $langCode) {
+                $data["album_title_{$langCode}"] = $this->album->getTranslated('title', $langCode);
+            }
+
+            if ($this->album->artist) {
+                foreach ($langCodes as $langCode) {
+                    $data["artist_title_{$langCode}"] = $this->album->artist->getTranslated('title', $langCode);
+                }
+            }
+        }
+
+        if ($this->genre) {
+            foreach ($langCodes as $langCode) {
+                $data["genre_title_{$langCode}"] = $this->genre->getTranslated('title', $langCode);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get the index name for the model (tenant-aware)
+     */
+    public function searchableAs(): string
+    {
+        $tenantId = tenant() ? tenant()->id : 'central';
+        return "tenant_{$tenantId}_songs";
+    }
+
+    /**
+     * Get the value used to index the model (primary key)
+     */
+    public function getScoutKey()
+    {
+        return $this->song_id;
+    }
+
+    /**
+     * Get the key name used to index the model
+     */
+    public function getScoutKeyName()
+    {
+        return 'song_id';
     }
 }

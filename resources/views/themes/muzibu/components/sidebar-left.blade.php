@@ -124,8 +124,62 @@
                         </div>
                     </template>
 
-                    {{-- Premium (Ücretli) --}}
-                    <template x-if="currentUser?.is_premium && !currentUser?.trial_ends_at">
+                    {{-- Premium (Ücretli) - 1 haftadan az kaldığında geri sayım --}}
+                    <template x-if="currentUser?.is_premium && !currentUser?.trial_ends_at && currentUser?.subscription_ends_at">
+                        <div class="text-white/90 text-xs"
+                             x-data="{
+                                 expiresAt: currentUser?.subscription_ends_at,
+                                 timeLeft: '',
+                                 showWarning: false,
+                                 init() {
+                                     this.updateTime();
+                                     setInterval(() => this.updateTime(), 60000);
+                                 },
+                                 updateTime() {
+                                     if (!this.expiresAt) return;
+                                     const now = new Date();
+                                     const expiry = new Date(this.expiresAt);
+                                     const diff = expiry - now;
+
+                                     if (diff <= 0) {
+                                         this.timeLeft = 'Üyelik sona erdi';
+                                         this.showWarning = true;
+                                         return;
+                                     }
+
+                                     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                                     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+                                     // 7 günden az kaldıysa geri sayım göster
+                                     this.showWarning = days < 7;
+
+                                     if (days > 0) {
+                                         this.timeLeft = days + ' gün ' + hours + ' saat kaldı';
+                                     } else if (hours > 0) {
+                                         this.timeLeft = hours + ' saat ' + minutes + ' dk kaldı';
+                                     } else {
+                                         this.timeLeft = minutes + ' dakika kaldı';
+                                     }
+                                 }
+                             }"
+                        >
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-crown text-yellow-300"></i>
+                                <span>Premium</span>
+                            </div>
+                            {{-- 1 haftadan az kaldıysa uyarı göster --}}
+                            <template x-if="showWarning">
+                                <p class="text-orange-300 text-[10px] mt-0.5 animate-pulse">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    <span x-text="timeLeft"></span>
+                                </p>
+                            </template>
+                        </div>
+                    </template>
+
+                    {{-- Premium (Ücretli) - subscription_ends_at yoksa sadece badge göster --}}
+                    <template x-if="currentUser?.is_premium && !currentUser?.trial_ends_at && !currentUser?.subscription_ends_at">
                         <p class="text-white/90 text-xs flex items-center gap-1">
                             <i class="fas fa-crown text-yellow-300"></i>
                             <span>Premium</span>
@@ -139,21 +193,21 @@
                 </div>
             </div>
 
-            {{-- Today's Stats - DEVRE DIŞI (3 şarkı limiti kaldırıldı) --}}
-            {{--
-            <div class="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 mb-3 border border-white/20">
-                <p class="text-white/80 text-xs mb-1">Bugün Dinlenen</p>
-                <div class="flex items-baseline gap-1">
-                    <span class="text-white font-bold text-2xl" x-text="todayPlayedCount || 0"></span>
-                    <template x-if="!currentUser?.is_premium">
-                        <span class="text-white/70 text-sm">/3 şarkı</span>
-                    </template>
-                    <template x-if="currentUser?.is_premium">
-                        <span class="text-white/70 text-sm">şarkı</span>
-                    </template>
-                </div>
-            </div>
-            --}}
+            {{-- Premium'a Geç (Ücretsiz üyeler için) --}}
+            <template x-if="!currentUser?.is_premium">
+                <a href="/subscription/plans" class="block w-full mb-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white px-4 py-2.5 rounded-lg text-sm font-bold text-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
+                    <i class="fas fa-crown mr-2"></i>
+                    Premium'a Geç
+                </a>
+            </template>
+
+            {{-- Üyeliğini Uzat (Premium/Trial üyeler için) --}}
+            <template x-if="currentUser?.is_premium">
+                <a href="/subscription/plans" class="block w-full mb-3 bg-gradient-to-r from-yellow-500/80 to-orange-500/80 hover:from-yellow-400 hover:to-orange-400 text-white px-4 py-2.5 rounded-lg text-sm font-bold text-center transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
+                    <i class="fas fa-sync-alt mr-2"></i>
+                    Üyeliğini Uzat
+                </a>
+            </template>
 
             {{-- Logout Button --}}
             <button

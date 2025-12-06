@@ -581,6 +581,11 @@ class SongManageComponent extends Component implements AIContentGeneratable
             $this->songId = $song->song_id;
             log_activity($song, 'eklendi');
 
+            // 🎵 HLS conversion job'u kuyruğa ekle
+            if ($song->file_path) {
+                \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
+            }
+
             $toast = [
                 'title' => __('admin.success'),
                 'message' => __('muzibu::admin.song_created'),

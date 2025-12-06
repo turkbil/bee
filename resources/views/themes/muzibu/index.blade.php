@@ -5,30 +5,68 @@
 @section('content')
 <div class="px-6 py-8">
 
-{{-- Quick Access Cards (Spotify Style - 2 rows) --}}
+{{-- Quick Access Cards (Spotify Style - 2 rows, Horizontal Scroll) --}}
 @if($featuredPlaylists && $featuredPlaylists->count() > 0)
-<div class="mb-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-        @foreach($featuredPlaylists->take(8) as $playlist)
-        <div class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16"
-             data-playlist-id="{{ $playlist->playlist_id }}"
-             data-playlist-title="{{ getLocaleTitle($playlist->title, 'Playlist') }}"
-             data-is-favorite="{{ \Modules\Favorite\App\Models\Favorite::check(auth()->id(), 'playlist', $playlist->playlist_id) ? '1' : '0' }}"
-             data-is-mine="{{ auth()->check() && $playlist->user_id == auth()->user()->id ? '1' : '0' }}">
-            <div class="w-16 h-16 flex-shrink-0">
-                @if($playlist->coverMedia)
-                    <img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover">
-                @else
-                    <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-xl">🎵</div>
-                @endif
+<div class="mb-6 relative group/quickaccess" x-data="{
+    scrollContainer: null,
+    scrollInterval: null,
+    startAutoScroll(direction) {
+        this.scrollInterval = setInterval(() => {
+            this.scrollContainer.scrollBy({ left: direction === 'right' ? 20 : -20 });
+        }, 50);
+    },
+    stopAutoScroll() {
+        if (this.scrollInterval) {
+            clearInterval(this.scrollInterval);
+            this.scrollInterval = null;
+        }
+    }
+}" x-init="scrollContainer = $refs.scrollContainer">
+
+    {{-- Left Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: -400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('left')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute left-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/quickaccess:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    {{-- Right Arrow --}}
+    <button
+        @click="scrollContainer.scrollBy({ left: 400, behavior: 'smooth' })"
+        @mouseenter="startAutoScroll('right')"
+        @mouseleave="stopAutoScroll()"
+        class="absolute right-[-12px] top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-black/90 hover:bg-black rounded-full flex items-center justify-center text-white opacity-0 group-hover/quickaccess:opacity-100 transition-opacity shadow-xl"
+    >
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    {{-- Scrollable Container with 2 rows --}}
+    <div x-ref="scrollContainer" class="overflow-x-auto scrollbar-hide scroll-smooth pb-4">
+        <div class="grid grid-rows-2 grid-flow-col auto-cols-[minmax(280px,1fr)] gap-2">
+            @foreach($featuredPlaylists->take(8) as $playlist)
+            <div class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16"
+                 data-playlist-id="{{ $playlist->playlist_id }}"
+                 data-playlist-title="{{ getLocaleTitle($playlist->title, 'Playlist') }}"
+                 data-is-favorite="{{ \Modules\Favorite\App\Models\Favorite::check(auth()->id(), 'playlist', $playlist->playlist_id) ? '1' : '0' }}"
+                 data-is-mine="{{ auth()->check() && $playlist->user_id == auth()->user()->id ? '1' : '0' }}">
+                <div class="w-16 h-16 flex-shrink-0">
+                    @if($playlist->coverMedia)
+                        <img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full bg-gradient-to-br from-muzibu-coral to-pink-600 flex items-center justify-center text-xl">🎵</div>
+                    @endif
+                </div>
+                <div class="flex-1 min-w-0 pr-3">
+                    <h3 class="font-semibold text-white text-sm truncate">
+                        {{ getLocaleTitle($playlist->title, 'Playlist') }}
+                    </h3>
+                </div>
             </div>
-            <div class="flex-1 min-w-0 pr-3">
-                <h3 class="font-semibold text-white text-sm truncate">
-                    {{ getLocaleTitle($playlist->title, 'Playlist') }}
-                </h3>
-            </div>
+            @endforeach
         </div>
-        @endforeach
     </div>
 </div>
 @endif
@@ -96,8 +134,9 @@
                 </h3>
                 <p class="text-xs text-muzibu-text-gray truncate">{{ $playlist->songs()->count() }} şarkı</p>
             </a>
-            {{-- Play button OUTSIDE <a> tag --}}
-            <button class="absolute top-[12px] right-[12px] w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
+            {{-- Play button OUTSIDE <a> tag, positioned over photo bottom-right --}}
+            <button class="absolute w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-20 pointer-events-auto"
+                    style="bottom: calc(3rem + 0.75rem + 0.5rem); right: calc(0.75rem + 0.5rem);"
                     @click="playPlaylist({{ $playlist->playlist_id }})">
                 <i class="fas fa-play text-black ml-0.5"></i>
             </button>
@@ -177,8 +216,9 @@
                     {{ $album->artist ? (is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}
                 </p>
             </a>
-            {{-- Play button OUTSIDE <a> tag --}}
-            <button class="absolute top-[12px] right-[12px] w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
+            {{-- Play button OUTSIDE <a> tag, positioned over photo bottom-right --}}
+            <button class="absolute w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-20 pointer-events-auto"
+                    style="bottom: calc(3rem + 0.75rem + 0.5rem); right: calc(0.75rem + 0.5rem);"
                     @click="playAlbum({{ $album->album_id }})">
                 <i class="fas fa-play text-black ml-0.5"></i>
             </button>
@@ -368,8 +408,9 @@
                 </h3>
                 <p class="text-xs text-muzibu-text-gray truncate">{{ $genre->songs()->count() }} şarkı</p>
             </a>
-            {{-- Play button OUTSIDE <a> tag --}}
-            <button class="absolute top-[12px] right-[12px] w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
+            {{-- Play button OUTSIDE <a> tag, positioned over photo bottom-right --}}
+            <button class="absolute w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-20 pointer-events-auto"
+                    style="bottom: calc(3rem + 0.75rem + 0.5rem); right: calc(0.75rem + 0.5rem);"
                     @click="playGenre({{ $genre->genre_id }})">
                 <i class="fas fa-play text-black ml-0.5"></i>
             </button>

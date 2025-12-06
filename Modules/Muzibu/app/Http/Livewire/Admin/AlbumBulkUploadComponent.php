@@ -302,7 +302,7 @@ class AlbumBulkUploadComponent extends Component
                 ]);
 
                 // HLS conversion job'u kuyruğa ekle
-                \Modules\Muzibu\App\Jobs\ProcessBulkSongHLSJob::dispatch($song->song_id);
+                \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
 
                 $this->uploadedFiles[$index]['status'] = 'completed';
                 $this->uploadedFiles[$index]['song_id'] = $song->song_id;

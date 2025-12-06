@@ -3,7 +3,12 @@
  * Prevents "Access to storage is not allowed" errors in privacy-restricted contexts
  */
 
-const safeStorage = {
+// Guard against duplicate loading in SPA navigation
+if (typeof window.safeStorage !== 'undefined') {
+    console.log('⚠️ safeStorage already loaded, skipping...');
+} else {
+
+window.safeStorage = {
     getItem(key) {
         try {
             return localStorage.getItem(key);
@@ -30,5 +35,4 @@ const safeStorage = {
     }
 };
 
-// Make globally accessible
-window.safeStorage = safeStorage;
+} // End of else block - SPA guard

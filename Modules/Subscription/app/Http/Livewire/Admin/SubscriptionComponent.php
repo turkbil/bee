@@ -82,11 +82,44 @@ class SubscriptionComponent extends Component
     #[Computed]
     public function stats()
     {
+        // Trial: has_trial=true VE trial_ends_at gelecekte (status ne olursa olsun)
+        $trialCount = Subscription::where('has_trial', true)
+            ->whereNotNull('trial_ends_at')
+            ->where('trial_ends_at', '>', now())
+            ->count();
+
+        // Active: Premium (trial olmayan aktif) subscriptions
+        $activeCount = Subscription::where('status', 'active')
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            })
+            ->where(function($q) {
+                $q->where('has_trial', false)
+                  ->orWhereNull('has_trial')
+                  ->orWhere('trial_ends_at', '<=', now())
+                  ->orWhereNull('trial_ends_at');
+            })
+            ->count();
+
+        // Expired: Süresi dolmuş (status expired veya period_end geçmiş)
+        $expiredCount = Subscription::where(function($q) {
+            $q->where('status', 'expired')
+              ->orWhere(function($q2) {
+                  $q2->whereNotNull('current_period_end')
+                     ->where('current_period_end', '<=', now())
+                     ->where('status', '!=', 'cancelled');
+              });
+        })->count();
+
+        // Cancelled: İptal edilmiş
+        $cancelledCount = Subscription::cancelled()->count();
+
         return [
-            'active' => Subscription::active()->count(),
-            'trial' => Subscription::trial()->count(),
-            'expired' => Subscription::expired()->count(),
-            'cancelled' => Subscription::cancelled()->count(),
+            'active' => $activeCount,
+            'trial' => $trialCount,
+            'expired' => $expiredCount,
+            'cancelled' => $cancelledCount,
         ];
     }
 

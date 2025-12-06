@@ -7,12 +7,13 @@ use App\Traits\HasTranslations;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
 class Sector extends BaseModel implements HasMedia
 {
-    use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes;
+    use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes, Searchable;
 
     protected $table = 'muzibu_sectors';
     protected $primaryKey = 'sector_id';

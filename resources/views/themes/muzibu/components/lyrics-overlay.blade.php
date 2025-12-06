@@ -41,7 +41,7 @@
                 <div class="flex items-center gap-4">
                     <div class="w-20 h-20 rounded-lg bg-gradient-to-br from-pink-500 to-purple-600 flex-shrink-0 overflow-hidden shadow-lg">
                         <template x-if="currentSong.album_cover">
-                            <img :src="`{{ url('') }}/thumb/${currentSong.album_cover}/80/80`" :alt="currentSong.song_title" class="w-full h-full object-cover">
+                            <img :src="getCoverUrl(currentSong.album_cover, 80, 80)" :alt="currentSong.song_title" class="w-full h-full object-cover">
                         </template>
                         <template x-if="!currentSong.album_cover">
                             <div class="w-full h-full flex items-center justify-center text-3xl">🎵</div>

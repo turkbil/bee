@@ -98,9 +98,8 @@ class ConvertToHLSJob implements ShouldQueue
             $keyInfoPath = $tenantStoragePath . '/enc.keyinfo';
             file_put_contents($keyInfoPath, "{$keyUrl}\n{$keyFilePath}\n{$encryptionIV}");
 
-            // 🎵 ULTIMATE EDITION: Get original bitrate (preserve quality)
-            // If bitrate not set, default to 256kbps
-            $bitrate = $song->bitrate ?: 256;
+            // 🎵 Get original bitrate from file (preserve quality)
+            $bitrate = $song->getBitrate(); // Auto-extracts if not set, fallback to 256kbps
 
             // 🔊 ULTIMATE EDITION Audio Filters:
             // 1. Loudnorm: Loudness normalization (LUFS-based)
@@ -152,8 +151,6 @@ class ConvertToHLSJob implements ShouldQueue
                 ->where('song_id', $song->song_id)
                 ->update([
                     'hls_path' => $relativePath,
-                    'hls_converted' => 1,
-                    'is_encrypted' => 1,
                     'updated_at' => now()
                 ]);
 

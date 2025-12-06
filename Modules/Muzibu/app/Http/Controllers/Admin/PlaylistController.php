@@ -71,21 +71,21 @@ class PlaylistController extends Controller
         if ($search) {
             $searchTerm = '%' . strtolower($search) . '%';
             $query->where(function ($q) use ($searchTerm) {
-                // Şarkı adı - VIRTUAL COLUMN INDEX (ÇOK HIZLI!)
-                $q->where('title_tr_lower', 'like', $searchTerm)
+                // Şarkı adı - JSON field
+                $q->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
                   // Şarkı sözleri (lyrics) - JSON field (sadece TR)
                   ->orWhereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(lyrics, "$.tr"))) LIKE ?', [$searchTerm])
-                  // Sanatçı - VIRTUAL COLUMN INDEX
+                  // Sanatçı - JSON field
                   ->orWhereHas('album.artist', fn($artistQuery) =>
-                      $artistQuery->where('title_tr_lower', 'like', $searchTerm)
+                      $artistQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
                   )
-                  // Albüm - VIRTUAL COLUMN INDEX
+                  // Albüm - JSON field
                   ->orWhereHas('album', fn($albumQuery) =>
-                      $albumQuery->where('title_tr_lower', 'like', $searchTerm)
+                      $albumQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
                   )
-                  // Genre/Tür - VIRTUAL COLUMN INDEX
+                  // Genre/Tür - JSON field
                   ->orWhereHas('genre', fn($genreQuery) =>
-                      $genreQuery->where('title_tr_lower', 'like', $searchTerm)
+                      $genreQuery->whereRaw('LOWER(JSON_UNQUOTE(JSON_EXTRACT(title, "$.tr"))) LIKE ?', [$searchTerm])
                   );
             });
         }

@@ -16,6 +16,19 @@ Route::get('/cart', \Modules\Cart\App\Http\Livewire\Front\CartPage::class)->name
 Route::get('/shop/checkout', \Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew::class)->name('shop.checkout');
 Route::get('/shop/payment/{orderNumber}', [\Modules\Shop\App\Http\Controllers\PaymentPageController::class, 'show'])->name('shop.payment.page');
 
+// 🎵 MUZIBU SEARCH (Livewire) - Priority route (wildcard'dan önce)
+Route::middleware([InitializeTenancy::class, 'tenant', 'locale.site'])
+    ->get('/ara', \Modules\Muzibu\App\Http\Livewire\Frontend\SearchResults::class)
+    ->name('muzibu.search');
+
+// 🔀 MUZIBU OLD URL REDIRECTS - Backward compatibility
+Route::redirect('/muzibu/song/{slug}', '/song/{slug}', 301);
+Route::redirect('/muzibu/album/{slug}', '/albums/{slug}', 301);
+Route::redirect('/muzibu/artist/{slug}', '/artists/{slug}', 301);
+Route::redirect('/muzibu/playlist/{slug}', '/playlists/{slug}', 301);
+Route::redirect('/muzibu/genre/{slug}', '/genres/{slug}', 301);
+Route::redirect('/muzibu/sector/{slug}', '/sectors/{slug}', 301);
+
 // 👑 SUBSCRIPTION PLANS
 Route::get('/subscription/plans', \Modules\Subscription\App\Http\Livewire\Front\SubscriptionPlansComponent::class)->name('subscription.plans');
 Route::middleware('auth')->get('/subscription/success', \Modules\Subscription\App\Http\Controllers\Front\SubscriptionSuccessController::class)->name('subscription.success');
@@ -61,26 +74,35 @@ Route::post('/verify-construction-password', [App\Http\Controllers\ConstructionA
     ->name('construction.verify');
 
 // 🎵 MUZIBU ROUTES - Domain-specific routes (Tenant 1001)
-Route::middleware([InitializeTenancy::class])
-    ->domain('muzibu.com.tr')
-    ->group(function () {
-        Route::get('/', [\Modules\Muzibu\app\Http\Controllers\Front\HomeController::class, 'index'])->name('muzibu.home');
-        Route::get('/search', [\Modules\Muzibu\app\Http\Controllers\Front\SearchController::class, 'index'])->name('muzibu.search');
+// domains tablosundan dinamik çekiliyor
+$muzibuDomains = \Illuminate\Support\Facades\DB::table('domains')
+    ->where('tenant_id', 1001)
+    ->pluck('domain')
+    ->toArray();
 
-        // User Library
-        Route::get('/favorites', [\Modules\Muzibu\app\Http\Controllers\Front\FavoritesController::class, 'index'])->name('muzibu.favorites');
-        Route::get('/my-playlists', [\Modules\Muzibu\app\Http\Controllers\Front\MyPlaylistsController::class, 'index'])->name('muzibu.my-playlists');
+foreach ($muzibuDomains as $index => $domain) {
+    Route::middleware([InitializeTenancy::class])
+        ->domain($domain)
+        ->group(function () use ($domain, $index) {
+            // İlk domain (ana domain) için prefix yok, diğerleri için index ekle
+            $prefix = $index === 0 ? '' : "d{$index}.";
+            Route::get('/', [\Modules\Muzibu\app\Http\Controllers\Front\HomeController::class, 'index'])->name($prefix . 'muzibu.home');
+            Route::get('/favorites', [\Modules\Muzibu\app\Http\Controllers\Front\FavoritesController::class, 'index'])->name($prefix . 'muzibu.favorites');
+            Route::get('/my-playlists', [\Modules\Muzibu\app\Http\Controllers\Front\MyPlaylistsController::class, 'index'])->name($prefix . 'muzibu.my-playlists');
+            Route::get('/playlists', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'index'])->name($prefix . 'muzibu.playlists.index');
+            Route::get('/playlists/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'show'])->name($prefix . 'muzibu.playlists.show');
+            Route::get('/albums', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'index'])->name($prefix . 'muzibu.albums.index');
+            Route::get('/albums/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'show'])->name($prefix . 'muzibu.albums.show');
+            Route::get('/genres', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'index'])->name($prefix . 'muzibu.genres.index');
+            Route::get('/genres/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'show'])->name($prefix . 'muzibu.genres.show');
+            Route::get('/sectors', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'index'])->name($prefix . 'muzibu.sectors.index');
+            Route::get('/sectors/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'show'])->name($prefix . 'muzibu.sectors.show');
+            Route::get('/radios', [\Modules\Muzibu\app\Http\Controllers\Front\RadioController::class, 'index'])->name($prefix . 'muzibu.radios.index');
 
-        Route::get('/playlists', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'index'])->name('muzibu.playlists.index');
-        Route::get('/playlists/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'show'])->name('muzibu.playlists.show');
-        Route::get('/albums', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'index'])->name('muzibu.albums.index');
-        Route::get('/albums/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'show'])->name('muzibu.albums.show');
-        Route::get('/genres', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'index'])->name('muzibu.genres.index');
-        Route::get('/genres/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'show'])->name('muzibu.genres.show');
-        Route::get('/sectors', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'index'])->name('muzibu.sectors.index');
-        Route::get('/sectors/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'show'])->name('muzibu.sectors.show');
-        Route::get('/radios', [\Modules\Muzibu\app\Http\Controllers\Front\RadioController::class, 'index'])->name('muzibu.radios.index');
-    });
+            // Song detail page
+            Route::get('/song/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\SongController::class, 'show'])->name($prefix . 'muzibu.songs.show');
+        });
+}
 
 // 🎵 MUZIBU STREAMING ROUTES - EN ÖNCE TANIMLANMALI (high priority)
 // Sadece tenant middleware - session/web middleware yok (stateless streaming)

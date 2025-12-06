@@ -9,13 +9,14 @@ use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
 
 class Album extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, Searchable;
 
     protected $table = 'muzibu_albums';
     protected $primaryKey = 'album_id';
@@ -314,5 +315,58 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         return url("/{$locale}/muzibu/album/{$slug}");
+    }
+
+    /**
+     * Get the indexable data array for the model (Meilisearch)
+     */
+    public function toSearchableArray(): array
+    {
+        try {
+            $connection = (tenant() && !tenant()->central) ? 'tenant' : 'mysql';
+            $langCodes = \DB::connection($connection)
+                ->table('tenant_languages')
+                ->where('is_active', 1)
+                ->pluck('code')
+                ->toArray();
+        } catch (\Exception $e) {
+            $langCodes = ['tr', 'en'];
+        }
+
+        $data = [
+            'id' => $this->album_id,
+            'release_date' => $this->release_date,
+            'is_active' => $this->is_active,
+            'created_at' => $this->created_at?->timestamp,
+        ];
+
+        foreach ($langCodes as $langCode) {
+            $data["title_{$langCode}"] = $this->getTranslated('title', $langCode);
+            $data["description_{$langCode}"] = $this->getTranslated('description', $langCode);
+        }
+
+        if ($this->artist) {
+            foreach ($langCodes as $langCode) {
+                $data["artist_title_{$langCode}"] = $this->artist->getTranslated('title', $langCode);
+            }
+        }
+
+        return $data;
+    }
+
+    public function searchableAs(): string
+    {
+        $tenantId = tenant() ? tenant()->id : 'central';
+        return "tenant_{$tenantId}_albums";
+    }
+
+    public function getScoutKey()
+    {
+        return $this->album_id;
+    }
+
+    public function getScoutKeyName()
+    {
+        return 'album_id';
     }
 }

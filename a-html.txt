@@ -1,8 +1,225 @@
-blog:15 [Web Share] Helper yüklendi. Destek: true
-blog:15 [Back to Top] Initialized - Position: Left Bottom
-blog:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-blog:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-blog:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-blog:15 [PWA] Service Worker registered: https://ixtif.com/
-  document.querySelector('.h-screen')
-<section class=​"relative w-full h-screen overflow-hidden bg-black">​…​</section>​
+?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
+(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
+(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
+muzibu-router.js?v=1764994662:30 🚀 Muzibu SPA Router initialized
+player-core.js?v=1764994662:186 Muzibu initialized with Howler.js
+player-core.js?v=1764994662:189 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
+keyboard.js?v=1764994662:46 🎹 Keyboard shortcuts initialized
+player-core.js?v=1764994662:2798 ✅ Queue Monitor started (checks every 10s)
+muzibu-store.js?v=1764994662:102 🎯 Play Context Set: {type: 'favorites', subType: 'song', id: 344, name: 'Cold Love', offset: 3}
+muzibu-store.js?v=1764994662:137 🔄 Play Context Updated: {type: 'favorites', subType: 'song', id: 344, name: 'Cold Love', offset: 3}
+player-core.js?v=1764994662:546 💾 Full state restored: {queue: 4, index: 0, song: 'Cold Love', volume: 40, wasPlaying: false}
+player-core.js?v=1764994662:2877 ✅ Background playback enabled (works when minimized)
+player-core.js?v=1764994662:2942 ✅ Auto-save enabled (state saved on every change)
+player-core.js?v=1764994662:181 ⚠️ Already initialized, skipping...
+livewire.js?id=df3a17f2:1409 Alpine Warning: Duplicate key on x-for <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​
+warn @ livewire.js?id=df3a17f2:1409
+evaluateKey.scope.index @ livewire.js?id=df3a17f2:3680
+runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
+(anonymous) @ livewire.js?id=df3a17f2:1198
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3678
+runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
+(anonymous) @ livewire.js?id=df3a17f2:1198
+tryCatch @ livewire.js?id=df3a17f2:1116
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1409 Alpine Warning: x-for ":key" is undefined or invalid <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​ 339 {}
+warn @ livewire.js?id=df3a17f2:1409
+(anonymous) @ livewire.js?id=df3a17f2:3731
+mutateDom @ livewire.js?id=df3a17f2:886
+(anonymous) @ livewire.js?id=df3a17f2:3729
+runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
+(anonymous) @ livewire.js?id=df3a17f2:1198
+tryCatch @ livewire.js?id=df3a17f2:1116
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'after')
+
+Expression: "(queue || [])"
+
+ <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123
+tryCatch @ livewire.js?id=df3a17f2:1118
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+favorites:2516 🔄 Livewire navigated - Re-initializing Alpine...
+livewire.js?id=df3a17f2:3732 Uncaught TypeError: Cannot read properties of undefined (reading 'after')
+    at livewire.js?id=df3a17f2:3732:21
+    at mutateDom (livewire.js?id=df3a17f2:886:18)
+    at livewire.js?id=df3a17f2:3729:9
+    at runIfTypeOfFunction (livewire.js?id=df3a17f2:1219:7)
+    at livewire.js?id=df3a17f2:1198:11
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at loop (livewire.js?id=df3a17f2:3655:5)
+    at livewire.js?id=df3a17f2:3642:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+(anonymous) @ livewire.js?id=df3a17f2:3732
+mutateDom @ livewire.js?id=df3a17f2:886
+(anonymous) @ livewire.js?id=df3a17f2:3729
+runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
+(anonymous) @ livewire.js?id=df3a17f2:1198
+tryCatch @ livewire.js?id=df3a17f2:1116
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+favorites:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+favorites:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+favorites:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+player-core.js?v=1764994662:264 Featured playlists loaded: 10
+player-core.js?v=1764994662:2810 🔍 Queue Check: 4 songs remaining (queueIndex: 0/4)
+livewire.js?id=df3a17f2:1409 Alpine Warning: Duplicate key on x-for <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​
+warn @ livewire.js?id=df3a17f2:1409
+evaluateKey.scope.index @ livewire.js?id=df3a17f2:3680
+runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
+(anonymous) @ livewire.js?id=df3a17f2:1198
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3678
+runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
+(anonymous) @ livewire.js?id=df3a17f2:1198
+tryCatch @ livewire.js?id=df3a17f2:1116
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
+(anonymous) @ livewire.js?id=df3a17f2:7961
+(anonymous) @ livewire.js?id=df3a17f2:8029
+livewire.js?id=df3a17f2:1409 Alpine Warning: x-for ":key" is undefined or invalid <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​ 339 {}
+warn @ livewire.js?id=df3a17f2:1409
+(anonymous) @ livewire.js?id=df3a17f2:3731
+mutateDom @ livewire.js?id=df3a17f2:886
+(anonymous) @ livewire.js?id=df3a17f2:3729
+runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
+(anonymous) @ livewire.js?id=df3a17f2:1198
+tryCatch @ livewire.js?id=df3a17f2:1116
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
+(anonymous) @ livewire.js?id=df3a17f2:7961
+(anonymous) @ livewire.js?id=df3a17f2:8029
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'after')
+
+Expression: "(queue || [])"
+
+ <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​
+handleError @ livewire.js?id=df3a17f2:1123
+tryCatch @ livewire.js?id=df3a17f2:1118
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
+(anonymous) @ livewire.js?id=df3a17f2:7961
+(anonymous) @ livewire.js?id=df3a17f2:8029
+favorites:2516 🔄 Livewire navigated - Re-initializing Alpine...
+VM30045:4 🔄 Livewire navigated - Re-initializing Alpine...
+livewire.js?id=df3a17f2:3732 Uncaught TypeError: Cannot read properties of undefined (reading 'after')
+    at livewire.js?id=df3a17f2:3732:21
+    at mutateDom (livewire.js?id=df3a17f2:886:18)
+    at livewire.js?id=df3a17f2:3729:9
+    at runIfTypeOfFunction (livewire.js?id=df3a17f2:1219:7)
+    at livewire.js?id=df3a17f2:1198:11
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at loop (livewire.js?id=df3a17f2:3655:5)
+    at livewire.js?id=df3a17f2:3642:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+(anonymous) @ livewire.js?id=df3a17f2:3732
+mutateDom @ livewire.js?id=df3a17f2:886
+(anonymous) @ livewire.js?id=df3a17f2:3729
+runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
+(anonymous) @ livewire.js?id=df3a17f2:1198
+tryCatch @ livewire.js?id=df3a17f2:1116
+loop @ livewire.js?id=df3a17f2:3655
+(anonymous) @ livewire.js?id=df3a17f2:3642
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3642
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
+(anonymous) @ livewire.js?id=df3a17f2:7961
+(anonymous) @ livewire.js?id=df3a17f2:8029
+safe-storage.js?v=1764994661:1 Uncaught SyntaxError: Identifier 'safeStorage' has already been declared (at safe-storage.js?v=1764994661:1:1)
+muzibu-store.js?v=1764994661:1 Uncaught SyntaxError: Identifier '_safeStorage' has already been declared (at muzibu-store.js?v=1764994661:1:1)
+player-core.js?v=1764994662:2810 🔍 Queue Check: 4 songs remaining (queueIndex: 0/4)

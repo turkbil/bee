@@ -9,12 +9,13 @@ use App\Contracts\TranslatableEntity;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 
 class Radio extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable;
 
     protected $table = 'muzibu_radios';
     protected $primaryKey = 'radio_id';
@@ -290,5 +291,45 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         return url("/{$locale}/muzibu/radio/{$slug}");
+    }
+
+    /**
+     * Meilisearch - Get searchable data
+     */
+    public function toSearchableArray(): array
+    {
+        try {
+            $connection = (tenant() && !tenant()->central) ? 'tenant' : 'mysql';
+            $langCodes = \DB::connection($connection)->table('tenant_languages')->where('is_active', 1)->pluck('code')->toArray();
+        } catch (\Exception $e) {
+            $langCodes = ['tr', 'en'];
+        }
+
+        $data = ['id' => $this->radio_id, 'is_active' => $this->is_active, 'created_at' => $this->created_at?->timestamp];
+
+        foreach ($langCodes as $langCode) {
+            $data["title_{$langCode}"] = $this->getTranslated('title', $langCode);
+            if (method_exists($this, 'description')) {
+                $data["description_{$langCode}"] = $this->getTranslated('description', $langCode);
+            }
+        }
+
+        return $data;
+    }
+
+    public function searchableAs(): string
+    {
+        $tenantId = tenant() ? tenant()->id : 'central';
+        return "tenant_{$tenantId}_radios";
+    }
+
+    public function getScoutKey()
+    {
+        return $this->radio_id;
+    }
+
+    public function getScoutKeyName()
+    {
+        return 'radio_id';
     }
 }

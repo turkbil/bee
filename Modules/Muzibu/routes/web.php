@@ -2,6 +2,7 @@
 // Modules/Muzibu/routes/web.php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\InitializeTenancy;
 use Modules\Muzibu\app\Http\Controllers\Front\PlaylistController;
 use Modules\Muzibu\app\Http\Controllers\Front\AlbumController;
 use Modules\Muzibu\app\Http\Controllers\Front\GenreController;
@@ -9,11 +10,10 @@ use Modules\Muzibu\app\Http\Controllers\Front\SectorController;
 use Modules\Muzibu\app\Http\Controllers\Front\FavoritesController;
 use Modules\Muzibu\app\Http\Controllers\Front\MyPlaylistsController;
 use Modules\Muzibu\app\Http\Controllers\Front\RadioController;
+use Modules\Muzibu\app\Http\Controllers\Front\SongController;
 
 // 🚀 SPA API ENDPOINTS (JSON Response) - Muzibu Modülü İçin
-// Sadece muzibu.com.tr domain'i için geçerli
 Route::middleware(['web', 'tenant'])
-    ->domain('muzibu.com.tr')
     ->prefix('api')
     ->group(function () {
         // Playlists
@@ -38,4 +38,10 @@ Route::middleware(['web', 'tenant'])
 
         // Radios
         Route::get('/radios', [RadioController::class, 'apiIndex'])->name('muzibu.api.radios');
+
+        // Songs
+        Route::get('/songs/{slug}', [SongController::class, 'apiShow'])->name('muzibu.api.songs.show');
     });
+
+// 🔍 Search Results Page (Livewire) - Moved to main routes/web.php (priority route)
+// Route moved to avoid catch-all conflicts - same pattern as Cart module

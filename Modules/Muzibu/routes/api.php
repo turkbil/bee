@@ -8,6 +8,7 @@ use Modules\Muzibu\app\Http\Controllers\Api\GenreController;
 use Modules\Muzibu\app\Http\Controllers\Api\SectorController;
 use Modules\Muzibu\app\Http\Controllers\Api\DeviceController;
 use Modules\Muzibu\app\Http\Controllers\Api\QueueRefillController;
+use Modules\Muzibu\app\Http\Controllers\Front\SearchController;
 
 /*
  *--------------------------------------------------------------------------
@@ -21,6 +22,11 @@ use Modules\Muzibu\app\Http\Controllers\Api\QueueRefillController;
  */
 
 Route::prefix('muzibu')->group(function () {
+
+    // Search - Meilisearch powered
+    Route::get('/search', [SearchController::class, 'search'])
+        ->name('api.muzibu.search')
+        ->middleware('throttle.user:api');
 
     // Playlists - General API throttle
     Route::prefix('playlists')->middleware('throttle.user:api')->group(function () {
@@ -55,9 +61,10 @@ Route::prefix('muzibu')->group(function () {
         Route::post('/{id}/track-play', [SongController::class, 'trackPlay'])->name('api.muzibu.songs.track-play')->middleware(['auth:sanctum', 'throttle.user:api']);
 
         // Premium Limit System - SongStreamController (HLS conversion logic) - STRICT STREAM THROTTLE
+        // 🔥 FIX: StartSession middleware eklendi - auth('web')->user() çalışsın diye
         Route::get('/{id}/stream', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'stream'])
             ->name('api.muzibu.songs.stream')
-            ->middleware('throttle.user:stream'); // 🔥 Guest: 30/min, Member: 120/min, Premium: 300/min
+            ->middleware(['web', 'throttle.user:stream']); // web middleware session başlatır
         Route::get('/{id}/serve', [SongController::class, 'serve'])
             ->name('api.muzibu.songs.serve')
             ->middleware(['signed.url', 'throttle.user:stream']); // 🔐 Signed URL + rate limiting

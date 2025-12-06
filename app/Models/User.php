@@ -103,19 +103,21 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get active subscription
+     * 🔥 FIXED: Doğru Subscription modülü kullanılıyor
      */
     public function subscription()
     {
-        return $this->hasOne(Subscription::class, 'user_id')
+        return $this->hasOne(\Modules\Subscription\App\Models\Subscription::class, 'user_id')
             ->whereIn('status', ['active', 'trial']);
     }
 
     /**
      * Get all subscriptions
+     * 🔥 FIXED: Doğru Subscription modülü kullanılıyor
      */
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class, 'user_id');
+        return $this->hasMany(\Modules\Subscription\App\Models\Subscription::class, 'user_id');
     }
 
     /**
@@ -428,6 +430,7 @@ class User extends Authenticatable implements HasMedia
     /**
      * Aktif trial var mı?
      * Tenant 1001 (muzibu.com) için
+     * 🔥 FIX: has_trial=true VE trial_ends_at gelecekte ise trial aktif
      */
     public function isTrialActive(): bool
     {
@@ -435,9 +438,11 @@ class User extends Authenticatable implements HasMedia
             return false;
         }
 
-        // Yeni subscription sistemi: subscriptions tablosundan kontrol et
+        // Yeni subscription sistemi: has_trial=true VE trial_ends_at gelecekte
+        // NOT: status 'active' veya 'trial' olabilir, önemli olan has_trial ve trial_ends_at
         $trialSubscription = $this->subscriptions()
-            ->where('status', 'trial')
+            ->whereIn('status', ['active', 'trial'])
+            ->where('has_trial', true)
             ->whereNotNull('trial_ends_at')
             ->where('trial_ends_at', '>', now())
             ->first();
@@ -448,6 +453,16 @@ class User extends Authenticatable implements HasMedia
 
         // Fallback: Eski sistem (trial_ends_at kolonu)
         return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+    }
+
+    /**
+     * Premium veya Trial üye mi?
+     * 🔥 Helper: Tek çağrı ile hem premium hem trial kontrolü
+     * Tenant 1001 (muzibu.com) için
+     */
+    public function isPremiumOrTrial(): bool
+    {
+        return $this->isPremium() || $this->isTrialActive();
     }
 
     /**

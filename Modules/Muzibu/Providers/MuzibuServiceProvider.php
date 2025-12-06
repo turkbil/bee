@@ -28,9 +28,12 @@ class MuzibuServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
-        // Önce rotalar yüklenir
+        // Routes loaded directly like Cart module
         $this->loadRoutesFrom(module_path('Muzibu', 'routes/web.php'));
         $this->loadRoutesFrom(module_path('Muzibu', 'routes/admin.php'));
+
+        // API routes - tenant domain'leri için dinamik yükleme
+        $this->loadApiRoutes();
 
         // Tema Klasörleri - YENİ YAPI
         $this->loadViewsFrom(resource_path('views/themes'), 'themes');
@@ -85,6 +88,9 @@ class MuzibuServiceProvider extends ServiceProvider
 
         // Corporate Account Components
         Livewire::component('muzibu::admin.corporate-account-component', \Modules\Muzibu\App\Http\Livewire\Admin\CorporateAccountComponent::class);
+
+        // Frontend Components
+        Livewire::component('muzibu::frontend.search-results', \Modules\Muzibu\App\Http\Livewire\Frontend\SearchResults::class);
     }
 
     /**
@@ -100,12 +106,33 @@ class MuzibuServiceProvider extends ServiceProvider
     }
 
     /**
+     * Load API routes dynamically for all Muzibu tenant domains
+     */
+    protected function loadApiRoutes(): void
+    {
+        // Tenant 1001 domain'lerini al (dinamik)
+        $domains = \Illuminate\Support\Facades\DB::table('domains')
+            ->where('tenant_id', 1001)
+            ->pluck('domain')
+            ->toArray();
+
+        foreach ($domains as $index => $domain) {
+            \Illuminate\Support\Facades\Route::middleware(['api', \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class])
+                ->domain($domain)
+                ->prefix('api')
+                ->name($index === 0 ? '' : "d{$index}.")
+                ->group(module_path('Muzibu', 'routes/api.php'));
+        }
+    }
+
+    /**
      * Register the service provider.
      */
     public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
-        $this->app->register(RouteServiceProvider::class);
+        // RouteServiceProvider disabled - routes loaded directly like Cart module
+        // $this->app->register(RouteServiceProvider::class);
 
         // Repository Pattern bindings
         $this->app->singleton(\Modules\Muzibu\App\Repositories\ArtistRepository::class);

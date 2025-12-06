@@ -121,8 +121,8 @@ function muzibuApp() {
 
         // Crossfade settings (using Howler.js + HLS.js)
         crossfadeEnabled: true,
-        crossfadeDuration: 5000, // 5 seconds for automatic song transitions
-        fadeOutDuration: 5000, // 5 seconds for pause/play/manual change fade
+        crossfadeDuration: 1500, // 1.5 seconds for automatic song transitions (was 5s - too slow!)
+        fadeOutDuration: 800, // 0.8 seconds for pause/play/manual change fade (was 5s - too slow!)
         isCrossfading: false,
         howl: null, // Current Howler instance (for MP3)
         howlNext: null, // Next song Howler instance for crossfade
@@ -136,6 +136,35 @@ function muzibuApp() {
         // Computed: Current stream type
         get currentStreamType() {
             return this.isHlsStream ? 'hls' : 'mp3';
+        },
+
+        /**
+         * 🎨 GET COVER URL: Smart cover URL resolver
+         * Handles both media_id (number) and full URL formats
+         * @param {string|number} cover - media_id or full URL
+         * @param {number} width - thumbnail width
+         * @param {number} height - thumbnail height
+         */
+        getCoverUrl(cover, width = 56, height = 56) {
+            if (!cover) return null;
+
+            // If it's a full URL (starts with http), use it directly
+            if (typeof cover === 'string' && (cover.startsWith('http') || cover.startsWith('//'))) {
+                // If it's already a thumbmaker URL, just return it
+                if (cover.includes('thumbmaker')) {
+                    return cover;
+                }
+                // For other URLs, return as-is
+                return cover;
+            }
+
+            // If it's a media_id (number or numeric string), use thumb endpoint
+            if (cover && !isNaN(cover)) {
+                return `${window.location.origin}/thumb/${cover}/${width}/${height}`;
+            }
+
+            // Fallback: return as-is
+            return cover;
         },
 
         // Get the currently active HLS audio element
@@ -291,6 +320,8 @@ function muzibuApp() {
         // 🎯 Favorites functions (toggleFavorite, isFavorite, isLiked) moved to features/favorites.js
 
         async togglePlayPause() {
+            console.log('🎵 togglePlayPause called', { queue: this.queue.length, currentSong: this.currentSong, isPlaying: this.isPlaying, howl: !!this.howl, hls: !!this.hls });
+
             // 🔒 PREVIEW BLOCKED: Play button disabled after preview ends
             if (this.isPreviewBlocked) {
                 console.log('🔒 Play blocked: Preview ended, upgrading required');
@@ -349,6 +380,10 @@ function muzibuApp() {
                         this.fadeAudioElement(audio, 0, targetVolume, this.fadeOutDuration);
                         this.isPlaying = true;
                     }
+                } else if (this.currentSong) {
+                    // 🎵 No audio source loaded yet - load and play current song
+                    console.log('🎵 No audio source, loading current song:', this.currentSong.song_id);
+                    await this.playSongFromQueue(this.queueIndex);
                 }
             }
         },
@@ -439,6 +474,11 @@ function muzibuApp() {
 
         // 💾 FULL STATE BACKUP: Save complete player state to localStorage
         saveQueueState() {
+            // 🛡️ Don't save during state restoration (prevents queue corruption)
+            if (this._isRestoringState) {
+                return;
+            }
+
             try {
                 // ✅ Alpine store check
                 const muzibuStore = Alpine.store('muzibu');
@@ -478,17 +518,22 @@ function muzibuApp() {
         // 💾 FULL STATE RESTORATION: Load complete player state from localStorage
         async loadQueueState() {
             try {
+                // 🛡️ Prevent auto-save during state restoration
+                this._isRestoringState = true;
+
                 // ✅ localStorage access check
                 let saved;
                 try {
                     saved = safeStorage.getItem('muzibu_full_state');
                 } catch (storageError) {
                     console.warn('⚠️ localStorage access denied:', storageError.message);
+                    this._isRestoringState = false;
                     return;
                 }
 
                 if (!saved) {
                     console.log('💾 No saved state found - Fresh start');
+                    this._isRestoringState = false;
                     return;
                 }
 
@@ -517,26 +562,55 @@ function muzibuApp() {
                 });
 
                 // 🎵 AUTO-RESUME: Tarayıcı kapansa bile kaldığı yerden devam et
-                if (state.isPlaying && this.currentSong && this.queue.length > 0) {
-                    console.log('🎵 Auto-resuming from saved position...');
+                // ⚠️ Autoplay Policy: Kullanıcı etkileşimi olmadan play() yapılamaz
+                // Çözüm: Şarkıyı yükle, PAUSE modunda beklet, kullanıcı play'e basınca devam
+                if (this.currentSong && this.queue.length > 0) {
+                    const wasPlaying = state.isPlaying;
+                    const savedTime = state.currentTime || 0;
 
-                    // 2 saniye bekle (sayfa tamamen yüklensin)
+                    console.log('🎵 State restored, waiting for user interaction...', { wasPlaying, savedTime });
+
+                    // Şarkıyı yükle ama autoplay=false ile
                     setTimeout(async () => {
-                        // Queue'dan şarkıyı çal
-                        await this.playSongFromQueue(this.queueIndex);
+                        try {
+                            // Queue'dan şarkıyı yükle (autoplay=false)
+                            await this.playSongFromQueue(this.queueIndex, false);
 
-                        // Kaldığı yerden devam et (currentTime restore)
-                        if (state.currentTime > 0) {
+                            // Kaldığı pozisyona git
+                            if (savedTime > 0) {
+                                setTimeout(() => {
+                                    try {
+                                        this.seekTo(savedTime);
+                                        console.log(`⏩ Positioned at ${Math.floor(savedTime)}s (paused)`);
+                                    } catch (e) {
+                                        console.warn('⚠️ seekTo failed during restore:', e);
+                                    }
+                                }, 1000);
+                            }
+
+                            // Eğer önceden çalıyorduysa, kullanıcıya bilgi ver
+                            if (wasPlaying) {
+                                console.log('ℹ️ Song loaded in pause mode. Click play to resume.');
+                            }
+
+                            // 🛡️ Re-enable auto-save after song is loaded
                             setTimeout(() => {
-                                this.seekTo(state.currentTime);
-                                console.log(`⏩ Resumed from ${Math.floor(state.currentTime)}s`);
-                            }, 1000);
+                                this._isRestoringState = false;
+                                console.log('✅ State restoration complete, auto-save re-enabled');
+                            }, 500);
+                        } catch (e) {
+                            console.warn('⚠️ Auto-load failed:', e);
+                            this._isRestoringState = false;
                         }
-                    }, 2000);
+                    }, 1500);
+                } else {
+                    // No song to load, just re-enable auto-save
+                    this._isRestoringState = false;
                 }
 
             } catch (error) {
                 console.error('❌ Failed to load state:', error);
+                this._isRestoringState = false;
             }
         },
 
@@ -756,10 +830,21 @@ function muzibuApp() {
             const self = this;
             const targetVolume = this.isMuted ? 0 : this.volume / 100;
 
-            // Get next song URL and type
+            // Get next song URL and type - USE CACHE FIRST!
             try {
-                const response = await fetch(`/api/muzibu/songs/${nextSong.song_id}/stream`);
-                const data = await response.json();
+                let data;
+
+                // 🚀 CHECK CACHE FIRST - instant crossfade if cached!
+                const cached = this.getCachedStream(nextSong.song_id);
+                if (cached) {
+                    console.log('⚡ Crossfade using cached stream:', nextSong.song_id);
+                    data = cached;
+                } else {
+                    // Fetch from API if not cached
+                    console.log('⏳ Crossfade fetching from API:', nextSong.song_id);
+                    const response = await fetch(`/api/muzibu/songs/${nextSong.song_id}/stream`);
+                    data = await response.json();
+                }
 
                 if (!data.stream_url) {
                     this.isCrossfading = false;
@@ -959,10 +1044,22 @@ function muzibuApp() {
         },
 
         seekTo(e) {
-            const bar = e.currentTarget;
-            const rect = bar.getBoundingClientRect();
-            const percent = (e.clientX - rect.left) / rect.width;
-            const newTime = this.duration * percent;
+            let newTime;
+
+            // 🔧 Support both event (click on progress bar) and direct time value
+            if (typeof e === 'number') {
+                // Direct time value (from state restore)
+                newTime = e;
+            } else if (e && e.currentTarget) {
+                // Click event on progress bar
+                const bar = e.currentTarget;
+                const rect = bar.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                newTime = this.duration * percent;
+            } else {
+                console.warn('⚠️ seekTo called with invalid argument:', e);
+                return;
+            }
 
             // 🔒 PREVIEW LIMIT: Guest kullanıcılar sadece 30 saniye dinleyebilir
             if (this.previewDuration && this.previewDuration > 0) {
@@ -997,7 +1094,8 @@ function muzibuApp() {
             }
 
             this.currentTime = newTime;
-            this.progressPercent = percent * 100;
+            // 🔥 FIX: percent sadece click event'de tanımlı, duration'dan hesapla
+            this.progressPercent = this.duration > 0 ? (newTime / this.duration) * 100 : 0;
         },
 
         setVolume(e) {
@@ -1210,98 +1308,64 @@ function muzibuApp() {
 
                 this.isLoading = true;
 
-                // Get song details first
-                const songResponse = await fetch(`/api/muzibu/songs/popular?limit=100`);
-                const songs = await songResponse.json();
+                // 🚀 OPTIMIZED: Get stream URL directly (includes song info)
+                const streamResponse = await fetch(`/api/muzibu/songs/${id}/stream`);
 
-                // Find the specific song by ID
-                const song = songs.find(s => s.song_id == id);
-
-                if (song) {
-                    // Determine cover: song.media_id > album.media_id > placeholder
-                    const coverMediaId = song.media_id || song.album?.media_id || null;
-                    const albumCover = coverMediaId ? coverMediaId : '/placeholder-album.jpg';
-
-                    // Enrich song object with cover
-                    song.album_cover = albumCover;
-
-                    // Create queue with just this song
-                    this.queue = [song];
-                    this.queueIndex = 0;
-                    this.currentSong = song;
-                    this.playTracked = false; // 🎵 Reset play tracking for new song
-
-                    // Get stream URL
-                    const streamResponse = await fetch(`/api/muzibu/songs/${id}/stream`);
-
-                    // ❌ HTTP Error Check
-                    if (!streamResponse.ok) {
-                        const errorData = await streamResponse.json().catch(() => ({}));
-
-                        // 404: Şarkı bulunamadı
-                        if (streamResponse.status === 404) {
-                            this.showToast('Şarkı bulunamadı', 'error');
-                            return;
-                        }
-
-                        // 500: Sunucu hatası
-                        if (streamResponse.status >= 500) {
-                            this.showToast('Sunucu hatası', 'error');
-                            return;
-                        }
-
-                        // Diğer hatalar
+                // ❌ HTTP Error Check
+                if (!streamResponse.ok) {
+                    const errorData = await streamResponse.json().catch(() => ({}));
+                    if (streamResponse.status === 404) {
+                        this.showToast('Şarkı bulunamadı', 'error');
+                    } else if (streamResponse.status >= 500) {
+                        this.showToast('Sunucu hatası', 'error');
+                    } else {
                         this.showToast(errorData.message || 'Bir hata oluştu', 'error');
-                        return;
                     }
+                    return;
+                }
 
-                    const streamData = await streamResponse.json();
+                const streamData = await streamResponse.json();
 
-                    // 🎯 COVER: Update song cover from stream API
-                    if (streamData.song && streamData.song.cover_url) {
-                        // Extract media_id from cover_url (format: .../thumb/123/600/600)
-                        const coverMatch = streamData.song.cover_url.match(/\/thumb\/(\d+)\//);
-                        if (coverMatch) {
-                            song.album_cover = coverMatch[1]; // Use media_id for thumbmaker
-                        }
-                    }
+                // 🎵 Build song object from stream API response
+                const song = {
+                    song_id: id,
+                    song_title: streamData.song?.title || 'Bilinmeyen Şarkı',
+                    duration: streamData.song?.duration || '0:00',
+                    album_cover: null
+                };
 
-                    // 🔍 DEBUG: Backend response'u logla
-                    console.log('🎵 Stream API Response:', {
-                        status: streamData.status,
-                        preview_duration: streamData.preview_duration,
-                        is_premium: streamData.is_premium,
-                        message: streamData.message
-                    });
+                // 🎯 COVER: Extract from stream API
+                if (streamData.song?.cover_url) {
+                    const coverMatch = streamData.song.cover_url.match(/\/thumb\/(\d+)\//);
+                    song.album_cover = coverMatch ? coverMatch[1] : streamData.song.cover_url;
+                }
 
-                    // ⚠️ 3/3 KURAL DEVRE DIŞI - limit_exceeded artık kullanılmıyor
-                    // Normal/Guest üyeler 30 saniye preview alacak (status: 'preview')
-                    // Premium üyeler full şarkı alacak (status: 'ready')
+                // Create queue with just this song
+                this.queue = [song];
+                this.queueIndex = 0;
+                this.currentSong = song;
+                this.playTracked = false;
 
-                    // if (streamData.status === 'limit_exceeded') {
-                    //     const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
-                    //     if (playLimitsComponent) {
-                    //         playLimitsComponent.showLimitModal = true;
-                    //     }
-                    //     this.showToast('Günlük limit doldu', 'error');
-                    //     return;
-                    // }
-
-                    // 🔄 Her şarkı çalmada premium status güncelle
-                    if (streamData.is_premium !== undefined && this.currentUser) {
+                // 🔄 Her şarkı çalmada premium status ve subscription bilgilerini güncelle
+                if (this.currentUser) {
+                    if (streamData.is_premium !== undefined) {
                         this.currentUser.is_premium = streamData.is_premium;
                     }
-
-                    // 🎵 Guest preview: Pass preview_duration to enforce 30-second limit
-                    await this.loadAndPlaySong(
-                        streamData.stream_url,
-                        streamData.stream_type,
-                        streamData.preview_duration || null
-                    );
-                    this.showToast('Şarkı çalınıyor', 'success');
-                } else {
-                    this.showToast('Şarkı bulunamadı', 'error');
+                    if (streamData.trial_ends_at !== undefined) {
+                        this.currentUser.trial_ends_at = streamData.trial_ends_at;
+                    }
+                    if (streamData.subscription_ends_at !== undefined) {
+                        this.currentUser.subscription_ends_at = streamData.subscription_ends_at;
+                    }
                 }
+
+                // 🎵 Play immediately
+                await this.loadAndPlaySong(
+                    streamData.stream_url,
+                    streamData.stream_type,
+                    streamData.preview_duration || null
+                );
+                this.showToast('Şarkı çalınıyor', 'success');
             } catch (error) {
                 console.error('Failed to play song:', error);
                 this.showToast('Şarkı yüklenemedi', 'error');
@@ -1310,72 +1374,75 @@ function muzibuApp() {
             }
         },
 
-        async playSongFromQueue(index) {
+        async playSongFromQueue(index, autoplay = true) {
             if (index < 0 || index >= this.queue.length) return;
 
             const song = this.queue[index];
             this.currentSong = song;
             this.queueIndex = index;
-            this.playTracked = false; // 🎵 Reset play tracking for new song
-            this.isPreviewBlocked = false; // 🔓 Reset preview block for new song
+            this.playTracked = false;
+            this.isPreviewBlocked = false;
 
-            // Check if song is favorited
+            // Check if song is favorited (background, don't wait)
             this.checkFavoriteStatus(song.song_id);
 
+            // Store autoplay preference for loadAndPlaySong
+            this._autoplayNext = autoplay;
+
             try {
-                const response = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
+                let data;
 
-                // ❌ FIX: Generic error handling - response.ok sadece network hatalarını kontrol eder
-                // Backend'den gelen status'ü JSON'dan okuyacağız
-                if (!response.ok) {
-                    // 🚨 AUTO-SKIP: Hatalı şarkıyı atla, sonrakine geç
-                    this.showToast(`Şarkı yüklenemedi (${response.status}), sonrakine geçiliyor...`, 'warning');
+                // 🚀 CHECK CACHE FIRST - instant playback if cached!
+                const cached = this.getCachedStream(song.song_id);
+                if (cached) {
+                    console.log('⚡ Using cached stream URL:', song.song_id);
+                    data = cached;
+                } else {
+                    // Fetch from API if not cached
+                    const response = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
 
-                    // Sonraki şarkıya geç (eğer varsa)
-                    if (this.queueIndex < this.queue.length - 1) {
-                        await this.nextTrack();
-                    } else {
-                        // Queue sonu, oynatıcıyı durdur
-                        this.isPlaying = false;
+                    if (!response.ok) {
+                        this.showToast(`Şarkı yüklenemedi, sonrakine geçiliyor...`, 'warning');
+                        if (this.queueIndex < this.queue.length - 1) {
+                            await this.nextTrack();
+                        } else {
+                            this.isPlaying = false;
+                        }
+                        return;
                     }
-                    return;
+
+                    data = await response.json();
                 }
 
-                const data = await response.json();
-
-                // 🔍 DEBUG: Queue song API response
-                console.log('🎵 Queue Song API Response:', {
-                    status: data.status,
-                    preview_duration: data.preview_duration,
-                    is_premium: data.is_premium
-                });
-
-                // ⚠️ 3/3 KURAL DEVRE DIŞI
-                // if (data.status === 'limit_exceeded') {
-                //     const playLimitsComponent = Alpine.$data(document.querySelector('[x-data*="playLimits"]'));
-                //     if (playLimitsComponent) {
-                //         playLimitsComponent.showLimitModal = true;
-                //     }
-                //     this.showToast('Günlük limit doldu', 'error');
-                //     return;
-                // }
-
-                // 🔄 Her şarkı çalmada premium status güncelle
-                if (data.is_premium !== undefined && this.currentUser) {
-                    this.currentUser.is_premium = data.is_premium;
+                // Update premium status ve subscription bilgileri
+                if (this.currentUser) {
+                    if (data.is_premium !== undefined) {
+                        this.currentUser.is_premium = data.is_premium;
+                    }
+                    if (data.trial_ends_at !== undefined) {
+                        this.currentUser.trial_ends_at = data.trial_ends_at;
+                    }
+                    if (data.subscription_ends_at !== undefined) {
+                        this.currentUser.subscription_ends_at = data.subscription_ends_at;
+                    }
                 }
 
-                // 🔐 Save fallback URL for HLS errors (signed MP3)
+                // Save fallback URL
                 this.currentFallbackUrl = data.fallback_url || null;
 
-                // Pass stream type and preview duration from API response
-                const streamType = data.stream_type || 'mp3';
-                const previewDuration = data.preview_duration || null; // 🎵 Guest preview
-                console.log('Playing song:', data.stream_url, 'Type:', streamType, 'Preview:', previewDuration, 'Fallback:', this.currentFallbackUrl);
-                await this.loadAndPlaySong(data.stream_url, streamType, previewDuration);
+                // 🎵 Load and optionally play
+                const shouldAutoplay = this._autoplayNext !== false;
+                await this.loadAndPlaySong(
+                    data.stream_url,
+                    data.stream_type || 'mp3',
+                    data.preview_duration || null,
+                    shouldAutoplay
+                );
+                // Reset autoplay flag
+                this._autoplayNext = true;
 
-                // Prefetch HLS for next songs in queue (background)
-                this.prefetchHlsForQueue(index);
+                // 🚀 Preload next songs in background (don't wait)
+                this.preloadNextThreeSongs();
             } catch (error) {
                 console.error('Failed to load song:', error);
                 this.showToast('Şarkı yüklenemedi', 'error');
@@ -1429,7 +1496,7 @@ function muzibuApp() {
             }
         },
 
-        async loadAndPlaySong(url, streamType = null, previewDuration = null) {
+        async loadAndPlaySong(url, streamType = null, previewDuration = null, autoplay = true) {
             const self = this;
             const targetVolume = this.isMuted ? 0 : this.volume / 100;
 
@@ -1476,19 +1543,20 @@ function muzibuApp() {
                 useHls = isHlsUrl || !isDirectAudio;
             }
 
-            console.log('loadAndPlaySong:', { url, streamType, useHls, previewMode: !!previewDuration });
+            // Use passed autoplay parameter
+            console.log('🔍 Autoplay mode:', autoplay);
 
             if (useHls) {
                 this.isHlsStream = true;
-                await this.playHlsStream(url, targetVolume);
+                await this.playHlsStream(url, targetVolume, autoplay);
             } else {
                 this.isHlsStream = false;
                 // 🔒 GUEST PREVIEW: Use fallback URL if available (faster MP3 loading)
                 const playUrl = (previewDuration && previewDuration > 0 && this.currentFallbackUrl)
                     ? this.currentFallbackUrl
                     : url;
-                console.log('🎵 Playing URL:', playUrl);
-                await this.playWithHowler(playUrl, targetVolume);
+                console.log('🎵 Playing URL:', playUrl, 'Autoplay:', autoplay);
+                await this.playWithHowler(playUrl, targetVolume, autoplay);
             }
 
             // 🎵 GUEST PREVIEW: Setup preview duration limits
@@ -1691,6 +1759,9 @@ onplay: function() {
 
             console.log('🔍 HLS Autoplay:', autoplay);
 
+            // 🛡️ Flag to prevent play() after error/fallback
+            let hlsAborted = false;
+
             // Check HLS.js support
             if (Hls.isSupported()) {
                 // Store original chunk URLs with tokens from playlist
@@ -1699,11 +1770,47 @@ onplay: function() {
                 this.hls = new Hls({
                     enableWorker: true,
                     lowLatencyMode: false,
+                    // 🔑 KEY LOADING POLICY - Prevent keyLoadError with retries
+                    keyLoadPolicy: {
+                        default: {
+                            maxTimeToFirstByteMs: 8000,  // 8 second timeout for first byte
+                            maxLoadTimeMs: 15000,        // 15 second total timeout
+                            timeoutRetry: {
+                                maxNumRetry: 3,          // 3 timeout retries
+                                retryDelayMs: 1000,      // 1 second delay
+                                maxRetryDelayMs: 4000    // Max 4 seconds
+                            },
+                            errorRetry: {
+                                maxNumRetry: 5,          // 5 error retries (critical for key)
+                                retryDelayMs: 500,       // 500ms initial delay
+                                maxRetryDelayMs: 3000,   // Max 3 seconds
+                                backoff: 'exponential'   // Exponential backoff
+                            }
+                        }
+                    },
+                    // 🎵 FRAGMENT LOADING POLICY
+                    fragLoadPolicy: {
+                        default: {
+                            maxTimeToFirstByteMs: 6000,
+                            maxLoadTimeMs: 20000,
+                            timeoutRetry: {
+                                maxNumRetry: 2,
+                                retryDelayMs: 1000,
+                                maxRetryDelayMs: 4000
+                            },
+                            errorRetry: {
+                                maxNumRetry: 3,
+                                retryDelayMs: 500,
+                                maxRetryDelayMs: 3000
+                            }
+                        }
+                    },
                     // Custom XHR setup to preserve query strings (tokens) for chunks only
                     xhrSetup: function(xhr, url) {
-                        // Skip encryption key URLs - let HLS.js handle them normally
-                        if (url.includes('/stream/key/') || url.includes('/key/')) {
-                            return; // Don't modify encryption key requests
+                        // 🔑 For encryption key requests - ensure proper handling
+                        if (url.includes('/key') || url.includes('/key/')) {
+                            xhr.withCredentials = false;
+                            return;
                         }
 
                         // HLS.js strips query strings from chunks, we restore them here
@@ -1734,11 +1841,43 @@ onplay: function() {
                 this.hls.loadSource(url);
                 this.hls.attachMedia(audio);
 
+                // 🔑 Track key loading for debugging
+                this.hls.on(Hls.Events.KEY_LOADING, function(event, data) {
+                    console.log('🔑 Key loading started:', data.frag?.decryptdata?.uri);
+                });
+
+                this.hls.on(Hls.Events.KEY_LOADED, function(event, data) {
+                    console.log('✅ Key loaded successfully for song:', self.currentSong?.song_id);
+                });
+
+                // 🔑 Non-fatal error handling with retry info
+                this.hls.on(Hls.Events.ERROR, function(event, data) {
+                    if (!data.fatal && data.details === 'keyLoadError') {
+                        console.warn('⚠️ Key load retry:', {
+                            song: self.currentSong?.song_id,
+                            retry: data.frag?.loader?.stats?.retry || 0
+                        });
+                    }
+                });
+
                 this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    // 🛡️ Check if HLS was aborted (error occurred before manifest parsed)
+                    if (hlsAborted) {
+                        console.log('⚠️ HLS aborted, skipping play()');
+                        return;
+                    }
+
                     audio.volume = 0;
 
                     if (autoplay) {
                         audio.play().then(() => {
+                            // 🛡️ Double-check: HLS might have been aborted during play promise
+                            if (hlsAborted) {
+                                console.log('⚠️ HLS aborted during play(), stopping');
+                                audio.pause();
+                                return;
+                            }
+
                             self.isPlaying = true;
                             self.fadeAudioElement(audio, 0, targetVolume, self.fadeOutDuration);
                             self.startProgressTracking('hls');
@@ -1751,8 +1890,13 @@ onplay: function() {
                                 }
                             }));
                         }).catch(e => {
-                            console.error('HLS play error:', e);
-                            self.showToast('Çalma hatası', 'error');
+                            // 🛡️ AbortError is expected when fallback kicks in - don't show error toast
+                            if (e.name === 'AbortError') {
+                                console.log('⚠️ HLS play aborted (expected during fallback)');
+                            } else {
+                                console.error('HLS play error:', e);
+                                self.showToast('Çalma hatası', 'error');
+                            }
                         });
                     } else {
                         // Preload mode: load but don't play
@@ -1765,6 +1909,9 @@ onplay: function() {
                 this.hls.on(Hls.Events.ERROR, function(event, data) {
                     if (data.fatal) {
                         console.error('HLS fatal error:', data);
+
+                        // 🛡️ Set abort flag FIRST to prevent MANIFEST_PARSED from calling play()
+                        hlsAborted = true;
 
                         // HLS yüklenemezse MP3'e fallback (SIGNED URL)
                         if (data.type === Hls.ErrorTypes.NETWORK_ERROR && self.currentSong && self.currentFallbackUrl) {
@@ -2567,44 +2714,14 @@ onplay: function() {
         async clearCache() {
             const cacheModule = muzibuCache();
             await cacheModule.clearAll();
-        }
-    }
-}
-
-// ✅ Make muzibuApp globally accessible for Alpine.js
-window.muzibuApp = muzibuApp;
-
-// Play Limits Component (Guest & Member daily limits)
-function playLimits() {
-    return {
-        showGuestModal: false,
-        // showLimitModal: false, // ⚠️ REMOVED - 3/3 daily limit modal removed
-
-        init() {
-            // Listen for play limit events from muzibuApp
-            window.addEventListener('player:guest-limit', () => {
-                this.showGuestModal = true;
-            });
-
-            // ⚠️ REMOVED - 3/3 daily limit event listener removed
-            // window.addEventListener('player:daily-limit', () => {
-            //     this.showLimitModal = true;
-            // });
         },
 
-        handleGuestRegister() {
-            this.showGuestModal = false;
-            window.location.href = '/register';
-        },
-
-        handleGuestLogin() {
-            this.showGuestModal = false;
-            window.location.href = '/login';
-        },
+        // ═══════════════════════════════════════════════════════════════════
+        // 🚀 PRELOAD & QUEUE FUNCTIONS (Fixed: Moved from playLimits to muzibuApp)
+        // ═══════════════════════════════════════════════════════════════════
 
         /**
-         * 🎯 AGGRESSIVE PRELOAD: Queue'daki ilk 3 şarkının HLS'ini arka planda yükle
-         * Şarkı geçişlerinde 0ms gecikme için (PHASE 4 - Priority 3)
+         * 🚀 PRELOAD FIRST IN QUEUE: Backward compatibility wrapper
          */
         async preloadFirstInQueue() {
             // Backward compatibility: Still works as before (preloads first song)
@@ -2653,45 +2770,68 @@ function playLimits() {
         },
 
         /**
-         * 🚀 HOVER PRELOAD: Mouse şarkı kartına gelince HLS chunk ön yükleme
-         * Bandwidth tasarrufu + instant play
-         *
+         * 🚀 AGGRESSIVE PRELOAD: Stream URL'lerini cache'le + HLS playlist preload
          * @param {number} songId - Ön yüklenecek şarkı ID
          */
         async preloadSongOnHover(songId) {
-            // Zaten preload edilmiş mi kontrol et
-            if (this.preloadedSongs && this.preloadedSongs.has(songId)) {
-                console.log('🎵 Song already preloaded:', songId);
+            // Initialize cache if not exists
+            if (!this.streamUrlCache) {
+                this.streamUrlCache = new Map();
+            }
+            if (!this.preloadedSongs) {
+                this.preloadedSongs = new Set();
+            }
+
+            // Already cached?
+            if (this.streamUrlCache.has(songId)) {
                 return;
             }
 
             try {
-                console.log('🔄 Preloading song on hover:', songId);
-
-                // Stream URL'i al (HLS varsa HLS, yoksa MP3)
+                // 🚀 Fetch stream URL and cache it
                 const response = await fetch(`/api/muzibu/songs/${songId}/stream`);
                 if (!response.ok) return;
 
                 const data = await response.json();
 
-                // HLS varsa ilk chunk'ı preload et
-                if (data.stream_type === 'hls' && data.stream_url) {
-                    // HLS playlist fetch et (bu otomatik olarak ilk chunk'ı da çeker)
-                    const hlsResponse = await fetch(data.stream_url);
-                    if (hlsResponse.ok) {
-                        console.log('✅ HLS preloaded:', songId);
+                // Cache the stream data for instant playback later
+                this.streamUrlCache.set(songId, {
+                    stream_url: data.stream_url,
+                    stream_type: data.stream_type,
+                    fallback_url: data.fallback_url,
+                    preview_duration: data.preview_duration,
+                    cached_at: Date.now()
+                });
 
-                        // Preload edildi olarak işaretle
-                        if (!this.preloadedSongs) {
-                            this.preloadedSongs = new Set();
-                        }
-                        this.preloadedSongs.add(songId);
-                    }
+                // 🎯 Preload HLS playlist (triggers browser cache)
+                if (data.stream_type === 'hls' && data.stream_url) {
+                    fetch(data.stream_url).catch(() => {}); // Fire and forget
                 }
+
+                this.preloadedSongs.add(songId);
+                console.log('✅ Preloaded & cached:', songId);
+
             } catch (error) {
-                // Preload hataları sessizce ignore et (kritik değil)
-                console.debug('Preload error (ignored):', error);
+                // Silently ignore preload errors
             }
+        },
+
+        /**
+         * 🚀 GET CACHED STREAM: Return cached stream URL if available
+         */
+        getCachedStream(songId) {
+            if (!this.streamUrlCache) return null;
+
+            const cached = this.streamUrlCache.get(songId);
+            if (!cached) return null;
+
+            // Cache valid for 5 minutes
+            if (Date.now() - cached.cached_at > 300000) {
+                this.streamUrlCache.delete(songId);
+                return null;
+            }
+
+            return cached;
         },
 
         /**
@@ -2762,7 +2902,6 @@ function playLimits() {
                 console.error('❌ Queue check error:', error);
             }
         },
-
 
         /**
          * 🎵 BACKGROUND PLAYBACK: Tarayıcı minimize olsa bile müzik çalsın
@@ -2859,5 +2998,34 @@ function playLimits() {
     }
 }
 
+// ✅ Make muzibuApp globally accessible for Alpine.js
+window.muzibuApp = muzibuApp;
+
+// Play Limits Component (Guest & Member daily limits)
+function playLimits() {
+    return {
+        showGuestModal: false,
+
+        init() {
+            // Listen for play limit events from muzibuApp
+            window.addEventListener('player:guest-limit', () => {
+                this.showGuestModal = true;
+            });
+        },
+
+        handleGuestRegister() {
+            this.showGuestModal = false;
+            window.location.href = '/register';
+        },
+
+        handleGuestLogin() {
+            this.showGuestModal = false;
+            window.location.href = '/login';
+        }
+    }
+}
+
 // ✅ Make playLimits globally accessible for Alpine.js
 window.playLimits = playLimits;
+window.playLimits = playLimits;
+

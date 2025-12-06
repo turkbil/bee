@@ -40,7 +40,7 @@ class HomeController extends Controller
             $popularSongs = Song::where('is_active', 1)
                 ->whereNotNull('file_path') // CRITICAL: Skip songs without files
                 ->with(['album.artist', 'album.coverMedia', 'coverMedia']) // Load cover media for songs and albums
-                ->orderBy('hls_converted', 'desc') // HLS songs first
+                ->orderByRaw('CASE WHEN hls_path IS NOT NULL THEN 0 ELSE 1 END') // HLS songs first
                 ->orderBy('play_count', 'desc')
                 ->limit(20) // Limit to 20 popular songs
                 ->get();
@@ -80,7 +80,8 @@ class HomeController extends Controller
         } catch (\Exception $e) {
             \Log::error('HomeController error:', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
             ]);
 
             // Return empty data on error

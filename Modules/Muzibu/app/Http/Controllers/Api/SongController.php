@@ -61,9 +61,7 @@ class SongController extends Controller
                         'song_slug' => $song->slug,
                         'duration' => $song->duration,
                         'file_path' => $song->file_path,
-                        'hls_path' => $song->hls_path,
-                        'hls_converted' => $song->hls_converted,
-                        'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
+                        'hls_path' => $song->hls_path,                        'lyrics' => $song->lyrics, // 🎤 Lyrics support (dynamic - null if not available)
                         'album_id' => $album?->album_id,
                         'album_title' => $album?->title,
                         'album_slug' => $album?->slug,
@@ -215,14 +213,14 @@ class SongController extends Controller
             }
 
             // Generate stream URL - Hardcode URL yerine relative path kullan
-            $streamUrl = $song->hls_converted && $song->hls_path
+            $streamUrl = !empty($song->hls_path) && $song->hls_path
                 ? $song->hls_path
                 : '/api/muzibu/songs/' . $id . '/serve';
 
             return response()->json([
                 'song_id' => $song->song_id,
                 'stream_url' => $streamUrl,
-                'type' => $song->hls_converted ? 'hls' : 'mp3',
+                'type' => !empty($song->hls_path) ? 'hls' : 'mp3',
                 'duration' => $song->duration,
             ]);
 
@@ -254,7 +252,7 @@ class SongController extends Controller
             $forceMP3 = $request->has('force_mp3') || $request->has('fallback');
 
             // 🎵 HLS PRIORITY: If HLS converted AND not forced to MP3, serve playlist.m3u8
-            if ($song->hls_converted && !empty($song->hls_path) && !$forceMP3) {
+            if (!empty($song->hls_path) && !empty($song->hls_path) && !$forceMP3) {
                 // Build HLS playlist path
                 $hlsPath = storage_path('app/public/' . $song->hls_path);
 
@@ -298,7 +296,7 @@ class SongController extends Controller
             }
 
             // 🎵 AUTO HLS CONVERSION (if not converted yet)
-            if (!$song->hls_converted) {
+            if (empty($song->hls_path)) {
                 try {
                     \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
                     \Log::info('HLS conversion queued', ['song_id' => $song->song_id]);
@@ -391,8 +389,8 @@ class SongController extends Controller
                 abort(404, 'Song not found');
             }
 
-            // HLS dönüşmüş mü kontrol et
-            if (!$song->hls_converted || empty($song->hls_path)) {
+            // HLS dönüşmüş mü kontrol et (hls_path varsa dönüşmüş demektir)
+            if (empty($song->hls_path)) {
                 abort(404, 'HLS playlist not available');
             }
 

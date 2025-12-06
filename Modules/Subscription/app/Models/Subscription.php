@@ -158,11 +158,11 @@ class Subscription extends BaseModel
     public function daysRemaining(): int
     {
         if ($this->isTrial() && $this->trial_ends_at) {
-            return max(0, now()->diffInDays($this->trial_ends_at, false));
+            return max(0, (int) floor(now()->diffInDays($this->trial_ends_at, false)));
         }
 
         if ($this->current_period_end) {
-            return max(0, now()->diffInDays($this->current_period_end, false));
+            return max(0, (int) floor(now()->diffInDays($this->current_period_end, false)));
         }
 
         return 0;
@@ -277,5 +277,16 @@ class Subscription extends BaseModel
                 $subscription->subscription_number = self::generateSubscriptionNumber();
             }
         });
+
+        // 🔥 Premium cache'i otomatik temizle (subscription değiştiğinde)
+        $clearPremiumCache = function ($subscription) {
+            if ($subscription->user_id) {
+                \Cache::forget('user_' . $subscription->user_id . '_is_premium_tenant_1001');
+            }
+        };
+
+        static::created($clearPremiumCache);
+        static::updated($clearPremiumCache);
+        static::deleted($clearPremiumCache);
     }
 }

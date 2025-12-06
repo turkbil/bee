@@ -133,7 +133,7 @@ class MuzikStreamController extends Controller
                     $songId = (int) $songHash;
                     $song = Song::find($songId);
 
-                    if ($song && $song->file_path && !$song->hls_converted) {
+                    if ($song && $song->file_path && empty($song->hls_path)) {
                         // Response döndükten sonra HLS conversion başlat
                         // Bu sayede kullanıcı hemen MP3 dinleyebilir
                         ProcessBulkSongHLSJob::dispatchAfterResponse($songId);

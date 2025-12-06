@@ -3,6 +3,24 @@
  * Modüller arası paylaşılan state ve fonksiyonlar
  */
 
+// 🛡️ Guard against duplicate loading in SPA navigation
+if (typeof window._muzibuStoreInitialized !== 'undefined') {
+    console.log('⚠️ muzibu-store.js already loaded, skipping...');
+} else {
+    window._muzibuStoreInitialized = true;
+
+// 🛡️ Use global safeStorage from safe-storage.js (or fallback to localStorage)
+// safe-storage.js must be loaded before this file
+// Use window namespace to prevent redeclaration errors
+window._safeStorage = window._safeStorage || window.safeStorage || {
+    getItem: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
+    setItem: (key, value) => { try { localStorage.setItem(key, value); } catch(e) {} },
+    removeItem: (key) => { try { localStorage.removeItem(key); } catch(e) {} }
+};
+
+// Local reference for convenience
+const _safeStorage = window._safeStorage;
+
 document.addEventListener('alpine:init', () => {
     // Modern Toast Store - Minimal & Professional
     Alpine.store('toast', {
@@ -85,8 +103,8 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
 
-            // Save to localStorage
-            localStorage.setItem('muzibu_play_context', JSON.stringify(context));
+            // Save to localStorage (using safe wrapper)
+            _safeStorage.setItem('muzibu_play_context', JSON.stringify(context));
 
             // Update Alpine store (reactive)
             this.playContext = context;
@@ -103,7 +121,7 @@ document.addEventListener('alpine:init', () => {
                 return this.playContext;
             }
 
-            const stored = localStorage.getItem('muzibu_play_context');
+            const stored = _safeStorage.getItem('muzibu_play_context');
             if (stored) {
                 this.playContext = JSON.parse(stored);
                 return this.playContext;
@@ -133,7 +151,7 @@ document.addEventListener('alpine:init', () => {
          * Clear play context
          */
         clearPlayContext() {
-            localStorage.removeItem('muzibu_play_context');
+            _safeStorage.removeItem('muzibu_play_context');
             this.playContext = null;
             console.log('🗑️ Play Context Cleared');
         },
@@ -264,6 +282,10 @@ document.addEventListener('alpine:init', () => {
         // Touch/Long Press
         touchTimer: null,
         touchStartPos: { x: 0, y: 0 },
+
+        show(event, type, data) {
+            return this.openContextMenu(event, type, data);
+        },
 
         openContextMenu(event, type, data) {
             if (this._debug) {
@@ -525,4 +547,26 @@ document.addEventListener('alpine:init', () => {
             });
         }
     });
+
+    // Playlist Select Store (Add to Playlist Modal)
+    Alpine.store('playlistSelect', {
+        open: false,
+        songId: null,
+
+        show(songId) {
+            this.songId = songId;
+            this.open = true;
+        },
+
+        hide() {
+            this.open = false;
+            this.songId = null;
+        }
+    });
+
+    // 🔗 ALIAS: 'muzibu' store references 'player' store for backward compatibility
+    // Some code uses Alpine.store('muzibu') instead of Alpine.store('player')
+    Alpine.store('muzibu', Alpine.store('player'));
 });
+
+} // End of SPA guard - prevents duplicate store registration

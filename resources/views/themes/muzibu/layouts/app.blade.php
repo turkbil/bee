@@ -1,9 +1,10 @@
 @php
-    // 🔐 Şifre Koruması
-    $constructionPassword = 'nn';
-    $cookieName = 'mzb_auth_' . tenant('id');
-    $cookieValue = md5($constructionPassword . 'salt2024');
-    $isAuthenticated = isset($_COOKIE[$cookieName]) && $_COOKIE[$cookieName] === $cookieValue;
+    // 🔐 Şifre Koruması - DEVRE DIŞI
+    // $constructionPassword = 'nn';
+    // $cookieName = 'mzb_auth_' . tenant('id');
+    // $cookieValue = md5($constructionPassword . 'salt2024');
+    // $isAuthenticated = isset($_COOKIE[$cookieName]) && $_COOKIE[$cookieName] === $cookieValue;
+    $isAuthenticated = true; // ✅ ŞİFRE KORUMASINI KALDIRDIK
 @endphp
 
 @if(!$isAuthenticated)
@@ -106,8 +107,34 @@
     <link rel="stylesheet" href="{{ asset('themes/muzibu/css/muzibu-custom.css') }}?v={{ time() }}">
 
     @yield('styles')
+
+    <style>
+        /* Grid Layout Fix - Prevent Shrinking */
+        html, body {
+            width: 100vw;
+            max-width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Main Grid Container */
+        #main-app-grid {
+            width: 100vw;
+            max-width: 100vw;
+            min-width: 100vw;
+        }
+
+        /* Prevent content shrinking on mobile menu open */
+        @media (max-width: 1023px) {
+            #main-app-grid {
+                position: fixed;
+                left: 0;
+                right: 0;
+            }
+        }
+    </style>
 </head>
-<body class="bg-black text-white">
+<body class="bg-black text-white overflow-hidden">
     {{-- Hidden Audio Elements --}}
     <audio id="hlsAudio" x-ref="hlsAudio" class="hidden"></audio>
     <audio id="hlsAudioNext" class="hidden"></audio>
@@ -117,7 +144,8 @@
         $initialIsHomepage = empty(trim(request()->path(), '/'));
     @endphp
     <div
-        class="grid grid-rows-[56px_1fr_65px] lg:grid-cols-[220px_1fr] grid-cols-1 h-screen gap-3 px-3 pb-3"
+        id="main-app-grid"
+        class="grid grid-rows-[56px_1fr_65px] grid-cols-1 lg:grid-cols-[220px_1fr] h-screen gap-0 lg:gap-3 px-0 pb-0 lg:px-3 lg:pb-3"
         x-data="{
             isHomepage: {{ $initialIsHomepage ? 'true' : 'false' }},
             checkIsHomepage() {
@@ -220,12 +248,36 @@
             lang: @json(tenant_lang('player')),
             frontLang: @json(tenant_lang('front')),
             isLoggedIn: {{ auth()->check() ? 'true' : 'false' }},
-            currentUser: @if(auth()->check()) {
-                id: {{ auth()->user()->id }},
-                name: "{{ auth()->user()->name }}",
-                email: "{{ auth()->user()->email }}",
-                is_premium: {{ auth()->user()->isPremium() ? 'true' : 'false' }}
-            } @else null @endif,
+            currentUser: @if(auth()->check())
+                @php
+                    $user = auth()->user();
+                    $subscription = $user->subscriptions()
+                        ->whereIn('status', ['active', 'trial'])
+                        ->where(function($q) {
+                            $q->whereNull('current_period_end')
+                              ->orWhere('current_period_end', '>', now());
+                        })
+                        ->first();
+
+                    $isTrial = $subscription
+                        && $subscription->has_trial
+                        && $subscription->trial_ends_at
+                        && $subscription->trial_ends_at->isFuture();
+
+                    $trialEndsAt = $isTrial ? $subscription->trial_ends_at->toIso8601String() : null;
+                    $subscriptionEndsAt = $subscription && $subscription->current_period_end
+                        ? $subscription->current_period_end->toIso8601String()
+                        : null;
+                @endphp
+                {
+                id: {{ $user->id }},
+                name: "{{ $user->name }}",
+                email: "{{ $user->email }}",
+                is_premium: {{ $user->isPremiumOrTrial() ? 'true' : 'false' }},
+                trial_ends_at: {!! $trialEndsAt ? '"' . $trialEndsAt . '"' : 'null' !!},
+                subscription_ends_at: {!! $subscriptionEndsAt ? '"' . $subscriptionEndsAt . '"' : 'null' !!}
+            }
+            @else null @endif,
             // todayPlayedCount: {{ auth()->check() ? auth()->user()->getTodayPlayedCount() : 0 }}, // DEVRE DIŞI
             tenantId: {{ tenant('id') }}
         };

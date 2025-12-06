@@ -165,29 +165,742 @@
         </section>
         @endif
 
+        {{-- NEWS PORTAL SECTION: 8+4 Column Layout (ixtif theme only) --}}
+        @if($themeName === 'ixtif' && $items->count() >= 12)
+        <section class="py-8 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800" x-data="newsSlider()">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                <div class="grid lg:grid-cols-12 gap-6">
+
+                    {{-- 8 COLUMNS: Main Slider (6 slides - 5-10. haberler) --}}
+                    <div class="lg:col-span-8">
+                        <div class="relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-xl" style="height: 518px;">
+                            {{-- Slides --}}
+                            @foreach($items->skip(4)->take(6) as $slideItem)
+                                @php
+                                    $slideIndex = $loop->index; // 0-5 arası index
+                                    $currentLocale = app()->getLocale();
+                                    $slugData = $slideItem->getRawOriginal('slug');
+                                    if (is_string($slugData)) {
+                                        $slugData = json_decode($slugData, true) ?: [];
+                                    }
+                                    $slug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $slideItem->blog_id;
+                                    $title = $slideItem->getTranslated('title', $currentLocale);
+                                    $body = $slideItem->getTranslated('body', $currentLocale);
+                                    $excerpt = $slideItem->getCleanExcerpt($currentLocale) ?: \Illuminate\Support\Str::limit(strip_tags($body), 150);
+                                    $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                                    $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+                                    $defaultLocale = get_tenant_default_locale();
+                                    $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                                    $slideUrl = url($localePrefix . '/' . $slugPrefix . '/' . $slug);
+                                    $slideMedia = getFirstMediaWithFallback($slideItem);
+                                    $slideImage = $slideMedia ? thumb($slideMedia, 1200, 800, ['quality' => 90, 'format' => 'webp']) : null;
+                                @endphp
+
+                                <div x-show="newsIndex === {{ $slideIndex }}"
+                                     x-transition:enter="transition ease-out duration-600"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     x-transition:leave="transition ease-in duration-600"
+                                     x-transition:leave-start="opacity-100"
+                                     x-transition:leave-end="opacity-0"
+                                     class="absolute inset-0"
+                                     style="display: {{ $slideIndex === 0 ? 'block' : 'none' }};">
+
+                                    <a href="{{ $slideUrl }}" class="block h-full group">
+                                        {{-- Background Image --}}
+                                        @if($slideImage)
+                                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                                             style="background-image: url('{{ $slideImage }}');"></div>
+                                        @else
+                                        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                                            <i class="fas fa-image text-white/20 text-9xl relative z-10"></i>
+                                        </div>
+                                        @endif
+
+                                        {{-- Content --}}
+                                        <div class="absolute inset-0 flex items-end p-8">
+                                            <div class="w-full">
+                                                {{-- Category Badge --}}
+                                                @if($slideItem->categories && $slideItem->categories->first())
+                                                <span class="inline-block px-4 py-2 bg-red-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg mb-4 shadow-2xl">
+                                                    {{ $slideItem->categories->first()->getTranslated('title', $currentLocale) }}
+                                                </span>
+                                                @endif
+
+                                                {{-- Title: PC 1 satır, Mobil 2 satır --}}
+                                                <h2 class="text-4xl font-black text-white mb-3 group-hover:text-blue-300 transition-colors md:line-clamp-1 line-clamp-2"
+                                                    style="text-shadow: 0 0 30px rgba(0,0,0,1), 0 0 20px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.9), 0 4px 8px rgba(0,0,0,0.8); min-height: 3.5rem; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;">
+                                                    {{ $title }}
+                                                </h2>
+
+                                                {{-- Excerpt: Sabit 2 satır --}}
+                                                <p class="text-lg text-white mb-4"
+                                                   style="text-shadow: 0 0 20px rgba(0,0,0,1), 0 0 15px rgba(0,0,0,0.9), 0 2px 6px rgba(0,0,0,0.8); min-height: 3.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                                    {{ $excerpt }}
+                                                </p>
+
+                                                {{-- Date --}}
+                                                <div class="flex items-center gap-2 text-white text-sm"
+                                                     style="text-shadow: 0 0 15px rgba(0,0,0,1), 0 2px 4px rgba(0,0,0,0.8);">
+                                                    <i class="far fa-clock"></i>
+                                                    <span>{{ $slideItem->created_at->locale('tr')->diffForHumans() }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+
+                            {{-- Navigation Numbers (Bottom Center) - INSTANT HOVER --}}
+                            <div class="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-3 z-10">
+                                @for($i = 0; $i < 6; $i++)
+                                <button @click="goToSlide({{ $i }})"
+                                        @mouseenter="goToSlide({{ $i }})"
+                                        :class="newsIndex === {{ $i }} ? 'bg-white text-gray-900 scale-110 shadow-xl' : 'bg-black/60 text-white hover:bg-black/70 border border-white/30'"
+                                        class="w-10 h-10 rounded-full font-bold text-sm transition-all duration-300 flex items-center justify-center backdrop-blur-md">
+                                    {{ $i + 1 }}
+                                </button>
+                                @endfor
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- 4 COLUMNS: Side News (2 vertical cards - 11-12. haberler) --}}
+                    <div class="lg:col-span-4 space-y-6">
+                        @foreach($items->skip(10)->take(2) as $sideIndex => $sideItem)
+                            @php
+                                $currentLocale = app()->getLocale();
+                                $slugData = $sideItem->getRawOriginal('slug');
+                                if (is_string($slugData)) {
+                                    $slugData = json_decode($slugData, true) ?: [];
+                                }
+                                $slug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $sideItem->blog_id;
+                                $title = $sideItem->getTranslated('title', $currentLocale);
+                                $body = $sideItem->getTranslated('body', $currentLocale);
+                                $excerpt = $sideItem->getCleanExcerpt($currentLocale) ?: \Illuminate\Support\Str::limit(strip_tags($body), 100);
+                                $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                                $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+                                $defaultLocale = get_tenant_default_locale();
+                                $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                                $sideUrl = url($localePrefix . '/' . $slugPrefix . '/' . $slug);
+                                $sideMedia = getFirstMediaWithFallback($sideItem);
+                                $sideImage = $sideMedia ? thumb($sideMedia, 600, 400, ['quality' => 85, 'format' => 'webp']) : null;
+                            @endphp
+
+                            <a href="{{ $sideUrl }}"
+                               class="group block relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300"
+                               style="height: 247px;">
+                                {{-- Background Image --}}
+                                @if($sideImage)
+                                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                                     style="background-image: url('{{ $sideImage }}');"></div>
+                                @else
+                                <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                                    <i class="fas fa-image text-white/20 text-7xl relative z-10"></i>
+                                </div>
+                                @endif
+
+                                {{-- Content --}}
+                                <div class="absolute inset-0 flex items-end p-6">
+                                    <div class="w-full">
+                                        {{-- Category Badge --}}
+                                        @if($sideItem->categories && $sideItem->categories->first())
+                                        <span class="inline-block px-3 py-1 bg-blue-600 text-white text-xs font-bold uppercase tracking-wider rounded-lg mb-3 shadow-2xl">
+                                            {{ $sideItem->categories->first()->getTranslated('title', $currentLocale) }}
+                                        </span>
+                                        @endif
+
+                                        {{-- Title --}}
+                                        <h3 class="text-2xl font-black text-white mb-2 line-clamp-2 group-hover:text-blue-300 transition-colors"
+                                            style="text-shadow: 0 0 25px rgba(0,0,0,1), 0 0 15px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.9), 0 4px 6px rgba(0,0,0,0.8);">
+                                            {{ $title }}
+                                        </h3>
+
+                                        {{-- Date --}}
+                                        <div class="flex items-center gap-2 text-white text-sm"
+                                             style="text-shadow: 0 0 15px rgba(0,0,0,1), 0 2px 4px rgba(0,0,0,0.8);">
+                                            <i class="far fa-clock"></i>
+                                            <span>{{ $sideItem->created_at->locale('tr')->diffForHumans() }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        {{-- FEATURED NEWS BANNER (Özel Haber) - 13. haber --}}
+        @if($themeName === 'ixtif' && $items->count() >= 13)
+        @php
+            $featuredItem = $items->skip(12)->first();
+            $currentLocale = app()->getLocale();
+            $slugData = $featuredItem->getRawOriginal('slug');
+            if (is_string($slugData)) {
+                $slugData = json_decode($slugData, true) ?: [];
+            }
+            $slug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $featuredItem->blog_id;
+            $title = $featuredItem->getTranslated('title', $currentLocale);
+            $body = $featuredItem->getTranslated('body', $currentLocale);
+            $excerpt = $featuredItem->getCleanExcerpt($currentLocale) ?: \Illuminate\Support\Str::limit(strip_tags($body), 200);
+            $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+            $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+            $defaultLocale = get_tenant_default_locale();
+            $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+            $featuredUrl = url($localePrefix . '/' . $slugPrefix . '/' . $slug);
+            $featuredMedia = getFirstMediaWithFallback($featuredItem);
+            $featuredImage = $featuredMedia ? thumb($featuredMedia, 800, 600, ['quality' => 90, 'format' => 'webp']) : null;
+        @endphp
+
+        <section class="py-6">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                <a href="{{ $featuredUrl }}" class="group block relative bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 dark:from-indigo-900 dark:via-purple-900 dark:to-indigo-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+
+                        {{-- Left: Content (8 columns) --}}
+                        <div class="lg:col-span-8 p-4 md:p-6 flex items-center gap-4 relative z-10 order-2 lg:order-1">
+                            {{-- Icon --}}
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-yellow-400/20 flex items-center justify-center group-hover:bg-yellow-400/30 transition-colors">
+                                    <i class="fas fa-bolt text-yellow-300 text-xl md:text-2xl"></i>
+                                </div>
+                            </div>
+
+                            {{-- Title + Info --}}
+                            <div class="flex-1">
+                                <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight group-hover:text-yellow-300 transition-colors mb-2"
+                                    style="text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                                    {{ $title }}
+                                </h3>
+
+                                {{-- Excerpt --}}
+                                <p class="text-sm text-white/80 line-clamp-1 mb-2"
+                                   style="text-shadow: 0 1px 5px rgba(0,0,0,0.4);">
+                                    {{ $excerpt }}
+                                </p>
+
+                                {{-- Date --}}
+                                <div class="flex items-center gap-2 text-white/70 text-xs"
+                                     style="text-shadow: 0 1px 5px rgba(0,0,0,0.4);">
+                                    <i class="far fa-clock"></i>
+                                    <span>{{ $featuredItem->created_at->locale('tr')->diffForHumans() }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Right: Image (4 columns) --}}
+                        <div class="lg:col-span-4 relative h-40 lg:h-auto lg:min-h-[160px] order-1 lg:order-2">
+                            @if($featuredImage)
+                            <div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                                 style="background-image: url('{{ $featuredImage }}');"></div>
+                            @else
+                            <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                                <i class="fas fa-newspaper text-white/20 text-5xl"></i>
+                            </div>
+                            @endif
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+        </section>
+        @endif
+
+        {{-- MAIN CONTENT WITH SIDEBAR: 8-4 Layout --}}
+        @if($themeName === 'ixtif' && $items->count() >= 14)
+        <section class="py-8">
+            <div class="container mx-auto px-4 sm:px-4 md:px-2">
+                <div class="grid lg:grid-cols-12 gap-8">
+
+                    {{-- LEFT SIDE (SOL): 8 Columns - Main Content --}}
+                    <div class="lg:col-span-8">
+
+                        {{-- TOP: 4-4 Layout (1 BIG NEWS) --}}
+                        @php
+                            $bigNews = $items->skip(13)->first(); // 14. haber
+                            if ($bigNews) {
+                                $currentLocale = app()->getLocale();
+                                $slugData = $bigNews->slug;
+                                if (is_string($slugData)) {
+                                    $slugData = json_decode($slugData, true) ?: [];
+                                }
+                                $bigSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $bigNews->id;
+                                $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                                $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+                                $defaultLocale = get_tenant_default_locale();
+                                $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                                $bigUrl = url($localePrefix . '/' . $slugPrefix . '/' . $bigSlug);
+                                $bigTitle = $bigNews->getTranslated('title', $currentLocale) ?? 'Başlık bulunamadı';
+                                $bigExcerpt = $bigNews->getTranslated('excerpt', $currentLocale) ?? '';
+                                // Görsel debug
+                                $bigMediaObj = getFirstMediaWithFallback($bigNews);
+                                $bigImage = $bigMediaObj ? thumb($bigMediaObj, 600, 400, ['quality' => 90, 'format' => 'webp']) : null;
+                            }
+                        @endphp
+
+                        @if(isset($bigNews))
+                        <a href="{{ $bigUrl }}" class="group block mb-8">
+                            <div class="grid md:grid-cols-2 gap-6 bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
+
+                                {{-- Left: Image (4 cols) --}}
+                                <div class="relative h-80 md:h-full min-h-[450px] overflow-hidden">
+                                    @if($bigImage)
+                                    <div class="absolute inset-0 group-hover:scale-105 transition-transform duration-500"
+                                         style="background-image: url('{{ $bigImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+                                    @else
+                                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                                        <i class="fas fa-robot text-white/20 text-6xl"></i>
+                                    </div>
+                                    @endif
+                                </div>
+
+                                {{-- Right: Content (4 cols) --}}
+                                <div class="p-6 flex flex-col justify-center">
+                                    <h3 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4 line-clamp-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                        {{ $bigTitle }}
+                                    </h3>
+
+                                    <p class="text-gray-600 dark:text-gray-300 mb-6 line-clamp-3 leading-relaxed">
+                                        {{ $bigExcerpt }}
+                                    </p>
+
+                                    {{-- Meta --}}
+                                    <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                                        <div class="flex items-center gap-2">
+                                            <i class="far fa-clock"></i>
+                                            <span>{{ $bigNews->created_at->locale('tr')->diffForHumans() }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        @endif
+
+                        {{-- BOTTOM: 4-4 Layout (2 SMALL NEWS) --}}
+                        <div class="grid md:grid-cols-2 gap-6">
+                            @foreach($items->skip(14)->take(2) as $smallNews)
+                                @php
+                                    $currentLocale = app()->getLocale();
+                                    $slugData = $smallNews->slug;
+                                    if (is_string($slugData)) {
+                                        $slugData = json_decode($slugData, true) ?: [];
+                                    }
+                                    $smallSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $smallNews->id;
+                                    $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                                    $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+                                    $defaultLocale = get_tenant_default_locale();
+                                    $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                                    $smallUrl = url($localePrefix . '/' . $slugPrefix . '/' . $smallSlug);
+                                    $smallTitle = $smallNews->getTranslated('title', $currentLocale) ?? 'Başlık bulunamadı';
+                                    $smallExcerpt = $smallNews->getTranslated('excerpt', $currentLocale) ?? '';
+                                    // Görsel sistemini slider'daki gibi yap
+                                    $smallMediaObj = getFirstMediaWithFallback($smallNews);
+                                    $smallImage = $smallMediaObj ? thumb($smallMediaObj, 400, 300, ['quality' => 90, 'format' => 'webp']) : null;
+                                @endphp
+
+                                <div class="group flex flex-col">
+                                    <a href="{{ $smallUrl }}" class="flex flex-col h-full bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+
+                                        {{-- Image --}}
+                                        <div class="relative h-56 overflow-hidden flex-shrink-0">
+                                            @if($smallImage)
+                                            <div class="absolute inset-0 group-hover:scale-105 transition-transform duration-500"
+                                                 style="background-image: url('{{ $smallImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+                                            @else
+                                            <div class="absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+                                                <i class="fas fa-image text-white/20 text-5xl"></i>
+                                            </div>
+                                            @endif
+                                        </div>
+
+                                        {{-- Content (BELOW IMAGE) - Flex grow --}}
+                                        <div class="p-5 flex flex-col flex-grow">
+                                            {{-- Title: Fixed 2 lines --}}
+                                            <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" style="min-height: 3.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                                {{ $smallTitle }}
+                                            </h4>
+
+                                            {{-- Excerpt: Fixed 2 lines --}}
+                                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 flex-grow" style="min-height: 2.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                                {{ $smallExcerpt }}
+                                            </p>
+
+                                            {{-- Meta - Bottom --}}
+                                            <div class="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-auto">
+                                                <div class="flex items-center gap-1.5">
+                                                    <i class="far fa-clock"></i>
+                                                    <span>{{ $smallNews->created_at->locale('tr')->diffForHumans() }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        {{-- 3'LÜ HABERLER: 3-3-3 Layout --}}
+                        @php
+                            $tripleItems = $items->skip(16)->take(3);
+                        @endphp
+                        {{-- DEBUG: Toplam: {{ $items->count() }}, Triple count: {{ $tripleItems->count() }} --}}
+
+                        @if($tripleItems->count() > 0)
+                        <div class="grid md:grid-cols-3 gap-6 mt-8">
+                            @foreach($tripleItems as $tripleNews)
+                                @php
+                                    $currentLocale = app()->getLocale();
+                                    $slugData = $tripleNews->slug;
+                                    if (is_string($slugData)) {
+                                        $slugData = json_decode($slugData, true) ?: [];
+                                    }
+                                    $tripleSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $tripleNews->id;
+                                    $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                                    $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+                                    $defaultLocale = get_tenant_default_locale();
+                                    $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                                    $tripleUrl = url($localePrefix . '/' . $slugPrefix . '/' . $tripleSlug);
+                                    $tripleTitle = $tripleNews->getTranslated('title', $currentLocale) ?? 'Başlık bulunamadı';
+                                    $tripleExcerpt = $tripleNews->getTranslated('excerpt', $currentLocale) ?? '';
+                                    $tripleMediaObj = getFirstMediaWithFallback($tripleNews);
+                                    $tripleImage = $tripleMediaObj ? thumb($tripleMediaObj, 400, 250, ['quality' => 90, 'format' => 'webp']) : null;
+                                @endphp
+
+                                <div class="group flex flex-col">
+                                    <a href="{{ $tripleUrl }}" class="flex flex-col h-full bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
+
+                                        {{-- Image (TOP) --}}
+                                        <div class="relative h-48 overflow-hidden flex-shrink-0">
+                                            @if($tripleImage)
+                                            <div class="absolute inset-0 group-hover:scale-105 transition-transform duration-500"
+                                                 style="background-image: url('{{ $tripleImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+                                            @else
+                                            <div class="absolute inset-0 bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+                                                <i class="fas fa-image text-white/20 text-4xl"></i>
+                                            </div>
+                                            @endif
+                                        </div>
+
+                                        {{-- Content (BOTTOM) - Flex grow --}}
+                                        <div class="p-4 flex flex-col flex-grow">
+                                            {{-- Title: Fixed 2 lines --}}
+                                            <h4 class="text-base font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" style="min-height: 3rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                                {{ $tripleTitle }}
+                                            </h4>
+
+                                            {{-- Excerpt: Fixed 2 lines --}}
+                                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 flex-grow" style="min-height: 2.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                                {{ $tripleExcerpt }}
+                                            </p>
+
+                                            {{-- Meta - Bottom --}}
+                                            <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mt-auto">
+                                                <i class="far fa-clock"></i>
+                                                <span>{{ $tripleNews->created_at->locale('tr')->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                        @else
+                        <div class="mt-8 p-4 bg-red-100 dark:bg-red-900/20 rounded-lg">
+                            <p class="text-red-800 dark:text-red-200 font-bold text-center mb-3">⚠️ 3'lü haberler için yeterli içerik yok!</p>
+                            <div class="text-sm text-red-600 dark:text-red-300 space-y-1">
+                                <p>• Toplam haber sayısı: <strong>{{ $items->count() }}</strong></p>
+                                <p>• Kullanılan haberler:</p>
+                                <p class="ml-4">- 0-3: Full hero slider (4 haber)</p>
+                                <p class="ml-4">- 4-9: 8-col slider (6 haber)</p>
+                                <p class="ml-4">- 10-11: 4-col side (2 haber)</p>
+                                <p class="ml-4">- 12: Featured banner (1 haber)</p>
+                                <p class="ml-4">- 13: Büyük haber (1 haber)</p>
+                                <p class="ml-4">- 14-15: İkili haberler (2 haber)</p>
+                                <p class="ml-4">- <strong>16-18: Üçlü haberler (3 haber) ← BUNLAR EKSİK!</strong></p>
+                                <p class="mt-2">• 3'lü haberler için kalan: <strong>{{ $tripleItems->count() }}</strong> / 3</p>
+                                <p class="text-xs text-red-500 dark:text-red-400 mt-2">👉 En az <strong>19 haber</strong> olmalı (şu an {{ $items->count() }})</p>
+                            </div>
+                        </div>
+                        @endif
+
+                        {{-- GÜNDEM TARZI: 8-4 Layout (3 kez tekrar) --}}
+                        @php
+                            $gundemItems = $items->skip(19)->take(9); // 19-27: 3 set x 3 haber
+                        @endphp
+
+                        @if($gundemItems->count() >= 3)
+                            @foreach($gundemItems->chunk(3) as $chunkIndex => $setItems)
+                                @php
+                                    if($setItems->count() < 3) {
+                                        echo "<!-- DEBUG: Skipping incomplete set, only " . $setItems->count() . " items -->";
+                                        break;
+                                    }
+
+                                    $setIndex = $chunkIndex; // 0, 1, 2
+
+                                    // Büyük haber (sol 8 kolon)
+                                    $bigItem = $setItems->first();
+                                    $currentLocale = app()->getLocale();
+                                    $slugData = $bigItem->slug;
+                                    if (is_string($slugData)) {
+                                        $slugData = json_decode($slugData, true) ?: [];
+                                    }
+                                    $bigSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $bigItem->id;
+                                    $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                                    $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+                                    $defaultLocale = get_tenant_default_locale();
+                                    $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                                    $bigUrl = url($localePrefix . '/' . $slugPrefix . '/' . $bigSlug);
+                                    $bigTitle = $bigItem->getTranslated('title', $currentLocale);
+                                    $bigExcerpt = $bigItem->getTranslated('excerpt', $currentLocale) ?? '';
+                                    $bigMediaObj = getFirstMediaWithFallback($bigItem);
+                                    $bigImage = $bigMediaObj ? thumb($bigMediaObj, 800, 500, ['quality' => 90, 'format' => 'webp']) : null;
+                                @endphp
+
+                                <div class="grid md:grid-cols-12 gap-6 mt-8">
+                                    {{-- SOL: Büyük Haber (8 kolon) --}}
+                                    <div class="md:col-span-8">
+                                        <a href="{{ $bigUrl }}" class="group block relative h-[400px] rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300">
+                                            {{-- Background Image --}}
+                                            @if($bigImage)
+                                            <div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                                                 style="background-image: url('{{ $bigImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+                                            @else
+                                            <div class="absolute inset-0 bg-gradient-to-br from-red-600 to-orange-600"></div>
+                                            @endif
+
+                                            {{-- Overlay --}}
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+
+                                            {{-- Content --}}
+                                            <div class="absolute bottom-0 left-0 right-0 p-8">
+                                                <span class="inline-block bg-red-600 text-white px-4 py-2 text-xs font-bold uppercase tracking-wider mb-4 rounded">
+                                                    Gündem
+                                                </span>
+                                                <h1 class="text-3xl lg:text-4xl font-black text-white leading-tight mb-4 line-clamp-2 group-hover:text-red-400 transition-colors">
+                                                    {{ $bigTitle }}
+                                                </h1>
+                                                <p class="text-gray-200 text-base mb-4 line-clamp-2">
+                                                    {{ $bigExcerpt }}
+                                                </p>
+                                                <div class="flex items-center gap-4 text-gray-300 text-sm">
+                                                    <span><i class="far fa-clock mr-1"></i> {{ $bigItem->created_at->locale('tr')->diffForHumans() }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    {{-- SAĞ: 2 Küçük Haber (4 kolon) --}}
+                                    <div class="md:col-span-4 flex flex-col gap-6">
+                                        @foreach($setItems->slice(1, 2)->values() as $smallIndex => $smallItem)
+                                            @php
+                                                $currentLocale = app()->getLocale();
+                                                $slugData = $smallItem->slug;
+                                                if (is_string($slugData)) {
+                                                    $slugData = json_decode($slugData, true) ?: [];
+                                                }
+                                                $smallSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $smallItem->id;
+                                                $smallUrl = url($localePrefix . '/' . $slugPrefix . '/' . $smallSlug);
+                                                $smallTitle = $smallItem->getTranslated('title', $currentLocale);
+                                                $smallMediaObj = getFirstMediaWithFallback($smallItem);
+                                                $smallImage = $smallMediaObj ? thumb($smallMediaObj, 400, 300, ['quality' => 90, 'format' => 'webp']) : null;
+
+                                                // Doğru numara hesapla: Set başlangıcı (19) + (set * 3) + (1 + smallIndex)
+                                                $actualNewsNumber = 19 + ($setIndex * 3) + (1 + $smallIndex);
+                                            @endphp
+
+                                            <a href="{{ $smallUrl }}" class="group block relative h-[190px] rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
+                                                {{-- Background Image --}}
+                                                @if($smallImage)
+                                                <div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                                                     style="background-image: url('{{ $smallImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+                                                @else
+                                                <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600"></div>
+                                                @endif
+
+                                                {{-- Overlay --}}
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+
+                                                {{-- Content --}}
+                                                <div class="absolute bottom-0 left-0 right-0 p-5">
+                                                    <span class="inline-block bg-blue-600 text-white px-3 py-1 text-xs font-bold uppercase mb-3 rounded">
+                                                        Teknoloji
+                                                    </span>
+                                                    <h2 class="text-lg font-bold text-white leading-tight group-hover:text-blue-400 transition-colors line-clamp-2">
+                                                        {{ $smallTitle }}
+                                                    </h2>
+                                                </div>
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+
+                    </div>
+
+                    {{-- RIGHT SIDE (SAĞ): 4 Columns - Sidebar --}}
+                    <div class="lg:col-span-4 space-y-6">
+
+                        {{-- En Çok Okunanlar --}}
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                            <div class="bg-gradient-to-r from-red-600 to-orange-600 p-4">
+                                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                    <i class="fas fa-fire"></i> En Çok Okunanlar
+                                </h3>
+                            </div>
+                            <div class="p-4 space-y-4">
+                                @foreach($items->take(5) as $popularIndex => $popularItem)
+                                    @php
+                                        $currentLocale = app()->getLocale();
+                                        $slugData = $popularItem->slug;
+                                        if (is_string($slugData)) {
+                                            $slugData = json_decode($slugData, true) ?: [];
+                                        }
+                                        $popularSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $popularItem->id;
+                                        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                                        $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+                                        $defaultLocale = get_tenant_default_locale();
+                                        $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                                        $popularUrl = url($localePrefix . '/' . $slugPrefix . '/' . $popularSlug);
+                                        $popularTitle = $popularItem->getTranslated('title', $currentLocale);
+                                    @endphp
+
+                                    <a href="{{ $popularUrl }}" class="group flex items-start gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-all">
+                                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center text-white font-bold text-sm">
+                                            {{ $popularIndex + 1 }}
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                                {{ $popularTitle }}
+                                            </h4>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                <i class="far fa-clock"></i> {{ $popularItem->created_at->locale('tr')->diffForHumans() }}
+                                            </p>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        {{-- Son Haberler --}}
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                            <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-4">
+                                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                                    <i class="fas fa-newspaper"></i> Son Haberler
+                                </h3>
+                            </div>
+                            <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                                @foreach($items->skip(28)->take(6) as $sidebarItem)
+                                    @php
+                                        $currentLocale = app()->getLocale();
+                                        $slugData = $sidebarItem->slug;
+                                        if (is_string($slugData)) {
+                                            $slugData = json_decode($slugData, true) ?: [];
+                                        }
+                                        $sidebarSlug = (is_array($slugData) && isset($slugData[$currentLocale])) ? $slugData[$currentLocale] : 'blog-' . $sidebarItem->id;
+                                        $moduleSlugService = app(\App\Services\ModuleSlugService::class);
+                                        $slugPrefix = $moduleSlugService->getMultiLangSlug('Blog', 'index', $currentLocale);
+                                        $defaultLocale = get_tenant_default_locale();
+                                        $localePrefix = ($currentLocale !== $defaultLocale) ? '/' . $currentLocale : '';
+                                        $sidebarUrl = url($localePrefix . '/' . $slugPrefix . '/' . $sidebarSlug);
+                                        $sidebarTitle = $sidebarItem->getTranslated('title', $currentLocale);
+                                        $sidebarMediaObj = getFirstMediaWithFallback($sidebarItem);
+                                        $sidebarImage = $sidebarMediaObj ? thumb($sidebarMediaObj, 200, 150, ['quality' => 85, 'format' => 'webp']) : null;
+                                    @endphp
+
+                                    <a href="{{ $sidebarUrl }}" class="group flex gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all">
+                                        {{-- Image --}}
+                                        <div class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
+                                            @if($sidebarImage)
+                                            <div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-300"
+                                                 style="background-image: url('{{ $sidebarImage }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+                                            @else
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <i class="fas fa-image text-gray-400 text-2xl"></i>
+                                            </div>
+                                            @endif
+                                        </div>
+
+                                        {{-- Content --}}
+                                        <div class="flex-1 min-w-0">
+                                            <h4 class="text-sm font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2">
+                                                {{ $sidebarTitle }}
+                                            </h4>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                                <i class="far fa-clock"></i> {{ $sidebarItem->created_at->locale('tr')->diffForHumans() }}
+                                            </p>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        @endif
+
+        {{-- News Slider Alpine.js Component --}}
+        <script>
+            function newsSlider() {
+                return {
+                    newsIndex: 0,
+                    autoPlayInterval: null,
+
+                    init() {
+                        console.log('🎬 News Slider initialized');
+                        this.startAutoPlay();
+                    },
+
+                    startAutoPlay() {
+                        if (this.autoPlayInterval) {
+                            clearInterval(this.autoPlayInterval);
+                        }
+                        this.autoPlayInterval = setInterval(() => {
+                            this.newsIndex = (this.newsIndex + 1) % 6;
+                            console.log('⏱️ Auto-play: slide', this.newsIndex);
+                        }, 5000);
+                    },
+
+                    goToSlide(index) {
+                        console.log('👆 Manual/Hover: slide', index);
+                        this.newsIndex = index;
+                        this.startAutoPlay(); // Reset timer
+                    }
+                }
+            }
+        </script>
+        @endif
+
         {{-- Alt Kategoriler (Sadece kategori seçiliyse ve alt kategorileri varsa) --}}
         @if(isset($selectedCategory) && $selectedCategory && $selectedCategory->children && $selectedCategory->children->count() > 0)
         <section class="py-8 border-b border-gray-200 dark:border-white/10">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-folder-tree text-blue-600 dark:text-blue-400"></i>
-                    {{ $selectedCategory->getTranslated('title', app()->getLocale()) }} - Alt Kategoriler
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                    <i class="fa-light fa-folder-tree text-blue-600 dark:text-blue-400"></i>
+                    Alt Kategoriler
                 </h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
                     @foreach($selectedCategory->children as $child)
                         @php
                             $childSlug = $child->getTranslated('slug', app()->getLocale());
                             $childTitle = $child->getTranslated('title', app()->getLocale());
                         @endphp
                         <a href="{{ url('/blog/category/' . $childSlug) }}"
-                           class="group relative overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-white/10 hover:border-blue-300 dark:hover:border-blue-400 transition-all hover:shadow-lg hover:-translate-y-1">
-                            <div class="relative z-10">
-                                <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                           class="group bg-white/60 dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:bg-white/80 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
+                            <div class="flex flex-col items-center justify-center text-center h-full min-h-[120px]">
+                                @if($child->icon_class)
+                                    <i class="{{ $child->icon_class }} text-5xl text-blue-500 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                                @else
+                                    <i class="fa-light fa-folder text-5xl text-blue-500 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform"></i>
+                                @endif
+                                <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                     {{ $childTitle }}
                                 </h3>
-                            </div>
-                            <div class="absolute -bottom-4 -right-4 text-6xl text-blue-200 dark:text-white/5 opacity-50 group-hover:opacity-100 transition-opacity">
-                                <i class="fa-solid fa-folder"></i>
                             </div>
                         </a>
                     @endforeach

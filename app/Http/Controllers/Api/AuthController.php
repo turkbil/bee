@@ -53,9 +53,12 @@ class AuthController extends Controller
 
             $token = $user->createToken('mobile-app')->plainTextToken;
 
+            // Subscription bilgilerini ekle
+            $subscriptionData = $this->getSubscriptionData($user);
+
             return response()->json([
                 'message' => 'User registered successfully',
-                'user' => $user,
+                'user' => array_merge($user->toArray(), $subscriptionData),
                 'token' => $token,
             ], 201);
         } catch (\Exception $e) {
@@ -101,9 +104,12 @@ class AuthController extends Controller
 
             $token = $user->createToken('mobile-app')->plainTextToken;
 
+            // Subscription bilgilerini ekle
+            $subscriptionData = $this->getSubscriptionData($user);
+
             return response()->json([
                 'message' => 'Login successful',
-                'user' => $user,
+                'user' => array_merge($user->toArray(), $subscriptionData),
                 'token' => $token,
             ]);
         } catch (\Exception $e) {
@@ -154,5 +160,50 @@ class AuthController extends Controller
                 'message' => 'Logged out',
             ]);
         }
+    }
+
+    /**
+     * Get subscription data for user (trial, premium, dates)
+     * 🔥 FIX: Frontend'e subscription bilgileri gönder
+     */
+    protected function getSubscriptionData(User $user): array
+    {
+        // Tenant kontrolü - sadece Muzibu için
+        $tenant = tenant();
+        if (!$tenant || $tenant->id != 1001) {
+            return [
+                'is_premium' => false,
+                'trial_ends_at' => null,
+                'subscription_ends_at' => null,
+            ];
+        }
+
+        // Aktif subscription var mı?
+        $subscription = $user->subscriptions()
+            ->whereIn('status', ['active', 'trial'])
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            })
+            ->first();
+
+        if (!$subscription) {
+            return [
+                'is_premium' => false,
+                'trial_ends_at' => null,
+                'subscription_ends_at' => null,
+            ];
+        }
+
+        // Trial mı yoksa premium mı?
+        $isTrial = $subscription->has_trial
+            && $subscription->trial_ends_at
+            && $subscription->trial_ends_at->isFuture();
+
+        return [
+            'is_premium' => true,
+            'trial_ends_at' => $isTrial ? $subscription->trial_ends_at->toIso8601String() : null,
+            'subscription_ends_at' => $subscription->current_period_end ? $subscription->current_period_end->toIso8601String() : null,
+        ];
     }
 }

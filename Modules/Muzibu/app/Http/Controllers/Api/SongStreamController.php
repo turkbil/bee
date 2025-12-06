@@ -40,7 +40,9 @@ class SongStreamController extends Controller
                 return response()->json(['error' => 'Song not found'], 404);
             }
 
-            $user = auth()->user();
+            // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
+            // Session-based login (web) veya token-based login (sanctum)
+            $user = auth('web')->user() ?? auth('sanctum')->user();
 
             // 🎵 YENİ MANTIK:
             // - Guest (üye değil) → 30 saniye preview
@@ -61,9 +63,9 @@ class SongStreamController extends Controller
                 // HLS'e dönüşmüşse HLS URL, yoksa MP3 serve endpoint
                 // 🚀 CACHE: Song already from cache, no need to refresh
 
-                if ($song->hls_converted && !empty($song->hls_path)) {
+                if (!empty($song->hls_path) && !empty($song->hls_path)) {
                     // 🎯 DYNAMIC PLAYLIST (4 chunk: 3 çal + 1 buffer)
-                    $streamUrl = route('api.api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
+                    $streamUrl = route('api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
                     $streamType = 'hls';
                     // 🔐 MP3 fallback (signed URL, force MP3 output)
                     $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30, true);
@@ -94,8 +96,9 @@ class SongStreamController extends Controller
                 ]);
             }
 
-            // Normal üye (premium değil) → 30 saniye preview
-            if (!$user->isPremium()) {
+            // Normal üye (premium veya trial değil) → 30 saniye preview
+            // 🔥 FIX: isPremiumOrTrial() helper kullanılıyor
+            if (!$user->isPremiumOrTrial()) {
                 // HLS conversion başlat (eğer gerekiyorsa)
                 if ($song->needsHlsConversion()) {
                     Log::info('Muzibu Stream: HLS conversion dispatched for non-premium user', [
@@ -109,9 +112,9 @@ class SongStreamController extends Controller
                 // HLS'e dönüşmüşse HLS URL, yoksa MP3 serve endpoint
                 // 🚀 CACHE: Song already from cache, no need to refresh
 
-                if ($song->hls_converted && !empty($song->hls_path)) {
+                if (!empty($song->hls_path) && !empty($song->hls_path)) {
                     // 🎯 DYNAMIC PLAYLIST (4 chunk: 3 çal + 1 buffer)
-                    $streamUrl = route('api.api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
+                    $streamUrl = route('api.muzibu.songs.dynamic-playlist', ['id' => $songId]);
                     $streamType = 'hls';
                     // 🔐 MP3 fallback (signed URL, force MP3 output)
                     $fallbackUrl = $this->signedUrlService->generateStreamUrl($songId, 30, true);
@@ -165,13 +168,12 @@ class SongStreamController extends Controller
                 ConvertToHLSJob::dispatch($song);
 
                 // Return original MP3 URL for now (SIGNED)
-                return response()->json([
+                return response()->json(array_merge([
                     'status' => 'converting',
                     'message' => 'HLS conversion in progress. Playing original file.',
                     'stream_url' => $this->signedUrlService->generateStreamUrl($songId, 30), // 🔐 SIGNED URL
                     'stream_type' => 'mp3',
                     'hls_converting' => true,
-                    'is_premium' => $user->isPremium(), // 🔄 Frontend sync için güncel durum
                     'song' => [
                         'id' => $song->song_id,
                         'title' => $song->getTranslated('title', app()->getLocale()),
@@ -179,11 +181,14 @@ class SongStreamController extends Controller
                         'bitrate' => $song->getFormattedBitrate(),
                         'cover_url' => $song->getCoverUrl(600, 600),
                     ]
-                ]);
+                ], $this->getSubscriptionData($user)));
             }
 
+            // 🔥 Subscription bilgilerini al
+            $subscriptionData = $this->getSubscriptionData($user);
+
             // HLS already converted - return HLS URL (SIGNED)
-            return response()->json([
+            return response()->json(array_merge([
                 'status' => 'ready',
                 'message' => 'HLS stream ready',
                 'stream_url' => $this->signedUrlService->generateHlsUrl($songId, 60), // 🔐 SIGNED HLS URL
@@ -191,7 +196,6 @@ class SongStreamController extends Controller
                 'fallback_url' => $this->signedUrlService->generateStreamUrl($songId, 30, true), // 🔐 SIGNED MP3 fallback (force MP3)
                 'hls_converting' => false,
                 'remaining' => $user->getRemainingPlays(),
-                'is_premium' => $user->isPremium(), // 🔄 Frontend sync için güncel durum
                 'song' => [
                     'id' => $song->song_id,
                     'title' => $song->getTranslated('title', app()->getLocale()),
@@ -199,7 +203,7 @@ class SongStreamController extends Controller
                     'bitrate' => $song->getFormattedBitrate(),
                     'cover_url' => $song->getCoverUrl(600, 600),
                 ]
-            ]);
+            ], $subscriptionData));
 
         } catch (\Exception $e) {
             Log::error('Muzibu Stream: Failed to get stream URL', [
@@ -227,9 +231,7 @@ class SongStreamController extends Controller
             $song = Song::findOrFail($songId);
 
             return response()->json([
-                'status' => 'success',
-                'hls_converted' => $song->hls_converted,
-                'hls_url' => $song->hls_converted ? $song->getHlsUrl() : null,
+                'status' => 'success',                'hls_url' => !empty($song->hls_path) ? $song->getHlsUrl() : null,
                 'needs_conversion' => $song->needsHlsConversion(),
             ]);
 
@@ -253,7 +255,9 @@ class SongStreamController extends Controller
         try {
             $song = Song::findOrFail($songId);
 
-            $userId = auth()->check() ? auth()->id() : null;
+            // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
+            $user = auth('web')->user() ?? auth('sanctum')->user();
+            $userId = $user?->id;
             $song->incrementPlayCount($userId);
 
             return response()->json([
@@ -281,12 +285,15 @@ class SongStreamController extends Controller
     public function trackProgress(\Illuminate\Http\Request $request, int $songId): JsonResponse
     {
         try {
-            if (!auth()->check()) {
+            // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
+            $user = auth('web')->user() ?? auth('sanctum')->user();
+
+            if (!$user) {
                 return response()->json(['error' => 'unauthorized'], 401);
             }
 
             $song = Song::findOrFail($songId);
-            $userId = auth()->id();
+            $userId = $user->id;
 
             // 🔒 Duplicate kontrolü: Aynı kullanıcı + şarkı için son 60 saniyede kayıt var mı?
             $recentPlay = \DB::table('muzibu_song_plays')
@@ -315,11 +322,19 @@ class SongStreamController extends Controller
                 'updated_at' => now()
             ]);
 
-            // ⚠️ 3/3 KURAL DEVRE DIŞI - remaining her zaman -1 (sınırsız)
-            // Tracking sadece analytics için yapılıyor
+            // 🔥 FIX: songs.play_count'u da artır
+            $song->increment('play_count');
+
+            Log::info('Muzibu: Play tracked', [
+                'song_id' => $songId,
+                'user_id' => $userId,
+                'play_count' => $song->play_count
+            ]);
+
             return response()->json([
                 'success' => true,
-                'remaining' => -1  // Unlimited (3/3 rule removed)
+                'play_count' => $song->play_count,
+                'remaining' => -1  // Unlimited
             ]);
 
         } catch (\Exception $e) {
@@ -351,5 +366,48 @@ class SongStreamController extends Controller
         }
 
         return 'desktop';
+    }
+
+    /**
+     * Get subscription data for user (trial, premium, dates)
+     * 🔥 Frontend'e subscription bilgileri gönder
+     */
+    protected function getSubscriptionData($user): array
+    {
+        if (!$user) {
+            return [
+                'is_premium' => false,
+                'trial_ends_at' => null,
+                'subscription_ends_at' => null,
+            ];
+        }
+
+        // Aktif subscription var mı?
+        $subscription = $user->subscriptions()
+            ->whereIn('status', ['active', 'trial'])
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            })
+            ->first();
+
+        if (!$subscription) {
+            return [
+                'is_premium' => false,
+                'trial_ends_at' => null,
+                'subscription_ends_at' => null,
+            ];
+        }
+
+        // Trial mı yoksa premium mı?
+        $isTrial = $subscription->has_trial
+            && $subscription->trial_ends_at
+            && $subscription->trial_ends_at->isFuture();
+
+        return [
+            'is_premium' => true,
+            'trial_ends_at' => $isTrial ? $subscription->trial_ends_at->toIso8601String() : null,
+            'subscription_ends_at' => $subscription->current_period_end ? $subscription->current_period_end->toIso8601String() : null,
+        ];
     }
 }

@@ -70,18 +70,29 @@ Route::middleware(['admin', 'tenant'])->post('/admin/cache/clear', function () {
     try {
         // Tenant-specific cache temizleme
         Cache::flush();
-        
+
         // Response cache temizleme (eğer varsa)
         if (config('responsecache.enabled')) {
             Artisan::call('responsecache:clear');
         }
-        
+
         // View cache temizleme
         Artisan::call('view:clear');
-        
+
+        // Config cache temizleme
+        Artisan::call('config:clear');
+
+        // Route cache temizleme
+        Artisan::call('route:clear');
+
+        // OPcache reset (PHP bytecode cache)
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+
         return response()->json([
             'success' => true,
-            'message' => 'Tenant cache başarıyla temizlendi'
+            'message' => 'Tüm cache başarıyla temizlendi (view, config, route, opcache)'
         ]);
     } catch (\Exception $e) {
         return response()->json([

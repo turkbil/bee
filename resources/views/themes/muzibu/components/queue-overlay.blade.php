@@ -1,4 +1,7 @@
 {{-- QUEUE OVERLAY - Slides in from right when queue button clicked --}}
+{{-- x-if guard: Render only when parent scope has 'queue' defined --}}
+<template x-if="typeof queue !== 'undefined'">
+<div>
 <div
     x-show="showQueue"
     x-transition:enter="transition ease-out duration-300"
@@ -49,7 +52,7 @@
                 <div class="flex items-center gap-3 px-2 py-2 bg-muzibu-gray-light rounded">
                     <div class="w-10 h-10 rounded bg-gradient-to-br from-pink-500 to-purple-600 flex-shrink-0 overflow-hidden">
                         <template x-if="currentSong.album_cover">
-                            <img :src="`{{ url('') }}/thumb/${currentSong.album_cover}/40/40`" :alt="currentSong.song_title" class="w-full h-full object-cover">
+                            <img :src="getCoverUrl(currentSong.album_cover, 40, 40)" :alt="currentSong.song_title" class="w-full h-full object-cover">
                         </template>
                         <template x-if="!currentSong.album_cover">
                             <div class="w-full h-full flex items-center justify-center text-lg">🎵</div>
@@ -65,11 +68,11 @@
 
         {{-- Queue Count --}}
         <div class="text-xs text-muzibu-text-gray font-semibold mb-3">
-            Sırada <span x-text="queue.length"></span> şarkı
+            Sırada <span x-text="(queue || []).length"></span> şarkı
         </div>
 
         {{-- Empty State --}}
-        <template x-if="queue.length === 0">
+        <template x-if="!queue || queue.length === 0">
             <div class="text-center py-8 text-muzibu-text-gray">
                 <i class="fas fa-music text-3xl mb-2 opacity-30"></i>
                 <p class="text-sm">Çalma listesi boş</p>
@@ -78,7 +81,7 @@
 
         {{-- Queue List --}}
         <div id="queue-list" class="space-y-1">
-            <template x-for="(song, index) in queue" :key="song.song_id || index">
+            <template x-for="(song, index) in (queue || [])" :key="song?.song_id || index">
                 <div
                     @click="playFromQueue(index)"
                     @dragstart="dragStart($event, index)"
@@ -90,7 +93,7 @@
                 >
                     <div class="w-8 h-8 rounded bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0 overflow-hidden relative">
                         <template x-if="song.album_cover">
-                            <img :src="`{{ url('') }}/thumb/${song.album_cover}/32/32`" :alt="song.song_title" class="w-full h-full object-cover">
+                            <img :src="getCoverUrl(song.album_cover, 32, 32)" :alt="song.song_title" class="w-full h-full object-cover">
                         </template>
                         <template x-if="!song.album_cover">
                             <div class="w-full h-full flex items-center justify-center text-xs">🎵</div>
@@ -116,3 +119,5 @@
         </div>
     </div>
 </aside>
+</div>
+</template>

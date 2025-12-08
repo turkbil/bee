@@ -102,7 +102,7 @@
                     {{ __('shop::front.browse_subcategories') }}
                 </h2>
 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
                     @foreach($subcategories as $subcategory)
                         @php
                             $subcategorySlug = $subcategory->getTranslated('slug');
@@ -142,7 +142,7 @@
                          x-transition:leave="transition ease-in duration-100"
                          x-transition:leave-start="opacity-100"
                          x-transition:leave-end="opacity-0"
-                         class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+                         class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6"
                          x-ref="productsGrid">
                         @foreach($products as $product)
                             <x-ixtif.product-card :product="$product" layout="vertical" :showAddToCart="true" />

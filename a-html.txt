@@ -1,239 +1,89 @@
-?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
-(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-muzibu-router.js?v=1765143908:30 🚀 Muzibu SPA Router initialized
-player-core.js?v=1765143908:197 Muzibu initialized with Howler.js
-player-core.js?v=1765143908:200 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
-keyboard.js?v=1765143908:46 🎹 Keyboard shortcuts initialized
-player-core.js?v=1765143908:3047 ✅ Queue Monitor started (checks every 10s)
-player-core.js?v=1765143908:551 💾 No saved state found - Fresh start
-player-core.js?v=1765143908:3131 ✅ Background playback enabled (works when minimized)
-player-core.js?v=1765143908:3196 ✅ Auto-save enabled (state saved on every change)
-player-core.js?v=1765143908:3220 🔐 Session polling started (30s interval, initial check in 2s)
-player-core.js?v=1765143908:192 ⚠️ Already initialized, skipping...
-(index):4123 🔄 Livewire navigated - Re-initializing Alpine...
-player-core.js?v=1765143908:280 Featured playlists loaded: 10
-player-core.js?v=1765143908:339 🎵 togglePlayPause called {queue: 0, currentSong: null, isPlaying: false, howl: false, hls: false}
-player-core.js?v=1765143908:412 🎵 Auto-starting music from Genre (infinite loop)...
-muzibu-store.js?v=1765143908:112 🎯 Play Context Set: {type: 'genre', id: 3, offset: 0, source: 'auto_start'}
-muzibu-store.js?v=1765143908:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 0, limit: 15}
-muzibu-store.js?v=1765143908:218 ✅ Queue refilled: 13 songs (13) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
-muzibu-store.js?v=1765143908:112 🎯 Play Context Set: {type: 'genre', id: 3, offset: 13, source: 'auto_start'}
-muzibu-store.js?v=1765143908:147 🔄 Play Context Updated: {type: 'genre', id: 3, offset: 13, source: 'auto_start'}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 0, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 0, volume: 100, …}
-player-core.js?v=1765143908:1569 🔍 Autoplay mode: true
-player-core.js?v=1765143908:1782 🔍 HLS Autoplay: true
-player-core.js?v=1765143908:2954 🚀 Aggressive Preload: Loading next 3 songs...
-player-core.js?v=1765143908:1885 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/344/key
-player-core.js?v=1765143908:3007 ✅ Preloaded & cached: 347
-player-core.js?v=1765143908:3007 ✅ Preloaded & cached: 345
-player-core.js?v=1765143908:1895 ⚠️ Key load retry: {song: 344, retry: 0}
-(anonymous) @ player-core.js?v=1765143908:1895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-r.onLevelLoaded @ stream-controller.ts:691
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.handlePlaylistLoaded @ playlist-loader.ts:676
-e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
-onSuccess @ playlist-loader.ts:314
-e.readystatechange @ xhr-loader.ts:231
-XMLHttpRequest.send
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-e.load @ playlist-loader.ts:347
-e.onManifestLoading @ playlist-loader.ts:154
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.loadSource @ hls.ts:389
-playHlsStream @ player-core.js?v=1765143908:1880
-loadAndPlaySong @ player-core.js?v=1765143908:1573
-await in loadAndPlaySong
-playSongFromQueue @ player-core.js?v=1765143908:1457
-await in playSongFromQueue
-playRandomSongs @ player-core.js?v=1765143908:444
-await in playRandomSongs
-togglePlayPause @ player-core.js?v=1765143908:359
-[Alpine] togglePlayPause() @ VM1111:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
-player-core.js?v=1765143908:1885 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/344/key
-player-core.js?v=1765143908:1955 HLS fatal error: {type: 'networkError', details: 'keyLoadError', fatal: true, frag: Proxy(e), response: undefined, …}
-(anonymous) @ player-core.js?v=1765143908:1955
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-setTimeout
-e.tickImmediate @ task-loop.ts:119
-r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
-r.onError @ stream-controller.ts:895
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.handleFragLoadError @ base-stream-controller.ts:838
-(anonymous) @ base-stream-controller.ts:784
-Promise.catch
-r._doFragLoad @ base-stream-controller.ts:784
-r._loadFragForPlayback @ base-stream-controller.ts:367
-r.loadFragment @ base-stream-controller.ts:343
-r.loadFragment @ stream-controller.ts:373
-r.doTickIdle @ stream-controller.ts:349
-r.doTick @ stream-controller.ts:204
-e.tick @ task-loop.ts:106
-r.onLevelLoaded @ stream-controller.ts:691
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.handlePlaylistLoaded @ playlist-loader.ts:676
-e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
-onSuccess @ playlist-loader.ts:314
-e.readystatechange @ xhr-loader.ts:231
-XMLHttpRequest.send
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-e.load @ playlist-loader.ts:347
-e.onManifestLoading @ playlist-loader.ts:154
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.loadSource @ hls.ts:389
-playHlsStream @ player-core.js?v=1765143908:1880
-loadAndPlaySong @ player-core.js?v=1765143908:1573
-await in loadAndPlaySong
-playSongFromQueue @ player-core.js?v=1765143908:1457
-await in playSongFromQueue
-playRandomSongs @ player-core.js?v=1765143908:444
-await in playRandomSongs
-togglePlayPause @ player-core.js?v=1765143908:359
-[Alpine] togglePlayPause() @ VM1111:3
-(anonymous) @ livewire.js?id=df3a17f2:1196
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3881
-handler4 @ livewire.js?id=df3a17f2:3183
-(anonymous) @ livewire.js?id=df3a17f2:3247
-(anonymous) @ livewire.js?id=df3a17f2:3185
-player-core.js?v=1765143908:1964 🔄 HLS failed, falling back to signed MP3...
-player-core.js?v=1765143908:1965 🔍 currentFallbackUrl: https://muzibu.com.tr/api/muzibu/songs/344/serve?expires=1765145712&signature=7f2a836981468c72b7d03a0cd528215b9bfddcfb028d6686cf67f82c0bc1da0a&force_mp3=1
-player-core.js?v=1765143908:1966 🔍 currentFallbackUrl type: string
-player-core.js?v=1765143908:1985 🔍 About to call playWithHowler with: https://muzibu.com.tr/api/muzibu/songs/344/serve?expires=1765145712&signature=7f2a836981468c72b7d03a0cd528215b9bfddcfb028d6686cf67f82c0bc1da0a&force_mp3=1
-player-core.js?v=1765143908:1700 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/344/serve?expires=1765145712&signature=7f2a836981468c72b7d03a0cd528215b9bfddcfb028d6686cf67f82c0bc1da0a&force_mp3=1
-player-core.js?v=1765143908:1701 🔍 URL type: string
-player-core.js?v=1765143908:1702 🔍 URL length: 154
-player-core.js?v=1765143908:1703 🔍 Autoplay: true
-player-core.js?v=1765143908:1711 🎵 Creating Howl with src: ['https://muzibu.com.tr/api/muzibu/songs/344/serve?e…8215b9bfddcfb028d6686cf67f82c0bc1da0a&force_mp3=1']
-player-core.js?v=1765143908:1938 ⚠️ HLS play aborted (expected during fallback)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 0, volume: 100, …}
-player-core.js?v=1765143908:3007 ✅ Preloaded & cached: 346
-player-core.js?v=1765143908:2964 ✅ Aggressive Preload completed: 3 songs ready
-player-core.js?v=1765143908:1721 Howler loaded, duration: 122.9
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 2, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 7, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 12, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 17, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 22, volume: 100, …}
-player-core.js?v=1765143908:3242 ⚠️ Session invalid: device_limit_exceeded
-checkSessionValidity @ player-core.js?v=1765143908:3242
-await in checkSessionValidity
-(anonymous) @ player-core.js?v=1765143908:3217
-setInterval
-startSessionPolling @ player-core.js?v=1765143908:3216
-init @ player-core.js?v=1765143908:231
-(anonymous) @ livewire.js?id=df3a17f2:1160
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3571
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-player-core.js?v=1765143908:3254 🚨 Device limit exceeded - session was terminated from another device
-player-core.js?v=1765143908:3275 🔐 Device limit exceeded - showing warning modal
-player-core.js?v=1765143908:3331 🔐 Active devices fetched: 0
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 27, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 32, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 37, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 42, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 47, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 52, volume: 100, …}
-player-core.js?v=1765143908:3115 📱 Page hidden - Background playback active
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 57, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 62, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 67, volume: 100, …}
-player-core.js?v=1765143908:3118 👀 Page visible - Welcome back!
-player-core.js?v=1765143908:3115 📱 Page hidden - Background playback active
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 72, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 77, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 82, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 87, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 92, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 97, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 102, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 107, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 112, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 117, volume: 100, …}
-player-core.js?v=1765143908:844 Starting crossfade...
-player-core.js?v=1765143908:856 ⚡ Crossfade using cached stream: 345
-player-core.js?v=1765143908:873 Next song type: hls URL: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/345/playlist.m3u8
-player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 122, volume: 100, …}
-player-core.js?v=1765143908:1059 Crossfade complete, now playing: Cupid
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 122, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 122, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 4, volume: 100, …}
-player-core.js?v=1765143908:3060 🔍 Queue Check: 12 songs remaining (queueIndex: 1/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 9, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 14, volume: 100, …}
-player-core.js?v=1765143908:3118 👀 Page visible - Welcome back!
-player-core.js?v=1765143908:3060 🔍 Queue Check: 12 songs remaining (queueIndex: 1/13)
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 19, volume: 100, …}
-player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 24, volume: 100, …}
+<div x-data="productCard(true, 245)" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all ">
+
+    <div class="flex flex-col">
+        
+        <div class="relative aspect-square">
+            <a href="https://ixtif.com/shop/ixtif-f4-15-ton-li-ion-transpalet" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+                                    <img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenant2%2F323%2Fupload-692d1a57d18c8-f4.png&amp;w=400&amp;h=400&amp;q=85&amp;f=webp&amp;c=1" alt="İXTİF F4 - 1.5 Ton Li-Ion Transpalet" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark p-3 md:p-4 lg:p-6" loading="lazy">
+                            </a>
+
+            
+                            <div class="absolute top-2 left-2 lg:top-3 lg:left-3 z-10 flex flex-col gap-1.5 lg:gap-2 items-start">
+                    
+                                            <div class="w-fit bg-gradient-to-br from-orange-600 to-red-600 text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
+                            -%13
+                        </div>
+                    
+                    
+                                                                    <div class="w-fit bg-gradient-to-br from-indigo-600 to-blue-600 bg-[length:200%_200%] animate-gradient text-white px-1.5 py-0.5 lg:px-2.5 lg:py-1 rounded-lg shadow-lg text-xs font-bold">
+                            Yılsonu Fırsatı
+                        </div>
+                                    </div>
+                    </div>
+
+        
+        <div class="p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5">
+                            
+                                <div class="flex items-center gap-2 mb-4 justify-end lg:justify-between">
+                    <span class="hidden lg:flex items-center gap-1.5 text-xs text-blue-800 dark:text-blue-300 font-medium uppercase tracking-[0.1em]">
+                        <i class="fa-solid fa-dolly text-sm"></i>
+                        Transpalet
+                    </span>
+                                    </div>
+                
+                
+                <a href="https://ixtif.com/shop/ixtif-f4-15-ton-li-ion-transpalet">
+                    <h3 class="text-base md:text-lg lg:text-xl font-bold line-clamp-2 min-h-[2.8rem] md:min-h-[3.2rem] lg:min-h-[3.5rem] text-gray-950 dark:text-gray-50 leading-relaxed group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors tracking-wide">
+                        İXTİF F4 - 1.5 Ton Li-Ion Transpalet
+                    </h3>
+                </a>
+            
+            
+            <div class="pt-3 md:pt-4 lg:pt-5 mt-auto flex items-center justify-between gap-3 border-t border-gray-300 dark:border-gray-500">
+                
+                <div class="flex-1 min-w-0">
+                                            
+                                                    <div class="relative inline-block -mb-4 lg:-mb-2">
+                                <span class="text-xs lg:text-sm text-gray-400 dark:text-gray-500 font-medium leading-none">
+                                    1.550 $
+                                </span>
+                                
+                                <span class="absolute inset-0 flex items-center justify-center">
+                                    <span class="w-full h-[1.5px] bg-gradient-to-r from-transparent via-red-500 to-transparent transform rotate-[-8deg] opacity-70"></span>
+                                </span>
+                            </div>
+                        
+                        <div class="relative h-8 w-fit flex items-center cursor-pointer" @mouseenter="priceHovered = true; showTryPrice = true" @mouseleave="priceHovered = false; showTryPrice = false">
+                            
+                            <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-150 whitespace-nowrap" x-show="!showTryPrice" x-transition:enter="transition ease-in duration-150" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-out duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
+                                $ 1.350
+                                                                    <small class="text-xs font-light text-gray-600 dark:text-gray-300 ml-1 align-text-bottom">+ KDV</small>
+                                                            </div>
+
+                            
+                            <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-150 scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)] whitespace-nowrap" x-show="showTryPrice" x-transition:enter="transition ease-in duration-150" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-105" x-transition:leave="transition ease-out duration-150" x-transition:leave-start="opacity-100 scale-105" x-transition:leave-end="opacity-0 scale-95" style="display: none;">
+                                57.443 ₺
+                                                                    <small class="text-xs font-light text-gray-600 dark:text-gray-300 ml-1 align-text-bottom">+ KDV</small>
+                                                            </div>
+                        </div>
+                                    </div>
+
+                
+                                    
+                                            
+                        <button type="button" @click="addToCart()" :disabled="loading || success" class="flex-shrink-0 border-2 border-blue-600 dark:border-blue-400 hover:border-blue-700 dark:hover:border-blue-300 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed" :class="{ 'animate-pulse': loading, '!border-green-600 !text-green-600 !bg-green-50 dark:!bg-green-900/20': success }">
+                            <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                                <i class="fa-solid text-lg transition-all duration-300 fa-cart-plus" :class="{
+                                       'fa-spinner fa-spin': loading,
+                                       'fa-check scale-125': success,
+                                       'fa-cart-plus': !loading &amp;&amp; !success
+                                   }"></i>
+                            </span>
+                            <span class="max-w-0 overflow-hidden group-hover:max-w-[5rem] transition-all duration-300 text-[10px] font-medium pl-0 group-hover:pl-2 leading-[1.2] flex items-center text-center">
+                                <span class="whitespace-pre-line block" x-html="loading ? 'Ekle' : (success ? 'Tamam!' : 'Sepete&lt;br&gt;Ekle')">Sepete<br>Ekle</span>
+                            </span>
+                        </button>
+                                                </div>
+        </div>
+    </div>
+</div>

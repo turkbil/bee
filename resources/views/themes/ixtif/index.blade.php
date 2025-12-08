@@ -233,8 +233,8 @@
                 <p class="text-xl text-gray-600 dark:text-gray-300">En çok tercih edilen istif ekipmanları</p>
             </div>
 
-            <!-- Product Grid: 4 Kolonlu Modern Tasarım -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10">
+            <!-- Product Grid: 6 Kolonlu Modern Tasarım -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
                 <template x-for="product in products" :key="product.id">
                     <article class="group relative bg-white rounded-3xl overflow-hidden border border-gray-100 hover:border-gray-200 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10">
                         <a :href="product.url" class="block">

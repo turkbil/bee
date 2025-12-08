@@ -169,7 +169,7 @@
                     <i class="fa-light fa-folder-tree mr-2 text-blue-600 dark:text-blue-400"></i>
                     {{ __('shop::front.subcategories') }}
                 </h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
                     @foreach($selectedCategory->children->sortBy('sort_order') as $subcategory)
                         @php
                             $subcategorySlug = $subcategory->getTranslated('slug');
@@ -207,7 +207,7 @@
                          x-transition:leave="transition ease-in duration-100"
                          x-transition:leave-start="opacity-100"
                          x-transition:leave-end="opacity-0"
-                         class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+                         class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6"
                          x-ref="productsGrid">
                         @foreach($products as $product)
                             <x-ixtif.product-card :product="$product" layout="vertical" :showAddToCart="true" />
@@ -284,7 +284,7 @@
 
                     {{-- Content --}}
                     <div class="p-8 max-h-[70vh] overflow-y-auto">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                             @foreach($categories as $rootCategory)
                                 <div class="bg-gray-50 dark:bg-slate-700/50 rounded-2xl p-6 border border-gray-200 dark:border-white/10">
                                     {{-- Root Category --}}

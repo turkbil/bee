@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" x-data="authApp()" x-init="init()" :class="darkMode ? 'dark' : ''">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@yield('title', 'Muzibu - Giriş')</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    {{-- Alpine.js: Livewire already includes Alpine, no need for CDN --}}
 
     <script>
         tailwind.config = {
@@ -18,8 +21,9 @@
                     colors: {
                         'muzibu-black': '#121212',
                         'muzibu-dark': '#181818',
-                        'muzibu-coral': '#1DB954',
-                        'muzibu-coral-light': '#1ed760',
+                        'muzibu-coral': '#ff7f50',
+                        'muzibu-coral-light': '#ff9770',
+                        'muzibu-coral-dark': '#ff6a3d',
                         'muzibu-gray': '#282828',
                     }
                 }
@@ -31,15 +35,16 @@
         body { font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .slide-in { animation: slideIn 0.4s ease-out; }
+        [x-cloak] { display: none !important; }
     </style>
 
     @livewireStyles
 </head>
-<body class="min-h-screen bg-gradient-to-br from-green-400 via-emerald-500 to-teal-600 dark:from-muzibu-black dark:via-muzibu-dark dark:to-black transition-colors duration-300">
+<body class="min-h-screen bg-gradient-to-br from-muzibu-coral via-orange-500 to-red-500 dark:from-muzibu-black dark:via-muzibu-dark dark:to-black transition-colors duration-300" x-data="authApp()" x-init="init()" :class="darkMode ? 'dark' : ''" x-cloak>
     <!-- Dark/Light Mode Toggle -->
     <div class="fixed top-6 right-6 z-50">
-        <button @click="toggleDarkMode()" class="w-12 h-12 rounded-full bg-white/20 dark:bg-white/10 backdrop-blur-lg border border-white/30 flex items-center justify-center hover:scale-110 transition-all shadow-xl">
-            <i :class="darkMode ? 'fas fa-sun text-yellow-300' : 'fas fa-moon text-blue-900'" class="text-lg"></i>
+        <button @click="toggleDarkMode()" class="w-12 h-12 rounded-full bg-white/30 dark:bg-white/10 backdrop-blur-lg border border-white/50 dark:border-white/30 flex items-center justify-center hover:scale-110 transition-all shadow-xl">
+            <i :class="darkMode ? 'fas fa-sun text-yellow-300' : 'fas fa-moon text-white'" class="text-lg"></i>
         </button>
     </div>
 
@@ -48,7 +53,7 @@
             <!-- Logo & Back to Home -->
             <div class="text-center mb-8 slide-in">
                 <a href="/" class="inline-flex items-center justify-center gap-3 mb-6 group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-muzibu-coral to-green-600 dark:from-muzibu-coral-light dark:to-green-500 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all">
+                    <div class="w-16 h-16 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark dark:from-muzibu-coral-light dark:to-muzibu-coral rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all">
                         <i class="fas fa-music text-white text-2xl"></i>
                     </div>
                     <span class="text-4xl font-bold text-white drop-shadow-lg">Muzibu</span>
@@ -72,27 +77,38 @@
         </div>
     </div>
 
-    {{-- Device Limit Modal (Tenant 1001 only) --}}
-    @include('themes.muzibu.components.device-limit-modal')
+    {{-- Device Limit Modal - NOT NEEDED in auth pages (only in main app) --}}
 
     @livewireScripts
 
     <script>
         function authApp() {
             return {
-                darkMode: localStorage.getItem('darkMode') === 'true',
+                darkMode: false,
                 showPassword: false,
 
                 init() {
-                    // Apply saved theme
-                    if (this.darkMode) {
-                        document.documentElement.classList.add('dark');
+                    // Try to get dark mode from localStorage (with error handling)
+                    try {
+                        this.darkMode = localStorage.getItem('darkMode') === 'true';
+                        if (this.darkMode) {
+                            document.documentElement.classList.add('dark');
+                        }
+                    } catch (e) {
+                        // localStorage not available (iframe, private mode, etc.)
+                        console.warn('localStorage not available:', e.message);
                     }
                 },
 
                 toggleDarkMode() {
                     this.darkMode = !this.darkMode;
-                    localStorage.setItem('darkMode', this.darkMode);
+
+                    try {
+                        localStorage.setItem('darkMode', this.darkMode);
+                    } catch (e) {
+                        // localStorage not available, just toggle visually
+                        console.warn('Cannot save dark mode preference:', e.message);
+                    }
 
                     if (this.darkMode) {
                         document.documentElement.classList.add('dark');

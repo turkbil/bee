@@ -74,12 +74,12 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($featuredPlaylists as $playlist)
-        <div class="playlist-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
-             data-playlist-id="{{ $playlist->playlist_id }}"
-             data-playlist-title="{{ e(getLocaleTitle($playlist->title, 'Playlist')) }}"
-             data-is-favorite="{{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? '1' : '0' }}"
-             data-is-mine="{{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? '1' : '0' }}"
-             x-on:click="window.location.href = '/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}'">
+        <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+           class="playlist-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10 block"
+           data-playlist-id="{{ $playlist->playlist_id }}"
+           data-playlist-title="{{ e(getLocaleTitle($playlist->title, 'Playlist')) }}"
+           data-is-favorite="{{ auth()->check() && method_exists($playlist, 'isFavoritedBy') && $playlist->isFavoritedBy(auth()->id()) ? '1' : '0' }}"
+           data-is-mine="{{ $playlist->user_id && auth()->check() && $playlist->user_id == auth()->id() ? '1' : '0' }}">
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
                     @if($playlist->coverMedia)
@@ -89,8 +89,8 @@
                     @endif
                 </div>
                 {{-- Play button on hover --}}
-                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
-                     @click.stop="
+                <button type="button" class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
+                     @click.prevent.stop="
                         $store.player.setPlayContext({
                             type: 'playlist',
                             id: {{ $playlist->playlist_id }},
@@ -100,13 +100,13 @@
                         playPlaylist({{ $playlist->playlist_id }});
                      ">
                     <i class="fas fa-play text-black ml-0.5"></i>
-                </div>
+                </button>
             </div>
             <h3 class="font-semibold text-white truncate mb-1 text-sm">
                 {{ getLocaleTitle($playlist->title, 'Playlist') }}
             </h3>
             <p class="text-xs text-muzibu-text-gray truncate">{{ $playlist->songs()->count() }} şarkı</p>
-        </div>
+        </a>
         @endforeach
     </div>
 </div>
@@ -158,12 +158,12 @@
 
     <div x-ref="scrollContainer" class="flex gap-2 overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         @foreach($newReleases as $album)
-        <div class="album-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10"
-             data-album-id="{{ $album->album_id }}"
-             data-album-title="{{ e(getLocaleTitle($album->title, 'Album')) }}"
-             data-album-artist="{{ $album->artist ? e(is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}"
-             data-is-favorite="{{ auth()->check() && auth()->user()->hasFavorite('album', $album->album_id) ? '1' : '0' }}"
-             x-on:click="window.location.href = '/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}'">
+        <a href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+           class="album-card group flex-shrink-0 w-[190px] p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10 block"
+           data-album-id="{{ $album->album_id }}"
+           data-album-title="{{ e(getLocaleTitle($album->title, 'Album')) }}"
+           data-album-artist="{{ $album->artist ? e(is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}"
+           data-is-favorite="{{ auth()->check() && auth()->user()->hasFavorite('album', $album->album_id) ? '1' : '0' }}">
             <div class="relative mb-3">
                 <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl" style="background: linear-gradient(135deg, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 0%, #{{ sprintf('%06X', mt_rand(0, 0xFFFFFF)) }} 100%);">
                     @if($album->coverMedia)
@@ -173,8 +173,8 @@
                     @endif
                 </div>
                 {{-- Play button on hover --}}
-                <div class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"
-                     x-on:click.stop="
+                <button type="button" class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full flex items-center justify-center shadow-2xl opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-10"
+                     @click.prevent.stop="
                         $store.player.setPlayContext({
                             type: 'recent',
                             subType: 'album',
@@ -185,7 +185,7 @@
                         playAlbum({{ $album->album_id }});
                      ">
                     <i class="fas fa-play text-black ml-0.5"></i>
-                </div>
+                </button>
             </div>
             <h3 class="font-semibold text-white truncate mb-1 text-sm">
                 {{ getLocaleTitle($album->title, 'Album') }}
@@ -193,7 +193,7 @@
             <p class="text-xs text-muzibu-text-gray truncate">
                 {{ $album->artist ? (is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : json_encode('Sanatçı') }}
             </p>
-        </div>
+        </a>
         @endforeach
     </div>
 </div>

@@ -32,9 +32,10 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
-            // 🔐 DEVICE LIMIT: Limit aşıldıysa eski cihazdan çıkar (Tenant 1001 only)
-            if (tenant() && tenant()->id == 1001) {
+            // 🔐 DEVICE LIMIT: Session kaydet ve limit kontrolü (Tenant-aware, setting'den kontrol)
+            if (tenant()) {
                 $deviceService = app(DeviceService::class);
+                $deviceService->registerSession($user); // DeviceService kendi içinde shouldRun() kontrol eder
                 $deviceService->handlePostLoginDeviceLimit($user);
             }
 
@@ -78,9 +79,10 @@ class AuthController extends Controller
         Auth::login($user, true); // Remember me = true
         $request->session()->regenerate();
 
-        // 🔐 DEVICE LIMIT: Limit aşıldıysa eski cihazdan çıkar (Tenant 1001 only)
-        if (tenant() && tenant()->id == 1001) {
+        // 🔐 DEVICE LIMIT: Session kaydet ve limit kontrolü (Tenant-aware, setting'den kontrol)
+        if (tenant()) {
             $deviceService = app(DeviceService::class);
+            $deviceService->registerSession($user); // DeviceService kendi içinde shouldRun() kontrol eder
             $deviceService->handlePostLoginDeviceLimit($user);
         }
 
@@ -119,6 +121,14 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $user = Auth::user();
+
+        // 🔐 DEVICE SERVICE: Session kaydını sil (Tenant-aware, setting'den kontrol)
+        if ($user && tenant()) {
+            $deviceService = app(DeviceService::class);
+            $deviceService->unregisterSession($user); // DeviceService kendi içinde shouldRun() kontrol eder
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -126,6 +136,135 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Çıkış yapıldı'
+        ]);
+    }
+
+    /**
+     * Check session validity (device limit polling)
+     */
+    public function checkSession(Request $request)
+    {
+        // 🔍 DEBUG: Session ve Auth durumunu kontrol et
+        $sessionId = session()->getId();
+        $hasSession = $request->hasSession();
+        $isAuth = Auth::check();
+
+        \Log::info('🔐 checkSession DEBUG', [
+            'session_id' => $sessionId,
+            'has_session' => $hasSession,
+            'is_authenticated' => $isAuth,
+            'cookies' => $request->cookies->all(),
+            'session_data' => session()->all(),
+        ]);
+
+        if (!Auth::check()) {
+            return response()->json([
+                'valid' => false,
+                'reason' => 'not_authenticated',
+                'debug' => [
+                    'session_id' => $sessionId,
+                    'has_session' => $hasSession,
+                ]
+            ]);
+        }
+
+        $user = Auth::user();
+
+        // 🔐 DEVICE SERVICE: Session activity güncelle ve geçerlilik kontrol et (Tenant-aware)
+        if (tenant()) {
+            $deviceService = app(DeviceService::class);
+            $isValid = $deviceService->updateSessionActivity($user); // shouldRun() kontrol eder
+
+            if (!$isValid) {
+                // Session silinmiş (başka cihazdan çıkarılmış)
+                Auth::logout();
+                $request->session()->invalidate();
+
+                return response()->json([
+                    'valid' => false,
+                    'reason' => 'device_limit_exceeded'
+                ]);
+            }
+        }
+
+        return response()->json([
+            'valid' => true,
+            'user_id' => $user->id
+        ]);
+    }
+
+    /**
+     * Terminate a device session
+     */
+    public function terminateDevice(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $request->validate([
+            'session_id' => 'required|string'
+        ]);
+
+        $user = Auth::user();
+
+        // Tenant kontrolü (setting'den device limit aktif mi kontrol et)
+        if (!tenant()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Device limit feature not available'
+            ], 400);
+        }
+
+        $deviceService = app(DeviceService::class);
+
+        // DeviceService shouldRun() kontrolü yapar
+        if (!$deviceService->shouldRun()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Device limit feature not enabled for this tenant'
+            ], 400);
+        }
+
+        $result = $deviceService->terminateDevice($user, $request->session_id);
+
+        return response()->json([
+            'success' => $result,
+            'message' => $result ? 'Device terminated' : 'Device not found'
+        ]);
+    }
+
+    /**
+     * Get active devices for user
+     */
+    public function getActiveDevices(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $user = Auth::user();
+
+        // Tenant kontrolü
+        if (!tenant()) {
+            return response()->json([
+                'success' => true,
+                'devices' => []
+            ]);
+        }
+
+        $deviceService = app(DeviceService::class);
+        $devices = $deviceService->getActiveDevices($user); // shouldRun() kontrol eder
+
+        return response()->json([
+            'success' => true,
+            'devices' => $devices
         ]);
     }
 
@@ -146,6 +285,13 @@ class AuthController extends Controller
                 })
                 ->first();
 
+            // Device limit bilgisi al (tenant-aware)
+            $deviceLimit = 1; // Default fallback
+            if (tenant()) {
+                $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
+                $deviceLimit = $deviceService->getDeviceLimit($user);
+            }
+
             return response()->json([
                 'authenticated' => true,
                 'user' => [
@@ -156,6 +302,7 @@ class AuthController extends Controller
                     'trial_ends_at' => $activeSubscription && $activeSubscription->trial_ends_at
                         ? $activeSubscription->trial_ends_at->toIso8601String()
                         : null,
+                    'device_limit' => $deviceLimit,
                 ]
             ]);
         }

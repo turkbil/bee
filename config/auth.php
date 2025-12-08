@@ -67,12 +67,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
-            'connection' => 'tenant',
+            'connection' => 'tenant', // 🔧 Her tenant kendi users tablosunu kullanır
         ],
         'api_users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
-            'connection' => 'mysql',
+            'connection' => 'tenant', // 🔧 API de tenant users kullanır
         ],
 
         // 'users' => [

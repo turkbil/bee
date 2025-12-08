@@ -71,6 +71,6 @@ class RegisteredUserController extends Controller
             $subscriptionService->createTrialForUser($user);
         }
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect('/');
     }
 }

@@ -83,12 +83,21 @@ Route::get('/session/check', function (Request $request) {
 })->middleware('web')->name('api.session.check');
 
 // 🔐 AUTH ROUTES - Muzibu Authentication - STRICT AUTH THROTTLE
-Route::prefix('auth')->middleware(['web', 'throttle.user:auth'])->group(function () {
+// ⚠️ NOT: api.php dosyası zaten 'api' middleware grubuyla yüklenir (bootstrap/app.php)
+//    'api' middleware grubu şunları içerir:
+//    - EnsureFrontendRequestsAreStateful (Sanctum - stateful domains için session + CSRF)
+//    - InitializeTenancy (Tenant başlatma)
+//    - throttle:api
+//    Bu yüzden burada sadece özel throttle ekleyip diğerlerini inherit ediyoruz
+Route::prefix('auth')->middleware(['throttle.user:auth'])->group(function () {
     Route::post('/login', [\App\Http\Controllers\Api\Auth\AuthController::class, 'login'])->name('api.auth.login'); // 🔥 Guest: 10/min, Member: 20/min, Premium: 30/min
     Route::post('/register', [\App\Http\Controllers\Api\Auth\AuthController::class, 'register'])->name('api.auth.register'); // 🔥 Auth throttle
     Route::post('/check-email', [\App\Http\Controllers\Api\Auth\AuthController::class, 'checkEmail'])->name('api.auth.check-email'); // 🔥 Auth throttle
     Route::post('/logout', [\App\Http\Controllers\Api\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.auth.logout');
     Route::get('/me', [\App\Http\Controllers\Api\Auth\AuthController::class, 'me'])->name('api.auth.me');
+    Route::get('/check-session', [\App\Http\Controllers\Api\Auth\AuthController::class, 'checkSession'])->name('api.auth.check-session'); // 🔐 Device limit polling
+    Route::post('/terminate-device', [\App\Http\Controllers\Api\Auth\AuthController::class, 'terminateDevice'])->name('api.auth.terminate-device'); // 🔐 Device selection
+    Route::post('/get-active-devices', [\App\Http\Controllers\Api\Auth\AuthController::class, 'getActiveDevices'])->name('api.auth.get-active-devices'); // 🔐 Device list for selection modal
     Route::post('/forgot-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'forgotPassword'])->name('api.auth.forgot'); // 🔥 Auth throttle
     Route::post('/reset-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'resetPassword'])->name('api.auth.reset'); // 🔥 Auth throttle
 });

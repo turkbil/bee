@@ -329,6 +329,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         ),
         'J' =>
         array (
+            'Jenssegers\\Agent\\' => 17,
             'Jaybizzle\\CrawlerDetect\\' => 24,
         ),
         'I' =>
@@ -1304,6 +1305,10 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         array (
             0 => __DIR__ . '/..' . '/laravel/breeze/src',
         ),
+        'Jenssegers\\Agent\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/jenssegers/agent/src',
+        ),
         'Jaybizzle\\CrawlerDetect\\' =>
         array (
             0 => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src',
@@ -1508,6 +1513,13 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
             'HTMLPurifier' =>
             array (
                 0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
+            ),
+        ),
+        'D' =>
+        array (
+            'Detection' =>
+            array (
+                0 => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/namespaced',
             ),
         ),
         'B' =>
@@ -1742,6 +1754,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'App\\Notifications\\RefundRequestNotification' => __DIR__ . '/../..' . '/app/Notifications/RefundRequestNotification.php',
         'App\\Observers\\ProductObserver' => __DIR__ . '/../..' . '/app/Observers/ProductObserver.php',
         'App\\Observers\\ShopProductCacheObserver' => __DIR__ . '/../..' . '/app/Observers/ShopProductCacheObserver.php',
+        'App\\Observers\\SubscriptionObserver' => __DIR__ . '/../..' . '/app/Observers/SubscriptionObserver.php',
         'App\\Providers\\AIServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AIServiceProvider.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
@@ -2332,6 +2345,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'DeepCopy\\TypeFilter\\TypeFilter' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeFilter/TypeFilter.php',
         'DeepCopy\\TypeMatcher\\TypeMatcher' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/TypeMatcher/TypeMatcher.php',
         'Deprecated' => __DIR__ . '/..' . '/symfony/polyfill-php84/Resources/stubs/Deprecated.php',
+        'Detection\\MobileDetect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/namespaced/Detection/MobileDetect.php',
         'Dflydev\\DotAccessData\\Data' => __DIR__ . '/..' . '/dflydev/dot-access-data/src/Data.php',
         'Dflydev\\DotAccessData\\DataInterface' => __DIR__ . '/..' . '/dflydev/dot-access-data/src/DataInterface.php',
         'Dflydev\\DotAccessData\\Exception\\DataException' => __DIR__ . '/..' . '/dflydev/dot-access-data/src/Exception/DataException.php',
@@ -5558,6 +5572,9 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Jaybizzle\\CrawlerDetect\\Fixtures\\Crawlers' => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src/Fixtures/Crawlers.php',
         'Jaybizzle\\CrawlerDetect\\Fixtures\\Exclusions' => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src/Fixtures/Exclusions.php',
         'Jaybizzle\\CrawlerDetect\\Fixtures\\Headers' => __DIR__ . '/..' . '/jaybizzle/crawler-detect/src/Fixtures/Headers.php',
+        'Jenssegers\\Agent\\Agent' => __DIR__ . '/..' . '/jenssegers/agent/src/Agent.php',
+        'Jenssegers\\Agent\\AgentServiceProvider' => __DIR__ . '/..' . '/jenssegers/agent/src/AgentServiceProvider.php',
+        'Jenssegers\\Agent\\Facades\\Agent' => __DIR__ . '/..' . '/jenssegers/agent/src/Facades/Agent.php',
         'Laravel\\Breeze\\BreezeServiceProvider' => __DIR__ . '/..' . '/laravel/breeze/src/BreezeServiceProvider.php',
         'Laravel\\Breeze\\Console\\InstallCommand' => __DIR__ . '/..' . '/laravel/breeze/src/Console/InstallCommand.php',
         'Laravel\\Breeze\\Console\\InstallsApiStack' => __DIR__ . '/..' . '/laravel/breeze/src/Console/InstallsApiStack.php',
@@ -7021,6 +7038,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Meilisearch\\Search\\FacetSearchResult' => __DIR__ . '/..' . '/meilisearch/meilisearch-php/src/Search/FacetSearchResult.php',
         'Meilisearch\\Search\\SearchResult' => __DIR__ . '/..' . '/meilisearch/meilisearch-php/src/Search/SearchResult.php',
         'Meilisearch\\Search\\SimilarDocumentsSearchResult' => __DIR__ . '/..' . '/meilisearch/meilisearch-php/src/Search/SimilarDocumentsSearchResult.php',
+        'Mobile_Detect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegration.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegrationAssertPostConditions' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegrationAssertPostConditions.php',
         'Mockery\\Adapter\\Phpunit\\MockeryTestCase' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryTestCase.php',
@@ -7747,6 +7765,7 @@ class ComposerStaticInit9ba589fedbf903d5b0887285f2f10880
         'Modules\\Muzibu\\app\\Http\\Controllers\\Front\\RadioController' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Controllers/Front/RadioController.php',
         'Modules\\Muzibu\\app\\Http\\Controllers\\Front\\SearchController' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Controllers/Front/SearchController.php',
         'Modules\\Muzibu\\app\\Http\\Controllers\\Front\\SectorController' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Controllers/Front/SectorController.php',
+        'Modules\\Muzibu\\app\\Http\\Controllers\\Front\\SongController' => __DIR__ . '/../..' . '/Modules/Muzibu/app/Http/Controllers/Front/SongController.php',
         'Modules\\Muzibu\\app\\View\\Composers\\SidebarComposer' => __DIR__ . '/../..' . '/Modules/Muzibu/app/View/Composers/SidebarComposer.php',
         'Modules\\Page\\App\\Console\\WarmPageCacheCommand' => __DIR__ . '/../..' . '/Modules/Page/app/Console/WarmPageCacheCommand.php',
         'Modules\\Page\\App\\Contracts\\PageRepositoryInterface' => __DIR__ . '/../..' . '/Modules/Page/app/Contracts/PageRepositoryInterface.php',

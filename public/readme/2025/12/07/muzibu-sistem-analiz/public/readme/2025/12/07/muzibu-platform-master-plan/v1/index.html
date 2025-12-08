@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Platform - Master Düzenleme Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+    <div class="max-w-[1600px] mx-auto px-8 py-16">
+        
+        <!-- HERO -->
+        <header class="mb-20 text-center border-b border-slate-800 pb-12">
+            <div class="inline-block mb-4 px-4 py-1 bg-red-500/10 border border-red-500/30 rounded-full">
+                <span class="text-red-400 text-xs font-bold">🔥 MASTER DÜZENLEME PLANI</span>
+            </div>
+            <h1 class="text-6xl font-black mb-4 bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
+                Muzibu Platform
+            </h1>
+            <p class="text-xl text-slate-400 mb-6">
+                Hiyerarşik Sistem Analizi & Tek Noktadan Düzenleme Stratejisi
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 text-xs text-slate-600">
+                <span>📅 7 Aralık 2025</span>
+                <span>🎯 Tenant 1001 - muzibu.com.tr</span>
+                <span>🔧 Tüm Akışlar: Üyelik → Giriş → Cihaz → Çalma → Player</span>
+                <span>📊 4 Referans Döküman Analizi</span>
+            </div>
+        </header>
+
+        <!-- MEVCUT DURUM ANALİZİ -->
+        <section class="mb-20">
+            <h2 class="text-4xl font-bold mb-10 text-orange-400">🔍 Mevcut Durum Analizi</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-green-900/20 to-green-800/10 border border-green-700/30 rounded-xl p-6">
+                    <h3 class="text-xl font-bold text-green-400 mb-4">✅ ÇALIŞAN SİSTEMLER</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✓ Redis + MySQL Hybrid Session (5ms hız)</li>
+                        <li>✓ HLS Streaming + MP3 Fallback (6s timeout)</li>
+                        <li>✓ Device Limit 3-Tier Hierarchy</li>
+                        <li>✓ Premium Status Cache (5 dakika)</li>
+                        <li>✓ Queue Auto-Refill (&lt;5 şarkı)</li>
+                        <li>✓ 30 Saniye Preview (Guest/Free)</li>
+                        <li>✓ Session Regeneration (Login)</li>
+                        <li>✓ Active Sessions Tracking</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gradient-to-br from-red-900/20 to-red-800/10 border border-red-700/30 rounded-xl p-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-4">❌ TESPİT EDİLEN SORUNLAR</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>❌ DeviceController hardcoded tenant ID</li>
+                        <li>❌ Frontend deviceLimit=1 hardcoded</li>
+                        <li>❌ Sector Model TranslatableEntity eksik</li>
+                        <li>❌ Album.release_date field yok</li>
+                        <li>❌ SongStreamController duplicate code</li>
+                        <li>❌ musikuApp() 100+ satır state</li>
+                        <li>❌ Preview duration hardcoded (30)</li>
+                        <li>❌ Cache TTL values hardcoded</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/50 border border-slate-700 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-cyan-400 mb-4">📊 Sistem Performans Metrikleri</h3>
+                <div class="grid md:grid-cols-4 gap-4 text-sm">
+                    <div>
+                        <span class="text-slate-500">Session Hızı:</span>
+                        <p class="text-white font-bold">5ms <span class="text-green-400">(Redis)</span></p>
+                        <p class="text-slate-600 text-xs">vs 23.3s DB driver</p>
+                    </div>
+                    <div>
+                        <span class="text-slate-500">HLS Fallback:</span>
+                        <p class="text-white font-bold">6 saniye timeout</p>
+                        <p class="text-slate-600 text-xs">MP3 otomatik devreye girer</p>
+                    </div>
+                    <div>
+                        <span class="text-slate-500">Premium Cache:</span>
+                        <p class="text-white font-bold">5 dakika TTL</p>
+                        <p class="text-slate-600 text-xs">Event-based invalidation</p>
+                    </div>
+                    <div>
+                        <span class="text-slate-500">Queue Refill:</span>
+                        <p class="text-white font-bold">&lt;5 şarkı trigger</p>
+                        <p class="text-slate-600 text-xs">3 şarkı preload</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SİSTEM AKI ŞLARI HİYERARŞİSİ -->
+        <section class="mb-20">
+            <h2 class="text-4xl font-bold mb-10 text-purple-400">🔗 Sistem Akışları Hiyerarşisi</h2>
+
+            <!-- AKIŞ 1: ÜYELİK & GİRİŞ -->
+            <div class="mb-10">
+                <div class="bg-gradient-to-r from-blue-900/30 to-blue-800/20 border-l-4 border-blue-500 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold text-blue-400 mb-6">1️⃣ ÜYELİK & GİRİŞ AKIŞI</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Kayıt -->
+                        <div class="bg-slate-900/50 rounded-lg p-5">
+                            <h4 class="font-bold text-blue-300 mb-3">📝 Kayıt (Register)</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">1.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">POST /api/register</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ AuthController::register()</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">2.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">User::create()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Central DB (users tablosu)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">3.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">Session::regenerate()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Security: Session fixation önleme</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">4.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">DeviceService::registerSession()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ user_active_sessions INSERT</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 p-3 bg-green-900/20 border border-green-700/30 rounded">
+                                <p class="text-xs text-green-300"><strong>✓ DOĞRU AKIŞ:</strong> User kaydı → Session yenile → Device kaydet</p>
+                            </div>
+                        </div>
+
+                        <!-- Giriş -->
+                        <div class="bg-slate-900/50 rounded-lg p-5">
+                            <h4 class="font-bold text-blue-300 mb-3">🔐 Giriş (Login)</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">1.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">POST /api/login</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ AuthController::login()</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">2.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">Auth::attempt(credentials)</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Central DB user kontrolü</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">3.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">DeviceService::checkDeviceLimitBeforeLogin()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Mevcut cihaz sayısı kontrol (current session hariç)</p>
+                                        <div class="mt-2 p-2 bg-yellow-900/20 border border-yellow-700/30 rounded text-xs">
+                                            <strong class="text-yellow-300">⚠️ SORUN:</strong> Frontend modal gösterimi eksik!
+                                            <p class="text-yellow-200 mt-1"><strong>ÇÖZÜM:</strong> can_login=false ise device selection modal aç</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">4.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">Session::regenerate()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Yeni session ID oluştur (security)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">5.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">DeviceService::registerSession()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Yeni device kaydı (user_agent, IP, device_type)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">6.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">DeviceService::handlePostLoginDeviceLimit()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Limit aşıldıysa en eski session terminate</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Logout -->
+                        <div class="bg-slate-900/50 rounded-lg p-5">
+                            <h4 class="font-bold text-blue-300 mb-3">👋 Çıkış (Logout)</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">1.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">POST /api/logout</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ AuthController::logout()</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">2.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">DeviceService::unregisterSession()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ user_active_sessions DELETE</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">3.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">DeviceService::invalidateRedisSession()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Redis session key sil</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">4.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">Cache::forget(premium_cache_key)</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Premium status cache temizle</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-blue-400 font-mono">5.</span>
+                                    <div class="flex-1">
+                                        <code class="text-cyan-300">Auth::logout()</code>
+                                        <p class="text-slate-400 text-xs mt-1">→ Laravel auth session destroy</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+

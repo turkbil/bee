@@ -1,6 +1,45 @@
 <?php
 
 use Laravel\Sanctum\Sanctum;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+/**
+ * Get stateful domains from database (domains table)
+ * Falls back to env if database is not available
+ */
+$getStatefulDomains = function () {
+    $defaultDomains = 'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1';
+
+    try {
+        // Check if we can connect to database and domains table exists
+        if (Schema::hasTable('domains')) {
+            $dbDomains = DB::table('domains')
+                ->whereNotNull('domain')
+                ->pluck('domain')
+                ->toArray();
+
+            if (!empty($dbDomains)) {
+                // Add www variants for each domain (if not already present)
+                $allDomains = [];
+                foreach ($dbDomains as $domain) {
+                    $allDomains[] = $domain;
+                    if (!str_starts_with($domain, 'www.')) {
+                        $allDomains[] = 'www.' . $domain;
+                    }
+                }
+
+                return $defaultDomains . ',' . implode(',', array_unique($allDomains));
+            }
+        }
+    } catch (\Exception $e) {
+        // Database not available yet (during config cache, migrations, etc.)
+        // Fall back to env
+    }
+
+    // Fallback to env variable
+    return env('SANCTUM_STATEFUL_DOMAINS', $defaultDomains);
+};
 
 return [
 
@@ -13,14 +52,12 @@ return [
     | authentication cookies. Typically, these should include your local
     | and production domains which access your API via a frontend SPA.
     |
+    | 🔥 DYNAMIC: Domains are loaded from the `domains` table automatically!
+    | New tenants will be recognized without code changes.
+    |
     */
 
-    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
-        '%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
-        Sanctum::currentApplicationUrlWithPort(),
-        // Sanctum::currentRequestHost(),
-    ))),
+    'stateful' => explode(',', $getStatefulDomains()),
 
     /*
     |--------------------------------------------------------------------------

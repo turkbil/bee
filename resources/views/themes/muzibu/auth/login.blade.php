@@ -14,7 +14,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('login') }}" class="space-y-5">
+    <form method="POST" action="{{ route('login') }}" class="space-y-5" x-data="{ loading: false, showPassword: false }" @submit="loading = true">
         @csrf
 
         <!-- Email -->
@@ -39,13 +39,13 @@
         </div>
 
         <!-- Password -->
-        <div x-data="{ show: false }">
+        <div>
             <label for="password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Şifre
             </label>
             <div class="relative">
                 <input
-                    :type="show ? 'text' : 'password'"
+                    :type="showPassword ? 'text' : 'password'"
                     id="password"
                     name="password"
                     required
@@ -55,10 +55,10 @@
                 >
                 <button
                     type="button"
-                    @click="show = !show"
+                    @click="showPassword = !showPassword"
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 >
-                    <i :class="show ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                    <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                 </button>
             </div>
             @error('password')
@@ -87,10 +87,17 @@
         <!-- Submit Button -->
         <button
             type="submit"
-            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-green-600 hover:from-muzibu-coral-light hover:to-green-500 text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
+            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-dark hover:from-muzibu-coral-light hover:to-muzibu-coral text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105"
+            :class="loading ? 'opacity-70 cursor-wait' : ''"
         >
-            <i class="fas fa-sign-in-alt mr-2"></i>
-            Giriş Yap
+            <span x-show="!loading" class="inline-flex items-center justify-center">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Giriş Yap
+            </span>
+            <span x-show="loading" class="inline-flex items-center justify-center">
+                <i class="fas fa-spinner fa-spin mr-2"></i>
+                Giriş Yapılıyor...
+            </span>
         </button>
     </form>
 @endsection

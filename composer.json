@@ -23,6 +23,7 @@
         "intervention/image": "^3.11",
         "intervention/image-laravel": "^1.5",
         "james-heinrich/getid3": "^1.9",
+        "jenssegers/agent": "^2.6",
         "laravel-notification-channels/telegram": "^6.0",
         "laravel/breeze": "^2.3",
         "laravel/framework": "^12.0",

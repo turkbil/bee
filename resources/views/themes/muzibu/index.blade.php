@@ -47,11 +47,12 @@
     <div x-ref="scrollContainer" class="overflow-x-auto scrollbar-hide scroll-smooth pb-4">
         <div class="grid grid-rows-2 grid-flow-col auto-cols-[minmax(280px,1fr)] gap-2">
             @foreach($featuredPlaylists->take(8) as $playlist)
-            <div class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16"
-                 data-playlist-id="{{ $playlist->playlist_id }}"
-                 data-playlist-title="{{ getLocaleTitle($playlist->title, 'Playlist') }}"
-                 data-is-favorite="{{ \Modules\Favorite\App\Models\Favorite::check(auth()->id(), 'playlist', $playlist->playlist_id) ? '1' : '0' }}"
-                 data-is-mine="{{ auth()->check() && $playlist->user_id == auth()->user()->id ? '1' : '0' }}">
+            <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+               class="playlist-card group flex items-center gap-3 bg-white/5 hover:bg-white/10 rounded transition-all cursor-pointer overflow-hidden h-16"
+               data-playlist-id="{{ $playlist->playlist_id }}"
+               data-playlist-title="{{ getLocaleTitle($playlist->title, 'Playlist') }}"
+               data-is-favorite="{{ \Modules\Favorite\App\Models\Favorite::check(auth()->id(), 'playlist', $playlist->playlist_id) ? '1' : '0' }}"
+               data-is-mine="{{ auth()->check() && $playlist->user_id == auth()->user()->id ? '1' : '0' }}">
                 <div class="w-16 h-16 flex-shrink-0">
                     @if($playlist->coverMedia)
                         <img src="{{ thumb($playlist->coverMedia, 64, 64, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" class="w-full h-full object-cover">
@@ -64,7 +65,7 @@
                         {{ getLocaleTitle($playlist->title, 'Playlist') }}
                     </h3>
                 </div>
-            </div>
+            </a>
             @endforeach
         </div>
     </div>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Subscription & Device Limit Sistemi - Kapsamli Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Muzibu Subscription & Device Limit Sistemi
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Kapsamli Analiz ve Uygulama Plani
+            </div>
+            <div class="mt-4 flex flex-wrap gap-4 text-sm text-slate-500">
+                <span>Tarih: 2025-12-07</span>
+                <span>Tenant: muzibu.com.tr (1001)</span>
+                <span>Durum: Analiz Tamamlandi</span>
+            </div>
+        </header>
+
+        <!-- KRITIK SORUNLAR -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">1. KRITIK SORUNLAR (Hemen Duzeltilmeli)</h2>
+
+            <!-- Sorun 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-red-300 mb-2">
+                            handlePostLoginDeviceLimit() Metodu EKSIK
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">RUNTIME HATASI</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            <strong class="text-white">DeviceService.php</strong> icinde <code class="bg-slate-700 px-2 py-1 rounded">handlePostLoginDeviceLimit()</code> metodu tanimli DEGIL.
+                            Ancak 2 yerden cagiriliyor:
+                        </p>
+                        <ul class="list-disc list-inside text-slate-400 space-y-1 mb-3">
+                            <li><code class="bg-slate-700 px-1 rounded">AuthController.php:114</code> - register() icerisinde</li>
+                            <li><code class="bg-slate-700 px-1 rounded">AuthenticatedSessionController.php:155</code> - store() icerisinde</li>
+                        </ul>
+                        <p class="text-yellow-300"><strong>Sonuc:</strong> Kayit olan kullanicilar icin runtime hatasi olusabilir!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sorun 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-red-300 mb-2">
+                            IKI FARKLI Device Limit Hierarchy
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">TUTARSIZLIK</span>
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-slate-700/50 p-4 rounded-lg">
+                                <h4 class="font-bold text-yellow-300 mb-2">DeviceService (YANLIS)</h4>
+                                <ol class="list-decimal list-inside text-slate-300 space-y-1 text-sm">
+                                    <li>User->device_limit</li>
+                                    <li>Setting('auth_device_limit')</li>
+                                    <li>Fallback: 1</li>
+                                </ol>
+                                <p class="text-red-400 mt-2 text-sm">Subscription Plan YOKSUN!</p>
+                            </div>
+                            <div class="bg-slate-700/50 p-4 rounded-lg">
+                                <h4 class="font-bold text-green-300 mb-2">SubscriptionService (DOGRU)</h4>
+                                <ol class="list-decimal list-inside text-slate-300 space-y-1 text-sm">
+                                    <li>User->device_limit</li>
+                                    <li>Subscription Plan->device_limit</li>
+                                    <li>Setting('auth_device_limit')</li>
+                                </ol>
+                                <p class="text-green-400 mt-2 text-sm">3 katmanli hierarchy</p>
+                            </div>
+                        </div>
+                        <p class="text-yellow-300"><strong>Sonuc:</strong> Login sirasinda DeviceService kullaniliyor, plan device_limit'i goz ardi ediliyor!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sorun 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-orange-300 mb-2">
+                            CSRF Token Mismatch Sorunu
+                            <span class="ml-3 px-3 py-1 bg-orange-600 text-white text-xs rounded-full">LOGIN SORUNU</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Device limit asildinda modal aciliyor. Kullanici cihaz secip terminate ettiginde
+                            <strong class="text-white">CSRF token gecersiz</strong> olabiliyor cunku session regenerate edilmis.
+                        </p>
+                        <p class="text-slate-400 text-sm">Cozum: terminateDevice API'si credential-based (email+password) oldugu icin CSRF token sorunu olmamali. Modal'dan login retry yapildiginda CSRF sorunu olusabilir.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEVCUT DURUM -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">2. MEVCUT DURUM ANALIZI</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Calisan Sistemler -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-green-500/30">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">Calisan Sistemler</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> Session tablosu ve tracking</li>
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> Device bilgileri (Jenssegers/Agent)</li>
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> Browser/Platform detection</li>
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> IP address kaydi</li>
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> Premium/Trial kontrol (5dk cache)</li>
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> 30 saniye guest/ucretsiz preview</li>
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> Login oncesi device limit kontrolu</li>
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> Session polling (30sn aralik)</li>
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> Device selection modal (login)</li>
+                        <li class="flex items-center gap-2"><span class="text-green-400">&#10003;</span> Device terminate API</li>
+                    </ul>
+                </div>
+
+                <!-- Eksik/Bozuk Sistemler -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-red-500/30">
+                    <h3 class="text-xl font-bold mb-4 text-red-400">Eksik/Bozuk Sistemler</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-center gap-2"><span class="text-red-400">&#10007;</span> handlePostLoginDeviceLimit() metodu</li>
+                        <li class="flex items-center gap-2"><span class="text-red-400">&#10007;</span> Plan device_limit entegrasyonu</li>
+                        <li class="flex items-center gap-2"><span class="text-red-400">&#10007;</span> Premium expire - session cleanup</li>
+                        <li class="flex items-center gap-2"><span class="text-yellow-400">!</span> Modal encoding sorunu (Turkce)</li>
+                        <li class="flex items-center gap-2"><span class="text-yellow-400">!</span> 3 sarki/gun limiti (devre disi)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- KULLANICI ISTEKLERI -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">3. KULLANICI ISTEKLERI ve COZUMLER</h2>
+
+            <!-- Istek 1: 3 Seviyeli Fallback -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            3 Seviyeli Device Limit Fallback
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            <strong class="text-white">Istek:</strong> User -> Subscription -> Settings siralamasiyla device limit belirlenmeli.
+                        </p>
+                        <div class="bg-slate-700/50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-white mb-2">Uygulama Plani:</h4>
+                            <ol class="list-decimal list-inside text-slate-300 space-y-2 text-sm">
+                                <li>DeviceService.getDeviceLimit() metodunu guncelle</li>
+                                <li>SubscriptionService.getDeviceLimit() ile ayni mantigi kullan</li>
+                                <li>User->activeSubscription()->plan->device_limit kontrol ekle</li>
+                            </ol>
+                        </div>
+                        <div class="bg-green-900/30 p-3 rounded border border-green-500/30">
+                            <p class="text-green-300 text-sm"><strong>Beklenen Sonuc:</strong> Premium Plan'daki device_limit degeri kullanilacak</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Istek 2: Device Limit Modal -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            Cihaz Limit Dolunca Modal
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            <strong class="text-white">Istek:</strong> Limit dolunca modal acilsin, kullanici cihaz secsin, secilen cihaz sistemden cikarilsin.
+                        </p>
+                        <div class="bg-green-900/30 p-3 rounded border border-green-500/30 mb-4">
+                            <p class="text-green-300 text-sm"><strong>ZATEN CALISIYOR!</strong> device-selection-modal.blade.php mevcut ve calisir durumda.</p>
+                        </div>
+                        <div class="bg-slate-700/50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-white mb-2">Gosterilen Bilgiler:</h4>
+                            <ul class="list-disc list-inside text-slate-400 space-y-1 text-sm">
+                                <li>Cihaz turu (desktop/mobile/tablet) - ikon ile</li>
+                                <li>Cihaz adi (Windows 11 - Chrome)</li>
+                                <li>Browser + Platform</li>
+                                <li>IP adresi</li>
+                                <li>Son aktivite (5 dakika once, 2 saat once vs.)</li>
+                                <li>Mevcut cihaz badge'i</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Istek 3: Guest/Ucretsiz 30sn -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Guest ve Ucretsiz Uyeler 30sn Dinlesin
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">TAMAMLANDI</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            <strong class="text-white">Mevcut Durum:</strong> SongStreamController.stream() metodunda bu kontrol ZATEN VAR.
+                        </p>
+                        <div class="bg-slate-700/50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-white mb-2">Calisma Mantigi:</h4>
+                            <ul class="list-disc list-inside text-slate-400 space-y-1 text-sm">
+                                <li>Guest (auth yok) -> 30sn preview (HLS: 4 chunk)</li>
+                                <li>Normal uye (premium degil) -> 30sn preview</li>
+                                <li>Premium/Trial -> Sinirsiz</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Istek 4: Premium Sinirsiz -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Premium Uyeler Sinirsiz Dinlesin
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">TAMAMLANDI</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            <strong class="text-white">Mevcut Durum:</strong> User.isPremiumOrTrial() kontrolu ile calisir durumda.
+                        </p>
+                        <div class="bg-slate-700/50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-white mb-2">Kontrol Sirasi:</h4>
+                            <ol class="list-decimal list-inside text-slate-400 space-y-1 text-sm">
+                                <li>isPremium() - status='active' VE current_period_end > now()</li>
+                                <li>isTrialActive() - has_trial=true VE trial_ends_at > now()</li>
+                                <li>5 dakikalik cache (performans)</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Istek 5: Premium Bitince Otomatik Donusum -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-yellow-300 mb-2">
+                            Premium Bitince Otomatik Ucretsiz'e Donusum
+                            <span class="ml-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">KISMI CALISIYOR</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            <strong class="text-white">Mevcut Durum:</strong> isPremium() her stream'de kontrol ediyor (5dk cache).
+                            Premium bittiginde 5dk icinde ucretsiz'e donuyor.
+                        </p>
+                        <div class="bg-slate-700/50 p-4 rounded-lg mb-4">
+                            <h4 class="font-semibold text-white mb-2">Iyilestirme Onerileri:</h4>
+                            <ul class="list-disc list-inside text-slate-400 space-y-1 text-sm">
+                                <li>Cron job ile expire olan subscription'lari isaretle</li>
+                                <li>SubscriptionObserver ile cache invalidation (ZATEN VAR)</li>
+                                <li>Frontend'de subscription_ends_at takibi</li>
+                            </ul>
+                        </div>
+                        <div class="bg-yellow-900/30 p-3 rounded border border-yellow-500/30">
+                            <p class="text-yellow-300 text-sm"><strong>5 Dakika Gecikme Kabul Edilebilir:</strong> Kullanici istedigi gibi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Istek 6: Yeni Subscription Aninda Aktif -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">6</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            Yeni Subscription Aninda Aktif Olmali
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-4">
+                            <strong class="text-white">Istek:</strong> Kullanici subscription aldiktan sonra HEMEN dinlemeye baslayabilmeli.
+                        </p>
+                        <div class="bg-green-900/30 p-3 rounded border border-green-500/30 mb-4">
+                            <p class="text-green-300 text-sm"><strong>ZATEN CALISIYOR!</strong> SubscriptionObserver cache'i aninda temizliyor.</p>
+                        </div>
+                        <div class="bg-slate-700/50 p-4 rounded-lg">
+                            <h4 class="font-semibold text-white mb-2">Cache Invalidation Noktalari:</h4>
+                            <ul class="list-disc list-inside text-slate-400 space-y-1 text-sm">
+                                <li>Subscription::created -> Cache::forget()</li>
+                                <li>Subscription::updated -> Cache::forget()</li>
+                                <li>Subscription::deleted -> Cache::forget()</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- UYGULAMA PLANI -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">4. UYGULAMA PLANI</h2>
+
+            <!-- Phase 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-red-300 mb-4">
+                    Phase 1: Kritik Bug Fix'ler
+                    <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">ONCELIKLI</span>
+                </h3>
+                <div class="space-y-4">
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-white mb-2">1.1 handlePostLoginDeviceLimit() Ekle</h4>
+                        <p class="text-slate-400 text-sm mb-2">DeviceService.php'ye eksik metodu ekle:</p>
+                        <ul class="list-disc list-inside text-slate-400 text-sm space-y-1">
+                            <li>Login sonrasi device limit kontrolu</li>
+                            <li>Limit asilmissa en eski session'i sil</li>
+                            <li>Premium cache'i temizle</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-white mb-2">1.2 Device Limit Hierarchy Duzelt</h4>
+                        <p class="text-slate-400 text-sm mb-2">DeviceService.getDeviceLimit() metodunu guncelle:</p>
+                        <ul class="list-disc list-inside text-slate-400 text-sm space-y-1">
+                            <li>User->device_limit (VIP/Test/Ban)</li>
+                            <li>Subscription Plan->device_limit (Normal akis)</li>
+                            <li>Setting('auth_device_limit') (Fallback)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-yellow-300 mb-4">
+                    Phase 2: Iyilestirmeler
+                    <span class="ml-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">ORTA ONCELIK</span>
+                </h3>
+                <div class="space-y-4">
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-white mb-2">2.1 Modal Encoding Fix</h4>
+                        <p class="text-slate-400 text-sm">device-selection-modal.blade.php'deki Turkce karakter sorunlarini duzelt.</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-white mb-2">2.2 Settings Kontrolu</h4>
+                        <p class="text-slate-400 text-sm mb-2">Admin panelinde kontrol edilecek ayarlar:</p>
+                        <ul class="list-disc list-inside text-slate-400 text-sm space-y-1">
+                            <li>auth_device_limit - Varsayilan cihaz limiti</li>
+                            <li>session_lifetime - Oturum suresi</li>
+                            <li>subscription_enabled - Uyelik sistemi aktif/pasif</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-white mb-2">2.3 Subscription Plan device_limit</h4>
+                        <p class="text-slate-400 text-sm">Premium planlar icin device_limit degerini ayarla (ornegin: 3 cihaz).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-green-300 mb-4">
+                    Phase 3: Opsiyonel Gelistirmeler
+                    <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">DUSUK ONCELIK</span>
+                </h3>
+                <div class="space-y-4">
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-white mb-2">3.1 Session Cleanup Cron Job</h4>
+                        <p class="text-slate-400 text-sm">Expired subscription'larin session'larini temizle (5dk aralik kabul edilebilir).</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-white mb-2">3.2 Device Activity Tracking</h4>
+                        <p class="text-slate-400 text-sm">Son dinlenen sarki bilgisini device listesinde goster.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MEVCUT AKIS -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">5. MEVCUT SISTEM AKISI</h2>
+
+            <div class="grid md:grid-cols-1 gap-6">
+                <!-- Login Flow -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-cyan-500/30">
+                    <h3 class="text-xl font-bold mb-4 text-cyan-400">Login Akisi</h3>
+                    <ol class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-cyan-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">1</span>
+                            <span class="text-slate-300">Kullanici email/password girer</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-cyan-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">2</span>
+                            <span class="text-slate-300">AuthController.login() - credentials dogrulama</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-cyan-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">3</span>
+                            <span class="text-slate-300">DeviceService.checkDeviceLimitBeforeLogin() - limit kontrolu</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-yellow-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">?</span>
+                            <span class="text-yellow-300">Limit asildi -> device_limit_exceeded response + aktif cihaz listesi</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-cyan-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">4</span>
+                            <span class="text-slate-300">Frontend device selection modal acar</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-cyan-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">5</span>
+                            <span class="text-slate-300">Kullanici cihaz secer -> terminateDevice() API</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-cyan-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">6</span>
+                            <span class="text-slate-300">Secilen cihazin session'i silinir</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">7</span>
+                            <span class="text-green-300">Kullanici tekrar login yapar (simdi limit altinda)</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Session Polling Flow -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-purple-500/30">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">Session Polling Akisi (Aktif Kullanici)</h3>
+                    <ol class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">1</span>
+                            <span class="text-slate-300">Kullanici basarili login -> startSessionPolling()</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">2</span>
+                            <span class="text-slate-300">Her 30 saniyede checkSessionValidity() cagrilir</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">3</span>
+                            <span class="text-slate-300">/api/auth/check-session -> Session DB'de var mi?</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-yellow-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">?</span>
+                            <span class="text-yellow-300">Session silinmis -> device_limit_exceeded response</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-purple-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">4</span>
+                            <span class="text-slate-300">handleDeviceLimitExceeded() -> Modal goster</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">5</span>
+                            <span class="text-red-300">3 saniye sonra otomatik logout</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Stream Flow -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-green-500/30">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">Stream Akisi</h3>
+                    <ol class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">1</span>
+                            <span class="text-slate-300">Kullanici sarki calar -> /api/muzibu/songs/{id}/stream</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">2</span>
+                            <span class="text-slate-300">Auth kontrol: web guard || sanctum guard</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-slate-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">A</span>
+                            <span class="text-slate-400">Guest -> 30sn preview (HLS: 4 chunk)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-slate-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">B</span>
+                            <span class="text-slate-400">Ucretsiz uye -> 30sn preview</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs">C</span>
+                            <span class="text-green-300">Premium/Trial -> Sinirsiz HLS stream</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOSYA REFERANSLARI -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-slate-400">6. DOSYA REFERANSLARI</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-600">
+                <div class="grid md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <h4 class="font-bold text-white mb-3">Backend</h4>
+                        <ul class="space-y-2 text-slate-400">
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">Modules/Muzibu/app/Services/DeviceService.php</code></li>
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">Modules/Subscription/app/Services/SubscriptionService.php</code></li>
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">Modules/Subscription/app/Models/Subscription.php</code></li>
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">Modules/Subscription/app/Models/SubscriptionPlan.php</code></li>
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">app/Models/User.php</code></li>
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">app/Http/Controllers/Api/Auth/AuthController.php</code></li>
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">Modules/Muzibu/app/Http/Controllers/Api/SongStreamController.php</code></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white mb-3">Frontend</h4>
+                        <ul class="space-y-2 text-slate-400">
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">resources/views/themes/muzibu/components/device-limit-modal.blade.php</code></li>
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">resources/views/themes/muzibu/components/device-selection-modal.blade.php</code></li>
+                            <li><code class="bg-slate-700 px-2 py-1 rounded text-xs">public/themes/muzibu/js/player/core/player-core.js</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OZET -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-white">7. SONUC ve OZET</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-red-500/10 rounded-lg p-6 border border-red-500/30 text-center">
+                    <div class="text-4xl font-bold text-red-400 mb-2">2</div>
+                    <div class="text-slate-400">Kritik Bug</div>
+                </div>
+                <div class="bg-green-500/10 rounded-lg p-6 border border-green-500/30 text-center">
+                    <div class="text-4xl font-bold text-green-400 mb-2">4</div>
+                    <div class="text-slate-400">Calisan Ozellik</div>
+                </div>
+                <div class="bg-yellow-500/10 rounded-lg p-6 border border-yellow-500/30 text-center">
+                    <div class="text-4xl font-bold text-yellow-400 mb-2">3</div>
+                    <div class="text-slate-400">Iyilestirme</div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-slate-800/50 rounded-lg p-6 border border-slate-600">
+                <h4 class="font-bold text-white mb-4">Oncelik Sirasi:</h4>
+                <ol class="list-decimal list-inside text-slate-300 space-y-2">
+                    <li><strong class="text-red-400">HEMEN:</strong> handlePostLoginDeviceLimit() metodunu ekle (runtime hatasi)</li>
+                    <li><strong class="text-red-400">HEMEN:</strong> DeviceService.getDeviceLimit() hierarchy'yi duzelt</li>
+                    <li><strong class="text-yellow-400">YAKINDA:</strong> Modal encoding fix</li>
+                    <li><strong class="text-yellow-400">YAKINDA:</strong> Settings kontrolu ve plan device_limit ayari</li>
+                    <li><strong class="text-green-400">OPSIYONEL:</strong> Session cleanup cron job</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>Claude AI tarafindan olusturuldu - Muzibu Subscription Analizi</p>
+        </footer>
+    </div>
+</body>
+</html>

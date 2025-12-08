@@ -13,7 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         // API rotalarını CSRF doğrulamasından hariç tutmak için ekleyebilirsiniz
-        // 'api/*',
+        'api/*', // API routes - Sanctum kendi CSRF kontrolünü yapar
 
         // Payment Gateway Callbacks (PayTR, Stripe vs.)
         'payment/callback/*',

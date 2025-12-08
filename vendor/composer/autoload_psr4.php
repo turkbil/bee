@@ -230,6 +230,7 @@ return array(
     'Laravel\\Horizon\\' => array($vendorDir . '/laravel/horizon/src'),
     'Laravel\\Dusk\\' => array($vendorDir . '/laravel/dusk/src'),
     'Laravel\\Breeze\\' => array($vendorDir . '/laravel/breeze/src'),
+    'Jenssegers\\Agent\\' => array($vendorDir . '/jenssegers/agent/src'),
     'Jaybizzle\\CrawlerDetect\\' => array($vendorDir . '/jaybizzle/crawler-detect/src'),
     'Intervention\\Image\\Laravel\\' => array($vendorDir . '/intervention/image-laravel/src'),
     'Intervention\\Image\\' => array($vendorDir . '/intervention/image/src'),

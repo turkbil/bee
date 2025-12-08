@@ -89,9 +89,9 @@
                     </p>
                 </div>
             </div>
-            <button @click="showAuthModal = 'register'" class="px-6 py-3 bg-gradient-to-r from-muzibu-coral to-pink-500 hover:from-muzibu-coral-light hover:to-pink-600 text-white font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 whitespace-nowrap">
+            <a href="/register" wire:navigate class="px-6 py-3 bg-gradient-to-r from-muzibu-coral to-pink-500 hover:from-muzibu-coral-light hover:to-pink-600 text-white font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 whitespace-nowrap inline-block">
                 <i class="fas fa-user-plus mr-2"></i>Ücretsiz Dene
-            </button>
+            </a>
         </div>
     </div>
 @endguest

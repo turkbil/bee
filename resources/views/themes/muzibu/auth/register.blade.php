@@ -122,7 +122,7 @@
         <!-- Submit Button -->
         <button
             type="submit"
-            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-green-600 hover:from-muzibu-coral-light hover:to-green-500 text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
+            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-dark hover:from-muzibu-coral-light hover:to-muzibu-coral text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
         >
             <i class="fas fa-rocket mr-2"></i>
             Ücretsiz Hesap Oluştur

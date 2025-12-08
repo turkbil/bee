@@ -21,7 +21,7 @@
     x-transition:leave-start="transform translate-x-0"
     x-transition:leave-end="transform translate-x-full"
     style="display: none;"
-    class="fixed top-0 right-0 bottom-0 w-96 bg-muzibu-gray border-l border-white/10 shadow-2xl z-50 flex flex-col"
+    class="fixed top-0 right-0 bottom-0 w-full sm:w-80 md:w-96 bg-muzibu-gray border-l border-white/10 shadow-2xl z-50 flex flex-col"
 >
     {{-- Header --}}
     <div class="flex items-center justify-between p-4 border-b border-white/10">

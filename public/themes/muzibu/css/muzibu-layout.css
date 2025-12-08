@@ -184,7 +184,7 @@
 }
 
 .muzibu-premium-card {
-    background: linear-gradient(135deg, #1DB954, #1ed760);
+    background: linear-gradient(135deg, #ff7f50, #ff9770);
     padding: 20px;
     border-radius: 12px;
     margin: 16px 0;
@@ -320,7 +320,7 @@
     right: 8px;
     width: 48px;
     height: 48px;
-    background: #1DB954;
+    background: #ff7f50;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -546,7 +546,7 @@
 }
 
 .muzibu-player-like-btn:hover { color: white; }
-.muzibu-player-like-btn.liked { color: #1DB954; }
+.muzibu-player-like-btn.liked { color: #ff7f50; }
 
 .muzibu-player-controls {
     display: flex;
@@ -576,7 +576,7 @@
 }
 
 .muzibu-control-btn:hover { color: white; }
-.muzibu-control-btn.active { color: #1DB954; }
+.muzibu-control-btn.active { color: #ff7f50; }
 
 .muzibu-play-btn {
     width: 32px;
@@ -620,7 +620,7 @@
     position: relative;
 }
 
-.muzibu-progress-bar:hover .muzibu-progress-fill { background: #1DB954; }
+.muzibu-progress-bar:hover .muzibu-progress-fill { background: #ff7f50; }
 
 .muzibu-progress-fill::after {
     content: '';
@@ -677,7 +677,7 @@
     border-radius: 2px;
 }
 
-.muzibu-volume-bar:hover .muzibu-volume-fill { background: #1DB954; }
+.muzibu-volume-bar:hover .muzibu-volume-fill { background: #ff7f50; }
 
 /* BOTTOM NAVIGATION (Mobile) */
 .muzibu-bottom-nav {
@@ -1071,67 +1071,6 @@
 .muzibu-genre-6 { background: linear-gradient(135deg, #4caf50 0%, #121212 100%); }
 .muzibu-genre-7 { background: linear-gradient(135deg, #ff9800 0%, #121212 100%); }
 .muzibu-genre-8 { background: linear-gradient(135deg, #ff5722 0%, #121212 100%); }
-
-/* LAYOUT TEST - Farklı renklerle görsel kontrol */
-.layout-test-container {
-    width: 100%;
-    height: 100%;
-}
-
-.layout-pills {
-    background: #ff0000;
-    color: white;
-    padding: 40px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-}
-
-.layout-horizontal {
-    background: #00ff00;
-    color: black;
-    padding: 60px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-}
-
-.layout-section-1 {
-    background: #0000ff;
-    color: white;
-    padding: 80px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-}
-
-.layout-section-2 {
-    background: #ff00ff;
-    color: white;
-    padding: 100px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-}
-
-.layout-section-3 {
-    background: #ffff00;
-    color: black;
-    padding: 120px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-}
 
 /* ==================== CUSTOM HEADER UPDATES ==================== */
 

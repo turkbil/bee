@@ -16,6 +16,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- Device Limit Session Flash --}}
+    @if (session('device_limit_exceeded'))
+        <meta name="device-limit-exceeded" content="true">
+        <meta name="device-limit" content="{{ session('device_limit', 1) }}">
+        <meta name="active-device-count" content="{{ session('active_device_count', 2) }}">
+    @endif
+
     <title>@yield('title', 'Muzibu - İşletmenize Yasal ve Telifsiz Müzik')</title>
 
     {{-- Tailwind CSS CDN (dev mode) --}}
@@ -135,6 +143,9 @@
     </style>
 </head>
 <body class="bg-black text-white overflow-hidden">
+    {{-- Mobile Menu Overlay - Sidebar açıkken arka planı karartır --}}
+    <div class="muzibu-mobile-overlay" onclick="toggleMobileMenu()"></div>
+
     {{-- Hidden Audio Elements --}}
     <audio id="hlsAudio" x-ref="hlsAudio" class="hidden"></audio>
     <audio id="hlsAudioNext" class="hidden"></audio>
@@ -164,10 +175,10 @@
                 checkIsHomepage();
             });
 
-            // Her 100ms'de bir kontrol et (güvenlik için)
-            setInterval(() => {
+            // Livewire navigation sonrası da kontrol et
+            document.addEventListener('livewire:navigated', () => {
                 checkIsHomepage();
-            }, 100);
+            });
         "
         :class="{
             '2xl:grid-cols-[220px_1fr_360px] xl:grid-cols-[220px_1fr_320px]': isHomepage
@@ -190,16 +201,17 @@
         @include('themes.muzibu.components.bottom-nav')
     </div>
 
-    {{-- Auth Modal - SPA-friendly (x-teleport) --}}
-    @include('themes.muzibu.components.auth-modal')
+    {{-- Auth Modal - REMOVED: Users now go to /login and /register pages directly --}}
+
+    {{-- 🔐 NEW DEVICE LIMIT SYSTEM (User chooses what to do) --}}
+    @include('themes.muzibu.components.device-limit-warning-modal')
+    @include('themes.muzibu.components.device-selection-modal')
 
     {{-- Create Playlist Modal --}}
     <x-muzibu.create-playlist-modal />
 
     {{-- Play Limits Modals - DEVRE DIŞI (3 şarkı limiti kaldırıldı) --}}
     {{-- @include('themes.muzibu.components.play-limits-modals') --}}
-    {{-- Device limit modal devre dışı - Backend handlePostLoginDeviceLimit() otomatik hallediyor --}}
-    {{-- @include('themes.muzibu.components.device-limit-modal') --}}
 
     {{-- Session Check --}}
     @include('themes.muzibu.components.session-check')
@@ -268,19 +280,72 @@
                     $subscriptionEndsAt = $subscription && $subscription->current_period_end
                         ? $subscription->current_period_end->toIso8601String()
                         : null;
+
+                    // 🔥 Device limit (backend'den al - 3-tier hierarchy)
+                    $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
+                    $deviceLimit = $deviceService->getDeviceLimit($user);
                 @endphp
                 {
                 id: {{ $user->id }},
                 name: "{{ $user->name }}",
                 email: "{{ $user->email }}",
                 is_premium: {{ $user->isPremiumOrTrial() ? 'true' : 'false' }},
+                is_trial: {{ $isTrial ? 'true' : 'false' }},
                 trial_ends_at: {!! $trialEndsAt ? '"' . $trialEndsAt . '"' : 'null' !!},
                 subscription_ends_at: {!! $subscriptionEndsAt ? '"' . $subscriptionEndsAt . '"' : 'null' !!}
             }
             @else null @endif,
-            // todayPlayedCount: {{ auth()->check() ? auth()->user()->getTodayPlayedCount() : 0 }}, // DEVRE DIŞI
-            tenantId: {{ tenant('id') }}
+            {{-- todayPlayedCount kaldırıldı - 3 şarkı limiti devre dışı --}}
+            tenantId: {{ tenant('id') }},
+            // 🔥 Config values (Muzibu module)
+            @if(auth()->check())
+                deviceLimit: {{ $deviceLimit ?? 1 }},
+            @else
+                deviceLimit: 1,
+            @endif
+            sessionPollingInterval: {{ config('muzibu.session.polling_interval') }},
+            previewDuration: {{ config('muzibu.stream.preview_duration') }},
+            previewChunks: {{ config('muzibu.stream.preview_chunks') }}
         };
+
+        // 🔐 CSRF Token Auto-Renewal (419 hatası önleme)
+        if (typeof axios !== 'undefined') {
+            // Axios CSRF interceptor
+            axios.interceptors.response.use(
+                response => response,
+                async error => {
+                    // CSRF token mismatch (419)
+                    if (error.response?.status === 419) {
+                        console.warn('🔐 CSRF token expired, refreshing...');
+
+                        try {
+                            // Yeni token al
+                            await axios.get('/sanctum/csrf-cookie');
+
+                            // Meta tag güncelle
+                            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                            if (token) {
+                                axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+                            }
+
+                            // Orijinal isteği tekrar gönder
+                            return axios(error.config);
+                        } catch (refreshError) {
+                            console.error('❌ CSRF token refresh failed:', refreshError);
+                            return Promise.reject(error);
+                        }
+                    }
+                    return Promise.reject(error);
+                }
+            );
+
+            // Initial CSRF token setup
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (token) {
+                axios.defaults.headers.common['X-CSRF-TOKEN'] = token;
+                axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+            }
+        }
 
         // Mobile Menu Toggle
         function toggleMobileMenu() {

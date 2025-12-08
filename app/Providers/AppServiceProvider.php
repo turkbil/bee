@@ -348,6 +348,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Shop Product Cache Observer - Automatic cache invalidation
         \Modules\Shop\App\Models\ShopProduct::observe(\App\Observers\ShopProductCacheObserver::class);
+
+        // 🔥 Subscription Observer - Premium cache invalidation
+        \Modules\Subscription\App\Models\Subscription::observe(\App\Observers\SubscriptionObserver::class);
     }
     
     /**

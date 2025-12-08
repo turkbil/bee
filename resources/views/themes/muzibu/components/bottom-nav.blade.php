@@ -1,16 +1,16 @@
 <nav class="muzibu-bottom-nav">
     <div class="muzibu-bottom-nav-items">
-        <a href="{{ route('muzibu.home') }}" class="muzibu-bottom-nav-item active">
+        <a href="{{ route('muzibu.home') }}" wire:navigate class="muzibu-bottom-nav-item {{ request()->routeIs('muzibu.home') ? 'active' : '' }}">
             <i class="fas fa-home"></i>
             <span>Ana Sayfa</span>
         </a>
-        <a href="#" class="muzibu-bottom-nav-item">
+        <a href="/search" wire:navigate class="muzibu-bottom-nav-item {{ request()->is('search*') ? 'active' : '' }}">
             <i class="fas fa-search"></i>
             <span>Ara</span>
         </a>
-        <a href="#" class="muzibu-bottom-nav-item">
-            <i class="fas fa-book"></i>
-            <span>Kitaplık</span>
-        </a>
+        <button onclick="toggleMobileMenu()" class="muzibu-bottom-nav-item">
+            <i class="fas fa-bars"></i>
+            <span>Menü</span>
+        </button>
     </div>
 </nav>

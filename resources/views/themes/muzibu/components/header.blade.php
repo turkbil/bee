@@ -2,7 +2,7 @@
     <div class="flex items-center gap-4 flex-1">
         {{-- Mobile Hamburger --}}
         <button
-            @click="mobileMenuOpen = !mobileMenuOpen"
+            onclick="toggleMobileMenu()"
             class="lg:hidden text-muzibu-text-gray hover:text-white transition-colors"
         >
             <i class="fas fa-bars text-xl"></i>
@@ -445,23 +445,25 @@
             </div>
         </div>
 
-        {{-- Login/Register Buttons - SPA Reactive --}}
+        {{-- Login/Register Links - Direct page navigation --}}
         <div x-show="!isLoggedIn" x-cloak class="flex items-center gap-3">
-            <button
-                @click="showAuthModal = 'login'"
+            <a
+                href="/login"
+                wire:navigate
                 class="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full text-white text-sm font-semibold transition-all duration-300"
             >
                 <i class="fas fa-sign-in-alt text-xs"></i>
                 <span>Giriş Yap</span>
-            </button>
-            <button
-                @click="showAuthModal = 'register'"
+            </a>
+            <a
+                href="/register"
+                wire:navigate
                 class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-light hover:from-muzibu-coral-light hover:to-muzibu-coral rounded-full text-white text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-muzibu-coral/30"
             >
                 <i class="fas fa-user-plus text-xs"></i>
                 <span class="hidden md:inline">Üye Ol</span>
                 <span class="md:hidden">Kaydol</span>
-            </button>
+            </a>
         </div>
     </div>
 </header>

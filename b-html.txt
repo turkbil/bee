@@ -1,95 +1,207 @@
-?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
-(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-(anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-VM31593 muzibu-router.js:30 🚀 Muzibu SPA Router initialized
-VM31597 player-core.js:186 Muzibu initialized with Howler.js
-VM31597 player-core.js:189 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
-VM31589 keyboard.js:46 🎹 Keyboard shortcuts initialized
-VM31597 player-core.js:2820 ✅ Queue Monitor started (checks every 10s)
-VM31594 muzibu-store.js:112 🎯 Play Context Set: {type: 'genre', subType: null, id: 17, name: 'Cold Love', offset: 0, …}
-VM31594 muzibu-store.js:147 🔄 Play Context Updated: {type: 'genre', subType: null, id: 17, name: 'Cold Love', offset: 0, …}
-VM31597 player-core.js:546 💾 Full state restored: {queue: 16, index: 0, song: 'Cold Love', volume: 40, wasPlaying: true}
-VM31597 player-core.js:561 🎵 State restored, waiting for user interaction... {wasPlaying: true, savedTime: 28.634802}
-VM31597 player-core.js:2899 ✅ Background playback enabled (works when minimized)
-VM31597 player-core.js:2964 ✅ Auto-save enabled (state saved on every change)
-VM31597 player-core.js:181 ⚠️ Already initialized, skipping...
-(index):4274 🔄 Livewire navigated - Re-initializing Alpine...
-(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-(index):1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-VM31597 player-core.js:264 Featured playlists loaded: 10
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 0, song: 'Cold Love', time: 0, volume: 40, …}
-VM31597 player-core.js:1515 🔍 Autoplay mode: false
-VM31597 player-core.js:1728 🔍 HLS Autoplay: false
-VM31597 player-core.js:2727 🚀 Aggressive Preload: Loading next 3 songs...
-VM31597 player-core.js:583 ℹ️ Song loaded in pause mode. Click play to resume.
-VM31597 player-core.js:1873 HLS loaded (PAUSED, ready to play)
-VM31597 player-core.js:1814 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/344/key
-VM31597 player-core.js:574 ⏩ Positioned at 28s (paused)
-VM31597 player-core.js:1818 ✅ Key loaded successfully for song: 344
-VM31597 player-core.js:2780 ✅ Preloaded & cached: 389
-VM31597 player-core.js:2780 ✅ Preloaded & cached: 390
-VM31597 player-core.js:2780 ✅ Preloaded & cached: 391
-VM31597 player-core.js:2737 ✅ Aggressive Preload completed: 3 songs ready
-VM31597 player-core.js:1926 HLS loaded, duration: 122.861311
-VM31597 player-core.js:2832 🔍 Queue Check: 16 songs remaining (queueIndex: 0/16)
-(index):4274 🔄 Livewire navigated - Re-initializing Alpine...
-VM31980:4 🔄 Livewire navigated - Re-initializing Alpine...
-muzibu-store.js?v=1764994662:8 ⚠️ muzibu-store.js already loaded, skipping...
-VM31597 player-core.js:2832 🔍 Queue Check: 16 songs remaining (queueIndex: 0/16)
-VM31597 player-core.js:1515 🔍 Autoplay mode: true
-VM31597 player-core.js:1728 🔍 HLS Autoplay: true
-VM31597 player-core.js:496 💾 Full state saved: {queue: 1, index: 0, song: 'Cold Love', time: 28, volume: 40, …}
-VM31597 player-core.js:496 💾 Full state saved: {queue: 1, index: 0, song: 'Cold Love', time: 28, volume: 40, …}
-VM31597 player-core.js:1814 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/344/key
-VM31597 player-core.js:1818 ✅ Key loaded successfully for song: 344
-VM31597 player-core.js:1926 HLS loaded, duration: 122.861311
-VM31597 player-core.js:496 💾 Full state saved: {queue: 1, index: 0, song: 'Cold Love', time: 28, volume: 40, …}
-VM31597 player-core.js:496 💾 Full state saved: {queue: 1, index: 0, song: 'Cold Love', time: 0, volume: 40, …}
-VM31597 player-core.js:2832 🔍 Queue Check: 1 songs remaining (queueIndex: 0/1)
-VM31597 player-core.js:2836 ⚠️ Queue running low! Auto-refilling...
-checkAndRefillQueue @ VM31597 player-core.js:2836
-(anonymous) @ VM31597 player-core.js:2817
-setInterval
-startQueueMonitor @ VM31597 player-core.js:2816
-init @ VM31597 player-core.js:207
-(anonymous) @ livewire.js?id=df3a17f2:1160
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3571
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-VM31594 muzibu-store.js:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 0, limit: 15}
-VM31597 player-core.js:496 💾 Full state saved: {queue: 1, index: 0, song: 'Cold Love', time: 110, volume: 40, …}
-VM31594 muzibu-store.js:218 ✅ Queue refilled: 15 songs (15) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
-VM31594 muzibu-store.js:112 🎯 Play Context Set: {type: 'genre', subType: null, id: 17, name: 'Cold Love', offset: 15, …}
-VM31594 muzibu-store.js:147 🔄 Play Context Updated: {type: 'genre', subType: null, id: 17, name: 'Cold Love', offset: 15, …}
-VM31597 player-core.js:2855 ✅ Auto-refilled: 15 songs added (Total queue: 16)
-VM31597 player-core.js:2727 🚀 Aggressive Preload: Loading next 3 songs...
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 0, song: 'Cold Love', time: 110, volume: 40, …}
-VM31597 player-core.js:2737 ✅ Aggressive Preload completed: 3 songs ready
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 0, song: 'Cold Love', time: 115, volume: 40, …}
-VM31597 player-core.js:2832 🔍 Queue Check: 16 songs remaining (queueIndex: 0/16)
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 0, song: 'Cold Love', time: 120, volume: 40, …}
-VM31597 player-core.js:807 Starting crossfade...
-VM31597 player-core.js:825 Next song type: hls URL: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/389/playlist.m3u8
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 0, song: 'Cold Love', time: 122, volume: 40, …}
-VM31597 player-core.js:1011 Crossfade complete, now playing: No Destruction
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 1, song: 'No Destruction', time: 122, volume: 40, …}
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 1, song: 'No Destruction', time: 122, volume: 40, …}
-VM31597 player-core.js:2832 🔍 Queue Check: 15 songs remaining (queueIndex: 1/16)
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 1, song: 'No Destruction', time: 6, volume: 40, …}
-(index):4274 🔄 Livewire navigated - Re-initializing Alpine...
-VM31980:4 🔄 Livewire navigated - Re-initializing Alpine...
-VM32017:4 🔄 Livewire navigated - Re-initializing Alpine...
-safe-storage.js?v=1764995317:8 ⚠️ safeStorage already loaded, skipping...
-muzibu-store.js?v=1764995317:8 ⚠️ muzibu-store.js already loaded, skipping...
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 1, song: 'No Destruction', time: 7, volume: 40, …}
-VM31597 player-core.js:2832 🔍 Queue Check: 15 songs remaining (queueIndex: 1/16)
-VM31597 player-core.js:496 💾 Full state saved: {queue: 16, index: 1, song: 'No Destruction', time: 7, volume: 40, …}
+
+<!DOCTYPE html>
+<html lang="tr" x-data="authApp()" x-init="init()" :class="darkMode ? 'dark' : ''">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="hON4DwKDHxVLm8DsBeMP61OGzWJAbrbZfVp2R87W">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Giriş Yap - Muzibu</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-black': '#121212',
+                        'muzibu-dark': '#181818',
+                        'muzibu-coral': '#ff7f50',
+                        'muzibu-coral-light': '#ff9770',
+                        'muzibu-coral-dark': '#ff6a3d',
+                        'muzibu-gray': '#282828',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .slide-in { animation: slideIn 0.4s ease-out; }
+    </style>
+
+    <!-- Livewire Styles --><style >[wire\:loading][wire\:loading], [wire\:loading\.delay][wire\:loading\.delay], [wire\:loading\.inline-block][wire\:loading\.inline-block], [wire\:loading\.inline][wire\:loading\.inline], [wire\:loading\.block][wire\:loading\.block], [wire\:loading\.flex][wire\:loading\.flex], [wire\:loading\.table][wire\:loading\.table], [wire\:loading\.grid][wire\:loading\.grid], [wire\:loading\.inline-flex][wire\:loading\.inline-flex] {display: none;}[wire\:loading\.delay\.none][wire\:loading\.delay\.none], [wire\:loading\.delay\.shortest][wire\:loading\.delay\.shortest], [wire\:loading\.delay\.shorter][wire\:loading\.delay\.shorter], [wire\:loading\.delay\.short][wire\:loading\.delay\.short], [wire\:loading\.delay\.default][wire\:loading\.delay\.default], [wire\:loading\.delay\.long][wire\:loading\.delay\.long], [wire\:loading\.delay\.longer][wire\:loading\.delay\.longer], [wire\:loading\.delay\.longest][wire\:loading\.delay\.longest] {display: none;}[wire\:offline][wire\:offline] {display: none;}[wire\:dirty]:not(textarea):not(input):not(select) {display: none;}:root {--livewire-progress-bar-color: #2299dd;}[x-cloak] {display: none !important;}[wire\:cloak] {display: none !important;}</style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-muzibu-coral via-orange-500 to-red-500 dark:from-muzibu-black dark:via-muzibu-dark dark:to-black transition-colors duration-300">
+    <!-- Dark/Light Mode Toggle -->
+    <div class="fixed top-6 right-6 z-50">
+        <button @click="toggleDarkMode()" class="w-12 h-12 rounded-full bg-white/30 dark:bg-white/10 backdrop-blur-lg border border-white/50 dark:border-white/30 flex items-center justify-center hover:scale-110 transition-all shadow-xl">
+            <i :class="darkMode ? 'fas fa-sun text-yellow-300' : 'fas fa-moon text-white'" class="text-lg"></i>
+        </button>
+    </div>
+
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Logo & Back to Home -->
+            <div class="text-center mb-8 slide-in">
+                <a href="/" class="inline-flex items-center justify-center gap-3 mb-6 group">
+                    <div class="w-16 h-16 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark dark:from-muzibu-coral-light dark:to-muzibu-coral rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all">
+                        <i class="fas fa-music text-white text-2xl"></i>
+                    </div>
+                    <span class="text-4xl font-bold text-white drop-shadow-lg">Muzibu</span>
+                </a>
+                <p class="text-white/90 dark:text-gray-300 text-lg font-medium">Hesabınıza giriş yapın</p>
+            </div>
+
+            <!-- Auth Card -->
+            <div class="bg-white dark:bg-muzibu-dark rounded-3xl shadow-2xl p-8 slide-in backdrop-blur-xl border border-white/20 dark:border-white/10">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Hoş Geldiniz</h2>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">Hesabınıza giriş yapın</p>
+
+    <!-- Session Status -->
+    
+    <form method="POST" action="https://muzibu.com.tr/login" class="space-y-5">
+        <input type="hidden" name="_token" value="hON4DwKDHxVLm8DsBeMP61OGzWJAbrbZfVp2R87W" autocomplete="off">
+        <!-- Email -->
+        <div>
+            <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                E-posta Adresi
+            </label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                value=""
+                required
+                autofocus
+                autocomplete="username"
+                class="w-full px-4 py-3 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all "
+                placeholder="ornek@email.com"
+            >
+                    </div>
+
+        <!-- Password -->
+        <div x-data="{ show: false }">
+            <label for="password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Şifre
+            </label>
+            <div class="relative">
+                <input
+                    :type="show ? 'text' : 'password'"
+                    id="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all "
+                    placeholder="••••••••"
+                >
+                <button
+                    type="button"
+                    @click="show = !show"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                    <i :class="show ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+            </div>
+                    </div>
+
+        <!-- Remember Me & Forgot Password -->
+        <div class="flex items-center justify-between">
+            <label class="flex items-center cursor-pointer">
+                <input
+                    type="checkbox"
+                    name="remember"
+                    class="w-4 h-4 border-gray-300 rounded text-muzibu-coral focus:ring-muzibu-coral focus:ring-offset-0"
+                >
+                <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Beni Hatırla</span>
+            </label>
+
+                            <a href="https://muzibu.com.tr/forgot-password" class="text-sm font-semibold text-muzibu-coral hover:text-muzibu-coral-light transition-colors">
+                    Şifremi Unuttum
+                </a>
+                    </div>
+
+        <!-- Submit Button -->
+        <button
+            type="submit"
+            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-dark hover:from-muzibu-coral-light hover:to-muzibu-coral text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
+        >
+            <i class="fas fa-sign-in-alt mr-2"></i>
+            Giriş Yap
+        </button>
+    </form>
+            </div>
+
+            <!-- Footer Links -->
+            <div class="text-center mt-6 space-y-3">
+                    <div class="text-white/80 dark:text-gray-400">
+        Hesabınız yok mu?
+        <a href="https://muzibu.com.tr/register" class="font-semibold text-white dark:text-muzibu-coral-light hover:text-white/100 dark:hover:text-muzibu-coral transition-colors">
+            Ücretsiz Kaydolun
+        </a>
+    </div>
+
+                <div class="text-white/80 dark:text-gray-400 text-sm">
+                    <a href="/" class="hover:text-white dark:hover:text-white transition-colors">← Ana Sayfaya Dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <!-- Livewire Scripts -->
+<script src="/livewire/livewire.js?id=df3a17f2"   data-csrf="hON4DwKDHxVLm8DsBeMP61OGzWJAbrbZfVp2R87W" data-update-uri="/livewire/update" data-navigate-once="true"></script>
+
+    <script>
+        function authApp() {
+            return {
+                darkMode: false,
+                showPassword: false,
+
+                init() {
+                    // Try to get dark mode from localStorage (with error handling)
+                    try {
+                        this.darkMode = localStorage.getItem('darkMode') === 'true';
+                        if (this.darkMode) {
+                            document.documentElement.classList.add('dark');
+                        }
+                    } catch (e) {
+                        // localStorage not available (iframe, private mode, etc.)
+                        console.warn('localStorage not available:', e.message);
+                    }
+                },
+
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+
+                    try {
+                        localStorage.setItem('darkMode', this.darkMode);
+                    } catch (e) {
+                        // localStorage not available, just toggle visually
+                        console.warn('Cannot save dark mode preference:', e.message);
+                    }
+
+                    if (this.darkMode) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                },
+
+                togglePasswordVisibility() {
+                    this.showPassword = !this.showPassword;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

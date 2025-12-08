@@ -1,34 +1,184 @@
 ?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
 (anonymous) @ ?plugins=forms,typography,aspect-ratio:68
 (anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-muzibu-router.js?v=1764994662:30 🚀 Muzibu SPA Router initialized
-player-core.js?v=1764994662:186 Muzibu initialized with Howler.js
-player-core.js?v=1764994662:189 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
-keyboard.js?v=1764994662:46 🎹 Keyboard shortcuts initialized
-player-core.js?v=1764994662:2798 ✅ Queue Monitor started (checks every 10s)
-muzibu-store.js?v=1764994662:102 🎯 Play Context Set: {type: 'favorites', subType: 'song', id: 344, name: 'Cold Love', offset: 3}
-muzibu-store.js?v=1764994662:137 🔄 Play Context Updated: {type: 'favorites', subType: 'song', id: 344, name: 'Cold Love', offset: 3}
-player-core.js?v=1764994662:546 💾 Full state restored: {queue: 4, index: 0, song: 'Cold Love', volume: 40, wasPlaying: false}
-player-core.js?v=1764994662:2877 ✅ Background playback enabled (works when minimized)
-player-core.js?v=1764994662:2942 ✅ Auto-save enabled (state saved on every change)
-player-core.js?v=1764994662:181 ⚠️ Already initialized, skipping...
-livewire.js?id=df3a17f2:1409 Alpine Warning: Duplicate key on x-for <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​
-warn @ livewire.js?id=df3a17f2:1409
-evaluateKey.scope.index @ livewire.js?id=df3a17f2:3680
-runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
-(anonymous) @ livewire.js?id=df3a17f2:1198
+muzibu-router.js?v=1765143908:30 🚀 Muzibu SPA Router initialized
+player-core.js?v=1765143908:197 Muzibu initialized with Howler.js
+player-core.js?v=1765143908:200 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
+keyboard.js?v=1765143908:46 🎹 Keyboard shortcuts initialized
+player-core.js?v=1765143908:3047 ✅ Queue Monitor started (checks every 10s)
+player-core.js?v=1765143908:551 💾 No saved state found - Fresh start
+player-core.js?v=1765143908:3131 ✅ Background playback enabled (works when minimized)
+player-core.js?v=1765143908:3196 ✅ Auto-save enabled (state saved on every change)
+player-core.js?v=1765143908:3220 🔐 Session polling started (30s interval, initial check in 2s)
+player-core.js?v=1765143908:192 ⚠️ Already initialized, skipping...
+(index):4123 🔄 Livewire navigated - Re-initializing Alpine...
+player-core.js?v=1765143908:280 Featured playlists loaded: 10
+player-core.js?v=1765143908:339 🎵 togglePlayPause called {queue: 0, currentSong: null, isPlaying: false, howl: false, hls: false}
+player-core.js?v=1765143908:412 🎵 Auto-starting music from Genre (infinite loop)...
+muzibu-store.js?v=1765143908:112 🎯 Play Context Set: {type: 'genre', id: 3, offset: 0, source: 'auto_start'}
+muzibu-store.js?v=1765143908:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 0, limit: 15}
+muzibu-store.js?v=1765143908:218 ✅ Queue refilled: 13 songs (13) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+muzibu-store.js?v=1765143908:112 🎯 Play Context Set: {type: 'genre', id: 3, offset: 13, source: 'auto_start'}
+muzibu-store.js?v=1765143908:147 🔄 Play Context Updated: {type: 'genre', id: 3, offset: 13, source: 'auto_start'}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 0, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 0, volume: 100, …}
+player-core.js?v=1765143908:1569 🔍 Autoplay mode: true
+player-core.js?v=1765143908:1782 🔍 HLS Autoplay: true
+player-core.js?v=1765143908:2954 🚀 Aggressive Preload: Loading next 3 songs...
+player-core.js?v=1765143908:1885 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/344/key
+player-core.js?v=1765143908:3007 ✅ Preloaded & cached: 347
+player-core.js?v=1765143908:3007 ✅ Preloaded & cached: 345
+player-core.js?v=1765143908:1895 ⚠️ Key load retry: {song: 344, retry: 0}
+(anonymous) @ player-core.js?v=1765143908:1895
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1765143908:1880
+loadAndPlaySong @ player-core.js?v=1765143908:1573
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1765143908:1457
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1765143908:444
+await in playRandomSongs
+togglePlayPause @ player-core.js?v=1765143908:359
+[Alpine] togglePlayPause() @ VM1111:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
 tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3678
-runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
-(anonymous) @ livewire.js?id=df3a17f2:1198
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+player-core.js?v=1765143908:1885 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/344/key
+player-core.js?v=1765143908:1955 HLS fatal error: {type: 'networkError', details: 'keyLoadError', fatal: true, frag: Proxy(e), response: undefined, …}
+(anonymous) @ player-core.js?v=1765143908:1955
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+setTimeout
+e.tickImmediate @ task-loop.ts:119
+r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
+r.onError @ stream-controller.ts:895
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1765143908:1880
+loadAndPlaySong @ player-core.js?v=1765143908:1573
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1765143908:1457
+await in playSongFromQueue
+playRandomSongs @ player-core.js?v=1765143908:444
+await in playRandomSongs
+togglePlayPause @ player-core.js?v=1765143908:359
+[Alpine] togglePlayPause() @ VM1111:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
 tryCatch @ livewire.js?id=df3a17f2:1116
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+player-core.js?v=1765143908:1964 🔄 HLS failed, falling back to signed MP3...
+player-core.js?v=1765143908:1965 🔍 currentFallbackUrl: https://muzibu.com.tr/api/muzibu/songs/344/serve?expires=1765145712&signature=7f2a836981468c72b7d03a0cd528215b9bfddcfb028d6686cf67f82c0bc1da0a&force_mp3=1
+player-core.js?v=1765143908:1966 🔍 currentFallbackUrl type: string
+player-core.js?v=1765143908:1985 🔍 About to call playWithHowler with: https://muzibu.com.tr/api/muzibu/songs/344/serve?expires=1765145712&signature=7f2a836981468c72b7d03a0cd528215b9bfddcfb028d6686cf67f82c0bc1da0a&force_mp3=1
+player-core.js?v=1765143908:1700 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/344/serve?expires=1765145712&signature=7f2a836981468c72b7d03a0cd528215b9bfddcfb028d6686cf67f82c0bc1da0a&force_mp3=1
+player-core.js?v=1765143908:1701 🔍 URL type: string
+player-core.js?v=1765143908:1702 🔍 URL length: 154
+player-core.js?v=1765143908:1703 🔍 Autoplay: true
+player-core.js?v=1765143908:1711 🎵 Creating Howl with src: ['https://muzibu.com.tr/api/muzibu/songs/344/serve?e…8215b9bfddcfb028d6686cf67f82c0bc1da0a&force_mp3=1']
+player-core.js?v=1765143908:1938 ⚠️ HLS play aborted (expected during fallback)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 0, volume: 100, …}
+player-core.js?v=1765143908:3007 ✅ Preloaded & cached: 346
+player-core.js?v=1765143908:2964 ✅ Aggressive Preload completed: 3 songs ready
+player-core.js?v=1765143908:1721 Howler loaded, duration: 122.9
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 2, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 7, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 12, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 17, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 22, volume: 100, …}
+player-core.js?v=1765143908:3242 ⚠️ Session invalid: device_limit_exceeded
+checkSessionValidity @ player-core.js?v=1765143908:3242
+await in checkSessionValidity
+(anonymous) @ player-core.js?v=1765143908:3217
+setInterval
+startSessionPolling @ player-core.js?v=1765143908:3216
+init @ player-core.js?v=1765143908:231
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
 flushHandlers @ livewire.js?id=df3a17f2:1281
 stopDeferring @ livewire.js?id=df3a17f2:1286
 deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
@@ -37,189 +187,53 @@ initTree @ livewire.js?id=df3a17f2:1479
 start @ livewire.js?id=df3a17f2:1427
 start2 @ livewire.js?id=df3a17f2:8851
 (anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1409 Alpine Warning: x-for ":key" is undefined or invalid <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​ 339 {}
-warn @ livewire.js?id=df3a17f2:1409
-(anonymous) @ livewire.js?id=df3a17f2:3731
-mutateDom @ livewire.js?id=df3a17f2:886
-(anonymous) @ livewire.js?id=df3a17f2:3729
-runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
-(anonymous) @ livewire.js?id=df3a17f2:1198
-tryCatch @ livewire.js?id=df3a17f2:1116
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'after')
-
-Expression: "(queue || [])"
-
- <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​
-handleError @ livewire.js?id=df3a17f2:1123
-tryCatch @ livewire.js?id=df3a17f2:1118
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-favorites:2516 🔄 Livewire navigated - Re-initializing Alpine...
-livewire.js?id=df3a17f2:3732 Uncaught TypeError: Cannot read properties of undefined (reading 'after')
-    at livewire.js?id=df3a17f2:3732:21
-    at mutateDom (livewire.js?id=df3a17f2:886:18)
-    at livewire.js?id=df3a17f2:3729:9
-    at runIfTypeOfFunction (livewire.js?id=df3a17f2:1219:7)
-    at livewire.js?id=df3a17f2:1198:11
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at loop (livewire.js?id=df3a17f2:3655:5)
-    at livewire.js?id=df3a17f2:3642:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-(anonymous) @ livewire.js?id=df3a17f2:3732
-mutateDom @ livewire.js?id=df3a17f2:886
-(anonymous) @ livewire.js?id=df3a17f2:3729
-runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
-(anonymous) @ livewire.js?id=df3a17f2:1198
-tryCatch @ livewire.js?id=df3a17f2:1116
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-favorites:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-favorites:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-favorites:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-player-core.js?v=1764994662:264 Featured playlists loaded: 10
-player-core.js?v=1764994662:2810 🔍 Queue Check: 4 songs remaining (queueIndex: 0/4)
-livewire.js?id=df3a17f2:1409 Alpine Warning: Duplicate key on x-for <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​
-warn @ livewire.js?id=df3a17f2:1409
-evaluateKey.scope.index @ livewire.js?id=df3a17f2:3680
-runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
-(anonymous) @ livewire.js?id=df3a17f2:1198
-tryCatch @ livewire.js?id=df3a17f2:1116
-(anonymous) @ livewire.js?id=df3a17f2:3678
-runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
-(anonymous) @ livewire.js?id=df3a17f2:1198
-tryCatch @ livewire.js?id=df3a17f2:1116
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
-(anonymous) @ livewire.js?id=df3a17f2:7961
-(anonymous) @ livewire.js?id=df3a17f2:8029
-livewire.js?id=df3a17f2:1409 Alpine Warning: x-for ":key" is undefined or invalid <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​ 339 {}
-warn @ livewire.js?id=df3a17f2:1409
-(anonymous) @ livewire.js?id=df3a17f2:3731
-mutateDom @ livewire.js?id=df3a17f2:886
-(anonymous) @ livewire.js?id=df3a17f2:3729
-runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
-(anonymous) @ livewire.js?id=df3a17f2:1198
-tryCatch @ livewire.js?id=df3a17f2:1116
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
-(anonymous) @ livewire.js?id=df3a17f2:7961
-(anonymous) @ livewire.js?id=df3a17f2:8029
-livewire.js?id=df3a17f2:1123 Alpine Expression Error: Cannot read properties of undefined (reading 'after')
-
-Expression: "(queue || [])"
-
- <template x-for=​"(song, index)​ in (queue || []​)​" :key=​"song?.song_id || index">​…​</template>​
-handleError @ livewire.js?id=df3a17f2:1123
-tryCatch @ livewire.js?id=df3a17f2:1118
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
-(anonymous) @ livewire.js?id=df3a17f2:7961
-(anonymous) @ livewire.js?id=df3a17f2:8029
-favorites:2516 🔄 Livewire navigated - Re-initializing Alpine...
-VM30045:4 🔄 Livewire navigated - Re-initializing Alpine...
-livewire.js?id=df3a17f2:3732 Uncaught TypeError: Cannot read properties of undefined (reading 'after')
-    at livewire.js?id=df3a17f2:3732:21
-    at mutateDom (livewire.js?id=df3a17f2:886:18)
-    at livewire.js?id=df3a17f2:3729:9
-    at runIfTypeOfFunction (livewire.js?id=df3a17f2:1219:7)
-    at livewire.js?id=df3a17f2:1198:11
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at loop (livewire.js?id=df3a17f2:3655:5)
-    at livewire.js?id=df3a17f2:3642:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-(anonymous) @ livewire.js?id=df3a17f2:3732
-mutateDom @ livewire.js?id=df3a17f2:886
-(anonymous) @ livewire.js?id=df3a17f2:3729
-runIfTypeOfFunction @ livewire.js?id=df3a17f2:1219
-(anonymous) @ livewire.js?id=df3a17f2:1198
-tryCatch @ livewire.js?id=df3a17f2:1116
-loop @ livewire.js?id=df3a17f2:3655
-(anonymous) @ livewire.js?id=df3a17f2:3642
-reactiveEffect @ livewire.js?id=df3a17f2:2432
-effect2 @ livewire.js?id=df3a17f2:2407
-effect @ livewire.js?id=df3a17f2:764
-wrappedEffect @ livewire.js?id=df3a17f2:780
-(anonymous) @ livewire.js?id=df3a17f2:3642
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
-(anonymous) @ livewire.js?id=df3a17f2:7961
-(anonymous) @ livewire.js?id=df3a17f2:8029
-safe-storage.js?v=1764994661:1 Uncaught SyntaxError: Identifier 'safeStorage' has already been declared (at safe-storage.js?v=1764994661:1:1)
-muzibu-store.js?v=1764994661:1 Uncaught SyntaxError: Identifier '_safeStorage' has already been declared (at muzibu-store.js?v=1764994661:1:1)
-player-core.js?v=1764994662:2810 🔍 Queue Check: 4 songs remaining (queueIndex: 0/4)
+player-core.js?v=1765143908:3254 🚨 Device limit exceeded - session was terminated from another device
+player-core.js?v=1765143908:3275 🔐 Device limit exceeded - showing warning modal
+player-core.js?v=1765143908:3331 🔐 Active devices fetched: 0
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 27, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 32, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 37, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 42, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 47, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 52, volume: 100, …}
+player-core.js?v=1765143908:3115 📱 Page hidden - Background playback active
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 57, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 62, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 67, volume: 100, …}
+player-core.js?v=1765143908:3118 👀 Page visible - Welcome back!
+player-core.js?v=1765143908:3115 📱 Page hidden - Background playback active
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 72, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 77, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 82, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 87, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 92, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 97, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 102, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 107, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 112, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 117, volume: 100, …}
+player-core.js?v=1765143908:844 Starting crossfade...
+player-core.js?v=1765143908:856 ⚡ Crossfade using cached stream: 345
+player-core.js?v=1765143908:873 Next song type: hls URL: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/345/playlist.m3u8
+player-core.js?v=1765143908:3060 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 122, volume: 100, …}
+player-core.js?v=1765143908:1059 Crossfade complete, now playing: Cupid
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 122, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 122, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 4, volume: 100, …}
+player-core.js?v=1765143908:3060 🔍 Queue Check: 12 songs remaining (queueIndex: 1/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 9, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 14, volume: 100, …}
+player-core.js?v=1765143908:3118 👀 Page visible - Welcome back!
+player-core.js?v=1765143908:3060 🔍 Queue Check: 12 songs remaining (queueIndex: 1/13)
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 19, volume: 100, …}
+player-core.js?v=1765143908:517 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 24, volume: 100, …}

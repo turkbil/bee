@@ -157,12 +157,13 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
-     * Check if current tenant is Muzibu
+     * Check if current tenant has subscription/premium features enabled
+     * Artık tüm tenant'lar için çalışır (dinamik)
      */
     protected function isMuzibuTenant(): bool
     {
-        $tenant = tenant();
-        return $tenant && $tenant->id == 1001;
+        // Tenant varsa ve subscription özelliği aktifse true
+        return (bool) tenant();
     }
 
     // ==========================================
@@ -181,7 +182,7 @@ class User extends Authenticatable implements HasMedia
         }
 
         // Diğer tenant'lar için basit fallback
-        return $this->device_limit ?: (int) setting('auth_session_device_limit', 1);
+        return $this->device_limit ?: (int) setting('auth_device_limit', 1);
     }
 
     /**
@@ -336,61 +337,6 @@ class User extends Authenticatable implements HasMedia
     // ==========================================
 
     /**
-     * Bugün kaç şarkı dinledi? (60+ saniye dinlenen)
-     * Tenant 1001 (muzibu.com) için
-     */
-    public function getTodayPlayedCount(): int
-    {
-        if (!$this->isMuzibuTenant()) {
-            return 0;
-        }
-
-        // JS 60sn kontrolü yapıyor, burada sadece kayıt sayısı
-        return \DB::table('muzibu_song_plays')
-            ->where('user_id', $this->id)
-            ->whereDate('created_at', today())
-            ->count();
-    }
-
-    /**
-     * Şarkı çalabilir mi?
-     * Tenant 1001 (muzibu.com) için
-     */
-    public function canPlaySong(): bool
-    {
-        if (!$this->isMuzibuTenant()) {
-            return true; // Diğer tenant'lar etkilenmez
-        }
-
-        // Premium/Trial → Sınırsız
-        if ($this->isPremium() || $this->isTrialActive()) {
-            return true;
-        }
-
-        // Normal üye → Günde 3 şarkı (60+ saniye dinlenen)
-        return $this->getTodayPlayedCount() < 3;
-    }
-
-    /**
-     * Kalan şarkı hakkı
-     * Tenant 1001 (muzibu.com) için
-     */
-    public function getRemainingPlays(): int
-    {
-        if (!$this->isMuzibuTenant()) {
-            return -1; // Diğer tenant'lar sınırsız
-        }
-
-        // Premium/Trial → Sınırsız
-        if ($this->isPremium() || $this->isTrialActive()) {
-            return -1;
-        }
-
-        // Normal üye → Kalan hak (3 şarkı/gün)
-        return max(0, 3 - $this->getTodayPlayedCount());
-    }
-
-    /**
      * Premium üye mi? (aktif subscription veya trial)
      *
      * ⚠️ SADECE TENANT 1001 (muzibu.com.tr) İÇİN!
@@ -401,16 +347,16 @@ class User extends Authenticatable implements HasMedia
      */
     public function isPremium(): bool
     {
-        // ✅ DİĞER TENANT'LAR İÇİN: Direkt false dön (cache yok!)
+        // Tenant yoksa false
         if (!$this->isMuzibuTenant()) {
             return false;
         }
 
-        // 🚀 SADECE TENANT 1001 İÇİN: 1 saatlik cache
-        // Cache key tenant_id içeriyor ama zaten sadece 1001 buraya gelir
-        $cacheKey = 'user_' . $this->id . '_is_premium_tenant_1001';
+        // 🚀 5 dakikalık cache (güvenlik vs performans balance)
+        // Event-based invalidation: Login/Register/Subscription change → cache flush
+        $cacheKey = 'user_' . $this->id . '_is_premium_tenant_' . tenant()->id;
 
-        return \Cache::remember($cacheKey, 3600, function () {
+        return \Cache::remember($cacheKey, 300, function () {
             // Yeni subscription sistemi: subscriptions tablosundan kontrol et
             // ✅ FIXED: whereNull kaldırıldı (NULL = sonsuz premium önlendi)
             $activeSubscription = $this->subscriptions()

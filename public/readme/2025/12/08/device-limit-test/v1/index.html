@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Limit Test Senaryosu - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                🔐 Device Limit Test Senaryosu
+            </h1>
+            <div class="text-slate-400 text-lg">
+                İki farklı tarayıcıdan giriş simülasyonu
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-07</span>
+                <span>🎯 Tenant: muzibu.com.tr</span>
+                <span>👤 Test User: nurullah@nurullah.net</span>
+            </div>
+        </header>
+
+        <!-- Hazırlık Durumu -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Hazırlık Tamamlandı</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">👤 Test Kullanıcısı</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p>✅ Email: nurullah@nurullah.net</p>
+                        <p>✅ Password: g0nulcelen</p>
+                        <p>✅ User ID: 1</p>
+                        <p>✅ Session'lar temizlendi (0 aktif cihaz)</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">📦 Subscription</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p>✅ Plan: Premium Yıllık</p>
+                        <p>✅ Status: Active</p>
+                        <p>🚨 <strong class="text-red-400">Device Limit: 1 cihaz</strong></p>
+                        <p class="text-yellow-300 mt-3">→ 2. cihazda modal görmeli!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Adımları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🎯 Test Adımları</h2>
+
+            <!-- Adım 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            İlk Giriş - Chrome Desktop
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">Normal Giriş</span>
+                        </h3>
+                        <div class="space-y-3 text-slate-300">
+                            <p><strong class="text-white">Adres:</strong> <a href="https://muzibu.com.tr/login" target="_blank" class="text-blue-400 hover:underline">https://muzibu.com.tr/login</a></p>
+                            <p><strong class="text-white">Email:</strong> nurullah@nurullah.net</p>
+                            <p><strong class="text-white">Password:</strong> g0nulcelen</p>
+                            <p class="mt-3 text-yellow-300"><strong>Beklenen Sonuç:</strong></p>
+                            <ul class="list-disc list-inside pl-4 space-y-1">
+                                <li>✅ Giriş başarılı</li>
+                                <li>✅ Ana sayfaya yönlendirilmeli (index, dashboard değil)</li>
+                                <li>✅ Modal GÖRMEMELI (ilk giriş)</li>
+                                <li>✅ Console: "Session polling started"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-orange-300 mb-2">
+                            İkinci Giriş - Firefox/Safari (Farklı Tarayıcı)
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">⚠️ Device Limit Aşılacak</span>
+                        </h3>
+                        <div class="space-y-3 text-slate-300">
+                            <p><strong class="text-white">Yeni Tarayıcı:</strong> Firefox, Safari veya Incognito Mode</p>
+                            <p><strong class="text-white">Adres:</strong> <a href="https://muzibu.com.tr/login" target="_blank" class="text-blue-400 hover:underline">https://muzibu.com.tr/login</a></p>
+                            <p><strong class="text-white">Aynı Hesap:</strong> nurullah@nurullah.net / g0nulcelen</p>
+                            <p class="mt-3 text-red-300"><strong>Beklenen Sonuç:</strong></p>
+                            <ul class="list-disc list-inside pl-4 space-y-1">
+                                <li>✅ Giriş başarılı</li>
+                                <li>🚨 <strong class="text-red-400">Modal GÖRMELI!</strong> (device limit aşıldı)</li>
+                                <li>✅ Console: "Session invalid: device_limit_exceeded"</li>
+                                <li>✅ Console: "Device limit exceeded, showing modal..."</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            Modal İçeriği Kontrol
+                            <span class="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded-full">UI Test</span>
+                        </h3>
+                        <div class="space-y-3 text-slate-300">
+                            <p class="mt-3 text-blue-300"><strong>Modal'da Görülmesi Gerekenler:</strong></p>
+                            <ul class="list-disc list-inside pl-4 space-y-2">
+                                <li><strong class="text-white">Başlık:</strong> "Cihaz Limiti Aşıldı"</li>
+                                <li><strong class="text-white">Açıklama:</strong> "Aynı anda maksimum 1 cihazdan giriş yapabilirsiniz"</li>
+                                <li><strong class="text-white">Cihaz Listesi:</strong> 2 cihaz görmeli
+                                    <ul class="list-circle list-inside pl-6 text-sm mt-1">
+                                        <li>Chrome Desktop (ilk giriş)</li>
+                                        <li>Firefox/Safari (mevcut cihaz - <span class="text-green-400">Mevcut Cihaz</span> badge)</li>
+                                    </ul>
+                                </li>
+                                <li><strong class="text-white">Checkbox'lar:</strong> Çoklu seçim için checkbox (radio değil!)</li>
+                                <li><strong class="text-white">Mevcut Cihaz:</strong> Disabled checkbox (kendini çıkaramasın)</li>
+                                <li><strong class="text-white">Butonlar:</strong>
+                                    <ul class="list-circle list-inside pl-6 text-sm mt-1">
+                                        <li><span class="text-orange-400">"Tümünü Çıkar"</span> butonu (1 cihaz yazmalı)</li>
+                                        <li><span class="text-red-400">"Seçilenleri Çıkar (0)"</span> butonu (başlangıçta disabled)</li>
+                                        <li>"İptal" butonu</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 4 -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">
+                            Tek Cihaz Çıkarma Testi
+                            <span class="ml-3 px-3 py-1 bg-purple-600 text-white text-xs rounded-full">Fonksiyon Test</span>
+                        </h3>
+                        <div class="space-y-3 text-slate-300">
+                            <p><strong class="text-white">İşlem:</strong></p>
+                            <ol class="list-decimal list-inside pl-4 space-y-2">
+                                <li>İlk cihazın (Chrome Desktop) checkbox'ını işaretle</li>
+                                <li>Buton "Seçilenleri Çıkar (1)" olmalı</li>
+                                <li>Butona bas</li>
+                            </ol>
+                            <p class="mt-3 text-purple-300"><strong>Beklenen Sonuç:</strong></p>
+                            <ul class="list-disc list-inside pl-4 space-y-1">
+                                <li>✅ Chrome tarayıcısında çıkış yapılmalı (session sonlandırılmalı)</li>
+                                <li>✅ Firefox/Safari'de kalmalı (aktif kalmalı)</li>
+                                <li>✅ Sayfa yenilenmeli (window.location.reload)</li>
+                                <li>✅ Toast mesajı: "1 cihaz çıkış yaptırıldı"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 5 -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-red-300 mb-2">
+                            Toplu Çıkış Testi (Tümünü Çıkar)
+                            <span class="ml-3 px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Bulk Action</span>
+                        </h3>
+                        <div class="space-y-3 text-slate-300">
+                            <p><strong class="text-white">İşlem:</strong></p>
+                            <ol class="list-decimal list-inside pl-4 space-y-2">
+                                <li>Yeni tarayıcıda yeniden giriş yap (2 cihaz olsun)</li>
+                                <li>Modal açıldığında "Tümünü Çıkar (1 cihaz)" butonuna bas</li>
+                                <li>Confirm dialog'u onayla</li>
+                            </ol>
+                            <p class="mt-3 text-red-300"><strong>Beklenen Sonuç:</strong></p>
+                            <ul class="list-disc list-inside pl-4 space-y-1">
+                                <li>✅ Tüm diğer cihazlar çıkış yapmalı (mevcut hariç)</li>
+                                <li>✅ Sadece mevcut cihaz aktif kalmalı</li>
+                                <li>✅ Toast mesajı: "1 cihaz çıkış yaptırıldı"</li>
+                                <li>✅ Sayfa yenilenmeli</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Console Log Kontrolleri -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">💡 Console Log Kontrolleri (F12)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-xl font-bold mb-4 text-yellow-300">Beklenen Console Mesajları:</h3>
+                <div class="space-y-3 font-mono text-sm">
+                    <div class="bg-slate-900 p-3 rounded">
+                        <span class="text-green-400">✅ İlk Giriş:</span>
+                        <div class="pl-4 text-slate-300">
+                            <p>🔐 Session polling started (30s interval, initial check in 2s)</p>
+                            <p>✅ Session valid</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded">
+                        <span class="text-orange-400">⚠️ İkinci Giriş:</span>
+                        <div class="pl-4 text-slate-300">
+                            <p>⚠️ Session invalid: device_limit_exceeded</p>
+                            <p>🚨 Device limit exceeded, showing modal...</p>
+                            <p>📱 Fetching active devices...</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded">
+                        <span class="text-red-400">❌ OLMAMASI GEREKENLER:</span>
+                        <div class="pl-4 text-slate-300">
+                            <p>❌ "Alpine Expression Error: showDeviceLimitModal is not defined" (Auth sayfasında)</p>
+                            <p>❌ "Queue running low!" spam (sürekli tekrar etmemeli)</p>
+                            <p>❌ "No play context - cannot auto-refill queue" spam</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Database Kontrolleri -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">🗄️ Database Kontrolleri (Opsiyonel)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-xl font-bold mb-4 text-cyan-300">SQL Sorguları:</h3>
+                <div class="space-y-4 font-mono text-sm">
+                    <div>
+                        <p class="text-slate-400 mb-2">1️⃣ Aktif cihazları kontrol et:</p>
+                        <div class="bg-slate-900 p-3 rounded text-green-300">
+                            SELECT id, device_type, device_name, browser, ip_address, created_at<br>
+                            FROM user_active_sessions<br>
+                            WHERE user_id = 1<br>
+                            ORDER BY created_at DESC;
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 mb-2">2️⃣ User device limit kontrol et:</p>
+                        <div class="bg-slate-900 p-3 rounded text-green-300">
+                            SELECT id, email, device_limit FROM users WHERE id = 1;
+                        </div>
+                        <p class="text-yellow-300 text-xs mt-1">→ NULL olmalı (subscription'dan alınacak)</p>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 mb-2">3️⃣ Subscription device limit kontrol et:</p>
+                        <div class="bg-slate-900 p-3 rounded text-green-300">
+                            SELECT sp.title, sp.device_limit, s.status<br>
+                            FROM subscriptions s<br>
+                            JOIN subscription_plans sp ON s.subscription_plan_id = sp.subscription_plan_id<br>
+                            WHERE s.user_id = 1 AND s.status = 'active';
+                        </div>
+                        <p class="text-yellow-300 text-xs mt-1">→ device_limit = 1 olmalı</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hierarchy Açıklama -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-pink-400">📊 Device Limit Hierarchy</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border-2 border-blue-500">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">1️⃣ User Level</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p><strong class="text-white">Tablo:</strong> users.device_limit</p>
+                        <p><strong class="text-white">Öncelik:</strong> En Yüksek</p>
+                        <p><strong class="text-white">Durum:</strong> <span class="text-yellow-300">NULL</span> (kullanılmıyor)</p>
+                        <p class="text-xs text-slate-400 mt-2">Kullanıcı özel limit belirlemek için</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border-2 border-green-500">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">2️⃣ Subscription Level</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p><strong class="text-white">Tablo:</strong> subscription_plans.device_limit</p>
+                        <p><strong class="text-white">Öncelik:</strong> Orta</p>
+                        <p><strong class="text-white">Durum:</strong> <span class="text-green-300">1 cihaz</span> (aktif)</p>
+                        <p class="text-xs text-slate-400 mt-2">Abonelik planına göre</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border-2 border-purple-500">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">3️⃣ Tenant Default</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p><strong class="text-white">Tablo:</strong> settings.site_device_limit</p>
+                        <p><strong class="text-white">Öncelik:</strong> En Düşük</p>
+                        <p><strong class="text-white">Durum:</strong> <span class="text-slate-400">Yok</span> (fallback)</p>
+                        <p class="text-xs text-slate-400 mt-2">Tüm tenant için varsayılan</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                <p class="text-blue-300 text-sm leading-relaxed">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <strong>Kontrol Sırası:</strong> Sistem önce users.device_limit'e bakar (NULL), sonra subscription_plans.device_limit'e bakar (1 bulur ve kullanır). Settings'e bakmaya gerek kalmaz.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+        </footer>
+    </div>
+</body>
+</html>

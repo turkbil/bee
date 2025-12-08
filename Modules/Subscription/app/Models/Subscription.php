@@ -6,8 +6,10 @@ use App\Models\BaseModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Carbon\Carbon;
 
+#[ObservedBy([\App\Observers\SubscriptionObserver::class])]
 class Subscription extends BaseModel
 {
     use HasFactory, SoftDeletes;

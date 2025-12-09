@@ -32,26 +32,26 @@ class HybridSearchService
     ];
 
     /**
-     * Expand query with synonyms
+     * Expand query with synonyms (power types only - global)
+     * Category synonyms are handled by tenant-specific services
      */
     private function expandQueryWithSynonyms(string $query): string
     {
         $lowerQuery = mb_strtolower($query);
         $expansions = [];
 
+        // Power type synonyms (global - applies to all tenants)
         foreach (self::POWER_SYNONYMS as $term => $synonyms) {
             if (str_contains($lowerQuery, $term)) {
-                // Add main term and all synonyms
                 $expansions = array_merge($expansions, $synonyms);
             }
         }
 
         if (!empty($expansions)) {
-            // Add unique synonyms to query
             $uniqueExpansions = array_unique($expansions);
             $expandedQuery = $query . ' ' . implode(' ', $uniqueExpansions);
 
-            Log::info('🔄 Query expanded with synonyms', [
+            Log::info('🔄 Query expanded with power synonyms', [
                 'original' => $query,
                 'expanded' => $expandedQuery
             ]);

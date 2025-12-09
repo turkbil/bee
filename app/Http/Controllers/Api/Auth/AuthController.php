@@ -141,49 +141,90 @@ class AuthController extends Controller
 
     /**
      * Check session validity (device limit polling)
+     * Frontend her 30 saniyede bir cagiriyor
      */
     public function checkSession(Request $request)
     {
-        // 🔍 DEBUG: Session ve Auth durumunu kontrol et
         $sessionId = session()->getId();
-        $hasSession = $request->hasSession();
-        $isAuth = Auth::check();
 
+        // 🔍 DEBUG: Session ve auth durumunu logla
         \Log::info('🔐 checkSession DEBUG', [
-            'session_id' => $sessionId,
-            'has_session' => $hasSession,
-            'is_authenticated' => $isAuth,
-            'cookies' => $request->cookies->all(),
-            'session_data' => session()->all(),
+            'session_id' => substr($sessionId, 0, 20) . '...',
+            'has_session' => $request->hasSession(),
+            'web_user' => auth('web')->user()?->email,
+            'sanctum_user' => auth('sanctum')->user()?->email,
+            'auth_check' => \Auth::check(),
+            'cookies' => array_keys($request->cookies->all()),
         ]);
 
-        if (!Auth::check()) {
+        // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
+        // Session-based login (web) veya token-based login (sanctum)
+        $user = auth('web')->user() ?? auth('sanctum')->user();
+
+        if (!$user) {
+            \Log::warning('🔐 checkSession - NOT AUTHENTICATED', [
+                'session_id' => substr($sessionId, 0, 20) . '...',
+            ]);
             return response()->json([
                 'valid' => false,
-                'reason' => 'not_authenticated',
-                'debug' => [
-                    'session_id' => $sessionId,
-                    'has_session' => $hasSession,
-                ]
+                'reason' => 'not_authenticated'
             ]);
         }
 
-        $user = Auth::user();
-
-        // 🔐 DEVICE SERVICE: Session activity güncelle ve geçerlilik kontrol et (Tenant-aware)
+        // 🔐 DEVICE SERVICE: Session validity kontrol et (Tenant-aware)
         if (tenant()) {
             $deviceService = app(DeviceService::class);
-            $isValid = $deviceService->updateSessionActivity($user); // shouldRun() kontrol eder
 
-            if (!$isValid) {
-                // Session silinmiş (başka cihazdan çıkarılmış)
-                Auth::logout();
-                $request->session()->invalidate();
+            if ($deviceService->shouldRun()) {
+                // 1. 🔐 ÖNCE: Session DB'de var mi kontrol et (LIFO ile silinmis olabilir)
+                $sessionExists = \DB::table('user_active_sessions')
+                    ->where('session_id', $sessionId)
+                    ->where('user_id', $user->id)
+                    ->exists();
 
-                return response()->json([
-                    'valid' => false,
-                    'reason' => 'device_limit_exceeded'
-                ]);
+                if (!$sessionExists) {
+                    \Log::info('🔐 Session terminated (LIFO) - forcing logout', [
+                        'user_id' => $user->id,
+                        'session_id' => substr($sessionId, 0, 20) . '...',
+                    ]);
+
+                    // Session silinmis - kullaniciyi logout et
+                    // 🔥 FIX: Hem web hem sanctum guard'ını logout et
+                    auth('web')->logout();
+                    if ($request->hasSession()) {
+                        $request->session()->invalidate();
+                        $request->session()->regenerateToken();
+                    }
+
+                    return response()->json([
+                        'valid' => false,
+                        'reason' => 'session_terminated',
+                        'message' => 'Baska bir cihazdan giris yapildi.'
+                    ]);
+                }
+
+                // 2. Session var - activity guncelle
+                $deviceService->updateSessionActivity($user);
+
+                // 3. Device limit kontrolu (normalde LIFO ile asim olmamali)
+                $deviceLimit = $deviceService->getDeviceLimit($user);
+                $activeDevices = $deviceService->getActiveDeviceCount($user);
+
+                if ($activeDevices > $deviceLimit) {
+                    \Log::warning('🔐 Device limit exceeded during poll (unexpected)', [
+                        'user_id' => $user->id,
+                        'device_limit' => $deviceLimit,
+                        'active_devices' => $activeDevices,
+                    ]);
+
+                    return response()->json([
+                        'valid' => false,
+                        'reason' => 'device_limit_exceeded',
+                        'device_limit' => $deviceLimit,
+                        'active_devices' => $activeDevices,
+                        'show_device_modal' => true
+                    ]);
+                }
             }
         }
 
@@ -198,43 +239,68 @@ class AuthController extends Controller
      */
     public function terminateDevice(Request $request)
     {
-        if (!Auth::check()) {
+        try {
+            // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
+            $user = auth('web')->user() ?? auth('sanctum')->user();
+
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+
+            $request->validate([
+                'session_id' => 'required|string'
+            ]);
+
+            // Tenant kontrolü (setting'den device limit aktif mi kontrol et)
+            if (!tenant()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Device limit feature not available'
+                ], 400);
+            }
+
+            $deviceService = app(DeviceService::class);
+
+            // DeviceService shouldRun() kontrolü yapar
+            if (!$deviceService->shouldRun()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Device limit feature not enabled for this tenant'
+                ], 400);
+            }
+
+            \Log::info('🔐 terminateDevice ATTEMPT', [
+                'session_id' => $request->session_id,
+                'user_id' => $user->id,
+                'tenant_id' => tenant()->id ?? null,
+            ]);
+
+            $result = $deviceService->terminateSession($request->session_id, $user);
+
+            \Log::info('🔐 terminateDevice RESULT', [
+                'session_id' => $request->session_id,
+                'result' => $result,
+            ]);
+
+            return response()->json([
+                'success' => $result,
+                'message' => $result ? 'Device terminated' : 'Device not found'
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('🔐 terminateDevice ERROR', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'session_id' => $request->session_id ?? 'N/A',
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized'
-            ], 401);
+                'message' => 'Server error: ' . $e->getMessage()
+            ], 500);
         }
-
-        $request->validate([
-            'session_id' => 'required|string'
-        ]);
-
-        $user = Auth::user();
-
-        // Tenant kontrolü (setting'den device limit aktif mi kontrol et)
-        if (!tenant()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Device limit feature not available'
-            ], 400);
-        }
-
-        $deviceService = app(DeviceService::class);
-
-        // DeviceService shouldRun() kontrolü yapar
-        if (!$deviceService->shouldRun()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Device limit feature not enabled for this tenant'
-            ], 400);
-        }
-
-        $result = $deviceService->terminateDevice($user, $request->session_id);
-
-        return response()->json([
-            'success' => $result,
-            'message' => $result ? 'Device terminated' : 'Device not found'
-        ]);
     }
 
     /**
@@ -242,29 +308,41 @@ class AuthController extends Controller
      */
     public function getActiveDevices(Request $request)
     {
-        if (!Auth::check()) {
+        // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
+        $user = auth('web')->user() ?? auth('sanctum')->user();
+
+        if (!$user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized'
             ], 401);
         }
 
-        $user = Auth::user();
-
         // Tenant kontrolü
         if (!tenant()) {
             return response()->json([
                 'success' => true,
-                'devices' => []
+                'devices' => [],
+                'device_limit' => 999
             ]);
         }
 
         $deviceService = app(DeviceService::class);
         $devices = $deviceService->getActiveDevices($user); // shouldRun() kontrol eder
+        $deviceLimit = $deviceService->getDeviceLimit($user);
+
+        // 🔐 DEBUG: Device limit hierarchy check
+        \Log::info('🔐 getActiveDevices DEBUG', [
+            'user_id' => $user->id,
+            'user_device_limit_raw' => $user->device_limit,
+            'calculated_device_limit' => $deviceLimit,
+            'devices_count' => count($devices),
+        ]);
 
         return response()->json([
             'success' => true,
-            'devices' => $devices
+            'devices' => $devices,
+            'device_limit' => $deviceLimit
         ]);
     }
 
@@ -273,15 +351,18 @@ class AuthController extends Controller
      */
     public function me(Request $request)
     {
-        if (Auth::check()) {
-            $user = Auth::user();
+        // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
+        $user = auth('web')->user() ?? auth('sanctum')->user();
+
+        if ($user) {
 
             // Active subscription bilgisini al
+            // 🔥 FIX: ends_at -> current_period_end (doğru kolon adı)
             $activeSubscription = $user->subscriptions()
                 ->where('status', 'active')
                 ->where(function($q) {
-                    $q->whereNull('ends_at')
-                      ->orWhere('ends_at', '>', now());
+                    $q->whereNull('current_period_end')
+                      ->orWhere('current_period_end', '>', now());
                 })
                 ->first();
 

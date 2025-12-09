@@ -296,3 +296,13 @@ body.dark-mode-active::after {
 .animate-gradient {
     animation: gradient 3s ease infinite;
 }
+
+/* ========================================
+   Topbar Background - Header'ın koyusu
+   ======================================== */
+#top-bar {
+    background-color: #f3f4f6 !important; /* gray-100 - light mode */
+}
+html.dark #top-bar {
+    background-color: #0a0f1a !important; /* slate-900'dan koyu - dark mode */
+}

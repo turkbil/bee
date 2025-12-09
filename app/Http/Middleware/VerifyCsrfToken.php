@@ -49,14 +49,14 @@ class VerifyCsrfToken extends Middleware
     {
         $config = config('session');
 
-        // Session domain ile tutarlı olmalı - SESSION_DOMAIN config'den al
-        // .env'de SESSION_DOMAIN=.tuufi.com ayarı var
-        // tenant() varsa tenant domain, yoksa config'den al
+        // Session domain ile tutarlı olmalı
+        // Tenant context'te domain'i host'tan al (nokta prefix ile subdomain desteği)
         if (tenant()) {
-            $config['domain'] = $request->getHost();
+            $host = $request->getHost();
+            // Subdomain desteği için nokta prefix ekle (www.domain.com için .domain.com)
+            $config['domain'] = '.' . $host;
         }
-        // Central domain için .env SESSION_DOMAIN kullan (wildcard support)
-        // config/session.php'de zaten SESSION_DOMAIN env var'ı okunuyor
+        // Central domain için .env SESSION_DOMAIN kullan
 
         $response->headers->setCookie(
             new \Symfony\Component\HttpFoundation\Cookie(

@@ -97,7 +97,7 @@ Route::prefix('auth')->middleware(['throttle.user:auth'])->group(function () {
     Route::get('/me', [\App\Http\Controllers\Api\Auth\AuthController::class, 'me'])->name('api.auth.me');
     Route::get('/check-session', [\App\Http\Controllers\Api\Auth\AuthController::class, 'checkSession'])->name('api.auth.check-session'); // 🔐 Device limit polling
     Route::post('/terminate-device', [\App\Http\Controllers\Api\Auth\AuthController::class, 'terminateDevice'])->name('api.auth.terminate-device'); // 🔐 Device selection
-    Route::post('/get-active-devices', [\App\Http\Controllers\Api\Auth\AuthController::class, 'getActiveDevices'])->name('api.auth.get-active-devices'); // 🔐 Device list for selection modal
+    Route::get('/active-devices', [\App\Http\Controllers\Api\Auth\AuthController::class, 'getActiveDevices'])->name('api.auth.active-devices'); // 🔐 Device list for selection modal (GET)
     Route::post('/forgot-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'forgotPassword'])->name('api.auth.forgot'); // 🔥 Auth throttle
     Route::post('/reset-password', [\App\Http\Controllers\Api\Auth\AuthController::class, 'resetPassword'])->name('api.auth.reset'); // 🔥 Auth throttle
 });

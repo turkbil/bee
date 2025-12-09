@@ -23,16 +23,28 @@ class DeviceService
     /**
      * Check if this service should run
      * Device limit özelliği aktif olan tüm tenant'lar için çalışır
+     *
+     * Kontroller:
+     * 1. Tenant var mı?
+     * 2. Abonelik sistemi açık mı? (auth_subscription)
+     * 3. Device limit aktif mi? (auth_device_limit_enabled)
      */
-    protected function shouldRun(): bool
+    public function shouldRun(): bool
     {
         $tenant = tenant();
         if (!$tenant) {
             return false;
         }
 
-        // Setting'den device limit aktif mi kontrol et
-        // Varsayılan: true (tüm tenant'lar için aktif)
+        // 1. Abonelik sistemi kapalıysa device limit de çalışmasın
+        // auth_subscription = 0 (Kapalı) ise false döner
+        if (!setting('auth_subscription', false)) {
+            return false;
+        }
+
+        // 2. Device limit özelliği kapatılmışsa çalışmasın
+        // auth_device_limit_enabled = false ise false döner
+        // Varsayılan: true (abonelik açıksa device limit de aktif)
         return (bool) setting('auth_device_limit_enabled', true);
     }
 
@@ -100,25 +112,45 @@ class DeviceService
 
     /**
      * Unregister session (called on logout)
+     * NOT: shouldRun() kontrolü YOK - logout her zaman session silmeli!
      */
     public function unregisterSession(User $user): void
     {
-        if (!$this->shouldRun()) {
+        // ⚠️ shouldRun() kontrolü KALDIRILDI!
+        // Logout yapan kullanıcının session'ı HER ZAMAN silinmeli
+        // (subscription kapalı olsa bile)
+
+        $tenant = tenant();
+        if (!$tenant) {
             return;
         }
 
         $sessionId = session()->getId();
+
+        \Log::info('🔐 DeviceService::unregisterSession', [
+            'user_id' => $user->id,
+            'session_id' => $sessionId ? substr($sessionId, 0, 20) . '...' : 'NULL',
+            'tenant_id' => $tenant->id,
+        ]);
+
         if ($sessionId) {
-            DB::table($this->table)
+            $deleted = DB::table($this->table)
                 ->where('session_id', $sessionId)
                 ->delete();
+
+            \Log::info('🔐 DeviceService::unregisterSession - Deleted', [
+                'user_id' => $user->id,
+                'rows_deleted' => $deleted,
+            ]);
         }
 
-        // Log activity
-        $this->logActivity($user, 'logout');
+        // Log activity (sadece shouldRun true ise)
+        if ($this->shouldRun()) {
+            $this->logActivity($user, 'logout');
+        }
 
         // Premium cache temizle
-        \Cache::forget('user_' . $user->id . '_is_premium_tenant_' . tenant()->id);
+        \Cache::forget('user_' . $user->id . '_is_premium_tenant_' . $tenant->id);
     }
 
     /**
@@ -143,28 +175,43 @@ class DeviceService
             ->first();
 
         if (!$session) {
-            // Debug: Kayitli session'lari listele
-            $allSessions = DB::table($this->table)
-                ->where('user_id', $user->id)
-                ->get(['session_id', 'device_name', 'browser', 'last_activity'])
-                ->toArray();
+            // Session tabloda yok - yeni login olmuş olabilir veya session regenerate edilmiş
+            // Kullanıcı authenticated ise session'ı otomatik kaydet (self-healing)
 
-            \Log::warning('🔐 DeviceService: Session not found in DB!', [
+            \Log::info('🔐 DeviceService: Session not in DB - auto-registering (self-healing)', [
                 'current_session_id' => $sessionId,
                 'user_id' => $user->id,
-                'registered_sessions_count' => count($allSessions),
-                'registered_sessions' => $allSessions,
             ]);
 
-            // Session kaydi yok - baska cihazdan cikarilmis olabilir
-            return false;
-        }
+            // Session'ı kaydet
+            $this->registerSession($user);
 
-        \Log::info('🔐 DeviceService: Session found - updating activity', [
-            'session_id' => $sessionId,
-            'user_id' => $user->id,
-            'device_name' => $session->device_name ?? 'unknown',
-        ]);
+            // Kayıt sonrası device limit kontrolü
+            $limit = $this->getDeviceLimit($user);
+            $count = $this->getActiveDeviceCount($user);
+
+            // Limit asilmissa EN ESKI session'i sil (LIFO - son giren kalir)
+            if ($count > $limit) {
+                \Log::info('🔐 DeviceService: Device limit exceeded after auto-register, removing oldest', [
+                    'user_id' => $user->id,
+                    'limit' => $limit,
+                    'count' => $count,
+                ]);
+
+                // En eski session'ı bul ve sil (mevcut session hariç)
+                $oldestSession = DB::table($this->table)
+                    ->where('user_id', $user->id)
+                    ->where('session_id', '!=', $sessionId)
+                    ->orderBy('last_activity', 'asc')
+                    ->first();
+
+                if ($oldestSession) {
+                    $this->terminateSession($oldestSession->session_id, $user);
+                }
+            }
+
+            return true; // Kullanıcıyı logout etme, session kaydedildi
+        }
 
         // Activity guncelle
         DB::table($this->table)
@@ -183,8 +230,11 @@ class DeviceService
             return [];
         }
 
-        // 30 dakikadan eski session'lari temizle (stale sessions)
+        // 1. Stale sessions temizle (30 dakika inaktif)
         $this->cleanupStaleSessions($user);
+
+        // 2. Ghost sessions temizle (Redis'te olmayan DB kayitlari)
+        $this->cleanupGhostSessions($user);
 
         return DB::table($this->table)
             ->where('user_id', $user->id)
@@ -210,11 +260,19 @@ class DeviceService
 
     /**
      * Get active session count
+     * Ghost session'lari temizledikten sonra sayar
      */
     public function getActiveDeviceCount(User $user): int
     {
         if (!$this->shouldRun()) {
             return 0;
+        }
+
+        // Ghost sessions temizle (her count sorgusunda degil, sadece 5 dakikada bir)
+        $cacheKey = 'ghost_cleanup_' . $user->id . '_' . tenant()->id;
+        if (!\Cache::has($cacheKey)) {
+            $this->cleanupGhostSessions($user);
+            \Cache::put($cacheKey, true, now()->addMinutes(5));
         }
 
         return DB::table($this->table)
@@ -277,7 +335,8 @@ class DeviceService
 
     /**
      * Handle device limit after successful login
-     * Login sonrasi cagrilir - limit asildiydısa en eski session silinir
+     * Login sonrasi cagrilir - limit asilmissa en eski session(lar) silinir
+     * LIFO MANTIGI: Son giren kalir, eski cihazlar cikarilir
      */
     public function handlePostLoginDeviceLimit(User $user): void
     {
@@ -285,11 +344,50 @@ class DeviceService
             return;
         }
 
-        // 🚨 DEVICE LIMIT: Login sonrası OTOMATİK SİLME YAPMA!
-        // Sadece frontend session polling device limit modal gösterecek
-        // Kullanıcı hangi cihazı çıkaracağını SEÇMELİ
+        $limit = $this->getDeviceLimit($user);
+        $currentSessionId = session()->getId();
 
-        // Premium cache'i temizle (login sonrası fresh check için)
+        // Mevcut session sayisini al
+        $activeSessions = DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->orderBy('last_activity', 'asc') // En eski once
+            ->get();
+
+        $activeCount = $activeSessions->count();
+
+        \Log::info('🔐 handlePostLoginDeviceLimit - LIFO Check', [
+            'user_id' => $user->id,
+            'limit' => $limit,
+            'active_count' => $activeCount,
+            'current_session' => substr($currentSessionId, 0, 20) . '...',
+        ]);
+
+        // Limit asilmissa eski session'lari sil (LIFO - son giren kalir)
+        if ($activeCount > $limit) {
+            $sessionsToRemove = $activeCount - $limit;
+
+            \Log::info('🔐 LIFO: Removing oldest sessions', [
+                'user_id' => $user->id,
+                'sessions_to_remove' => $sessionsToRemove,
+            ]);
+
+            // En eski session'lari bul (mevcut session haric)
+            $oldSessions = $activeSessions
+                ->filter(fn($s) => $s->session_id !== $currentSessionId)
+                ->take($sessionsToRemove);
+
+            foreach ($oldSessions as $oldSession) {
+                \Log::info('🔐 LIFO: Terminating old session', [
+                    'session_id' => substr($oldSession->session_id, 0, 20) . '...',
+                    'device_name' => $oldSession->device_name,
+                    'last_activity' => $oldSession->last_activity,
+                ]);
+
+                $this->terminateSession($oldSession->session_id, $user);
+            }
+        }
+
+        // Premium cache'i temizle (login sonrasi fresh check icin)
         \Cache::forget('user_' . $user->id . '_is_premium_tenant_' . tenant()->id);
     }
 
@@ -376,17 +474,39 @@ class DeviceService
      */
     public function terminateSession(string $sessionId, User $actor = null): bool
     {
+        \Log::info('🔐 DeviceService::terminateSession START', [
+            'session_id' => $sessionId,
+            'actor_id' => $actor ? $actor->id : null,
+            'shouldRun' => $this->shouldRun(),
+        ]);
+
         if (!$this->shouldRun()) {
+            \Log::warning('🔐 DeviceService::terminateSession - shouldRun() returned false');
             return false;
         }
+
+        // Session var mı kontrol et
+        $sessionExists = DB::table($this->table)->where('session_id', $sessionId)->exists();
+        \Log::info('🔐 DeviceService::terminateSession - Session exists check', [
+            'session_id' => $sessionId,
+            'exists' => $sessionExists,
+        ]);
 
         // Redis'ten session'i sil
         $this->invalidateRedisSession($sessionId);
 
         // Tablodan sil
-        $deleted = DB::table($this->table)
+        $deleteCount = DB::table($this->table)
             ->where('session_id', $sessionId)
-            ->delete() > 0;
+            ->delete();
+
+        $deleted = $deleteCount > 0;
+
+        \Log::info('🔐 DeviceService::terminateSession COMPLETE', [
+            'session_id' => $sessionId,
+            'delete_count' => $deleteCount,
+            'deleted' => $deleted,
+        ]);
 
         if ($deleted && $actor) {
             $this->logActivity($actor, 'device_force_logout', [
@@ -495,21 +615,69 @@ class DeviceService
     protected function invalidateRedisSession(string $sessionId): void
     {
         try {
-            $prefix = config('database.redis.options.prefix', 'laravel_database_');
-            $sessionPrefix = config('session.cookie', 'laravel_session');
-
-            // Redis key patterns
-            $keys = [
-                $prefix . $sessionPrefix . ':' . $sessionId,
-                $prefix . 'sessions:' . $sessionId,
-                'laravel:' . $sessionId,
-            ];
-
-            foreach ($keys as $key) {
+            // Dogru Redis key'i bul ve sil
+            $key = $this->getRedisSessionKey($sessionId);
+            if ($key) {
                 Redis::del($key);
+                \Log::info('🔐 Redis session invalidated', ['key' => $key]);
             }
         } catch (\Exception $e) {
             \Log::warning('Failed to invalidate Redis session: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Check if Redis session exists
+     * Ghost session tespiti icin kullanilir
+     */
+    protected function redisSessionExists(string $sessionId): bool
+    {
+        try {
+            $key = $this->getRedisSessionKey($sessionId);
+            return $key !== null;
+        } catch (\Exception $e) {
+            \Log::warning('Redis session check failed: ' . $e->getMessage());
+            return true; // Hata durumunda session var kabul et (guvenli taraf)
+        }
+    }
+
+    /**
+     * Get the actual Redis key for a session
+     * Farkli key pattern'leri dener ve var olani dondurur
+     */
+    protected function getRedisSessionKey(string $sessionId): ?string
+    {
+        try {
+            $prefix = config('database.redis.options.prefix', 'laravel_database_');
+            $sessionCookie = config('session.cookie', 'laravel_session');
+
+            // Olasi key pattern'leri (oncelik sirasina gore)
+            $patterns = [
+                $prefix . $sessionCookie . ':' . $sessionId,
+                $prefix . 'sessions:' . $sessionId,
+                'laravel_database_' . $sessionCookie . ':' . $sessionId,
+                'laravel:sessions:' . $sessionId,
+            ];
+
+            foreach ($patterns as $key) {
+                // Redis::exists prefix ekliyor olabilir, connection uzerinden kontrol et
+                $exists = Redis::connection()->exists($key);
+                if ($exists) {
+                    return $key;
+                }
+            }
+
+            // Hicbiri bulunamadi - wildcard ara
+            $wildcardKey = '*' . $sessionId . '*';
+            $foundKeys = Redis::connection()->keys($wildcardKey);
+            if (!empty($foundKeys)) {
+                return $foundKeys[0];
+            }
+
+            return null;
+        } catch (\Exception $e) {
+            \Log::warning('Redis key lookup failed: ' . $e->getMessage());
+            return null;
         }
     }
 
@@ -518,10 +686,75 @@ class DeviceService
      */
     protected function cleanupStaleSessions(User $user): void
     {
-        DB::table($this->table)
+        // 1. Zaman bazli temizlik (30 dakika inaktif)
+        $staleByTime = DB::table($this->table)
             ->where('user_id', $user->id)
             ->where('last_activity', '<', now()->subMinutes(30))
-            ->delete();
+            ->get();
+
+        if ($staleByTime->count() > 0) {
+            \Log::info('🔐 Cleaning stale sessions (time-based)', [
+                'user_id' => $user->id,
+                'count' => $staleByTime->count(),
+            ]);
+
+            DB::table($this->table)
+                ->where('user_id', $user->id)
+                ->where('last_activity', '<', now()->subMinutes(30))
+                ->delete();
+        }
+    }
+
+    /**
+     * Cleanup ghost sessions (Redis'te olmayan DB kayitlari)
+     * Tarayici kapatildiginda logout cagrilmaz - bu ghost session'lari temizler
+     */
+    public function cleanupGhostSessions(User $user): int
+    {
+        if (!$this->shouldRun()) {
+            return 0;
+        }
+
+        $currentSessionId = session()->getId();
+        $ghostCount = 0;
+
+        // Kullanicinin tum session'larini al
+        $sessions = DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->get();
+
+        foreach ($sessions as $session) {
+            // Mevcut session'i atlama
+            if ($session->session_id === $currentSessionId) {
+                continue;
+            }
+
+            // Redis'te var mi kontrol et
+            if (!$this->redisSessionExists($session->session_id)) {
+                \Log::info('🔐 Ghost session found - removing', [
+                    'user_id' => $user->id,
+                    'session_id' => substr($session->session_id, 0, 20) . '...',
+                    'device_name' => $session->device_name,
+                    'last_activity' => $session->last_activity,
+                ]);
+
+                // DB'den sil
+                DB::table($this->table)
+                    ->where('id', $session->id)
+                    ->delete();
+
+                $ghostCount++;
+            }
+        }
+
+        if ($ghostCount > 0) {
+            \Log::info('🔐 Ghost sessions cleaned', [
+                'user_id' => $user->id,
+                'ghost_count' => $ghostCount,
+            ]);
+        }
+
+        return $ghostCount;
     }
 
     /**
@@ -589,6 +822,67 @@ class DeviceService
 
         $device = $agent->device();
         return $device ?: "{$platform} - {$browser}";
+    }
+
+    /**
+     * Enforce device limit on plan change (downgrade/cancel/expire)
+     * LIFO: Terminates oldest sessions to comply with new limit
+     *
+     * @param User $user
+     * @param int|null $newLimit Yeni device limit (null ise getDeviceLimit() kullanılır)
+     * @return int Number of terminated sessions
+     */
+    public function enforceDeviceLimitOnPlanChange(User $user, ?int $newLimit = null): int
+    {
+        if (!$this->shouldRun()) {
+            return 0;
+        }
+
+        $limit = $newLimit ?? $this->getDeviceLimit($user);
+
+        // Tüm aktif session'ları al (en eskiden yeniye)
+        $activeSessions = DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->orderBy('last_activity', 'asc')
+            ->get();
+
+        $activeCount = $activeSessions->count();
+
+        // Limit aşılmadıysa hiçbir şey yapma
+        if ($activeCount <= $limit) {
+            return 0;
+        }
+
+        // Kaç session terminate edilecek?
+        $sessionsToTerminate = $activeCount - $limit;
+
+        \Log::info('🔐 Plan change: Enforcing device limit', [
+            'user_id' => $user->id,
+            'active_sessions' => $activeCount,
+            'new_limit' => $limit,
+            'sessions_to_terminate' => $sessionsToTerminate,
+        ]);
+
+        // En eski session'ları terminate et (LIFO - en yeni kalır)
+        $terminated = 0;
+        $oldSessions = $activeSessions->take($sessionsToTerminate);
+
+        foreach ($oldSessions as $oldSession) {
+            $result = $this->terminateSession($oldSession->session_id, $user);
+            if ($result) {
+                $terminated++;
+            }
+        }
+
+        // Premium cache temizle
+        \Cache::forget('user_' . $user->id . '_is_premium_tenant_' . tenant()->id);
+
+        \Log::info('🔐 Plan change: Device limit enforced', [
+            'user_id' => $user->id,
+            'terminated_sessions' => $terminated,
+        ]);
+
+        return $terminated;
     }
 
     /**

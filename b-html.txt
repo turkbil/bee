@@ -1,207 +1,82 @@
+howler.min.js:2 HTML5 Audio pool exhausted, returning potentially locked audio object.
+(anonymous)	@	howler.min.js:2
+Promise.catch		
+_obtainHtml5Audio	@	howler.min.js:2
+create	@	howler.min.js:2
+init	@	howler.min.js:2
+(anonymous)	@	howler.min.js:4
+t	@	howler.min.js:2
+load	@	howler.min.js:2
+init	@	howler.min.js:2
+(anonymous)	@	howler.min.js:4
+o	@	howler.min.js:2
+playWithHowler	@	player-core.js?v=1765295886:1771
+(anonymous)	@	player-core.js?v=1765295886:2044
+e.emit	@	hls.ts:287
+e.trigger	@	hls.ts:298
+r.handleFragLoadError	@	base-stream-controller.ts:838
+(anonymous)	@	base-stream-controller.ts:784
+Promise.catch		
+r._doFragLoad	@	base-stream-controller.ts:784
+r._loadFragForPlayback	@	base-stream-controller.ts:367
+r.loadFragment	@	base-stream-controller.ts:343
+r.loadFragment	@	stream-controller.ts:373
+r.doTickIdle	@	stream-controller.ts:349
+r.doTick	@	stream-controller.ts:204
+e.tick	@	task-loop.ts:106
+setTimeout		
+e.tickImmediate	@	task-loop.ts:119
+r.onFragmentOrKeyLoadError	@	base-stream-controller.ts:1558
+r.onError	@	stream-controller.ts:895
+e.emit	@	hls.ts:287
+e.trigger	@	hls.ts:298
+r.handleFragLoadError	@	base-stream-controller.ts:838
+(anonymous)	@	base-stream-controller.ts:784
+Promise.catch		
+r._doFragLoad	@	base-stream-controller.ts:784
+r._loadFragForPlayback	@	base-stream-controller.ts:367
+r.loadFragment	@	base-stream-controller.ts:343
+r.loadFragment	@	stream-controller.ts:373
+r.doTickIdle	@	stream-controller.ts:349
+r.doTick	@	stream-controller.ts:204
+e.tick	@	task-loop.ts:106
+r.onLevelLoaded	@	stream-controller.ts:691
+e.emit	@	hls.ts:287
+e.trigger	@	hls.ts:298
+e.handlePlaylistLoaded	@	playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist	@	playlist-loader.ts:498
+onSuccess	@	playlist-loader.ts:314
+e.readystatechange	@	xhr-loader.ts:231
+XMLHttpRequest.send		
+e.openAndSendXhr	@	xhr-loader.ts:158
+(anonymous)	@	xhr-loader.ts:104
+Promise.then		
+e.loadInternal	@	xhr-loader.ts:102
+e.load	@	xhr-loader.ts:76
+e.load	@	playlist-loader.ts:347
+e.onManifestLoading	@	playlist-loader.ts:154
+e.emit	@	hls.ts:287
+e.trigger	@	hls.ts:298
+e.loadSource	@	hls.ts:389
+playHlsStream	@	player-core.js?v=1765295886:1938
+loadAndPlaySong	@	player-core.js?v=1765295886:1619
+await in loadAndPlaySong		
+playSongFromQueue	@	player-core.js?v=1765295886:1503
+await in playSongFromQueue		
+(anonymous)	@	player-core.js?v=1765295886:626
+setTimeout		
+loadQueueState	@	player-core.js?v=1765295886:623
+init	@	player-core.js?v=1765295886:221
+(anonymous)	@	livewire.js?id=df3a17f2:1160
+tryCatch	@	livewire.js?id=df3a17f2:1116
+evaluate	@	livewire.js?id=df3a17f2:1140
+(anonymous)	@	livewire.js?id=df3a17f2:3571
+flushHandlers	@	livewire.js?id=df3a17f2:1281
+stopDeferring	@	livewire.js?id=df3a17f2:1286
+deferHandlingDirectives	@	livewire.js?id=df3a17f2:1289
+initTree	@	livewire.js?id=df3a17f2:1479
+(anonymous)	@	livewire.js?id=df3a17f2:1428
+start	@	livewire.js?id=df3a17f2:1427
+start2	@	livewire.js?id=df3a17f2:8851
+(anonymous)	@	livewire.js?id=df3a17f2:10215
 
-<!DOCTYPE html>
-<html lang="tr" x-data="authApp()" x-init="init()" :class="darkMode ? 'dark' : ''">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="hON4DwKDHxVLm8DsBeMP61OGzWJAbrbZfVp2R87W">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Giriş Yap - Muzibu</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        'muzibu-black': '#121212',
-                        'muzibu-dark': '#181818',
-                        'muzibu-coral': '#ff7f50',
-                        'muzibu-coral-light': '#ff9770',
-                        'muzibu-coral-dark': '#ff6a3d',
-                        'muzibu-gray': '#282828',
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        body { font-family: 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .slide-in { animation: slideIn 0.4s ease-out; }
-    </style>
-
-    <!-- Livewire Styles --><style >[wire\:loading][wire\:loading], [wire\:loading\.delay][wire\:loading\.delay], [wire\:loading\.inline-block][wire\:loading\.inline-block], [wire\:loading\.inline][wire\:loading\.inline], [wire\:loading\.block][wire\:loading\.block], [wire\:loading\.flex][wire\:loading\.flex], [wire\:loading\.table][wire\:loading\.table], [wire\:loading\.grid][wire\:loading\.grid], [wire\:loading\.inline-flex][wire\:loading\.inline-flex] {display: none;}[wire\:loading\.delay\.none][wire\:loading\.delay\.none], [wire\:loading\.delay\.shortest][wire\:loading\.delay\.shortest], [wire\:loading\.delay\.shorter][wire\:loading\.delay\.shorter], [wire\:loading\.delay\.short][wire\:loading\.delay\.short], [wire\:loading\.delay\.default][wire\:loading\.delay\.default], [wire\:loading\.delay\.long][wire\:loading\.delay\.long], [wire\:loading\.delay\.longer][wire\:loading\.delay\.longer], [wire\:loading\.delay\.longest][wire\:loading\.delay\.longest] {display: none;}[wire\:offline][wire\:offline] {display: none;}[wire\:dirty]:not(textarea):not(input):not(select) {display: none;}:root {--livewire-progress-bar-color: #2299dd;}[x-cloak] {display: none !important;}[wire\:cloak] {display: none !important;}</style>
-</head>
-<body class="min-h-screen bg-gradient-to-br from-muzibu-coral via-orange-500 to-red-500 dark:from-muzibu-black dark:via-muzibu-dark dark:to-black transition-colors duration-300">
-    <!-- Dark/Light Mode Toggle -->
-    <div class="fixed top-6 right-6 z-50">
-        <button @click="toggleDarkMode()" class="w-12 h-12 rounded-full bg-white/30 dark:bg-white/10 backdrop-blur-lg border border-white/50 dark:border-white/30 flex items-center justify-center hover:scale-110 transition-all shadow-xl">
-            <i :class="darkMode ? 'fas fa-sun text-yellow-300' : 'fas fa-moon text-white'" class="text-lg"></i>
-        </button>
-    </div>
-
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-md">
-            <!-- Logo & Back to Home -->
-            <div class="text-center mb-8 slide-in">
-                <a href="/" class="inline-flex items-center justify-center gap-3 mb-6 group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark dark:from-muzibu-coral-light dark:to-muzibu-coral rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all">
-                        <i class="fas fa-music text-white text-2xl"></i>
-                    </div>
-                    <span class="text-4xl font-bold text-white drop-shadow-lg">Muzibu</span>
-                </a>
-                <p class="text-white/90 dark:text-gray-300 text-lg font-medium">Hesabınıza giriş yapın</p>
-            </div>
-
-            <!-- Auth Card -->
-            <div class="bg-white dark:bg-muzibu-dark rounded-3xl shadow-2xl p-8 slide-in backdrop-blur-xl border border-white/20 dark:border-white/10">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Hoş Geldiniz</h2>
-    <p class="text-gray-600 dark:text-gray-400 mb-6">Hesabınıza giriş yapın</p>
-
-    <!-- Session Status -->
-    
-    <form method="POST" action="https://muzibu.com.tr/login" class="space-y-5">
-        <input type="hidden" name="_token" value="hON4DwKDHxVLm8DsBeMP61OGzWJAbrbZfVp2R87W" autocomplete="off">
-        <!-- Email -->
-        <div>
-            <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                E-posta Adresi
-            </label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                value=""
-                required
-                autofocus
-                autocomplete="username"
-                class="w-full px-4 py-3 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all "
-                placeholder="ornek@email.com"
-            >
-                    </div>
-
-        <!-- Password -->
-        <div x-data="{ show: false }">
-            <label for="password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Şifre
-            </label>
-            <div class="relative">
-                <input
-                    :type="show ? 'text' : 'password'"
-                    id="password"
-                    name="password"
-                    required
-                    autocomplete="current-password"
-                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all "
-                    placeholder="••••••••"
-                >
-                <button
-                    type="button"
-                    @click="show = !show"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                >
-                    <i :class="show ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                </button>
-            </div>
-                    </div>
-
-        <!-- Remember Me & Forgot Password -->
-        <div class="flex items-center justify-between">
-            <label class="flex items-center cursor-pointer">
-                <input
-                    type="checkbox"
-                    name="remember"
-                    class="w-4 h-4 border-gray-300 rounded text-muzibu-coral focus:ring-muzibu-coral focus:ring-offset-0"
-                >
-                <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Beni Hatırla</span>
-            </label>
-
-                            <a href="https://muzibu.com.tr/forgot-password" class="text-sm font-semibold text-muzibu-coral hover:text-muzibu-coral-light transition-colors">
-                    Şifremi Unuttum
-                </a>
-                    </div>
-
-        <!-- Submit Button -->
-        <button
-            type="submit"
-            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-dark hover:from-muzibu-coral-light hover:to-muzibu-coral text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
-        >
-            <i class="fas fa-sign-in-alt mr-2"></i>
-            Giriş Yap
-        </button>
-    </form>
-            </div>
-
-            <!-- Footer Links -->
-            <div class="text-center mt-6 space-y-3">
-                    <div class="text-white/80 dark:text-gray-400">
-        Hesabınız yok mu?
-        <a href="https://muzibu.com.tr/register" class="font-semibold text-white dark:text-muzibu-coral-light hover:text-white/100 dark:hover:text-muzibu-coral transition-colors">
-            Ücretsiz Kaydolun
-        </a>
-    </div>
-
-                <div class="text-white/80 dark:text-gray-400 text-sm">
-                    <a href="/" class="hover:text-white dark:hover:text-white transition-colors">← Ana Sayfaya Dön</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    
-
-    <!-- Livewire Scripts -->
-<script src="/livewire/livewire.js?id=df3a17f2"   data-csrf="hON4DwKDHxVLm8DsBeMP61OGzWJAbrbZfVp2R87W" data-update-uri="/livewire/update" data-navigate-once="true"></script>
-
-    <script>
-        function authApp() {
-            return {
-                darkMode: false,
-                showPassword: false,
-
-                init() {
-                    // Try to get dark mode from localStorage (with error handling)
-                    try {
-                        this.darkMode = localStorage.getItem('darkMode') === 'true';
-                        if (this.darkMode) {
-                            document.documentElement.classList.add('dark');
-                        }
-                    } catch (e) {
-                        // localStorage not available (iframe, private mode, etc.)
-                        console.warn('localStorage not available:', e.message);
-                    }
-                },
-
-                toggleDarkMode() {
-                    this.darkMode = !this.darkMode;
-
-                    try {
-                        localStorage.setItem('darkMode', this.darkMode);
-                    } catch (e) {
-                        // localStorage not available, just toggle visually
-                        console.warn('Cannot save dark mode preference:', e.message);
-                    }
-
-                    if (this.darkMode) {
-                        document.documentElement.classList.add('dark');
-                    } else {
-                        document.documentElement.classList.remove('dark');
-                    }
-                },
-
-                togglePasswordVisibility() {
-                    this.showPassword = !this.showPassword;
-                }
-            }
-        }
-    </script>
-</body>
-</html>

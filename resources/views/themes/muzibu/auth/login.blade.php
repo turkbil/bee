@@ -1,112 +1,170 @@
 @extends('themes.muzibu.auth.layout')
 
-@section('title', 'Giriş Yap - Muzibu')
-@section('subtitle', 'Hesabınıza giriş yapın')
+@section('title', 'Giris Yap - Muzibu')
 
 @section('content')
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Hoş Geldiniz</h2>
-    <p class="text-gray-600 dark:text-gray-400 mb-6">Hesabınıza giriş yapın</p>
+    <!-- Header -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold text-white mb-2">Tekrar Hos Geldiniz</h2>
+        <p class="text-dark-200">Hesabiniza giris yapin</p>
+    </div>
 
     <!-- Session Status -->
     @if (session('status'))
-        <div class="mb-4 px-4 py-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 rounded-lg text-sm">
-            {{ session('status') }}
+        <div class="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+            <div class="flex items-center gap-3 text-emerald-400 text-sm">
+                <i class="fas fa-check-circle"></i>
+                <span>{{ session('status') }}</span>
+            </div>
         </div>
     @endif
 
-    <form method="POST" action="{{ route('login') }}" class="space-y-5" x-data="{ loading: false, showPassword: false }" @submit="loading = true">
+    <!-- CSRF/Session Error -->
+    @if (session('error'))
+        <div class="mb-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+            <div class="flex items-center gap-3 text-amber-400 text-sm">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('login') }}" class="space-y-5"
+          @submit="loading = true; setTimeout(() => loading = false, 10000)">
         @csrf
 
         <!-- Email -->
         <div>
-            <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label for="email" class="block text-sm font-medium text-dark-100 mb-2">
                 E-posta Adresi
             </label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                value="{{ old('email') }}"
-                required
-                autofocus
-                autocomplete="username"
-                class="w-full px-4 py-3 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all @error('email') border-red-500 dark:border-red-500 @enderror"
-                placeholder="ornek@email.com"
-            >
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-envelope text-dark-300"></i>
+                </div>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ old('email') }}"
+                    required
+                    autofocus
+                    autocomplete="username"
+                    class="w-full pl-12 pr-4 py-3.5 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('email') border-red-500/50 @enderror"
+                    placeholder="ornek@email.com"
+                >
+            </div>
             @error('email')
-                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
             @enderror
         </div>
 
         <!-- Password -->
         <div>
-            <label for="password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Şifre
-            </label>
+            <div class="flex items-center justify-between mb-2">
+                <label for="password" class="block text-sm font-medium text-dark-100">
+                    Sifre
+                </label>
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}" class="text-sm text-mz-400 hover:text-mz-300 transition-colors">
+                        Sifremi Unuttum
+                    </a>
+                @endif
+            </div>
             <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-dark-300"></i>
+                </div>
                 <input
                     :type="showPassword ? 'text' : 'password'"
                     id="password"
                     name="password"
                     required
                     autocomplete="current-password"
-                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all @error('password') border-red-500 dark:border-red-500 @enderror"
+                    class="w-full pl-12 pr-12 py-3.5 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('password') border-red-500/50 @enderror"
                     placeholder="••••••••"
                 >
                 <button
                     type="button"
                     @click="showPassword = !showPassword"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-dark-300 hover:text-white transition-colors"
                 >
                     <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                 </button>
             </div>
             @error('password')
-                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
             @enderror
         </div>
 
-        <!-- Remember Me & Forgot Password -->
-        <div class="flex items-center justify-between">
-            <label class="flex items-center cursor-pointer">
-                <input
-                    type="checkbox"
-                    name="remember"
-                    class="w-4 h-4 border-gray-300 rounded text-muzibu-coral focus:ring-muzibu-coral focus:ring-offset-0"
-                >
-                <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Beni Hatırla</span>
+        <!-- Remember Me -->
+        <div class="flex items-center">
+            <input
+                type="checkbox"
+                id="remember"
+                name="remember"
+                class="w-4 h-4 bg-dark-700 border-dark-500 rounded text-mz-500 focus:ring-mz-500 focus:ring-offset-0 focus:ring-offset-dark-800"
+            >
+            <label for="remember" class="ml-3 text-sm text-dark-200">
+                Beni Hatirla
             </label>
-
-            @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" class="text-sm font-semibold text-muzibu-coral hover:text-muzibu-coral-light transition-colors">
-                    Şifremi Unuttum
-                </a>
-            @endif
         </div>
 
         <!-- Submit Button -->
         <button
             type="submit"
-            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-dark hover:from-muzibu-coral-light hover:to-muzibu-coral text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105"
-            :class="loading ? 'opacity-70 cursor-wait' : ''"
+            :disabled="loading"
+            class="w-full py-4 bg-gradient-to-r from-mz-500 to-mz-600 hover:from-mz-400 hover:to-mz-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-mz-500/20 hover:shadow-mz-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-            <span x-show="!loading" class="inline-flex items-center justify-center">
-                <i class="fas fa-sign-in-alt mr-2"></i>
-                Giriş Yap
-            </span>
-            <span x-show="loading" class="inline-flex items-center justify-center">
-                <i class="fas fa-spinner fa-spin mr-2"></i>
-                Giriş Yapılıyor...
-            </span>
+            <template x-if="!loading">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Giris Yap
+                </span>
+            </template>
+            <template x-if="loading">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Giris Yapiliyor...
+                </span>
+            </template>
         </button>
+
+        <!-- Divider -->
+        <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-dark-600"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+                <span class="px-4 bg-dark-800 text-dark-300">veya</span>
+            </div>
+        </div>
+
+        <!-- Social Login Placeholder -->
+        <div class="grid grid-cols-2 gap-3">
+            <button type="button" disabled class="flex items-center justify-center gap-2 py-3 bg-dark-700/50 border border-dark-500 rounded-xl text-dark-300 cursor-not-allowed opacity-50">
+                <i class="fab fa-google"></i>
+                <span class="text-sm">Google</span>
+            </button>
+            <button type="button" disabled class="flex items-center justify-center gap-2 py-3 bg-dark-700/50 border border-dark-500 rounded-xl text-dark-300 cursor-not-allowed opacity-50">
+                <i class="fab fa-apple"></i>
+                <span class="text-sm">Apple</span>
+            </button>
+        </div>
     </form>
 @endsection
 
 @section('footer-links')
-    <div class="text-white/80 dark:text-gray-400">
-        Hesabınız yok mu?
-        <a href="{{ route('register') }}" class="font-semibold text-white dark:text-muzibu-coral-light hover:text-white/100 dark:hover:text-muzibu-coral transition-colors">
-            Ücretsiz Kaydolun
+    <p class="text-dark-300">
+        Hesabiniz yok mu?
+        <a href="{{ route('register') }}" class="text-mz-400 hover:text-mz-300 font-medium transition-colors">
+            Ucretsiz Kaydolun
         </a>
-    </div>
+    </p>
 @endsection

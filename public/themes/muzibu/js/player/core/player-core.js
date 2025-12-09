@@ -41,6 +41,7 @@ function muzibuApp() {
         deviceLimit: 1, // Kullanıcı cihaz limiti
         selectedDeviceIds: [], // Seçilen cihazların session ID'leri (çoklu seçim için array)
         deviceTerminateLoading: false, // Device terminate loading state
+        deviceLimitExceeded: false, // 🛑 Device limit aşıldı mı? (playback engelle)
         sessionCheckFailCount: 0, // Session check başarısız deneme sayısı (login sonrası)
         loginForm: {
             email: safeStorage.getItem('remembered_email') || '',
@@ -232,26 +233,36 @@ function muzibuApp() {
             }
 
             // 🔐 DEVICE LIMIT WARNING: Check localStorage flag after logout
+            // Bu flag sadece başka cihazdan çıkarıldığında (session polling) set edilir
             try {
                 const deviceLimitWarning = localStorage.getItem('device_limit_warning');
                 if (deviceLimitWarning === 'true') {
-                    console.log('🔐 Showing device limit warning modal after logout');
+                    console.log('🔐 Session was terminated from another device - showing warning modal');
                     this.showDeviceLimitWarning = true;
-                    // Fetch device limit from API (async, modal will show with default until loaded)
-                    this.fetchDeviceLimitInfo();
                     localStorage.removeItem('device_limit_warning');
                 }
             } catch (e) {
                 console.warn('localStorage not available:', e.message);
             }
 
-            // 🔐 DEVICE LIMIT: Check meta tag for session flash (2. cihaz login sonrası)
+            // 🔐 DEVICE LIMIT: Check meta tag for session flash (login sonrası limit aşıldıysa)
+            // Bu durumda SELECTION MODAL göster (kullanıcı seçim yapsın)
             const deviceLimitMeta = document.querySelector('meta[name="device-limit-exceeded"]');
             if (deviceLimitMeta && deviceLimitMeta.content === 'true') {
-                console.log('🔐 Device limit exceeded on login - showing warning modal');
-                this.showDeviceLimitWarning = true;
-                this.deviceLimit = parseInt(document.querySelector('meta[name="device-limit"]')?.content || '1');
-                this.activeDeviceCount = parseInt(document.querySelector('meta[name="active-device-count"]')?.content || '2');
+                console.log('🔐 Device limit exceeded on login - showing SELECTION modal (user chooses which to remove)');
+
+                // 🔧 FIX: Selection modal göster, warning modal DEĞİL!
+                // Önce cihaz listesini çek (device limit de API'den gelir - 3-tier hierarchy)
+                // Backend: 1) User->device_limit 2) SubscriptionPlan->device_limit 3) Setting('auth_device_limit')
+                this.fetchActiveDevices().then(() => {
+                    this.showDeviceSelectionModal = true;
+                });
+            }
+
+            // 🔐 DEVICE LIMIT: Her sayfa yüklemesinde kontrol et (login olmuş kullanıcılar için)
+            // Meta tag yoksa bile, API'den cihaz sayısı ve limiti al, limit aşılmışsa modal göster
+            if (this.isLoggedIn && !deviceLimitMeta) {
+                this.checkDeviceLimitOnPageLoad();
             }
 
             // SPA Navigation: Handle browser back/forward
@@ -1353,6 +1364,18 @@ function muzibuApp() {
                 // ❌ HTTP Error Check
                 if (!streamResponse.ok) {
                     const errorData = await streamResponse.json().catch(() => ({}));
+
+                    // 🔐 DEVICE LIMIT CHECK: Stream API'den gelen device limit hatası
+                    if (streamResponse.status === 403 && errorData.error === 'device_limit_exceeded') {
+                        console.log('🔐 Device limit exceeded on stream - showing modal');
+                        this.deviceLimit = errorData.device_limit || 1;
+                        this.activeDevices = []; // Modal açılınca fetchActiveDevices çağrılacak
+                        this.showDeviceSelectionModal = true;
+                        this.fetchActiveDevices(); // Cihaz listesini getir
+                        this.isLoading = false;
+                        return;
+                    }
+
                     if (streamResponse.status === 404) {
                         this.showToast('Şarkı bulunamadı', 'error');
                     } else if (streamResponse.status >= 500) {
@@ -1360,6 +1383,7 @@ function muzibuApp() {
                     } else {
                         this.showToast(errorData.message || 'Bir hata oluştu', 'error');
                     }
+                    this.isLoading = false;
                     return;
                 }
 
@@ -1419,6 +1443,12 @@ function muzibuApp() {
         async playSongFromQueue(index, autoplay = true) {
             if (index < 0 || index >= this.queue.length) return;
 
+            // 🛑 Device limit exceeded - don't try to play anything
+            if (this.deviceLimitExceeded) {
+                console.log('🚨 Device limit exceeded - blocking playback');
+                return;
+            }
+
             const song = this.queue[index];
             this.currentSong = song;
             this.queueIndex = index;
@@ -1444,11 +1474,37 @@ function muzibuApp() {
                     const response = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
 
                     if (!response.ok) {
-                        this.showToast(`Şarkı yüklenemedi, sonrakine geçiliyor...`, 'warning');
-                        if (this.queueIndex < this.queue.length - 1) {
-                            await this.nextTrack();
-                        } else {
-                            this.isPlaying = false;
+                        // 🛑 403 = Device limit exceeded OR Session terminated
+                        if (response.status === 403) {
+                            const errorData = await response.json().catch(() => ({}));
+
+                            // 🔐 Session terminated - another device logged in (LIFO)
+                            // 🔥 FIX: Sonsuz döngü önleme - zaten handle ediliyorsa tekrar çağırma
+                            if (errorData.error === 'session_terminated') {
+                                if (!this._sessionTerminatedHandling) {
+                                    console.log('🔐 Session terminated on stream - redirecting to login');
+                                    this.handleSessionTerminated(errorData.message);
+                                } else {
+                                    console.log('🔐 Session terminated already being handled, skipping stream retry...');
+                                }
+                                return;
+                            }
+
+                            if (errorData.error === 'device_limit_exceeded' || errorData.show_device_modal) {
+                                console.log('🚨 Device limit exceeded on stream - showing modal');
+                                this.handleDeviceLimitExceeded();
+                                return; // Don't try next track!
+                            }
+                        }
+
+                        // Other errors - try next track (but only if not device limited AND not session terminated)
+                        if (!this.deviceLimitExceeded && !this._sessionTerminatedHandling) {
+                            this.showToast(`Şarkı yüklenemedi, sonrakine geçiliyor...`, 'warning');
+                            if (this.queueIndex < this.queue.length - 1) {
+                                await this.nextTrack();
+                            } else {
+                                this.isPlaying = false;
+                            }
                         }
                         return;
                     }
@@ -1724,6 +1780,18 @@ function muzibuApp() {
             console.log('🔍 URL type:', typeof url);
             console.log('🔍 URL length:', url?.length);
             console.log('🔍 Autoplay:', autoplay);
+
+            // 🧹 CLEANUP: Eski Howl instance'ını temizle (Audio pool exhausted önleme)
+            if (this.howl) {
+                try {
+                    this.howl.stop();
+                    this.howl.unload();
+                    console.log('🧹 Previous Howl instance unloaded');
+                } catch (e) {
+                    console.warn('⚠️ Howl cleanup warning:', e);
+                }
+                this.howl = null;
+            }
 
             // Determine format from URL or default to mp3
             let format = ['mp3'];
@@ -2004,9 +2072,9 @@ onplay: function() {
                             // 🔐 Use signed fallback URL from API response
                             self.showToast('MP3 ile çalıyor, HLS hazırlanıyor...', 'info');
 
-                            // MP3 ile çal (signed URL)
-                            console.log('🔍 About to call playWithHowler with:', self.currentFallbackUrl);
-                            self.playWithHowler(self.currentFallbackUrl, targetVolume);
+                            // MP3 ile çal (signed URL) - autoplay parametresini aktar!
+                            console.log('🔍 About to call playWithHowler with:', self.currentFallbackUrl, 'autoplay:', autoplay);
+                            self.playWithHowler(self.currentFallbackUrl, targetVolume, autoplay);
                         } else {
                             self.showToast('Şarkı yüklenemedi', 'error');
                             self.isPlaying = false;
@@ -2805,49 +2873,37 @@ onplay: function() {
 
             console.log('🚪 Logging out user...');
 
-            // Hemen UI'ı güncelle (SPA-friendly)
+            // Hemen UI'ı güncelle
             this.isLoggingOut = true;
+
+            // State temizle (logout öncesi)
             this.isLoggedIn = false;
             this.currentUser = null;
-            this.showAuthModal = null;
+            // NOT: Player state'i (queue, currentSong) silmiyoruz - kullanıcı tekrar giriş yapınca devam edebilsin
 
-            try {
-                // Logout isteğini BEKLE
-                const response = await fetch('/logout', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    },
-                    credentials: 'same-origin'
-                });
-
-                console.log('✅ Logout successful - SPA mode maintained!');
-                console.log('👤 User logged out:', {
-                    isLoggedIn: this.isLoggedIn,
-                    currentUser: this.currentUser
-                });
-
-                // Toast mesajı
-                this.showToast('Başarıyla çıkış yaptınız! 👋', 'success');
-
-                // SPA-friendly: Sayfayı YENILEME, sadece state temizle
-                this.isLoggingOut = false;
-
-                // 🔐 CSRF token yenile (logout sonrası session regenerate edilir)
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.csrf_token) {
-                        document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.csrf_token);
-                        console.log('🔐 CSRF token refreshed after logout');
-                    }
-                }
-            } catch (error) {
-                console.error('❌ Logout error:', error);
-                this.isLoggingOut = false;
-                this.showToast('Çıkış yapılırken hata oluştu', 'error');
+            // Session polling durdur
+            if (this.sessionPollInterval) {
+                clearInterval(this.sessionPollInterval);
+                this.sessionPollInterval = null;
             }
+
+            // 🔐 FORM-BASED LOGOUT: CSRF token ile hidden form oluştur ve submit et
+            // Bu yöntem CSRF mismatch sorununu çözer
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/logout';
+            form.style.display = 'none';
+
+            // CSRF token
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            form.appendChild(csrfInput);
+
+            // Form'u body'e ekle ve submit et
+            document.body.appendChild(form);
+            form.submit();
         },
 
         // 🧹 Clean queue: Remove null/undefined songs
@@ -3244,6 +3300,17 @@ onplay: function() {
         },
 
         /**
+         * 🔐 STOP SESSION POLLING: Clear the polling interval
+         */
+        stopSessionPolling() {
+            if (this.sessionPollInterval) {
+                clearInterval(this.sessionPollInterval);
+                this.sessionPollInterval = null;
+                console.log('🔐 Session polling stopped');
+            }
+        },
+
+        /**
          * 🔐 CHECK SESSION: Verify session is still valid
          * Backend checks if session exists in DB (device limit enforcement)
          */
@@ -3272,10 +3339,16 @@ onplay: function() {
 
                     // Handle based on reason
                     if (data.reason === 'device_limit_exceeded') {
-                        // 🚨 DEVICE LIMIT EXCEEDED: Başka cihazdan giriş yapıldı
-                        // Session DB'den silinmiş - modal göster ve bilgilendir
-                        console.log('🚨 Device limit exceeded - session was terminated from another device');
+                        // 🚨 DEVICE LIMIT EXCEEDED: Limit aşık - modal göster
+                        console.log('🚨 Device limit exceeded - showing modal');
                         this.handleDeviceLimitExceeded();
+                    } else if (data.reason === 'session_terminated') {
+                        // 🔐 SESSION TERMINATED: Başka cihazdan giriş yapıldı (LIFO)
+                        // 🔥 FIX: Sonsuz döngü önleme
+                        if (!this._sessionTerminatedHandling) {
+                            console.log('🔐 Session terminated - another device logged in');
+                            this.handleSessionTerminated(data.message);
+                        }
                     } else {
                         // Silent logout (session expired or not authenticated)
                         this.handleSilentLogout();
@@ -3291,23 +3364,22 @@ onplay: function() {
         },
 
         /**
-         * 🔐 DEVICE LIMIT EXCEEDED: Force logout immediately
-         * Başka cihazdan giriş yapıldı - direkt çıkış yap
+         * 🔐 DEVICE LIMIT EXCEEDED: Show modal to select which device to terminate
+         * Limit aşıldı - kullanıcı hangi cihazı çıkaracağını seçsin
          */
         handleDeviceLimitExceeded() {
-            console.log('🔐 Device limit exceeded - forcing logout');
+            console.log('🔐 Device limit exceeded - showing device selection modal');
 
-            // Stop playback immediately
-            this.pause();
+            // 🛑 Set device limit flag to prevent further playback attempts
+            this.deviceLimitExceeded = true;
 
-            // Clear player state
-            this.clearState();
+            // Stop playback immediately (use stopCurrentPlayback instead of pause)
+            this.stopCurrentPlayback();
+            this.isPlaying = false;
 
-            // Force logout FIRST
-            this.forceLogout();
-
-            // THEN show modal after page reload (localStorage flag)
-            localStorage.setItem('device_limit_warning', 'true');
+            // Show device selection modal (don't logout - let user choose)
+            this.showDeviceSelectionModal = true;
+            this.fetchActiveDevices(); // Cihaz listesini getir
         },
 
         /**
@@ -3316,6 +3388,55 @@ onplay: function() {
         handleSilentLogout() {
             console.log('🔐 Session expired - silent logout');
             this.forceLogout();
+        },
+
+        /**
+         * 🔐 SESSION TERMINATED: Başka cihazdan giriş yapıldı
+         * Kullanıcıya bilgi ver ve logout yap
+         *
+         * 🔥 FIX: Sonsuz döngü önleme - önce logout API çağır, sonra yönlendir
+         */
+        handleSessionTerminated(message) {
+            // 🔥 Sonsuz döngü önleme - zaten işleniyor mu?
+            if (this._sessionTerminatedHandling) {
+                console.log('🔐 Session terminated already being handled, skipping...');
+                return;
+            }
+            this._sessionTerminatedHandling = true;
+
+            console.log('🔐 Session terminated by another device');
+
+            // Stop playback
+            this.stopCurrentPlayback();
+            this.isPlaying = false;
+
+            // Clear session data
+            this.isLoggedIn = false;
+            this.currentUser = null;
+            this.deviceLimitExceeded = true;
+
+            // 🔥 Session polling'i durdur (döngü önleme)
+            this.stopSessionPolling();
+
+            // Show notification to user
+            const defaultMessage = 'Başka bir cihazdan giriş yapıldı. Bu oturum sonlandırıldı.';
+            this.showToast(message || defaultMessage, 'warning', 5000);
+
+            // 🔥 FIX: Önce logout API çağır, cookie'yi temizle, sonra yönlendir
+            fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                },
+                credentials: 'same-origin'
+            }).finally(() => {
+                // Logout başarılı veya başarısız olsa da login'e yönlendir
+                setTimeout(() => {
+                    window.location.href = '/login?reason=session_terminated';
+                }, 1500);
+            });
         },
 
         /**
@@ -3345,34 +3466,101 @@ onplay: function() {
          */
         async fetchActiveDevices() {
             try {
-                const response = await fetch('/api/auth/me', {
+                // 🔧 FIX: Doğru endpoint'i kullan - /api/auth/active-devices
+                const response = await fetch('/api/auth/active-devices', {
                     headers: {
                         'Accept': 'application/json',
                         'X-Requested-With': 'XMLHttpRequest'
-                    }
+                    },
+                    credentials: 'same-origin'
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch active devices');
+                    console.warn('🔐 Active devices fetch failed:', response.status);
+                    // Fallback: /api/auth/me ile device limit al
+                    await this.fetchDeviceLimitFromMe();
+                    return;
                 }
 
                 const data = await response.json();
 
-                // Update device limit from API (dynamic from subscription/settings)
-                if (data.authenticated && data.user) {
-                    this.deviceLimit = data.user.device_limit || 1;
-                    console.log('🔐 Device limit updated from API:', this.deviceLimit);
+                if (data.success) {
+                    this.activeDevices = data.devices || [];
+                    // Device limit'i de API'den al
+                    if (data.device_limit) {
+                        this.deviceLimit = data.device_limit;
+                    }
+                    console.log('🔐 Active devices fetched:', this.activeDevices.length, 'limit:', this.deviceLimit, this.activeDevices);
+                } else {
+                    this.activeDevices = [];
                 }
-
-                // Note: /api/auth/me doesn't return active_devices yet
-                // We need to modify it or create a new endpoint
-                // For now, use empty array
-                this.activeDevices = data.active_devices || [];
-
-                console.log('🔐 Active devices fetched:', this.activeDevices.length);
             } catch (error) {
                 console.error('Failed to fetch active devices:', error);
                 this.activeDevices = [];
+            }
+        },
+
+        /**
+         * 🔐 FETCH DEVICE LIMIT FROM ME: Fallback method
+         */
+        async fetchDeviceLimitFromMe() {
+            try {
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.authenticated && data.user) {
+                        this.deviceLimit = data.user.device_limit || 1;
+                        console.log('🔐 Device limit from /me:', this.deviceLimit);
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to fetch device limit:', error);
+            }
+        },
+
+        /**
+         * 🔐 CHECK DEVICE LIMIT ON PAGE LOAD: Her sayfa yüklemesinde limit kontrolü
+         * API'den cihaz sayısı ve limiti al, limit aşılmışsa selection modal göster
+         */
+        async checkDeviceLimitOnPageLoad() {
+            try {
+                const response = await fetch('/api/auth/active-devices', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
+
+                if (!response.ok) {
+                    console.warn('🔐 Device limit check failed:', response.status);
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    this.activeDevices = data.devices || [];
+                    this.deviceLimit = data.device_limit || 1;
+
+                    const deviceCount = this.activeDevices.length;
+                    console.log('🔐 Page load device check:', deviceCount, 'devices, limit:', this.deviceLimit);
+
+                    // Limit aşıldıysa selection modal göster
+                    if (deviceCount > this.deviceLimit) {
+                        console.log('🔐 Device limit exceeded on page load - showing SELECTION modal');
+                        this.showDeviceSelectionModal = true;
+                    }
+                }
+            } catch (error) {
+                console.error('🔐 Device limit check error:', error);
             }
         },
 
@@ -3398,26 +3586,32 @@ onplay: function() {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
+                        credentials: 'same-origin',
                         body: JSON.stringify({ session_id: sessionId })
-                    }).then(res => res.json());
+                    }).then(res => res.json()).catch(err => ({ success: false, error: err.message }));
                 });
 
                 const results = await Promise.all(promises);
-                const allSuccess = results.every(data => data.success);
+                const successCount = results.filter(data => data.success).length;
+                const failCount = results.filter(data => !data.success).length;
 
-                if (allSuccess) {
-                    console.log('✅ Selected devices terminated successfully');
-                    this.showToast(`${this.selectedDeviceIds.length} cihaz çıkış yaptırıldı`, 'success');
+                console.log(`🔐 Terminate results: ${successCount} success, ${failCount} failed`, results);
+
+                if (successCount > 0) {
+                    this.showToast(`${successCount} cihaz çıkış yaptırıldı`, 'success');
 
                     // Close modals and refresh
                     this.showDeviceSelectionModal = false;
                     this.showDeviceLimitWarning = false;
                     this.selectedDeviceIds = [];
 
+                    // 🔓 Reset device limit flag - user can play again
+                    this.deviceLimitExceeded = false;
+
                     // Refresh device list or reload page
                     window.location.reload();
                 } else {
-                    alert('Bazı cihazlar çıkış yaptırılamadı');
+                    alert('Cihazlar çıkış yaptırılamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
                 }
             } catch (error) {
                 console.error('Device termination failed:', error);
@@ -3438,43 +3632,56 @@ onplay: function() {
                 return;
             }
 
-            if (!confirm(`${otherDevices.length} cihazın tümünü çıkarmak istediğinize emin misiniz?`)) {
-                return;
-            }
-
             this.deviceTerminateLoading = true;
 
             try {
                 // Tüm diğer cihazlar için terminate isteği gönder
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                console.log('🔐 CSRF Token:', csrfToken ? 'Found' : 'MISSING!');
+                console.log('🔐 Terminating devices:', otherDevices.map(d => d.session_id));
+
                 const promises = otherDevices.map(device => {
                     return fetch('/api/auth/terminate-device', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                            'X-CSRF-TOKEN': csrfToken,
                             'X-Requested-With': 'XMLHttpRequest'
                         },
+                        credentials: 'same-origin',
                         body: JSON.stringify({ session_id: device.session_id })
-                    }).then(res => res.json());
+                    }).then(async res => {
+                        const data = await res.json();
+                        console.log(`🔐 Terminate ${device.session_id.substring(0,8)}... Status: ${res.status}`, data);
+                        return data;
+                    }).catch(err => {
+                        console.error(`🔐 Terminate ${device.session_id.substring(0,8)}... ERROR:`, err);
+                        return { success: false, error: err.message };
+                    });
                 });
 
                 const results = await Promise.all(promises);
-                const allSuccess = results.every(data => data.success);
+                const successCount = results.filter(data => data.success).length;
+                const failCount = results.filter(data => !data.success).length;
 
-                if (allSuccess) {
-                    console.log('✅ All other devices terminated successfully');
-                    this.showToast(`${otherDevices.length} cihaz çıkış yaptırıldı`, 'success');
+                console.log(`🔐 Terminate results: ${successCount} success, ${failCount} failed`, results);
+
+                if (successCount > 0) {
+                    this.showToast(`${successCount} cihaz çıkış yaptırıldı`, 'success');
 
                     // Close modals and refresh
                     this.showDeviceSelectionModal = false;
                     this.showDeviceLimitWarning = false;
                     this.selectedDeviceIds = [];
 
+                    // 🔓 Reset device limit flag - user can play again
+                    this.deviceLimitExceeded = false;
+
                     // Refresh device list or reload page
                     window.location.reload();
                 } else {
-                    alert('Bazı cihazlar çıkış yaptırılamadı');
+                    alert('Cihazlar çıkış yaptırılamadı. Lütfen sayfayı yenileyip tekrar deneyin.');
                 }
             } catch (error) {
                 console.error('Device termination failed:', error);

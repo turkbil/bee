@@ -143,6 +143,14 @@
         .skeleton-shimmer {
             animation: shimmer 1.5s infinite;
         }
+
+        /* Topbar Background - Header'ın koyusu */
+        #top-bar {
+            background-color: #f3f4f6; /* gray-100 - light mode */
+        }
+        .dark #top-bar {
+            background-color: #0a0f1a; /* slate-900'dan koyu - dark mode */
+        }
     </style>
 
     {{-- AI Chat CSS - Load in head for styling --}}
@@ -201,11 +209,12 @@
 
         {{-- Top Info Bar - CSS ile yukarı kayacak --}}
         <div id="top-bar"
-             class="bg-slate-100 dark:bg-slate-950 border-b border-gray-200/50 dark:border-white/10 overflow-hidden"
+             class="overflow-hidden"
+             style="background-color: #0a0f1a;"
              @mouseenter="activeMegaMenu = null">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div class="flex items-center justify-between text-sm py-3">
-                    <div class="flex items-center gap-4 sm:gap-6 text-gray-600 dark:text-gray-400">
+                    <div class="flex items-center gap-4 sm:gap-6 text-gray-300">
                         @php
                             $contactPhone = setting('contact_phone_1');
                             $contactWhatsapp = setting('contact_whatsapp_1');
@@ -213,7 +222,7 @@
 
                         {{-- Telefon (Tıklanabilir) --}}
                         @if($contactPhone)
-                            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-2 text-sm font-medium">
+                            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}" class="hover:text-white transition flex items-center gap-2 text-sm font-medium">
                                 <i class="fa-solid fa-phone"></i>
                                 <span>{{ $contactPhone }}</span>
                             </a>
@@ -221,7 +230,7 @@
 
                         {{-- WhatsApp (Tıklanabilir) --}}
                         @if($contactWhatsapp)
-                            <a href="{{ whatsapp_link() }}" target="_blank" class="hover:text-green-600 dark:hover:text-green-400 transition flex items-center gap-2 text-sm font-medium">
+                            <a href="{{ whatsapp_link() }}" target="_blank" class="hover:text-green-400 transition flex items-center gap-2 text-sm font-medium">
                                 <i class="fa-brands fa-whatsapp text-base"></i>
                                 <span>{{ $contactWhatsapp }}</span>
                             </a>
@@ -229,7 +238,7 @@
                     </div>
                     <div class="flex items-center gap-3 sm:gap-4">
                         {{-- İletişim - xs/sm'de gizli, md+'da görünür --}}
-                        <a href="{{ href('Page', 'show', 'iletisim') }}" class="hidden md:inline-block text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition text-xs sm:text-sm font-medium">
+                        <a href="{{ href('Page', 'show', 'iletisim') }}" class="hidden md:inline-block text-gray-300 hover:text-white transition text-xs sm:text-sm font-medium">
                             <i class="fa-solid fa-envelope mr-1"></i>
                             İletişim
                         </a>
@@ -305,7 +314,7 @@
                             @endphp
 
                             <button @click="open = !open"
-                                    class="flex items-center gap-1 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition text-xs sm:text-sm">
+                                    class="flex items-center gap-1 text-gray-300 hover:text-white transition text-xs sm:text-sm">
                                 <span class="text-base">{{ $currentLangData['flag'] }}</span>
                                 <span class="hidden sm:inline">{{ $currentLangData['name'] }}</span>
                             </button>

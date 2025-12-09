@@ -11,10 +11,17 @@ class ContextBuilderNode extends BaseNode
         // Ensure $products is always a Collection (handle both array and Collection)
         $products = collect($context['products'] ?? []);
 
+        // 🆕 YAKLAŞIK ÜRÜN BİLGİSİ
+        $isApproximate = $context['is_approximate'] ?? false;
+        $approximateMessage = $context['approximate_message'] ?? null;
+        $requestedTonnage = $context['requested_tonnage'] ?? null;
+
         Log::info('🏗️ ContextBuilderNode: Input', [
             'has_products' => isset($context['products']),
             'products_count' => $products->count(),
-            'products_found' => $context['products_found'] ?? 'NULL'
+            'products_found' => $context['products_found'] ?? 'NULL',
+            'is_approximate' => $isApproximate,
+            'requested_tonnage' => $requestedTonnage
         ]);
 
         // Get USD exchange rate from shop_currencies
@@ -24,7 +31,16 @@ class ContextBuilderNode extends BaseNode
             ->value('exchange_rate') ?? 42.0; // Fallback to 42 if not found
 
         // Build markdown context for AI
-        $productContext = "## 📦 Mevcut Ürünler:\n\n";
+        $productContext = "";
+
+        // 🆕 YAKLAŞIK ÜRÜN UYARISI - En başta göster
+        if ($isApproximate && $approximateMessage) {
+            $productContext .= "## ⚠️ YAKLAŞIK ÜRÜN SONUÇLARI\n\n";
+            $productContext .= "**{$approximateMessage}**\n\n";
+            $productContext .= "---\n\n";
+        }
+
+        $productContext .= "## 📦 Mevcut Ürünler:\n\n";
 
         foreach ($products as $product) {
             // Handle both Model and array
@@ -136,7 +152,10 @@ class ContextBuilderNode extends BaseNode
         // IMPORTANT: Also return products_found to preserve it for AIResponseNode
         return [
             'product_context' => $productContext,
-            'products_found' => $products->count()  // Preserve for AI check
+            'products_found' => $products->count(),  // Preserve for AI check
+            'is_approximate' => $isApproximate,  // 🆕 Yaklaşık ürün flag'i
+            'approximate_message' => $approximateMessage,  // 🆕 Yaklaşık ürün mesajı
+            'requested_tonnage' => $requestedTonnage  // 🆕 İstenen tonaj
         ];
     }
 }

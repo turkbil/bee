@@ -175,16 +175,201 @@
         <div x-show="viewMode === 'grid'"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 scale-95"
-             x-transition:enter-end="opacity-100 scale-100"
-             class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
-            @foreach($homepageProducts as $index => $product)
-                <x-ixtif.product-card
-                    :product="$product"
-                    layout="vertical"
-                    :showAddToCart="true"
-                    :index="$index"
-                />
-            @endforeach
+             x-transition:enter-end="opacity-100 scale-100">
+
+            {{-- VIP Products (İlk 2 ürün - Görsel solda, yazı sağda, col-6, BÜYÜK) --}}
+            @if($homepageProducts->count() >= 2)
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                @foreach($homepageProducts->take(2) as $index => $product)
+                @php
+                    $vipProductId = $product['id'];
+                    $vipProductTitle = $product['title'];
+                    $vipProductUrl = $product['url'];
+                    $vipProductImage = $product['image'];
+                    $vipProductCategory = $product['category'] ?? 'Genel';
+                    $vipProductCategoryIcon = $product['category_icon'] ?? 'fa-light fa-box';
+                    $vipProductFormattedPrice = $product['formatted_price'];
+                    $vipProductTryPrice = $product['try_price'] ?? null;
+                    $vipProductCurrencyCode = $product['currency'] ?? 'TRY';
+                    $vipProductBasePrice = $product['price'] ?? 0;
+                    $vipProductDiscountPercentage = $product['auto_discount_percentage'] ?? null;
+                    $vipProductBadges = $product['badges'] ?? [];
+                    $vipFormattedComparePrice = $product['formatted_compare_price'] ?? null;
+
+                    // Badge renk gradient map
+                    $badgeGradients = [
+                        'green' => 'from-emerald-600 to-green-600',
+                        'red' => 'from-red-600 to-rose-600',
+                        'orange' => 'from-orange-600 to-amber-600',
+                        'blue' => 'from-blue-600 to-cyan-600',
+                        'yellow' => 'from-yellow-500 to-amber-500',
+                        'purple' => 'from-purple-600 to-fuchsia-600',
+                        'emerald' => 'from-emerald-500 to-teal-600',
+                        'indigo' => 'from-indigo-600 to-blue-600',
+                        'cyan' => 'from-cyan-600 to-blue-500',
+                        'gray' => 'from-gray-600 to-slate-600',
+                    ];
+
+                    // Badge label helper
+                    $getBadgeLabel = function($badge) {
+                        $labels = [
+                            'new_arrival' => 'Yeni',
+                            'discount' => '%' . ($badge['value'] ?? '0') . ' İndirim',
+                            'limited_stock' => 'Son ' . ($badge['value'] ?? '0') . ' Adet',
+                            'free_shipping' => 'Ücretsiz Kargo',
+                            'bestseller' => 'Çok Satan',
+                            'featured' => 'Öne Çıkan',
+                            'eco_friendly' => 'Çevre Dostu',
+                            'warranty' => ($badge['value'] ?? '0') . ' Ay Garanti',
+                            'pre_order' => 'Ön Sipariş',
+                            'imported' => 'İthal',
+                            'custom' => $badge['label']['tr'] ?? 'Özel',
+                        ];
+                        return $labels[$badge['type'] ?? 'custom'] ?? ($badge['label']['tr'] ?? 'Badge');
+                    };
+
+                    // Aktif badge'leri filtrele ve sırala (is_array kontrolü ekle)
+                    $vipActiveBadges = [];
+                    if (is_array($vipProductBadges) && count($vipProductBadges) > 0) {
+                        $vipActiveBadges = array_filter($vipProductBadges, fn($b) => is_array($b) && ($b['is_active'] ?? false));
+                        usort($vipActiveBadges, fn($a, $b) => ($a['priority'] ?? 999) <=> ($b['priority'] ?? 999));
+                    }
+                @endphp
+                <div x-data="productCard({{ $vipProductTryPrice ? 'true' : 'false' }}, {{ $vipProductId }})"
+                     class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
+
+                    <div class="flex flex-col md:flex-row">
+                        {{-- Sol: Büyük Görsel --}}
+                        <div class="relative md:w-1/2 aspect-square md:aspect-auto md:min-h-[280px]">
+                            <a href="{{ $vipProductUrl }}" class="block w-full h-full rounded-xl md:rounded-l-2xl md:rounded-r-none flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
+                                @if($vipProductImage)
+                                    <img src="{{ $vipProductImage }}"
+                                         alt="{{ $vipProductTitle }}"
+                                         class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark p-6 md:p-8"
+                                         loading="lazy">
+                                @else
+                                    <i class="{{ $vipProductCategoryIcon }} text-6xl md:text-8xl text-blue-400 dark:text-blue-400"></i>
+                                @endif
+                            </a>
+
+                            {{-- Badges (Görsel üstünde - alttakilerle aynı) --}}
+                            <div class="absolute top-3 left-3 z-10 flex flex-col gap-2 items-start">
+                                {{-- İndirim Badge --}}
+                                @if($vipProductDiscountPercentage && $vipProductDiscountPercentage >= 5)
+                                    <div class="bg-gradient-to-br from-orange-600 to-red-600 text-white px-3 py-1.5 rounded-lg shadow-lg text-sm font-bold">
+                                        -%{{ $vipProductDiscountPercentage }}
+                                    </div>
+                                @endif
+
+                                {{-- Dinamik Badge'ler (renk ve animasyon destekli) --}}
+                                @foreach($vipActiveBadges as $badgeIndex => $badge)
+                                    @php
+                                        $badgeColor = $badge['color'] ?? 'gray';
+                                        $badgeGradient = $badgeGradients[$badgeColor] ?? 'from-gray-600 to-slate-600';
+                                        $isFirstBadge = $badgeIndex === 0;
+                                        $animationClass = $isFirstBadge ? 'bg-[length:200%_200%] animate-gradient' : '';
+                                    @endphp
+                                    <div class="bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-3 py-1.5 rounded-lg shadow-lg text-sm font-bold">
+                                        {{ $getBadgeLabel($badge) }}
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        {{-- Sağ: İçerik --}}
+                        <div class="md:w-1/2 p-5 md:p-6 lg:p-8 flex flex-col justify-between">
+                            {{-- Kategori --}}
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="flex items-center gap-1.5 text-sm text-blue-800 dark:text-blue-300 font-medium uppercase tracking-wider">
+                                    <i class="{{ $vipProductCategoryIcon }} text-base"></i>
+                                    {{ $vipProductCategory }}
+                                </span>
+                            </div>
+
+                            {{-- Başlık (BÜYÜK) --}}
+                            <a href="{{ $vipProductUrl }}">
+                                <h3 class="text-xl md:text-2xl lg:text-3xl font-bold line-clamp-3 text-gray-950 dark:text-gray-50 leading-tight group-hover:text-blue-800 dark:group-hover:text-blue-300 transition-colors mb-4">
+                                    {{ $vipProductTitle }}
+                                </h3>
+                            </a>
+
+                            {{-- Fiyat & Sepete Ekle --}}
+                            <div class="pt-4 mt-auto flex items-center justify-between gap-4">
+                                <div class="flex-1 min-w-0">
+                                    {{-- Üstü çizili eski fiyat (varsa) --}}
+                                    @if($vipFormattedComparePrice)
+                                        <div class="relative inline-block mb-1">
+                                            <span class="text-sm lg:text-base text-gray-400 dark:text-gray-500 font-medium leading-none">
+                                                {{ $vipFormattedComparePrice }}
+                                            </span>
+                                            <span class="absolute inset-0 flex items-center justify-center">
+                                                <span class="w-full h-[1.5px] bg-gradient-to-r from-transparent via-red-500 to-transparent transform rotate-[-8deg] opacity-70"></span>
+                                            </span>
+                                        </div>
+                                    @endif
+
+                                    @if($vipProductTryPrice && $vipProductCurrencyCode !== 'TRY')
+                                        <div class="relative h-10 w-fit flex items-center cursor-pointer"
+                                             @mouseenter="priceHovered = true; showTryPrice = true"
+                                             @mouseleave="priceHovered = false; showTryPrice = false">
+                                            <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-150 whitespace-nowrap"
+                                                 x-show="!showTryPrice">
+                                                {{ $vipProductFormattedPrice }}
+                                            </div>
+                                            <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-150 whitespace-nowrap"
+                                                 x-show="showTryPrice" style="display: none;">
+                                                {{ $vipProductTryPrice }} ₺
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 whitespace-nowrap">
+                                            {{ $vipProductFormattedPrice }}
+                                        </div>
+                                    @endif
+                                </div>
+
+                                {{-- Sepete Ekle (alttakilerle aynı style) --}}
+                                @if($vipProductBasePrice > 0)
+                                <button type="button" @click="addToCart()" :disabled="loading || success"
+                                        class="flex-shrink-0 border-2 border-blue-600 dark:border-blue-400 hover:border-blue-700 dark:hover:border-blue-300 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        :class="{ 'animate-pulse': loading, '!border-green-600 !text-green-600 !bg-green-50 dark:!bg-green-900/20': success }">
+                                    <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                                        <i class="fa-solid text-lg transition-all duration-300" :class="{ 'fa-spinner fa-spin': loading, 'fa-check scale-125': success, 'fa-cart-plus': !loading && !success }"></i>
+                                    </span>
+                                    <span class="max-w-0 overflow-hidden group-hover:max-w-[5rem] transition-all duration-300 text-[10px] font-medium pl-0 group-hover:pl-2 leading-[1.2] flex items-center text-center">
+                                        <span class="whitespace-pre-line block" x-html="loading ? 'Ekle' : (success ? 'Tamam!' : 'Sepete<br>Ekle')"></span>
+                                    </span>
+                                </button>
+                                @else
+                                <a href="{{ url('/sizi-arayalim') }}" class="flex-shrink-0 bg-gradient-to-br from-green-700 to-emerald-700 hover:from-green-800 hover:to-emerald-800 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 active:scale-95">
+                                    <span class="flex items-center justify-center w-10 h-10 flex-shrink-0 transition-transform duration-300 group-hover:scale-110">
+                                        <i class="fa-solid fa-phone text-base"></i>
+                                    </span>
+                                    <span class="max-w-0 overflow-hidden group-hover:max-w-[5rem] transition-all duration-300 text-[10px] font-semibold pl-0 group-hover:pl-2 leading-[1.1] flex items-center">
+                                        <span class="whitespace-pre-line">Sizi{{ "\n" }}Arayalım</span>
+                                    </span>
+                                </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @endif
+
+            {{-- Regular Products (Geri kalan 18 ürün) --}}
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
+                @foreach($homepageProducts->skip(2)->take(18) as $index => $product)
+                    <x-ixtif.product-card
+                        :product="$product"
+                        layout="vertical"
+                        :showAddToCart="true"
+                        :showDivider="false"
+                        :index="$index + 2"
+                    />
+                @endforeach
+            </div>
         </div>
 
         <div x-show="viewMode === 'list'"

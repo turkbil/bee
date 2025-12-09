@@ -73,6 +73,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // 🔍 DEBUG: Login başlangıcı
+        \Log::info('🔐 LOGIN START', [
+            'email' => $request->input('email'),
+            'ip' => $request->ip(),
+            'session_id_before' => session()->getId(),
+        ]);
+
         $request->authenticate();
 
         // Son giriş zamanını güncelle
@@ -146,7 +153,16 @@ class AuthenticatedSessionController extends Controller
         }
 
         // Session regenerate işlemi EN SONDA - user preferences kaydedildikten sonra
+        $oldSessionId = session()->getId();
         $request->session()->regenerate();
+        $newSessionId = session()->getId();
+
+        \Log::info('🔐 LOGIN: Session regenerated', [
+            'user_id' => $user->id,
+            'old_session_id' => $oldSessionId,
+            'new_session_id' => $newSessionId,
+            'auth_check' => Auth::check() ? 'YES' : 'NO',
+        ]);
 
         // 🔐 DEVICE LIMIT - Session regenerate SONRASI registerSession() çağır (Tenant-aware)
         $currentTenant = tenant();
@@ -213,6 +229,14 @@ class AuthenticatedSessionController extends Controller
         // Normal redirect - cache bypass header'ları ile (Ana sayfaya yönlendir)
         $intendedUrl = session()->pull('url.intended', '/');
 
+        \Log::info('🔐 LOGIN COMPLETE', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'intended_url' => $intendedUrl,
+            'final_session_id' => session()->getId(),
+            'auth_check_final' => Auth::check() ? 'YES' : 'NO',
+        ]);
+
         // 🔐 CSRF Token - Session regenerate sonrası yeni token
         $response = redirect($intendedUrl)
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
@@ -240,6 +264,17 @@ class AuthenticatedSessionController extends Controller
                     $activity->event = 'çıkış yaptı';
                 })
                 ->log("\"{$user->name}\" çıkış yaptı");
+
+            // 🔐 DEVICE LIMIT: Aktif oturumu sil (session invalidate ÖNCE çağrılmalı)
+            // ⚠️ shouldRun() kontrolü KALDIRILDI - logout HER ZAMAN session silmeli
+            if (tenant()) {
+                try {
+                    $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
+                    $deviceService->unregisterSession($user); // shouldRun kontrolü içeride yok artık
+                } catch (\Exception $e) {
+                    \Log::warning('Logout unregisterSession error: ' . $e->getMessage());
+                }
+            }
 
             // 🧹 LOGOUT: Sadece user auth cache (hafif & hızlı)
             try {

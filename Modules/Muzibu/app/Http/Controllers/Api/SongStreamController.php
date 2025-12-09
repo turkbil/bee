@@ -9,18 +9,22 @@ use Modules\Muzibu\App\Models\Song;
 use Modules\Muzibu\App\Jobs\ConvertToHLSJob;
 use App\Services\SignedUrlService;
 use Modules\Muzibu\App\Services\MuzibuCacheService;
+use Modules\Muzibu\App\Services\DeviceService;
 
 class SongStreamController extends Controller
 {
     protected $signedUrlService;
     protected $cacheService;
+    protected $deviceService;
 
     public function __construct(
         SignedUrlService $signedUrlService,
-        MuzibuCacheService $cacheService
+        MuzibuCacheService $cacheService,
+        DeviceService $deviceService
     ) {
         $this->signedUrlService = $signedUrlService;
         $this->cacheService = $cacheService;
+        $this->deviceService = $deviceService;
     }
 
     /**
@@ -53,6 +57,78 @@ class SongStreamController extends Controller
             // Guest kullanıcı → 30 saniye preview
             if (!$user) {
                 return $this->getPreviewStreamResponse($song, 'guest');
+            }
+
+            // 🔐 DEVICE LIMIT CHECK: Şarkı çalmadan önce cihaz limitini kontrol et
+            if ($this->deviceService->shouldRun()) {
+                $currentSessionId = session()->getId();
+
+                // 1. Mevcut session DB'de var mi kontrol et (terminate edilmis olabilir)
+                $sessionExists = \DB::table('user_active_sessions')
+                    ->where('session_id', $currentSessionId)
+                    ->where('user_id', $user->id)
+                    ->exists();
+
+                if (!$sessionExists) {
+                    // 🔥 DEBUG: Hangi session'lar var?
+                    $existingSessions = \DB::table('user_active_sessions')
+                        ->where('user_id', $user->id)
+                        ->pluck('session_id')
+                        ->map(fn($s) => substr($s, 0, 15) . '...')
+                        ->toArray();
+
+                    Log::warning('🔐 Session terminated - stream blocked', [
+                        'user_id' => $user->id,
+                        'current_session_id' => substr($currentSessionId, 0, 20) . '...',
+                        'existing_sessions' => $existingSessions,
+                        'song_id' => $songId,
+                    ]);
+
+                    // 🔥 SELF-HEALING: Eğer user login durumundaysa ve session yoksa, yeniden kaydet
+                    // Bu durum login sırasında session regenerate probleminden kaynaklanabilir
+                    $this->deviceService->registerSession($user);
+
+                    // Tekrar kontrol et
+                    $sessionNowExists = \DB::table('user_active_sessions')
+                        ->where('session_id', $currentSessionId)
+                        ->where('user_id', $user->id)
+                        ->exists();
+
+                    if ($sessionNowExists) {
+                        Log::info('🔐 Session self-healed - continuing stream', [
+                            'user_id' => $user->id,
+                            'session_id' => substr($currentSessionId, 0, 20) . '...',
+                        ]);
+                        // Session kaydedildi, devam et (403 döndürme)
+                    } else {
+                        return response()->json([
+                            'error' => 'session_terminated',
+                            'message' => 'Oturumunuz başka cihazdan sonlandırıldı.',
+                            'show_device_modal' => true,
+                        ], 403);
+                    }
+                }
+
+                // 2. Device limit kontrolü
+                $deviceLimit = $this->deviceService->getDeviceLimit($user);
+                $activeDevices = $this->deviceService->getActiveDeviceCount($user);
+
+                if ($activeDevices > $deviceLimit) {
+                    Log::warning('🔐 Device limit exceeded on stream', [
+                        'user_id' => $user->id,
+                        'device_limit' => $deviceLimit,
+                        'active_devices' => $activeDevices,
+                        'song_id' => $songId,
+                    ]);
+
+                    return response()->json([
+                        'error' => 'device_limit_exceeded',
+                        'message' => 'Cihaz limitini aştınız. Diğer cihazlardan çıkış yapın.',
+                        'device_limit' => $deviceLimit,
+                        'active_devices' => $activeDevices,
+                        'show_device_modal' => true,
+                    ], 403);
+                }
             }
 
             // Normal üye (premium veya trial değil) → 30 saniye preview

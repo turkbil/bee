@@ -119,13 +119,17 @@ class SlugHelper
     public static function normalizeSlug(string $slug): string
     {
         $slug = strtolower(trim($slug));
-        
-        // Multi-language character mapping - extensible for any language
-        $characterMaps = [
-            // Turkish characters
+
+        // ÖNCE Türkçe karakterleri dönüştür (ü→u, ö→o)
+        // Bu Almanca dönüşüm (ü→ue) ile çakışmayı önler
+        $turkishMap = [
             'ç' => 'c', 'ğ' => 'g', 'ı' => 'i', 'ö' => 'o', 'ş' => 's', 'ü' => 'u',
             'Ç' => 'c', 'Ğ' => 'g', 'I' => 'i', 'İ' => 'i', 'Ö' => 'o', 'Ş' => 's', 'Ü' => 'u',
-            
+        ];
+        $slug = strtr($slug, $turkishMap);
+
+        // Diğer diller için karakter dönüşümleri (Türkçe hariç)
+        $characterMaps = [
             // Arabic characters
             'ا' => 'a', 'ب' => 'b', 'ت' => 't', 'ث' => 'th', 'ج' => 'j', 'ح' => 'h', 'خ' => 'kh',
             'د' => 'd', 'ذ' => 'dh', 'ر' => 'r', 'ز' => 'z', 'س' => 's', 'ش' => 'sh', 'ص' => 's',
@@ -133,52 +137,43 @@ class SlugHelper
             'ك' => 'k', 'ل' => 'l', 'م' => 'm', 'ن' => 'n', 'ه' => 'h', 'و' => 'w', 'ي' => 'y',
             'ى' => 'a', 'ة' => 'h', 'ء' => 'a', 'أ' => 'a', 'إ' => 'i', 'آ' => 'a', 'ؤ' => 'w',
             'ئ' => 'y', 'ً' => '', 'ٌ' => '', 'ٍ' => '', 'َ' => '', 'ُ' => '', 'ِ' => '', 'ّ' => '', 'ْ' => '',
-            
-            // French characters
+
+            // French/Accent characters (ö, ü zaten Türkçe'de dönüştürüldü)
             'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a',
             'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
             'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
             'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ø' => 'o',
             'ù' => 'u', 'ú' => 'u', 'û' => 'u',
             'ý' => 'y', 'ÿ' => 'y',
-            'ñ' => 'n', 'ç' => 'c',
-            
-            // German characters
-            'ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'ß' => 'ss',
-            'Ä' => 'ae', 'Ö' => 'oe', 'Ü' => 'ue',
-            
-            // Spanish characters
             'ñ' => 'n', 'Ñ' => 'n',
-            
-            // Portuguese characters
-            'ã' => 'a', 'õ' => 'o', 'ç' => 'c',
-            
+            'ß' => 'ss',
+
             // Russian (Cyrillic) characters
             'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'yo',
             'ж' => 'zh', 'з' => 'z', 'и' => 'i', 'й' => 'y', 'к' => 'k', 'л' => 'l', 'м' => 'm',
             'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u',
             'ф' => 'f', 'х' => 'h', 'ц' => 'ts', 'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch',
             'ъ' => '', 'ы' => 'y', 'ь' => '', 'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
-            
+
             // Greek characters
             'α' => 'a', 'β' => 'b', 'γ' => 'g', 'δ' => 'd', 'ε' => 'e', 'ζ' => 'z', 'η' => 'h',
             'θ' => 'th', 'ι' => 'i', 'κ' => 'k', 'λ' => 'l', 'μ' => 'm', 'ν' => 'n', 'ξ' => 'x',
             'ο' => 'o', 'π' => 'p', 'ρ' => 'r', 'σ' => 's', 'τ' => 't', 'υ' => 'y', 'φ' => 'f',
             'χ' => 'ch', 'ψ' => 'ps', 'ω' => 'w',
-            
+
             // Polish characters
-            'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l', 'ń' => 'n', 'ó' => 'o', 'ś' => 's',
+            'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l', 'ń' => 'n', 'ś' => 's',
             'ź' => 'z', 'ż' => 'z',
         ];
-        
-        // Apply all character mappings
+
+        // Apply remaining character mappings
         $slug = strtr($slug, $characterMaps);
-        
+
         // Sadece a-z, 0-9 ve tire bırak
         $slug = preg_replace('/[^a-z0-9\-]/', '', $slug);
         $slug = preg_replace('/\-+/', '-', $slug);
         $slug = trim($slug, '-');
-        
+
         return $slug;
     }
     

@@ -81,12 +81,9 @@ class DashboardComponent extends Component
     public function hlsStats(): array
     {
         return [
-            'completed' => Song::where('hls_converted', true)->count(),
+            'completed' => Song::whereNotNull('hls_path')->count(),
             'pending' => Song::whereNotNull('file_path')
-                ->where(function($q) {
-                    $q->whereNull('hls_converted')
-                      ->orWhere('hls_converted', false);
-                })
+                ->whereNull('hls_path')
                 ->count(),
             'failed' => 0, // TODO: Implement failed tracking
         ];

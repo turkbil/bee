@@ -1,30 +1,22 @@
-{{-- Device Selection Modal --}}
+{{-- Device Selection Modal - KAPATILMAZ (Cihaz seçmeden devam edemez) --}}
 <div x-show="showDeviceSelectionModal"
      x-cloak
-     class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm"
-     @click.self="showDeviceSelectionModal = false">
+     class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm">
 
-    <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 border border-blue-500/30"
-         @click.stop>
+    <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 border border-red-500/50">
 
         {{-- Header --}}
-        <div class="bg-blue-500/10 border-b border-blue-500/30 px-6 py-4 rounded-t-2xl">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
-                        <i class="fas fa-mobile-alt text-blue-400 text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-white">Aktif Cihazlar</h3>
-                        <p class="text-sm text-blue-400/80">
-                            Cikis yaptirmak istediginiz cihazi secin
-                        </p>
-                    </div>
+        <div class="bg-red-500/10 border-b border-red-500/30 px-6 py-4 rounded-t-2xl">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-red-400 text-xl"></i>
                 </div>
-                <button @click="showDeviceSelectionModal = false"
-                        class="text-slate-400 hover:text-white transition-colors">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Cihaz Limiti Aşıldı</h3>
+                    <p class="text-sm text-red-400/80">
+                        Devam etmek için bazı cihazlardan çıkış yapmalısınız
+                    </p>
+                </div>
             </div>
         </div>
 
@@ -110,33 +102,50 @@
 
         {{-- Footer / Actions --}}
         <div class="px-6 pb-6 space-y-3">
+            {{-- Seçilenleri Çıkar Button --}}
+            <button @click="terminateSelectedDevices()"
+                    :disabled="selectedDeviceIds.length === 0 || deviceTerminateLoading"
+                    class="w-full px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-sign-out-alt mr-2"
+                   :class="deviceTerminateLoading && 'fa-spin fa-spinner'"></i>
+                <span x-text="deviceTerminateLoading ? 'İşleniyor...' : 'Seçilenleri Çıkar (' + selectedDeviceIds.length + ')'"></span>
+            </button>
+
             {{-- Tümünü Çıkar Button --}}
             <button @click="terminateAllDevices()"
                     :disabled="deviceTerminateLoading || activeDevices.filter(d => !d.is_current).length === 0"
                     class="w-full px-6 py-3 bg-orange-600 hover:bg-orange-500 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
-                <i class="fas fa-sign-out-alt mr-2"
+                <i class="fas fa-users-slash mr-2"
                    :class="deviceTerminateLoading && 'fa-spin fa-spinner'"></i>
-                <span x-text="deviceTerminateLoading ? 'Isleniyor...' : 'Tümünü Çıkar'"></span>
+                <span x-text="deviceTerminateLoading ? 'İşleniyor...' : 'Diğer Tüm Cihazları Çıkar'"></span>
                 <span class="text-sm opacity-80 ml-2" x-show="!deviceTerminateLoading">
                     (<span x-text="activeDevices.filter(d => !d.is_current).length"></span> cihaz)
                 </span>
             </button>
 
-            <div class="flex gap-3">
-                <button @click="showDeviceSelectionModal = false"
-                        class="flex-1 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-semibold transition-all duration-200">
-                    <i class="fas fa-times mr-2"></i>
-                    Iptal
-                </button>
-
-                <button @click="terminateSelectedDevices()"
-                        :disabled="selectedDeviceIds.length === 0 || deviceTerminateLoading"
-                        class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i class="fas fa-sign-out-alt mr-2"
-                       :class="deviceTerminateLoading && 'fa-spin fa-spinner'"></i>
-                    <span x-text="deviceTerminateLoading ? 'Isleniyor...' : 'Seçilenleri Çıkar (' + selectedDeviceIds.length + ')'"></span>
-                </button>
+            {{-- Ayırıcı --}}
+            <div class="relative py-2">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-700"></div>
+                </div>
+                <div class="relative flex justify-center">
+                    <span class="px-3 bg-slate-800 text-slate-500 text-sm">veya</span>
+                </div>
             </div>
+
+            {{-- Bu Cihazdan Çıkış Yap Button --}}
+            <button @click="logoutFromThisDevice()"
+                    :disabled="deviceTerminateLoading"
+                    class="w-full px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-semibold transition-all duration-200 border border-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-power-off mr-2"></i>
+                Bu Cihazdan Çıkış Yap
+            </button>
+
+            {{-- Bilgi Notu --}}
+            <p class="text-center text-slate-500 text-xs">
+                <i class="fas fa-info-circle mr-1"></i>
+                Diğer cihazı çıkarırsanız bu cihazda kalmaya devam edersiniz
+            </p>
         </div>
     </div>
 </div>

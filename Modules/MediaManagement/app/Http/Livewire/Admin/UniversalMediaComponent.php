@@ -124,9 +124,10 @@ class UniversalMediaComponent extends Component
             $this->maxGalleryItems = config('mediamanagement.defaults.max_gallery_items', 50);
         }
 
-        // Load temp files from session (for new records)
+        // Yeni kayıt için temp dosyaları TEMİZLE (önceki session'dan kalan dosyalar gitsin)
+        // Kullanıcı yeni form açtığında boş başlamalı
         if (!$this->modelId) {
-            $this->loadTempFilesFromSession();
+            $this->clearTempFilesFromSession();
         }
     }
 

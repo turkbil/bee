@@ -385,6 +385,13 @@ class ArtistManageComponent extends Component implements AIContentGeneratable
             return redirect()->route('admin.muzibu.artist.index');
         }
 
+        // Kaydet ve Yeni Ekle: Formu sıfırla ve yeni kayıt sayfasına yönlendir
+        if ($resetForm && $isNewRecord) {
+            session()->flash('toast', $toast);
+            return redirect()->route('admin.muzibu.artist.manage');
+        }
+
+        // Sadece Kaydet (yeni kayıt): Düzenleme sayfasına yönlendir
         if ($isNewRecord && isset($artist)) {
             $this->dispatch('artist-saved', $artist->artist_id);
 
@@ -395,12 +402,6 @@ class ArtistManageComponent extends Component implements AIContentGeneratable
         Log::info('✅ Save method başarıyla tamamlandı', [
             'artistId' => $this->artistId
         ]);
-
-        if ($resetForm && !$this->artistId) {
-            $this->reset();
-            $this->currentLanguage = get_tenant_default_locale();
-            $this->initializeEmptyInputs();
-        }
     }
 
     public function render()

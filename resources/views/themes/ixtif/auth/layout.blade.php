@@ -1,65 +1,122 @@
+@php
+    $currentLocale = app()->getLocale();
+    $isRtl = in_array($currentLocale, ['ar', 'he', 'fa', 'ur']) ? 'rtl' : 'ltr';
+    $siteName = setting('site_name') ?: setting('site_title') ?: config('app.name', 'İxtif');
+@endphp
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="if(darkMode) document.documentElement.classList.add('dark')" :class="darkMode ? 'dark' : ''">
+<html lang="{{ $currentLocale }}"
+      dir="{{ $isRtl }}"
+      x-data="{ darkMode: localStorage.getItem('darkMode') || 'light' }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+      :class="{ 'dark': darkMode === 'dark' }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'İxtif - Giriş')</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>@yield('title', 'Giriş') - {{ $siteName }}</title>
 
-    {{-- Local compiled CSS - no CDN overhead --}}
-    <link rel="stylesheet" href="{{ asset('css/tenant-2.css') }}?v={{ config('app.asset_version', time()) }}">
+    {{-- Theme Flash Fix - Prevent FOUC --}}
+    <script>if(localStorage.getItem('darkMode')==='dark')document.documentElement.classList.add('dark')</script>
+
+    {{-- Tailwind CSS - Tenant-Aware --}}
+    <link rel="stylesheet" href="{{ tenant_css() }}">
+
+    {{-- Font Awesome Pro --}}
     <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}">
-    <script src="{{ asset('assets/js/alpine.min.js') }}" defer></script>
+
+    {{-- Google Fonts --}}
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    {{-- Alpine.js CDN (Auth sayfalarında Livewire yok) --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .slide-in { animation: slideIn 0.4s ease-out; }
+        body { font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; }
+        [x-cloak] { display: none !important; }
+
+        /* Dark mode icon visibility (CSS-based, instant) */
+        html:not(.dark) .dark-mode-icon-moon { display: inline-block !important; }
+        html:not(.dark) .dark-mode-icon-sun { display: none !important; }
+        html.dark .dark-mode-icon-moon { display: none !important; }
+        html.dark .dark-mode-icon-sun { display: inline-block !important; }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
-    <!-- Dark/Light Mode Toggle -->
-    <div class="fixed top-6 right-6 z-50">
-        <button @click="toggleDarkMode()" class="w-12 h-12 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:scale-110 transition-all">
-            <i :class="darkMode ? 'fas fa-sun text-yellow-400' : 'fas fa-moon text-blue-600'" class="text-lg"></i>
-        </button>
-    </div>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
 
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-md">
-            <!-- Logo & Back to Home -->
-            <div class="text-center mb-8 slide-in">
-                <a href="/" class="inline-flex items-center justify-center gap-3 mb-6 group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-2xl flex items-center justify-center shadow-xl group-hover:scale-110 transition-all">
-                        <i class="fas fa-industry text-white text-2xl"></i>
-                    </div>
-                    <span class="text-4xl font-bold text-gray-900 dark:text-white">İxtif</span>
+    {{-- Minimal Header --}}
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                {{-- Logo --}}
+                <a href="/" class="flex items-center gap-3">
+                    @php
+                        $logoService = app(\App\Services\LogoService::class);
+                        $logos = $logoService->getLogos();
+                        $logoUrl = $logos['light_logo_url'] ?? null;
+                        $logoDarkUrl = $logos['dark_logo_url'] ?? null;
+                        $fallbackMode = $logos['fallback_mode'] ?? 'title_only';
+                        $siteTitle = $logos['site_title'] ?? setting('site_title');
+                    @endphp
+
+                    @if($fallbackMode === 'both')
+                        <img src="{{ $logoUrl }}" alt="{{ $siteTitle }}" class="dark:hidden h-10 w-auto">
+                        <img src="{{ $logoDarkUrl }}" alt="{{ $siteTitle }}" class="hidden dark:block h-10 w-auto">
+                    @elseif($logoUrl)
+                        <img src="{{ $logoUrl }}" alt="{{ $siteTitle }}" class="h-10 w-auto logo-adaptive">
+                    @else
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                            <i class="fa-solid fa-industry text-white text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold text-gray-900 dark:text-white">{{ $siteTitle }}</span>
+                    @endif
                 </a>
-                <p class="text-gray-600 dark:text-gray-400 text-lg font-medium">@yield('subtitle', 'Endüstriyel Ekipman Çözümleri')</p>
-            </div>
 
-            <!-- Auth Card -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 slide-in border border-gray-100 dark:border-gray-700">
-                @yield('content')
-            </div>
+                {{-- Right Actions --}}
+                <div class="flex items-center gap-3">
+                    {{-- Dark Mode Toggle (Same as main site header) --}}
+                    <button @click="darkMode = darkMode === 'dark' ? 'light' : 'dark'"
+                            type="button"
+                            class="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors"
+                            :aria-label="darkMode === 'dark' ? 'Aydınlık moda geç' : 'Karanlık moda geç'">
+                        <i class="fa-light fa-moon text-lg text-gray-600 dark-mode-icon-moon"></i>
+                        <i class="fa-regular fa-sun-bright text-lg text-yellow-500 dark-mode-icon-sun"></i>
+                    </button>
 
-            <!-- Footer Links -->
-            <div class="text-center mt-6 space-y-3">
-                @yield('footer-links')
-
-                <div class="text-gray-600 dark:text-gray-400 text-sm">
-                    <a href="/" class="hover:text-gray-900 dark:hover:text-white transition-colors">← Ana Sayfaya Dön</a>
+                    {{-- Ana Sayfa Link --}}
+                    <a href="/" class="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Ana Sayfa</span>
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
-    <script>
-        function toggleDarkMode() {
-            const html = document.documentElement;
-            const isDark = html.classList.toggle('dark');
-            localStorage.setItem('darkMode', isDark);
-        }
-    </script>
+    {{-- Main Content --}}
+    <main class="flex-1 flex items-center justify-center p-4 py-12">
+        <div class="w-full max-w-md">
+            {{-- Auth Card --}}
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
+                @yield('content')
+            </div>
+
+            {{-- Footer Links --}}
+            <div class="text-center mt-6">
+                @yield('footer-links')
+            </div>
+        </div>
+    </main>
+
+    {{-- Minimal Footer --}}
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                &copy; {{ date('Y') }} {{ $siteName }}. Tüm hakları saklıdır.
+            </p>
+        </div>
+    </footer>
+
+    @stack('scripts')
 </body>
 </html>

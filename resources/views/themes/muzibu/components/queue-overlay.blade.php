@@ -81,7 +81,7 @@
 
         {{-- Queue List --}}
         <div id="queue-list" class="space-y-1">
-            <template x-for="(song, index) in (queue || [])" :key="song?.song_id || index">
+            <template x-for="(song, index) in (queue || [])" :key="'queue-' + index + '-' + (song?.song_id || 'song')">
                 <div
                     @click="playFromQueue(index)"
                     @dragstart="dragStart($event, index)"

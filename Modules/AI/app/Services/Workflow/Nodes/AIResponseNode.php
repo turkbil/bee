@@ -312,7 +312,26 @@ UNIVERSAL;
 
         // Add product context if available
         if (!empty($context['product_context']) && !empty($context['products_found'])) {
-            \Log::emergency('✅ ÜRÜN VAR - Product context ekleniyor');
+            \Log::emergency('✅ ÜRÜN VAR - Product context ekleniyor', [
+                'is_approximate' => $context['is_approximate'] ?? false,
+                'requested_tonnage' => $context['requested_tonnage'] ?? null
+            ]);
+
+            // 🆕 YAKLAŞIK ÜRÜN BİLDİRİMİ
+            if (!empty($context['is_approximate']) && !empty($context['approximate_message'])) {
+                $enhancedPrompt .= "\n\n🚨🚨🚨 **YAKLAŞIK ÜRÜN UYARISI** 🚨🚨🚨";
+                $enhancedPrompt .= "\n" . $context['approximate_message'];
+                $enhancedPrompt .= "\n\n**ÖNEMLİ:** Kullanıcıya mutlaka bildir:";
+                $enhancedPrompt .= "\n- İstenen tam kapasitede ürün MEVCUT DEĞİL";
+                $enhancedPrompt .= "\n- Gösterilen ürünler YAKLAŞIK kapasiteler";
+                $enhancedPrompt .= "\n- Özel sipariş için iletişime geçmeleri önerilir";
+                $enhancedPrompt .= "\n\n**ÖRNEK YANITLAR:**";
+                $enhancedPrompt .= "\n✅ 'Maalesef tam olarak 1.5 ton kapasiteli ürünümüz mevcut değil. Ancak yakın kapasitelerde şu alternatiflerimiz var:'";
+                $enhancedPrompt .= "\n✅ 'Bu kapasitede ürün bulunamadı, ama benzer özelliklerde şu seçenekler mevcut:'";
+                $enhancedPrompt .= "\n❌ '1.5 ton ürünlerimiz:' (YANLIŞ - 1.5 ton yoksa böyle deme!)";
+                $enhancedPrompt .= "\n\n---";
+            }
+
             // Ürün varsa, ürün listesini ekle
             $enhancedPrompt .= "\n\n" . $context['product_context'];
             // ═══════════════════════════════════════════════════════════════════════

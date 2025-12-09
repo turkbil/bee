@@ -55,6 +55,7 @@ class PageController extends Controller
                 ->with(['category', 'brand', 'media', 'currency'])
                 ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
                 ->orderBy('product_id', 'desc')
+                ->limit(20) // 📐 Featured Layout: 2 büyük kart + 18 normal (2,3,6 kolonlarda tam bölünür)
                 ->get();
 
             // ⚡ OPTIMIZED: Currency artık eager loading ile yüklü (satır 53)
@@ -95,14 +96,16 @@ class PageController extends Controller
                 $compareAtPrice = $showTaxIncluded ? $compareAtPriceWithTax : $compareAtPriceBase;
 
                 // ✨ OTOMATIK İNDİRİM SİSTEMİ
-                // Eğer compare_at_price yoksa veya display_price'dan küçükse, otomatik hesapla
+                // compare_at_price varsa gerçek indirimi hesapla, yoksa otomatik oluştur
                 $autoDiscountPercentage = null;
                 if (!$compareAtPrice || $compareAtPrice <= $displayPrice) {
-                    // Hedef indirim yüzdesi (badge için - SABİT: %5, %10, %15, %20)
+                    // Compare price yoksa → Otomatik hesapla
                     $autoDiscountPercentage = (($product->product_id % 4) * 5 + 5);
-
                     // Eski fiyatı hesapla (ters formül: old = new / (1 - discount))
                     $compareAtPrice = $displayPrice / (1 - ($autoDiscountPercentage / 100));
+                } else {
+                    // Compare price varsa → Gerçek indirim yüzdesini hesapla
+                    $autoDiscountPercentage = round((($compareAtPrice - $displayPrice) / $compareAtPrice) * 100);
                 }
 
                 // Format compare price

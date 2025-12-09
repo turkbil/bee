@@ -46,21 +46,40 @@ class Handler extends ExceptionHandler
             \Log::warning('CSRF Token Mismatch', [
                 'url' => $request->fullUrl(),
                 'method' => $request->method(),
-                'session_token' => $request->session()->token(),
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'session_token' => $request->session()->token() ?? 'NO_SESSION',
                 'request_token_header' => $request->header('X-CSRF-TOKEN'),
-                'request_token_input' => $request->input('_token')
+                'request_token_input' => $request->input('_token'),
+                'session_id' => $request->session()->getId() ?? 'NO_SESSION_ID',
             ]);
 
+            // API request'leri için JSON response
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'message' => 'CSRF token mismatch. Please refresh the page.',
+                    'error' => 'token_mismatch'
+                ], 419);
+            }
+
             // Login sayfasından geldiyse tekrar login'e yönlendir
-            if ($request->is('login') || $request->url() == route('login')) {
+            if ($request->is('login') || $request->routeIs('login')) {
                 return redirect()->route('login')
                     ->withInput($request->except('password', '_token'))
+                    ->with('error', 'Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.');
+            }
+
+            // Register sayfası için
+            if ($request->is('register') || $request->routeIs('register')) {
+                return redirect()->route('register')
+                    ->withInput($request->except('password', 'password_confirmation', '_token'))
                     ->with('error', 'Oturum süreniz dolmuş. Lütfen tekrar deneyin.');
             }
 
-            // Diğer sayfalar için homepage'e yönlendir
-            return redirect('/')
-                ->with('error', 'Oturum süreniz dolmuş. Lütfen giriş yapın.');
+            // Diğer sayfalar için önceki sayfaya dön
+            return redirect()->back()
+                ->withInput($request->except('password', 'password_confirmation', '_token'))
+                ->with('error', 'Oturum süreniz dolmuş. Lütfen tekrar deneyin.');
         });
         
         // Tenant offline durumu için özel istisna işleyici

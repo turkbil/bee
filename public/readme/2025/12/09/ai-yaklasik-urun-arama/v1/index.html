@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Yaklaşık Ürün Arama - Test Raporu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                🤖 AI Yaklaşık Ürün Arama Sistemi
+            </h1>
+            <div class="text-slate-400 text-lg">
+                ixtif.com AI Shop Sohbet Robotu - Tonaj Bazlı Yaklaşık Eşleştirme Özelliği
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-09</span>
+                <span>🎯 Tenant: ixtif.com</span>
+                <span>✅ Durum: Tamamlandı</span>
+            </div>
+        </header>
+
+        <!-- Özet -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">📊 Özet</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <div class="text-4xl font-bold text-green-400 mb-2">✅</div>
+                    <h3 class="text-xl font-bold text-green-300">Sistem Aktif</h3>
+                    <p class="text-slate-400 mt-2">Yaklaşık ürün eşleştirme sistemi devrede</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <div class="text-4xl font-bold text-blue-400 mb-2">6</div>
+                    <h3 class="text-xl font-bold text-blue-300">Kategori</h3>
+                    <p class="text-slate-400 mt-2">Forklift, Transpalet, İstif Makinesi, Reach Truck, Order Picker, Otonom</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <div class="text-4xl font-bold text-purple-400 mb-2">7</div>
+                    <h3 class="text-xl font-bold text-purple-300">Test Senaryosu</h3>
+                    <p class="text-slate-400 mt-2">Farklı tonaj ve kategori testleri başarıyla tamamlandı</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özellik Açıklaması -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🎯 Yapılan Geliştirmeler</h2>
+
+            <!-- Adım 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Yaklaşık Tonaj Arama Mantığı
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">Tamamlandı</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            Kullanıcı belirli bir tonaj istediğinde (örn: 1.5 ton) sistem önce exact match arar.
+                            Bulamazsa ±0.5 ton toleransla yakın ürünleri getirir.
+                        </p>
+                        <div class="mt-4 bg-slate-900/50 rounded p-4">
+                            <p class="text-slate-400 text-sm"><strong class="text-white">Dosya:</strong> Tenant2ProductSearchService.php</p>
+                            <p class="text-slate-400 text-sm mt-1"><strong class="text-white">Metot:</strong> searchApproximateTonnage()</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            Context Builder Entegrasyonu
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">Tamamlandı</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            ContextBuilderNode güncellendi. Yaklaşık ürün durumunda AI'a özel uyarı mesajı gönderiliyor.
+                        </p>
+                        <div class="mt-4 bg-slate-900/50 rounded p-4">
+                            <p class="text-slate-400 text-sm"><strong class="text-white">Dosya:</strong> ContextBuilderNode.php</p>
+                            <p class="text-slate-400 text-sm mt-1"><strong class="text-white">Flag:</strong> is_approximate, approximate_message</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">
+                            AI Prompt Kuralları
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">Tamamlandı</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            AIResponseNode ve Tenant2ProductSearchService'e yaklaşık ürün bildirimi kuralları eklendi.
+                            AI kullanıcıya "tam kapasitede ürün yok, alternatifler" şeklinde bilgi verecek.
+                        </p>
+                        <div class="mt-4 bg-slate-900/50 rounded p-4">
+                            <p class="text-slate-400 text-sm"><strong class="text-white">Prompt:</strong> approximate_product_matching</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Sonuçları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">🧪 Test Sonuçları</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full bg-slate-800/50 rounded-lg overflow-hidden">
+                    <thead class="bg-slate-700">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-200">#</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-200">Sorgu</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-200">Sonuç</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-200">Yaklaşık?</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-slate-200">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">1</td>
+                            <td class="px-4 py-3 text-slate-300">"1.5 ton transpalet"</td>
+                            <td class="px-4 py-3 text-green-400">7 ürün</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-blue-600 text-xs rounded">HAYIR</span></td>
+                            <td class="px-4 py-3"><span class="text-green-400">✅ Exact Match</span></td>
+                        </tr>
+                        <tr class="bg-slate-800/30">
+                            <td class="px-4 py-3 text-slate-300">2</td>
+                            <td class="px-4 py-3 text-slate-300">"1.8 ton transpalet"</td>
+                            <td class="px-4 py-3 text-yellow-400">7 ürün</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-600 text-xs rounded">EVET</span></td>
+                            <td class="px-4 py-3"><span class="text-yellow-400">⚠️ 1.5 ton, 2 ton alternatif</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">3</td>
+                            <td class="px-4 py-3 text-slate-300">"3 ton forklift"</td>
+                            <td class="px-4 py-3 text-yellow-400">8 ürün</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-600 text-xs rounded">EVET</span></td>
+                            <td class="px-4 py-3"><span class="text-yellow-400">⚠️ Yakın tonajlar önerildi</span></td>
+                        </tr>
+                        <tr class="bg-slate-800/30">
+                            <td class="px-4 py-3 text-slate-300">4</td>
+                            <td class="px-4 py-3 text-slate-300">"2 ton forklift"</td>
+                            <td class="px-4 py-3 text-yellow-400">8 ürün</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-600 text-xs rounded">EVET</span></td>
+                            <td class="px-4 py-3"><span class="text-yellow-400">⚠️ 1.8 ton mevcut</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">5</td>
+                            <td class="px-4 py-3 text-slate-300">"1.2 ton istif makinesi"</td>
+                            <td class="px-4 py-3 text-green-400">8 ürün</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-yellow-600 text-xs rounded">EVET</span></td>
+                            <td class="px-4 py-3"><span class="text-yellow-400">⚠️ Alternatifler gösterildi</span></td>
+                        </tr>
+                        <tr class="bg-slate-800/30">
+                            <td class="px-4 py-3 text-slate-300">6</td>
+                            <td class="px-4 py-3 text-slate-300">"reach truck"</td>
+                            <td class="px-4 py-3 text-green-400">2 ürün</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-blue-600 text-xs rounded">HAYIR</span></td>
+                            <td class="px-4 py-3"><span class="text-green-400">✅ Kategori eşleşmesi</span></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 text-slate-300">7</td>
+                            <td class="px-4 py-3 text-slate-300">"order picker"</td>
+                            <td class="px-4 py-3 text-green-400">4 ürün</td>
+                            <td class="px-4 py-3"><span class="px-2 py-1 bg-blue-600 text-xs rounded">HAYIR</span></td>
+                            <td class="px-4 py-3"><span class="text-green-400">✅ Kategori eşleşmesi</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Kategori Desteği -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">📦 Desteklenen Kategoriler</h2>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="font-bold text-blue-400 mb-2">🚜 Forklift</h3>
+                    <p class="text-slate-400 text-sm">forklift, fork lift, portif</p>
+                    <p class="text-slate-500 text-xs mt-1">Kategori ID: 1</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="font-bold text-green-400 mb-2">🛒 Transpalet</h3>
+                    <p class="text-slate-400 text-sm">transpalet, trans palet, palet jack</p>
+                    <p class="text-slate-500 text-xs mt-1">Kategori ID: 2</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="font-bold text-purple-400 mb-2">📦 İstif Makinesi</h3>
+                    <p class="text-slate-400 text-sm">istif makinesi, stacker, istif</p>
+                    <p class="text-slate-500 text-xs mt-1">Kategori ID: 3</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="font-bold text-yellow-400 mb-2">📋 Order Picker</h3>
+                    <p class="text-slate-400 text-sm">order picker, sipariş toplama</p>
+                    <p class="text-slate-500 text-xs mt-1">Kategori ID: 4</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="font-bold text-cyan-400 mb-2">🤖 Otonom</h3>
+                    <p class="text-slate-400 text-sm">otonom, AGV, robot forklift</p>
+                    <p class="text-slate-500 text-xs mt-1">Kategori ID: 5</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <h3 class="font-bold text-red-400 mb-2">🏗️ Reach Truck</h3>
+                    <p class="text-slate-400 text-sm">reach truck, dar koridor</p>
+                    <p class="text-slate-500 text-xs mt-1">Kategori ID: 6</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Yanıt Örnekleri -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">💬 Beklenen AI Yanıt Formatları</h2>
+
+            <div class="space-y-6">
+                <!-- Exact Match -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-green-500/30">
+                    <h3 class="text-lg font-bold text-green-400 mb-4">✅ Exact Match Durumu</h3>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <p class="text-slate-400 text-sm mb-2"><strong class="text-white">Kullanıcı:</strong> "1.5 ton transpalet arıyorum"</p>
+                        <p class="text-slate-400 text-sm"><strong class="text-white">AI:</strong></p>
+                        <div class="text-slate-300 text-sm mt-2 pl-4 border-l-2 border-green-500">
+                            1.5 ton transpalet modellerimiz:<br><br>
+                            - [İXTİF F4 - 1.5 Ton Li-Ion Transpalet](/shop/...) - Kompakt ve güçlü<br>
+                            - [İXTİF EPL153 - 1.5 Ton Transpalet](/shop/...) - Ekonomik seçenek<br><br>
+                            Hangi model hakkında detaylı bilgi almak istersiniz?
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Approximate Match -->
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-yellow-500/30">
+                    <h3 class="text-lg font-bold text-yellow-400 mb-4">⚠️ Yaklaşık Eşleşme Durumu</h3>
+                    <div class="bg-slate-900/50 rounded p-4">
+                        <p class="text-slate-400 text-sm mb-2"><strong class="text-white">Kullanıcı:</strong> "1.8 ton transpalet lazım"</p>
+                        <p class="text-slate-400 text-sm"><strong class="text-white">AI:</strong></p>
+                        <div class="text-slate-300 text-sm mt-2 pl-4 border-l-2 border-yellow-500">
+                            Maalesef <strong>1.8 ton</strong> kapasiteli transpalet şu an katalogumuzda mevcut değil.<br><br>
+                            ⚠️ <strong>Yakın kapasiteli alternatifler:</strong><br><br>
+                            - [İXTİF F4 - 1.5 Ton Li-Ion Transpalet](/shop/...) - Biraz daha düşük kapasite<br>
+                            - [İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet](/shop/...) - Biraz daha yüksek kapasite<br><br>
+                            <strong>Not:</strong> Tam olarak 1.8 ton arıyorsanız özel sipariş verebiliriz. İletişim: +90 212 XXX XX XX
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Değişen Dosyalar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">📁 Değişen Dosyalar</h2>
+
+            <div class="bg-slate-800/50 rounded-lg overflow-hidden">
+                <div class="divide-y divide-slate-700">
+                    <div class="p-4 flex items-center gap-4">
+                        <span class="px-2 py-1 bg-green-600 text-xs rounded">MODIFIED</span>
+                        <code class="text-slate-300 text-sm">Modules/AI/app/Services/Tenant/Tenant2ProductSearchService.php</code>
+                    </div>
+                    <div class="p-4 flex items-center gap-4">
+                        <span class="px-2 py-1 bg-green-600 text-xs rounded">MODIFIED</span>
+                        <code class="text-slate-300 text-sm">Modules/AI/app/Services/Workflow/Nodes/ContextBuilderNode.php</code>
+                    </div>
+                    <div class="p-4 flex items-center gap-4">
+                        <span class="px-2 py-1 bg-green-600 text-xs rounded">MODIFIED</span>
+                        <code class="text-slate-300 text-sm">Modules/AI/app/Services/Workflow/Nodes/AIResponseNode.php</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+            <p class="mt-2">ixtif.com AI Shop Sohbet Robotu Geliştirmesi</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -31,10 +31,82 @@ class Tenant2ProductSearchService
     protected string $locale;
     protected HybridSearchService $hybridSearch;
 
+    /**
+     * 🏭 İXTİF CATEGORY SYNONYMS
+     * Endüstriyel ekipman kategorileri için eş anlamlı terimler
+     * Bu synonyms SADECE Tenant 2 & 3 (iXtif) için geçerlidir!
+     */
+    private const CATEGORY_SYNONYMS = [
+        // İstif Makinesi synonyms (category_id: 3)
+        'stacker' => ['istif makinesi', 'istifleyici', 'istif'],
+        'istif makinesi' => ['stacker', 'istifleyici'],
+        'istifleyici' => ['stacker', 'istif makinesi'],
+        'yük istif' => ['istif makinesi', 'stacker'],
+        'palet istif' => ['istif makinesi', 'stacker'],
+
+        // Transpalet synonyms (category_id: 2)
+        'pallet truck' => ['transpalet', 'palet jack'],
+        'palet jack' => ['transpalet', 'pallet truck'],
+        'trans palet' => ['transpalet'],
+        'palet arabası' => ['transpalet'],
+        'el transpaleti' => ['transpalet', 'manuel transpalet'],
+
+        // Forklift synonyms (category_id: 1)
+        'fork lift' => ['forklift'],
+        'portif' => ['forklift'],
+        'çatallı yükleyici' => ['forklift'],
+        'forklift makinesi' => ['forklift'],
+
+        // Reach Truck synonyms (category_id: 6)
+        'dar koridor' => ['reach truck'],
+        'reach' => ['reach truck'],
+        'dar koridor forklift' => ['reach truck'],
+
+        // Order Picker synonyms (category_id: 4)
+        'sipariş toplama' => ['order picker'],
+        'picking' => ['order picker'],
+        'komisyonlama' => ['order picker'],
+
+        // Otonom Sistemler synonyms (category_id: 5)
+        'agv' => ['otonom', 'autonomous'],
+        'robot forklift' => ['otonom'],
+        'otomatik forklift' => ['otonom'],
+    ];
+
     public function __construct(HybridSearchService $hybridSearch)
     {
         $this->locale = app()->getLocale();
         $this->hybridSearch = $hybridSearch;
+    }
+
+    /**
+     * Expand query with iXtif-specific category synonyms
+     * stacker -> istif makinesi, pallet truck -> transpalet, etc.
+     */
+    public function expandQueryWithSynonyms(string $query): string
+    {
+        $lowerQuery = mb_strtolower($query);
+        $expansions = [];
+
+        foreach (self::CATEGORY_SYNONYMS as $term => $synonyms) {
+            if (str_contains($lowerQuery, $term)) {
+                $expansions = array_merge($expansions, $synonyms);
+            }
+        }
+
+        if (!empty($expansions)) {
+            $uniqueExpansions = array_unique($expansions);
+            $expandedQuery = $query . ' ' . implode(' ', $uniqueExpansions);
+
+            Log::info('🏭 Tenant2: Query expanded with category synonyms', [
+                'original' => $query,
+                'expanded' => $expandedQuery
+            ]);
+
+            return $expandedQuery;
+        }
+
+        return $query;
     }
 
     /**
@@ -46,10 +118,15 @@ class Tenant2ProductSearchService
      * 3. Stock > 0
      * 4. Price > 0
      *
+     * 🆕 Yaklaşık Ürün Arama:
+     * - Kullanıcı belirli tonaj isterse (örn: 1.5 ton) ve bulunamazsa
+     * - Yakın tonajlı ürünleri gösterir (1.2 ton, 1.8 ton gibi)
+     * - Yaklaşık ürün olduğunu belirtir
+     *
      * @param string $userMessage User's search query
      * @param int $limit Result limit
      * @param int|null $categoryId Optional category filter
-     * @return array ['products' => Collection, 'products_found' => int, 'detected_category' => int|null]
+     * @return array ['products' => Collection, 'products_found' => int, 'detected_category' => int|null, 'is_approximate' => bool, 'approximate_message' => string|null]
      */
     public function search(string $userMessage, int $limit = 50, ?int $categoryId = null): array
     {
@@ -62,23 +139,60 @@ class Tenant2ProductSearchService
         // 🚨 Model araması mı? (F4 201, EPL153, vb.)
         $extractedModel = $this->extractModelNumber($userMessage);
 
+        // 🆕 Tonaj araması mı? (1.5 ton, 2 ton, vb.)
+        $requestedTonnage = $this->extractRequestedTonnage($userMessage);
+
+        // 🔄 Expand query with iXtif-specific synonyms (stacker -> istif makinesi, etc.)
+        $expandedQuery = $this->expandQueryWithSynonyms($userMessage);
+
         Log::info('🏢 Tenant2: Product search (HybridSearch)', [
             'user_message' => mb_substr($userMessage, 0, 100),
+            'expanded_query' => mb_substr($expandedQuery, 0, 150),
             'detected_category' => $detectedCategory,
             'is_price_query' => $isPriceQuery,
             'extracted_model' => $extractedModel,
+            'requested_tonnage' => $requestedTonnage,
             'limit' => $limit
         ]);
 
-        // Pass user message directly to HybridSearch
+        // Pass expanded query to HybridSearch
         // Meilisearch handles typo tolerance automatically (transpalet, trans palet, transpalat, etc.)
-        $hybridResults = $this->hybridSearch->search($userMessage, $detectedCategory, $limit);
+        $hybridResults = $this->hybridSearch->search($expandedQuery, $detectedCategory, $limit);
+
+        // 🆕 APPROXIMATE TONNAGE MATCHING
+        $isApproximate = false;
+        $approximateMessage = null;
 
         if (empty($hybridResults)) {
+            // 🆕 Hybrid sonuç yoksa ve tonaj isteniyorsa, yaklaşık ürün ara
+            if ($requestedTonnage !== null) {
+                $approximateResult = $this->searchApproximateTonnage($requestedTonnage, $detectedCategory);
+
+                if ($approximateResult['products']->isNotEmpty()) {
+                    Log::info('🎯 Approximate tonnage products found', [
+                        'requested' => $requestedTonnage,
+                        'found_count' => $approximateResult['products']->count(),
+                        'message' => $approximateResult['message']
+                    ]);
+
+                    return [
+                        'products' => $approximateResult['products'],
+                        'products_found' => $approximateResult['products']->count(),
+                        'detected_category' => $detectedCategory,
+                        'is_approximate' => $approximateResult['is_approximate'],
+                        'approximate_message' => $approximateResult['message'],
+                        'requested_tonnage' => $requestedTonnage,
+                        'found_tonnages' => $approximateResult['found_tonnages'] ?? []
+                    ];
+                }
+            }
+
             return [
                 'products' => collect(),
                 'products_found' => 0,
-                'detected_category' => $detectedCategory
+                'detected_category' => $detectedCategory,
+                'is_approximate' => false,
+                'approximate_message' => null
             ];
         }
 
@@ -211,17 +325,50 @@ class Tenant2ProductSearchService
             }
         }
 
+        // 🆕 Tonaj kontrolü - Eğer istenen tonaj varsa ve sonuçlarda yoksa, yaklaşık sonuç döndür
+        if ($requestedTonnage !== null && $products->isNotEmpty()) {
+            // Sonuçlarda istenen tonaj var mı kontrol et
+            $hasExactTonnage = $products->contains(function($product) use ($requestedTonnage) {
+                $productTonnage = $this->extractTonnageFromTitle($product->title['tr'] ?? '');
+                if ($productTonnage === null) {
+                    $productTonnage = $this->extractTonnageFromTitle($product->title['en'] ?? '');
+                }
+                return $productTonnage !== null && abs($productTonnage - $requestedTonnage) < 0.1;
+            });
+
+            if (!$hasExactTonnage) {
+                // Exact tonaj yok, yaklaşık ürün bildirimi oluştur
+                $foundTonnages = $this->extractTonnagesFromProducts($products);
+
+                if (!empty($foundTonnages)) {
+                    $isApproximate = true;
+                    $tonnageList = implode(', ', array_map(fn($t) => $t . ' ton', $foundTonnages));
+                    $approximateMessage = "⚠️ **{$requestedTonnage} ton ürün mevcut değil.** Yakın kapasiteler mevcut: {$tonnageList}";
+
+                    Log::info('⚠️ Showing approximate tonnage products', [
+                        'requested' => $requestedTonnage,
+                        'found_tonnages' => $foundTonnages,
+                        'product_count' => $products->count()
+                    ]);
+                }
+            }
+        }
+
         Log::info('✅ Tenant2: Products found (HybridSearch)', [
             'count' => $products->count(),
             'category_filtered' => $detectedCategory ? 'YES' : 'NO',
             'is_price_query' => $isPriceQuery,
+            'is_approximate' => $isApproximate,
             'first_product' => $products->first()?->title['tr'] ?? null
         ]);
 
         return [
             'products' => $products,
             'products_found' => $products->count(),
-            'detected_category' => $detectedCategory
+            'detected_category' => $detectedCategory,
+            'is_approximate' => $isApproximate,
+            'approximate_message' => $approximateMessage,
+            'requested_tonnage' => $requestedTonnage
         ];
     }
 
@@ -322,6 +469,259 @@ class Tenant2ProductSearchService
         }
 
         return array_unique($keywords);
+    }
+
+    /**
+     * 🎯 YAKLAŞIK ÜRÜN ARAMA
+     *
+     * Kullanıcının istediği tonaj bulunamazsa yakın tonajlı ürünleri önerir.
+     * Örnek: 1.5 ton yoksa 1.2 ton ve 1.8 ton önerilir.
+     *
+     * @param float $requestedTonnage İstenen tonaj (örn: 1.5)
+     * @param int|null $categoryId Kategori filtresi
+     * @param float $tolerance Tolerans (varsayılan: 0.5 ton)
+     * @return array ['products' => Collection, 'is_approximate' => bool, 'requested_tonnage' => float]
+     */
+    public function searchApproximateTonnage(float $requestedTonnage, ?int $categoryId = null, float $tolerance = 0.5): array
+    {
+        Log::info('🔍 Approximate tonnage search started', [
+            'requested_tonnage' => $requestedTonnage,
+            'category_id' => $categoryId,
+            'tolerance' => $tolerance
+        ]);
+
+        // Önce exact match dene
+        $exactProducts = $this->searchByTonnage($requestedTonnage, $categoryId, true);
+
+        if ($exactProducts->isNotEmpty()) {
+            Log::info('✅ Exact tonnage match found', [
+                'tonnage' => $requestedTonnage,
+                'count' => $exactProducts->count()
+            ]);
+
+            return [
+                'products' => $exactProducts,
+                'is_approximate' => false,
+                'requested_tonnage' => $requestedTonnage,
+                'matched_tonnage' => $requestedTonnage,
+                'message' => null
+            ];
+        }
+
+        // Exact bulunamadı, yaklaşık ara
+        $lowerBound = $requestedTonnage - $tolerance;
+        $upperBound = $requestedTonnage + $tolerance;
+
+        $approximateProducts = $this->searchByTonnageRange($lowerBound, $upperBound, $categoryId);
+
+        if ($approximateProducts->isEmpty()) {
+            // Toleransı genişlet
+            $lowerBound = $requestedTonnage - ($tolerance * 2);
+            $upperBound = $requestedTonnage + ($tolerance * 2);
+            $approximateProducts = $this->searchByTonnageRange($lowerBound, $upperBound, $categoryId);
+        }
+
+        if ($approximateProducts->isNotEmpty()) {
+            // Bulunan tonajları çıkar
+            $foundTonnages = $this->extractTonnagesFromProducts($approximateProducts);
+
+            Log::info('⚠️ Approximate tonnage found', [
+                'requested' => $requestedTonnage,
+                'found_tonnages' => $foundTonnages,
+                'count' => $approximateProducts->count()
+            ]);
+
+            $tonnageList = implode(', ', array_map(fn($t) => $t . ' ton', $foundTonnages));
+
+            return [
+                'products' => $approximateProducts,
+                'is_approximate' => true,
+                'requested_tonnage' => $requestedTonnage,
+                'found_tonnages' => $foundTonnages,
+                'message' => "⚠️ {$requestedTonnage} ton ürün bulunamadı. Yakın kapasiteler: {$tonnageList}"
+            ];
+        }
+
+        // Hiç ürün bulunamadı
+        return [
+            'products' => collect(),
+            'is_approximate' => false,
+            'requested_tonnage' => $requestedTonnage,
+            'message' => "❌ {$requestedTonnage} ton veya yakın kapasiteli ürün bulunamadı."
+        ];
+    }
+
+    /**
+     * Belirli bir tonaja sahip ürünleri ara
+     *
+     * @param float $tonnage Tonaj değeri
+     * @param int|null $categoryId Kategori filtresi
+     * @param bool $exact Tam eşleşme mi?
+     * @return \Illuminate\Support\Collection
+     */
+    protected function searchByTonnage(float $tonnage, ?int $categoryId = null, bool $exact = true): \Illuminate\Support\Collection
+    {
+        $query = ShopProduct::where('is_active', true);
+
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        // Tonaj formatları: "1.5 ton", "1.5 Ton", "1,5 ton", "1.5Ton"
+        $tonnagePatterns = [
+            $tonnage . ' ton',
+            $tonnage . ' Ton',
+            str_replace('.', ',', (string)$tonnage) . ' ton',
+            str_replace('.', ',', (string)$tonnage) . ' Ton',
+            $tonnage . 'ton',
+            $tonnage . 'Ton',
+        ];
+
+        // Tam sayı tonajlar için ek pattern'ler (örn: 2 ton, 2.0 ton)
+        if (floor($tonnage) == $tonnage) {
+            $intTonnage = (int)$tonnage;
+            $tonnagePatterns[] = $intTonnage . ' ton';
+            $tonnagePatterns[] = $intTonnage . ' Ton';
+            $tonnagePatterns[] = $intTonnage . '.0 ton';
+            $tonnagePatterns[] = $intTonnage . '.0 Ton';
+        }
+
+        $query->where(function($q) use ($tonnagePatterns) {
+            foreach ($tonnagePatterns as $pattern) {
+                // JSON title içinde ara (tr veya en)
+                $q->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.tr')) LIKE ?", ["%{$pattern}%"]);
+                $q->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(title, '$.en')) LIKE ?", ["%{$pattern}%"]);
+            }
+        });
+
+        return $query->with('category:category_id,title,slug')->get();
+    }
+
+    /**
+     * Belirli bir tonaj aralığındaki ürünleri ara
+     */
+    protected function searchByTonnageRange(float $lowerBound, float $upperBound, ?int $categoryId = null): \Illuminate\Support\Collection
+    {
+        $query = ShopProduct::where('is_active', true);
+
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        // Ürün adlarından tonaj çıkar ve filtrele
+        $products = $query->with('category:category_id,title,slug')->get();
+
+        return $products->filter(function($product) use ($lowerBound, $upperBound) {
+            $tonnage = $this->extractTonnageFromTitle($product->title['tr'] ?? '');
+            if ($tonnage === null) {
+                $tonnage = $this->extractTonnageFromTitle($product->title['en'] ?? '');
+            }
+
+            if ($tonnage === null) {
+                return false;
+            }
+
+            return $tonnage >= $lowerBound && $tonnage <= $upperBound;
+        });
+    }
+
+    /**
+     * Ürün başlığından tonaj değerini çıkar
+     *
+     * @param string $title Ürün başlığı
+     * @return float|null Tonaj değeri veya null
+     */
+    protected function extractTonnageFromTitle(string $title): ?float
+    {
+        // Pattern: "1.5 ton", "1,5 Ton", "2 ton", "1.5-2 Ton" (ilkini al)
+        // 🔥 FIX: Model numaralarını hariç tut! (TDL162, CPD15 gibi)
+        // Sadece "X Ton" veya "X.X Ton" pattern'ı yakala, önünde harf olmamalı
+        if (preg_match('/(?<![A-Za-z])(\d+(?:[.,]\d+)?)\s*(?:-\s*\d+(?:[.,]\d+)?)?\s*ton/i', $title, $matches)) {
+            $tonnage = (float)str_replace(',', '.', $matches[1]);
+            // Mantıklı aralık kontrolü: 0.1 - 50 ton arası
+            if ($tonnage >= 0.1 && $tonnage <= 50) {
+                return $tonnage;
+            }
+        }
+
+        // Libra (pound) için lb pattern - 3000 lb = ~1.36 ton
+        // NOT: 3000 lb gibi büyük sayılar geçerli
+        if (preg_match('/(\d{3,5})\s*lb/i', $title, $matches)) {
+            $lb = (int)$matches[1];
+            if ($lb >= 500 && $lb <= 100000) { // Mantıklı aralık
+                return round($lb / 2204.6, 1); // lb to ton conversion
+            }
+        }
+
+        // kg pattern - 1500 kg = 1.5 ton
+        if (preg_match('/(\d{3,5})\s*kg/i', $title, $matches)) {
+            $kg = (int)$matches[1];
+            if ($kg >= 100 && $kg <= 50000) { // Mantıklı aralık
+                return round($kg / 1000, 1);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Ürün koleksiyonundan tüm tonaj değerlerini çıkar
+     */
+    protected function extractTonnagesFromProducts(\Illuminate\Support\Collection $products): array
+    {
+        $tonnages = [];
+
+        foreach ($products as $product) {
+            $tonnage = $this->extractTonnageFromTitle($product->title['tr'] ?? '');
+            if ($tonnage === null) {
+                $tonnage = $this->extractTonnageFromTitle($product->title['en'] ?? '');
+            }
+
+            if ($tonnage !== null && !in_array($tonnage, $tonnages)) {
+                $tonnages[] = $tonnage;
+            }
+        }
+
+        sort($tonnages);
+        return $tonnages;
+    }
+
+    /**
+     * Kullanıcı mesajından tonaj isteği çıkar
+     *
+     * @param string $message Kullanıcı mesajı
+     * @return float|null İstenen tonaj veya null
+     */
+    public function extractRequestedTonnage(string $message): ?float
+    {
+        $message = mb_strtolower($message);
+
+        // "1.5 ton", "1,5 ton", "1.5 tonluk", "2 ton"
+        if (preg_match('/(\d+(?:[.,]\d+)?)\s*ton/i', $message, $matches)) {
+            return (float)str_replace(',', '.', $matches[1]);
+        }
+
+        // "buçuk ton" = 0.5 ton eklentisi: "bir buçuk ton" = 1.5, "iki buçuk ton" = 2.5
+        $turkishNumbers = [
+            'yarım' => 0.5,
+            'bir buçuk' => 1.5,
+            'birbuçuk' => 1.5,
+            'iki buçuk' => 2.5,
+            'ikibuçuk' => 2.5,
+            'bir' => 1.0,
+            'iki' => 2.0,
+            'üç' => 3.0,
+            'dört' => 4.0,
+            'beş' => 5.0,
+        ];
+
+        foreach ($turkishNumbers as $word => $value) {
+            if (str_contains($message, $word . ' ton')) {
+                return $value;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -505,6 +905,57 @@ Kullanıcı 'reach truck' derse:
 Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
 ",
 
+            'approximate_product_matching' => "
+## ⚠️ İXTİF ÖZEL KURAL: YAKLAŞIK ÜRÜN EŞLEŞTİRME
+
+**🎯 KRİTİK: Kullanıcı belirli bir tonaj/kapasite istediğinde ve EXACT MATCH yoksa:**
+
+### 1. YAKLAŞIK ÜRÜN SUNMA
+Eğer BAĞLAM BİLGİLERİ'nde `is_approximate: true` veya `approximate_message` varsa:
+- MUTLAKA kullanıcıyı bilgilendir!
+- Önce özür dile: 'Maalesef tam olarak X ton ürünümüz mevcut değil.'
+- Ardından alternatif sun: 'Ancak yakın kapasitelerde şu ürünlerimiz var:'
+
+### 2. DOĞRU FORMAT
+**✅ DOĞRU YANIT:**
+```
+Maalesef **1.5 ton** kapasiteli transpalet şu an katalogumuzda mevcut değil.
+
+⚠️ **Yakın kapasiteli alternatifler:**
+
+- [İXTİF EPL185 - 1.8 Ton Li-Ion Transpalet](URL) - Biraz daha yüksek kapasite
+- [İXTİF ES12-12ES - 1.2 Ton İstifleyici](URL) - Biraz daha düşük kapasite
+
+**Not:** Tam olarak 1.5 ton arıyorsanız özel sipariş verebiliriz. İletişime geçin: {$phone}
+```
+
+**❌ YANLIŞ YANIT (ASLA YAPMA!):**
+```
+İşte 1.5 ton transpalet modellerimiz:
+- [1.8 Ton Model](URL)  ← YANLIŞ! 1.8 ≠ 1.5
+```
+
+### 3. TONAJ FARKLILIĞINI BELİRT
+- 0.1-0.3 ton fark: 'Yakın kapasite'
+- 0.3-0.5 ton fark: 'Alternatif kapasite'
+- 0.5+ ton fark: 'Farklı sınıf, uygunluk kontrolü önerilir'
+
+### 4. İLETİŞİME YÖNLENDİR
+Exact match yoksa, her zaman iletişim bilgilerini ekle:
+- Telefon: {$phone}
+- WhatsApp: https://wa.me/{$cleanWhatsapp}
+- 'Özel sipariş/tedarik için bizi arayın'
+
+### 5. KATEGORİ BAZLI YAKLAŞIK ARAMA
+Forklift kategorisinde 1.5 ton yoksa:
+- Önce 1.2 ton ve 1.8 ton forkliftleri göster
+- Kategori değiştirme (transpalet önerme!) YAPMA
+
+Transpalet kategorisinde 2 ton yoksa:
+- Önce 1.8 ton ve 2.5 ton transpaletleri göster
+- Forklift önerme YAPMA (farklı kategori!)
+",
+
             'price_and_stock_policy' => "
 ## 💰 İXTİF ÖZEL KURAL: FİYAT VE STOK DURUMU POLİTİKASI
 
@@ -577,14 +1028,18 @@ Kullanıcı 'yedek parça' demediği sürece yedek parça önerme!
         // 1. TENANT-SPECIFIC: Kategori detection
         $detectedCategory = $this->detectCategoryTenant2($userMessage);
 
+        // 2. Expand query with iXtif-specific synonyms (stacker -> istif makinesi, etc.)
+        $expandedQuery = $this->expandQueryWithSynonyms($userMessage);
+
         Log::info('🏢 Tenant2ProductSearchService - Category detection', [
             'user_message' => mb_substr($userMessage, 0, 100),
+            'expanded_query' => mb_substr($expandedQuery, 0, 150),
             'detected_category' => $detectedCategory ? $detectedCategory['category_name'] : 'none'
         ]);
 
-        // 2. HYBRID SEARCH (Global ile aynı - Meilisearch + Vector)
+        // 3. HYBRID SEARCH (Global ile aynı - Meilisearch + Vector)
         $hybridResults = $this->hybridSearch->search(
-            $userMessage,
+            $expandedQuery,
             $detectedCategory['category_id'] ?? null,
             100  // TÜM ürünleri getir, AI filtreleyecek
         );

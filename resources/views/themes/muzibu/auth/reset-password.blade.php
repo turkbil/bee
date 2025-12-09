@@ -1,15 +1,19 @@
 @extends('themes.muzibu.auth.layout')
 
-@section('title', 'Şifre Sıfırla - Muzibu')
-@section('subtitle', 'Yeni şifre oluşturun')
+@section('title', 'Sifre Sifirla - Muzibu')
 
 @section('content')
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Yeni Şifre Oluşturun</h2>
-    <p class="text-gray-600 dark:text-gray-400 mb-6">
-        Hesabınız için yeni bir şifre belirleyin
-    </p>
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-shield-check text-emerald-400 text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-2">Yeni Sifre Olusturun</h2>
+        <p class="text-dark-200">Hesabiniz icin guclu bir sifre belirleyin.</p>
+    </div>
 
-    <form method="POST" action="{{ route('password.store') }}" class="space-y-5">
+    <form method="POST" action="{{ route('password.store') }}" class="space-y-5"
+          @submit="loading = true; setTimeout(() => loading = false, 10000)">
         @csrf
 
         <!-- Password Reset Token -->
@@ -17,75 +21,107 @@
 
         <!-- Email -->
         <div>
-            <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            <label for="email" class="block text-sm font-medium text-dark-100 mb-2">
                 E-posta Adresi
             </label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                value="{{ old('email', $request->email) }}"
-                required
-                autofocus
-                autocomplete="username"
-                class="w-full px-4 py-3 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all @error('email') border-red-500 dark:border-red-500 @enderror"
-                placeholder="ornek@email.com"
-            >
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-envelope text-dark-300"></i>
+                </div>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ old('email', $request->email) }}"
+                    required
+                    readonly
+                    autocomplete="username"
+                    class="w-full pl-12 pr-4 py-3.5 bg-dark-700/30 border border-dark-600 rounded-xl text-dark-200 cursor-not-allowed"
+                >
+            </div>
             @error('email')
-                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
             @enderror
         </div>
 
         <!-- Password -->
-        <div x-data="{ show: false }">
-            <label for="password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Yeni Şifre
+        <div>
+            <label for="password" class="block text-sm font-medium text-dark-100 mb-2">
+                Yeni Sifre
             </label>
             <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-dark-300"></i>
+                </div>
                 <input
-                    :type="show ? 'text' : 'password'"
+                    :type="showPassword ? 'text' : 'password'"
                     id="password"
                     name="password"
                     required
+                    autofocus
                     autocomplete="new-password"
-                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all @error('password') border-red-500 dark:border-red-500 @enderror"
-                    placeholder="••••••••"
+                    @input="checkPasswordStrength($event.target.value)"
+                    class="w-full pl-12 pr-12 py-3.5 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('password') border-red-500/50 @enderror"
+                    placeholder="En az 8 karakter"
                 >
                 <button
                     type="button"
-                    @click="show = !show"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    @click="showPassword = !showPassword"
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-dark-300 hover:text-white transition-colors"
                 >
-                    <i :class="show ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                    <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                 </button>
             </div>
+
+            <!-- Password Strength Indicator -->
+            <div class="mt-3" x-show="passwordStrength > 0" x-transition>
+                <div class="flex items-center gap-2 mb-1">
+                    <div class="flex-1 h-1.5 bg-dark-600 rounded-full overflow-hidden">
+                        <div
+                            class="h-full transition-all duration-300 rounded-full"
+                            :class="getStrengthColor()"
+                            :style="'width: ' + (passwordStrength * 20) + '%'"
+                        ></div>
+                    </div>
+                    <span class="text-xs font-medium" :class="getStrengthColor().replace('bg-', 'text-')" x-text="getStrengthText()"></span>
+                </div>
+            </div>
+
             @error('password')
-                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ $message }}
+                </p>
             @enderror
-            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">En az 8 karakter olmalıdır</p>
         </div>
 
         <!-- Password Confirmation -->
-        <div x-data="{ show: false }">
-            <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                Şifre Tekrar
+        <div>
+            <label for="password_confirmation" class="block text-sm font-medium text-dark-100 mb-2">
+                Sifre Tekrar
             </label>
             <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-dark-300"></i>
+                </div>
                 <input
-                    :type="show ? 'text' : 'password'"
+                    :type="showPasswordConfirm ? 'text' : 'password'"
                     id="password_confirmation"
                     name="password_confirmation"
                     required
                     autocomplete="new-password"
-                    class="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-muzibu-gray border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-muzibu-coral focus:border-transparent dark:text-white transition-all"
-                    placeholder="••••••••"
+                    class="w-full pl-12 pr-12 py-3.5 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all"
+                    placeholder="Sifreyi tekrar girin"
                 >
                 <button
                     type="button"
-                    @click="show = !show"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    @click="showPasswordConfirm = !showPasswordConfirm"
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-dark-300 hover:text-white transition-colors"
                 >
-                    <i :class="show ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                    <i :class="showPasswordConfirm ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                 </button>
             </div>
         </div>
@@ -93,19 +129,38 @@
         <!-- Submit Button -->
         <button
             type="submit"
-            class="w-full py-3.5 bg-gradient-to-r from-muzibu-coral to-green-600 hover:from-muzibu-coral-light hover:to-green-500 text-white font-bold rounded-xl transition-all hover:scale-105 shadow-lg hover:shadow-xl"
+            :disabled="loading"
+            class="w-full py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-            <i class="fas fa-key mr-2"></i>
-            Şifreyi Sıfırla
+            <template x-if="!loading">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-check-circle"></i>
+                    Sifreyi Guncelle
+                </span>
+            </template>
+            <template x-if="loading">
+                <span class="flex items-center gap-2">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Guncelleniyor...
+                </span>
+            </template>
         </button>
+
+        <!-- Security Info -->
+        <div class="pt-4 border-t border-dark-600">
+            <div class="flex items-start gap-3 text-sm text-dark-300">
+                <i class="fas fa-shield-alt text-dark-400 mt-0.5"></i>
+                <p>Guclu bir sifre icin buyuk/kucuk harf, rakam ve ozel karakter kullamin.</p>
+            </div>
+        </div>
     </form>
 @endsection
 
 @section('footer-links')
-    <div class="text-white/80 dark:text-gray-400">
-        Şifrenizi hatırladınız mı?
-        <a href="{{ route('login') }}" class="font-semibold text-white dark:text-muzibu-coral-light hover:text-white/100 dark:hover:text-muzibu-coral transition-colors">
-            Giriş Yapın
+    <p class="text-dark-300">
+        Sifrenizi hatirladin mi?
+        <a href="{{ route('login') }}" class="text-mz-400 hover:text-mz-300 font-medium transition-colors">
+            Giris Yapin
         </a>
-    </div>
+    </p>
 @endsection

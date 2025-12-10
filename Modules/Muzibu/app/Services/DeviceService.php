@@ -4,15 +4,13 @@ namespace Modules\Muzibu\App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 use Jenssegers\Agent\Agent;
 
 /**
- * DeviceService - Redis Session + user_active_sessions Hybrid System
+ * DeviceService - Basit Session Takip Sistemi
  *
- * Redis session driver ile birlikte calisir.
- * user_active_sessions tablosu device tracking icin kullanilir.
- * Login/logout event'lerinde bu tablo guncellenir.
+ * SADECE user_active_sessions tablosu ile çalışır.
+ * Redis kontrolü YOK - session valid ise DB'de kalır.
  *
  * @package Modules\Muzibu\App\Services
  */
@@ -21,13 +19,7 @@ class DeviceService
     protected string $table = 'user_active_sessions';
 
     /**
-     * Check if this service should run
-     * Device limit özelliği aktif olan tüm tenant'lar için çalışır
-     *
-     * Kontroller:
-     * 1. Tenant var mı?
-     * 2. Abonelik sistemi açık mı? (auth_subscription)
-     * 3. Device limit aktif mi? (auth_device_limit_enabled)
+     * Servis çalışmalı mı?
      */
     public function shouldRun(): bool
     {
@@ -36,20 +28,17 @@ class DeviceService
             return false;
         }
 
-        // 1. Abonelik sistemi kapalıysa device limit de çalışmasın
-        // auth_subscription = 0 (Kapalı) ise false döner
+        // Abonelik sistemi kapalıysa device limit de çalışmasın
         if (!setting('auth_subscription', false)) {
             return false;
         }
 
-        // 2. Device limit özelliği kapatılmışsa çalışmasın
-        // auth_device_limit_enabled = false ise false döner
-        // Varsayılan: true (abonelik açıksa device limit de aktif)
-        return (bool) setting('auth_device_limit_enabled', true);
+        // Device limit özelliği kapatılmışsa çalışmasın (auth_device setting key)
+        return (bool) setting('auth_device', false);
     }
 
     /**
-     * Register a new session for user (called on login)
+     * Yeni session kaydet (login sonrası)
      */
     public function registerSession(User $user): void
     {
@@ -59,102 +48,73 @@ class DeviceService
 
         $sessionId = session()->getId();
         if (!$sessionId) {
-            \Log::warning('DeviceService::registerSession - No session ID');
             return;
         }
 
         $agent = new Agent();
-        $currentIp = request()->ip();
-        $currentUserAgent = request()->userAgent();
 
-        \Log::info('🔐 DeviceService::registerSession - START', [
+        // 🔥 LOGIN TOKEN: Her login için benzersiz token oluştur
+        // Bu token session ID değişse bile aynı kalır
+        $loginToken = bin2hex(random_bytes(32)); // 64 char hex
+
+        // Önce bu session'ı sil (varsa) - temiz kayıt için
+        DB::table($this->table)->where('session_id', $sessionId)->delete();
+
+        // Yeni session kaydet
+        DB::table($this->table)->insert([
             'user_id' => $user->id,
             'session_id' => $sessionId,
+            'login_token' => $loginToken,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'device_type' => $this->getDeviceType($agent),
             'device_name' => $this->getDeviceName($agent),
             'browser' => $agent->browser(),
             'platform' => $agent->platform(),
-            'ip' => $currentIp,
+            'last_activity' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
-        // ❌ IP + User Agent kontrolünü KALDIRDIK!
-        // Sebep: Aynı bilgisayardan farklı tarayıcılarla giriş yapılınca
-        // her iki tarayıcı da aynı IP'ye sahip olduğu için birbirini siliyordu!
-        // Şimdi sadece session_id benzersiz olacak, her tarayıcı ayrı device sayılır
+        // 🔥 LOGIN TOKEN: Cookie'ye kaydet (7 gün, HttpOnly)
+        $cookieName = 'mzb_login_token';
+        $cookieMinutes = 60 * 24 * 7; // 7 gün
+        cookie()->queue(cookie($cookieName, $loginToken, $cookieMinutes, '/', null, true, true, false, 'Lax'));
 
-        // Mevcut session varsa guncelle, yoksa ekle
-        DB::table($this->table)->updateOrInsert(
-            ['session_id' => $sessionId],
-            [
-                'user_id' => $user->id,
-                'ip_address' => $currentIp,
-                'user_agent' => $currentUserAgent,
-                'device_type' => $this->getDeviceType($agent),
-                'device_name' => $this->getDeviceName($agent),
-                'browser' => $agent->browser(),
-                'platform' => $agent->platform(),
-                'last_activity' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
-
-        \Log::info('🔐 DeviceService::registerSession - COMPLETE', [
-            'session_id' => $sessionId,
+        \Log::info('🔐 Session registered with login_token', [
             'user_id' => $user->id,
+            'session_id' => substr($sessionId, 0, 20) . '...',
+            'login_token' => substr($loginToken, 0, 16) . '...',
         ]);
 
-        // Device limit kontrolu ve cleanup
-        $this->handlePostLoginDeviceLimit($user);
-
-        // Log activity
-        $this->logActivity($user, 'login');
+        // LIFO: Limit aşıldıysa eski session'ları sil
+        $this->enforceDeviceLimit($user, $sessionId);
     }
 
     /**
-     * Unregister session (called on logout)
-     * NOT: shouldRun() kontrolü YOK - logout her zaman session silmeli!
+     * Session sil (logout)
      */
     public function unregisterSession(User $user): void
     {
-        // ⚠️ shouldRun() kontrolü KALDIRILDI!
-        // Logout yapan kullanıcının session'ı HER ZAMAN silinmeli
-        // (subscription kapalı olsa bile)
-
         $tenant = tenant();
         if (!$tenant) {
             return;
         }
 
         $sessionId = session()->getId();
-
-        \Log::info('🔐 DeviceService::unregisterSession', [
-            'user_id' => $user->id,
-            'session_id' => $sessionId ? substr($sessionId, 0, 20) . '...' : 'NULL',
-            'tenant_id' => $tenant->id,
-        ]);
-
         if ($sessionId) {
-            $deleted = DB::table($this->table)
+            DB::table($this->table)
                 ->where('session_id', $sessionId)
                 ->delete();
-
-            \Log::info('🔐 DeviceService::unregisterSession - Deleted', [
-                'user_id' => $user->id,
-                'rows_deleted' => $deleted,
-            ]);
         }
-
-        // Log activity (sadece shouldRun true ise)
-        if ($this->shouldRun()) {
-            $this->logActivity($user, 'logout');
-        }
-
-        // Premium cache temizle
-        \Cache::forget('user_' . $user->id . '_is_premium_tenant_' . $tenant->id);
     }
 
     /**
-     * Update session activity (called periodically - session polling)
+     * Session activity güncelle
+     *
+     * 🔥 ÖNEMLİ: Session ID değişirse (Livewire regenerate) DB'yi güncelle
+     * Ama SADECE bu kullanıcının tek bir session'ı varsa!
+     * Birden fazla session varsa → Bu bir LIFO durumu, güncelleme yapma
      */
     public function updateSessionActivity(User $user): bool
     {
@@ -162,67 +122,260 @@ class DeviceService
             return true;
         }
 
-        $sessionId = session()->getId();
-        if (!$sessionId) {
-            \Log::warning('🔐 DeviceService: No session ID available');
+        $currentSessionId = $this->getCurrentSessionId();
+        if (!$currentSessionId) {
             return false;
         }
 
-        // Session kaydi var mi kontrol et
-        $session = DB::table($this->table)
-            ->where('session_id', $sessionId)
+        // Önce mevcut session ID ile güncellemeyi dene
+        $updated = DB::table($this->table)
+            ->where('session_id', $currentSessionId)
+            ->where('user_id', $user->id)
+            ->update(['last_activity' => now()]);
+
+        if ($updated > 0) {
+            return true; // Session bulundu ve güncellendi
+        }
+
+        // Session bulunamadı - Livewire regenerate olmuş olabilir
+        // SADECE tek session varsa güncelle (aynı sekme/cihaz)
+        $existingSession = DB::table($this->table)
             ->where('user_id', $user->id)
             ->first();
 
-        if (!$session) {
-            // Session tabloda yok - yeni login olmuş olabilir veya session regenerate edilmiş
-            // Kullanıcı authenticated ise session'ı otomatik kaydet (self-healing)
+        if ($existingSession) {
+            // Tek session var - Livewire regenerate, session ID'yi güncelle
+            $sessionCount = DB::table($this->table)
+                ->where('user_id', $user->id)
+                ->count();
 
-            \Log::info('🔐 DeviceService: Session not in DB - auto-registering (self-healing)', [
-                'current_session_id' => $sessionId,
-                'user_id' => $user->id,
-            ]);
-
-            // Session'ı kaydet
-            $this->registerSession($user);
-
-            // Kayıt sonrası device limit kontrolü
-            $limit = $this->getDeviceLimit($user);
-            $count = $this->getActiveDeviceCount($user);
-
-            // Limit asilmissa EN ESKI session'i sil (LIFO - son giren kalir)
-            if ($count > $limit) {
-                \Log::info('🔐 DeviceService: Device limit exceeded after auto-register, removing oldest', [
+            if ($sessionCount === 1) {
+                \Log::info('🔐 updateSessionActivity: Session ID regenerated (Livewire), updating', [
                     'user_id' => $user->id,
-                    'limit' => $limit,
-                    'count' => $count,
+                    'old_session' => substr($existingSession->session_id, 0, 20) . '...',
+                    'new_session' => substr($currentSessionId, 0, 20) . '...',
                 ]);
 
-                // En eski session'ı bul ve sil (mevcut session hariç)
-                $oldestSession = DB::table($this->table)
-                    ->where('user_id', $user->id)
-                    ->where('session_id', '!=', $sessionId)
-                    ->orderBy('last_activity', 'asc')
-                    ->first();
+                DB::table($this->table)
+                    ->where('id', $existingSession->id)
+                    ->update([
+                        'session_id' => $currentSessionId,
+                        'last_activity' => now(),
+                        'updated_at' => now(),
+                    ]);
 
-                if ($oldestSession) {
-                    $this->terminateSession($oldestSession->session_id, $user);
-                }
+                return true;
             }
-
-            return true; // Kullanıcıyı logout etme, session kaydedildi
         }
 
-        // Activity guncelle
-        DB::table($this->table)
-            ->where('session_id', $sessionId)
-            ->update(['last_activity' => now()]);
-
-        return true;
+        return false;
     }
 
     /**
-     * Get active sessions for user
+     * Session DB'de var mı? (polling için)
+     *
+     * 🔥 LOGIN TOKEN YAKLAŞIMI:
+     * Session ID Livewire tarafından değişebilir, ama login_token sabit kalır.
+     * Cookie'deki login_token ile DB'deki login_token eşleşirse = geçerli session
+     *
+     * LIFO ile çalışması:
+     * - Tab A login → token_A oluşur, cookie'ye ve DB'ye kaydedilir
+     * - Tab B login → token_B oluşur, LIFO token_A'yı DB'den siler
+     * - Tab A polling → cookie'de token_A var ama DB'de YOK → LOGOUT
+     */
+    public function sessionExists(User $user): bool
+    {
+        if (!$this->shouldRun()) {
+            return true; // Sistem kapalıysa her zaman valid
+        }
+
+        // 1. Cookie'den login_token al
+        $cookieToken = request()->cookie('mzb_login_token');
+
+        \Log::debug('🔐 sessionExists: Checking with login_token', [
+            'user_id' => $user->id,
+            'cookie_token' => $cookieToken ? substr($cookieToken, 0, 16) . '...' : 'NULL',
+        ]);
+
+        // Cookie'de token yoksa → Session ID ile fallback
+        if (!$cookieToken) {
+            return $this->sessionExistsBySessionId($user);
+        }
+
+        // 2. Login token ile DB'de kontrol et
+        $session = DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->where('login_token', $cookieToken)
+            ->first();
+
+        if ($session) {
+            // Token eşleşti - session geçerli
+            // Session ID değiştiyse güncelle (Livewire regenerate)
+            $currentSessionId = $this->getCurrentSessionId();
+            if ($currentSessionId && $session->session_id !== $currentSessionId) {
+                DB::table($this->table)
+                    ->where('id', $session->id)
+                    ->update([
+                        'session_id' => $currentSessionId,
+                        'last_activity' => now(),
+                        'updated_at' => now(),
+                    ]);
+            } else {
+                DB::table($this->table)
+                    ->where('id', $session->id)
+                    ->update(['last_activity' => now()]);
+            }
+            return true;
+        }
+
+        // 3. Token eşleşmiyor = LIFO tarafından silindi → LOGOUT
+        \Log::info('🔐 sessionExists: Login token not found in DB - LIFO kicked', [
+            'user_id' => $user->id,
+            'cookie_token' => substr($cookieToken, 0, 16) . '...',
+        ]);
+
+        return false;
+    }
+
+    /**
+     * Session ID ile kontrol (login_token yoksa fallback)
+     */
+    protected function sessionExistsBySessionId(User $user): bool
+    {
+        $currentSessionId = $this->getCurrentSessionId();
+
+        if (!$currentSessionId) {
+            // Session ID alamıyoruz - kullanıcının session'ı var mı?
+            $hasSession = DB::table($this->table)
+                ->where('user_id', $user->id)
+                ->exists();
+
+            return $hasSession;
+        }
+
+        // Session ID ile kontrol
+        $exists = DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->where('session_id', $currentSessionId)
+            ->exists();
+
+        if ($exists) {
+            return true;
+        }
+
+        // Tek session varsa sync yap (Livewire regenerate)
+        $sessions = DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->get();
+
+        if ($sessions->count() === 1) {
+            $session = $sessions->first();
+            DB::table($this->table)
+                ->where('id', $session->id)
+                ->update([
+                    'session_id' => $currentSessionId,
+                    'last_activity' => now(),
+                    'updated_at' => now(),
+                ]);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Mevcut session ID'yi al (session veya cookie'den)
+     *
+     * API context'te session()->getId() boş dönebilir.
+     * Cookie'den doğrudan session ID'yi çıkarmalıyız.
+     *
+     * Laravel session cookie formatı (decrypt sonrası):
+     * - Simple: "SESSION_ID" (40 char)
+     * - With HMAC: "HMAC_HASH|SESSION_ID" (hash|40 char)
+     */
+    protected function getCurrentSessionId(): ?string
+    {
+        // 🔍 DEBUG: Her source'u logla
+        $sources = [];
+
+        // 1. Önce session()->getId() dene (web context - en güvenilir)
+        $sessionId = session()->getId();
+        $sources['session_helper'] = $sessionId ?: 'EMPTY';
+        if ($sessionId && $sessionId !== '' && strlen($sessionId) === 40) {
+            \Log::debug('🔐 getCurrentSessionId: Using session() helper', [
+                'session_id' => substr($sessionId, 0, 20) . '...',
+            ]);
+            return $sessionId;
+        }
+
+        // 2. Request session'dan ID al (API with session middleware)
+        if (request()->hasSession()) {
+            $reqSessionId = request()->session()->getId();
+            $sources['request_session'] = $reqSessionId ?: 'EMPTY';
+            if ($reqSessionId && $reqSessionId !== '' && strlen($reqSessionId) === 40) {
+                \Log::debug('🔐 getCurrentSessionId: Using request()->session()', [
+                    'session_id' => substr($reqSessionId, 0, 20) . '...',
+                ]);
+                return $reqSessionId;
+            }
+        } else {
+            $sources['request_session'] = 'NO_SESSION';
+        }
+
+        // 3. Cookie'den parse et (fallback)
+        $cookieName = config('session.cookie', 'laravel_session');
+        $cookie = request()->cookie($cookieName);
+        $sources['cookie_name'] = $cookieName;
+        $sources['cookie_exists'] = $cookie ? 'YES' : 'NO';
+
+        if ($cookie) {
+            // Cookie zaten 40 char alphanumeric ise session ID'dir
+            if (strlen($cookie) === 40 && ctype_alnum($cookie)) {
+                \Log::debug('🔐 getCurrentSessionId: Using raw cookie (40 char)', [
+                    'session_id' => substr($cookie, 0, 20) . '...',
+                ]);
+                return $cookie;
+            }
+
+            try {
+                // Encrypted cookie - decrypt et
+                $decrypted = decrypt($cookie, false);
+
+                if ($decrypted) {
+                    // Format: "HMAC_HASH|SESSION_ID" olabilir
+                    if (str_contains($decrypted, '|')) {
+                        $parts = explode('|', $decrypted);
+                        $lastPart = end($parts);
+                        if (strlen($lastPart) === 40 && ctype_alnum($lastPart)) {
+                            \Log::debug('🔐 getCurrentSessionId: Using decrypted cookie (HMAC format)', [
+                                'session_id' => substr($lastPart, 0, 20) . '...',
+                            ]);
+                            return $lastPart;
+                        }
+                    }
+
+                    // Simple format - 40 char
+                    if (strlen($decrypted) === 40 && ctype_alnum($decrypted)) {
+                        \Log::debug('🔐 getCurrentSessionId: Using decrypted cookie (simple format)', [
+                            'session_id' => substr($decrypted, 0, 20) . '...',
+                        ]);
+                        return $decrypted;
+                    }
+                }
+            } catch (\Exception $e) {
+                // Decrypt başarısız - log et
+                $sources['cookie_decrypt_error'] = $e->getMessage();
+            }
+        }
+
+        // 🔥 FALLBACK FAILED - Hiçbir source session ID bulamadı
+        \Log::warning('🔐 getCurrentSessionId: ALL SOURCES FAILED', $sources);
+
+        return null;
+    }
+
+    /**
+     * Kullanıcının aktif cihazlarını getir
      */
     public function getActiveDevices(User $user): array
     {
@@ -230,49 +383,42 @@ class DeviceService
             return [];
         }
 
-        // 1. Stale sessions temizle (30 dakika inaktif)
-        $this->cleanupStaleSessions($user);
+        $currentSessionId = session()->getId();
 
-        // 2. Ghost sessions temizle (Redis'te olmayan DB kayitlari)
-        $this->cleanupGhostSessions($user);
+        // Sadece 60 dakikadan eski session'ları temizle (stale cleanup)
+        DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->where('last_activity', '<', now()->subMinutes(60))
+            ->delete();
 
         return DB::table($this->table)
             ->where('user_id', $user->id)
             ->orderBy('last_activity', 'desc')
             ->get()
-            ->map(function ($session) {
+            ->map(function ($session) use ($currentSessionId) {
                 return [
                     'id' => $session->id,
                     'session_id' => $session->session_id,
                     'ip_address' => $session->ip_address,
-                    'user_agent' => $session->user_agent,
                     'device_type' => $session->device_type,
                     'device_name' => $session->device_name,
                     'browser' => $session->browser,
                     'platform' => $session->platform,
                     'last_activity' => $session->last_activity,
                     'last_activity_human' => $this->getHumanTime(strtotime($session->last_activity)),
-                    'is_current' => $session->session_id === session()->getId(),
+                    'is_current' => $session->session_id === $currentSessionId,
                 ];
             })
             ->toArray();
     }
 
     /**
-     * Get active session count
-     * Ghost session'lari temizledikten sonra sayar
+     * Aktif cihaz sayısı
      */
     public function getActiveDeviceCount(User $user): int
     {
         if (!$this->shouldRun()) {
             return 0;
-        }
-
-        // Ghost sessions temizle (her count sorgusunda degil, sadece 5 dakikada bir)
-        $cacheKey = 'ghost_cleanup_' . $user->id . '_' . tenant()->id;
-        if (!\Cache::has($cacheKey)) {
-            $this->cleanupGhostSessions($user);
-            \Cache::put($cacheKey, true, now()->addMinutes(5));
         }
 
         return DB::table($this->table)
@@ -281,23 +427,7 @@ class DeviceService
     }
 
     /**
-     * Check if user has exceeded device limit
-     */
-    public function checkDeviceLimit(User $user): bool
-    {
-        if (!$this->shouldRun()) {
-            return true;
-        }
-
-        $limit = $this->getDeviceLimit($user);
-        $activeCount = $this->getActiveDeviceCount($user);
-
-        return $activeCount < $limit;
-    }
-
-    /**
-     * Get device limit for user
-     * 3-Seviyeli Hierarchy: 1) User device_limit (VIP/Ban), 2) Subscription Plan, 3) Settings fallback
+     * Device limit al (3-tier: User > Plan > Setting)
      */
     public function getDeviceLimit(User $user): int
     {
@@ -305,12 +435,12 @@ class DeviceService
             return 999;
         }
 
-        // 1. User override (VIP/Test/Ban durumlari)
+        // 1. User override
         if ($user->device_limit !== null && $user->device_limit > 0) {
             return $user->device_limit;
         }
 
-        // 2. Subscription Plan device_limit
+        // 2. Subscription Plan
         $subscription = $user->subscriptions()
             ->whereIn('status', ['active', 'trial'])
             ->where(function($q) {
@@ -329,188 +459,61 @@ class DeviceService
             return (int) setting('auth_device_limit');
         }
 
-        // 4. Ultimate fallback: 1 cihaz
         return 1;
     }
 
     /**
-     * Handle device limit after successful login
-     * Login sonrasi cagrilir - limit asilmissa en eski session(lar) silinir
-     * LIFO MANTIGI: Son giren kalir, eski cihazlar cikarilir
+     * LIFO: Limit aşıldıysa eski session'ları sil
      */
-    public function handlePostLoginDeviceLimit(User $user): void
+    protected function enforceDeviceLimit(User $user, string $currentSessionId): void
     {
-        if (!$this->shouldRun()) {
-            return;
-        }
-
         $limit = $this->getDeviceLimit($user);
-        $currentSessionId = session()->getId();
 
-        // Mevcut session sayisini al
-        $activeSessions = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->orderBy('last_activity', 'asc') // En eski once
-            ->get();
-
-        $activeCount = $activeSessions->count();
-
-        \Log::info('🔐 handlePostLoginDeviceLimit - LIFO Check', [
-            'user_id' => $user->id,
-            'limit' => $limit,
-            'active_count' => $activeCount,
-            'current_session' => substr($currentSessionId, 0, 20) . '...',
-        ]);
-
-        // Limit asilmissa eski session'lari sil (LIFO - son giren kalir)
-        if ($activeCount > $limit) {
-            $sessionsToRemove = $activeCount - $limit;
-
-            \Log::info('🔐 LIFO: Removing oldest sessions', [
-                'user_id' => $user->id,
-                'sessions_to_remove' => $sessionsToRemove,
-            ]);
-
-            // En eski session'lari bul (mevcut session haric)
-            $oldSessions = $activeSessions
-                ->filter(fn($s) => $s->session_id !== $currentSessionId)
-                ->take($sessionsToRemove);
-
-            foreach ($oldSessions as $oldSession) {
-                \Log::info('🔐 LIFO: Terminating old session', [
-                    'session_id' => substr($oldSession->session_id, 0, 20) . '...',
-                    'device_name' => $oldSession->device_name,
-                    'last_activity' => $oldSession->last_activity,
-                ]);
-
-                $this->terminateSession($oldSession->session_id, $user);
-            }
-        }
-
-        // Premium cache'i temizle (login sonrasi fresh check icin)
-        \Cache::forget('user_' . $user->id . '_is_premium_tenant_' . tenant()->id);
-    }
-
-    /**
-     * Check device limit BEFORE login
-     * SADECE bilgilendirme amacli - login'i engellemez
-     * Limit asimdaysa modal gosterilir, kullanici secer
-     */
-    public function checkDeviceLimitBeforeLogin(User $user): array
-    {
-        if (!$this->shouldRun()) {
-            return ['can_login' => true, 'devices' => [], 'limit' => 999];
-        }
-
-        $limit = $this->getDeviceLimit($user);
-        $currentSessionId = session()->getId();
-
-        // Mevcut session'lari al
         $sessions = DB::table($this->table)
             ->where('user_id', $user->id)
-            ->orderBy('last_activity', 'desc')
+            ->orderBy('last_activity', 'asc') // En eski önce
             ->get();
 
-        // Bu cihaz zaten kayitli mi?
-        $isCurrentDeviceRegistered = $sessions->contains('session_id', $currentSessionId);
+        $count = $sessions->count();
 
-        // Kayitli degilse ve limit doluysa
-        $currentCount = $sessions->count();
-        $canLogin = $isCurrentDeviceRegistered || $currentCount < $limit;
+        if ($count > $limit) {
+            $toRemove = $count - $limit;
 
-        return [
-            'can_login' => $canLogin,
-            'devices' => $sessions->map(function($s) use ($currentSessionId) {
-                return [
-                    'id' => $s->id,
-                    'session_id' => $s->session_id,
-                    'device_name' => $s->device_name,
-                    'browser' => $s->browser,
-                    'platform' => $s->platform,
-                    'ip_address' => $s->ip_address,
-                    'last_activity' => $s->last_activity,
-                    'is_current' => $s->session_id === $currentSessionId,
-                ];
-            })->toArray(),
-            'limit' => $limit,
-            'current_count' => $currentCount,
-        ];
+            // En eski session'ları sil (mevcut hariç)
+            $oldSessions = $sessions
+                ->filter(fn($s) => $s->session_id !== $currentSessionId)
+                ->take($toRemove);
+
+            foreach ($oldSessions as $old) {
+                DB::table($this->table)
+                    ->where('id', $old->id)
+                    ->delete();
+
+                \Log::info('🔐 LIFO: Old session removed', [
+                    'user_id' => $user->id,
+                    'session_id' => substr($old->session_id, 0, 20) . '...',
+                ]);
+            }
+        }
     }
 
     /**
-     * Terminate a specific session by ID
-     */
-    public function terminateSessionById(int $sessionDbId, User $actor = null): bool
-    {
-        if (!$this->shouldRun()) {
-            return false;
-        }
-
-        $session = DB::table($this->table)->where('id', $sessionDbId)->first();
-        if (!$session) {
-            return false;
-        }
-
-        // Redis'ten de session'i sil
-        $this->invalidateRedisSession($session->session_id);
-
-        // Tablodan sil
-        $deleted = DB::table($this->table)
-            ->where('id', $sessionDbId)
-            ->delete() > 0;
-
-        if ($deleted && $actor) {
-            $this->logActivity($actor, 'device_force_logout', [
-                'target_session_id' => $session->session_id,
-                'target_user_id' => $session->user_id,
-            ]);
-        }
-
-        return $deleted;
-    }
-
-    /**
-     * Terminate session by session_id string
+     * Belirli session'ı sonlandır
      */
     public function terminateSession(string $sessionId, User $actor = null): bool
     {
-        \Log::info('🔐 DeviceService::terminateSession START', [
-            'session_id' => $sessionId,
-            'actor_id' => $actor ? $actor->id : null,
-            'shouldRun' => $this->shouldRun(),
-        ]);
-
         if (!$this->shouldRun()) {
-            \Log::warning('🔐 DeviceService::terminateSession - shouldRun() returned false');
             return false;
         }
 
-        // Session var mı kontrol et
-        $sessionExists = DB::table($this->table)->where('session_id', $sessionId)->exists();
-        \Log::info('🔐 DeviceService::terminateSession - Session exists check', [
-            'session_id' => $sessionId,
-            'exists' => $sessionExists,
-        ]);
-
-        // Redis'ten session'i sil
-        $this->invalidateRedisSession($sessionId);
-
-        // Tablodan sil
-        $deleteCount = DB::table($this->table)
+        $deleted = DB::table($this->table)
             ->where('session_id', $sessionId)
-            ->delete();
+            ->delete() > 0;
 
-        $deleted = $deleteCount > 0;
-
-        \Log::info('🔐 DeviceService::terminateSession COMPLETE', [
-            'session_id' => $sessionId,
-            'delete_count' => $deleteCount,
-            'deleted' => $deleted,
-        ]);
-
-        if ($deleted && $actor) {
-            $this->logActivity($actor, 'device_force_logout', [
-                'session_id' => $sessionId,
+        if ($deleted) {
+            \Log::info('🔐 Session terminated', [
+                'session_id' => substr($sessionId, 0, 20) . '...',
+                'by_user' => $actor ? $actor->id : null,
             ]);
         }
 
@@ -518,28 +521,7 @@ class DeviceService
     }
 
     /**
-     * Terminate oldest session for user
-     */
-    public function terminateOldestSession(User $user): bool
-    {
-        if (!$this->shouldRun()) {
-            return false;
-        }
-
-        $oldest = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->orderBy('last_activity', 'asc')
-            ->first();
-
-        if ($oldest) {
-            return $this->terminateSession($oldest->session_id, $user);
-        }
-
-        return false;
-    }
-
-    /**
-     * Terminate all sessions except current
+     * Diğer tüm session'ları sonlandır
      */
     public function terminateOtherSessions(User $user): int
     {
@@ -549,360 +531,52 @@ class DeviceService
 
         $currentSessionId = session()->getId();
 
-        // Silinecek session'lari al
-        $sessions = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->where('session_id', '!=', $currentSessionId)
-            ->get();
-
-        // Redis'ten sil
-        foreach ($sessions as $session) {
-            $this->invalidateRedisSession($session->session_id);
-        }
-
-        // Tablodan sil
-        $count = DB::table($this->table)
+        return DB::table($this->table)
             ->where('user_id', $user->id)
             ->where('session_id', '!=', $currentSessionId)
             ->delete();
-
-        if ($count > 0) {
-            $this->logActivity($user, 'device_logout_all', [
-                'devices_logged_out' => $count,
-            ]);
-        }
-
-        return $count;
     }
 
     /**
-     * Terminate all sessions for user
-     */
-    public function terminateAllSessions(User $user): int
-    {
-        if (!$this->shouldRun()) {
-            return 0;
-        }
-
-        // Silinecek session'lari al
-        $sessions = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->get();
-
-        // Redis'ten sil
-        foreach ($sessions as $session) {
-            $this->invalidateRedisSession($session->session_id);
-        }
-
-        // Tablodan sil
-        $count = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->delete();
-
-        if ($count > 0) {
-            $this->logActivity($user, 'device_logout_all', [
-                'devices_logged_out' => $count,
-                'include_current' => true,
-            ]);
-        }
-
-        return $count;
-    }
-
-    /**
-     * Invalidate Redis session
-     */
-    protected function invalidateRedisSession(string $sessionId): void
-    {
-        try {
-            // Dogru Redis key'i bul ve sil
-            $key = $this->getRedisSessionKey($sessionId);
-            if ($key) {
-                Redis::del($key);
-                \Log::info('🔐 Redis session invalidated', ['key' => $key]);
-            }
-        } catch (\Exception $e) {
-            \Log::warning('Failed to invalidate Redis session: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Check if Redis session exists
-     * Ghost session tespiti icin kullanilir
-     */
-    protected function redisSessionExists(string $sessionId): bool
-    {
-        try {
-            $key = $this->getRedisSessionKey($sessionId);
-            return $key !== null;
-        } catch (\Exception $e) {
-            \Log::warning('Redis session check failed: ' . $e->getMessage());
-            return true; // Hata durumunda session var kabul et (guvenli taraf)
-        }
-    }
-
-    /**
-     * Get the actual Redis key for a session
-     * Farkli key pattern'leri dener ve var olani dondurur
-     */
-    protected function getRedisSessionKey(string $sessionId): ?string
-    {
-        try {
-            $prefix = config('database.redis.options.prefix', 'laravel_database_');
-            $sessionCookie = config('session.cookie', 'laravel_session');
-
-            // Olasi key pattern'leri (oncelik sirasina gore)
-            $patterns = [
-                $prefix . $sessionCookie . ':' . $sessionId,
-                $prefix . 'sessions:' . $sessionId,
-                'laravel_database_' . $sessionCookie . ':' . $sessionId,
-                'laravel:sessions:' . $sessionId,
-            ];
-
-            foreach ($patterns as $key) {
-                // Redis::exists prefix ekliyor olabilir, connection uzerinden kontrol et
-                $exists = Redis::connection()->exists($key);
-                if ($exists) {
-                    return $key;
-                }
-            }
-
-            // Hicbiri bulunamadi - wildcard ara
-            $wildcardKey = '*' . $sessionId . '*';
-            $foundKeys = Redis::connection()->keys($wildcardKey);
-            if (!empty($foundKeys)) {
-                return $foundKeys[0];
-            }
-
-            return null;
-        } catch (\Exception $e) {
-            \Log::warning('Redis key lookup failed: ' . $e->getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Cleanup stale sessions (no activity for 30 minutes)
-     */
-    protected function cleanupStaleSessions(User $user): void
-    {
-        // 1. Zaman bazli temizlik (30 dakika inaktif)
-        $staleByTime = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->where('last_activity', '<', now()->subMinutes(30))
-            ->get();
-
-        if ($staleByTime->count() > 0) {
-            \Log::info('🔐 Cleaning stale sessions (time-based)', [
-                'user_id' => $user->id,
-                'count' => $staleByTime->count(),
-            ]);
-
-            DB::table($this->table)
-                ->where('user_id', $user->id)
-                ->where('last_activity', '<', now()->subMinutes(30))
-                ->delete();
-        }
-    }
-
-    /**
-     * Cleanup ghost sessions (Redis'te olmayan DB kayitlari)
-     * Tarayici kapatildiginda logout cagrilmaz - bu ghost session'lari temizler
-     */
-    public function cleanupGhostSessions(User $user): int
-    {
-        if (!$this->shouldRun()) {
-            return 0;
-        }
-
-        $currentSessionId = session()->getId();
-        $ghostCount = 0;
-
-        // Kullanicinin tum session'larini al
-        $sessions = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->get();
-
-        foreach ($sessions as $session) {
-            // Mevcut session'i atlama
-            if ($session->session_id === $currentSessionId) {
-                continue;
-            }
-
-            // Redis'te var mi kontrol et
-            if (!$this->redisSessionExists($session->session_id)) {
-                \Log::info('🔐 Ghost session found - removing', [
-                    'user_id' => $user->id,
-                    'session_id' => substr($session->session_id, 0, 20) . '...',
-                    'device_name' => $session->device_name,
-                    'last_activity' => $session->last_activity,
-                ]);
-
-                // DB'den sil
-                DB::table($this->table)
-                    ->where('id', $session->id)
-                    ->delete();
-
-                $ghostCount++;
-            }
-        }
-
-        if ($ghostCount > 0) {
-            \Log::info('🔐 Ghost sessions cleaned', [
-                'user_id' => $user->id,
-                'ghost_count' => $ghostCount,
-            ]);
-        }
-
-        return $ghostCount;
-    }
-
-    /**
-     * Log user activity using Spatie Activity Log
-     */
-    public function logActivity(User $user, string $action, array $details = []): void
-    {
-        if (!$this->shouldRun()) {
-            return;
-        }
-
-        $agent = new Agent();
-        $messages = [
-            'device_logout' => 'Cihazdan cikis yapildi',
-            'device_force_logout' => 'Baska cihaz zorla kapatildi',
-            'device_logout_all' => 'Tum cihazlardan cikis yapildi',
-            'login' => 'Giris yapildi',
-            'logout' => 'Cikis yapildi',
-        ];
-
-        try {
-            activity()
-                ->causedBy($user)
-                ->inLog('device_management')
-                ->withProperties([
-                    'action' => $action,
-                    'ip_address' => request()->ip(),
-                    'user_agent' => request()->userAgent(),
-                    'device_type' => $this->getDeviceType($agent),
-                    'device_name' => $this->getDeviceName($agent),
-                    'session_id' => session()->getId(),
-                    'details' => $details,
-                ])
-                ->log($messages[$action] ?? $action);
-        } catch (\Exception $e) {
-            \Log::warning('Activity log failed: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Get device type from agent
+     * Device type belirle
      */
     protected function getDeviceType(Agent $agent): string
     {
-        if ($agent->isMobile()) {
-            return 'mobile';
-        } elseif ($agent->isTablet()) {
-            return 'tablet';
-        } else {
-            return 'desktop';
-        }
+        if ($agent->isMobile()) return 'mobile';
+        if ($agent->isTablet()) return 'tablet';
+        return 'desktop';
     }
 
     /**
-     * Get device name from agent
+     * Device name oluştur
      */
     protected function getDeviceName(Agent $agent): string
     {
-        $browser = $agent->browser();
-        $platform = $agent->platform();
-
-        if ($agent->isDesktop()) {
-            return "{$platform} - {$browser}";
-        }
-
-        $device = $agent->device();
-        return $device ?: "{$platform} - {$browser}";
+        return $agent->platform() . ' - ' . $agent->browser();
     }
 
     /**
-     * Enforce device limit on plan change (downgrade/cancel/expire)
-     * LIFO: Terminates oldest sessions to comply with new limit
-     *
-     * @param User $user
-     * @param int|null $newLimit Yeni device limit (null ise getDeviceLimit() kullanılır)
-     * @return int Number of terminated sessions
-     */
-    public function enforceDeviceLimitOnPlanChange(User $user, ?int $newLimit = null): int
-    {
-        if (!$this->shouldRun()) {
-            return 0;
-        }
-
-        $limit = $newLimit ?? $this->getDeviceLimit($user);
-
-        // Tüm aktif session'ları al (en eskiden yeniye)
-        $activeSessions = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->orderBy('last_activity', 'asc')
-            ->get();
-
-        $activeCount = $activeSessions->count();
-
-        // Limit aşılmadıysa hiçbir şey yapma
-        if ($activeCount <= $limit) {
-            return 0;
-        }
-
-        // Kaç session terminate edilecek?
-        $sessionsToTerminate = $activeCount - $limit;
-
-        \Log::info('🔐 Plan change: Enforcing device limit', [
-            'user_id' => $user->id,
-            'active_sessions' => $activeCount,
-            'new_limit' => $limit,
-            'sessions_to_terminate' => $sessionsToTerminate,
-        ]);
-
-        // En eski session'ları terminate et (LIFO - en yeni kalır)
-        $terminated = 0;
-        $oldSessions = $activeSessions->take($sessionsToTerminate);
-
-        foreach ($oldSessions as $oldSession) {
-            $result = $this->terminateSession($oldSession->session_id, $user);
-            if ($result) {
-                $terminated++;
-            }
-        }
-
-        // Premium cache temizle
-        \Cache::forget('user_' . $user->id . '_is_premium_tenant_' . tenant()->id);
-
-        \Log::info('🔐 Plan change: Device limit enforced', [
-            'user_id' => $user->id,
-            'terminated_sessions' => $terminated,
-        ]);
-
-        return $terminated;
-    }
-
-    /**
-     * Get human readable time difference
+     * İnsan okunabilir zaman
      */
     protected function getHumanTime(int $timestamp): string
     {
         $diff = time() - $timestamp;
 
-        if ($diff < 60) {
-            return 'Az once';
-        } elseif ($diff < 3600) {
-            $minutes = floor($diff / 60);
-            return $minutes . ' dakika once';
-        } elseif ($diff < 86400) {
-            $hours = floor($diff / 3600);
-            return $hours . ' saat once';
-        } else {
-            $days = floor($diff / 86400);
-            return $days . ' gun once';
-        }
+        if ($diff < 60) return 'Az önce';
+        if ($diff < 3600) return floor($diff / 60) . ' dakika önce';
+        if ($diff < 86400) return floor($diff / 3600) . ' saat önce';
+        return floor($diff / 86400) . ' gün önce';
+    }
+
+    /**
+     * Login sonrası device limit kontrolü
+     * AuthController'dan çağrılır - registerSession zaten enforceDeviceLimit yapar
+     * Bu metod ekstra kontrol için (boş bırakılabilir)
+     */
+    public function handlePostLoginDeviceLimit(User $user): void
+    {
+        // registerSession içinde enforceDeviceLimit zaten çağrılıyor
+        // Bu metod gerekirse ekstra işlemler için kullanılabilir
+        // Şu an için no-op
     }
 }

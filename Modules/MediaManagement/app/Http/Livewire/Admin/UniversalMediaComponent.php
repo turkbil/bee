@@ -229,6 +229,9 @@ class UniversalMediaComponent extends Component
             return;
         }
 
+        // Yükleme başladı event'i yayınla
+        $this->dispatch('media-upload-started');
+
         // Root user (ID: 1) için validation SKIP
         if (!auth()->check() || auth()->user()->id !== 1) {
             $this->validate([
@@ -282,6 +285,9 @@ class UniversalMediaComponent extends Component
                             'message' => __('mediamanagement::admin.upload_success'),
                             'type' => 'success'
                         ]);
+
+                        // Yükleme tamamlandı event'i
+                        $this->dispatch('media-upload-completed');
                     }
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
@@ -289,8 +295,16 @@ class UniversalMediaComponent extends Component
                         'message' => __('mediamanagement::admin.upload_error', ['message' => $e->getMessage()]),
                         'type' => 'error'
                     ]);
+
+                    // Hata durumunda da kilidi aç
+                    $this->dispatch('media-upload-completed');
                 }
             }
+        }
+
+        // Eğer model yoksa (yeni kayıt) temp'e kaydettikten sonra kilidi aç
+        if (!$this->modelId) {
+            $this->dispatch('media-upload-completed');
         }
     }
 
@@ -300,6 +314,9 @@ class UniversalMediaComponent extends Component
         if (!$this->seoOgImageFile) {
             return;
         }
+
+        // Yükleme başladı event'i yayınla
+        $this->dispatch('media-upload-started');
 
         // Root user (ID: 1) için sınırsız upload
         $maxSize = (auth()->check() && auth()->user()->id === 1) ? PHP_INT_MAX : 20480;
@@ -311,6 +328,7 @@ class UniversalMediaComponent extends Component
         if (!$this->modelId) {
             $this->saveSeoOgToTempStorage();
             $this->seoOgImageFile = null;
+            $this->dispatch('media-upload-completed');
             return;
         }
 
@@ -337,17 +355,26 @@ class UniversalMediaComponent extends Component
                 'model_id' => $this->modelId,
             ]);
 
+            // Yükleme tamamlandı event'i
+            $this->dispatch('media-upload-completed');
+
         } catch (\Exception $e) {
             $this->dispatch('toast', [
                 'title' => __('admin.error'),
                 'message' => __('mediamanagement::admin.upload_error', ['message' => $e->getMessage()]),
                 'type' => 'error'
             ]);
+
+            // Hata durumunda da kilidi aç
+            $this->dispatch('media-upload-completed');
         }
     }
 
     public function updatedGalleryFiles()
     {
+        // Yükleme başladı event'i yayınla
+        $this->dispatch('media-upload-started');
+
         // Root user (ID: 1) için validation SKIP
         if (!auth()->check() || auth()->user()->id !== 1) {
             $this->validate([
@@ -412,6 +439,9 @@ class UniversalMediaComponent extends Component
                             'message' => __('mediamanagement::admin.upload_success'),
                             'type' => 'success'
                         ]);
+
+                        // Yükleme tamamlandı event'i
+                        $this->dispatch('media-upload-completed');
                     }
                 } catch (\Exception $e) {
                     $this->dispatch('toast', [
@@ -419,8 +449,16 @@ class UniversalMediaComponent extends Component
                         'message' => __('mediamanagement::admin.upload_error', ['message' => $e->getMessage()]),
                         'type' => 'error'
                     ]);
+
+                    // Hata durumunda da kilidi aç
+                    $this->dispatch('media-upload-completed');
                 }
             }
+        }
+
+        // Eğer model yoksa (yeni kayıt) temp'e kaydettikten sonra kilidi aç
+        if (!$this->modelId) {
+            $this->dispatch('media-upload-completed');
         }
     }
 

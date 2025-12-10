@@ -945,6 +945,9 @@
                         if (this.uploading && retryCount === 0) return;
                         this.uploading = true;
 
+                        // Media upload başladı event'i
+                        window.dispatchEvent(new CustomEvent('media-upload-started'));
+
                         const formData = new FormData();
                         formData.append('file', file);
                         formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
@@ -972,6 +975,9 @@
                                 alert(data.message || 'Upload failed');
                             }
                             this.uploading = false;
+
+                            // Media upload tamamlandı event'i
+                            window.dispatchEvent(new CustomEvent('media-upload-completed'));
                         })
                         .catch(error => {
                             console.error('Upload error (attempt ' + (retryCount + 1) + '):', error);
@@ -988,6 +994,9 @@
                             // Final failure
                             this.uploading = false;
                             alert('Upload failed: ' + error.message);
+
+                            // Hata durumunda da kilidi aç
+                            window.dispatchEvent(new CustomEvent('media-upload-completed'));
                         });
                     }
                 };

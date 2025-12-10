@@ -55,7 +55,7 @@ class PageController extends Controller
                 ->with(['category', 'brand', 'media', 'currency'])
                 ->orderByRaw('COALESCE(homepage_sort_order, 999999) ASC')
                 ->orderBy('product_id', 'desc')
-                ->limit(20) // 📐 Featured Layout: 2 büyük kart + 18 normal (2,3,6 kolonlarda tam bölünür)
+                ->limit(17) // 📐 Featured Layout: 2 VIP + 15 normal (PC'de 5 kolon x 3 satır)
                 ->get();
 
             // ⚡ OPTIMIZED: Currency artık eager loading ile yüklü (satır 53)

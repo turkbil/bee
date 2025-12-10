@@ -826,6 +826,8 @@
     }
 </script>
 
+@stack('scripts')
+
     </div> {{-- Close relative z-10 wrapper --}}
 </body>
 </html>

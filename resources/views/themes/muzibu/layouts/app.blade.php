@@ -233,6 +233,9 @@
     <script src="{{ asset('themes/muzibu/js/player/features/favorites.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('themes/muzibu/js/player/features/auth.js') }}?v={{ time() }}"></script>
     <script src="{{ asset('themes/muzibu/js/player/features/keyboard.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('themes/muzibu/js/player/features/api.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('themes/muzibu/js/player/features/session.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('themes/muzibu/js/player/features/spa-router.js') }}?v={{ time() }}"></script>
 
     {{-- 4. Player Core (en son - features'ı spread eder) --}}
     <script src="{{ asset('themes/muzibu/js/player/core/player-core.js') }}?v={{ time() }}"></script>

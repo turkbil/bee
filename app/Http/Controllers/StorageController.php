@@ -37,12 +37,18 @@ class StorageController extends Controller
         // Decode URL encoding
         $path = urldecode($path);
 
+        \Log::info('📁 [STORAGE] publicStorage called', ['path' => $path, 'url' => $request->fullUrl()]);
+
         // Tenant context kontrolü - eğer tenant context'i varsa tenant klasörüne yönlendir
         if (app()->bound(\Stancl\Tenancy\Tenancy::class)) {
             $tenancy = app(\Stancl\Tenancy\Tenancy::class);
 
+            \Log::info('📁 [STORAGE] Tenancy bound:', ['initialized' => $tenancy->initialized]);
+
             if ($tenancy->initialized) {
                 $tenantId = tenant('id');
+
+                \Log::info('📁 [STORAGE] Tenant initialized:', ['tenant_id' => $tenantId]);
 
                 // Eğer path 'tenant{id}/' ile başlıyorsa onu kullan
                 if (preg_match('/^tenant(\d+)\/(.+)$/', $path, $matches)) {
@@ -56,6 +62,12 @@ class StorageController extends Controller
                 // ⚠️ CRITICAL FIX: Tenant context ZATEN initialize edilmiş (middleware'den geçti)
                 // storage_path() otomatik tenant prefix ekliyor, manuel eklememeliyiz!
                 $fullPath = storage_path("app/public/{$relativePath}");
+
+                \Log::info('📁 [STORAGE] Resolved path:', [
+                    'relativePath' => $relativePath,
+                    'fullPath' => $fullPath,
+                    'exists' => file_exists($fullPath)
+                ]);
 
                 return $this->serveFile($fullPath);
             }

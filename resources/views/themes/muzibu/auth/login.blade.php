@@ -9,6 +9,16 @@
         <p class="text-dark-200">Hesabiniza giris yapin</p>
     </div>
 
+    <!-- Session Terminated Warning -->
+    @if (request()->get('session_terminated'))
+        <div class="mb-6 p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl">
+            <div class="flex items-center gap-3 text-orange-400 text-sm">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Baska bir cihazdan giris yapildi. Bu oturum sonlandirildi.</span>
+            </div>
+        </div>
+    @endif
+
     <!-- Session Status -->
     @if (session('status'))
         <div class="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">

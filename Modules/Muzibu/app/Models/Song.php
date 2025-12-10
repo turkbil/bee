@@ -440,6 +440,27 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
     }
 
     /**
+     * Tenant-aware file URL accessor (for admin player)
+     * Returns: /storage/tenant1001/muzibu/songs/song_xxx.mp3
+     */
+    public function getFileUrlAttribute(): ?string
+    {
+        if (!$this->file_path) {
+            return null;
+        }
+
+        // Admin'de tenant-aware URL döndür
+        $tenantId = tenant() ? tenant()->id : null;
+
+        if ($tenantId) {
+            return '/storage/tenant' . $tenantId . '/muzibu/songs/' . basename($this->file_path);
+        }
+
+        // Fallback: normal storage URL
+        return '/storage/muzibu/songs/' . basename($this->file_path);
+    }
+
+    /**
      * Get HLS playlist URL (if converted)
      */
     public function getHlsUrl(): ?string

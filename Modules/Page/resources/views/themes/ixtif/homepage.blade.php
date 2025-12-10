@@ -5,90 +5,300 @@
 @endphp
 @extends('themes.' . $themeName . '.layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<link rel="stylesheet" href="{{ asset('themes/ixtif/css/homepage.css') }}">
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="{{ asset('themes/ixtif/js/homepage.js') }}"></script>
+@endpush
+
 @section('module_content')
 <div x-data="homepage()" x-init="init()">
-    <section class="py-4 md:py-6 lg:py-8 flex items-center relative overflow-hidden">
-    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
-        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-            <!-- Left Content -->
-            <div class="text-gray-900 dark:text-white">
-                <!-- Main Title with Animation -->
-                <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible" style="font-weight: 900;">
-                    <span class="gradient-animate block py-2">
-                        TÜRKİYE'NİN
-                    </span>
-                    <span class="gradient-animate block py-2">
-                        İSTİF PAZARI
-                    </span>
-                </h1>
+    <!-- Hero Slider Section -->
+    <section class="hero-section pt-4 pb-8 relative">
+        <!-- Progress Bar (Top) -->
+        <div class="hero-progress-container absolute top-0 left-0 right-0 z-20">
+            <div class="hero-progress-bar h-full ease-linear"></div>
+        </div>
 
-                <!-- Description -->
-                <p class="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium">
-                    Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı
-                </p>
+        <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+            <div class="swiper heroSwiper relative">
+                <div class="swiper-wrapper">
 
-                <!-- CTA Button -->
-                <div class="mb-16">
-                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
-                        <i class="fa-light fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
-                        Ürünleri İncele
-                    </a>
+                    <!-- Slide 1: Teslimatlar -->
+                    <div class="swiper-slide">
+                        <div class="grid lg:grid-cols-2 gap-8 items-center">
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
+                                    <span class="gradient-animate block py-2">İXTİF TÜRKİYE'NİN</span>
+                                    <span class="gradient-animate block py-2">HER NOKTASINDA</span>
+                                </h1>
+                                <p class="hero-desc text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Güvenli paketleme ve hızlı kargo ile sorunsuz teslimat, her zaman zamanında ve güvenle
+                                </p>
+                                <div class="hero-cta mb-16 opacity-0">
+                                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-truck-fast mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        Teslimat Bilgisi Al
+                                    </a>
+                                </div>
+                                <div class="grid grid-cols-2 xl:grid-cols-3 gap-6">
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslim</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Türkiye geneli</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-boxes text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Güvenli Paket</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Sağlam gönderi</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-warehouse text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Düzenli Sevkiyat</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Titiz süreç</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 xl:hidden opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-clock text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Tam Zamanında</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Teslim garantisi</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
+                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1437/teslimat.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: HELI -->
+                    <div class="swiper-slide">
+                        <div class="grid lg:grid-cols-2 gap-8 items-center">
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
+                                    <span class="gradient-animate block py-2">DÜNYA DEVİ HELI</span>
+                                    <span class="gradient-animate block py-2">ARTIK İXTİF'TE</span>
+                                </h1>
+                                <p class="hero-desc text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Yedek parça stoğu, yetkili servis ve teknik destek garantisiyle tam hizmet ve güvence
+                                </p>
+                                <div class="hero-cta mb-16 opacity-0">
+                                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-forklift mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        HELI Ürünleri İncele
+                                    </a>
+                                </div>
+                                <div class="grid grid-cols-2 xl:grid-cols-3 gap-6">
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-globe text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Global Lider</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Dünya markası</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-medal text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Üstün Kalite</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Uzun ömür</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-shield-check text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Tam Güvence</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Garantili ürün</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 xl:hidden opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-layer-group text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Geniş Çeşit</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Her ihtiyaca</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
+                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1436/heli.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="HELI Forklift" class="h-auto object-contain" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: EP -->
+                    <div class="swiper-slide">
+                        <div class="grid lg:grid-cols-2 gap-8 items-center">
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
+                                    <span class="gradient-animate block py-2">EP İLE MODERN</span>
+                                    <span class="gradient-animate block py-2">DEPOLAR</span>
+                                </h1>
+                                <p class="hero-desc text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Elektrikli motor, düşük işletme maliyeti, sessiz çalışma ve çevre dostu teknoloji ile üretim
+                                </p>
+                                <div class="hero-cta mb-16 opacity-0">
+                                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-bolt mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        EP Dünyasını Keşfet
+                                    </a>
+                                </div>
+                                <div class="grid grid-cols-2 xl:grid-cols-3 gap-6">
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-leaf text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Çevre Dostu</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Yeşil teknoloji</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-sparkles text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Yeni Nesil</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Modern tasarım</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-volume-slash text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Sessiz Çalışma</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Konforlu kullanım</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 xl:hidden opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-piggy-bank text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Düşük Maliyet</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Enerji tasarrufu</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
+                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1435/ep.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="EP Elektrikli İstif" class="h-auto object-contain" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4: Türkiye'nin İstif Pazarı -->
+                    <div class="swiper-slide">
+                        <div class="grid lg:grid-cols-2 gap-8 items-center">
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
+                                    <span class="gradient-animate block py-2">TÜRKİYE'NİN</span>
+                                    <span class="gradient-animate block py-2">İSTİF PAZARI</span>
+                                </h1>
+                                <p class="hero-desc text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı
+                                </p>
+                                <div class="hero-cta mb-16 opacity-0">
+                                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        Ürünleri İncele
+                                    </a>
+                                </div>
+                                <div class="grid grid-cols-2 xl:grid-cols-3 gap-6">
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Güçlü Stok</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Zengin ürün çeşidi</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-certificate text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Garantili Ürün</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Teknik servis</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Profesyonel Ekip</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Uzman danışmanlık</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 xl:hidden opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Aynı gün kargo</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
+                                <img src="https://ixtif.com/storage/tenant2/4/hero.png" alt="İXTİF İstif Makinesi" class="h-auto object-contain" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Features -->
-                <div class="grid grid-cols-2 xl:grid-cols-3 gap-6">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900 dark:text-white text-base">Güçlü Stok</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Zengin ürün çeşidi</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-certificate text-blue-600 dark:text-blue-300 text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900 dark:text-white text-base">Garantili Ürün</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Teknik servis</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Profesyonel Ekip</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Uzman danışmanlık</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4 xl:hidden">
-                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fa-light fa-truck-fast text-blue-600 dark:text-blue-300 text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">Aynı gün kargo</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <!-- Modern Pagination with Play/Pause -->
+                <div class="flex justify-start items-center gap-4 mt-4">
+                    <!-- Play/Pause Button -->
+                    <button id="heroPlayPause" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200/30 dark:bg-slate-700/30 backdrop-blur-sm hover:bg-blue-500/50 transition-all duration-300 group">
+                        <i class="fa-solid fa-pause text-slate-700 dark:text-slate-300 text-sm group-hover:text-white transition-colors"></i>
+                    </button>
 
-            <!-- Right Content - Hero Image -->
-            <div class="flex items-center justify-center">
-                <a href="{{ route('shop.index') }}" class="block cursor-pointer">
-                    <img src="https://ixtif.com/storage/tenant2/4/hero.png"
-                         alt="iXtif İstif Makinesi - Forklift"
-                         class="w-full h-auto object-contain"
-                         loading="lazy">
-                </a>
+                    <!-- Pagination Dots -->
+                    <div class="swiper-pagination-custom flex justify-start items-center gap-3"></div>
+                </div>
             </div>
         </div>
-    </div>
 
-</section>
+        <!-- Navigation Arrows (Outside Slider - Minimal & Transparent) -->
+        <button class="hero-nav-prev absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-all duration-300 group opacity-30 hover:opacity-100">
+            <i class="fa-solid fa-chevron-left text-white text-xl lg:text-2xl drop-shadow-lg group-hover:-translate-x-0.5 transition-transform"></i>
+        </button>
+        <button class="hero-nav-next absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-all duration-300 group opacity-30 hover:opacity-100">
+            <i class="fa-solid fa-chevron-right text-white text-xl lg:text-2xl drop-shadow-lg group-hover:translate-x-0.5 transition-transform"></i>
+        </button>
+    </section>
 
 <!-- Featured Products Section -->
 <section class="w-full py-8 relative overflow-hidden" x-data="{
@@ -144,7 +354,7 @@
             <div class="flex items-center gap-4">
                 <div class="w-1.5 h-12 bg-gradient-to-b from-blue-600 via-purple-600 to-pink-600 rounded-full"></div>
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-                    Efsane Yılsonu Fırsatları İXTİF'te Başladı! 🔥
+                    Efsane Yılsonu Fırsatları İXTİF'te Başladı! <span class="fire-emoji inline-block">🔥</span>
                 </h2>
             </div>
 
@@ -166,8 +376,7 @@
                 </div>
 
                 {{-- Hover Gradient Ring --}}
-                <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                     style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));"></div>
+                <div class="product-card-gradient absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
         </div>
 
@@ -358,15 +567,21 @@
             </div>
             @endif
 
-            {{-- Regular Products (Geri kalan 18 ürün) --}}
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
-                @foreach($homepageProducts->skip(2)->take(18) as $index => $product)
+            {{-- Regular Products (2 VIP + 15 normal = 17 toplam) --}}
+            {{-- Responsive gizleme: 2 kolon=4 göster, 3 kolon=6 göster, 4 kolon=12 göster, 5 kolon=15 göster --}}
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                @foreach($homepageProducts->skip(2)->take(15) as $index => $product)
                     <x-ixtif.product-card
                         :product="$product"
                         layout="vertical"
                         :showAddToCart="true"
                         :showDivider="false"
                         :index="$index + 2"
+                        class="
+                            {{ $index >= 4 ? 'hidden md:block' : '' }}
+                            {{ $index >= 6 ? 'hidden lg:block' : '' }}
+                            {{ $index >= 12 ? 'hidden xl:block' : '' }}
+                        "
                     />
                 @endforeach
             </div>
@@ -805,137 +1020,6 @@
 </section>
 
 {{-- Alpine.js Component --}}
-<style>
-    /* Ken Burns + Parallax Hybrid Effect */
-    @keyframes kenBurnsParallax {
-        0% {
-            transform: scale(1) translate(0, var(--parallax-y, 0));
-        }
-        25% {
-            transform: scale(1.08) translate(-15px, calc(var(--parallax-y, 0) - 10px));
-        }
-        50% {
-            transform: scale(1.12) translate(12px, calc(var(--parallax-y, 0) - 8px));
-        }
-        75% {
-            transform: scale(1.08) translate(-8px, calc(var(--parallax-y, 0) + 8px));
-        }
-        100% {
-            transform: scale(1) translate(0, var(--parallax-y, 0));
-        }
-    }
-
-    .about-hero-photo {
-        animation: kenBurnsParallax 25s ease-in-out infinite;
-        --parallax-y: 0px;
-    }
-
-    /* Icon Hover Animations */
-    @keyframes slideXInfinite {
-        0%, 100% {
-            transform: translateX(0);
-        }
-        25% {
-            transform: translateX(8px);
-        }
-        75% {
-            transform: translateX(-8px);
-        }
-    }
-
-    @keyframes pulseScale {
-        0%, 100% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.15);
-        }
-    }
-
-    @keyframes rotateWiggleInfinite {
-        0%, 100% {
-            transform: rotate(0deg);
-        }
-        25% {
-            transform: rotate(15deg);
-        }
-        75% {
-            transform: rotate(-15deg);
-        }
-    }
-
-    .animate-slide-x-infinite {
-        animation: slideXInfinite 1.5s ease-in-out infinite;
-    }
-
-    .animate-pulse-scale {
-        animation: pulseScale 1.2s ease-in-out infinite;
-    }
-
-    .animate-rotate-wiggle-infinite {
-        animation: rotateWiggleInfinite 1.5s ease-in-out infinite;
-    }
-</style>
-
-<script>
-    function homepage() {
-        return {
-            loaded: false,
-            showX: false,
-            showModal: false,
-            selectedProduct: null,
-
-            init() {
-                this.$nextTick(() => {
-                    this.loaded = true;
-                });
-
-                // İSTİF ↔ İXTİF animasyonu (S ↔ X değişimi)
-                setInterval(() => {
-                    this.showX = !this.showX;
-                }, 2000);
-
-                // Ken Burns + Parallax Hybrid Effect
-                this.initAboutPhotoEffect();
-            },
-
-            initAboutPhotoEffect() {
-                const photo = document.getElementById('aboutHeroPhoto');
-                const container = document.getElementById('aboutPhotoContainer');
-
-                if (!photo || !container) return;
-
-                const handleScroll = () => {
-                    const rect = container.getBoundingClientRect();
-                    const windowHeight = window.innerHeight;
-
-                    // Parallax hesaplama (container ekranda görünürken)
-                    if (rect.top < windowHeight && rect.bottom > 0) {
-                        const scrollPercent = (windowHeight - rect.top) / (windowHeight + rect.height);
-                        const parallaxY = (scrollPercent - 0.5) * 40; // -20px to +20px
-
-                        // CSS variable güncelle (Ken Burns animasyonu bunu kullanacak)
-                        photo.style.setProperty('--parallax-y', `${parallaxY}px`);
-                    }
-                };
-
-                // Scroll event listener
-                window.addEventListener('scroll', handleScroll, { passive: true });
-
-                // Initial call
-                handleScroll();
-            },
-
-            openProductModal(productData) {
-                this.selectedProduct = productData;
-                this.showModal = true;
-            },
-
-            closeModal() {
-                this.showModal = false;
-            }
-        }
-    }
-</script>
+{{-- CSS and JS moved to external files: public/themes/ixtif/css/homepage.css and public/themes/ixtif/js/homepage.js --}}
 </div>
 @endsection

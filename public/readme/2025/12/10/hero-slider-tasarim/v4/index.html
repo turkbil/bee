@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Slider v4 - Profesyonel Animasyonlar | iXtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* ========== GRADIENT TEXT ANIMATION ========== */
+        @keyframes gradientFlow {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg,
+                #3b82f6 0%,
+                #8b5cf6 25%,
+                #ec4899 50%,
+                #8b5cf6 75%,
+                #3b82f6 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientFlow 3s linear infinite;
+        }
+
+        .gradient-text-orange {
+            background: linear-gradient(90deg, #f97316, #f59e0b, #eab308);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientFlow 3s linear infinite;
+        }
+
+        .gradient-text-cyan {
+            background: linear-gradient(90deg, #06b6d4, #3b82f6, #6366f1);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientFlow 3s linear infinite;
+        }
+
+        .gradient-text-emerald {
+            background: linear-gradient(90deg, #10b981, #059669, #14b8a6);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientFlow 3s linear infinite;
+        }
+
+        /* ========== SLIDE ENTRY ANIMATIONS ========== */
+        @keyframes titleEntry {
+            from {
+                opacity: 0;
+                transform: translateX(-150px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes descriptionEntry {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes ctaEntry {
+            from {
+                opacity: 0;
+                transform: translateY(80px) scale(0.7);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes featureEntry {
+            from {
+                opacity: 0;
+                transform: scale(0.5) rotate(-180deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes imageFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ========== ACTIVE SLIDE ANIMATIONS (Staggered) ========== */
+        .swiper-slide-active .animate-title {
+            animation: titleEntry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .swiper-slide-active .animate-description {
+            animation: descriptionEntry 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+        }
+
+        .swiper-slide-active .animate-cta {
+            animation: ctaEntry 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
+        }
+
+        .swiper-slide-active .animate-feature-1 {
+            animation: featureEntry 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
+        }
+
+        .swiper-slide-active .animate-feature-2 {
+            animation: featureEntry 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s forwards;
+        }
+
+        .swiper-slide-active .animate-feature-3 {
+            animation: featureEntry 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.9s forwards;
+        }
+
+        .swiper-slide-active .animate-image {
+            animation: imageFadeIn 1.2s ease-out 0.3s forwards;
+        }
+
+        /* ========== INACTIVE SLIDES (Reset) ========== */
+        .swiper-slide:not(.swiper-slide-active) .animate-title,
+        .swiper-slide:not(.swiper-slide-active) .animate-description,
+        .swiper-slide:not(.swiper-slide-active) .animate-cta,
+        .swiper-slide:not(.swiper-slide-active) .animate-feature-1,
+        .swiper-slide:not(.swiper-slide-active) .animate-feature-2,
+        .swiper-slide:not(.swiper-slide-active) .animate-feature-3,
+        .swiper-slide:not(.swiper-slide-active) .animate-image {
+            animation: none !important;
+            opacity: 0;
+        }
+
+        /* ========== GRADIENT BACKGROUNDS (Transparan Biten) ========== */
+        .slide-bg-1 {
+            background: transparent;
+        }
+
+        /* Light Mode Gradients */
+        .slide-bg-2 {
+            background: linear-gradient(to bottom,
+                #ffedd5 0%,
+                #fed7aa 40%,
+                #fdba74 75%,
+                rgba(253, 186, 116, 0) 100%
+            );
+        }
+
+        .slide-bg-3 {
+            background: linear-gradient(to bottom,
+                #e0f2fe 0%,
+                #bae6fd 40%,
+                #7dd3fc 75%,
+                rgba(125, 211, 252, 0) 100%
+            );
+        }
+
+        .slide-bg-4 {
+            background: linear-gradient(to bottom,
+                #d1fae5 0%,
+                #a7f3d0 40%,
+                #6ee7b7 75%,
+                rgba(110, 231, 183, 0) 100%
+            );
+        }
+
+        /* Dark Mode Gradients */
+        .dark .slide-bg-2 {
+            background: linear-gradient(to bottom,
+                rgba(251, 146, 60, 0.3) 0%,
+                rgba(245, 158, 11, 0.25) 40%,
+                rgba(234, 179, 8, 0.15) 75%,
+                rgba(234, 179, 8, 0) 100%
+            );
+        }
+
+        .dark .slide-bg-3 {
+            background: linear-gradient(to bottom,
+                rgba(6, 182, 212, 0.3) 0%,
+                rgba(59, 130, 246, 0.25) 40%,
+                rgba(99, 102, 241, 0.15) 75%,
+                rgba(99, 102, 241, 0) 100%
+            );
+        }
+
+        .dark .slide-bg-4 {
+            background: linear-gradient(to bottom,
+                rgba(16, 185, 129, 0.3) 0%,
+                rgba(5, 150, 105, 0.25) 40%,
+                rgba(20, 184, 166, 0.15) 75%,
+                rgba(20, 184, 166, 0) 100%
+            );
+        }
+
+        /* ========== SWIPER NAVIGATION & PAGINATION ========== */
+        .swiper-button-next,
+        .swiper-button-prev {
+            width: 60px !important;
+            height: 60px !important;
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(10px) !important;
+            border-radius: 50% !important;
+            color: #3b82f6 !important;
+            transition: all 0.3s ease !important;
+            opacity: 0;
+        }
+
+        .hero-slider-container:hover .swiper-button-next,
+        .hero-slider-container:hover .swiper-button-prev {
+            opacity: 1;
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background: rgba(255, 255, 255, 0.25) !important;
+            transform: scale(1.1) !important;
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 20px !important;
+            font-weight: bold !important;
+        }
+
+        .swiper-pagination-bullet {
+            width: 10px !important;
+            height: 10px !important;
+            background: #d1d5db !important;
+            opacity: 0.5 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .swiper-pagination-bullet-active {
+            width: 40px !important;
+            border-radius: 5px !important;
+            background: white !important;
+            opacity: 1 !important;
+        }
+
+        /* Hero container */
+        .hero-slider-container {
+            min-height: 500px;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+
+    <!-- Demo Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6">
+        <div class="container mx-auto flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold">🎨 Hero Slider v4 - Profesyonel Animasyonlar</h1>
+                <p class="text-sm opacity-90">Design/hero-slider kalitesinde animasyonlar + Transparan gradient'ler</p>
+            </div>
+            <div class="text-right text-sm">
+                <div class="font-semibold">4 Slayt • Swiper.js • Cubic-Bezier Easing</div>
+                <div class="opacity-90">Staggered Entry Animations</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Slider -->
+    <section class="hero-slider-container py-8 md:py-12 lg:py-16 relative overflow-hidden">
+        <div class="swiper heroSwiper">
+            <div class="swiper-wrapper">
+
+                <!-- Slide 1: Mevcut Hero (Birebir Kopya) -->
+                <div class="swiper-slide slide-bg-1">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+                            <!-- Left Content -->
+                            <div class="text-gray-900 dark:text-white">
+                                <!-- Main Title -->
+                                <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0" style="font-weight: 900;">
+                                    <span class="gradient-text block py-2">
+                                        TÜRKİYE'NİN
+                                    </span>
+                                    <span class="gradient-text block py-2">
+                                        İSTİF PAZARI
+                                    </span>
+                                </h1>
+
+                                <!-- Description -->
+                                <p class="animate-description text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı
+                                </p>
+
+                                <!-- CTA Button -->
+                                <div class="animate-cta mb-16 opacity-0">
+                                    <a href="#" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        Ürünleri İncele
+                                    </a>
+                                </div>
+
+                                <!-- Features -->
+                                <div class="grid grid-cols-3 gap-6">
+                                    <div class="animate-feature-1 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Güçlü Stok</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Zengin ürün çeşidi</div>
+                                        </div>
+                                    </div>
+                                    <div class="animate-feature-2 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-certificate text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Garantili Ürün</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Teknik servis</div>
+                                        </div>
+                                    </div>
+                                    <div class="animate-feature-3 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Profesyonel Ekip</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Uzman danışmanlık</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Content - Hero Image -->
+                            <div class="flex items-center justify-center">
+                                <img src="https://ixtif.com/storage/tenant2/4/hero.png"
+                                     alt="iXtif İstif Makinesi - Forklift"
+                                     class="animate-image w-full h-auto object-contain opacity-0"
+                                     loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: HELI Markası -->
+                <div class="swiper-slide slide-bg-2">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0" style="font-weight: 900;">
+                                    <span class="gradient-text-orange block py-2">
+                                        DÜNYA DEVİ HELI
+                                    </span>
+                                    <span class="gradient-text-orange block py-2">
+                                        ARTIK İXTİF'TE
+                                    </span>
+                                </h1>
+
+                                <p class="animate-description text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Dünyanın önde gelen forklift markası HELI artık İXTİF güvencesiyle Türkiye'de
+                                </p>
+
+                                <div class="animate-cta mb-16 opacity-0">
+                                    <a href="#" class="group bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-star mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        HELI Ürünlerini Keşfet
+                                    </a>
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-6">
+                                    <div class="animate-feature-1 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-orange-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-globe text-orange-600 dark:text-orange-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Dünya Lideri</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Global marka</div>
+                                        </div>
+                                    </div>
+                                    <div class="animate-feature-2 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-orange-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-shield-check text-orange-600 dark:text-orange-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Güvenilir</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Kanıtlanmış kalite</div>
+                                        </div>
+                                    </div>
+                                    <div class="animate-feature-3 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-orange-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-tags text-orange-600 dark:text-orange-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Özel Fiyat</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Kampanya fırsatı</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-center">
+                                <img src="https://ixtif.com/storage/tenant2/4/hero.png"
+                                     alt="HELI Forklift"
+                                     class="animate-image w-full h-auto object-contain opacity-0"
+                                     loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: EP Markası -->
+                <div class="swiper-slide slide-bg-3">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0" style="font-weight: 900;">
+                                    <span class="gradient-text-cyan block py-2">
+                                        EP MARKASI
+                                    </span>
+                                    <span class="gradient-text-cyan block py-2">
+                                        İXTİF'TE
+                                    </span>
+                                </h1>
+
+                                <p class="animate-description text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Avrupa'nın lider elektrikli forklift markası EP artık İXTİF güvencesiyle
+                                </p>
+
+                                <div class="animate-cta mb-16 opacity-0">
+                                    <a href="#" class="group bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-book-open mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        EP Katalog
+                                    </a>
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-6">
+                                    <div class="animate-feature-1 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-cyan-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-plug text-cyan-600 dark:text-cyan-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Elektrikli</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Gelişmiş teknoloji</div>
+                                        </div>
+                                    </div>
+                                    <div class="animate-feature-2 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-cyan-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-leaf text-cyan-600 dark:text-cyan-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Çevre Dostu</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Sıfır emisyon</div>
+                                        </div>
+                                    </div>
+                                    <div class="animate-feature-3 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-cyan-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-chart-line-down text-cyan-600 dark:text-cyan-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Düşük Maliyet</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">İşletme avantajı</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-center">
+                                <img src="https://ixtif.com/storage/tenant2/4/hero.png"
+                                     alt="EP Forklift"
+                                     class="animate-image w-full h-auto object-contain opacity-0"
+                                     loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Teslimatlar -->
+                <div class="swiper-slide slide-bg-4">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0" style="font-weight: 900;">
+                                    <span class="gradient-text-emerald block py-2">
+                                        TESLİMATLAR
+                                    </span>
+                                    <span class="gradient-text-emerald block py-2">
+                                        TAM GAZ DEVAM
+                                    </span>
+                                </h1>
+
+                                <p class="animate-description text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Her gün yeni teslimatlar! Müşteri memnuniyeti bizim için her şeyden önce gelir
+                                </p>
+
+                                <div class="animate-cta mb-16 opacity-0">
+                                    <a href="#" class="group bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-cart-shopping mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        Siparişinizi Verin
+                                    </a>
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-6">
+                                    <div class="animate-feature-1 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-emerald-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-truck-fast text-emerald-600 dark:text-emerald-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Zamanında ulaşır</div>
+                                        </div>
+                                    </div>
+                                    <div class="animate-feature-2 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-emerald-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-screwdriver-wrench text-emerald-600 dark:text-emerald-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Kurulum Dahil</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Ücretsiz montaj</div>
+                                        </div>
+                                    </div>
+                                    <div class="animate-feature-3 flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-emerald-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-graduation-cap text-emerald-600 dark:text-emerald-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Test & Eğitim</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Operatör eğitimi</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-center">
+                                <img src="https://ixtif.com/storage/tenant2/4/hero.png"
+                                     alt="İxtif Teslimat"
+                                     class="animate-image w-full h-auto object-contain opacity-0"
+                                     loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Navigation -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+
+            <!-- Pagination -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- Info Panel -->
+    <div class="bg-white dark:bg-gray-800 py-8 px-6">
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">✅ Profesyonel Animasyonlar</h2>
+                    <ul class="space-y-2 text-gray-700 dark:text-gray-300 text-sm">
+                        <li>✓ <strong>Cubic-Bezier Easing:</strong> cubic-bezier(0.34, 1.56, 0.64, 1) - Elastik efekt</li>
+                        <li>✓ <strong>Staggered Entry:</strong> Başlık (0s) → Açıklama (0.2s) → Buton (0.4s) → Feature'lar (0.6-0.9s)</li>
+                        <li>✓ <strong>titleEntry:</strong> -150px translateX + scale 0.8→1</li>
+                        <li>✓ <strong>descriptionEntry:</strong> +100px translateX + fade</li>
+                        <li>✓ <strong>ctaEntry:</strong> +80px translateY + scale 0.7→1</li>
+                        <li>✓ <strong>featureEntry:</strong> Pop-in + rotate -180deg→0deg</li>
+                        <li>✓ <strong>Inactive Slides:</strong> animation: none + opacity: 0 (performans)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">🎨 Transparan Gradient'ler</h2>
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <div class="font-semibold text-gray-900 dark:text-white mb-1">Slayt 2 - HELI (Turuncu)</div>
+                            <div class="h-12 rounded" style="background: linear-gradient(to bottom, #ffedd5 0%, #fed7aa 40%, #fdba74 75%, rgba(253, 186, 116, 0) 100%);"></div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">0% → 40% → 75% → <strong>100% transparan</strong></div>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-gray-900 dark:text-white mb-1">Slayt 3 - EP (Mavi)</div>
+                            <div class="h-12 rounded" style="background: linear-gradient(to bottom, #e0f2fe 0%, #bae6fd 40%, #7dd3fc 75%, rgba(125, 211, 252, 0) 100%);"></div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">0% → 40% → 75% → <strong>100% transparan</strong></div>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-gray-900 dark:text-white mb-1">Slayt 4 - Teslimat (Yeşil)</div>
+                            <div class="h-12 rounded" style="background: linear-gradient(to bottom, #d1fae5 0%, #a7f3d0 40%, #6ee7b7 75%, rgba(110, 231, 183, 0) 100%);"></div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">0% → 40% → 75% → <strong>100% transparan</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl border-2 border-green-500 dark:border-green-600">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">✅</div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Design/Hero-Slider Kalitesinde!</h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">
+                        Animasyonlar ve gradient'ler tamamen design/hero-slider sayfasından alındı. <strong>Transparan biten gradient'ler</strong> + <strong>profesyonel cubic-bezier animations</strong>!
+                    </p>
+                    <div class="flex gap-4 justify-center flex-wrap">
+                        <button class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-bold text-lg transition-all shadow-lg">
+                            ✅ UYGUNDUR - Homepage'e Uygula
+                        </button>
+                        <button class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-bold text-lg transition-all shadow-lg">
+                            🔄 Değişiklik İstiyorum
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        const swiper = new Swiper('.heroSwiper', {
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            speed: 1000,
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            keyboard: {
+                enabled: true,
+                onlyInViewport: true,
+            },
+        });
+    </script>
+</body>
+</html>

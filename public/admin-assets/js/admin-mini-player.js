@@ -28,8 +28,11 @@ document.addEventListener('alpine:init', () => {
 
         // Initialize
         init() {
+            console.log('🎵 [ADMIN PLAYER] Alpine component initialized');
+
             // Listen for play events from song list
             window.addEventListener('play-song', (e) => {
+                console.log('🎵 [ADMIN PLAYER] play-song event received:', e.detail);
                 this.playSong(e.detail);
             });
 
@@ -44,6 +47,8 @@ document.addEventListener('alpine:init', () => {
 
         // Play a song
         async playSong(songData) {
+            console.log('🎵 [ADMIN PLAYER] playSong() called, songData:', songData);
+
             // Stop current playback
             this.stop();
 
@@ -54,7 +59,14 @@ document.addEventListener('alpine:init', () => {
 
             // Determine URLs
             let hlsUrl = null;
-            const directUrl = songData.file_url || songData.url;
+
+            // Build tenant-aware direct URL from file_path and tenant_id
+            let directUrl = songData.file_url || songData.url;
+
+            if (!directUrl && songData.file_path && songData.tenant_id) {
+                directUrl = `/storage/tenant${songData.tenant_id}/muzibu/songs/${songData.file_path}`;
+                console.log('🎵 [ADMIN PLAYER] Built tenant-aware URL:', directUrl);
+            }
 
             // HLS URL oluştur - song_id bazlı (lazy conversion destekli)
             const baseUrl = window.location.origin;
@@ -88,27 +100,40 @@ document.addEventListener('alpine:init', () => {
             // Store fallback URL
             this.fallbackUrl = directUrl;
 
+            console.log('🎵 [ADMIN PLAYER] URLs determined:', {
+                hlsUrl: hlsUrl,
+                directUrl: directUrl,
+                is_hls: songData.is_hls
+            });
+
             if (!hlsUrl && !directUrl) {
-                console.error('No audio URL provided');
+                console.error('❌ [ADMIN PLAYER] No audio URL provided');
                 this.isLoading = false;
                 return;
             }
 
             // Try HLS first if available
             if (hlsUrl && songData.is_hls !== false) {
+                console.log('🎵 [ADMIN PLAYER] Attempting HLS playback:', hlsUrl);
                 await this.playHLS(hlsUrl);
             } else if (directUrl) {
+                console.log('🎵 [ADMIN PLAYER] Attempting direct playback:', directUrl);
                 this.playDirect(directUrl);
             }
         },
 
         // Play HLS stream with encryption support
         async playHLS(url) {
+            console.log('🎵 [ADMIN PLAYER] playHLS() called with:', url);
+
             if (!Hls.isSupported()) {
+                console.log('⚠️ [ADMIN PLAYER] HLS not supported, falling back to direct');
                 // Fallback for Safari (native HLS support)
                 this.playDirect(url);
                 return;
             }
+
+            console.log('✅ [ADMIN PLAYER] HLS is supported, creating player');
 
             // Create video element for HLS (Audio element causes chunk loading issues)
             this.audioElement = document.createElement('video');
@@ -126,22 +151,26 @@ document.addEventListener('alpine:init', () => {
 
             // Start playing when manifest is parsed - faster start
             this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                console.log('✅ [ADMIN PLAYER] HLS manifest parsed, starting playback');
                 this.audioElement.play()
                     .then(() => {
+                        console.log('✅ [ADMIN PLAYER] HLS playback started successfully');
                         this.isPlaying = true;
                         this.isLoading = false;
                         this.startProgressUpdate();
                     })
                     .catch(err => {
                         if (err.name !== 'AbortError') {
-                            console.error('HLS play error:', err);
+                            console.error('❌ [ADMIN PLAYER] HLS play error:', err);
                         }
                         this.isLoading = false;
                     });
             });
 
             this.hls.on(Hls.Events.ERROR, (event, data) => {
+                console.error('❌ [ADMIN PLAYER] HLS Error:', data.type, data.details, data);
                 if (data.fatal) {
+                    console.error('❌ [ADMIN PLAYER] Fatal HLS error, retry count:', this.hlsRetryCount);
                     this.hlsRetryCount++;
 
                     // Try recovery first
@@ -203,30 +232,36 @@ document.addEventListener('alpine:init', () => {
 
         // Play direct MP3/audio file
         playDirect(url) {
+            console.log('🎵 [ADMIN PLAYER] playDirect() called with:', url);
+
             this.sound = new Howl({
                 src: [url],
                 html5: true,
                 volume: this.volume,
                 onplay: () => {
+                    console.log('✅ [ADMIN PLAYER] Howler playback started');
                     this.isPlaying = true;
                     this.isLoading = false;
                     this.duration = this.sound.duration();
                     this.startProgressUpdate();
                 },
                 onpause: () => {
+                    console.log('⏸️ [ADMIN PLAYER] Howler paused');
                     this.isPlaying = false;
                 },
                 onend: () => {
+                    console.log('⏹️ [ADMIN PLAYER] Howler playback ended');
                     this.isPlaying = false;
                     this.progress = 0;
                     this.currentTime = 0;
                     this.stopProgressUpdate();
                 },
                 onload: () => {
+                    console.log('✅ [ADMIN PLAYER] Howler loaded, duration:', this.sound.duration());
                     this.duration = this.sound.duration();
                 },
                 onloaderror: (id, error) => {
-                    console.error('Audio load error:', error);
+                    console.error('❌ [ADMIN PLAYER] Howler load error:', error);
                     this.isLoading = false;
                 }
             });
@@ -380,5 +415,7 @@ document.addEventListener('alpine:init', () => {
 
 // Global helper function for easy access
 window.playAdminSong = function(songData) {
+    console.log('🎵 [ADMIN PLAYER] playAdminSong called with:', songData);
     window.dispatchEvent(new CustomEvent('play-song', { detail: songData }));
+    console.log('🎵 [ADMIN PLAYER] play-song event dispatched');
 };

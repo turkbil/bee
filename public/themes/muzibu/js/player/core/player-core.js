@@ -7,6 +7,9 @@
  * - muzibuFavorites (from features/favorites.js)
  * - muzibuAuth (from features/auth.js)
  * - muzibuKeyboard (from features/keyboard.js)
+ * - MuzibuApi (from features/api.js)
+ * - MuzibuSession (from features/session.js)
+ * - MuzibuSpaRouter (from features/spa-router.js)
  */
 
 function muzibuApp() {
@@ -18,6 +21,9 @@ function muzibuApp() {
         ...muzibuFavorites(),
         ...muzibuAuth(),
         ...muzibuKeyboard(),
+        ...(window.MuzibuApi || {}),
+        ...(window.MuzibuSession || {}),
+        ...(window.MuzibuSpaRouter || {}),
 
         // Tenant-specific translations
         lang: config.lang || {},
@@ -187,6 +193,33 @@ function muzibuApp() {
             return this.$refs.hlsAudio;
         },
 
+        /**
+         * 🔐 AUTHENTICATED FETCH: Tüm API çağrılarında 401 kontrolü yapar
+         * 401 alırsa kullanıcıyı logout eder
+         */
+        async authenticatedFetch(url, options = {}) {
+            const response = await fetch(url, options);
+
+            // 🔴 401 Unauthorized = Session terminated, LOGOUT!
+            if (response.status === 401) {
+                try {
+                    const data = await response.json();
+                    if (data.force_logout || data.error === 'session_terminated') {
+                        console.error('🔐 401 UNAUTHORIZED - Session terminated, forcing logout!');
+                        this.handleSessionTerminated(data.message || 'Oturumunuz sonlandırıldı.');
+                        return null; // Çağrıyı durdurmak için null döndür
+                    }
+                } catch (e) {
+                    // JSON parse hatası olsa bile 401 = logout
+                    console.error('🔐 401 UNAUTHORIZED - Forcing logout!');
+                    this.handleSessionTerminated('Oturumunuz sonlandırıldı.');
+                    return null;
+                }
+            }
+
+            return response;
+        },
+
         init() {
             // ✅ Prevent double initialization (component-level, not window-level)
             if (this._initialized) {
@@ -249,13 +282,25 @@ function muzibuApp() {
             // Bu durumda SELECTION MODAL göster (kullanıcı seçim yapsın)
             const deviceLimitMeta = document.querySelector('meta[name="device-limit-exceeded"]');
             if (deviceLimitMeta && deviceLimitMeta.content === 'true') {
-                console.log('🔐 Device limit exceeded on login - showing SELECTION modal (user chooses which to remove)');
+                console.log('🔐 Device limit exceeded on login - checking if there are terminable devices...');
 
                 // 🔧 FIX: Selection modal göster, warning modal DEĞİL!
                 // Önce cihaz listesini çek (device limit de API'den gelir - 3-tier hierarchy)
                 // Backend: 1) User->device_limit 2) SubscriptionPlan->device_limit 3) Setting('auth_device_limit')
                 this.fetchActiveDevices().then(() => {
-                    this.showDeviceSelectionModal = true;
+                    // 🔥 FIX: Sadece başka cihaz varsa modal göster
+                    // Eğer sadece mevcut cihaz varsa (is_current=true), modal göstermenin anlamı yok
+                    const terminableDevices = this.activeDevices.filter(d => !d.is_current);
+
+                    if (terminableDevices.length > 0) {
+                        console.log('🔐 Found', terminableDevices.length, 'terminable devices - showing modal');
+                        this.showDeviceSelectionModal = true;
+                    } else {
+                        console.log('🔐 No terminable devices (only current device exists) - skipping modal');
+                        // Device limit exceeded ama çıkış yapılacak başka cihaz yok
+                        // Bu durumda LIFO zaten en eski session'ı silmiş olmalı
+                        this.deviceLimitExceeded = false; // Flag'i temizle
+                    }
                 });
             }
 
@@ -300,6 +345,14 @@ function muzibuApp() {
                     }
                 }
 
+                // 🔥 AUTH PAGES BYPASS: Bu sayfalar farklı layout kullanıyor, SPA ile yüklenemez
+                const authPaths = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email', '/logout'];
+                const urlPath = href.startsWith('http') ? new URL(href).pathname : href.split('?')[0];
+                if (authPaths.some(authPath => urlPath === authPath || urlPath.startsWith(authPath + '/'))) {
+                    console.log('🔐 Auth page detected, bypassing SPA:', href);
+                    return; // Full page navigation for auth pages
+                }
+
                 // Internal link - use SPA navigation
                 console.log('🚀 SPA Navigation:', href);
                 e.preventDefault();
@@ -341,8 +394,9 @@ function muzibuApp() {
                 this.queueIndex = 0;
                 this.currentSong = song;
 
-                // Load song stream URL
-                const streamResponse = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
+                // Load song stream URL (🔐 401 kontrolü ile)
+                const streamResponse = await this.authenticatedFetch(`/api/muzibu/songs/${song.song_id}/stream`);
+                if (!streamResponse) return; // 401 aldıysa logout olacak
                 const streamData = await streamResponse.json();
 
                 // Load audio in PAUSE mode
@@ -618,41 +672,25 @@ function muzibuApp() {
                     const wasPlaying = state.isPlaying;
                     const savedTime = state.currentTime || 0;
 
-                    console.log('🎵 State restored, waiting for user interaction...', { wasPlaying, savedTime });
+                    console.log('🎵 State restored - UI only, NO stream request', { wasPlaying, savedTime });
 
-                    // Şarkıyı yükle ama autoplay=false ile
-                    setTimeout(async () => {
-                        try {
-                            // Queue'dan şarkıyı yükle (autoplay=false)
-                            await this.playSongFromQueue(this.queueIndex, false);
+                    // 🔥 FIX: Stream isteği ATMA! Sadece UI'ı güncelle.
+                    // Kullanıcı play butonuna basınca şarkı yüklenecek.
+                    // Bu şekilde login sonrası race condition olmaz.
 
-                            // Kaldığı pozisyona git
-                            if (savedTime > 0) {
-                                setTimeout(() => {
-                                    try {
-                                        this.seekTo(savedTime);
-                                        console.log(`⏩ Positioned at ${Math.floor(savedTime)}s (paused)`);
-                                    } catch (e) {
-                                        console.warn('⚠️ seekTo failed during restore:', e);
-                                    }
-                                }, 1000);
-                            }
+                    // UI'da şarkı bilgisini göster (stream isteği yok)
+                    this.currentTime = savedTime;
+                    this.isPlaying = false; // Pause modunda bekle
 
-                            // Eğer önceden çalıyorduysa, kullanıcıya bilgi ver
-                            if (wasPlaying) {
-                                console.log('ℹ️ Song loaded in pause mode. Click play to resume.');
-                            }
+                    // 🛡️ Re-enable auto-save
+                    setTimeout(() => {
+                        this._isRestoringState = false;
+                        console.log('✅ State restoration complete (UI only), auto-save re-enabled');
+                    }, 500);
 
-                            // 🛡️ Re-enable auto-save after song is loaded
-                            setTimeout(() => {
-                                this._isRestoringState = false;
-                                console.log('✅ State restoration complete, auto-save re-enabled');
-                            }, 500);
-                        } catch (e) {
-                            console.warn('⚠️ Auto-load failed:', e);
-                            this._isRestoringState = false;
-                        }
-                    }, 1500);
+                    if (wasPlaying) {
+                        console.log('ℹ️ Previous session was playing. Click play to resume.');
+                    }
                 } else {
                     // No song to load, just re-enable auto-save
                     this._isRestoringState = false;
@@ -890,9 +928,13 @@ function muzibuApp() {
                     console.log('⚡ Crossfade using cached stream:', nextSong.song_id);
                     data = cached;
                 } else {
-                    // Fetch from API if not cached
+                    // Fetch from API if not cached (🔐 401 kontrolü ile)
                     console.log('⏳ Crossfade fetching from API:', nextSong.song_id);
-                    const response = await fetch(`/api/muzibu/songs/${nextSong.song_id}/stream`);
+                    const response = await this.authenticatedFetch(`/api/muzibu/songs/${nextSong.song_id}/stream`);
+                    if (!response) {
+                        this.isCrossfading = false;
+                        return; // 401 aldıysa logout olacak
+                    }
                     data = await response.json();
                 }
 
@@ -1470,8 +1512,13 @@ function muzibuApp() {
                     console.log('⚡ Using cached stream URL:', song.song_id);
                     data = cached;
                 } else {
-                    // Fetch from API if not cached
-                    const response = await fetch(`/api/muzibu/songs/${song.song_id}/stream`);
+                    // Fetch from API if not cached (🔐 401 kontrolü ile)
+                    const response = await this.authenticatedFetch(`/api/muzibu/songs/${song.song_id}/stream`);
+
+                    // 🔴 401 = authenticatedFetch null döndü, logout yapıldı
+                    if (!response) {
+                        return;
+                    }
 
                     if (!response.ok) {
                         // 🛑 403 = Device limit exceeded OR Session terminated
@@ -1825,7 +1872,13 @@ onplay: function() {
                 },
                 onend: function() {
                     if (!self.isCrossfading) {
-                        self.onTrackEnded();
+                        // 🔥 Son şans: Crossfade başlatılamamışsa ve enabled ise, başlat!
+                        if (self.crossfadeEnabled && self.getNextSongIndex() !== -1) {
+                            console.log('🎵 Howler onend fallback crossfade start');
+                            self.startCrossfade();
+                        } else {
+                            self.onTrackEnded();
+                        }
                     }
                 },
                 onloaderror: function(id, error) {
@@ -2082,10 +2135,30 @@ onplay: function() {
                     }
                 });
 
+                // 🎵 CROSSFADE TRIGGER: timeupdate event (NOT throttled like setInterval!)
+                // Bu event page hidden olsa bile düzgün çalışır
+                audio.ontimeupdate = function() {
+                    if (!self.duration || self.duration <= 0) return;
+                    if (self.isCrossfading) return;
+
+                    const timeRemaining = self.duration - audio.currentTime;
+                    // Son 1.5 saniyede crossfade başlat
+                    if (self.crossfadeEnabled && timeRemaining <= (self.crossfadeDuration / 1000) && timeRemaining > 0) {
+                        console.log('🎵 HLS timeupdate crossfade trigger, remaining:', timeRemaining.toFixed(2));
+                        self.startCrossfade();
+                    }
+                };
+
                 // Handle track end
                 audio.onended = function() {
                     if (!self.isCrossfading) {
-                        self.onTrackEnded();
+                        // 🔥 Son şans: Crossfade başlatılamamışsa ve enabled ise, başlat!
+                        if (self.crossfadeEnabled && self.getNextSongIndex() !== -1) {
+                            console.log('🎵 onended fallback crossfade start');
+                            self.startCrossfade();
+                        } else {
+                            self.onTrackEnded();
+                        }
                     }
                 };
 
@@ -2098,6 +2171,31 @@ onplay: function() {
                 // Native HLS support (Safari)
                 audio.src = url;
                 audio.volume = 0;
+
+                // 🎵 CROSSFADE TRIGGER: timeupdate event for Safari
+                audio.ontimeupdate = function() {
+                    if (!self.duration || self.duration <= 0) return;
+                    if (self.isCrossfading) return;
+
+                    const timeRemaining = self.duration - audio.currentTime;
+                    if (self.crossfadeEnabled && timeRemaining <= (self.crossfadeDuration / 1000) && timeRemaining > 0) {
+                        console.log('🎵 Safari HLS crossfade trigger, remaining:', timeRemaining.toFixed(2));
+                        self.startCrossfade();
+                    }
+                };
+
+                // Safari onended fallback
+                audio.onended = function() {
+                    if (!self.isCrossfading) {
+                        if (self.crossfadeEnabled && self.getNextSongIndex() !== -1) {
+                            console.log('🎵 Safari onended fallback crossfade');
+                            self.startCrossfade();
+                        } else {
+                            self.onTrackEnded();
+                        }
+                    }
+                };
+
                 audio.play().then(() => {
                     self.isPlaying = true;
                     self.fadeAudioElement(audio, 0, targetVolume, self.fadeOutDuration);
@@ -2292,7 +2390,12 @@ onplay: function() {
                         console.log('Page loaded:', url);
                     }
                 } else {
-                    console.error('Main content not found in response');
+                    // 🔥 Main content not found = farklı layout (auth pages gibi)
+                    // Full page reload yap, sonsuz döngüye girme!
+                    console.warn('Main content not found, falling back to full page reload:', url);
+                    this.isLoading = false;
+                    window.location.href = url;
+                    return;
                 }
 
                 this.isLoading = false;
@@ -2527,7 +2630,9 @@ onplay: function() {
                     this.isPreviewBlocked = false;
                     console.log('🔓 Preview block removed - User logged in');
 
-                    // 🔄 RELOAD CURRENT SONG: Clear preview timers and reload without preview limit
+                    // 🔄 RELOAD CURRENT SONG: Clear preview timers
+                    // ⚠️ NOTE: Şarkı reload işlemini page reload sonrasına bırakıyoruz
+                    // Session cookie henüz browser'a ulaşmadan stream API çağırmak race condition yaratır!
                     if (this.previewTimer) {
                         clearTimeout(this.previewTimer);
                         this.previewTimer = null;
@@ -2537,43 +2642,10 @@ onplay: function() {
                         this.fadeOutTimer = null;
                     }
 
-                    // If there's a current song playing with preview, reload it without preview
-                    if (this.currentSong && this.currentSong.song_id) {
-                        console.log('🔄 Reloading current song without preview restrictions...');
-                        const currentTime = this.currentTime || 0;
-                        const wasPlaying = this.isPlaying;
-
-                        // Reload song from API (will get full access now)
-                        fetch(`/api/muzibu/songs/${this.currentSong.song_id}/stream`)
-                            .then(res => res.json())
-                            .then(async data => {
-                                if (data.stream_url) {
-                                    // Stop current playback
-                                    await this.stopCurrentPlayback();
-
-                                    // Load without preview (data.preview_duration will be null for premium)
-                                    await this.loadAndPlaySong(
-                                        data.stream_url,
-                                        data.stream_type || 'mp3',
-                                        data.preview_duration || null,
-                                        false // Don't autoplay, let user resume
-                                    );
-
-                                    // Restore position
-                                    if (currentTime > 0) {
-                                        this.seekTo(null, currentTime);
-                                    }
-
-                                    // Resume if was playing
-                                    if (wasPlaying) {
-                                        this.togglePlayPause();
-                                    }
-
-                                    console.log('✅ Song reloaded with full access');
-                                }
-                            })
-                            .catch(err => console.error('Failed to reload song:', err));
-                    }
+                    // 🛑 STREAM API ÇAĞIRMA! Session cookie henüz set edilmedi.
+                    // window.location.reload() ile sayfa yenilenecek,
+                    // yeni session cookie'ler orada yüklenecek.
+                    console.log('⏳ Song reload skipped - waiting for page reload to fix session...');
 
                     // 🎵 Başarı mesajı göster
                     this.showToast('Hoş geldin, ' + data.user.name + '! 🎉', 'success');
@@ -3062,9 +3134,9 @@ onplay: function() {
             }
 
             try {
-                // 🚀 Fetch stream URL and cache it
-                const response = await fetch(`/api/muzibu/songs/${songId}/stream`);
-                if (!response.ok) return;
+                // 🚀 Fetch stream URL and cache it (🔐 401 kontrolü ile)
+                const response = await this.authenticatedFetch(`/api/muzibu/songs/${songId}/stream`);
+                if (!response || !response.ok) return;
 
                 const data = await response.json();
 
@@ -3291,12 +3363,17 @@ onplay: function() {
                 this.checkSessionValidity();
             }, 2000);
 
-            // Poll every 30 seconds
+            // 🔧 PERFORMANS AYARI:
+            // TEST: 5 saniye (5000ms) - hızlı geri bildirim
+            // CANLI: 5 dakika (300000ms) - 10.000 kullanıcıda 33 req/s
+            // @see https://ixtif.com/readme/2025/12/10/muzibu-session-auth-system/
+            const SESSION_POLL_INTERVAL = 5000; // 🧪 TEST: 5 saniye
+
             this.sessionPollInterval = setInterval(() => {
                 this.checkSessionValidity();
-            }, 30000); // 30 seconds
+            }, SESSION_POLL_INTERVAL);
 
-            console.log('🔐 Session polling started (30s interval, initial check in 2s)');
+            console.log(`🔐 Session polling started (${SESSION_POLL_INTERVAL/1000}s interval, initial check in 2s)`);
         },
 
         /**
@@ -3316,13 +3393,17 @@ onplay: function() {
          */
         async checkSessionValidity() {
             try {
+                // 🔥 FIX: Sanctum stateful authentication için Referer header ZORUNLU!
+                // EnsureFrontendRequestsAreStateful middleware Referer/Origin header'a bakıyor
                 const response = await fetch('/api/auth/check-session', {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Referer': window.location.origin + '/'  // Sanctum stateful için ZORUNLU
                     },
-                    credentials: 'same-origin'
+                    credentials: 'same-origin',
+                    referrerPolicy: 'strict-origin-when-cross-origin'  // Browser'ın Referer göndermesini sağla
                 });
 
                 const data = await response.json();
@@ -3349,8 +3430,19 @@ onplay: function() {
                             console.log('🔐 Session terminated - another device logged in');
                             this.handleSessionTerminated(data.message);
                         }
+                    } else if (data.reason === 'not_authenticated') {
+                        // 🔥 Sayfa renderda auth vardı ama API'de yok
+                        // Bu NORMAL durum olabilir: İlk sayfa yüklemesi sırasında session henüz sync olmamış
+                        console.log('🔐 Not authenticated - waiting for session sync (not forcing logout)');
+
+                        // Sadece flag güncelle, agresif logout YAPMA
+                        // Session sync sorunu genelde kendiliğinden düzelir
+                        this.isLoggedIn = false;
+
+                        // Polling'i durdur (gereksiz istek atmaya gerek yok)
+                        this.stopSessionPolling();
                     } else {
-                        // Silent logout (session expired or not authenticated)
+                        // Silent logout (session expired veya diğer nedenler)
                         this.handleSilentLogout();
                     }
                 } else {
@@ -3368,7 +3460,7 @@ onplay: function() {
          * Limit aşıldı - kullanıcı hangi cihazı çıkaracağını seçsin
          */
         handleDeviceLimitExceeded() {
-            console.log('🔐 Device limit exceeded - showing device selection modal');
+            console.log('🔐 Device limit exceeded - checking terminable devices...');
 
             // 🛑 Set device limit flag to prevent further playback attempts
             this.deviceLimitExceeded = true;
@@ -3377,9 +3469,20 @@ onplay: function() {
             this.stopCurrentPlayback();
             this.isPlaying = false;
 
-            // Show device selection modal (don't logout - let user choose)
-            this.showDeviceSelectionModal = true;
-            this.fetchActiveDevices(); // Cihaz listesini getir
+            // 🔥 FIX: Önce cihaz listesini çek, sonra başka cihaz varsa modal göster
+            this.fetchActiveDevices().then(() => {
+                const terminableDevices = this.activeDevices.filter(d => !d.is_current);
+
+                if (terminableDevices.length > 0) {
+                    console.log('🔐 Found', terminableDevices.length, 'terminable devices - showing modal');
+                    this.showDeviceSelectionModal = true;
+                } else {
+                    console.log('🔐 No terminable devices - showing logout prompt instead');
+                    // Sadece mevcut cihaz var, modal yerine logout seçeneği sun
+                    this.showToast('Cihaz limitine ulaştınız. Müzik dinlemek için bu cihazdan çıkış yapıp tekrar giriş yapabilirsiniz.', 'warning', 8000);
+                    this.deviceLimitExceeded = false; // Playback'i durdurmaya devam et ama modal gösterme
+                }
+            });
         },
 
         /**
@@ -3392,51 +3495,217 @@ onplay: function() {
 
         /**
          * 🔐 SESSION TERMINATED: Başka cihazdan giriş yapıldı
-         * Kullanıcıya bilgi ver ve logout yap
-         *
-         * 🔥 FIX: Sonsuz döngü önleme - önce logout API çağır, sonra yönlendir
+         * HEMEN logout yap ve login'e yönlendir - modal yok, bekleme yok!
          */
         handleSessionTerminated(message) {
-            // 🔥 Sonsuz döngü önleme - zaten işleniyor mu?
+            // 🔥 Sonsuz döngü önleme
             if (this._sessionTerminatedHandling) {
                 console.log('🔐 Session terminated already being handled, skipping...');
                 return;
             }
             this._sessionTerminatedHandling = true;
 
-            console.log('🔐 Session terminated by another device');
+            console.log('🔐 Session terminated - IMMEDIATE LOGOUT');
 
-            // Stop playback
-            this.stopCurrentPlayback();
-            this.isPlaying = false;
+            // 🛑 HER ŞEYİ DURDUR
+            try {
+                this.stopCurrentPlayback();
+                this.isPlaying = false;
+                this.isLoggedIn = false;
+                this.stopSessionPolling();
+                this.clearAllBrowserStorage();
+            } catch(e) {}
 
-            // Clear session data
-            this.isLoggedIn = false;
-            this.currentUser = null;
-            this.deviceLimitExceeded = true;
+            // 🔥 API LOGOUT + HARD REDIRECT
+            // Livewire/SPA intercept edemez çünkü window.location.href kullanıyoruz
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-            // 🔥 Session polling'i durdur (döngü önleme)
-            this.stopSessionPolling();
+            console.log('🔐 Calling logout API...');
 
-            // Show notification to user
-            const defaultMessage = 'Başka bir cihazdan giriş yapıldı. Bu oturum sonlandırıldı.';
-            this.showToast(message || defaultMessage, 'warning', 5000);
-
-            // 🔥 FIX: Önce logout API çağır, cookie'yi temizle, sonra yönlendir
+            // API ile logout yap
             fetch('/api/auth/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
                 },
                 credentials: 'same-origin'
-            }).finally(() => {
-                // Logout başarılı veya başarısız olsa da login'e yönlendir
-                setTimeout(() => {
-                    window.location.href = '/login?reason=session_terminated';
-                }, 1500);
+            })
+            .then(() => {
+                console.log('🔐 Logout API success, redirecting to login...');
+            })
+            .catch((err) => {
+                console.log('🔐 Logout API error (ignored):', err.message);
+            })
+            .finally(() => {
+                // 🚀 HARD REDIRECT - Livewire/SPA INTERCEPT EDEMEZ!
+                // API response ne olursa olsun login'e git
+                console.log('🔐 HARD REDIRECT to login page NOW!');
+                window.location.href = '/login?session_terminated=1';
             });
+        },
+
+        /**
+         * 🔥 SESSION TERMINATED MODAL
+         * Kullanıcıya bilgi veren modal - Butona basınca TAM ÇIKIŞ yapar
+         */
+        showSessionTerminatedModal(message) {
+            const defaultMessage = 'Başka bir cihazdan giriş yapıldı. Bu oturum sonlandırıldı.';
+            const displayMessage = message || defaultMessage;
+
+            // Mevcut modal varsa kaldır
+            const existingModal = document.getElementById('session-terminated-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Modal HTML
+            const modalHtml = `
+                <div id="session-terminated-modal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+                    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+                        <div class="text-center">
+                            <!-- Icon -->
+                            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-500/20 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                            </div>
+
+                            <!-- Title -->
+                            <h3 class="text-xl font-bold text-white mb-2">Oturum Sonlandırıldı</h3>
+
+                            <!-- Message -->
+                            <p class="text-slate-300 mb-6">${displayMessage}</p>
+
+                            <!-- Button -->
+                            <button
+                                id="session-terminated-btn"
+                                class="w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200"
+                            >
+                                Tamam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Modal'ı body'ye ekle
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // 🔥 Butona tıklanınca TAM ÇIKIŞ yap
+            document.getElementById('session-terminated-btn').addEventListener('click', () => {
+                this.performFullLogout();
+            });
+        },
+
+        /**
+         * 🔥 TAM ÇIKIŞ - Form POST ile logout yap (en güvenilir yöntem)
+         */
+        async performFullLogout() {
+            const btn = document.getElementById('session-terminated-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="animate-pulse">Çıkış yapılıyor...</span>';
+            }
+
+            console.log('🔐 Performing full logout via form POST...');
+
+            // 1. Browser storage temizle
+            this.clearAllBrowserStorage();
+
+            // 2. Cache API temizle
+            this.clearCacheAPI();
+
+            // 3. Form POST ile logout - Bu en güvenilir yöntem
+            // Laravel'in standart logout route'u cookie'leri otomatik siler
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/logout';
+            form.style.display = 'none';
+
+            // CSRF token ekle
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
+                              document.querySelector('input[name="_token"]')?.value || '';
+
+            const tokenInput = document.createElement('input');
+            tokenInput.type = 'hidden';
+            tokenInput.name = '_token';
+            tokenInput.value = csrfToken;
+            form.appendChild(tokenInput);
+
+            // Redirect URL ekle (logout sonrası nereye gidecek)
+            const redirectInput = document.createElement('input');
+            redirectInput.type = 'hidden';
+            redirectInput.name = 'redirect';
+            redirectInput.value = '/login?session_terminated=1';
+            form.appendChild(redirectInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        },
+
+        /**
+         * 🔥 TÜM COOKIE'LERİ TEMİZLE
+         */
+        clearAllCookies() {
+            console.log('🍪 Clearing all cookies...');
+            const cookies = document.cookie.split(';');
+
+            for (let cookie of cookies) {
+                const eqPos = cookie.indexOf('=');
+                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+
+                // Cookie'yi sil (tüm path'ler için)
+                document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=' + window.location.hostname;
+                document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.' + window.location.hostname;
+            }
+
+            console.log('🍪 Cookies cleared');
+        },
+
+        /**
+         * 🔥 CACHE API TEMİZLE (Service Worker)
+         */
+        async clearCacheAPI() {
+            if ('caches' in window) {
+                try {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    console.log('🗄️ Cache API cleared');
+                } catch (e) {
+                    console.log('🗄️ Cache API clear error:', e.message);
+                }
+            }
+        },
+
+        /**
+         * 🔥 BROWSER STORAGE TEMİZLE
+         * LocalStorage, SessionStorage ve player state'i temizle
+         */
+        clearAllBrowserStorage() {
+            console.log('🧹 Clearing browser storage...');
+
+            // Player state temizle
+            try {
+                localStorage.removeItem('muzibu_player_state');
+                localStorage.removeItem('muzibu_queue');
+                localStorage.removeItem('muzibu_favorites');
+                localStorage.removeItem('muzibu_play_context');
+                localStorage.removeItem('muzibu_volume');
+            } catch (e) {
+                console.log('🧹 localStorage clear error:', e.message);
+            }
+
+            // Session storage temizle
+            try {
+                sessionStorage.clear();
+            } catch (e) {
+                console.log('🧹 sessionStorage clear error:', e.message);
+            }
+
+            console.log('🧹 Browser storage cleared');
         },
 
         /**
@@ -3551,12 +3820,16 @@ onplay: function() {
                     this.deviceLimit = data.device_limit || 1;
 
                     const deviceCount = this.activeDevices.length;
-                    console.log('🔐 Page load device check:', deviceCount, 'devices, limit:', this.deviceLimit);
+                    const terminableDevices = this.activeDevices.filter(d => !d.is_current);
+                    console.log('🔐 Page load device check:', deviceCount, 'devices, limit:', this.deviceLimit, 'terminable:', terminableDevices.length);
 
-                    // Limit aşıldıysa selection modal göster
-                    if (deviceCount > this.deviceLimit) {
+                    // 🔥 FIX: Limit aşıldıysa VE çıkış yapılabilecek başka cihaz varsa modal göster
+                    if (deviceCount > this.deviceLimit && terminableDevices.length > 0) {
                         console.log('🔐 Device limit exceeded on page load - showing SELECTION modal');
                         this.showDeviceSelectionModal = true;
+                    } else if (deviceCount > this.deviceLimit) {
+                        // Limit aşıldı ama sadece mevcut cihaz var - bu olmamalı, LIFO bozuk demek
+                        console.warn('🔐 Device limit exceeded but no terminable devices - LIFO issue?');
                     }
                 }
             } catch (error) {

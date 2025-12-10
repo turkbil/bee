@@ -88,8 +88,8 @@
         }
     } else {
         // Shop format (ShopProduct model)
-        $productId = $product->product_id;
-        $productTitle = $product->getTranslated('title', app()->getLocale());
+        $productId = is_array($product) ? ($product['id'] ?? 0) : $product->product_id;
+        $productTitle = is_array($product) ? ($product['title'] ?? '') : $product->getTranslated('title', app()->getLocale());
         $productUrl = \Modules\Shop\App\Http\Controllers\Front\ShopController::resolveProductUrl($product);
         // 🎯 Sadece hero koleksiyonu kullan
         $productImage = $product->hasMedia('hero')
@@ -547,8 +547,8 @@ document.addEventListener('alpine:init', () => {
                         {{-- Fiyatsız Ürün: "Teklif Alın" --}}
                         <a href="{{ url('/sizi-arayalim') }}"
                            @click="
-                               localStorage.setItem('callMeBack_productId', '{{ $product->product_id ?? '' }}');
-                               localStorage.setItem('callMeBack_productName', '{{ addslashes($product->getTranslated('title', app()->getLocale()) ?? '') }}');
+                               localStorage.setItem('callMeBack_productId', '{{ is_array($product) ? ($product['id'] ?? '') : ($product->product_id ?? '') }}');
+                               localStorage.setItem('callMeBack_productName', '{{ addslashes(is_array($product) ? ($product['title'] ?? '') : ($product->getTranslated('title', app()->getLocale()) ?? '')) }}');
                                localStorage.setItem('callMeBack_fromUrl', '{{ url()->current() }}');
                            "
                            class="{{ $layout === 'horizontal' ? 'text-base md:text-lg font-bold' : 'text-lg md:text-xl lg:text-2xl font-bold' }} text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 whitespace-nowrap h-8 flex items-center no-underline hover:scale-105 transition-transform duration-200">
@@ -636,8 +636,8 @@ document.addEventListener('alpine:init', () => {
                         {{-- Sizi Arayalım Button (Fiyatsız ürünler için) --}}
                         <a href="{{ url('/sizi-arayalim') }}"
                            @click="
-                               localStorage.setItem('callMeBack_productId', '{{ $product->product_id ?? '' }}');
-                               localStorage.setItem('callMeBack_productName', '{{ addslashes($product->getTranslated('title', app()->getLocale()) ?? '') }}');
+                               localStorage.setItem('callMeBack_productId', '{{ is_array($product) ? ($product['id'] ?? '') : ($product->product_id ?? '') }}');
+                               localStorage.setItem('callMeBack_productName', '{{ addslashes(is_array($product) ? ($product['title'] ?? '') : ($product->getTranslated('title', app()->getLocale()) ?? '')) }}');
                                localStorage.setItem('callMeBack_fromUrl', '{{ url()->current() }}');
                            "
                            class="flex-shrink-0 bg-gradient-to-br from-green-700 to-emerald-700 hover:from-green-800 hover:to-emerald-800 text-white rounded-lg shadow-md transition-all duration-300 flex flex-row-reverse items-center gap-0 overflow-hidden h-10 min-w-[2.5rem] hover:scale-105 hover:shadow-2xl hover:shadow-green-500/50 active:scale-95">

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Slider - Canlı Demo | iXtif.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Gradient Animation */
+        @keyframes gradientAnimate {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .gradient-animate {
+            background: linear-gradient(90deg,
+                #3b82f6 0%,
+                #8b5cf6 25%,
+                #ec4899 50%,
+                #8b5cf6 75%,
+                #3b82f6 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientAnimate 3s linear infinite;
+        }
+
+        /* Slide Entry Animations */
+        @keyframes titleEntry {
+            from {
+                opacity: 0;
+                transform: translateX(-150px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes descriptionEntry {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes ctaEntry {
+            from {
+                opacity: 0;
+                transform: translateY(80px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes featureEntry {
+            from {
+                opacity: 0;
+                transform: scale(0.5) rotate(-180deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        /* Active slide animations */
+        .swiper-slide-active .hero-title {
+            animation: titleEntry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .swiper-slide-active .hero-description {
+            animation: descriptionEntry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+        }
+
+        .swiper-slide-active .hero-cta {
+            animation: ctaEntry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
+        }
+
+        .swiper-slide-active .hero-feature:nth-child(1) {
+            animation: featureEntry 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
+        }
+
+        .swiper-slide-active .hero-feature:nth-child(2) {
+            animation: featureEntry 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.75s forwards;
+        }
+
+        .swiper-slide-active .hero-feature:nth-child(3) {
+            animation: featureEntry 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.9s forwards;
+        }
+
+        /* Reset animations for non-active slides */
+        .swiper-slide:not(.swiper-slide-active) .hero-title,
+        .swiper-slide:not(.swiper-slide-active) .hero-description,
+        .swiper-slide:not(.swiper-slide-active) .hero-cta,
+        .swiper-slide:not(.swiper-slide-active) .hero-feature {
+            animation: none !important;
+            opacity: 0;
+        }
+
+        /* Swiper Navigation Buttons */
+        .swiper-button-next,
+        .swiper-button-prev {
+            width: 60px !important;
+            height: 60px !important;
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(10px) !important;
+            border-radius: 50% !important;
+            color: white !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background: rgba(255, 255, 255, 0.25) !important;
+            transform: scale(1.1) !important;
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 20px !important;
+            font-weight: bold !important;
+        }
+
+        /* Swiper Pagination */
+        .swiper-pagination-bullet {
+            width: 10px !important;
+            height: 10px !important;
+            background: #d1d5db !important;
+            opacity: 0.5 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .swiper-pagination-bullet-active {
+            width: 40px !important;
+            border-radius: 5px !important;
+            background: white !important;
+            opacity: 1 !important;
+        }
+
+        /* Gradient Backgrounds for each slide */
+        .slide-bg-1 {
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0) 100%
+            );
+        }
+
+        .slide-bg-2 {
+            background: linear-gradient(135deg,
+                rgba(251, 146, 60, 0.1) 0%,
+                rgba(245, 158, 11, 0.15) 50%,
+                rgba(234, 179, 8, 0.1) 100%
+            );
+        }
+
+        .slide-bg-3 {
+            background: linear-gradient(135deg,
+                rgba(6, 182, 212, 0.1) 0%,
+                rgba(59, 130, 246, 0.15) 50%,
+                rgba(99, 102, 241, 0.1) 100%
+            );
+        }
+
+        .slide-bg-4 {
+            background: linear-gradient(135deg,
+                rgba(16, 185, 129, 0.1) 0%,
+                rgba(5, 150, 105, 0.15) 50%,
+                rgba(20, 184, 166, 0.1) 100%
+            );
+        }
+
+        /* Custom gradient text colors */
+        .gradient-orange {
+            background: linear-gradient(90deg, #f97316, #f59e0b, #eab308);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientAnimate 3s linear infinite;
+        }
+
+        .gradient-cyan {
+            background: linear-gradient(90deg, #06b6d4, #3b82f6, #6366f1);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientAnimate 3s linear infinite;
+        }
+
+        .gradient-emerald {
+            background: linear-gradient(90deg, #10b981, #059669, #14b8a6);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientAnimate 3s linear infinite;
+        }
+
+        /* Hero container */
+        .hero-slider-container {
+            min-height: 500px;
+            height: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+
+    <!-- Demo Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6">
+        <div class="container mx-auto flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold">🎨 Hero Slider - Canlı Demo</h1>
+                <p class="text-sm opacity-90">iXtif.com Anasayfa Hero Slider Tasarımı</p>
+            </div>
+            <div class="text-right text-sm">
+                <div class="font-semibold">4 Slayt • Swiper.js • Fade Transition</div>
+                <div class="opacity-90">Otomatik Oynatma: 5 saniye</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Slider -->
+    <section class="hero-slider-container py-8 md:py-12 lg:py-16 relative overflow-hidden">
+        <div class="swiper heroSwiper">
+            <div class="swiper-wrapper">
+
+                <!-- Slide 1: Mevcut Hero (Birebir Kopya) -->
+                <div class="swiper-slide slide-bg-1">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+                            <!-- Left Content -->
+                            <div class="text-gray-900 dark:text-white">
+                                <!-- Main Title with Animation -->
+                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0" style="font-weight: 900;">
+                                    <span class="gradient-animate block py-2">
+                                        TÜRKİYE'NİN
+                                    </span>
+                                    <span class="gradient-animate block py-2">
+                                        İSTİF PAZARI
+                                    </span>
+                                </h1>
+
+                                <!-- Description -->
+                                <p class="hero-description text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı
+                                </p>
+
+                                <!-- CTA Button -->
+                                <div class="hero-cta mb-16 opacity-0">
+                                    <a href="#" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        Ürünleri İncele
+                                    </a>
+                                </div>
+
+                                <!-- Features -->
+                                <div class="grid grid-cols-3 gap-6">
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-boxes-stacked text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Güçlü Stok</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Zengin ürün çeşidi</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-certificate text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Garantili Ürün</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Teknik servis</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-blue-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-award text-blue-600 dark:text-blue-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Profesyonel Ekip</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Uzman danışmanlık</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Content - Hero Image -->
+                            <div class="flex items-center justify-center">
+                                <img src="https://ixtif.com/storage/tenant2/4/hero.png"
+                                     alt="iXtif İstif Makinesi - Forklift"
+                                     class="w-full h-auto object-contain"
+                                     loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Kiralama -->
+                <div class="swiper-slide slide-bg-2">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+                            <!-- Left Content -->
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0" style="font-weight: 900;">
+                                    <span class="gradient-orange block py-2">
+                                        KİRALAMA
+                                    </span>
+                                    <span class="gradient-orange block py-2">
+                                        ÇÖZÜMLERİ
+                                    </span>
+                                </h1>
+
+                                <p class="hero-description text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Günlük veya uzun dönem forklift kiralama seçenekleri ile esnek çözümler
+                                </p>
+
+                                <div class="hero-cta mb-16 opacity-0">
+                                    <a href="#" class="group bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-calendar-days mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        Kiralama Seçenekleri
+                                    </a>
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-6">
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-orange-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-clock text-orange-600 dark:text-orange-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Esnek Süreler</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Günlük-aylık-yıllık</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-orange-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-screwdriver-wrench text-orange-600 dark:text-orange-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Bakım Dahil</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Ücretsiz servis</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-orange-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-handshake text-orange-600 dark:text-orange-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Uygun Fiyat</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Özel teklifler</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-center">
+                                <img src="https://ixtif.com/storage/tenant2/4/hero.png"
+                                     alt="Forklift Kiralama"
+                                     class="w-full h-auto object-contain opacity-90"
+                                     loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Teknik Servis -->
+                <div class="swiper-slide slide-bg-3">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0" style="font-weight: 900;">
+                                    <span class="gradient-cyan block py-2">
+                                        TEKNİK
+                                    </span>
+                                    <span class="gradient-cyan block py-2">
+                                        SERVİS
+                                    </span>
+                                </h1>
+
+                                <p class="hero-description text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    7/24 saha desteği, profesyonel bakım ve periyodik kontrol hizmetleri
+                                </p>
+
+                                <div class="hero-cta mb-16 opacity-0">
+                                    <a href="#" class="group bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-wrench mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        Servis Talep Et
+                                    </a>
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-6">
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-cyan-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-clock-rotate-left text-cyan-600 dark:text-cyan-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">7/24 Destek</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Kesintisiz hizmet</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-cyan-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-user-gear text-cyan-600 dark:text-cyan-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Uzman Ekip</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Sertifikalı teknisyen</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-cyan-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-shield-check text-cyan-600 dark:text-cyan-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Garanti</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">İşçilik garantili</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-center">
+                                <img src="https://ixtif.com/storage/tenant2/4/hero.png"
+                                     alt="Teknik Servis"
+                                     class="w-full h-auto object-contain opacity-90"
+                                     loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Yedek Parça -->
+                <div class="swiper-slide slide-bg-4">
+                    <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                        <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
+                            <div class="text-gray-900 dark:text-white">
+                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0" style="font-weight: 900;">
+                                    <span class="gradient-emerald block py-2">
+                                        YEDEK
+                                    </span>
+                                    <span class="gradient-emerald block py-2">
+                                        PARÇA
+                                    </span>
+                                </h1>
+
+                                <p class="hero-description text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                    Tüm markalar için stokta binlerce yedek parça, hızlı teslimat garantisi
+                                </p>
+
+                                <div class="hero-cta mb-16 opacity-0">
+                                    <a href="#" class="group bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                        <i class="fa-light fa-gear mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
+                                        Parça Sorgula
+                                    </a>
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-6">
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-emerald-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-boxes-stacked text-emerald-600 dark:text-emerald-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Zengin Stok</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Binlerce çeşit</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-emerald-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-truck-fast text-emerald-600 dark:text-emerald-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base">Hızlı Teslimat</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">Aynı gün kargo</div>
+                                        </div>
+                                    </div>
+                                    <div class="hero-feature flex items-center gap-4 opacity-0">
+                                        <div class="w-12 h-12 bg-emerald-50 dark:bg-slate-700/50 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fa-light fa-certificate text-emerald-600 dark:text-emerald-300 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-gray-900 dark:text-white text-base whitespace-nowrap">Orijinal Parça</div>
+                                            <div class="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Sertifikalı ürün</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-center">
+                                <img src="https://ixtif.com/storage/tenant2/4/hero.png"
+                                     alt="Yedek Parça"
+                                     class="w-full h-auto object-contain opacity-90"
+                                     loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Navigation -->
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+
+            <!-- Pagination -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- Info Panel -->
+    <div class="bg-white dark:bg-gray-800 py-8 px-6">
+        <div class="container mx-auto">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">✅ Tasarım Özellikleri</h2>
+                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                        <li>✓ <strong>4 Slayt:</strong> Ana sayfa + Kiralama + Teknik Servis + Yedek Parça</li>
+                        <li>✓ <strong>Swiper.js:</strong> Fade transition, 1 saniye geçiş süresi</li>
+                        <li>✓ <strong>Otomatik:</strong> 5 saniye aralıklarla döngü</li>
+                        <li>✓ <strong>Navigasyon:</strong> Prev/Next butonlar + Dot pagination + Klavye</li>
+                        <li>✓ <strong>Animasyonlar:</strong> Staggered entry effect (başlık → açıklama → buton → features)</li>
+                        <li>✓ <strong>Responsive:</strong> Mobil, tablet, desktop optimize</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">🎨 Renk Paletleri</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-20 h-8 rounded" style="background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);"></div>
+                            <span class="text-gray-700 dark:text-gray-300">Slayt 1: Blue-Purple-Pink (Mevcut hero)</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-20 h-8 rounded" style="background: linear-gradient(90deg, #f97316, #f59e0b, #eab308);"></div>
+                            <span class="text-gray-700 dark:text-gray-300">Slayt 2: Orange-Amber-Yellow (Kiralama)</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-20 h-8 rounded" style="background: linear-gradient(90deg, #06b6d4, #3b82f6, #6366f1);"></div>
+                            <span class="text-gray-700 dark:text-gray-300">Slayt 3: Cyan-Blue-Indigo (Teknik Servis)</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-20 h-8 rounded" style="background: linear-gradient(90deg, #10b981, #059669, #14b8a6);"></div>
+                            <span class="text-gray-700 dark:text-gray-300">Slayt 4: Emerald-Green-Teal (Yedek Parça)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl border-2 border-green-500 dark:border-green-600">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">✅</div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Tasarım Hazır!</h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">
+                        Slider'ı yukarıda test edebilirsiniz. Uygunsa <strong>"UYGUNDUR"</strong> deyin, hemen homepage'e uygularım!
+                    </p>
+                    <div class="flex gap-4 justify-center flex-wrap">
+                        <button class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-bold text-lg transition-all shadow-lg">
+                            ✅ UYGUNDUR - Homepage'e Uygula
+                        </button>
+                        <button class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-bold text-lg transition-all shadow-lg">
+                            🔄 Değişiklik İstiyorum
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Initialize Swiper
+        const swiper = new Swiper('.heroSwiper', {
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            speed: 1000,
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            keyboard: {
+                enabled: true,
+                onlyInViewport: true,
+            },
+        });
+    </script>
+</body>
+</html>

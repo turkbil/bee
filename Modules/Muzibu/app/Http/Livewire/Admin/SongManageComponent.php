@@ -121,11 +121,14 @@ class SongManageComponent extends Component implements AIContentGeneratable
      */
     public function updatedAudioFile()
     {
-        $this->validate([
-            'audioFile' => 'file|mimes:mp3,wav,flac,m4a,ogg|max:102400', // 100MB
-        ]);
-
         try {
+            // Audio yükleme başladı event'i
+            Log::info('🎵 [SONG] Dispatching media-upload-started event');
+            $this->dispatch('media-upload-started');
+
+            $this->validate([
+                'audioFile' => 'file|mimes:mp3,wav,flac,m4a,ogg|max:102400', // 100MB
+            ]);
             // Eski dosyayı sil (varsa)
             if (!empty($this->inputs['file_path'])) {
                 $oldFilePath = storage_path('app/public/muzibu/songs/' . $this->inputs['file_path']);
@@ -211,6 +214,10 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 'message' => 'Dosya yüklenirken hata oluştu: ' . $e->getMessage(),
                 'type' => 'error'
             ]);
+        } finally {
+            // Her durumda (başarılı, hata, validation fail) kilidi aç
+            Log::info('🎵 [SONG] Dispatching media-upload-completed event');
+            $this->dispatch('media-upload-completed');
         }
     }
 

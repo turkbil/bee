@@ -165,58 +165,23 @@ class AuthenticatedSessionController extends Controller
         ]);
 
         // 🔐 DEVICE LIMIT - Session regenerate SONRASI registerSession() çağır (Tenant-aware)
-        $currentTenant = tenant();
-        \Log::info('🔐 POST-LOGIN: Tenant check', [
-            'tenant_exists' => $currentTenant ? 'yes' : 'no',
-            'tenant_id' => $currentTenant ? $currentTenant->id : null,
-            'user_id' => $user->id,
-        ]);
-
-        if ($currentTenant) {
+        if (tenant()) {
             try {
                 $deviceService = app(\Modules\Muzibu\App\Services\DeviceService::class);
 
-                // 🔐 DEVICE LIMIT CHECK: Login ÖNCESI cihaz sayısını kontrol et
-                $limit = $deviceService->getDeviceLimit($user);
-                $activeCountBeforeLogin = $deviceService->getActiveDeviceCount($user);
+                // registerSession() içinde LIFO otomatik çalışıyor
+                $deviceService->registerSession($user);
 
-                // Yeni session'ı kaydet
-                $deviceService->registerSession($user); // Yeni session ID ile kaydet
-
-                // Login sonrası kontrol - limit aşıldıysa session'a flag koy
-                if ($activeCountBeforeLogin >= $limit) {
-                    // Frontend modal gösterecek
-                    session()->flash('device_limit_exceeded', true);
-                    session()->flash('device_limit', $limit);
-                    session()->flash('active_device_count', $activeCountBeforeLogin + 1); // Yeni session dahil
-
-                    \Log::info('🔐 POST-LOGIN: Device limit exceeded - showing modal', [
-                        'user_id' => $user->id,
-                        'limit' => $limit,
-                        'count' => $activeCountBeforeLogin + 1,
-                    ]);
-                } else {
-                    \Log::info('🔐 POST-LOGIN: Device limit OK', [
-                        'user_id' => $user->id,
-                        'limit' => $limit,
-                        'count' => $activeCountBeforeLogin + 1,
-                    ]);
-                }
-
-                // Premium cache'i temizle
-                $deviceService->handlePostLoginDeviceLimit($user);
-
+                \Log::info('🔐 POST-LOGIN: Session registered', [
+                    'user_id' => $user->id,
+                    'session_id' => substr(session()->getId(), 0, 20) . '...',
+                ]);
             } catch (\Exception $e) {
                 \Log::error('🔐 POST-LOGIN: Device service failed', [
                     'user_id' => $user->id,
                     'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
                 ]);
             }
-        } else {
-            \Log::warning('🔐 POST-LOGIN: No tenant context - skipping device registration', [
-                'user_id' => $user->id,
-            ]);
         }
 
         // Dashboard'a giderken SetLocaleMiddleware halledecek, burada ayarlamıyoruz
@@ -299,11 +264,19 @@ class AuthenticatedSessionController extends Controller
         }
 
         // Normal request: Login sayfasına redirect
-        return redirect('/login?logged_out=1')
+        // 🔥 redirect parametresi varsa onu kullan (session_terminated modal'dan geliyor olabilir)
+        $redirectUrl = $request->input('redirect', '/login?logged_out=1');
+
+        // Cookie'leri expire et (HttpOnly için server-side ZORUNLU)
+        $sessionCookie = config('session.cookie', 'laravel_session');
+
+        return redirect($redirectUrl)
             ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT')
-            ->header('Clear-Site-Data', '"cache"'); // Sadece cache temizle, cookies'i korumalı (dark mode vb.)
+            ->header('Clear-Site-Data', '"cache", "cookies"') // Cache VE cookies temizle
+            ->withCookie(cookie()->forget($sessionCookie))
+            ->withCookie(cookie()->forget('XSRF-TOKEN'));
     }
     
     /**

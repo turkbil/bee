@@ -347,7 +347,8 @@
                                                     title: '{{ addslashes($song->getTranslated('title', $currentSiteLocale) ?? $song->getTranslated('title', 'tr')) }}',
                                                     artist: '{{ addslashes($song->album?->artist?->getTranslated('title', $currentSiteLocale) ?? '') }}',
                                                     hls_hash: '{{ $hlsHash ?? '' }}',
-                                                    file_url: '{{ $song->file_path ? asset('storage/muzibu/songs/' . $song->file_path) : '' }}',
+                                                    file_path: '{{ basename($song->file_path ?? '') }}',
+                                                    tenant_id: {{ tenant()->id ?? 1001 }},
                                                     is_hls: {{ $hlsHash ? 'true' : 'false' }}
                                                 })"
                                                 class="btn btn-icon btn-sm ps-1 pe-2"

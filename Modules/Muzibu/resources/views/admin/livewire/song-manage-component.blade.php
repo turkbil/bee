@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ isMediaUploading: false }">
     @php
         View::share(
             'pretitle',
@@ -159,6 +159,9 @@
                                             type="file"
                                             x-ref="fileInput"
                                             wire:model="audioFile"
+                                            @change="console.log('🎵 [INPUT] File selected, dispatching event'); window.dispatchEvent(new CustomEvent('media-upload-started'))"
+                                            x-on:livewire-upload-finish="console.log('✅ [INPUT] Upload finished, dispatching event'); window.dispatchEvent(new CustomEvent('media-upload-completed'))"
+                                            x-on:livewire-upload-error="console.log('❌ [INPUT] Upload error, dispatching event'); window.dispatchEvent(new CustomEvent('media-upload-completed'))"
                                             class="d-none"
                                             accept="audio/mp3,audio/wav,audio/flac,audio/m4a,audio/ogg,audio/mpeg">
 
@@ -363,6 +366,21 @@
 
             // 🔥 TAB RESTORE - Validation hatası sonrası tab görünür kalsın
             document.addEventListener('DOMContentLoaded', function() {
+                console.log('🎵 [SONG] DOMContentLoaded - registering Livewire event listeners');
+
+                // 🖼️ MEDIA UPLOAD STATE - Dosya yüklenirken butonları kilitle
+                Livewire.on('media-upload-started', () => {
+                    console.log('📸 [SONG] Livewire event received: media-upload-started');
+                    console.log('📸 [SONG] Dispatching window event: media-upload-started');
+                    window.dispatchEvent(new CustomEvent('media-upload-started'));
+                });
+
+                Livewire.on('media-upload-completed', () => {
+                    console.log('✅ [SONG] Livewire event received: media-upload-completed');
+                    console.log('✅ [SONG] Dispatching window event: media-upload-completed');
+                    window.dispatchEvent(new CustomEvent('media-upload-completed'));
+                });
+
                 @if(isset($inputs['hls_path']) && $inputs['hls_path'])
                     // 🎵 HLS Preview Player
                     const hlsPreview = document.getElementById('hlsPreview');

@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ isMediaUploading: false }">
     @php
         View::share(
             'pretitle',
@@ -186,6 +186,17 @@
 
             // 🔥 TAB RESTORE - Validation hatası sonrası tab görünür kalsın
             document.addEventListener('DOMContentLoaded', function() {
+                // 🖼️ MEDIA UPLOAD STATE - Görsel yüklenirken butonları kilitle
+                Livewire.on('media-upload-started', () => {
+                    console.log('📸 Media upload started - locking buttons');
+                    window.dispatchEvent(new CustomEvent('media-upload-started'));
+                });
+
+                Livewire.on('media-upload-completed', () => {
+                    console.log('✅ Media upload completed - unlocking buttons');
+                    window.dispatchEvent(new CustomEvent('media-upload-completed'));
+                });
+
                 Livewire.on('restore-active-tab', () => {
                     console.log('🔄 Tab restore tetiklendi (validation error)');
 

@@ -1,0 +1,259 @@
+/* Ken Burns + Parallax Hybrid Effect */
+@keyframes kenBurnsParallax {
+    0% {
+        transform: scale(1) translate(0, var(--parallax-y, 0));
+    }
+    25% {
+        transform: scale(1.08) translate(-15px, calc(var(--parallax-y, 0) - 10px));
+    }
+    50% {
+        transform: scale(1.12) translate(12px, calc(var(--parallax-y, 0) - 8px));
+    }
+    75% {
+        transform: scale(1.08) translate(-8px, calc(var(--parallax-y, 0) + 8px));
+    }
+    100% {
+        transform: scale(1) translate(0, var(--parallax-y, 0));
+    }
+}
+
+.about-hero-photo {
+    animation: kenBurnsParallax 25s ease-in-out infinite;
+    --parallax-y: 0px;
+}
+
+/* Icon Hover Animations */
+@keyframes slideXInfinite {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(8px);
+    }
+    75% {
+        transform: translateX(-8px);
+    }
+}
+
+@keyframes pulseScale {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+@keyframes rotateWiggleInfinite {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(15deg);
+    }
+    75% {
+        transform: rotate(-15deg);
+    }
+}
+
+.animate-slide-x-infinite {
+    animation: slideXInfinite 1.5s ease-in-out infinite;
+}
+
+.animate-pulse-scale {
+    animation: pulseScale 1.2s ease-in-out infinite;
+}
+
+.animate-rotate-wiggle-infinite {
+    animation: rotateWiggleInfinite 1.5s ease-in-out infinite;
+}
+
+/* Hero Slider Animations */
+@keyframes heroFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes heroFadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes heroZoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.swiper-slide-active .hero-title {
+    animation: heroFadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+}
+
+.swiper-slide-active .hero-desc {
+    animation: heroFadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+
+.swiper-slide-active .hero-cta {
+    animation: heroFadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+}
+
+.swiper-slide-active .hero-feature:nth-child(1) {
+    animation: heroFadeInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+}
+
+.swiper-slide-active .hero-feature:nth-child(2) {
+    animation: heroFadeInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.85s forwards;
+}
+
+.swiper-slide-active .hero-feature:nth-child(3) {
+    animation: heroFadeInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
+}
+
+.swiper-slide-active .hero-feature:nth-child(4) {
+    animation: heroFadeInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) 1.15s forwards;
+}
+
+.swiper-slide-active .hero-image {
+    animation: heroZoomIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+}
+
+/* Hero Section */
+.hero-section {
+    overflow: visible;
+}
+
+/* Hero Title */
+.hero-title {
+    font-weight: 900;
+}
+
+/* Hero Title Responsive - lg'de 2 satır, küçük ekranlarda büyük */
+@media (min-width: 1024px) {
+    .hero-title {
+        font-size: 3rem !important; /* 48px - text-5xl yerine */
+        line-height: 1.1 !important;
+    }
+}
+
+@media (max-width: 1023px) {
+    .hero-title {
+        font-size: 3.75rem !important; /* text-6xl - mobilde büyük kalabilir */
+    }
+}
+
+@media (max-width: 767px) {
+    .hero-title {
+        font-size: 3rem !important; /* text-5xl - mobilde de biraz küçült */
+    }
+}
+
+/* Hero Image Heights */
+.hero-image {
+    max-height: 600px;
+}
+
+.hero-image img {
+    max-height: 600px;
+}
+
+/* Hero Progress Bar Container */
+.hero-progress-container {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(249, 115, 22, 0.3), transparent);
+}
+
+/* Hero Progress Bar */
+.hero-progress-bar {
+    width: 0%;
+    transition: width 7s linear;
+    background: linear-gradient(to right, #f97316, #fb923c, #ea580c);
+}
+
+/* Pagination Custom */
+.swiper-pagination-custom {
+    z-index: 50;
+    padding-left: 3px;
+}
+
+/* Modern Pagination Dots */
+.hero-pagination-bullet {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(4px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+.dark .hero-pagination-bullet {
+    background: rgba(100, 116, 139, 0.3);
+    border-color: rgba(148, 163, 184, 0.5);
+}
+
+.hero-pagination-bullet:hover {
+    transform: scale(1.2);
+    border-color: rgba(59, 130, 246, 0.8);
+}
+
+.hero-pagination-bullet-active {
+    width: 40px;
+    border-radius: 20px;
+    background: rgba(249, 115, 22, 0.3);
+    border-color: transparent;
+}
+
+.dark .hero-pagination-bullet-active {
+    background: rgba(251, 146, 60, 0.3);
+}
+
+.hero-pagination-bullet-active .bullet-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(to right, #f97316, #fb923c, #ea580c);
+    width: 0%;
+    transition: width 7s linear;
+}
+
+/* Fire Flicker Animation */
+@keyframes fireFlicker {
+    0%, 100% {
+        transform: scale(1) rotate(-5deg);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.1) rotate(5deg);
+        filter: brightness(1.3);
+    }
+}
+
+.fire-emoji {
+    animation: fireFlicker 0.5s ease-in-out infinite alternate;
+}
+
+/* Product Card Gradient Background */
+.product-card-gradient {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
+}

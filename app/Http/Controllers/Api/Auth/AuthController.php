@@ -117,114 +117,104 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout
+     * Logout - TAM ÇIKIŞ
+     * Session, cookie, device kaydı hepsini temizler
      */
     public function logout(Request $request)
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        // 🔐 DEVICE SERVICE: Session kaydını sil (Tenant-aware, setting'den kontrol)
-        if ($user && tenant()) {
-            $deviceService = app(DeviceService::class);
-            $deviceService->unregisterSession($user); // DeviceService kendi içinde shouldRun() kontrol eder
+            // 🔐 DEVICE SERVICE: Session kaydını sil
+            if ($user && tenant()) {
+                $deviceService = app(DeviceService::class);
+                $deviceService->unregisterSession($user);
+            }
+
+            Auth::logout();
+
+            // Session invalidate et
+            if ($request->hasSession()) {
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
+        } catch (\Exception $e) {
+            \Log::warning('Logout error (ignored): ' . $e->getMessage());
         }
 
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // 🔥 Cookie'leri server-side expire et (HttpOnly için ZORUNLU)
+        $sessionCookie = config('session.cookie', 'laravel_session');
 
         return response()->json([
             'success' => true,
             'message' => 'Çıkış yapıldı'
-        ]);
+        ])
+        ->withCookie(cookie()->forget($sessionCookie))
+        ->withCookie(cookie()->forget('XSRF-TOKEN'));
     }
 
     /**
      * Check session validity (device limit polling)
-     * Frontend her 30 saniyede bir cagiriyor
+     * Frontend her 30 saniyede bir çağırıyor
+     *
+     * 🔥 IMPORTANT: Bu endpoint Sanctum stateful auth kullanıyor.
+     * Frontend'den Referer header gönderilmeli (EnsureFrontendRequestsAreStateful için)
      */
     public function checkSession(Request $request)
     {
-        $sessionId = session()->getId();
-
-        // 🔍 DEBUG: Session ve auth durumunu logla
-        \Log::info('🔐 checkSession DEBUG', [
-            'session_id' => substr($sessionId, 0, 20) . '...',
-            'has_session' => $request->hasSession(),
-            'web_user' => auth('web')->user()?->email,
-            'sanctum_user' => auth('sanctum')->user()?->email,
-            'auth_check' => \Auth::check(),
-            'cookies' => array_keys($request->cookies->all()),
-        ]);
-
-        // 🔥 FIX: Hem web hem sanctum guard'ı kontrol et
-        // Session-based login (web) veya token-based login (sanctum)
+        // Kullanıcı authenticated mi?
+        // 🔥 Sanctum stateful auth: web guard öncelikli, sanctum fallback
         $user = auth('web')->user() ?? auth('sanctum')->user();
 
         if (!$user) {
-            \Log::warning('🔐 checkSession - NOT AUTHENTICATED', [
-                'session_id' => substr($sessionId, 0, 20) . '...',
-            ]);
+            // 🔍 DEBUG: Neden authenticated değil? (sadece development'ta log)
+            if (config('app.debug')) {
+                \Log::debug('🔐 checkSession: not_authenticated', [
+                    'has_referer' => $request->hasHeader('referer'),
+                    'referer' => $request->header('referer'),
+                    'has_session' => $request->hasSession(),
+                    'session_id' => $request->hasSession() ? substr(session()->getId(), 0, 10) . '...' : 'N/A',
+                ]);
+            }
+
             return response()->json([
                 'valid' => false,
                 'reason' => 'not_authenticated'
             ]);
         }
 
-        // 🔐 DEVICE SERVICE: Session validity kontrol et (Tenant-aware)
+        // Tenant varsa session kontrolü yap
         if (tenant()) {
             $deviceService = app(DeviceService::class);
 
             if ($deviceService->shouldRun()) {
-                // 1. 🔐 ÖNCE: Session DB'de var mi kontrol et (LIFO ile silinmis olabilir)
-                $sessionExists = \DB::table('user_active_sessions')
-                    ->where('session_id', $sessionId)
-                    ->where('user_id', $user->id)
-                    ->exists();
+                // 🔥 LIFO CHECK: Session DB'de var mı? (TAM EŞLEŞME)
+                // Session sync KALDIRILDI - LIFO düzgün çalışsın diye
+                // Her cihaz kendi session'ını tutuyor, farklı session = farklı cihaz
+                if (!$deviceService->sessionExists($user)) {
+                    // Session DB'de yok veya ID eşleşmiyor = Başka cihazdan login (LIFO tarafından silindi)
+                    \Log::info('🔐 checkSession: Session not found (LIFO kicked)', ['user_id' => $user->id]);
 
-                if (!$sessionExists) {
-                    \Log::info('🔐 Session terminated (LIFO) - forcing logout', [
-                        'user_id' => $user->id,
-                        'session_id' => substr($sessionId, 0, 20) . '...',
-                    ]);
+                    Auth::logout();
 
-                    // Session silinmis - kullaniciyi logout et
-                    // 🔥 FIX: Hem web hem sanctum guard'ını logout et
-                    auth('web')->logout();
                     if ($request->hasSession()) {
                         $request->session()->invalidate();
                         $request->session()->regenerateToken();
                     }
 
+                    $sessionCookie = config('session.cookie', 'laravel_session');
+
                     return response()->json([
                         'valid' => false,
                         'reason' => 'session_terminated',
-                        'message' => 'Baska bir cihazdan giris yapildi.'
-                    ]);
+                        'message' => 'Başka bir cihazdan giriş yapıldı.',
+                    ])
+                    ->withCookie(cookie()->forget($sessionCookie))
+                    ->withCookie(cookie()->forget('XSRF-TOKEN'));
                 }
 
-                // 2. Session var - activity guncelle
+                // Session var ve ID eşleşiyor - activity güncelle
                 $deviceService->updateSessionActivity($user);
-
-                // 3. Device limit kontrolu (normalde LIFO ile asim olmamali)
-                $deviceLimit = $deviceService->getDeviceLimit($user);
-                $activeDevices = $deviceService->getActiveDeviceCount($user);
-
-                if ($activeDevices > $deviceLimit) {
-                    \Log::warning('🔐 Device limit exceeded during poll (unexpected)', [
-                        'user_id' => $user->id,
-                        'device_limit' => $deviceLimit,
-                        'active_devices' => $activeDevices,
-                    ]);
-
-                    return response()->json([
-                        'valid' => false,
-                        'reason' => 'device_limit_exceeded',
-                        'device_limit' => $deviceLimit,
-                        'active_devices' => $activeDevices,
-                        'show_device_modal' => true
-                    ]);
-                }
             }
         }
 

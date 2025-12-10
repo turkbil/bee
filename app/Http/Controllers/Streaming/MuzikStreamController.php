@@ -123,8 +123,24 @@ class MuzikStreamController extends Controller
                 Log::info('🎵 Guest stream', ['song_hash' => $songHash, 'file' => $filename]);
             }
             // Access check sonu
-            // Dosya yolu
-            $filePath = storage_path('app/public/' . HLSService::HLS_STORAGE_PATH . '/' . $songHash . '/' . $filename);
+            // Dosya yolu (tenant-aware)
+            $tenantId = tenant() ? tenant()->id : null;
+
+            if ($tenantId) {
+                // Tenant-aware path
+                $filePath = storage_path('../tenant' . $tenantId . '/app/public/' . HLSService::HLS_STORAGE_PATH . '/' . $songHash . '/' . $filename);
+            } else {
+                // Central/fallback path
+                $filePath = storage_path('app/public/' . HLSService::HLS_STORAGE_PATH . '/' . $songHash . '/' . $filename);
+            }
+
+            Log::info('🎵 Stream file request', [
+                'tenant' => $tenantId,
+                'song_hash' => $songHash,
+                'filename' => $filename,
+                'path' => $filePath,
+                'exists' => file_exists($filePath)
+            ]);
 
             // Dosya var mı kontrol
             if (!file_exists($filePath)) {

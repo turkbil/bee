@@ -149,9 +149,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
             $fullPath = storage_path('app/public/' . $path);
             $metadata = $this->extractAudioMetadata($fullPath);
 
-            // 🔄 YENİ ŞARKI YÜKLENDIĞINDE ESKİ METADATA'YI SIFIRLA
             $defaultLocale = get_tenant_default_locale();
-            $this->multiLangInputs[$defaultLocale]['title'] = null; // Eski title'ı sıfırla
 
             // Duration'u kaydet
             if (isset($metadata['duration'])) {
@@ -160,15 +158,17 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 $this->inputs['duration'] = 0;
             }
 
-            // Title'ı kaydet (ID3'te varsa)
-            if (isset($metadata['title'])) {
+            // Title'ı kaydet (SADECE ID3'te varsa - kullanıcının girdiğini korur)
+            if (isset($metadata['title']) && !empty(trim($metadata['title']))) {
                 $this->multiLangInputs[$defaultLocale]['title'] = $metadata['title'];
                 Log::info('📝 ID3 tag\'inden title otomatik dolduruldu', [
                     'title' => $metadata['title'],
                     'locale' => $defaultLocale
                 ]);
             } else {
-                Log::info('⚠️ ID3 tag\'inde title bulunamadı, boş bırakıldı');
+                Log::info('⚠️ ID3 tag\'inde title bulunamadı, kullanıcının girdiği değer korundu', [
+                    'current_title' => $this->multiLangInputs[$defaultLocale]['title'] ?? 'boş'
+                ]);
             }
 
             Log::info('✅ Audio dosyası yüklendi ve metadata çıkarıldı', [
@@ -178,29 +178,12 @@ class SongManageComponent extends Component implements AIContentGeneratable
                 'title' => $metadata['title'] ?? 'yok'
             ]);
 
-            // 🔐 HLS Conversion (Streaming + Encryption)
-            $hlsService = app(\App\Services\Muzibu\HLSService::class);
-            $hlsResult = $hlsService->convertToHLS('muzibu/songs/' . $filename, true);
-
-            if ($hlsResult['success']) {
-                $this->inputs['hls_path'] = $hlsResult['hls_path'];
-                $this->inputs['encryption_key'] = $hlsResult['encryption_key'];
-                $this->inputs['is_encrypted'] = $hlsResult['is_encrypted'];
-                $this->inputs['hls_converted_at'] = $hlsResult['converted_at'];
-
-                Log::info('🔐 HLS Conversion başarılı', [
-                    'hls_path' => $hlsResult['hls_path'],
-                    'encrypted' => $hlsResult['is_encrypted']
-                ]);
-            } else {
-                Log::warning('⚠️ HLS Conversion başarısız, MP3 kullanılacak', [
-                    'error' => $hlsResult['error'] ?? 'unknown'
-                ]);
-            }
+            // 🎵 HLS Conversion arka planda yapılacak (save sonrası job ile)
+            Log::info('📌 HLS conversion job\'a alınacak (save sonrası)');
 
             $this->dispatch('toast', [
                 'title' => 'Başarılı',
-                'message' => 'Şarkı dosyası yüklendi! Süre: ' . gmdate('i:s', $this->inputs['duration']) . ($hlsResult['success'] ? ' (HLS aktif)' : ''),
+                'message' => 'Şarkı dosyası yüklendi! Süre: ' . gmdate('i:s', $this->inputs['duration']) . ' (HLS arka planda hazırlanacak)',
                 'type' => 'success'
             ]);
 
@@ -567,6 +550,9 @@ class SongManageComponent extends Component implements AIContentGeneratable
             $song = Song::query()->findOrFail($this->songId);
             $currentData = collect($song->toArray())->only(array_keys($data))->all();
 
+            // Dosya değişti mi kontrol et
+            $fileChanged = isset($data['file_path']) && $song->file_path !== $data['file_path'];
+
             if ($data == $currentData) {
                 $toast = [
                     'title' => __('admin.success'),
@@ -576,6 +562,12 @@ class SongManageComponent extends Component implements AIContentGeneratable
             } else {
                 $song->update($data);
                 log_activity($song, 'güncellendi');
+
+                // 🎵 Dosya değiştiyse HLS conversion job'u kuyruğa ekle
+                if ($fileChanged && $song->file_path) {
+                    \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
+                    Log::info('🔄 Dosya değişti, HLS conversion job\'a alındı', ['song_id' => $song->song_id]);
+                }
 
                 $toast = [
                     'title' => __('admin.success'),
@@ -591,6 +583,7 @@ class SongManageComponent extends Component implements AIContentGeneratable
             // 🎵 HLS conversion job'u kuyruğa ekle
             if ($song->file_path) {
                 \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
+                Log::info('🎵 Yeni şarkı, HLS conversion job\'a alındı', ['song_id' => $song->song_id]);
             }
 
             $toast = [

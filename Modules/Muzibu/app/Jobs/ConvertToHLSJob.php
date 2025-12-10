@@ -28,7 +28,10 @@ class ConvertToHLSJob implements ShouldQueue
     {
         $this->songId = $song->song_id;
         $this->tenantId = tenant() ? tenant()->id : null;
-        $this->onQueue('hls'); // HLS conversion queue
+
+        // Tenant-aware queue name
+        $queueName = $this->tenantId ? 'tenant_' . $this->tenantId . '_hls' : 'hls';
+        $this->onQueue($queueName);
     }
 
     /**
@@ -54,11 +57,14 @@ class ConvertToHLSJob implements ShouldQueue
                 'title' => $song->getTranslated('title', 'en')
             ]);
 
-            // Check if file exists (file_path is already absolute path)
-            $inputPath = $song->file_path;
+            // Build tenant-aware input path
+            $inputPath = storage_path('../tenant' . tenant()->id . '/app/public/muzibu/songs/' . $song->file_path);
+
             if (!file_exists($inputPath)) {
                 throw new \Exception('Audio file not found: ' . $inputPath);
             }
+
+            Log::info('Muzibu HLS Conversion: Input file found', ['path' => $inputPath]);
 
             // Create HLS output directory (tenant-aware storage structure)
             // Path: storage/tenant{id}/app/public/muzibu/hls/{song_id}/

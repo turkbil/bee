@@ -23,14 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 🎯 UNIFİED THEME TOAST - Tema ile ilgili tüm mesajları birleştir
                 let unifiedTitle = toastData.title;
                 let unifiedMessage = toastData.message;
-                
-                // Tema ile ilgili mesajları birleştir
-                if (toastData.message.includes('Ana renk') || toastData.message.includes('Tema başarıyla') || 
-                    toastData.message.includes('güncellendi') && (toastData.title === 'Tema Ayarları' || toastData.title === 'Başarılı!')) {
+
+                // Tema ile ilgili mesajları birleştir (SADECE tema ile ilgili mesajlar için)
+                if ((toastData.message.includes('Ana renk') || toastData.message.includes('Tema başarıyla')) ||
+                    (toastData.title === 'Tema Ayarları' && toastData.message.includes('güncellendi'))) {
                     unifiedTitle = 'Tema Ayarları';
                     unifiedMessage = 'Tema ayarları başarıyla güncellendi';
                 }
-                
+
                 showToast(unifiedTitle, unifiedMessage, toastData.type || 'success');
             } else {
                 console.error('Invalid toast data structure:', data);

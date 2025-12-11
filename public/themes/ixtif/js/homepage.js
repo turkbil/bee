@@ -25,7 +25,6 @@ function homepage() {
         initHeroSwiper() {
             const progressBar = document.querySelector('.hero-progress-bar');
             const paginationContainer = document.querySelector('.swiper-pagination-custom');
-            let progressInterval;
             let pausedProgressWidth = 0;
             let pausedBulletWidth = 0;
             let remainingTime = 7000;
@@ -36,18 +35,16 @@ function homepage() {
                     crossFade: true
                 },
                 speed: 800,
-                loop: true,
-                grabCursor: true,
+                loop: false, // Loop kapalı - temiz navigation
+                grabCursor: false,
+                allowTouchMove: false,
+                preloadImages: false,
+                lazy: {
+                    loadPrevNext: true,
+                },
                 autoplay: {
                     delay: 7000,
-                    disableOnInteraction: false,
-                    pauseOnMouseEnter: false
-                },
-                allowTouchMove: true,
-                loopAdditionalSlides: 2,
-                navigation: {
-                    nextEl: '.hero-nav-next',
-                    prevEl: '.hero-nav-prev'
+                    disableOnInteraction: false
                 },
                 on: {
                     init: function() {
@@ -58,6 +55,12 @@ function homepage() {
                         updateCustomPagination(this);
                         startProgressBar();
                         remainingTime = 7000;
+                    },
+                    reachEnd: function() {
+                        // Son slayta gelince başa dön
+                        setTimeout(() => {
+                            this.slideTo(0);
+                        }, 7000);
                     }
                 }
             });
@@ -70,7 +73,7 @@ function homepage() {
                     bullet.dataset.index = i;
                     bullet.innerHTML = '<div class="bullet-progress"></div>';
                     bullet.addEventListener('click', () => {
-                        swiper.slideToLoop(i);
+                        swiper.slideTo(i);
                     });
                     paginationContainer.appendChild(bullet);
                 }
@@ -81,12 +84,11 @@ function homepage() {
                 const bullets = paginationContainer.querySelectorAll('.hero-pagination-bullet');
                 bullets.forEach((bullet, index) => {
                     const progress = bullet.querySelector('.bullet-progress');
-                    if (index === swiper.realIndex) {
+                    if (index === swiper.activeIndex) {
                         bullet.classList.add('hero-pagination-bullet-active');
-                        // Reset instantly, then animate
                         progress.style.transition = 'none';
                         progress.style.width = '0%';
-                        progress.offsetHeight; // Force reflow
+                        progress.offsetHeight;
                         progress.style.transition = 'width 7s linear';
                         setTimeout(() => {
                             if (progress) progress.style.width = '100%';
@@ -99,8 +101,6 @@ function homepage() {
             }
 
             function startProgressBar(fromPaused = false) {
-                if (progressInterval) clearInterval(progressInterval);
-
                 if (fromPaused && pausedProgressWidth > 0) {
                     // Resume from paused position
                     progressBar.style.transition = `width ${remainingTime}ms linear`;
@@ -116,6 +116,32 @@ function homepage() {
                         progressBar.style.width = '100%';
                     }, 50);
                 }
+            }
+
+            // Manuel Navigation Buttons
+            const navNext = document.querySelector('.hero-nav-next');
+            const navPrev = document.querySelector('.hero-nav-prev');
+
+            if (navNext) {
+                navNext.addEventListener('click', () => {
+                    const nextIndex = heroSwiper.activeIndex + 1;
+                    if (nextIndex >= heroSwiper.slides.length) {
+                        heroSwiper.slideTo(0);
+                    } else {
+                        heroSwiper.slideTo(nextIndex);
+                    }
+                });
+            }
+
+            if (navPrev) {
+                navPrev.addEventListener('click', () => {
+                    const prevIndex = heroSwiper.activeIndex - 1;
+                    if (prevIndex < 0) {
+                        heroSwiper.slideTo(heroSwiper.slides.length - 1);
+                    } else {
+                        heroSwiper.slideTo(prevIndex);
+                    }
+                });
             }
 
             // Play/Pause Button Control

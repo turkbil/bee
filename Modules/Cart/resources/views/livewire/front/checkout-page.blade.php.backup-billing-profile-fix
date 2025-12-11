@@ -289,60 +289,14 @@
                             <i class="fa-solid fa-file-invoice text-gray-700 dark:text-gray-500 mr-3"></i>
                             Fatura Bilgileri
                         </h2>
+                        <button @click="editBillingProfileMode = false; showNewBillingProfile = !showNewBillingProfile; $wire.set('edit_billing_profile_id', null); $wire.set('new_billing_profile_title', ''); $wire.set('new_billing_profile_type', 'individual'); $wire.set('new_billing_profile_identity_number', ''); $wire.set('new_billing_profile_company_name', ''); $wire.set('new_billing_profile_tax_number', ''); $wire.set('new_billing_profile_tax_office', ''); newBillingProfileType = 'individual'; showTypeSwitchWarning = false; pendingType = null"
+                                class="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-600 dark:text-gray-400 dark:hover:text-gray-900 dark:text-white px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <i class="fa-solid fa-plus mr-1"></i>Ekle
+                        </button>
                     </div>
 
-                    {{-- Seçili Profil Kartı (Form Kapalı) --}}
-                    <div x-show="!showNewBillingProfile">
-                        @php
-                            $selectedProfile = $billingProfiles?->firstWhere('billing_profile_id', $billing_profile_id);
-                        @endphp
-                        @if($selectedProfile)
-                            <div class="p-3 rounded-xl border-2 border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400 mb-4">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-3 flex-1 min-w-0">
-                                        <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-200 dark:bg-gray-700 flex-shrink-0">
-                                            <i class="fa-solid {{ $selectedProfile->isCorporate() ? 'fa-building' : 'fa-user' }} text-gray-700 dark:text-gray-400"></i>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex items-center gap-2">
-                                                <span class="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                                    {{ $selectedProfile->isCorporate() ? $selectedProfile->company_name : $selectedProfile->title }}
-                                                </span>
-                                                <span class="text-[10px] bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400 px-1.5 py-0.5 rounded flex-shrink-0">
-                                                    {{ $selectedProfile->isCorporate() ? 'Kurumsal' : 'Bireysel' }}
-                                                </span>
-                                            </div>
-                                            <p class="text-xs text-gray-600 dark:text-gray-500 mt-0.5 truncate">
-                                                @if($selectedProfile->isCorporate())
-                                                    Vergi No: {{ $selectedProfile->tax_number }} | {{ $selectedProfile->tax_office }}
-                                                @else
-                                                    {{ $selectedProfile->identity_number ? 'TC: ' . $selectedProfile->identity_number : '-' }}
-                                                @endif
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <button @click="showNewBillingProfile = true"
-                                            class="p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300">
-                                        <i class="fas fa-edit text-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        @else
-                            <div @click="showNewBillingProfile = true"
-                                 class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 transition-colors mb-4">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    <i class="fa-solid fa-info-circle mr-2"></i>
-                                    Fatura profili seçilmedi.
-                                    <span class="underline ml-1">Profil Seç</span>
-                                </p>
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- Profil Listesi + Form (Form Açık) --}}
-                    <div x-show="showNewBillingProfile" x-cloak x-transition>
-                        {{-- Mevcut Profiller --}}
-                        @if($billingProfiles && count($billingProfiles) > 0)
+                    {{-- Mevcut Profiller --}}
+                    @if($billingProfiles && count($billingProfiles) > 0)
                         <div class="space-y-2 mb-4" x-data="{ showAllProfiles: false }">
                             @foreach($billingProfiles as $profile)
                                 <div wire:key="billing-profile-{{ $profile->billing_profile_id }}"
@@ -520,7 +474,7 @@
                     @endif
 
                     {{-- Yeni Profil Formu --}}
-                    <div class="space-y-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <div x-show="showNewBillingProfile" x-cloak x-transition class="space-y-4 pt-3 border-t border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-900 dark:text-gray-300">
                                 <span x-show="!editBillingProfileMode">Yeni Profil</span>
@@ -609,9 +563,6 @@
                             </button>
                         </div>
                     </div>
-                    </div>
-                    {{-- /Profil Listesi + Form Wrapper --}}
-
                     @error('billing_profile_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 

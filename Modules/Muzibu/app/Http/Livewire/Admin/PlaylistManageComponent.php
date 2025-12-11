@@ -424,19 +424,27 @@ class PlaylistManageComponent extends Component implements AIContentGeneratable
         if ($isNewRecord && isset($playlist)) {
             $this->dispatch('playlist-saved', $playlist->playlist_id);
 
-            session()->flash('toast', $toast);
-            return redirect()->route('admin.muzibu.playlist.manage', ['id' => $playlist->playlist_id]);
+            if ($resetForm) {
+                // Kaydet ve Yeni Ekle: Formu resetle, aynı sayfada kal
+                $this->playlistId = null;
+                $this->reset(['inputs', 'multiLangInputs']);
+                $this->inputs = ['is_active' => true];
+                $this->currentLanguage = get_tenant_default_locale();
+                $this->initializeEmptyInputs();
+
+                Log::info('✅ Form resetlendi - Yeni kayıt için hazır', [
+                    'previous_playlist_id' => $playlist->playlist_id
+                ]);
+            } else {
+                // Normal kaydet: Düzenleme sayfasına yönlendir
+                session()->flash('toast', $toast);
+                return redirect()->route('admin.muzibu.playlist.manage', ['id' => $playlist->playlist_id]);
+            }
         }
 
         Log::info('✅ Save method başarıyla tamamlandı', [
             'playlistId' => $this->playlistId
         ]);
-
-        if ($resetForm && !$this->playlistId) {
-            $this->reset();
-            $this->currentLanguage = get_tenant_default_locale();
-            $this->initializeEmptyInputs();
-        }
     }
 
     public function render()

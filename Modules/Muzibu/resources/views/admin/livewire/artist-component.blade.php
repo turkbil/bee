@@ -70,23 +70,24 @@
                 <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                     <thead>
                         <tr>
-                            <th style="width: 50px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input type="checkbox"
-                                           wire:model.live="selectAll"
-                                           class="form-check-input"
-                                           id="selectAllCheckbox"
-                                           x-data="{
-                                               indeterminate: {{ count($selectedItems ?? []) > 0 && !($selectAll ?? false) ? 'true' : 'false' }}
-                                           }"
-                                           x-init="$el.indeterminate = indeterminate"
-                                           x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ ($selectAll ?? false) ? 'true' : 'false' }})"
-                                           @checked($selectAll ?? false)>
-                                    <button
-                                        class="table-sort {{ ($sortField ?? '') === 'artist_id' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
-                                        wire:click="sortBy('artist_id')">
-                                    </button>
-                                </div>
+                            <th class="text-center" style="width: 50px">
+                                <input type="checkbox"
+                                       wire:model.live="selectAll"
+                                       class="form-check-input"
+                                       id="selectAllCheckbox"
+                                       x-data="{
+                                           indeterminate: {{ count($selectedItems ?? []) > 0 && !($selectAll ?? false) ? 'true' : 'false' }}
+                                       }"
+                                       x-init="$el.indeterminate = indeterminate"
+                                       x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ ($selectAll ?? false) ? 'true' : 'false' }})"
+                                       @checked($selectAll ?? false)>
+                            </th>
+                            <th class="text-center" style="width: 60px">
+                                <button
+                                    class="table-sort {{ ($sortField ?? '') === 'artist_id' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
+                                    wire:click="sortBy('artist_id')">
+                                    ID
+                                </button>
                             </th>
                             <th style="min-width: 200px">
                                 <button
@@ -108,18 +109,18 @@
                     <tbody class="table-tbody">
                         @forelse($artists as $artist)
                             <tr class="hover-trigger" wire:key="row-{{ $artist->artist_id }}">
-                                <td class="sort-id small">
-                                    <div class="hover-toggle">
-                                        <span class="hover-hide">{{ $artist->artist_id }}</span>
-                                        <input type="checkbox"
-                                               wire:model.live="selectedItems"
-                                               value="{{ $artist->artist_id }}"
-                                               class="form-check-input hover-show"
-                                               id="checkbox-{{ $artist->artist_id }}"
-                                               @checked(in_array($artist->artist_id, $selectedItems))>
-                                    </div>
+                                <td class="text-center">
+                                    <input type="checkbox"
+                                           wire:model.live="selectedItems"
+                                           value="{{ $artist->artist_id }}"
+                                           class="form-check-input"
+                                           id="checkbox-{{ $artist->artist_id }}"
+                                           @checked(in_array($artist->artist_id, $selectedItems))>
                                 </td>
-                                <td wire:key="title-{{ $artist->artist_id }}" class="position-relative">
+                                <td class="text-center small text-muted">
+                                    {{ $artist->artist_id }}
+                                </td>
+                                <td wire:key="title-{{ $artist->artist_id }}">
                                     @if ($editingTitleId === $artist->artist_id)
                                         <div class="d-flex align-items-center gap-3" x-data
                                             @click.outside="$wire.updateTitleInline()">
@@ -233,7 +234,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ $detailedView ? 6 : 4 }}" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 7 : 5 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.artist.no_artists_found') }}</p>
                                         <p class="empty-subtitle">

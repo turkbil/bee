@@ -32,15 +32,15 @@
                         <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
                             <div class="grid lg:grid-cols-2 gap-8 items-center">
                             <div class="text-gray-900 dark:text-white">
-                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
-                                    <span class="gradient-animate block py-2">İXTİF TÜRKİYE'NİN</span>
-                                    <span class="gradient-animate block py-2">HER NOKTASINDA</span>
+                                <h1 class="hero-title text-3xl md:text-5xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
+                                    <span class="gradient-animate block py-2">İXTİF TÜRKİYE'DE</span>
+                                    <span class="gradient-animate block py-2">HER YERDE</span>
                                 </h1>
-                                <p class="hero-desc text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                <p class="hero-desc text-base md:text-xl lg:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed font-medium opacity-0">
                                     Güvenli paketleme ve hızlı kargo ile sorunsuz teslimat, her zaman zamanında ve güvenle
                                 </p>
-                                <div class="hero-cta mb-16 opacity-0">
-                                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                <div class="hero-cta mb-8 opacity-0">
+                                    <a href="{{ route('shop.index') }}" class="group bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-800 text-slate-900 dark:text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
                                         <i class="fa-light fa-truck-fast mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
                                         Teslimat Bilgisi Al
                                     </a>
@@ -96,15 +96,15 @@
                         <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
                             <div class="grid lg:grid-cols-2 gap-8 items-center">
                                 <div class="text-gray-900 dark:text-white">
-                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
+                                <h1 class="hero-title text-3xl md:text-5xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
                                     <span class="gradient-animate block py-2">DÜNYA DEVİ HELI</span>
                                     <span class="gradient-animate block py-2">ARTIK İXTİF'TE</span>
                                 </h1>
-                                <p class="hero-desc text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                <p class="hero-desc text-base md:text-xl lg:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed font-medium opacity-0">
                                     Yedek parça stoğu, yetkili servis ve teknik destek garantisiyle tam hizmet ve güvence
                                 </p>
-                                <div class="hero-cta mb-16 opacity-0">
-                                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                <div class="hero-cta mb-8 opacity-0">
+                                    <a href="{{ route('shop.index') }}" class="group bg-red-50 hover:bg-red-100 dark:bg-red-700 dark:hover:bg-red-800 text-red-900 dark:text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
                                         <i class="fa-light fa-forklift mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
                                         HELI Ürünleri İncele
                                     </a>
@@ -160,15 +160,15 @@
                         <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
                             <div class="grid lg:grid-cols-2 gap-8 items-center">
                             <div class="text-gray-900 dark:text-white">
-                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
+                                <h1 class="hero-title text-3xl md:text-5xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
                                     <span class="gradient-animate block py-2">EP İLE MODERN</span>
                                     <span class="gradient-animate block py-2">DEPOLAR</span>
                                 </h1>
-                                <p class="hero-desc text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                <p class="hero-desc text-base md:text-xl lg:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed font-medium opacity-0">
                                     Elektrikli motor, düşük işletme maliyeti, sessiz çalışma ve çevre dostu teknoloji ile üretim
                                 </p>
-                                <div class="hero-cta mb-16 opacity-0">
-                                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                <div class="hero-cta mb-8 opacity-0">
+                                    <a href="{{ route('shop.index') }}" class="group bg-green-100 hover:bg-green-200 dark:bg-green-700 dark:hover:bg-green-800 text-green-900 dark:text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
                                         <i class="fa-light fa-bolt mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
                                         EP Dünyasını Keşfet
                                     </a>
@@ -224,15 +224,15 @@
                         <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
                             <div class="grid lg:grid-cols-2 gap-8 items-center">
                             <div class="text-gray-900 dark:text-white">
-                                <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
+                                <h1 class="hero-title text-3xl md:text-5xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
                                     <span class="gradient-animate block py-2">TÜRKİYE'NİN</span>
                                     <span class="gradient-animate block py-2">İSTİF PAZARI</span>
                                 </h1>
-                                <p class="hero-desc text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-14 leading-relaxed font-medium opacity-0">
+                                <p class="hero-desc text-base md:text-xl lg:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed font-medium opacity-0">
                                     Profesyonel istif çözümleri, güçlü stok ve hızlı teslimat ile işletmenizin güvenilir ortağı
                                 </p>
-                                <div class="hero-cta mb-16 opacity-0">
-                                    <a href="{{ route('shop.index') }}" class="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
+                                <div class="hero-cta mb-8 opacity-0">
+                                    <a href="{{ route('shop.index') }}" class="group bg-blue-100 hover:bg-blue-200 dark:bg-blue-700 dark:hover:bg-blue-800 text-blue-900 dark:text-white px-10 py-4 rounded-full font-bold text-lg transition-all inline-block text-center shadow-lg hover:shadow-xl">
                                         <i class="fa-light fa-shopping-cart mr-2 inline-block group-hover:scale-125 group-hover:rotate-12 transition-all duration-300"></i>
                                         Ürünleri İncele
                                     </a>
@@ -286,11 +286,11 @@
                 </div>
 
                 <!-- Navigation Arrows (Outside Slider - Minimal & Transparent) -->
-                <button class="hero-nav-prev absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-all duration-300 group opacity-30 hover:opacity-100">
-                    <i class="fa-solid fa-chevron-left text-white text-xl lg:text-2xl drop-shadow-lg group-hover:-translate-x-0.5 transition-transform"></i>
+                <button class="hero-nav-prev absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-800/30 backdrop-blur-sm border border-slate-300/50 dark:border-slate-700/50 hover:bg-white/90 dark:hover:bg-slate-800/50 hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-300 group shadow-lg">
+                    <i class="fa-solid fa-chevron-left text-slate-700 dark:text-white text-xl lg:text-2xl group-hover:-translate-x-0.5 transition-transform"></i>
                 </button>
-                <button class="hero-nav-next absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-all duration-300 group opacity-30 hover:opacity-100">
-                    <i class="fa-solid fa-chevron-right text-white text-xl lg:text-2xl drop-shadow-lg group-hover:translate-x-0.5 transition-transform"></i>
+                <button class="hero-nav-next absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-800/30 backdrop-blur-sm border border-slate-300/50 dark:border-slate-700/50 hover:bg-white/90 dark:hover:bg-slate-800/50 hover:border-slate-400 dark:hover:border-slate-600 transition-all duration-300 group shadow-lg">
+                    <i class="fa-solid fa-chevron-right text-slate-700 dark:text-white text-xl lg:text-2xl group-hover:translate-x-0.5 transition-transform"></i>
                 </button>
             </div>
 
@@ -298,8 +298,8 @@
             <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div class="flex justify-start items-center gap-4 mt-4">
                     <!-- Play/Pause Button -->
-                    <button id="heroPlayPause" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200/30 dark:bg-slate-700/30 backdrop-blur-sm hover:bg-blue-500/50 transition-all duration-300 group">
-                        <i class="fa-solid fa-pause text-slate-700 dark:text-slate-300 text-sm group-hover:text-white transition-colors"></i>
+                    <button id="heroPlayPause" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/30 dark:bg-slate-700/30 backdrop-blur-sm hover:bg-blue-500/60 dark:hover:bg-blue-500/50 transition-all duration-300 group">
+                        <i class="fa-solid fa-pause text-slate-900 dark:text-slate-300 text-sm group-hover:text-white transition-colors"></i>
                     </button>
 
                     <!-- Pagination Dots -->
@@ -396,7 +396,7 @@
 
             {{-- VIP Products (İlk 2 ürün - Görsel solda, yazı sağda, col-6, BÜYÜK) --}}
             @if($homepageProducts->count() >= 2)
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
                 @foreach($homepageProducts->take(2) as $index => $product)
                 @php
                     $vipProductId = $product['id'];
@@ -411,7 +411,38 @@
                     $vipProductBasePrice = $product['price'] ?? 0;
                     $vipProductDiscountPercentage = $product['auto_discount_percentage'] ?? null;
                     $vipProductBadges = $product['badges'] ?? [];
-                    $vipFormattedComparePrice = $product['formatted_compare_price'] ?? null;
+
+                    // Compare price logic (component ile aynı)
+                    $vipProductCompareAtPrice = $product['compare_at_price'] ?? null;
+                    $vipProductCurrencySymbol = $product['currency_symbol'] ?? '₺';
+
+                    // Yuvarlama fonksiyonu tanımla (component'teki gibi)
+                    if (!function_exists('roundComparePrice')) {
+                        function roundComparePrice($price) {
+                            if (!$price) return null;
+                            $lastTwo = $price % 100;
+                            if ($lastTwo <= 24) {
+                                return floor($price / 100) * 100;
+                            }
+                            elseif ($lastTwo <= 74) {
+                                return floor($price / 100) * 100 + 50;
+                            }
+                            else {
+                                return ceil($price / 100) * 100;
+                            }
+                        }
+                    }
+
+                    // Yuvarlama uygula (00 veya 50'ye)
+                    if ($vipProductCompareAtPrice) {
+                        $vipProductCompareAtPrice = roundComparePrice($vipProductCompareAtPrice);
+                    }
+
+                    // Format et (sadece base price'dan büyükse göster)
+                    $vipFormattedComparePrice = null;
+                    if ($vipProductCompareAtPrice && $vipProductCompareAtPrice > $vipProductBasePrice) {
+                        $vipFormattedComparePrice = number_format($vipProductCompareAtPrice, 0, ',', '.') . ' ' . $vipProductCurrencySymbol;
+                    }
 
                     // Badge renk gradient map
                     $badgeGradients = [
@@ -455,6 +486,29 @@
                 <div x-data="productCard({{ $vipProductTryPrice ? 'true' : 'false' }}, {{ $vipProductId }})"
                      class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all">
 
+                    {{-- Badges (Ana container üstünde - responsive) --}}
+                    <div class="absolute top-2 left-2 md:top-3 md:left-3 z-20 flex flex-col gap-1.5 md:gap-2 items-start">
+                        {{-- İndirim Badge --}}
+                        @if($vipProductDiscountPercentage && $vipProductDiscountPercentage >= 5)
+                            <div class="bg-gradient-to-br from-orange-600 to-red-600 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-lg shadow-lg text-xs md:text-sm font-bold">
+                                -%{{ $vipProductDiscountPercentage }}
+                            </div>
+                        @endif
+
+                        {{-- Dinamik Badge'ler (renk ve animasyon destekli) --}}
+                        @foreach($vipActiveBadges as $badgeIndex => $badge)
+                            @php
+                                $badgeColor = $badge['color'] ?? 'gray';
+                                $badgeGradient = $badgeGradients[$badgeColor] ?? 'from-gray-600 to-slate-600';
+                                $isFirstBadge = $badgeIndex === 0;
+                                $animationClass = $isFirstBadge ? 'bg-[length:200%_200%] animate-gradient' : '';
+                            @endphp
+                            <div class="bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-2 py-1 md:px-3 md:py-1.5 rounded-lg shadow-lg text-xs md:text-sm font-bold">
+                                {{ $getBadgeLabel($badge) }}
+                            </div>
+                        @endforeach
+                    </div>
+
                     <div class="flex flex-col md:flex-row">
                         {{-- Sol: Büyük Görsel --}}
                         <div class="relative md:w-1/2 aspect-square md:aspect-auto md:min-h-[280px]">
@@ -468,29 +522,6 @@
                                     <i class="{{ $vipProductCategoryIcon }} text-6xl md:text-8xl text-blue-400 dark:text-blue-400"></i>
                                 @endif
                             </a>
-
-                            {{-- Badges (Görsel üstünde - alttakilerle aynı) --}}
-                            <div class="absolute top-3 left-3 z-10 flex flex-col gap-2 items-start">
-                                {{-- İndirim Badge --}}
-                                @if($vipProductDiscountPercentage && $vipProductDiscountPercentage >= 5)
-                                    <div class="bg-gradient-to-br from-orange-600 to-red-600 text-white px-3 py-1.5 rounded-lg shadow-lg text-sm font-bold">
-                                        -%{{ $vipProductDiscountPercentage }}
-                                    </div>
-                                @endif
-
-                                {{-- Dinamik Badge'ler (renk ve animasyon destekli) --}}
-                                @foreach($vipActiveBadges as $badgeIndex => $badge)
-                                    @php
-                                        $badgeColor = $badge['color'] ?? 'gray';
-                                        $badgeGradient = $badgeGradients[$badgeColor] ?? 'from-gray-600 to-slate-600';
-                                        $isFirstBadge = $badgeIndex === 0;
-                                        $animationClass = $isFirstBadge ? 'bg-[length:200%_200%] animate-gradient' : '';
-                                    @endphp
-                                    <div class="bg-gradient-to-br {{ $badgeGradient }} {{ $animationClass }} text-white px-3 py-1.5 rounded-lg shadow-lg text-sm font-bold">
-                                        {{ $getBadgeLabel($badge) }}
-                                    </div>
-                                @endforeach
-                            </div>
                         </div>
 
                         {{-- Sağ: İçerik --}}
@@ -511,14 +542,15 @@
                             </a>
 
                             {{-- Fiyat & Sepete Ekle --}}
-                            <div class="pt-4 mt-auto flex items-center justify-between gap-4">
-                                <div class="flex-1 min-w-0">
-                                    {{-- Üstü çizili eski fiyat (varsa) --}}
-                                    @if($vipFormattedComparePrice)
-                                        <div class="relative inline-block mb-1">
-                                            <span class="text-sm lg:text-base text-gray-400 dark:text-gray-500 font-medium leading-none">
+                            <div class="pt-4 mt-auto flex items-center justify-between gap-2 sm:gap-3 md:gap-4">
+                                <div class="flex-1 min-w-0 overflow-hidden">
+                                    {{-- Üstü çizili eski fiyat (varsa) - Component ile aynı --}}
+                                    @if(isset($vipFormattedComparePrice) && $vipFormattedComparePrice)
+                                        <div class="relative inline-block -mb-3 sm:-mb-4 lg:-mb-2">
+                                            <span class="text-xs sm:text-sm lg:text-sm text-gray-400 dark:text-gray-500 font-medium leading-none">
                                                 {{ $vipFormattedComparePrice }}
                                             </span>
+                                            {{-- Çapraz çizgi (diagonal line) --}}
                                             <span class="absolute inset-0 flex items-center justify-center">
                                                 <span class="w-full h-[1.5px] bg-gradient-to-r from-transparent via-red-500 to-transparent transform rotate-[-8deg] opacity-70"></span>
                                             </span>
@@ -526,20 +558,23 @@
                                     @endif
 
                                     @if($vipProductTryPrice && $vipProductCurrencyCode !== 'TRY')
-                                        <div class="relative h-10 w-fit flex items-center cursor-pointer"
+                                        <div class="relative h-8 w-fit flex items-center cursor-pointer"
                                              @mouseenter="priceHovered = true; showTryPrice = true"
                                              @mouseleave="priceHovered = false; showTryPrice = false">
-                                            <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-150 whitespace-nowrap"
+                                            {{-- USD Price (default) --}}
+                                            <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 transition-all duration-150 whitespace-nowrap"
                                                  x-show="!showTryPrice">
                                                 {{ $vipProductFormattedPrice }}
                                             </div>
-                                            <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-150 whitespace-nowrap"
+                                            {{-- TRY Price (hover ile gösterim) --}}
+                                            <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 dark:from-green-300 dark:via-emerald-300 dark:to-teal-300 absolute top-0 left-0 transition-all duration-150 scale-105 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)] whitespace-nowrap"
                                                  x-show="showTryPrice" style="display: none;">
                                                 {{ $vipProductTryPrice }} ₺
                                             </div>
                                         </div>
                                     @else
-                                        <div class="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 whitespace-nowrap">
+                                        {{-- TRY Only Price --}}
+                                        <div class="text-lg md:text-xl lg:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-300 dark:via-purple-300 dark:to-pink-300 h-8 flex items-center whitespace-nowrap">
                                             {{ $vipProductFormattedPrice }}
                                         </div>
                                     @endif

@@ -68,23 +68,24 @@
                 <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                     <thead>
                         <tr>
-                            <th style="width: 50px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input type="checkbox"
-                                           wire:model.live="selectAll"
-                                           class="form-check-input"
-                                           id="selectAllCheckbox"
-                                           x-data="{
-                                               indeterminate: {{ count($selectedItems ?? []) > 0 && !($selectAll ?? false) ? 'true' : 'false' }}
-                                           }"
-                                           x-init="$el.indeterminate = indeterminate"
-                                           x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ ($selectAll ?? false) ? 'true' : 'false' }})"
-                                           @checked($selectAll ?? false)>
-                                    <button
-                                        class="table-sort {{ ($sortField ?? '') === 'radio_id' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
-                                        wire:click="sortBy('radio_id')">
-                                    </button>
-                                </div>
+                            <th class="text-center" style="width: 50px">
+                                <input type="checkbox"
+                                       wire:model.live="selectAll"
+                                       class="form-check-input"
+                                       id="selectAllCheckbox"
+                                       x-data="{
+                                           indeterminate: {{ count($selectedItems ?? []) > 0 && !($selectAll ?? false) ? 'true' : 'false' }}
+                                       }"
+                                       x-init="$el.indeterminate = indeterminate"
+                                       x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ ($selectAll ?? false) ? 'true' : 'false' }})"
+                                       @checked($selectAll ?? false)>
+                            </th>
+                            <th class="text-center" style="width: 60px">
+                                <button
+                                    class="table-sort {{ ($sortField ?? '') === 'radio_id' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
+                                    wire:click="sortBy('radio_id')">
+                                    ID
+                                </button>
                             </th>
                             <th style="min-width: 200px">
                                 <button
@@ -108,18 +109,18 @@
                     <tbody class="table-tbody">
                         @forelse($radios as $radio)
                             <tr class="hover-trigger" wire:key="row-{{ $radio->radio_id }}">
-                                <td class="sort-id small">
-                                    <div class="hover-toggle">
-                                        <span class="hover-hide">{{ $radio->radio_id }}</span>
-                                        <input type="checkbox"
-                                               wire:model.live="selectedItems"
-                                               value="{{ $radio->radio_id }}"
-                                               class="form-check-input hover-show"
-                                               id="checkbox-{{ $radio->radio_id }}"
-                                               @checked(in_array($radio->radio_id, $selectedItems))>
-                                    </div>
+                                <td class="text-center">
+                                    <input type="checkbox"
+                                           wire:model.live="selectedItems"
+                                           value="{{ $radio->radio_id }}"
+                                           class="form-check-input"
+                                           id="checkbox-{{ $radio->radio_id }}"
+                                           @checked(in_array($radio->radio_id, $selectedItems))>
                                 </td>
-                                <td wire:key="title-{{ $radio->radio_id }}" class="position-relative">
+                                <td class="text-center small text-muted">
+                                    {{ $radio->radio_id }}
+                                </td>
+                                <td wire:key="title-{{ $radio->radio_id }}">
                                     @if ($editingTitleId === $radio->radio_id)
                                         <div class="d-flex align-items-center gap-3" x-data
                                             @click.outside="$wire.updateTitleInline()">
@@ -243,7 +244,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ $detailedView ? 8 : 7 }}" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 9 : 8 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.radio.no_radios_found') }}</p>
                                         <p class="empty-subtitle">

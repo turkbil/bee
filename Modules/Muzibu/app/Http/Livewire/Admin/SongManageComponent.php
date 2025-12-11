@@ -611,19 +611,27 @@ class SongManageComponent extends Component implements AIContentGeneratable
         if ($isNewRecord && isset($song)) {
             $this->dispatch('song-saved', $song->song_id);
 
-            session()->flash('toast', $toast);
-            return redirect()->route('admin.muzibu.song.manage', ['id' => $song->song_id]);
+            if ($resetForm) {
+                // Kaydet ve Yeni Ekle: Formu resetle, aynı sayfada kal
+                $this->songId = null;
+                $this->reset(['inputs', 'multiLangInputs']);
+                $this->inputs = ['is_active' => true];
+                $this->currentLanguage = get_tenant_default_locale();
+                $this->initializeEmptyInputs();
+
+                Log::info('✅ Form resetlendi - Yeni kayıt için hazır', [
+                    'previous_song_id' => $song->song_id
+                ]);
+            } else {
+                // Normal kaydet: Düzenleme sayfasına yönlendir
+                session()->flash('toast', $toast);
+                return redirect()->route('admin.muzibu.song.manage', ['id' => $song->song_id]);
+            }
         }
 
         Log::info('✅ Save method başarıyla tamamlandı', [
             'songId' => $this->songId
         ]);
-
-        if ($resetForm && !$this->songId) {
-            $this->reset();
-            $this->currentLanguage = get_tenant_default_locale();
-            $this->initializeEmptyInputs();
-        }
     }
 
     public function render()

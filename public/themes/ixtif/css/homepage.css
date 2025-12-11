@@ -144,6 +144,108 @@
     font-weight: 900;
 }
 
+/* Hero Title Gradient Animation */
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.gradient-animate {
+    background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777, #2563eb);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+.dark .gradient-animate {
+    background: linear-gradient(135deg, #93c5fd, #c4b5fd, #fda4af, #93c5fd);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+/* Light Mode - Slide Specific Gradients */
+/* Slide 1 - Gray Background: Koyu Gri + Mavi tonları */
+.slide-1-bg .gradient-animate {
+    background: linear-gradient(135deg, #475569, #3b82f6, #8b5cf6, #475569);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Slide 2 - Rose Background: Koyu Pembe/Rose tonları */
+.slide-2-bg .gradient-animate {
+    background: linear-gradient(135deg, #881337, #e11d48, #f43f5e, #881337);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Slide 3 - Green Background: Koyu Yeşil tonları */
+.slide-3-bg .gradient-animate {
+    background: linear-gradient(135deg, #14532d, #16a34a, #22c55e, #14532d);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Slide 4 - Blue Background: Koyu Mavi tonları */
+.slide-4-bg .gradient-animate {
+    background: linear-gradient(135deg, #1e3a8a, #2563eb, #3b82f6, #1e3a8a);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Dark Mode - Slide Specific Gradients */
+/* Slide 1 - Gray Background: Beyaz + Mavi-Mor-Pembe */
+.dark .slide-1-bg .gradient-animate {
+    background: linear-gradient(135deg, #ffffff, #93c5fd, #c4b5fd, #fda4af, #ffffff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Slide 2 - Bordo Background: Beyaz + Pembe tonları */
+.dark .slide-2-bg .gradient-animate {
+    background: linear-gradient(135deg, #ffffff, #fecdd3, #fda4af, #fb7185, #ffffff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Slide 3 - Yeşil Background: Beyaz + Açık Yeşil + Sarı tonları */
+.dark .slide-3-bg .gradient-animate {
+    background: linear-gradient(135deg, #ffffff, #d9f99d, #86efac, #bef264, #ffffff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Slide 4 - Lacivert Background: Beyaz + Açık Mavi + Cyan tonları */
+.dark .slide-4-bg .gradient-animate {
+    background: linear-gradient(135deg, #ffffff, #a5f3fc, #67e8f9, #bfdbfe, #ffffff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 /* Hero Title Responsive - xl/xxl'de büyük, lg'de 2 satır, küçük ekranlarda büyük */
 @media (min-width: 1536px) {
     /* xxl: 1536px+ - Extra büyük ekranlar */
@@ -165,7 +267,7 @@
     /* lg: 1024px-1279px - Laptop */
     .hero-title {
         font-size: 3rem !important; /* 48px - text-5xl yerine */
-        line-height: 1.1 !important;
+        line-height: 1 !important;
     }
 }
 
@@ -186,6 +288,7 @@
 /* Hero Image Heights */
 .hero-image {
     max-height: 600px;
+    padding-top: 1.25rem; /* pt-5 = 20px */
 }
 
 .hero-image img,
@@ -217,9 +320,9 @@
     position: relative;
     width: 12px;
     height: 12px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(71, 85, 105, 0.4);
     backdrop-filter: blur(4px);
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(71, 85, 105, 0.6);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -239,7 +342,7 @@
 .hero-pagination-bullet-active {
     width: 40px;
     border-radius: 20px;
-    background: rgba(249, 115, 22, 0.3);
+    background: rgba(249, 115, 22, 0.5);
     border-color: transparent;
 }
 
@@ -286,7 +389,7 @@
 
 /* Slide 1 - Teslimat (Gray) */
 .slide-1-bg {
-    background: linear-gradient(to bottom, #e0f2fe 0%, #bae6fd 30%, #7dd3fc 50%, rgba(125, 211, 252, 0.4) 75%, transparent 100%);
+    background: linear-gradient(to bottom, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 50%, rgba(203, 213, 225, 0.4) 75%, transparent 100%);
 }
 
 .dark .slide-1-bg {
@@ -295,7 +398,7 @@
 
 /* Slide 2 - HELI (Koyu Bordo) */
 .slide-2-bg {
-    background: linear-gradient(to bottom, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 50%, rgba(203, 213, 225, 0.4) 75%, transparent 100%);
+    background: linear-gradient(to bottom, #fff5f7 0%, #ffe4e6 30%, #fecdd3 50%, rgba(254, 205, 211, 0.3) 75%, transparent 100%);
 }
 
 .dark .slide-2-bg {
@@ -304,7 +407,7 @@
 
 /* Slide 3 - EP (Koyu Yeşil) */
 .slide-3-bg {
-    background: linear-gradient(to bottom, #ffedd5 0%, #fed7aa 30%, #fdba74 50%, rgba(253, 186, 116, 0.4) 75%, transparent 100%);
+    background: linear-gradient(to bottom, #f0fdf4 0%, #dcfce7 30%, #bbf7d0 50%, rgba(187, 247, 208, 0.3) 75%, transparent 100%);
 }
 
 .dark .slide-3-bg {
@@ -313,9 +416,54 @@
 
 /* Slide 4 - İstif Pazarı (Koyu Lacivert) */
 .slide-4-bg {
-    background: linear-gradient(to bottom, #cffafe 0%, #a5f3fc 30%, #67e8f9 50%, rgba(103, 232, 249, 0.4) 75%, transparent 100%);
+    background: linear-gradient(to bottom, #dbeafe 0%, #bfdbfe 30%, #93c5fd 50%, rgba(147, 197, 253, 0.4) 75%, transparent 100%);
 }
 
 .dark .slide-4-bg {
     background: linear-gradient(to bottom, #1e3a8a 0%, #1e40af 30%, #1d4ed8 50%, rgba(29, 78, 216, 0.5) 75%, transparent 100%);
+}
+
+/* ========================================== */
+/* Homepage Slider Button Dark Mode Fix */
+/* ========================================== */
+
+/* Slide 1 (Teslimat) - Slate/Gray Dark Mode Buttons */
+.dark .dark\:bg-slate-700 {
+    background-color: rgb(51 65 85) !important;
+}
+
+.dark .dark\:hover\:bg-slate-800:hover {
+    background-color: rgb(30 41 59) !important;
+}
+
+/* Slide 2 (HELI) - Red Dark Mode Buttons */
+.dark .dark\:bg-red-700 {
+    background-color: rgb(185 28 28) !important;
+}
+
+.dark .dark\:hover\:bg-red-800:hover {
+    background-color: rgb(153 27 27) !important;
+}
+
+/* Slide 3 (EP) - Green Dark Mode Buttons */
+.dark .dark\:bg-green-700 {
+    background-color: rgb(21 128 61) !important;
+}
+
+.dark .dark\:hover\:bg-green-800:hover {
+    background-color: rgb(22 101 52) !important;
+}
+
+/* Slide 4 (İstif Pazarı) - Blue Dark Mode Buttons */
+.dark .dark\:bg-blue-700 {
+    background-color: rgb(29 78 216) !important;
+}
+
+.dark .dark\:hover\:bg-blue-800:hover {
+    background-color: rgb(30 64 175) !important;
+}
+
+/* Dark mode text color for buttons */
+.dark .dark\:text-white {
+    color: rgb(255 255 255) !important;
 }

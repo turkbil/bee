@@ -164,6 +164,13 @@
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </select>
+
+                        <!-- Yeni Şarkı Ekle -->
+                        @hasmoduleaccess('muzibu', 'create')
+                        <a href="{{ route('admin.muzibu.song.manage') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>{{ __('muzibu::admin.add_song') }}
+                        </a>
+                        @endhasmoduleaccess
                     </div>
                 </div>
             </div>
@@ -173,23 +180,24 @@
                 <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                     <thead>
                         <tr>
-                            <th style="width: 50px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input type="checkbox"
-                                           wire:model.live="selectAll"
-                                           class="form-check-input"
-                                           id="selectAllCheckbox"
-                                           x-data="{
-                                               indeterminate: {{ count($selectedItems ?? []) > 0 && !($selectAll ?? false) ? 'true' : 'false' }}
-                                           }"
-                                           x-init="$el.indeterminate = indeterminate"
-                                           x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ ($selectAll ?? false) ? 'true' : 'false' }})"
-                                           @checked($selectAll ?? false)>
-                                    <button
-                                        class="table-sort {{ ($sortField ?? '') === 'song_id' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
-                                        wire:click="sortBy('song_id')">
-                                    </button>
-                                </div>
+                            <th class="text-center" style="width: 50px">
+                                <input type="checkbox"
+                                       wire:model.live="selectAll"
+                                       class="form-check-input"
+                                       id="selectAllCheckbox"
+                                       x-data="{
+                                           indeterminate: {{ count($selectedItems ?? []) > 0 && !($selectAll ?? false) ? 'true' : 'false' }}
+                                       }"
+                                       x-init="$el.indeterminate = indeterminate"
+                                       x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ ($selectAll ?? false) ? 'true' : 'false' }})"
+                                       @checked($selectAll ?? false)>
+                            </th>
+                            <th class="text-center" style="width: 60px">
+                                <button
+                                    class="table-sort {{ ($sortField ?? '') === 'song_id' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
+                                    wire:click="sortBy('song_id')">
+                                    ID
+                                </button>
                             </th>
                             <th style="min-width: 200px">
                                 <button
@@ -221,18 +229,18 @@
                     <tbody class="table-tbody">
                         @forelse($songs as $song)
                             <tr class="hover-trigger" wire:key="row-{{ $song->song_id }}">
-                                <td class="sort-id small">
-                                    <div class="hover-toggle">
-                                        <span class="hover-hide">{{ $song->song_id }}</span>
-                                        <input type="checkbox"
-                                               wire:model.live="selectedItems"
-                                               value="{{ $song->song_id }}"
-                                               class="form-check-input hover-show"
-                                               id="checkbox-{{ $song->song_id }}"
-                                               @checked(in_array($song->song_id, $selectedItems))>
-                                    </div>
+                                <td class="text-center">
+                                    <input type="checkbox"
+                                           wire:model.live="selectedItems"
+                                           value="{{ $song->song_id }}"
+                                           class="form-check-input"
+                                           id="checkbox-{{ $song->song_id }}"
+                                           @checked(in_array($song->song_id, $selectedItems))>
                                 </td>
-                                <td wire:key="title-{{ $song->song_id }}" class="position-relative">
+                                <td class="text-center small text-muted">
+                                    {{ $song->song_id }}
+                                </td>
+                                <td wire:key="title-{{ $song->song_id }}">
                                     @if ($editingTitleId === $song->song_id)
                                         <div class="d-flex align-items-center gap-3" x-data
                                             @click.outside="$wire.updateTitleInline()">
@@ -389,7 +397,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ $detailedView ? 9 : 5 }}" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 10 : 6 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.song.no_songs_found') }}</p>
                                         <p class="empty-subtitle">

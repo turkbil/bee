@@ -108,6 +108,13 @@
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </select>
+
+                        <!-- Yeni Albüm Ekle -->
+                        @hasmoduleaccess('muzibu', 'create')
+                        <a href="{{ route('admin.muzibu.album.manage') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>{{ __('muzibu::admin.add_album') }}
+                        </a>
+                        @endhasmoduleaccess
                     </div>
                 </div>
             </div>
@@ -116,23 +123,24 @@
                 <table class="table table-vcenter card-table table-hover text-nowrap datatable">
                     <thead>
                         <tr>
-                            <th style="width: 50px">
-                                <div class="d-flex align-items-center gap-2">
-                                    <input type="checkbox"
-                                           wire:model.live="selectAll"
-                                           class="form-check-input"
-                                           id="selectAllCheckbox"
-                                           x-data="{
-                                               indeterminate: {{ count($selectedItems ?? []) > 0 && !($selectAll ?? false) ? 'true' : 'false' }}
-                                           }"
-                                           x-init="$el.indeterminate = indeterminate"
-                                           x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ ($selectAll ?? false) ? 'true' : 'false' }})"
-                                           @checked($selectAll ?? false)>
-                                    <button
-                                        class="table-sort {{ ($sortField ?? '') === 'album_id' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
-                                        wire:click="sortBy('album_id')">
-                                    </button>
-                                </div>
+                            <th class="text-center" style="width: 50px">
+                                <input type="checkbox"
+                                       wire:model.live="selectAll"
+                                       class="form-check-input"
+                                       id="selectAllCheckbox"
+                                       x-data="{
+                                           indeterminate: {{ count($selectedItems ?? []) > 0 && !($selectAll ?? false) ? 'true' : 'false' }}
+                                       }"
+                                       x-init="$el.indeterminate = indeterminate"
+                                       x-effect="$el.indeterminate = ({{ count($selectedItems ?? []) }} > 0 && !{{ ($selectAll ?? false) ? 'true' : 'false' }})"
+                                       @checked($selectAll ?? false)>
+                            </th>
+                            <th class="text-center" style="width: 60px">
+                                <button
+                                    class="table-sort {{ ($sortField ?? '') === 'album_id' ? (($sortDirection ?? 'desc') === 'asc' ? 'asc' : 'desc') : '' }}"
+                                    wire:click="sortBy('album_id')">
+                                    ID
+                                </button>
                             </th>
                             <th style="min-width: 200px">
                                 <button
@@ -156,18 +164,18 @@
                     <tbody class="table-tbody">
                         @forelse($albums as $album)
                             <tr class="hover-trigger" wire:key="row-{{ $album->album_id }}">
-                                <td class="sort-id small">
-                                    <div class="hover-toggle">
-                                        <span class="hover-hide">{{ $album->album_id }}</span>
-                                        <input type="checkbox"
-                                               wire:model.live="selectedItems"
-                                               value="{{ $album->album_id }}"
-                                               class="form-check-input hover-show"
-                                               id="checkbox-{{ $album->album_id }}"
-                                               @checked(in_array($album->album_id, $selectedItems))>
-                                    </div>
+                                <td class="text-center">
+                                    <input type="checkbox"
+                                           wire:model.live="selectedItems"
+                                           value="{{ $album->album_id }}"
+                                           class="form-check-input"
+                                           id="checkbox-{{ $album->album_id }}"
+                                           @checked(in_array($album->album_id, $selectedItems))>
                                 </td>
-                                <td wire:key="title-{{ $album->album_id }}" class="position-relative">
+                                <td class="text-center small text-muted">
+                                    {{ $album->album_id }}
+                                </td>
+                                <td wire:key="title-{{ $album->album_id }}">
                                     @if ($editingTitleId === $album->album_id)
                                         <div class="d-flex align-items-center gap-3" x-data
                                             @click.outside="$wire.updateTitleInline()">
@@ -298,7 +306,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ $detailedView ? 8 : 6 }}" class="text-center py-4">
+                                <td colspan="{{ $detailedView ? 9 : 7 }}" class="text-center py-4">
                                     <div class="empty">
                                         <p class="empty-title">{{ __('muzibu::admin.album.no_albums_found') }}</p>
                                         <p class="empty-subtitle">

@@ -31,6 +31,26 @@ module.exports = {
 
         // Badge Animation
         'bg-[length:200%_100%]', 'animate-gradient',
+
+        // Homepage Slider Button Dark Mode Colors
+        // Slide 1 (Teslimat) - Slate/Gray
+        'dark:bg-slate-700', 'dark:bg-slate-800',
+        'dark:hover:bg-slate-700', 'dark:hover:bg-slate-800',
+
+        // Slide 2 (HELI) - Red
+        'dark:bg-red-700', 'dark:bg-red-800',
+        'dark:hover:bg-red-700', 'dark:hover:bg-red-800',
+
+        // Slide 3 (EP) - Green
+        'dark:bg-green-700', 'dark:bg-green-800',
+        'dark:hover:bg-green-700', 'dark:hover:bg-green-800',
+
+        // Slide 4 (İstif Pazarı) - Blue
+        'dark:bg-blue-700', 'dark:bg-blue-800',
+        'dark:hover:bg-blue-700', 'dark:hover:bg-blue-800',
+
+        // Text colors for dark mode
+        'dark:text-white',
     ],
 
     theme: {

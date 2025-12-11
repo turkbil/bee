@@ -399,19 +399,27 @@ class AlbumManageComponent extends Component implements AIContentGeneratable
         if ($isNewRecord && isset($album)) {
             $this->dispatch('album-saved', $album->album_id);
 
-            session()->flash('toast', $toast);
-            return redirect()->route('admin.muzibu.album.manage', ['id' => $album->album_id]);
+            if ($resetForm) {
+                // Kaydet ve Yeni Ekle: Formu resetle, aynı sayfada kal
+                $this->albumId = null;
+                $this->reset(['inputs', 'multiLangInputs']);
+                $this->inputs = ['is_active' => true];
+                $this->currentLanguage = get_tenant_default_locale();
+                $this->initializeEmptyInputs();
+
+                Log::info('✅ Form resetlendi - Yeni kayıt için hazır', [
+                    'previous_album_id' => $album->album_id
+                ]);
+            } else {
+                // Normal kaydet: Düzenleme sayfasına yönlendir
+                session()->flash('toast', $toast);
+                return redirect()->route('admin.muzibu.album.manage', ['id' => $album->album_id]);
+            }
         }
 
         Log::info('✅ Save method başarıyla tamamlandı', [
             'albumId' => $this->albumId
         ]);
-
-        if ($resetForm && !$this->albumId) {
-            $this->reset();
-            $this->currentLanguage = get_tenant_default_locale();
-            $this->initializeEmptyInputs();
-        }
     }
 
     public function render()

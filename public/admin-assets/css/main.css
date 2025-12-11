@@ -42,11 +42,11 @@
 }
 
 .hover-toggle .hover-hide {
-    display: inline;
+    display: inline-block;
 }
 
 tr.hover-trigger:hover .hover-toggle .hover-show {
-    display: inline;
+    display: inline-block;
 }
 
 tr.hover-trigger:hover .hover-toggle .hover-hide {
@@ -54,7 +54,7 @@ tr.hover-trigger:hover .hover-toggle .hover-hide {
 }
 
 tr:has(.form-check-input:checked) .hover-toggle .hover-show {
-    display: inline;
+    display: inline-block;
 }
 
 tr:has(.form-check-input:checked) .hover-toggle .hover-hide {
@@ -208,11 +208,11 @@ form .ts-control .item {
 }
 
 .hover-toggle .hover-hide {
-    display: inline;
+    display: inline-block;
 }
 
 tr.hover-trigger:hover .hover-toggle .hover-show {
-    display: inline;
+    display: inline-block;
 }
 
 tr.hover-trigger:hover .hover-toggle .hover-hide {
@@ -220,7 +220,7 @@ tr.hover-trigger:hover .hover-toggle .hover-hide {
 }
 
 tr:has(.form-check-input:checked) .hover-toggle .hover-show {
-    display: inline;
+    display: inline-block;
 }
 
 tr:has(.form-check-input:checked) .hover-toggle .hover-hide {

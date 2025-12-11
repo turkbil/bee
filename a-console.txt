@@ -1,0 +1,46 @@
+monaco-editor-universal.js?v=1765482408:31 🎯 Monaco Editor Universal System başlatılıyor...
+monaco-editor-universal.js?v=1765482408:352 ✅ Monaco Editor Universal System hazır!
+universal-seo-functions.js?v=1765482408:21 🎯 Universal SEO Functions başlatılıyor...
+universal-seo-functions.js?v=1765482408:372 ✅ Universal SEO Functions yüklendi!
+universal-language-functions.js?v=1765482408:21 🎯 Universal Language Functions başlatılıyor...
+universal-language-functions.js?v=1765482408:145 ✅ Universal Language Functions yüklendi!
+universal-ai-content-functions.js?v=1765482408:21 🎯 Universal AI Content Functions başlatılıyor...
+universal-ai-content-functions.js?v=1765482408:146 ✅ Universal AI Content Functions yüklendi!
+VM968:3 🔄 [FOOTER] Alpine state changed - isMediaUploading: false
+universal-seo-functions.js?v=1765482408:336 ✅ Universal SEO event listeners kuruldu
+universal-language-functions.js?v=1765482408:129 ✅ Universal Language event listeners kuruldu
+manage.js?v=1765482408:115 🔧 Language switching sistemi kuruluyor...
+manage.js?v=1765482408:118 🔍 Bulunan language button sayısı: 0
+manage.js?v=1765482408:443 🔎 RESTORE KONTROL - sayfa başladı
+manage.js?v=1765482408:444 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
+manage.js?v=1765482408:461 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
+manage.js?v=1765482408:1342 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
+manage.js?v=1765482408:1347 🔍 Bulunan seo-no-enter input sayısı: 0
+manage.js?v=1765482408:1407 ✅ 0 SEO input için Enter tuşu engelleme aktif
+manage.js?v=1765482408:662 ℹ️ Language switch buttons bulunamadı - tek dil sistemi aktif
+manage.js?v=1765482408:682 🔧 Tek dil modu aktif - tüm language-content elementleri görünür yapılıyor
+manage.js?v=1765482408:700 ✅ Tek dil modu kurulumu tamamlandı
+monaco-editor-universal.js?v=1765482408:62 ✅ Monaco loader yüklendi
+manage.js?v=1765482408:1469 ✅ Dil değiştirildi: tr
+manage.js?v=1765482408:106 🎯 İlk yükleme - dil içeriği ayarlandı: tr
+7:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+7:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+7:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
+monaco-editor-universal.js?v=1765482408:128 ✅ Monaco Editor hazır
+manage.js?v=1765482408:1295 🌍 Slug Normalization - Dinamik diller tespit edildi: Array(0)
+manage.js?v=1765482408:586 🌍 SEO Counter - Dinamik diller tespit edildi: Array(0)
+manage.js?v=1765482408:877 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
+manage.js?v=1765482408:882 ✅ MANAGE.JS: Loading bar zorla gizlendi
+VM971:3 🖱️ [BUTTON] Clicked! isMediaUploading: false
+manage.js?v=1765482408:371 💾 Save button tıklandı
+manage.js?v=1765482408:383 🔍🔍 AKTİF DİL TESPİTİ:
+manage.js?v=1765482408:384   - .text-primary button: null
+manage.js?v=1765482408:385   - Bulunan dil: tr
+manage.js?v=1765482408:386   - window.currentLanguage: tr
+manage.js?v=1765482408:390 🔍 Tüm dil button'ları:
+manage.js?v=1765482408:417 🎯 Kaydet ve Devam Et - GEÇİCİ state korunacak
+manage.js?v=1765482408:418   - Aktif dil: tr
+manage.js?v=1765482408:419   - Aktif tab: null
+manage.js?v=1765482408:425 ✅ Geçici state window object'e kaydedildi
+manage.js?v=1765482408:426 📋 KURAL: Sayfa tamamen yenilenirse bu veriler kaybolacak
+manage.js?v=1765482408:376 ✅ Save debounce reset edildi

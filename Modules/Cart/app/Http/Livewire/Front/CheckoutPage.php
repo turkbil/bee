@@ -66,6 +66,7 @@ class CheckoutPage extends Component
     public $shipping_delivery_notes = '';
 
     // Yeni Adres Formu (Shipping - inline)
+    public $edit_address_id = null; // Edit mode için address ID
     public $new_address_title = '';
     public $new_address_phone = '';
     public $new_address_line = '';
@@ -74,6 +75,7 @@ class CheckoutPage extends Component
     public $new_address_postal = '';
 
     // Yeni Adres Formu (Billing - inline)
+    public $edit_billing_address_id = null; // Edit mode için address ID
     public $new_billing_address_title = '';
     public $new_billing_address_phone = '';
     public $new_billing_address_line = '';
@@ -169,6 +171,27 @@ class CheckoutPage extends Component
                 // Checkbox true → Fatura adresini teslimat adresi yap
                 $this->billing_address_id = $this->shipping_address_id;
             }
+        }
+
+        // 🔵 Seçilen fatura profili varsayılan olarak kaydet
+        if ($propertyName === 'billing_profile_id' && $this->billing_profile_id && auth()->check()) {
+            BillingProfile::where('user_id', auth()->id())->update(['is_default' => false]);
+            BillingProfile::where('billing_profile_id', $this->billing_profile_id)->update(['is_default' => true]);
+            \Log::info('✅ Default billing profile updated', ['profile_id' => $this->billing_profile_id]);
+        }
+
+        // 🔵 Seçilen teslimat adresi varsayılan olarak kaydet
+        if ($propertyName === 'shipping_address_id' && $this->shipping_address_id && auth()->check()) {
+            Address::where('user_id', auth()->id())->update(['is_default_shipping' => false]);
+            Address::where('address_id', $this->shipping_address_id)->update(['is_default_shipping' => true]);
+            \Log::info('✅ Default shipping address updated', ['address_id' => $this->shipping_address_id]);
+        }
+
+        // 🔵 Seçilen fatura adresi varsayılan olarak kaydet
+        if ($propertyName === 'billing_address_id' && $this->billing_address_id && auth()->check()) {
+            Address::where('user_id', auth()->id())->update(['is_default_billing' => false]);
+            Address::where('address_id', $this->billing_address_id)->update(['is_default_billing' => true]);
+            \Log::info('✅ Default billing address updated', ['address_id' => $this->billing_address_id]);
         }
 
         // Ödeme yöntemi veya taksit değişirse komisyon hesapla
@@ -613,6 +636,54 @@ class CheckoutPage extends Component
     }
 
     /**
+     * Adresi düzenle (form verilerini yükle)
+     */
+    public function editAddress($addressId, $type = 'shipping')
+    {
+        $address = Address::where('address_id', $addressId)
+            ->where('user_id', $this->customerId)
+            ->first();
+
+        if (!$address) {
+            session()->flash('error', 'Adres bulunamadı.');
+            return;
+        }
+
+        if ($type === 'shipping') {
+            // Teslimat adresi düzenleme - form verilerini yükle
+            $this->edit_address_id = $address->address_id;
+            $this->new_address_title = $address->title;
+            $this->new_address_phone = $address->phone ?? '';
+            $this->new_address_line = $address->address_line_1;
+            $this->new_address_city = $address->city;
+            $this->new_address_postal = $address->postal_code ?? '';
+
+            // İlçeleri yükle
+            $this->districts = $this->getDistrictsByCity($address->city);
+            $this->new_address_district = $address->district;
+
+            \Log::info('📝 Editing shipping address', ['address_id' => $addressId]);
+        } else {
+            // Fatura adresi düzenleme - form verilerini yükle
+            $this->edit_billing_address_id = $address->address_id;
+            $this->new_billing_address_title = $address->title;
+            $this->new_billing_address_phone = $address->phone ?? '';
+            $this->new_billing_address_line = $address->address_line_1;
+            $this->new_billing_address_city = $address->city;
+            $this->new_billing_address_postal = $address->postal_code ?? '';
+
+            // İlçeleri yükle
+            $this->billingDistricts = $this->getDistrictsByCity($address->city);
+            $this->new_billing_address_district = $address->district;
+
+            \Log::info('📝 Editing billing address', ['address_id' => $addressId]);
+        }
+
+        // Edit modunu aktif et (Alpine için flag)
+        $this->dispatch('address-edit-mode', addressId: $addressId, type: $type);
+    }
+
+    /**
      * İl seçilince ilçeleri yükle (Teslimat)
      */
     public function loadShippingDistricts()
@@ -683,20 +754,49 @@ class CheckoutPage extends Component
                 'new_address_district.required' => 'İlçe zorunludur',
             ]);
 
-            $address = Address::create([
-                'user_id' => auth()->id(),
-                'title' => $this->new_address_title,
-                'first_name' => $this->contact_first_name ?? '',
-                'last_name' => $this->contact_last_name ?? '',
-                'phone' => $this->new_address_phone ?? $this->contact_phone ?? '',
-                'address_line_1' => $this->new_address_line,
-                'city' => $this->new_address_city,
-                'district' => $this->new_address_district,
-                'postal_code' => $this->new_address_postal,
-                'address_type' => 'both',
-                'is_default_shipping' => Address::where('user_id', auth()->id())->count() === 0,
-                'is_default_billing' => Address::where('user_id', auth()->id())->count() === 0,
-            ]);
+            // Edit mode mu, yoksa yeni kayıt mı?
+            if ($this->edit_address_id) {
+                // UPDATE - Mevcut adresi güncelle
+                $address = Address::where('address_id', $this->edit_address_id)
+                    ->where('user_id', auth()->id())
+                    ->first();
+
+                if (!$address) {
+                    session()->flash('error', 'Adres bulunamadı.');
+                    return;
+                }
+
+                $address->update([
+                    'title' => $this->new_address_title,
+                    'phone' => $this->new_address_phone ?? $this->contact_phone ?? '',
+                    'address_line_1' => $this->new_address_line,
+                    'city' => $this->new_address_city,
+                    'district' => $this->new_address_district,
+                    'postal_code' => $this->new_address_postal,
+                ]);
+
+                session()->flash('success', 'Adres başarıyla güncellendi!');
+                \Log::info('✅ Address updated', ['address_id' => $address->address_id]);
+            } else {
+                // CREATE - Yeni adres oluştur
+                $address = Address::create([
+                    'user_id' => auth()->id(),
+                    'title' => $this->new_address_title,
+                    'first_name' => $this->contact_first_name ?? '',
+                    'last_name' => $this->contact_last_name ?? '',
+                    'phone' => $this->new_address_phone ?? $this->contact_phone ?? '',
+                    'address_line_1' => $this->new_address_line,
+                    'city' => $this->new_address_city,
+                    'district' => $this->new_address_district,
+                    'postal_code' => $this->new_address_postal,
+                    'address_type' => 'both',
+                    'is_default_shipping' => Address::where('user_id', auth()->id())->count() === 0,
+                    'is_default_billing' => Address::where('user_id', auth()->id())->count() === 0,
+                ]);
+
+                session()->flash('success', 'Adres başarıyla kaydedildi!');
+                \Log::info('✅ New address created', ['address_id' => $address->address_id]);
+            }
 
             $this->shipping_address_id = $address->address_id;
 
@@ -706,12 +806,10 @@ class CheckoutPage extends Component
             }
 
             // Form temizle
-            $this->reset(['new_address_title', 'new_address_phone', 'new_address_line', 'new_address_city', 'new_address_district', 'new_address_postal']);
+            $this->reset(['edit_address_id', 'new_address_title', 'new_address_phone', 'new_address_line', 'new_address_city', 'new_address_district', 'new_address_postal']);
 
             // Alpine'a formu kapat sinyali gönder
             $this->dispatch('address-saved', type: 'shipping', addressId: $address->address_id);
-
-            session()->flash('success', 'Adres başarıyla kaydedildi!');
 
         } else {
             // Billing address
@@ -727,29 +825,56 @@ class CheckoutPage extends Component
                 'new_billing_address_district.required' => 'İlçe zorunludur',
             ]);
 
-            $address = Address::create([
-                'user_id' => auth()->id(),
-                'title' => $this->new_billing_address_title,
-                'first_name' => $this->contact_first_name ?? '',
-                'last_name' => $this->contact_last_name ?? '',
-                'phone' => $this->new_billing_address_phone ?? $this->contact_phone ?? '',
-                'address_line_1' => $this->new_billing_address_line,
-                'city' => $this->new_billing_address_city,
-                'district' => $this->new_billing_address_district,
-                'postal_code' => $this->new_billing_address_postal,
-                'address_type' => 'both',
-                'is_default_billing' => Address::where('user_id', auth()->id())->count() === 0,
-            ]);
+            // Edit mode mu, yoksa yeni kayıt mı?
+            if ($this->edit_billing_address_id) {
+                // UPDATE - Mevcut adresi güncelle
+                $address = Address::where('address_id', $this->edit_billing_address_id)
+                    ->where('user_id', auth()->id())
+                    ->first();
+
+                if (!$address) {
+                    session()->flash('error', 'Adres bulunamadı.');
+                    return;
+                }
+
+                $address->update([
+                    'title' => $this->new_billing_address_title,
+                    'phone' => $this->new_billing_address_phone ?? $this->contact_phone ?? '',
+                    'address_line_1' => $this->new_billing_address_line,
+                    'city' => $this->new_billing_address_city,
+                    'district' => $this->new_billing_address_district,
+                    'postal_code' => $this->new_billing_address_postal,
+                ]);
+
+                session()->flash('success', 'Fatura adresi başarıyla güncellendi!');
+                \Log::info('✅ Billing address updated', ['address_id' => $address->address_id]);
+            } else {
+                // CREATE - Yeni adres oluştur
+                $address = Address::create([
+                    'user_id' => auth()->id(),
+                    'title' => $this->new_billing_address_title,
+                    'first_name' => $this->contact_first_name ?? '',
+                    'last_name' => $this->contact_last_name ?? '',
+                    'phone' => $this->new_billing_address_phone ?? $this->contact_phone ?? '',
+                    'address_line_1' => $this->new_billing_address_line,
+                    'city' => $this->new_billing_address_city,
+                    'district' => $this->new_billing_address_district,
+                    'postal_code' => $this->new_billing_address_postal,
+                    'address_type' => 'both',
+                    'is_default_billing' => Address::where('user_id', auth()->id())->count() === 0,
+                ]);
+
+                session()->flash('success', 'Fatura adresi başarıyla kaydedildi!');
+                \Log::info('✅ New billing address created', ['address_id' => $address->address_id]);
+            }
 
             $this->billing_address_id = $address->address_id;
 
             // Form temizle
-            $this->reset(['new_billing_address_title', 'new_billing_address_phone', 'new_billing_address_line', 'new_billing_address_city', 'new_billing_address_district', 'new_billing_address_postal']);
+            $this->reset(['edit_billing_address_id', 'new_billing_address_title', 'new_billing_address_phone', 'new_billing_address_line', 'new_billing_address_city', 'new_billing_address_district', 'new_billing_address_postal']);
 
             // Alpine'a formu kapat sinyali gönder
             $this->dispatch('address-saved', type: 'billing', addressId: $address->address_id);
-
-            session()->flash('success', 'Fatura adresi başarıyla kaydedildi!');
         }
     }
 

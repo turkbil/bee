@@ -10,7 +10,7 @@
  * @date 2025-12-10
  */
 
-const CACHE_VERSION = 'v1.0.2';
+const CACHE_VERSION = 'v1.0.4'; // Fixed: HLS fetch error handling
 const CACHE_NAME = `pwa-cache-${CACHE_VERSION}`;
 
 // Assets to cache (minimal - only critical)
@@ -70,6 +70,28 @@ self.addEventListener('fetch', (event) => {
 
     // Skip external requests
     if (!event.request.url.startsWith(self.location.origin)) {
+        return;
+    }
+
+    // 🎵 NEVER cache HLS/API streaming requests (they must be fresh!)
+    const url = event.request.url;
+    const shouldNotCache =
+        url.includes('/stream/') ||
+        url.includes('/api/muzibu/songs/') ||
+        url.includes('.m3u8') ||
+        url.includes('.ts') ||
+        url.includes('/key');
+
+    if (shouldNotCache) {
+        // Network only - bypass cache completely, but still need Promise
+        event.respondWith(
+            fetch(event.request)
+                .then(response => response)
+                .catch(error => {
+                    console.error('[SW] HLS fetch error:', error);
+                    throw error;
+                })
+        );
         return;
     }
 

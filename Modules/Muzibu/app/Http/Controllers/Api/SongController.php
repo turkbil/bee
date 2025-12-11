@@ -326,37 +326,50 @@ class SongController extends Controller
     public function serveEncryptionKey(int $id)
     {
         try {
-            // 🔒 FIXED: Use Eloquent (tenant-aware)
-            $song = Song::where('song_id', $id)
-                ->where('is_active', 1)
-                ->first();
+            // 🚀 PERFORMANCE: Cache encryption key (key never changes)
+            $tenantId = tenant() ? tenant()->id : 'central';
+            $cacheKey = "song_encryption_key_{$tenantId}_{$id}";
 
-            if (!$song || !$song->encryption_key) {
-                \Log::error('Encryption key not found', [
-                    'song_id' => $id,
-                    'has_song' => !is_null($song),
-                    'has_key' => $song ? !is_null($song->encryption_key) : false
-                ]);
+            // Cache for 24 hours (key is immutable)
+            $keyBinary = \Cache::remember($cacheKey, 86400, function() use ($id) {
+                // 🔒 FIXED: Use Eloquent (tenant-aware)
+                $song = Song::where('song_id', $id)
+                    ->where('is_active', 1)
+                    ->first();
+
+                if (!$song || !$song->encryption_key) {
+                    \Log::error('Encryption key not found', [
+                        'song_id' => $id,
+                        'has_song' => !is_null($song),
+                        'has_key' => $song ? !is_null($song->encryption_key) : false
+                    ]);
+                    return null; // Cache miss, will abort below
+                }
+
+                // Convert hex key to binary
+                $keyBinary = hex2bin($song->encryption_key);
+
+                if ($keyBinary === false) {
+                    \Log::error('Invalid encryption key format', [
+                        'song_id' => $id
+                    ]);
+                    return null;
+                }
+
+                return $keyBinary;
+            });
+
+            // Check cache result
+            if ($keyBinary === null) {
                 abort(404, 'Encryption key not found');
-            }
-
-            // Convert hex key to binary
-            $keyBinary = hex2bin($song->encryption_key);
-
-            if ($keyBinary === false) {
-                \Log::error('Invalid encryption key format', [
-                    'song_id' => $id
-                ]);
-                abort(500, 'Invalid key format');
             }
 
             // Return binary key with proper headers
             return response($keyBinary, 200, [
                 'Content-Type' => 'application/octet-stream',
                 'Content-Length' => strlen($keyBinary),
-                'Cache-Control' => 'no-cache, no-store, must-revalidate',
-                'Pragma' => 'no-cache',
-                'Expires' => '0',
+                'Cache-Control' => 'public, max-age=86400', // Browser cache 24h
+                'Expires' => gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT',
             ]);
 
         } catch (\Exception $e) {

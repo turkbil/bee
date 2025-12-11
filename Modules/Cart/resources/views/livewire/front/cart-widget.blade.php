@@ -198,10 +198,19 @@
                         </span>
                     </div>
 
-                    <a href="{{ route('cart.index') }}"
-                       class="block w-full py-2 px-4 bg-primary-600 hover:bg-primary-700 text-white text-center rounded-lg font-medium transition-colors">
-                        {{ __('cart::front.view_cart') }}
-                    </a>
+                    {{-- Action Buttons - 2 Buton Yan Yana --}}
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="{{ route('cart.index') }}"
+                           class="py-2 px-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-center rounded-lg font-medium text-sm transition-colors">
+                            <i class="fas fa-shopping-cart mr-1"></i>
+                            Sepet
+                        </a>
+                        <a href="{{ route('cart.checkout') }}"
+                           class="py-2 px-3 bg-primary-600 hover:bg-primary-700 text-white text-center rounded-lg font-medium text-sm transition-colors">
+                            <i class="fas fa-credit-card mr-1"></i>
+                            Ödeme
+                        </a>
+                    </div>
                 </div>
             @endif
         </div>
@@ -235,14 +244,15 @@
             }
         }
 
-        // 🔄 LOGIN SONRASI CART MERGE - localStorage güncelle
+        // 🔄 LOGIN SONRASI CART MERGE - localStorage güncelle + Sayfa Yenile
         if (cartMergeCompleted && mergedCartId) {
             console.log('🔀 Cart Merge Detected! Updating localStorage with new cart_id:', mergedCartId);
             localStorage.setItem('cart_id', mergedCartId);
 
-            // Widget'ı yeni cart ile yükle
-            $wire.refreshCartById(mergedCartId);
-            console.log('✅ Cart widget refreshed with merged cart');
+            // 🔄 SAYFA YENİLE - Login sonrası CSRF token ve Livewire state'i yenilenir
+            console.log('🔄 Refreshing page to sync CSRF token and cart...');
+            window.location.reload();
+            return; // Reload başladı, script'in kalanını çalıştırma
         } else if (!serverCartId) {
             // Guest kullanıcı - localStorage'dan cart_id ile yükle
             const initCartId = localStorage.getItem('cart_id');

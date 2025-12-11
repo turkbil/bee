@@ -112,6 +112,10 @@ Route::middleware([InitializeTenancy::class])
         Route::match(['get', 'options'], '/stream/key/{songHash}', [\App\Http\Controllers\Streaming\MuzikStreamController::class, 'getEncryptionKey'])
             ->name('stream.key');
 
+        // Encryption key endpoint - API format (used in HLS playlists)
+        Route::match(['get', 'options'], '/api/muzibu/songs/{songHash}/key', [\App\Http\Controllers\Streaming\MuzikStreamController::class, 'getEncryptionKey'])
+            ->name('api.muzibu.songs.encryption-key');
+
         // HLS playlist ve chunk'lar (GET + OPTIONS for CORS)
         Route::match(['get', 'options'], '/stream/play/{songHash}/{filename}', [\App\Http\Controllers\Streaming\MuzikStreamController::class, 'streamFile'])
             ->where('filename', '.*')

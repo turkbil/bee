@@ -288,7 +288,7 @@ class HLSService
         // Fallback: Manuel tenant path ile dene
         $tenant = tenant();
         if ($tenant) {
-            $manualPath = storage_path('tenant' . $tenant->id . '/app/public/' . $relativePath);
+            $manualPath = storage_path('../tenant' . $tenant->id . '/app/public/' . $relativePath);
             if (file_exists($manualPath)) {
                 return file_get_contents($manualPath);
             }

@@ -164,6 +164,11 @@ class ConvertToHLSJob implements ShouldQueue
             try {
                 $cacheService = app(\Modules\Muzibu\App\Services\MuzibuCacheService::class);
                 $cacheService->invalidateSong($song->song_id);
+
+                // Also clear song list cache to update is_hls status immediately
+                $songService = app(\Modules\Muzibu\App\Services\SongService::class);
+                $songService->clearCache();
+
                 Log::info('Muzibu HLS Conversion: Cache invalidated', ['song_id' => $song->song_id]);
             } catch (\Exception $cacheException) {
                 // Log but don't fail the job if cache invalidation fails

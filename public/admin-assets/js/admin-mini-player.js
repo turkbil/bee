@@ -134,6 +134,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             console.log('✅ [ADMIN PLAYER] HLS is supported, creating player');
+            console.log('🔍 [DEBUG] HLS URL:', url);
 
             // Create video element for HLS (Audio element causes chunk loading issues)
             this.audioElement = document.createElement('video');
@@ -141,13 +142,19 @@ document.addEventListener('alpine:init', () => {
             this.audioElement.style.display = 'none'; // Hidden video for audio playback
             document.body.appendChild(this.audioElement);
 
-            // HLS config - disable worker to avoid CSP issues in admin panel
+            // HLS config - Disable worker to avoid CSP/postMessage issues in admin
+            console.log('🔍 [DEBUG] Creating HLS instance...');
             this.hls = new Hls({
-                enableWorker: false
+                enableWorker: false,
+                debug: false
             });
+            console.log('🔍 [DEBUG] HLS instance created (worker disabled)');
 
+            console.log('🔍 [DEBUG] Loading source:', url);
             this.hls.loadSource(url);
+            console.log('🔍 [DEBUG] Attaching media...');
             this.hls.attachMedia(this.audioElement);
+            console.log('🔍 [DEBUG] Media attached');
 
             // Start playing when manifest is parsed - faster start
             this.hls.on(Hls.Events.MANIFEST_PARSED, () => {

@@ -18,19 +18,19 @@
 @section('module_content')
 <div x-data="homepage()" x-init="init()">
     <!-- Hero Slider Section -->
-    <section class="hero-section pt-4 pb-8 relative">
+    <section class="hero-section relative">
         <!-- Progress Bar (Top) -->
         <div class="hero-progress-container absolute top-0 left-0 right-0 z-20">
             <div class="hero-progress-bar h-full ease-linear"></div>
         </div>
 
-        <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
-            <div class="swiper heroSwiper relative">
-                <div class="swiper-wrapper">
+        <div class="swiper heroSwiper relative">
+            <div class="swiper-wrapper">
 
                     <!-- Slide 1: Teslimatlar -->
-                    <div class="swiper-slide">
-                        <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div class="swiper-slide slide-1-bg">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                            <div class="grid lg:grid-cols-2 gap-8 items-center">
                             <div class="text-gray-900 dark:text-white">
                                 <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
                                     <span class="gradient-animate block py-2">İXTİF TÜRKİYE'NİN</span>
@@ -85,15 +85,17 @@
                                 </div>
                             </div>
                             <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
-                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1437/teslimat.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager">
+                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1474/teslimat.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager">
                             </div>
+                        </div>
                         </div>
                     </div>
 
                     <!-- Slide 2: HELI -->
-                    <div class="swiper-slide">
-                        <div class="grid lg:grid-cols-2 gap-8 items-center">
-                            <div class="text-gray-900 dark:text-white">
+                    <div class="swiper-slide slide-2-bg">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                                <div class="text-gray-900 dark:text-white">
                                 <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
                                     <span class="gradient-animate block py-2">DÜNYA DEVİ HELI</span>
                                     <span class="gradient-animate block py-2">ARTIK İXTİF'TE</span>
@@ -149,12 +151,14 @@
                             <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
                                 <img src="{{ thumb('https://ixtif.com/storage/tenant2/1436/heli.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="HELI Forklift" class="h-auto object-contain" loading="lazy">
                             </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Slide 3: EP -->
-                    <div class="swiper-slide">
-                        <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div class="swiper-slide slide-3-bg">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                            <div class="grid lg:grid-cols-2 gap-8 items-center">
                             <div class="text-gray-900 dark:text-white">
                                 <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
                                     <span class="gradient-animate block py-2">EP İLE MODERN</span>
@@ -211,12 +215,14 @@
                             <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
                                 <img src="{{ thumb('https://ixtif.com/storage/tenant2/1435/ep.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="EP Elektrikli İstif" class="h-auto object-contain" loading="lazy">
                             </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Slide 4: Türkiye'nin İstif Pazarı -->
-                    <div class="swiper-slide">
-                        <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <div class="swiper-slide slide-4-bg">
+                        <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
+                            <div class="grid lg:grid-cols-2 gap-8 items-center">
                             <div class="text-gray-900 dark:text-white">
                                 <h1 class="hero-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
                                     <span class="gradient-animate block py-2">TÜRKİYE'NİN</span>
@@ -273,12 +279,23 @@
                             <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
                                 <img src="https://ixtif.com/storage/tenant2/4/hero.png" alt="İXTİF İstif Makinesi" class="h-auto object-contain" loading="lazy">
                             </div>
+                            </div>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Modern Pagination with Play/Pause -->
+                <!-- Navigation Arrows (Outside Slider - Minimal & Transparent) -->
+                <button class="hero-nav-prev absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-all duration-300 group opacity-30 hover:opacity-100">
+                    <i class="fa-solid fa-chevron-left text-white text-xl lg:text-2xl drop-shadow-lg group-hover:-translate-x-0.5 transition-transform"></i>
+                </button>
+                <button class="hero-nav-next absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-all duration-300 group opacity-30 hover:opacity-100">
+                    <i class="fa-solid fa-chevron-right text-white text-xl lg:text-2xl drop-shadow-lg group-hover:translate-x-0.5 transition-transform"></i>
+                </button>
+            </div>
+
+            <!-- Modern Pagination with Play/Pause (Outside swiper) -->
+            <div class="container mx-auto px-4 sm:px-4 md:px-0">
                 <div class="flex justify-start items-center gap-4 mt-4">
                     <!-- Play/Pause Button -->
                     <button id="heroPlayPause" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200/30 dark:bg-slate-700/30 backdrop-blur-sm hover:bg-blue-500/50 transition-all duration-300 group">
@@ -289,15 +306,6 @@
                     <div class="swiper-pagination-custom flex justify-start items-center gap-3"></div>
                 </div>
             </div>
-        </div>
-
-        <!-- Navigation Arrows (Outside Slider - Minimal & Transparent) -->
-        <button class="hero-nav-prev absolute left-2 lg:left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-all duration-300 group opacity-30 hover:opacity-100">
-            <i class="fa-solid fa-chevron-left text-white text-xl lg:text-2xl drop-shadow-lg group-hover:-translate-x-0.5 transition-transform"></i>
-        </button>
-        <button class="hero-nav-next absolute right-2 lg:right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-full transition-all duration-300 group opacity-30 hover:opacity-100">
-            <i class="fa-solid fa-chevron-right text-white text-xl lg:text-2xl drop-shadow-lg group-hover:translate-x-0.5 transition-transform"></i>
-        </button>
     </section>
 
 <!-- Featured Products Section -->

@@ -291,6 +291,12 @@ class SongComponent extends Component
 
     public function render(): \Illuminate\Contracts\View\View
     {
+        // Short cache TTL (60s) to balance freshness vs performance
+        // HLS conversion job will invalidate cache when complete
+        if (!app()->runningInConsole()) {
+            header('Cache-Control: max-age=60, must-revalidate');
+        }
+
         $filters = [
             'search' => $this->search,
             'locales' => $this->availableSiteLanguages,

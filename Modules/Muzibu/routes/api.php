@@ -21,6 +21,11 @@ use Modules\Muzibu\app\Http\Controllers\Front\SearchController;
  *
  */
 
+// 🚀 LIGHTWEIGHT KEY ENDPOINT - Outside api prefix to avoid Sanctum middleware overhead
+Route::get('/muzibu/songs/{id}/key', [SongController::class, 'serveEncryptionKey'])
+    ->middleware('tenant') // Only tenant context, no session/auth overhead
+    ->name('api.muzibu.songs.encryption-key');
+
 Route::prefix('muzibu')->group(function () {
 
     // Search - Meilisearch powered
@@ -68,9 +73,6 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/{id}/serve', [SongController::class, 'serve'])
             ->name('api.muzibu.songs.serve')
             ->middleware(['signed.url', 'throttle.user:stream']); // 🔐 Signed URL + rate limiting
-        Route::get('/{id}/key', [SongController::class, 'serveEncryptionKey'])
-            ->name('api.muzibu.songs.encryption-key')
-            ->middleware('throttle.user:api'); // Rate limit to prevent key harvesting
 
         // 🎯 Dynamic Playlist (User tipine göre 4 chunk: 3 çal + 1 buffer)
         Route::get('/{id}/playlist', [SongController::class, 'dynamicPlaylist'])

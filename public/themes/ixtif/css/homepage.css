@@ -144,8 +144,25 @@
     font-weight: 900;
 }
 
-/* Hero Title Responsive - lg'de 2 satır, küçük ekranlarda büyük */
-@media (min-width: 1024px) {
+/* Hero Title Responsive - xl/xxl'de büyük, lg'de 2 satır, küçük ekranlarda büyük */
+@media (min-width: 1536px) {
+    /* xxl: 1536px+ - Extra büyük ekranlar */
+    .hero-title {
+        font-size: 5rem !important; /* 80px - text-8xl */
+        line-height: 1.1 !important;
+    }
+}
+
+@media (min-width: 1280px) and (max-width: 1535px) {
+    /* xl: 1280px-1535px - Büyük ekranlar */
+    .hero-title {
+        font-size: 4rem !important; /* 64px - text-7xl */
+        line-height: 1.1 !important;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+    /* lg: 1024px-1279px - Laptop */
     .hero-title {
         font-size: 3rem !important; /* 48px - text-5xl yerine */
         line-height: 1.1 !important;
@@ -153,12 +170,14 @@
 }
 
 @media (max-width: 1023px) {
+    /* md: 768px-1023px - Tablet */
     .hero-title {
         font-size: 3.75rem !important; /* text-6xl - mobilde büyük kalabilir */
     }
 }
 
 @media (max-width: 767px) {
+    /* sm/xs: 0-767px - Mobile */
     .hero-title {
         font-size: 3rem !important; /* text-5xl - mobilde de biraz küçült */
     }
@@ -169,7 +188,8 @@
     max-height: 600px;
 }
 
-.hero-image img {
+.hero-image img,
+.hero-image video {
     max-height: 600px;
 }
 
@@ -256,4 +276,46 @@
 /* Product Card Gradient Background */
 .product-card-gradient {
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
+}
+
+/* Slide Background Gradients - Full Width */
+.swiper-slide {
+    position: relative;
+    overflow: visible;
+}
+
+/* Slide 1 - Teslimat (Gray) */
+.slide-1-bg {
+    background: linear-gradient(to bottom, #e0f2fe 0%, #bae6fd 30%, #7dd3fc 50%, rgba(125, 211, 252, 0.4) 75%, transparent 100%);
+}
+
+.dark .slide-1-bg {
+    background: linear-gradient(to bottom, #030712 0%, #111827 30%, #1f2937 50%, rgba(31, 41, 55, 0.5) 75%, transparent 100%);
+}
+
+/* Slide 2 - HELI (Koyu Bordo) */
+.slide-2-bg {
+    background: linear-gradient(to bottom, #f1f5f9 0%, #e2e8f0 30%, #cbd5e1 50%, rgba(203, 213, 225, 0.4) 75%, transparent 100%);
+}
+
+.dark .slide-2-bg {
+    background: linear-gradient(to bottom, #450a0a 0%, #7f1d1d 30%, #991b1b 50%, rgba(153, 27, 27, 0.5) 75%, transparent 100%);
+}
+
+/* Slide 3 - EP (Koyu Yeşil) */
+.slide-3-bg {
+    background: linear-gradient(to bottom, #ffedd5 0%, #fed7aa 30%, #fdba74 50%, rgba(253, 186, 116, 0.4) 75%, transparent 100%);
+}
+
+.dark .slide-3-bg {
+    background: linear-gradient(to bottom, #052e16 0%, #14532d 30%, #166534 50%, rgba(22, 101, 52, 0.5) 75%, transparent 100%);
+}
+
+/* Slide 4 - İstif Pazarı (Koyu Lacivert) */
+.slide-4-bg {
+    background: linear-gradient(to bottom, #cffafe 0%, #a5f3fc 30%, #67e8f9 50%, rgba(103, 232, 249, 0.4) 75%, transparent 100%);
+}
+
+.dark .slide-4-bg {
+    background: linear-gradient(to bottom, #1e3a8a 0%, #1e40af 30%, #1d4ed8 50%, rgba(29, 78, 216, 0.5) 75%, transparent 100%);
 }

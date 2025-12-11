@@ -518,6 +518,10 @@ class AuthenticatedSessionController extends Controller
             // Guest sepeti ile user sepetini merge et
             $cartService->mergeGuestCart($guestCart, $userCart);
 
+            // 🔄 FRONTEND GÜNCELLEME: Session flash ile frontend'e bildir
+            session()->flash('cart_merge_completed', true);
+            session()->flash('merged_cart_id', $userCart->cart_id);
+
             \Log::info('🛒 LOGIN: Cart merge tamamlandı', [
                 'user_id' => $userId,
                 'merged_cart_id' => $userCart->cart_id,

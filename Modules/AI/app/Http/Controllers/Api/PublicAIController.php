@@ -1924,7 +1924,7 @@ class PublicAIController extends Controller
         try {
             $validated = $request->validate([
                 'session_id' => 'nullable|string|max:64',
-                'conversation_id' => 'nullable|integer|exists:ai_conversations,id',
+                'conversation_id' => 'nullable|integer|exists:mysql.ai_conversations,id',
             ]);
 
             // Find conversation by session_id or conversation_id

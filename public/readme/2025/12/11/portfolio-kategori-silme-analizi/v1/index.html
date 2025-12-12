@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Kategori Silme İşlemleri - Detaylı Analiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                📊 Portfolio Kategori Silme İşlemleri
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Detaylı analiz: Bir portfolio kategorisi silindiğinde sistem tarafından yapılan tüm işlemler
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 11 Aralık 2025</span>
+                <span>🎯 Tenant: tuufi.com (Tüm tenant'lar için geçerli)</span>
+                <span>📁 Modül: Portfolio</span>
+            </div>
+        </header>
+
+        <!-- İşlem Akışı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🔄 İşlem Akışı</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center text-xl">1</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-blue-300">SİLME ÖNCESİ KONTROLLER</h3>
+                        <p class="text-slate-400 text-sm">PortfolioCategoryObserver → deleting() event</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 ml-16">
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-bold text-yellow-300 mb-2">⚠️ Portfolio Bağlantı Kontrolü</h4>
+                        <p class="text-slate-300 leading-relaxed">
+                            Kategoriye bağlı <span class="text-yellow-300 font-semibold">portfolio</span>
+                            <span class="text-slate-400 text-sm">(proje/ürün içeriği)</span> varsa silme işlemi engellenir.
+                        </p>
+                        <div class="mt-3 bg-slate-800 rounded p-3">
+                            <p class="text-sm text-slate-400 mb-2">Kontrol:</p>
+                            <code class="text-green-400 text-sm">$category->portfolios()->count() > 0</code>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-slate-300"><strong class="text-white">Sonuç:</strong></p>
+                            <ul class="list-disc list-inside text-slate-300 ml-4 mt-2 space-y-1">
+                                <li>Portfolio varsa → <span class="text-red-400 font-bold">Exception fırlatılır</span></li>
+                                <li>Hata mesajı: "Bu kategoriye ait portfoliolar var. Önce portfolioları silmelisiniz."</li>
+                                <li>Kullanıcı önce portfolioları silmeli veya başka kategoriye taşımalı</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-bold text-blue-300 mb-2">📝 Log Kaydı (Pre-Delete)</h4>
+                        <p class="text-slate-300">
+                            Silme işlemi başlatılmadan önce Log dosyasına kayıt atılır.
+                        </p>
+                        <div class="mt-2 text-sm text-slate-400">
+                            <strong>Kaydedilen Bilgiler:</strong> category_id, title, user_id
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-8 mb-8 border border-slate-700">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center text-xl">2</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-purple-300">SİLME İŞLEMİ</h3>
+                        <p class="text-slate-400 text-sm">PortfolioCategoryService → deleteCategory()</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 ml-16">
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-bold text-purple-300 mb-2">🗑️ Database'den Silme</h4>
+                        <p class="text-slate-300 leading-relaxed">
+                            <span class="text-yellow-300 font-semibold">Repository</span>
+                            <span class="text-slate-400 text-sm">(veri erişim katmanı)</span>
+                            üzerinden kategori kaydı veritabanından silinir.
+                        </p>
+                        <div class="mt-3">
+                            <p class="text-slate-400 text-sm">Silme yöntemi: <span class="text-green-400">Soft Delete</span> veya <span class="text-red-400">Hard Delete</span></p>
+                            <p class="text-slate-300 text-sm mt-1">
+                                • Soft Delete → Kayıt <code class="bg-slate-800 px-2 py-1 rounded">deleted_at</code> ile işaretlenir, geri yüklenebilir<br>
+                                • Hard Delete → Kayıt tamamen silinir, geri dönüş yok
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-8 border border-slate-700">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center text-xl">3</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-green-300">SİLME SONRASI TEMİZLİK</h3>
+                        <p class="text-slate-400 text-sm">PortfolioCategoryObserver → deleted() event</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 ml-16">
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-bold text-green-300 mb-2">🧹 Cache Temizleme (Multi-Level)</h4>
+                        <p class="text-slate-300 mb-4">
+                            Sistem performansı için cachelenen kategori verileri temizlenir. Böylece kullanıcılar güncel veriyi görür.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="bg-slate-800 rounded p-3">
+                                <p class="text-blue-300 font-bold text-sm mb-2">1. Tenant Cache Service</p>
+                                <p class="text-slate-400 text-sm">Prefix bazlı temizleme: <code class="text-green-400">portfolio_categories</code></p>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3">
+                                <p class="text-blue-300 font-bold text-sm mb-2">2. Genel Cache Keys</p>
+                                <ul class="text-slate-400 text-sm space-y-1">
+                                    <li>• <code class="text-green-400">portfolio_categories_list</code> → Kategori listesi</li>
+                                    <li>• <code class="text-green-400">portfolio_categories_menu_cache</code> → Menü cache</li>
+                                    <li>• <code class="text-green-400">portfolio_category_detail_{id}</code> → Spesifik kategori</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3">
+                                <p class="text-blue-300 font-bold text-sm mb-2">3. SEO Cache</p>
+                                <p class="text-slate-400 text-sm"><code class="text-green-400">universal_seo_portfolio_category_{id}</code> → SEO meta verileri</p>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3">
+                                <p class="text-blue-300 font-bold text-sm mb-2">4. Tag-Based Cache</p>
+                                <p class="text-slate-400 text-sm">
+                                    Eğer cache store tag destekliyorsa:
+                                    <code class="text-green-400">['portfolio_categories', 'content']</code> tag'leri temizlenir
+                                </p>
+                            </div>
+                            <div class="bg-slate-800 rounded p-3">
+                                <p class="text-blue-300 font-bold text-sm mb-2">5. Response Cache (Spatie)</p>
+                                <p class="text-slate-400 text-sm">Tüm sayfa cache'leri temizlenir (full cache clear)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-bold text-red-300 mb-2">🗑️ SEO Ayarlarını Silme</h4>
+                        <p class="text-slate-300 leading-relaxed">
+                            Kategoriye ait <span class="text-yellow-300 font-semibold">SEO meta verileri</span>
+                            <span class="text-slate-400 text-sm">(title, description, keywords, og tags)</span>
+                            de veritabanından silinir.
+                        </p>
+                        <div class="mt-3 bg-slate-800 rounded p-3">
+                            <p class="text-sm text-slate-400">İlişkili tablo: <code class="text-green-400">seo_settings</code></p>
+                            <p class="text-sm text-slate-300 mt-2">
+                                <strong>Önemli:</strong> SEO ayarları kategoriye polymorphic
+                                <span class="text-slate-400 text-xs">(çok biçimli ilişki)</span>
+                                olarak bağlıdır ve otomatik silinir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-bold text-yellow-300 mb-2">📋 Activity Log Kaydı</h4>
+                        <p class="text-slate-300">
+                            Kullanıcı aktivite takibi için silme işlemi loglanır.
+                        </p>
+                        <div class="mt-2 text-sm text-slate-400">
+                            <strong>Kaydedilen Bilgiler:</strong> category model, "silindi" işlemi, user_id, timestamp
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-700/50 rounded-lg p-4">
+                        <h4 class="font-bold text-blue-300 mb-2">📝 Log Kaydı (Post-Delete)</h4>
+                        <p class="text-slate-300">
+                            Silme işlemi başarıyla tamamlandıktan sonra detaylı Log kaydı atılır.
+                        </p>
+                        <div class="mt-2 text-sm text-slate-400">
+                            <strong>Log Level:</strong> Info<br>
+                            <strong>Mesaj:</strong> "Portfolio Category deleted successfully"
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İlişkili Tablolar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🗄️ İlişkili Tablolar & İlişkiler</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">Doğrudan İlişkiler</h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-700/50 rounded p-3">
+                            <p class="font-bold text-green-300">portfolios (hasMany)</p>
+                            <p class="text-sm text-slate-400 mt-1">
+                                Foreign Key: <code class="text-yellow-300">portfolio_category_id</code>
+                            </p>
+                            <p class="text-sm text-red-300 mt-2">
+                                ⚠️ Portfolio varsa silme engellenir!
+                            </p>
+                        </div>
+                        <div class="bg-slate-700/50 rounded p-3">
+                            <p class="font-bold text-green-300">seoSetting (morphOne)</p>
+                            <p class="text-sm text-slate-400 mt-1">
+                                Polymorphic ilişki
+                            </p>
+                            <p class="text-sm text-green-300 mt-2">
+                                ✅ Otomatik silinir
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">Hiyerarşik İlişkiler</h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-700/50 rounded p-3">
+                            <p class="font-bold text-green-300">parent (belongsTo)</p>
+                            <p class="text-sm text-slate-400 mt-1">
+                                Foreign Key: <code class="text-yellow-300">parent_id</code>
+                            </p>
+                            <p class="text-sm text-slate-300 mt-2">
+                                Üst kategori referansı (nullable)
+                            </p>
+                        </div>
+                        <div class="bg-slate-700/50 rounded p-3">
+                            <p class="font-bold text-green-300">children (hasMany)</p>
+                            <p class="text-sm text-slate-400 mt-1">
+                                Alt kategoriler (recursive)
+                            </p>
+                            <p class="text-sm text-yellow-300 mt-2">
+                                ⚠️ Alt kategori kontrolü yok! (Potansiyel sorun)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Medya Yönetimi -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">🖼️ Medya Yönetimi (Spatie Media Library)</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-yellow-600">
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="text-3xl">⚠️</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-yellow-300 mb-2">Kategori Görselleri</h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            Portfolio kategorisi <code class="bg-slate-700 px-2 py-1 rounded text-green-400">category_image</code>
+                            media collection'ına sahip. Spatie Media Library kullanılıyor.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-4 bg-slate-700/50 rounded p-4">
+                    <p class="text-slate-300 mb-3"><strong class="text-white">Silme Durumu:</strong></p>
+                    <p class="text-slate-400 leading-relaxed">
+                        Spatie Media Library, model silindiğinde ilişkili media dosyalarını <strong class="text-green-300">otomatik siler</strong>
+                        (eğer <code class="text-yellow-300">HasMedia</code> trait'i doğru kullanılmışsa).
+                    </p>
+                    <div class="mt-3 bg-slate-800 rounded p-3">
+                        <p class="text-sm text-slate-400">Media Silme:</p>
+                        <ul class="text-sm text-slate-300 mt-2 space-y-1">
+                            <li>• Database'den media kayıtları silinir</li>
+                            <li>• Storage'dan fiziksel dosyalar silinir</li>
+                            <li>• Thumbnail/conversion'lar da silinir</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Potansiyel Sorunlar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">⚠️ Potansiyel Sorunlar & Öneriler</h2>
+
+            <div class="space-y-4">
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">!</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">Alt Kategori Kontrolü Eksik</h3>
+                            <p class="text-slate-300 leading-relaxed mb-3">
+                                <code class="bg-slate-800 px-2 py-1 rounded">deleting()</code> event'inde
+                                <strong>children kontrolü yok!</strong> Üst kategori silinirse alt kategorilerin
+                                <code class="bg-slate-800 px-2 py-1 rounded">parent_id</code> değeri orphan kalır.
+                            </p>
+                            <div class="bg-slate-800 rounded p-3">
+                                <p class="text-sm text-yellow-300 mb-2">Öneri:</p>
+                                <p class="text-sm text-slate-300">
+                                    Alt kategorisi olan kategori silinmeden önce hata fırlat veya
+                                    alt kategorileri <code class="text-green-400">parent_id = null</code> yap.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">!</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-yellow-300 mb-2">Force Delete Durumu</h3>
+                            <p class="text-slate-300 leading-relaxed mb-3">
+                                <code class="bg-slate-800 px-2 py-1 rounded">forceDeleting()</code> event'inde
+                                sadece log kaydı var, ekstra kontrol yok. Kalıcı silme işlemi geri alınamaz!
+                            </p>
+                            <div class="bg-slate-800 rounded p-3">
+                                <p class="text-sm text-yellow-300 mb-2">Öneri:</p>
+                                <p class="text-sm text-slate-300">
+                                    Force delete öncesinde tüm ilişkileri kontrol et ve kullanıcıyı uyar.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">i</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300 mb-2">Circular Reference Koruması</h3>
+                            <p class="text-slate-300 leading-relaxed">
+                                <code class="bg-slate-800 px-2 py-1 rounded">calculateDepth()</code>
+                                metodunda circular reference
+                                <span class="text-slate-400 text-sm">(döngüsel ilişki)</span>
+                                koruması var. İyi bir güvenlik önlemi!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özet -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Özet</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-8 border border-slate-700">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-4">Yapılan İşlemler</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400">✓</span>
+                                <span>Portfolio bağlantı kontrolü</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400">✓</span>
+                                <span>Database'den silme</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400">✓</span>
+                                <span>5 seviyeli cache temizleme</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400">✓</span>
+                                <span>SEO ayarlarını silme</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400">✓</span>
+                                <span>Media dosyalarını silme</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400">✓</span>
+                                <span>Activity & Log kaydı</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold text-red-300 mb-4">Dikkat Edilmesi Gerekenler</h3>
+                        <ul class="space-y-2 text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-400">⚠</span>
+                                <span>Alt kategori kontrolü eksik</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-400">⚠</span>
+                                <span>Force delete geri alınamaz</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-yellow-400">!</span>
+                                <span>Portfolio varsa silinemez</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-blue-400">i</span>
+                                <span>Circular reference korumalı</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kod Referansları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-slate-400">📂 İlgili Kod Dosyaları</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <ul class="space-y-2 text-sm font-mono">
+                    <li class="text-slate-300">
+                        <span class="text-blue-400">Observer:</span>
+                        Modules/Portfolio/app/Observers/PortfolioCategoryObserver.php
+                    </li>
+                    <li class="text-slate-300">
+                        <span class="text-blue-400">Service:</span>
+                        Modules/Portfolio/app/Services/PortfolioCategoryService.php
+                    </li>
+                    <li class="text-slate-300">
+                        <span class="text-blue-400">Model:</span>
+                        Modules/Portfolio/app/Models/PortfolioCategory.php
+                    </li>
+                    <li class="text-slate-300">
+                        <span class="text-blue-400">Repository:</span>
+                        Modules/Portfolio/app/Repositories/PortfolioCategoryRepository.php
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+        </footer>
+    </div>
+</body>
+</html>

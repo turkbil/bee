@@ -98,12 +98,33 @@ class AlbumService
             if (!$album) {
                 return new MuzibuOperationResult(false, __('muzibu::admin.album_not_found'), 'warning');
             }
+
+            // Şarkı kontrolü (Observer'da da kontrol var, ama service seviyesinde de yapalım)
+            if ($album->songs()->count() > 0) {
+                Log::warning('Cannot delete album with songs', [
+                    'album_id' => $id,
+                    'song_count' => $album->songs()->count()
+                ]);
+
+                return new MuzibuOperationResult(
+                    false,
+                    'Bu albüme ait ' . $album->songs()->count() . ' şarkı var. Önce şarkıları silmelisiniz veya başka albüme taşımalısınız.',
+                    'warning'
+                );
+            }
+
             $this->repository->delete($id);
             Log::info('Album deleted', ['album_id' => $id]);
             return new MuzibuOperationResult(true, __('muzibu::admin.album_deleted'), 'success');
         } catch (\Exception $e) {
-            Log::error('Album deletion failed', ['error' => $e->getMessage()]);
-            return new MuzibuOperationResult(false, __('muzibu::admin.album_deletion_failed'), 'error');
+            Log::error('Album deletion failed', [
+                'album_id' => $id,
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
+
+            // Observer'dan gelen exception mesajını kullanıcıya dön
+            return new MuzibuOperationResult(false, $e->getMessage(), 'error');
         }
     }
 

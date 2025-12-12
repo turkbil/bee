@@ -85,7 +85,7 @@
                                 </div>
                             </div>
                             <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
-                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1474/teslimat.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager">
+                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1510/teslimat.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager">
                             </div>
                         </div>
                         </div>

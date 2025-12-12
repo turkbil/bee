@@ -68,7 +68,10 @@ function muzibuKeyboard() {
                 case ' ':
                 case 'k':
                     this.togglePlayPause();
-                    this.showKeyboardFeedback('⏯️ Çal / Duraklat');
+                    // Show feedback based on state AFTER toggle
+                    setTimeout(() => {
+                        this.showKeyboardFeedback(this.isPlaying ? '▶️ Çalıyor' : '⏸️ Durduruldu');
+                    }, 10);
                     break;
 
                 // Seek backward (5 seconds)

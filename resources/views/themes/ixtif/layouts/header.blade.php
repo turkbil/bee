@@ -58,11 +58,14 @@
     {{-- Tailwind CSS - Tenant-Aware (tenant-2.css veya fallback app.css) --}}
     <link rel="stylesheet" href="{{ tenant_css() }}" media="all">
 
-    {{-- Font Awesome Pro --}}
-    <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="all">
+    {{-- Font Awesome Pro - ⚠️ DO NOT REMOVE - Defer for performance --}}
+    <link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/css/all.css') }}"></noscript>
 
-    {{-- Google Fonts - Roboto All Weights --}}
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    {{-- Google Fonts - Roboto All Weights - ⚠️ DO NOT REMOVE - display=swap prevents FOIT --}}
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;800;900&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 
     {{-- iXtif Theme Styles - Bundle if available, fallback to individual files --}}
     @if(file_exists(public_path('css/ixtif-bundle.min.css')))

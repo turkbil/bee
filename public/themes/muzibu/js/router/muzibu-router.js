@@ -20,8 +20,9 @@ window.muzibuRouter = {
     contentLoaded: true,
 
     // Cache (basit in-memory cache)
+    // ⚠️ Cache DEVRE DIŞI: Admin'den yapılan değişikliklerin anında yansıması için
     cache: {},
-    cacheTimeout: 5 * 60 * 1000, // 5 dakika
+    cacheTimeout: 0, // Cache kapalı (eski: 5 * 60 * 1000)
 
     /**
      * Router'ı başlat

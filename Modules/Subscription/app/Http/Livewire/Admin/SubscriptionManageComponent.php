@@ -39,8 +39,8 @@ class SubscriptionManageComponent extends Component
     public function mount($id = null)
     {
         $this->boot();
-        $this->started_at = now()->format('Y-m-d');
-        $this->current_period_end = now()->addMonth()->format('Y-m-d');
+        $this->started_at = now()->format('Y-m-d\TH:i');
+        $this->current_period_end = now()->addMonth()->format('Y-m-d\TH:i');
 
         if ($id) {
             $this->subscriptionId = (int) $id;
@@ -60,8 +60,8 @@ class SubscriptionManageComponent extends Component
         $this->trial_days = (int) $subscription->trial_days;
         $this->auto_renew = (bool) $subscription->auto_renew;
         $this->price_per_cycle = (float) $subscription->price_per_cycle;
-        $this->started_at = $subscription->started_at?->format('Y-m-d');
-        $this->current_period_end = $subscription->current_period_end?->format('Y-m-d');
+        $this->started_at = $subscription->started_at?->format('Y-m-d\TH:i');
+        $this->current_period_end = $subscription->current_period_end?->format('Y-m-d\TH:i');
 
         // Load plan cycles
         if ($this->subscription_plan_id) {
@@ -143,7 +143,7 @@ class SubscriptionManageComponent extends Component
             $durationDays = (int) ($cycle['duration_days'] ?? 30);
 
             $start = \Carbon\Carbon::parse($this->started_at);
-            $this->current_period_end = $start->addDays($durationDays)->format('Y-m-d');
+            $this->current_period_end = $start->addDays($durationDays)->format('Y-m-d\TH:i');
         }
     }
 

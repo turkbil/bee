@@ -3,7 +3,7 @@
     @php
         $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
         $access = $subscriptionService->checkUserAccess(auth()->user());
-        $status = $access['status'] ?? 'preview';
+        $status = $access['status'] ?? 'subscription_required';
         $isTrial = $access['is_trial'] ?? false;
         $expiresAt = $access['expires_at'] ?? null;
         $daysRemaining = $expiresAt ? now()->diffInDays($expiresAt) : 0;
@@ -51,8 +51,8 @@
         </div>
     @endif
 
-    {{-- Expired Subscription --}}
-    @if($status === 'preview' && auth()->user()->has_used_trial)
+    {{-- Expired Subscription / No Subscription --}}
+    @if($status === 'subscription_required' && auth()->user()->has_used_trial)
         <div class="mx-2 sm:mx-8 mb-6 p-6 bg-gradient-to-r from-red-500/20 to-pink-500/20 border border-red-500/30 rounded-2xl backdrop-blur-sm">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4 text-center sm:text-left">
@@ -62,7 +62,7 @@
                     <div>
                         <h3 class="text-white font-bold text-lg">❌ Aboneliğiniz Sona Erdi!</h3>
                         <p class="text-red-200 text-sm mt-1">
-                            Premium'a geçerek sınırsız müzik dinlemeye devam edin. Şimdi 30 saniyelik önizleme ile sınırlısınız.
+                            Müzik dinlemek için premium üyelik gereklidir. Hemen abone olun ve sınırsız dinlemenin keyfini çıkarın.
                         </p>
                     </div>
                 </div>

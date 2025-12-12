@@ -48,15 +48,23 @@ class SongStreamController extends Controller
             // Session-based login (web) veya token-based login (sanctum)
             $user = auth('web')->user() ?? auth('sanctum')->user();
 
-            // 🎵 YENİ MANTIK:
-            // - Guest (üye değil) → 30 saniye preview
-            // - Normal üye (premium değil) → 30 saniye preview
-            // - Premium üye → Sınırsız
+            // 🎵 YENİ MANTIK (2025-12-12):
+            // - Guest (üye değil) → Direkt /register yönlendirme (0 saniye dinleme)
+            // - Normal üye (premium/trial değil) → Direkt /subscription/plans yönlendirme (0 saniye dinleme)
+            // - Premium/Trial üye → Sınırsız dinleme
 
-            // 🎯 REFACTORED: Guest ve Free member için aynı preview logic
-            // Guest kullanıcı → 30 saniye preview
+            // 🚫 Guest kullanıcı → Kayıt olmadan dinleyemez
             if (!$user) {
-                return $this->getPreviewStreamResponse($song, 'guest');
+                return response()->json([
+                    'status' => 'unauthorized',
+                    'redirect' => '/register',
+                    'message' => 'Şarkı dinlemek için kayıt olmalısınız',
+                    'song' => [
+                        'id' => $song->song_id,
+                        'title' => $song->getTranslated('title', app()->getLocale()),
+                        'cover_url' => $song->getCoverUrl(600, 600),
+                    ]
+                ], 401);
             }
 
             // 🔐 DEVICE LIMIT CHECK: DEVRE DIŞI BIRAKILDI
@@ -70,12 +78,21 @@ class SongStreamController extends Controller
             //
             // if ($this->deviceService->shouldRun()) { ... }
 
-            // Normal üye (premium veya trial değil) → 30 saniye preview
+            // 🚫 Normal üye (premium veya trial değil) → Subscription sayfasına yönlendir
             // 🔥 FIX: isPremiumOrTrial() helper kullanılıyor
             // 🚀 SMART CACHE: 5 dakikalık cache ile balance (güvenlik vs performans)
             // Event-based invalidation: Subscription değişince cache temizlenir
             if (!$user->isPremiumOrTrial()) {
-                return $this->getPreviewStreamResponse($song, 'free', $user->id);
+                return response()->json([
+                    'status' => 'subscription_required',
+                    'redirect' => '/subscription/plans',
+                    'message' => 'Şarkı dinlemek için premium üyelik gereklidir',
+                    'song' => [
+                        'id' => $song->song_id,
+                        'title' => $song->getTranslated('title', app()->getLocale()),
+                        'cover_url' => $song->getCoverUrl(600, 600),
+                    ]
+                ], 402);
             }
 
             // Check if song needs HLS conversion
@@ -284,66 +301,6 @@ class SongStreamController extends Controller
         }
 
         return 'desktop';
-    }
-
-    /**
-     * 🎯 HELPER: Preview stream response (Guest & Free members)
-     * DRY principle - Tek method ile duplicate code kaldırıldı
-     *
-     * @param Song $song
-     * @param string $userType 'guest' or 'free'
-     * @param int|null $userId Optional user ID (for logging)
-     * @return JsonResponse
-     */
-    protected function getPreviewStreamResponse(Song $song, string $userType, ?int $userId = null): JsonResponse
-    {
-        // HLS conversion başlat (eğer gerekiyorsa)
-        if ($song->needsHlsConversion()) {
-            Log::info("Muzibu Stream: HLS conversion dispatched for {$userType}", [
-                'song_id' => $song->song_id,
-                'user_id' => $userId,
-                'title' => $song->getTranslated('title', 'en')
-            ]);
-            ConvertToHLSJob::dispatch($song);
-        }
-
-        // Stream URL hazırla
-        if (!empty($song->hls_path)) {
-            // 🎯 DYNAMIC PLAYLIST (4 chunk: 3 çal + 1 buffer)
-            $streamUrl = route('api.muzibu.songs.dynamic-playlist', ['id' => $song->song_id]);
-            $streamType = 'hls';
-            // 🔐 MP3 fallback (signed URL, force MP3 output)
-            $fallbackUrl = $this->signedUrlService->generateStreamUrl($song->song_id, 30, true);
-        } else {
-            // 🔐 SIGNED MP3 URL (30 dakika)
-            $streamUrl = $this->signedUrlService->generateStreamUrl($song->song_id, 30);
-            $streamType = 'mp3';
-            $fallbackUrl = null; // No fallback for MP3
-        }
-
-        // Message farklılaştırma
-        $message = $userType === 'guest'
-            ? 'Kayıt olun, tam dinleyin'
-            : 'Premium\'a geçin, sınırsız dinleyin';
-
-        return response()->json([
-            'status' => 'preview',
-            'message' => $message,
-            'stream_url' => $streamUrl, // 🎯 Dynamic playlist URL
-            'stream_type' => $streamType,
-            'fallback_url' => $fallbackUrl, // 🔐 SIGNED MP3 fallback (HLS fails)
-            'preview_duration' => 30,
-            'preview_chunks' => 3,        // 3 chunk çalacak
-            'buffer_chunks' => 1,         // 1 chunk buffer
-            'total_chunks_served' => 4,  // Toplam 4 chunk yüklenecek
-            'is_premium' => false,
-            'song' => [
-                'id' => $song->song_id,
-                'title' => $song->getTranslated('title', app()->getLocale()),
-                'duration' => $song->getFormattedDuration(),
-                'cover_url' => $song->getCoverUrl(600, 600),
-            ]
-        ]);
     }
 
     /**

@@ -24,6 +24,7 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        // Ek başlatma kodlarınızı buraya yazabilirsiniz
+        // Model Observers
+        \Modules\Muzibu\App\Models\Album::observe(\Modules\Muzibu\App\Observers\AlbumObserver::class);
     }
 }

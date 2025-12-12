@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Services\ActivityLogCacheService;
 
 class CleanupExpiredSessionsCommand extends Command
 {
@@ -33,6 +34,12 @@ class CleanupExpiredSessionsCommand extends Command
             ->delete();
 
         $this->line("Deleted {$deletedLogs} old activity logs");
+
+        // Clear activity log cache after cleanup
+        if ($deletedLogs > 0) {
+            ActivityLogCacheService::clearCache();
+            $this->line("Activity log cache cleared");
+        }
 
         $this->info('Cleanup completed');
 

@@ -1,46 +1,353 @@
-monaco-editor-universal.js?v=1765482408:31 🎯 Monaco Editor Universal System başlatılıyor...
-monaco-editor-universal.js?v=1765482408:352 ✅ Monaco Editor Universal System hazır!
-universal-seo-functions.js?v=1765482408:21 🎯 Universal SEO Functions başlatılıyor...
-universal-seo-functions.js?v=1765482408:372 ✅ Universal SEO Functions yüklendi!
-universal-language-functions.js?v=1765482408:21 🎯 Universal Language Functions başlatılıyor...
-universal-language-functions.js?v=1765482408:145 ✅ Universal Language Functions yüklendi!
-universal-ai-content-functions.js?v=1765482408:21 🎯 Universal AI Content Functions başlatılıyor...
-universal-ai-content-functions.js?v=1765482408:146 ✅ Universal AI Content Functions yüklendi!
-VM968:3 🔄 [FOOTER] Alpine state changed - isMediaUploading: false
-universal-seo-functions.js?v=1765482408:336 ✅ Universal SEO event listeners kuruldu
-universal-language-functions.js?v=1765482408:129 ✅ Universal Language event listeners kuruldu
-manage.js?v=1765482408:115 🔧 Language switching sistemi kuruluyor...
-manage.js?v=1765482408:118 🔍 Bulunan language button sayısı: 0
-manage.js?v=1765482408:443 🔎 RESTORE KONTROL - sayfa başladı
-manage.js?v=1765482408:444 📋 KURAL: İlk açılışta her zaman TR dili + Temel Bilgiler tab
-manage.js?v=1765482408:461 🎯 Varsayılan state uygulanıyor: TR dili + Temel Bilgiler tab
-manage.js?v=1765482408:1342 🚫 SEO Enter tuşu engelleme sistemi kuruluyor...
-manage.js?v=1765482408:1347 🔍 Bulunan seo-no-enter input sayısı: 0
-manage.js?v=1765482408:1407 ✅ 0 SEO input için Enter tuşu engelleme aktif
-manage.js?v=1765482408:662 ℹ️ Language switch buttons bulunamadı - tek dil sistemi aktif
-manage.js?v=1765482408:682 🔧 Tek dil modu aktif - tüm language-content elementleri görünür yapılıyor
-manage.js?v=1765482408:700 ✅ Tek dil modu kurulumu tamamlandı
-monaco-editor-universal.js?v=1765482408:62 ✅ Monaco loader yüklendi
-manage.js?v=1765482408:1469 ✅ Dil değiştirildi: tr
-manage.js?v=1765482408:106 🎯 İlk yükleme - dil içeriği ayarlandı: tr
-7:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-7:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-7:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-monaco-editor-universal.js?v=1765482408:128 ✅ Monaco Editor hazır
-manage.js?v=1765482408:1295 🌍 Slug Normalization - Dinamik diller tespit edildi: Array(0)
-manage.js?v=1765482408:586 🌍 SEO Counter - Dinamik diller tespit edildi: Array(0)
-manage.js?v=1765482408:877 🚨 MANAGE.JS ULTRA AGGRESSIVE: Loading bar zorla gizleniyor
-manage.js?v=1765482408:882 ✅ MANAGE.JS: Loading bar zorla gizlendi
-VM971:3 🖱️ [BUTTON] Clicked! isMediaUploading: false
-manage.js?v=1765482408:371 💾 Save button tıklandı
-manage.js?v=1765482408:383 🔍🔍 AKTİF DİL TESPİTİ:
-manage.js?v=1765482408:384   - .text-primary button: null
-manage.js?v=1765482408:385   - Bulunan dil: tr
-manage.js?v=1765482408:386   - window.currentLanguage: tr
-manage.js?v=1765482408:390 🔍 Tüm dil button'ları:
-manage.js?v=1765482408:417 🎯 Kaydet ve Devam Et - GEÇİCİ state korunacak
-manage.js?v=1765482408:418   - Aktif dil: tr
-manage.js?v=1765482408:419   - Aktif tab: null
-manage.js?v=1765482408:425 ✅ Geçici state window object'e kaydedildi
-manage.js?v=1765482408:426 📋 KURAL: Sayfa tamamen yenilenirse bu veriler kaybolacak
-manage.js?v=1765482408:376 ✅ Save debounce reset edildi
+player-core.js?v=1765505385:424 🎵 togglePlayPause called {queue: 13, currentSong: Proxy(Object), isPlaying: false, howl: false, hls: false}
+player-core.js?v=1765505385:494 🎵 No audio source, loading current song: 344
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 0, volume: 100, …}
+player-core.js?v=1765505385:1711 🔍 Autoplay mode: true
+player-core.js?v=1765505385:1878 🔍 HLS Autoplay: true
+player-core.js?v=1765505385:3033 🚀 Aggressive Preload: Loading next 3 songs...
+player-core.js?v=1765505385:1981 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/344/key
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 345
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 346
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 347
+player-core.js?v=1765505385:3043 ✅ Aggressive Preload completed: 3 songs ready
+player-core.js?v=1765505385:1991 ⚠️ Key load retry: {song: 344, retry: 0}
+(anonymous) @ player-core.js?v=1765505385:1991
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1765505385:1976
+loadAndPlaySong @ player-core.js?v=1765505385:1715
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1765505385:1620
+await in playSongFromQueue
+togglePlayPause @ player-core.js?v=1765505385:495
+[Alpine] togglePlayPause() @ VM966:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+player-core.js?v=1765505385:1981 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/344/key
+player-core.js?v=1765505385:2054 HLS fatal error: {type: 'networkError', details: 'keyLoadError', fatal: true, frag: Proxy(e), response: undefined, …}
+(anonymous) @ player-core.js?v=1765505385:2054
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+setTimeout
+e.tickImmediate @ task-loop.ts:119
+r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
+r.onError @ stream-controller.ts:895
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1765505385:1976
+loadAndPlaySong @ player-core.js?v=1765505385:1715
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1765505385:1620
+await in playSongFromQueue
+togglePlayPause @ player-core.js?v=1765505385:495
+[Alpine] togglePlayPause() @ VM966:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+player-core.js?v=1765505385:2063 🔄 HLS failed, falling back to signed MP3...
+player-core.js?v=1765505385:2064 🔍 currentFallbackUrl: https://muzibu.com.tr/api/muzibu/songs/344/serve?expires=1765507178&signature=1e4695f0679521d0428258aa28c0bc11fa26262b0686c90aa5b241d0b8eec47d&force_mp3=1
+player-core.js?v=1765505385:2065 🔍 currentFallbackUrl type: string
+player-core.js?v=1765505385:2084 🔍 About to call playWithHowler with: https://muzibu.com.tr/api/muzibu/songs/344/serve?expires=1765507178&signature=1e4695f0679521d0428258aa28c0bc11fa26262b0686c90aa5b241d0b8eec47d&force_mp3=1 autoplay: true
+player-core.js?v=1765505385:1775 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/344/serve?expires=1765507178&signature=1e4695f0679521d0428258aa28c0bc11fa26262b0686c90aa5b241d0b8eec47d&force_mp3=1
+player-core.js?v=1765505385:1776 🔍 URL type: string
+player-core.js?v=1765505385:1777 🔍 URL length: 154
+player-core.js?v=1765505385:1778 🔍 Autoplay: true
+player-core.js?v=1765505385:1798 🎵 Creating Howl with src: ['https://muzibu.com.tr/api/muzibu/songs/344/serve?e…0bc11fa26262b0686c90aa5b241d0b8eec47d&force_mp3=1']
+player-core.js?v=1765505385:2037 ⚠️ HLS play aborted (expected during fallback)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 0, volume: 100, …}
+player-core.js?v=1765505385:1808 Howler loaded, duration: 122.9
+player-core.js?v=1765505385:3125 ✅ Next song already cached: 345
+player-core.js?v=1765505385:3180 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 3, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 8, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 110, volume: 100, …}
+player-core.js?v=1765505385:909 Starting crossfade...
+player-core.js?v=1765505385:921 ⚡ Crossfade using cached stream: 345
+player-core.js?v=1765505385:942 Next song type: hls URL: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/345/playlist.m3u8
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 115, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 13 songs remaining (queueIndex: 0/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 0, song: 'Cold Love', time: 120, volume: 100, …}
+player-core.js?v=1765505385:1128 Crossfade complete, now playing: Cupid
+player-core.js?v=1765505385:3125 ✅ Next song already cached: 346
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 123, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 123, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 9, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 12 songs remaining (queueIndex: 1/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 14, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 19, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 12 songs remaining (queueIndex: 1/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 24, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 29, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 12 songs remaining (queueIndex: 1/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 138, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 143, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 12 songs remaining (queueIndex: 1/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 148, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 1, song: 'Cupid', time: 153, volume: 100, …}
+player-core.js?v=1765505385:1529 ⚡ Using cached stream URL: 346
+player-core.js?v=1765505385:1711 🔍 Autoplay mode: true
+player-core.js?v=1765505385:1878 🔍 HLS Autoplay: true
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 156, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 156, volume: 100, …}
+player-core.js?v=1765505385:3033 🚀 Aggressive Preload: Loading next 3 songs...
+player-core.js?v=1765505385:3033 🚀 Aggressive Preload: Loading next 3 songs...
+player-core.js?v=1765505385:1981 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/346/key
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 156, volume: 100, …}
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 348
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 348
+player-core.js?v=1765505385:1888 ⏰ HLS timeout - MP3 fallback tetikleniyor...
+(anonymous) @ player-core.js?v=1765505385:1888
+setTimeout
+playHlsStream @ player-core.js?v=1765505385:1886
+loadAndPlaySong @ player-core.js?v=1765505385:1715
+await in loadAndPlaySong
+playSongFromQueue @ player-core.js?v=1765505385:1620
+nextTrack @ player-core.js?v=1765505385:735
+await in nextTrack
+onTrackEnded @ player-core.js?v=1765505385:1222
+nextAudio.onended @ player-core.js?v=1765505385:1099
+player-core.js?v=1765505385:2178 🔄 MP3 fallback tetiklendi, sebep: timeout
+player-core.js?v=1765505385:1775 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/346/serve?expires=1765507181&signature=e6fde2597faa82e9624c925695d0a32a1157791cd2604209128d1d03f2bd12e2&force_mp3=1
+player-core.js?v=1765505385:1776 🔍 URL type: string
+player-core.js?v=1765505385:1777 🔍 URL length: 154
+player-core.js?v=1765505385:1778 🔍 Autoplay: true
+player-core.js?v=1765505385:1798 🎵 Creating Howl with src: ['https://muzibu.com.tr/api/muzibu/songs/346/serve?e…0a32a1157791cd2604209128d1d03f2bd12e2&force_mp3=1']
+player-core.js?v=1765505385:2037 ⚠️ HLS play aborted (expected during fallback)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 156, volume: 100, …}
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 349
+player-core.js?v=1765505385:3043 ✅ Aggressive Preload completed: 3 songs ready
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 349
+player-core.js?v=1765505385:3043 ✅ Aggressive Preload completed: 3 songs ready
+player-core.js?v=1765505385:1808 Howler loaded, duration: 215.8
+player-core.js?v=1765505385:3125 ✅ Next song already cached: 347
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 2, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 7, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 12, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 17, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 22, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 27, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 32, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 37, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 42, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 47, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 52, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 57, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 62, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 67, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 72, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 77, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 189, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 194, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 199, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 204, volume: 100, …}
+player-core.js?v=1765505385:909 Starting crossfade...
+player-core.js?v=1765505385:921 ⚡ Crossfade using cached stream: 347
+player-core.js?v=1765505385:942 Next song type: hls URL: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/347/playlist.m3u8
+player-core.js?v=1765505385:3180 🔍 Queue Check: 11 songs remaining (queueIndex: 2/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 209, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 2, song: 'Dancin', time: 214, volume: 100, …}
+player-core.js?v=1765505385:1128 Crossfade complete, now playing: Dark Days
+player-core.js?v=1765505385:3125 ✅ Next song already cached: 348
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 215, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 215, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 10 songs remaining (queueIndex: 3/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 9, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 14, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 10 songs remaining (queueIndex: 3/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 19, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 24, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 10 songs remaining (queueIndex: 3/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 29, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 34, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 10 songs remaining (queueIndex: 3/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 39, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 44, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 10 songs remaining (queueIndex: 3/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 49, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 54, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 10 songs remaining (queueIndex: 3/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 130, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 3, song: 'Dark Days', time: 135, volume: 100, …}
+player-core.js?v=1765505385:1529 ⚡ Using cached stream URL: 348
+player-core.js?v=1765505385:1711 🔍 Autoplay mode: true
+player-core.js?v=1765505385:1878 🔍 HLS Autoplay: true
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 137, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 137, volume: 100, …}
+player-core.js?v=1765505385:3033 🚀 Aggressive Preload: Loading next 3 songs...
+player-core.js?v=1765505385:3033 🚀 Aggressive Preload: Loading next 3 songs...
+player-core.js?v=1765505385:1981 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/348/key
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 351
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 351
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 137, volume: 100, …}
+player-core.js?v=1765505385:1985 ✅ Key loaded successfully for song: 348
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 350
+player-core.js?v=1765505385:3043 ✅ Aggressive Preload completed: 3 songs ready
+player-core.js?v=1765505385:3086 ✅ Preloaded & cached: 350
+player-core.js?v=1765505385:3043 ✅ Aggressive Preload completed: 3 songs ready
+player-core.js?v=1765505385:2123 HLS loaded, duration: 148.46131100000002
+player-core.js?v=1765505385:2018 ✅ HLS basariyla basladi
+player-core.js?v=1765505385:3125 ✅ Next song already cached: 349
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 4, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 9, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 14, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 19, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 24, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 29, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 34, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 39, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 44, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 49, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 54, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 59, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 64, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 69, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 74, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 79, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 84, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 89, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 94, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 99, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 104, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 109, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 114, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 119, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 124, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 129, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 134, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 139, volume: 100, …}
+player-core.js?v=1765505385:2102 🎵 HLS timeupdate crossfade trigger, remaining: 6.96
+player-core.js?v=1765505385:909 Starting crossfade...
+player-core.js?v=1765505385:925 ⏳ Crossfade fetching from API: 349
+player-core.js?v=1765505385:942 Next song type: hls URL: https://muzibu.com.tr/storage/tenant1001/muzibu/hls/349/playlist.m3u8
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 144, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 9 songs remaining (queueIndex: 4/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 4, song: 'DAYDREAMING', time: 148, volume: 100, …}
+player-core.js?v=1765505385:1128 Crossfade complete, now playing: Death Of A Bachelor
+player-core.js?v=1765505385:3125 ✅ Next song already cached: 350
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 148, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 148, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 11, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 8 songs remaining (queueIndex: 5/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 16, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 21, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 8 songs remaining (queueIndex: 5/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 26, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 31, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 8 songs remaining (queueIndex: 5/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 36, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 41, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 8 songs remaining (queueIndex: 5/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 46, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 51, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 8 songs remaining (queueIndex: 5/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 56, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 61, volume: 100, …}
+player-core.js?v=1765505385:3180 🔍 Queue Check: 8 songs remaining (queueIndex: 5/13)
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 66, volume: 100, …}
+player-core.js?v=1765505385:610 💾 Full state saved: {queue: 13, index: 5, song: 'Death Of A Bachelor', time: 71, volume: 100, …}

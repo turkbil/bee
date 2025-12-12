@@ -291,10 +291,10 @@ class SubscriptionService
             ];
         }
 
-        // 2. Abonelik yok/bitti
+        // 2. Abonelik yok/bitti - subscription gerekli
         return [
-            'status' => 'preview',
-            'duration' => 30, // saniye
+            'status' => 'subscription_required',
+            'message' => 'Müzik dinlemek için premium üyelik gereklidir',
         ];
     }
 }

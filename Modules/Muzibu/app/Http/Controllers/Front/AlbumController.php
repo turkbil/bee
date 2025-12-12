@@ -39,7 +39,11 @@ class AlbumController extends Controller
             ->orderBy('song_id')
             ->get();
 
-        return view('themes.muzibu.albums.show', compact('album', 'songs'));
+        return response()
+            ->view('themes.muzibu.albums.show', compact('album', 'songs'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function apiIndex()
@@ -53,7 +57,11 @@ class AlbumController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(200);
         $html = view('themes.muzibu.partials.albums-grid', compact('albums'))->render();
-        return response()->json(['html' => $html, 'meta' => ['title' => 'Albümler - Muzibu', 'description' => 'En yeni albümleri keşfedin']]);
+
+        return response()->json(['html' => $html, 'meta' => ['title' => 'Albümler - Muzibu', 'description' => 'En yeni albümleri keşfedin']])
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function apiShow($slug)
@@ -63,6 +71,10 @@ class AlbumController extends Controller
         $html = view('themes.muzibu.partials.album-detail', compact('album', 'songs'))->render();
         $titleJson = @json_decode($album->title);
         $title = $titleJson && isset($titleJson->tr) ? $titleJson->tr : $album->title;
-        return response()->json(['html' => $html, 'meta' => ['title' => $title . ' - Muzibu', 'description' => 'Albümü dinleyin']]);
+
+        return response()->json(['html' => $html, 'meta' => ['title' => $title . ' - Muzibu', 'description' => 'Albümü dinleyin']])
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 }

@@ -8,9 +8,9 @@ return [
         'width' => null,
         'height' => null,
         'fit' => 'max',
-        'format' => null,
-        'quality' => null,
-        'optimize' => false,
+        'format' => 'webp', // ⚠️ DO NOT REMOVE - Performance optimization
+        'quality' => 85, // ⚠️ DO NOT REMOVE - Quality/size balance
+        'optimize' => true, // ⚠️ DO NOT REMOVE - Image optimization
         'upscale' => false,
         'skip_extensions' => ['svg'],
     ],
@@ -34,12 +34,14 @@ return [
             'width' => 800,
             'height' => 600,
             'quality' => 85,
+            'format' => 'webp', // ⚠️ DO NOT REMOVE - Performance
             'optimize' => true,
         ],
         'large' => [
             'width' => 1280,
             'height' => 720,
             'quality' => 90,
+            'format' => 'webp', // ⚠️ DO NOT REMOVE - Performance
             'optimize' => true,
         ],
     ],

@@ -29,7 +29,7 @@
                 <i class="fas fa-step-backward"></i>
             </button>
             <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black transition-all shadow-lg hover:shadow-white/50" @click="togglePlayPause()">
-                <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play ml-0.5'"></i>
+                <i :class="isPlaying ? 'fas fa-stop' : 'fas fa-play ml-0.5'"></i>
             </button>
             <button class="text-muzibu-text-gray hover:text-white transition-all" @click="nextTrack()">
                 <i class="fas fa-step-forward"></i>

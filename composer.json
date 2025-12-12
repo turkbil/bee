@@ -52,7 +52,7 @@
         "spatie/laravel-medialibrary": "^11.12",
         "spatie/laravel-missing-page-redirector": "*",
         "spatie/laravel-permission": "^6.16",
-        "spatie/laravel-responsecache": "*",
+        "spatie/laravel-responsecache": "^7.7",
         "spatie/laravel-sitemap": "*",
         "spatie/schema-org": "*",
         "stancl/tenancy": "^3.8",

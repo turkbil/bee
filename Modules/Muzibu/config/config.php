@@ -12,10 +12,7 @@ return [
 
     // 🎵 Stream Settings
     'stream' => [
-        'preview_duration' => 30,  // Preview süresi (saniye) - Guest & Free
         'hls_timeout' => 6,        // HLS fallback timeout (saniye)
-        'preview_chunks' => 3,     // Preview için chunk sayısı
-        'buffer_chunks' => 1,      // Buffer chunk sayısı
     ],
 
     // 🔐 Session Settings

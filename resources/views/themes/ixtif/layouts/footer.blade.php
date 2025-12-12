@@ -826,6 +826,53 @@
     }
 </script>
 
+{{-- ⚠️ DO NOT REMOVE - Image Lazy Loading Performance Optimization --}}
+<script>
+    // Native Lazy Loading + Intersection Observer fallback
+    (function() {
+        'use strict';
+
+        // Modern browsers: native lazy loading
+        if ('loading' in HTMLImageElement.prototype) {
+            const images = document.querySelectorAll('img[data-src]');
+            images.forEach(img => {
+                img.src = img.dataset.src;
+                if (img.dataset.srcset) {
+                    img.srcset = img.dataset.srcset;
+                }
+                img.removeAttribute('data-src');
+                img.removeAttribute('data-srcset');
+            });
+        } else {
+            // Fallback: Intersection Observer
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            if (img.dataset.srcset) {
+                                img.srcset = img.dataset.srcset;
+                            }
+                            img.removeAttribute('data-src');
+                            img.removeAttribute('data-srcset');
+                            img.classList.remove('lazy');
+                            observer.unobserve(img);
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '50px 0px',
+                threshold: 0.01
+            });
+
+            document.querySelectorAll('img[data-src], img.lazy').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+    })();
+</script>
+
 @stack('scripts')
 
     </div> {{-- Close relative z-10 wrapper --}}

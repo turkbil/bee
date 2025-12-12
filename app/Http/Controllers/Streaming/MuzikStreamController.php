@@ -104,7 +104,7 @@ class MuzikStreamController extends Controller
 
         try {
             // 🎯 SUBSCRIPTION ACCESS CHECK (Phase 5)
-            // Frontend'de 30 saniye kontrolü yapılıyor, burada sadece log
+            // Access kontrolü log amaçlı (subscription_required kontrolü API'de yapılıyor)
             if (auth()->check()) {
                 $subscriptionService = app(\Modules\Subscription\App\Services\SubscriptionService::class);
                 $access = $subscriptionService->checkUserAccess(auth()->user());
@@ -117,8 +117,8 @@ class MuzikStreamController extends Controller
                     'file' => $filename,
                 ]);
 
-                // Not: Frontend'de hls.js 30 saniye kontrolü yapıyor
-                // Backend'de hard limit yok - frontend sorumlu
+                // Not: Premium/trial kullanıcılar sınırsız stream alır
+                // Ücretsiz kullanıcılar API'den 402 status code alır
             } else {
                 Log::info('🎵 Guest stream', ['song_hash' => $songHash, 'file' => $filename]);
             }

@@ -764,3 +764,18 @@ Route::get('/csrf-refresh', function () {
 })->name('csrf.refresh')->middleware('web');
 Route::get('/test-megamenu-v3', function() { return view('themes.ixtif.pages.test-megamenu-v3'); });
 
+
+// 🔍 AUTH DEBUG ENDPOINT (geçici)
+Route::get("/test-auth-debug", function () {
+    return response()->json([
+        "auth_check" => Auth::check(),
+        "user" => Auth::check() ? [
+            "id" => Auth::user()->id,
+            "name" => Auth::user()->name,
+            "email" => Auth::user()->email,
+        ] : null,
+        "session_id" => substr(session()->getId(), 0, 20) . "...",
+        "session_driver" => config("session.driver"),
+        "has_session_cookie" => request()->hasCookie(config("session.cookie")),
+    ]);
+})->middleware("web");

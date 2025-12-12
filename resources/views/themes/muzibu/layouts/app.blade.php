@@ -198,7 +198,6 @@
         @include('themes.muzibu.components.lyrics-overlay')
         @include('themes.muzibu.components.keyboard-shortcuts-overlay')
         @include('themes.muzibu.components.loading-overlay')
-        @include('themes.muzibu.components.bottom-nav')
     </div>
 
     {{-- Auth Modal - REMOVED: Users now go to /login and /register pages directly --}}
@@ -297,7 +296,9 @@
                 trial_ends_at: {!! $trialEndsAt ? '"' . $trialEndsAt . '"' : 'null' !!},
                 subscription_ends_at: {!! $subscriptionEndsAt ? '"' . $subscriptionEndsAt . '"' : 'null' !!}
             }
-            @else null @endif,
+            @else
+                null
+            @endif,
             {{-- todayPlayedCount kaldırıldı - 3 şarkı limiti devre dışı --}}
             tenantId: {{ tenant('id') }},
             // 🔥 Config values (Muzibu module)
@@ -306,9 +307,7 @@
             @else
                 deviceLimit: 1,
             @endif
-            sessionPollingInterval: {{ config('muzibu.session.polling_interval') }},
-            previewDuration: {{ config('muzibu.stream.preview_duration') }},
-            previewChunks: {{ config('muzibu.stream.preview_chunks') }}
+            sessionPollingInterval: {{ config('muzibu.session.polling_interval', 30000) }}
         };
 
         // 🔐 CSRF Token Auto-Renewal (419 hatası önleme)

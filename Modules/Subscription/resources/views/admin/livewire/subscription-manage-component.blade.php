@@ -158,25 +158,31 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label required">Başlangıç Tarihi</label>
-                                <input type="date"
+                                <label class="form-label required">
+                                    <i class="fas fa-calendar-plus text-primary me-1"></i>
+                                    Başlangıç Tarihi ve Saati
+                                </label>
+                                <input type="datetime-local"
                                        class="form-control @error('started_at') is-invalid @enderror"
                                        wire:model.live="started_at">
                                 @error('started_at')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <small class="text-muted">Tarih ve saat seçin (ör: 12 Ara 2025, 14:30)</small>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label required">Bitiş Tarihi</label>
-                                <input type="date"
+                                <label class="form-label required">
+                                    <i class="fas fa-calendar-check text-success me-1"></i>
+                                    Bitiş Tarihi ve Saati
+                                </label>
+                                <input type="datetime-local"
                                        class="form-control @error('current_period_end') is-invalid @enderror"
-                                       wire:model="current_period_end"
-                                       readonly>
+                                       wire:model="current_period_end">
                                 @error('current_period_end')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted">Seçilen süreye göre otomatik hesaplanır</small>
+                                <small class="text-muted">Otomatik hesaplanır, manuel değiştirilebilir</small>
                             </div>
                         </div>
                     </div>

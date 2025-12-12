@@ -73,13 +73,6 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // 🔍 DEBUG: Login başlangıcı
-        \Log::info('🔐 LOGIN START', [
-            'email' => $request->input('email'),
-            'ip' => $request->ip(),
-            'session_id_before' => session()->getId(),
-        ]);
-
         $request->authenticate();
 
         // Son giriş zamanını güncelle

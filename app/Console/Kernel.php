@@ -75,19 +75,6 @@ class Kernel extends ConsoleKernel
                  ->withoutOverlapping()
                  ->appendOutputTo(storage_path('logs/telescope-prune.log'));
 
-        // Plesk Orphan Database Cleanup - Günlük (03:30)
-        $schedule->command('plesk:clean-orphan-databases')
-                 ->daily()
-                 ->at('03:30')
-                 ->withoutOverlapping()
-                 ->appendOutputTo(storage_path('logs/plesk-cleanup.log'));
-
-        // TEST: Her 5 dakikada bir çalıştır (production'da kapat)
-        // $schedule->command('plesk:clean-orphan-databases')
-        //          ->everyFiveMinutes()
-        //          ->withoutOverlapping()
-        //          ->appendOutputTo(storage_path('logs/plesk-cleanup.log'));
-
         // Horizon Snapshot - Her 15 dakika (Horizon varsa)
         if (class_exists(\Laravel\Horizon\Console\SnapshotCommand::class)) {
             $schedule->command('horizon:snapshot')

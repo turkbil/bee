@@ -49,6 +49,9 @@ $app = Application::configure(basePath: dirname(__DIR__))
                      \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO
         );
 
+        // 0.5. WWW REDIRECT - KALDIRILDI (POST request'leri bozuyordu)
+        // $middleware->prependToGroup('web', \App\Http\Middleware\EnsureWwwDomain::class);
+
         // 1. TENANT - Domain belirleme (EN ÖNCELİKLİ) - Sadece web
         $middleware->prependToGroup('web', \App\Http\Middleware\InitializeTenancy::class);
         

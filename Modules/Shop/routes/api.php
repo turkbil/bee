@@ -16,5 +16,6 @@ use Modules\Shop\App\Http\Controllers\Api\ShopApiController;
 
 Route::prefix('v1/shops')->group(function () {
     Route::get('/', [ShopApiController::class, 'index'])->name('api.shops.index');
+    Route::get('mega-menu', [ShopApiController::class, 'megaMenu'])->name('api.shops.megaMenu'); // ⚠️ DO NOT REMOVE - Lazy loading
     Route::get('{slug}', [ShopApiController::class, 'show'])->name('api.shops.show');
 });

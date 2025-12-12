@@ -74,15 +74,6 @@ Route::prefix('muzibu')->group(function () {
             ->name('api.muzibu.songs.serve')
             ->middleware(['signed.url', 'throttle.user:stream']); // 🔐 Signed URL + rate limiting
 
-        // 🎯 Dynamic Playlist (User tipine göre 4 chunk: 3 çal + 1 buffer)
-        Route::get('/{id}/playlist', [SongController::class, 'dynamicPlaylist'])
-            ->name('api.muzibu.songs.dynamic-playlist')
-            ->middleware('throttle.user:stream');
-
-        // 🔒 Chunk Serve (Token-based authorization)
-        Route::get('/{id}/chunk/{chunkName}', [SongController::class, 'serveChunk'])
-            ->name('api.muzibu.songs.serve-chunk')
-            ->middleware('throttle.user:stream');
 
         Route::get('/{id}/conversion-status', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'checkConversionStatus'])
             ->name('api.muzibu.songs.conversion-status')

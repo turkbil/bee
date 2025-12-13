@@ -1,0 +1,437 @@
+nalizler
+Yazı tipi görüntüleme Tahmini tasarruf: 370 ms.
+Metnin her zaman görünmesini sağlamak için font-display özelliğini swap veya optional olarak ayarlayabilirsiniz. swap, yazı tipi metriği geçersiz kılmalarıyla düzen kaymalarını azaltmak için daha fazla optimize edilebilir.FCPPuanlanmamış
+URL
+Tahmini Tasarruf
+ixtif.com 1. taraf
+…webfonts/fa-regular-400.woff2(ixtif.com)
+370 msn
+…webfonts/fa-solid-900.woff2(ixtif.com)
+310 msn
+…webfonts/fa-light-300.woff2(ixtif.com)
+270 msn
+…webfonts/fa-brands-400.woff2(ixtif.com)
+200 msn
+Verimli önbellek sürelerini kullanın Tahmini tasarruf: 1.343 KiB
+Uzun önbellek ömrü, sayfanızın tekrar ziyaret edilmesi sürecini hızlandırabilir. Daha fazla bilgi edinin.LCPFCPPuanlanmamış
+İstek
+TTL'yi Önbelleğe Alma
+Aktarım Boyutu
+ixtif.com 1. taraf
+1.143 KiB
+…webfonts/fa-light-300.woff2(ixtif.com)
+None
+349 KiB
+…webfonts/fa-regular-400.woff2(ixtif.com)
+None
+326 KiB
+…webfonts/fa-solid-900.woff2(ixtif.com)
+None
+254 KiB
+…webfonts/fa-brands-400.woff2(ixtif.com)
+None
+99 KiB
+…css/all.css(ixtif.com)
+None
+38 KiB
+/css/tenant-2.css?v=176…(ixtif.com)
+None
+26 KiB
+/js/app.js?id=b20223b…(ixtif.com)
+None
+22 KiB
+…js/ai-chat.js?v=176…(ixtif.com)
+None
+6 KiB
+…css/homepage.css(ixtif.com)
+None
+3 KiB
+/js/core-system.js?v=1.0.0(ixtif.com)
+None
+3 KiB
+…css/ai-chat.css?v=176…(ixtif.com)
+None
+3 KiB
+…js/homepage.js(ixtif.com)
+None
+2 KiB
+/js/ga-events.js?v=1.0.0(ixtif.com)
+None
+2 KiB
+/css/ixtif-bundle.min.css(ixtif.com)
+None
+2 KiB
+/js/ixtif-theme.js?v=176…(ixtif.com)
+None
+1 KiB
+/js/instantpage.js(ixtif.com)
+None
+1 KiB
+/js/web-share.js(ixtif.com)
+None
+1 KiB
+/css/back-to-top.css(ixtif.com)
+None
+1 KiB
+/js/back-to-top.js(ixtif.com)
+None
+1 KiB
+/js/favorites.js?v=176…(ixtif.com)
+None
+1 KiB
+…ixtif/main.js?v=1.0.1(ixtif.com)
+None
+1 KiB
+Facebook social 
+133 KiB
+/en_US/fbevents.js(connect.facebook.net)
+20d
+94 KiB
+…config/861…?v=…(connect.facebook.net)
+20d
+38 KiB
+/tr/?id=…(www.facebook.com)
+None
+0 KiB
+Yandex Metrica analytics 
+84 KiB
+/metrika/tag.js(mc.yandex.ru)
+1 sa
+82 KiB
+/sync_cook…?cid=…(mc.yandex.ru)
+None
+1 KiB
+/metrika/advert.gif(mc.yandex.com)
+1 sa
+1 KiB
+/sync_cook…?cid=104…&scid=5beaf0f6-…&token=10874.-3HxYD2Lw…(mc.yandex.com)
+None
+0 KiB
+Clarity utility 
+26 KiB
+/0.8.43/clarity.js(scripts.clarity.ms)
+1g
+26 KiB
+JSDelivr CDN cdn 
+49 KiB
+…swiper@11/swiper-bundle.min.js(cdn.jsdelivr.net)
+7g
+44 KiB
+…swiper@11/swiper-bundle.min.css(cdn.jsdelivr.net)
+7g
+5 KiB
+Resim yayınlamayı kolaylaştırın Tahmini tasarruf: 1.189 KiB
+Resimlerin indirme süresini kısaltmak, sayfanın algılanan yükleme süresini ve LCP'yi daha iyi hale getirebilir. Resim boyutunu optimize etme hakkında daha fazla bilgi edinin.LCPFCPPuanlanmamış
+URL
+Kaynak Boyutu
+Tahmini Tasarruf
+ixtif.com 1. taraf
+1.424,2 KiB	1.188,9 KiB
+İXTİF İstif Makinesi
+<img src="https://ixtif.com/storage/tenant2/4/hero.png" alt="İXTİF İstif Makinesi" class="h-auto object-contain" loading="lazy">
+…4/hero.png(ixtif.com)
+973,1 KiB
+901,1 KiB
+Modern bir resim biçimi (WebP, AVIF) kullanmak veya resim sıkıştırmasını artırmak bu resmin indirme boyutunu küçültebilir.
+589,1 KiB
+Bu resim dosyası, görüntülenen boyutlarına (665x665) göre olması gerekenden (1536x1536) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+790,7 KiB
+İXTİF Teslimat
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager">
+/thumbmaker?src=…(ixtif.com)
+137,1 KiB
+66,0 KiB
+Resim sıkıştırma faktörünü artırarak bu resmin indirme boyutunu küçültebilirsiniz.
+6,9 KiB
+Bu resim dosyası, görüntülenen boyutlarına (665x657) göre olması gerekenden (900x889) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+62,3 KiB
+iXtif
+<img src="https://ixtif.com/storage/tenant2/318/lodwewkta8ruso2sa9uza4tcflgkw5kk0geu…" alt="iXtif" class="hidden dark:block object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto">
+…318/lodwewkta8ruso2sa9uza4tcflgkw5kk0geuyzus.png(ixtif.com)
+52,7 KiB
+51,0 KiB
+Bu resim dosyası, görüntülenen boyutlarına (455x168) göre olması gerekenden (2512x927) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+51,0 KiB
+HELI Forklift
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="HELI Forklift" class="h-auto object-contain" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+81,5 KiB
+37,0 KiB
+Bu resim dosyası, görüntülenen boyutlarına (665x657) göre olması gerekenden (900x889) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+37,0 KiB
+EP Elektrikli İstif
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="EP Elektrikli İstif" class="h-auto object-contain" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+51,5 KiB
+23,4 KiB
+Bu resim dosyası, görüntülenen boyutlarına (665x657) göre olması gerekenden (900x889) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+23,4 KiB
+İXTİF EFL352 - 3.5 Ton Li-Ion Forklift
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF EFL352 - 3.5 Ton Li-Ion Forklift" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-pr…" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+23,1 KiB
+20,8 KiB
+Bu resim dosyası, görüntülenen boyutlarına (126x126) göre olması gerekenden (400x400) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+20,8 KiB
+İXTİF TCL101 - 1.0 Ton 80V Li-Ion Üç Tekerli Forklift
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF TCL101 - 1.0 Ton 80V Li-Ion Üç Tekerli Forklift" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-pr…" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+21,0 KiB
+18,9 KiB
+Bu resim dosyası, görüntülenen boyutlarına (126x126) göre olması gerekenden (400x400) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+18,9 KiB
+İXTİF CPD18TVL - Li-Ion Forklift
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF CPD18TVL - Li-Ion Forklift" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-pr…" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+18,3 KiB
+16,4 KiB
+Bu resim dosyası, görüntülenen boyutlarına (126x126) göre olması gerekenden (400x400) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+16,4 KiB
+İXTİF CPD20TVL - Li-Ion Forklift
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF CPD20TVL - Li-Ion Forklift" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-pr…" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+18,2 KiB
+16,4 KiB
+Bu resim dosyası, görüntülenen boyutlarına (126x126) göre olması gerekenden (400x400) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+16,4 KiB
+İXTİF WSA161i - 1.6 Ton Ağır Hizmet Başlangıç Kaldırmalı İstif Makinesi
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF WSA161i - 1.6 Ton Ağır Hizmet Başlangıç Kaldırmalı İstif Makinesi" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-pr…" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+11,8 KiB
+10,7 KiB
+Bu resim dosyası, görüntülenen boyutlarına (126x126) göre olması gerekenden (400x400) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+10,7 KiB
+İXTİF EPT20 ET - 2.0 Ton Akülü Transpalet
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF EPT20 ET - 2.0 Ton Akülü Transpalet" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-pr…" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+11,7 KiB
+10,6 KiB
+Bu resim dosyası, görüntülenen boyutlarına (126x126) göre olması gerekenden (400x400) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+10,6 KiB
+İXTİF F4 - 1.5 Ton Li-Ion Transpalet
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF F4 - 1.5 Ton Li-Ion Transpalet" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-pr…" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+12,7 KiB
+8,7 KiB
+Bu resim dosyası, görüntülenen boyutlarına (224x224) göre olması gerekenden (400x400) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+8,7 KiB
+İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF F4 201 - 2.0 Ton Li-Ion Transpalet" class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-pr…" loading="lazy">
+/thumbmaker?src=…(ixtif.com)
+11,5 KiB
+7,9 KiB
+Bu resim dosyası, görüntülenen boyutlarına (224x224) göre olması gerekenden (400x400) daha büyük. Resim indirme boyutunu küçültmek için duyarlı resimler kullanın.
+7,9 KiB
+Yinelenen JavaScript Tahmini tasarruf: 44 KiB
+Ağ etkinliğinin kullandığı bayt sayısını azaltmak için paketlerden büyük, yinelenen JavaScript modüllerini kaldırın.LCPFCPPuanlanmamış
+Kaynak
+Yinelenen baytlar
+0
+40 KiB
+…swiper@11/swiper-bundle.min.js(cdn.jsdelivr.net)
+--
+…swiper@11/swiper-bundle.min.js(cdn.jsdelivr.net)
+40 KiB
+Eski JavaScript Tahmini tasarruf: 13 KiB
+Polyfill'ler ve dönüşümler, daha eski tarayıcıların yeni JavaScript özelliklerini kullanmasını sağlar. Ancak, çoğu modern tarayıcılar için gerekli değildir. Daha eski tarayıcıları desteklemeniz gerekmediğinden eminseniz JavaScript derleme işleminizi Baseline özelliklerini çevirecek şekilde değiştirmeyi düşünün. Çoğu sitenin neden ES6+ kodunu çevirmeden dağıtabildiğini öğreninLCPFCPPuanlanmamış
+URL
+Boşa harcanan bayt miktarı
+Facebook social 
+12,6 KiB
+/en_US/fbevents.js(connect.facebook.net)
+12,6 KiB
+/en_US/fbevents.js:24:6382(connect.facebook.net)
+@babel/plugin-transform-classes
+/en_US/fbevents.js:24:2819(connect.facebook.net)
+@babel/plugin-transform-regenerator
+/en_US/fbevents.js:24:5990(connect.facebook.net)
+@babel/plugin-transform-spread
+/en_US/fbevents.js:268:22961(connect.facebook.net)
+Array.from
+/en_US/fbevents.js:268:25570(connect.facebook.net)
+Array.prototype.filter
+/en_US/fbevents.js:268:28645(connect.facebook.net)
+Array.prototype.find
+/en_US/fbevents.js:268:25097(connect.facebook.net)
+Array.prototype.includes
+/en_US/fbevents.js:268:28134(connect.facebook.net)
+Array.prototype.indexOf
+/en_US/fbevents.js:268:15250(connect.facebook.net)
+Array.prototype.map
+/en_US/fbevents.js:268:27059(connect.facebook.net)
+String.prototype.startsWith
+Düzen kayması sorununun nedenleri
+Düzen kaymaları, öğeler herhangi bir kullanıcı etkileşimi olmadan hareket ettiğinde gerçekleşir. Öğelerin eklenmesi, kaldırılması veya sayfa yüklenirken yazı tiplerinin değişmesi gibi düzen kaymalarının nedenlerini araştırın.CLSPuanlanmamış
+Öğe
+Düzen kayması puanı
+Toplam
+0,112
+Efsane Yılsonu Fırsatları İXTİF'te Başladı! 🔥 İXTİF F4 - 1.5 Ton Li-Ion Transpa…
+<section class="w-full py-8 relative overflow-hidden" x-data="{ viewMode: (window.innerWidth < 1024 ? 'list' : 'grid'), // Cook…" x-init="init()">
+0,084
+EP İLE MODERN DEPOLAR Elektrikli motor, düşük işletme maliyeti, sessiz çalışma…
+<div class="swiper heroSwiper relative swiper-fade swiper-initialized swiper-horizonta…">
+0,007
+EP İLE MODERN DEPOLAR Elektrikli motor, düşük işletme maliyeti, sessiz çalışma…
+<div class="swiper heroSwiper relative swiper-fade swiper-initialized swiper-horizonta…">
+0,005
+EP İLE MODERN DEPOLAR Elektrikli motor, düşük işletme maliyeti, sessiz çalışma…
+<div class="swiper heroSwiper relative swiper-fade swiper-initialized swiper-horizonta…">
+0,005
+EP İLE MODERN DEPOLAR Elektrikli motor, düşük işletme maliyeti, sessiz çalışma…
+<div class="swiper heroSwiper relative swiper-fade swiper-initialized swiper-horizonta…">
+0,005
+Element
+Layout shift score
+Toplam
+0,000
+Ürünler hakkında bilgi verebilirim
+<p x-text="currentMessage" class="text-[10px] font-bold leading-tight px-2" style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+0,000
+Element
+Layout shift score
+Toplam
+0,000
+Ürünler hakkında bilgi verebilirim
+<p x-text="currentMessage" class="text-[10px] font-bold leading-tight px-2" style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+0,000
+Element
+Layout shift score
+Toplam
+0,000
+Ürünler hakkında bilgi verebilirim
+<p x-text="currentMessage" class="text-[10px] font-bold leading-tight px-2" style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+0,000
+Element
+Layout shift score
+Toplam
+0,000
+Ürünler hakkında bilgi verebilirim
+<p x-text="currentMessage" class="text-[10px] font-bold leading-tight px-2" style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+0,000
+Element
+Layout shift score
+Toplam
+0,000
+Ürünler hakkında bilgi verebilirim
+<p x-text="currentMessage" class="text-[10px] font-bold leading-tight px-2" style="color: #667eea; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+0,000
+Zorunlu yeniden düzenleme
+DOM durumunda yapılan bir değişiklik nedeniyle stiller geçersiz kılındıktan sonra JavaScript, geometrik özellikler (ör. offsetWidth) sorguladığında zorunlu yeniden düzenleme gerçekleşir. Bu durum, performansın düşmesine neden olabilir. Zorunlu yeniden düzenlemeler ve olası çözümleri hakkında daha fazla bilgi edinin.Puanlanmamış
+En çok zaman alan işlev çağrısı
+Toplam yeniden düzenleme süresi
+/livewire/livewire.js?id=df3a17f2:10212:51(ixtif.com)
+71 msn
+Kaynak
+Toplam yeniden düzenleme süresi
+[ilişkilendirilmemiş]
+116 msn
+/metrika/tag.js:16:172(mc.yandex.ru)
+3 msn
+/0.8.43/clarity.js:2:29736(scripts.clarity.ms)
+21 msn
+/en_US/fbevents.js:268:94539(connect.facebook.net)
+2 msn
+/js/back-to-top.js:39:33(ixtif.com)
+2 msn
+…js/homepage.js:217:39(ixtif.com)
+4 msn
+…swiper@11/swiper-bundle.min.js:13:10640(cdn.jsdelivr.net)
+12 msn
+…swiper@11/swiper-bundle.min.js:13:4766(cdn.jsdelivr.net)
+1 msn
+…swiper@11/swiper-bundle.min.js:13:16608(cdn.jsdelivr.net)
+14 msn
+…js/homepage.js:107:32(ixtif.com)
+14 msn
+…js/homepage.js:85:33(ixtif.com)
+22 msn
+1 msn
+33 msn
+/js/ixtif-theme.js?v=176…:1:1502(ixtif.com)
+10 msn
+/js/app.js?id=b20223b…:2:1525(ixtif.com)
+62 msn
+…swiper@11/swiper-bundle.min.js:13:48353(cdn.jsdelivr.net)
+1 msn
+…swiper@11/swiper-bundle.min.js:13:28699(cdn.jsdelivr.net)
+5 msn
+LCP dökümü
+Her alt bölüm için belirli iyileştirme stratejileri vardır. İdeal olarak LCP süresinin çoğu gecikmeler için değil, kaynakları yüklemek için harcanmalıdır.LCPPuanlanmamış
+Alt bölüm
+Süre
+Time to First Byte
+0 msn
+Kaynak yükleme gecikmesi
+1.540 msn
+Kaynak yükleme süresi
+1.550 msn
+Öğe oluşturma gecikmesi
+160 msn
+İXTİF Teslimat
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager">
+LCP istek keşfi
+LCP resmini HTML'den anında bulunabilir hale getirerek ve geç yüklemeden kaçınarak LCP'yi optimize edinLCPPuanlanmamış
+geç yükleme uygulanmadı
+fetchpriority=high uygulanmalıdır
+İstek, ilk dokümanda bulunabilir
+İXTİF Teslimat
+<img src="https://ixtif.com/thumbmaker?src=https%3A%2F%2Fixtif.com%2Fstorage%2Ftenan…" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager">
+Ağ bağımlılık ağacı
+Sayfaların daha kolay yüklenmesi için zincir uzunluğunu azaltarak, kaynakların indirme boyutunu küçülterek veya gereksiz kaynakların indirilmesini erteleyerek kritik istek zinciri oluşturmaktan kaçının.LCPPuanlanmamış
+Maksimum kritik yol gecikmesi: 3.148 msn
+İlk Gezinme
+https://ixtif.com - 1.571 msn, 59,45 KiB
+/livewire/livewire.js?id=df3a17f2(ixtif.com) - 3.148 msn, 75,00 KiB
+…lib/marked.umd.min.js(cdn.jsdelivr.net) - 1.963 msn, 11,74 KiB
+…js/ai-chat.js?v=176…(ixtif.com) - 2.140 msn, 5,63 KiB
+/js/ixtif-theme.js?v=176…(ixtif.com) - 2.140 msn, 1,48 KiB
+/css/tenant-2.css?v=176…(ixtif.com) - 1.865 msn, 26,28 KiB
+/js/favorites.js?v=176…(ixtif.com) - 2.140 msn, 1,11 KiB
+/js/instantpage.js(ixtif.com) - 1.610 msn, 1,44 KiB
+…swiper@11/swiper-bundle.min.js(cdn.jsdelivr.net) - 1.975 msn, 44,07 KiB
+…js/homepage.js(ixtif.com) - 2.139 msn, 2,38 KiB
+/css/ixtif-bundle.min.css(ixtif.com) - 1.762 msn, 2,09 KiB
+/css/back-to-top.css(ixtif.com) - 1.765 msn, 1,23 KiB
+…swiper@11/swiper-bundle.min.css(cdn.jsdelivr.net) - 1.559 msn, 5,38 KiB
+…css/homepage.css(ixtif.com) - 1.764 msn, 2,84 KiB
+…css/ai-chat.css?v=176…(ixtif.com) - 1.727 msn, 2,57 KiB
+Önceden bağlanmış kaynaklar
+Önceden bağlanma ipuçları, sayfa yüklenirken tarayıcının gerekli bağlantıları önceden kurmasına yardımcı olarak ilgili kaynağa yapılacak ilk istekte zaman kazandırır. Sayfanın önceden bağlantı kurduğu kaynaklar aşağıda verilmiştir.
+hiçbir kaynak önceden bağlanmadı
+Önceden bağlanma adayları
+En önemli kaynaklarınıza önceden bağlanma ipuçları ekleyin ancak 4'ten az ipucu kullanmaya çalışın.
+Kaynak
+Tahmini LCP tasarrufu
+https://www.google.com
+300 msn
+Oluşturma engelleme istekleri
+İstekler sayfanın ilk oluşturma işlemini engelliyor. Bu durum, LCP'yi geciktirebilir. Erteleme veya satır içine yerleştirme, bu ağ isteklerini kritik yoldan uzaklaştırabilir.LCPFCPPuanlanmamış
+URL
+Aktarım Boyutu
+Süre
+ixtif.com 1. taraf
+35,0 KiB	3.510 msn
+/css/tenant-2.css?v=176…(ixtif.com)
+26,3 KiB
+1.030 msn
+/css/back-to-top.css(ixtif.com)
+1,2 KiB
+620 msn
+…css/homepage.css(ixtif.com)
+2,8 KiB
+620 msn
+/css/ixtif-bundle.min.css(ixtif.com)
+2,1 KiB
+620 msn
+…css/ai-chat.css?v=176…(ixtif.com)
+2,6 KiB
+620 msn
+JSDelivr CDN cdn 
+5,4 KiB	900 msn
+…swiper@11/swiper-bundle.min.css(cdn.jsdelivr.net)
+5,4 KiB
+900 msn
+DOM boyutunu optimize edin
+3. taraflar
+Bu analizler Chrome Geliştirici Araçları Performans Paneli'nde de mevcuttur. Daha ayrıntılı bilgi görüntülemek için izleme kaydı oluşturun.

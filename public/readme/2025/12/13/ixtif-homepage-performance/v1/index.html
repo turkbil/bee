@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İXTİF Homepage Performans Analizi - Optimizasyon Planı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                ⚡ İXTİF Homepage Performans Analizi
+            </h1>
+            <div class="text-slate-400 text-lg mb-4">
+                Google Lighthouse performans raporuna dayalı optimizasyon planı
+            </div>
+            <div class="mt-4 flex flex-wrap gap-4 text-sm text-slate-500">
+                <span>📅 13 Aralık 2025</span>
+                <span>🎯 Tenant: ixtif.com</span>
+                <span>📊 Kaynak: b-html.txt</span>
+                <span>🎨 Hedef: Performans İyileştirme</span>
+            </div>
+        </header>
+
+        <!-- Özet İstatistikler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">📊 Tespit Edilen Sorunlar - Özet</h2>
+
+            <div class="grid md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-6">
+                    <div class="text-red-400 text-4xl font-bold mb-2">1.189 KB</div>
+                    <div class="text-slate-300 text-sm">Resim Optimizasyonu</div>
+                    <div class="text-slate-500 text-xs mt-1">Potansiyel tasarruf</div>
+                </div>
+
+                <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-6">
+                    <div class="text-yellow-400 text-4xl font-bold mb-2">1.343 KB</div>
+                    <div class="text-slate-300 text-sm">Cache Eksikliği</div>
+                    <div class="text-slate-500 text-xs mt-1">23 kaynak önbelleksiz</div>
+                </div>
+
+                <div class="bg-orange-900/30 border border-orange-700 rounded-lg p-6">
+                    <div class="text-orange-400 text-4xl font-bold mb-2">1.150 ms</div>
+                    <div class="text-slate-300 text-sm">Font Yükleme</div>
+                    <div class="text-slate-500 text-xs mt-1">4 webfont gecikmesi</div>
+                </div>
+
+                <div class="bg-purple-900/30 border border-purple-700 rounded-lg p-6">
+                    <div class="text-purple-400 text-4xl font-bold mb-2">44 KB</div>
+                    <div class="text-slate-300 text-sm">Yinelenen JS</div>
+                    <div class="text-slate-500 text-xs mt-1">Swiper.js iki kez</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ana Sorunlar ve Çözümler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🎯 Yapılacaklar - Öncelik Sırasına Göre</h2>
+
+            <!-- 1. Resim Optimizasyonu -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-red-300 mb-3">
+                            Resim Optimizasyonu - 1.189 KB Tasarruf
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">Kritik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Sorun:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">hero.png</strong> → 973 KB (901 KB tasarruf potansiyeli)</li>
+                                    <li>• WebP yerine PNG kullanılıyor</li>
+                                    <li>• Gösterim boyutundan çok daha büyük resimleryükleniyor</li>
+                                    <li>• Thumbmaker kullanan resimler de optimize edilebilir</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">WebP dönüşümü:</strong> Tüm PNG/JPG resimleri WebP formatına çevir (60-80% boyut azalması)</li>
+                                    <li>• <strong class="text-white">Responsive resimleri:</strong> srcset kullanarak farklı ekran boyutları için farklı boyutlar sun</li>
+                                    <li>• <strong class="text-white">Thumbmaker ayarları:</strong> Kalite parametresini 80-85 arasına çek (60'tan yükselt)</li>
+                                    <li>• <strong class="text-white">Lazy loading:</strong> Hero görseli dışındaki tüm resimlere loading="lazy" ekle</li>
+                                    <li>• <strong class="text-white">CDN kullanımı:</strong> Resimleri CDN üzerinden sun (Cloudflare Images veya BunnyCDN)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm">Sayfa yükleme süresi <strong class="text-white">1-2 saniye</strong> azalacak. LCP (Largest Contentful Paint) metriği önemli ölçüde iyileşecek. Mobil kullanıcılar için veri tasarrufu sağlanacak.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Cache Politikası -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-yellow-300 mb-3">
+                            Browser Cache Eksikliği - 1.343 KB
+                            <span class="ml-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">Yüksek Öncelik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Sorun:</h4>
+                                <p class="text-slate-300 text-sm mb-3">23 kaynak hiç cache edilmiyor (TTL: None). Her sayfa yüklemesinde tekrar tekrar indiriliyor:</p>
+                                <div class="grid md:grid-cols-2 gap-2 text-sm">
+                                    <div class="bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-400">FontAwesome Webfontlar:</span>
+                                        <span class="text-white ml-2">928 KB</span>
+                                    </div>
+                                    <div class="bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-400">CSS Dosyaları:</span>
+                                        <span class="text-white ml-2">98 KB</span>
+                                    </div>
+                                    <div class="bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-400">JavaScript Dosyaları:</span>
+                                        <span class="text-white ml-2">63 KB</span>
+                                    </div>
+                                    <div class="bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-400">İçerik bundle'ları:</span>
+                                        <span class="text-white ml-2">254 KB</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">Nginx cache headers:</strong> Static asset'ler için uzun süreli cache (1 yıl)</li>
+                                    <li>• <strong class="text-white">Versiyonlama:</strong> CSS/JS dosyalarına hash veya versiyon ekle (app.js?v=hash)</li>
+                                    <li>• <strong class="text-white">Font cache:</strong> Webfontlar için 1 yıl cache-control header'ı ekle</li>
+                                    <li>• <strong class="text-white">ETags:</strong> Değişmemiş dosyalar için 304 Not Modified yanıtı</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm">Tekrarziyaretlerde <strong class="text-white">%80-90 daha hızlı</strong> yükleme. 1.3 MB'den fazla veri transferi engellenir. Server yükü azalır.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Font Display Optimizasyonu -->
+            <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-orange-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-orange-300 mb-3">
+                            Font Görüntüleme Gecikmesi - 1.150 ms
+                            <span class="ml-3 px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Yüksek Öncelik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Sorun:</h4>
+                                <p class="text-slate-300 text-sm mb-3">FontAwesome webfontları yüklenene kadar metin görünmüyor (FOIT - Flash of Invisible Text):</p>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">fa-regular-400.woff2</span>
+                                        <span class="text-red-400">370 ms gecikme</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">fa-solid-900.woff2</span>
+                                        <span class="text-red-400">310 ms gecikme</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">fa-light-300.woff2</span>
+                                        <span class="text-red-400">270 ms gecikme</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">fa-brands-400.woff2</span>
+                                        <span class="text-red-400">200 ms gecikme</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">font-display: swap</strong> ekle → Metin hemen görünsün, font yüklenince değişsin</li>
+                                    <li>• <strong class="text-white">Preload kritik fontlar:</strong> &lt;link rel="preload"&gt; ile en önemli fontları önceliklendir</li>
+                                    <li>• <strong class="text-white">Lokal hosting:</strong> FontAwesome CDN yerine kendi sunucudan sun (cache kontrolü)</li>
+                                    <li>• <strong class="text-white">Subset oluştur:</strong> Sadece kullanılan icon'ları içeren custom font oluştur (boyut %50-70 azalır)</li>
+                                    <li>• <strong class="text-white">WOFF2 formatı:</strong> Eski formatlar yerine sadece WOFF2 kullan (modern tarayıcılar için yeterli)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm">FCP (First Contentful Paint) <strong class="text-white">300-500 ms hızlanır</strong>. Kullanıcı sayfa yüklenirken boş ekran görmez. Icon'lar gecikmeden görünür.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Yinelenen JavaScript -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-purple-300 mb-3">
+                            Yinelenen JavaScript Kodu - 44 KB
+                            <span class="ml-3 px-3 py-1 bg-purple-600 text-white text-xs rounded-full">Orta Öncelik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Sorun:</h4>
+                                <p class="text-slate-300 text-sm mb-2">Swiper.js kütüphanesi iki kez yükleniyor (40 KB + 40 KB = 80 KB):</p>
+                                <div class="space-y-2 text-sm">
+                                    <div class="bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-red-400">❌</span>
+                                        <span class="text-slate-300 ml-2">cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js</span>
+                                        <span class="text-slate-500 ml-2">(İlk yükleme)</span>
+                                    </div>
+                                    <div class="bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-red-400">❌</span>
+                                        <span class="text-slate-300 ml-2">cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js</span>
+                                        <span class="text-slate-500 ml-2">(Tekrar yükleme)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">Kod incelemesi:</strong> Hangi dosyaların Swiper.js import ettiğini tespit et</li>
+                                    <li>• <strong class="text-white">Tek import:</strong> Global bir script olarak sadece bir kez yükle (layout.blade.php)</li>
+                                    <li>• <strong class="text-white">Module bundling:</strong> Webpack/Vite ile tek bundle'a topla, yinelemeyi engelle</li>
+                                    <li>• <strong class="text-white">Lazy load:</strong> Swiper kullanılan sayfalarda dinamik import yap</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm"><strong class="text-white">44 KB veri tasarrufu</strong>. JavaScript parse süresi azalır. Page load daha hızlı.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Eski JavaScript (Polyfills) -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">5</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-blue-300 mb-3">
+                            Gereksiz Polyfill'ler - 13 KB
+                            <span class="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Orta Öncelik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Sorun:</h4>
+                                <p class="text-slate-300 text-sm mb-2">Facebook Pixel (fbevents.js) eski tarayıcılar için polyfill içeriyor:</p>
+                                <ul class="text-slate-300 space-y-1 text-sm ml-4">
+                                    <li>• @babel/plugin-transform-classes</li>
+                                    <li>• @babel/plugin-transform-regenerator</li>
+                                    <li>• Array.from, Array.prototype.filter/find/includes polyfills</li>
+                                    <li>• String.prototype.startsWith polyfill</li>
+                                </ul>
+                                <p class="text-slate-400 text-sm mt-2">Modern tarayıcılar bu özellikleri zaten destekliyor, polyfill gereksiz.</p>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">Self-hosted analytics:</strong> Facebook Pixel yerine Google Analytics 4 veya Plausible kullan</li>
+                                    <li>• <strong class="text-white">Modern build:</strong> Babel config'i ES6+ target'a ayarla (IE11 desteği kaldır)</li>
+                                    <li>• <strong class="text-white">Script loading:</strong> 3rd party script'ler async/defer ile yükle (render blocking engelle)</li>
+                                    <li>• <strong class="text-white">Conditional loading:</strong> Sadece eski tarayıcılarda polyfill yükle (feature detection)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm"><strong class="text-white">13 KB azalma</strong>. JavaScript execution süresi kısalır. Modern tarayıcılarda native API kullanımı.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Düzen Kayması (Layout Shift) -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">6</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-green-300 mb-3">
+                            Düzen Kayması Sorunu - CLS: 0.112
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">Orta Öncelik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Sorun:</h4>
+                                <p class="text-slate-300 text-sm mb-3">Sayfa yüklenirken elementler hareket ediyor (CLS skoru: 0.112):</p>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">Ürün listesi section (x-data)</span>
+                                        <span class="text-red-400">0.084 shift</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">Hero Swiper (heroSwiper)</span>
+                                        <span class="text-yellow-400">0.007 shift</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">Aspect ratio:</strong> Resimler ve container'lara sabit yükseklik/genişlik oranı tanımla</li>
+                                    <li>• <strong class="text-white">Skeleton loading:</strong> İçerik yüklenirken placeholder göster (layout değişmesin)</li>
+                                    <li>• <strong class="text-white">Min-height:</strong> Dinamik içeriklere minimum yükseklik ver</li>
+                                    <li>• <strong class="text-white">Font preload:</strong> Font yüklenmeden önce fallback font kullan (boyut değişimi engelle)</li>
+                                    <li>• <strong class="text-white">x-cloak:</strong> Alpine.js elementlerine x-cloak ekle (render öncesi gizle)</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm">CLS skoru <strong class="text-white">0.1'in altına iner</strong> (iyi seviye). Kullanıcı deneyimi iyileşir, tıklama hataları azalır.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Zorunlu Yeniden Düzenleme (Forced Reflow) -->
+            <div class="bg-slate-800/50 border-l-4 border-cyan-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-cyan-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">7</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-cyan-300 mb-3">
+                            Zorunlu Yeniden Düzenleme - 116 ms
+                            <span class="ml-3 px-3 py-1 bg-cyan-600 text-white text-xs rounded-full">Düşük Öncelik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Sorun:</h4>
+                                <p class="text-slate-300 text-sm mb-2">JavaScript kodları DOM geometrik ölçümlerini sık sık okuyor (layout thrashing):</p>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">Livewire (livewire.js)</span>
+                                        <span class="text-yellow-400">71 ms</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">Yandex Metrica</span>
+                                        <span class="text-yellow-400">3 ms</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">Swiper init</span>
+                                        <span class="text-yellow-400">42 ms</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">Batch DOM reads:</strong> Tüm ölçümleri önce oku, sonra yazma işlemlerini yap</li>
+                                    <li>• <strong class="text-white">CSS animations:</strong> JavaScript yerine CSS transition/animation kullan</li>
+                                    <li>• <strong class="text-white">RequestAnimationFrame:</strong> Layout değişikliklerini RAF içinde grupla</li>
+                                    <li>• <strong class="text-white">Virtual scrolling:</strong> Uzun listeler için sanal kaydırma kullan</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm">Scroll ve animasyon performansı <strong class="text-white">%30-40 iyileşir</strong>. 60 FPS smooth scrolling.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. LCP Optimizasyonu -->
+            <div class="bg-slate-800/50 border-l-4 border-pink-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-pink-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">8</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-pink-300 mb-3">
+                            LCP İyileştirmesi - 3.250 ms
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">Kritik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Sorun:</h4>
+                                <p class="text-slate-300 text-sm mb-3">En büyük içerik (LCP) çok geç yükleniyor. İXTİF Teslimat görseli:</p>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">TTFB (Time to First Byte)</span>
+                                        <span class="text-yellow-400">0 ms</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">Kaynak yükleme gecikmesi</span>
+                                        <span class="text-red-400">1.540 ms</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">Kaynak yükleme süresi</span>
+                                        <span class="text-red-400">1.550 ms</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">Element oluşturma gecikmesi</span>
+                                        <span class="text-yellow-400">160 ms</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">fetchpriority="high":</strong> LCP görseline yüksek öncelik ver</li>
+                                    <li>• <strong class="text-white">Preload:</strong> &lt;link rel="preload" as="image"&gt; ile LCP resmini önyükle</li>
+                                    <li>• <strong class="text-white">loading="eager":</strong> LCP elementi için lazy loading KALDIR (zaten var)</li>
+                                    <li>• <strong class="text-white">Above the fold:</strong> İlk ekranda görünen kritik CSS'i inline yap</li>
+                                    <li>• <strong class="text-white">CDN:</strong> Resimleri CDN'den sun (latency azalır)</li>
+                                    <li>• <strong class="text-white">Responsive images:</strong> Mobil için küçük boyut sun</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm">LCP <strong class="text-white">2.5 saniyenin altına</strong> iner (iyi seviye). Google PageSpeed skoru yükselir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. Render Blocking Resources -->
+            <div class="bg-slate-800/50 border-l-4 border-indigo-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-indigo-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">9</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-indigo-300 mb-3">
+                            Render Blocking CSS - 3.510 ms
+                            <span class="ml-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">Yüksek Öncelik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Sorun:</h4>
+                                <p class="text-slate-300 text-sm mb-3">6 CSS dosyası render'ı engelliyor (toplamm 40.4 KB):</p>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">tenant-2.css</span>
+                                        <span class="text-yellow-400">26.3 KB - 1.030 ms</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">swiper-bundle.min.css</span>
+                                        <span class="text-yellow-400">5.4 KB - 900 ms</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">homepage.css</span>
+                                        <span class="text-yellow-400">2.8 KB - 620 ms</span>
+                                    </div>
+                                    <div class="flex justify-between bg-slate-800 rounded px-3 py-2">
+                                        <span class="text-slate-300">3 diğer CSS dosyası</span>
+                                        <span class="text-yellow-400">5.9 KB - 1.860 ms</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">Critical CSS:</strong> İlk ekran için gerekli CSS'i &lt;style&gt; tag'i ile inline yap</li>
+                                    <li>• <strong class="text-white">Defer non-critical CSS:</strong> Kalan CSS'leri preload + onload ile async yükle</li>
+                                    <li>• <strong class="text-white">Bundle CSS:</strong> Birden fazla küçük CSS'i tek dosyada birleştir</li>
+                                    <li>• <strong class="text-white">Minify & Compress:</strong> CSS sıkıştırma ve Gzip/Brotli compression</li>
+                                    <li>• <strong class="text-white">Remove unused:</strong> PurgeCSS ile kullanılmayan CSS'leri temizle</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm">FCP (First Contentful Paint) <strong class="text-white">1-2 saniye</strong> hızlanır. Sayfa daha çabuk render olur.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. 3rd Party Scripts -->
+            <div class="bg-slate-800/50 border-l-4 border-rose-500 rounded-lg p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <div class="bg-rose-500 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">10</div>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold text-rose-300 mb-3">
+                            3rd Party Script Yönetimi
+                            <span class="ml-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">Orta Öncelik</span>
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-yellow-300 font-semibold mb-2">🖼️ Tespit Edilen 3rd Party Scripts:</h4>
+                                <div class="grid md:grid-cols-2 gap-3 text-sm">
+                                    <div class="bg-slate-800 rounded p-3">
+                                        <div class="text-blue-400 font-semibold mb-1">Facebook Pixel</div>
+                                        <div class="text-slate-400">133 KB (fbevents.js + config)</div>
+                                        <div class="text-slate-500 text-xs">20 gün cache</div>
+                                    </div>
+                                    <div class="bg-slate-800 rounded p-3">
+                                        <div class="text-blue-400 font-semibold mb-1">Yandex Metrica</div>
+                                        <div class="text-slate-400">84 KB (tag.js + sync)</div>
+                                        <div class="text-slate-500 text-xs">1 saat cache</div>
+                                    </div>
+                                    <div class="bg-slate-800 rounded p-3">
+                                        <div class="text-blue-400 font-semibold mb-1">Microsoft Clarity</div>
+                                        <div class="text-slate-400">26 KB (clarity.js)</div>
+                                        <div class="text-slate-500 text-xs">1 gün cache</div>
+                                    </div>
+                                    <div class="bg-slate-800 rounded p-3">
+                                        <div class="text-blue-400 font-semibold mb-1">JSDelivr CDN</div>
+                                        <div class="text-slate-400">49 KB (Swiper)</div>
+                                        <div class="text-slate-500 text-xs">7 gün cache</div>
+                                    </div>
+                                </div>
+                                <p class="text-red-300 text-sm mt-3">⚠️ Toplam 3rd party yük: <strong>292 KB</strong></p>
+                            </div>
+
+                            <div class="bg-slate-900/50 rounded-lg p-4">
+                                <h4 class="text-green-300 font-semibold mb-2">✅ Çözüm Stratejisi:</h4>
+                                <ul class="text-slate-300 space-y-2 text-sm">
+                                    <li>• <strong class="text-white">Async/Defer loading:</strong> Tüm analytics script'leri async veya defer ile yükle</li>
+                                    <li>• <strong class="text-white">Lazy load:</strong> Kullanıcı etkileşiminde yükle (scroll, click sonrası)</li>
+                                    <li>• <strong class="text-white">Self-host:</strong> Swiper gibi kritik kütüphaneleri kendi sunucundan sun</li>
+                                    <li>• <strong class="text-white">Consent management:</strong> Cookie onayı alınana kadar analytics yükleme</li>
+                                    <li>• <strong class="text-white">Minimize tracking:</strong> Gerçekten gerekli mi değerlendir, gereksizleri kaldır</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-blue-900/30 rounded-lg p-4">
+                                <h4 class="text-blue-300 font-semibold mb-2">🎯 Beklenen Sonuç:</h4>
+                                <p class="text-slate-300 text-sm">3rd party etkisi <strong class="text-white">%50-70 azalır</strong>. Sayfa yüklenirken external bağımlılık azalır. Privacy iyileşir.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Öncelik Matrisi -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">📊 Uygulama Öncelik Matrisi</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-800 border-b border-slate-700">
+                            <th class="text-left p-4 text-slate-300">Görev</th>
+                            <th class="text-left p-4 text-slate-300">Etki</th>
+                            <th class="text-left p-4 text-slate-300">Efor</th>
+                            <th class="text-left p-4 text-slate-300">Öncelik</th>
+                            <th class="text-left p-4 text-slate-300">Tahmini Kazanım</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">1. Resim Optimizasyonu</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-red-900/50 text-red-300 rounded text-xs">Çok Yüksek</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-yellow-900/50 text-yellow-300 rounded text-xs">Orta</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-red-600 text-white rounded text-xs font-semibold">P0 - Kritik</span></td>
+                            <td class="p-4 text-green-400 font-semibold">1-2 sn hızlanma</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">8. LCP İyileştirmesi</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-red-900/50 text-red-300 rounded text-xs">Çok Yüksek</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-green-900/50 text-green-300 rounded text-xs">Düşük</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-red-600 text-white rounded text-xs font-semibold">P0 - Kritik</span></td>
+                            <td class="p-4 text-green-400 font-semibold">0.8-1 sn hızlanma</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">2. Cache Politikası</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-orange-900/50 text-orange-300 rounded text-xs">Yüksek</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-green-900/50 text-green-300 rounded text-xs">Düşük</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-yellow-600 text-white rounded text-xs font-semibold">P1 - Yüksek</span></td>
+                            <td class="p-4 text-green-400 font-semibold">Tekrar ziyaret %80 hızlı</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">3. Font Display</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-orange-900/50 text-orange-300 rounded text-xs">Yüksek</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-green-900/50 text-green-300 rounded text-xs">Düşük</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-yellow-600 text-white rounded text-xs font-semibold">P1 - Yüksek</span></td>
+                            <td class="p-4 text-green-400 font-semibold">300-500 ms FCP iyileşme</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">9. Render Blocking CSS</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-orange-900/50 text-orange-300 rounded text-xs">Yüksek</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-yellow-900/50 text-yellow-300 rounded text-xs">Orta</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-yellow-600 text-white rounded text-xs font-semibold">P1 - Yüksek</span></td>
+                            <td class="p-4 text-green-400 font-semibold">1-2 sn FCP iyileşme</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">4. Yinelenen JS</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded text-xs">Orta</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-green-900/50 text-green-300 rounded text-xs">Düşük</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-600 text-white rounded text-xs font-semibold">P2 - Orta</span></td>
+                            <td class="p-4 text-green-400 font-semibold">44 KB tasarruf</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">6. Layout Shift</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded text-xs">Orta</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-yellow-900/50 text-yellow-300 rounded text-xs">Orta</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-600 text-white rounded text-xs font-semibold">P2 - Orta</span></td>
+                            <td class="p-4 text-green-400 font-semibold">UX iyileşme</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">10. 3rd Party Management</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-900/50 text-blue-300 rounded text-xs">Orta</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-yellow-900/50 text-yellow-300 rounded text-xs">Orta</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-600 text-white rounded text-xs font-semibold">P2 - Orta</span></td>
+                            <td class="p-4 text-green-400 font-semibold">200+ KB tasarruf</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">5. Polyfill Temizleme</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-slate-700 text-slate-400 rounded text-xs">Düşük</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-green-900/50 text-green-300 rounded text-xs">Düşük</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-slate-600 text-white rounded text-xs font-semibold">P3 - Düşük</span></td>
+                            <td class="p-4 text-green-400 font-semibold">13 KB tasarruf</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">7. Forced Reflow</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-slate-700 text-slate-400 rounded text-xs">Düşük</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-red-900/50 text-red-300 rounded text-xs">Yüksek</span></td>
+                            <td class="p-4"><span class="px-2 py-1 bg-slate-600 text-white rounded text-xs font-semibold">P3 - Düşük</span></td>
+                            <td class="p-4 text-green-400 font-semibold">Scroll performansı</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Uygulama Yol Haritası -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">🛣️ Uygulama Yol Haritası</h2>
+
+            <div class="space-y-6">
+                <!-- Faz 1 -->
+                <div class="bg-gradient-to-r from-red-900/30 to-red-800/20 border border-red-700 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold text-red-300 mb-4">
+                        📌 Faz 1: Kritik İyileştirmeler (Hemen Başla)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="font-semibold text-white mb-2">✅ Yapılacaklar:</div>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• Hero.png → WebP dönüşümü</li>
+                                <li>• LCP görseline fetchpriority="high"</li>
+                                <li>• Tüm resimlere loading="lazy" (hero hariç)</li>
+                                <li>• Nginx cache headers ekle</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="font-semibold text-white mb-2">🎯 Hedef:</div>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• LCP: 3.25s → 2.0s</li>
+                                <li>• Sayfa boyutu: -1.2 MB</li>
+                                <li>• Tekrar ziyaret: %80 hızlı</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 2 -->
+                <div class="bg-gradient-to-r from-yellow-900/30 to-yellow-800/20 border border-yellow-700 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold text-yellow-300 mb-4">
+                        📌 Faz 2: Font & CSS Optimizasyonu (1 Hafta İçinde)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="font-semibold text-white mb-2">✅ Yapılacaklar:</div>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• FontAwesome'a font-display: swap</li>
+                                <li>• Kritik CSS inline</li>
+                                <li>• Non-critical CSS defer</li>
+                                <li>• PurgeCSS ile temizlik</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="font-semibold text-white mb-2">🎯 Hedef:</div>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• FCP: -500ms</li>
+                                <li>• Render blocking: %50 azalma</li>
+                                <li>• Font flash önlendi</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 3 -->
+                <div class="bg-gradient-to-r from-blue-900/30 to-blue-800/20 border border-blue-700 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold text-blue-300 mb-4">
+                        📌 Faz 3: JavaScript & 3rd Party (2 Hafta İçinde)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="font-semibold text-white mb-2">✅ Yapılacaklar:</div>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• Swiper.js yinelemesini kaldır</li>
+                                <li>• Analytics lazy load</li>
+                                <li>• Layout shift düzeltmeleri</li>
+                                <li>• Self-host kritik kütüphaneler</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="font-semibold text-white mb-2">🎯 Hedef:</div>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• JS boyutu: -250 KB</li>
+                                <li>• CLS: 0.112 → 0.05</li>
+                                <li>• 3rd party etkisi: %70 azalma</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 4 -->
+                <div class="bg-gradient-to-r from-slate-700/30 to-slate-600/20 border border-slate-600 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold text-slate-300 mb-4">
+                        📌 Faz 4: İleri Düzey İyileştirmeler (1 Ay İçinde)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="font-semibold text-white mb-2">✅ Yapılacaklar:</div>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• CDN kurulumu (Cloudflare/BunnyCDN)</li>
+                                <li>• HTTP/3 aktifleştir</li>
+                                <li>• Service Worker (offline support)</li>
+                                <li>• Forced reflow optimizasyonları</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/50 rounded p-4">
+                            <div class="font-semibold text-white mb-2">🎯 Hedef:</div>
+                            <ul class="text-slate-300 space-y-1">
+                                <li>• PageSpeed: 90+</li>
+                                <li>• Mobil performans: A grade</li>
+                                <li>• PWA ready</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beklenen Genel Sonuçlar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">🎯 Beklenen Genel Sonuçlar</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-700 rounded-lg p-6">
+                    <div class="text-green-400 text-5xl font-bold mb-3">%60-70</div>
+                    <div class="text-white font-semibold mb-2">Yükleme Hızı Artışı</div>
+                    <div class="text-slate-300 text-sm">İlk yükleme 4-5 saniyeden 1.5-2 saniyeye düşecek</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-900/30 to-blue-800/20 border border-blue-700 rounded-lg p-6">
+                    <div class="text-blue-400 text-5xl font-bold mb-3">-2.5 MB</div>
+                    <div class="text-white font-semibold mb-2">Toplam Veri Tasarrufu</div>
+                    <div class="text-slate-300 text-sm">Resimlerde 1.2 MB, cache ile 1.3 MB tasarruf</div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/20 border border-purple-700 rounded-lg p-6">
+                    <div class="text-purple-400 text-5xl font-bold mb-3">90+</div>
+                    <div class="text-white font-semibold mb-2">PageSpeed Skoru</div>
+                    <div class="text-slate-300 text-sm">Mevcut 60-70'lerden 90+ puana yükselecek</div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-gradient-to-r from-cyan-900/30 to-blue-900/30 border border-cyan-700 rounded-lg p-6">
+                <h3 class="text-xl font-bold text-cyan-300 mb-4">💡 SEO & Kullanıcı Deneyimi Kazançları</h3>
+                <div class="grid md:grid-cols-2 gap-4 text-sm text-slate-300">
+                    <div>
+                        <div class="font-semibold text-white mb-2">🔍 SEO İyileştirmeleri:</div>
+                        <ul class="space-y-1">
+                            <li>• Google Core Web Vitals: Tüm metrikler "İyi" seviyesinde</li>
+                            <li>• Mobil-first indexing: Performans avantajı</li>
+                            <li>• Ranking boost: Hızlı siteler üst sıralarda</li>
+                            <li>• Bounce rate azalması: %15-20 düşüş beklenir</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-white mb-2">👥 Kullanıcı Deneyimi:</div>
+                        <ul class="space-y-1">
+                            <li>• Dönüşüm oranı artışı: %10-15 beklenir</li>
+                            <li>• Sayfa görüntüleme süresi: %20-30 artış</li>
+                            <li>• Mobil kullanıcı memnuniyeti: Önemli iyileşme</li>
+                            <li>• Server yükü: %40-50 azalma (cache sayesinde)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Notlar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">⚙️ Teknik Uygulama Notları</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-yellow-300 mb-3">🔧 Nginx Cache Configuration</h3>
+                    <div class="bg-slate-900 rounded p-4 text-sm text-slate-300">
+                        <div class="font-mono">
+                            <div class="text-slate-400"># Static asset'ler için cache headers</div>
+                            <div>location ~* \.(woff2|woff|ttf|eot)$ → 1 year</div>
+                            <div>location ~* \.(css|js)$ → 1 year (versiyonlu olmalı)</div>
+                            <div>location ~* \.(jpg|jpeg|png|gif|webp|svg)$ → 1 year</div>
+                            <div class="mt-2 text-slate-400"># ETags aktif</div>
+                            <div>etag on;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-yellow-300 mb-3">🖼️ Resim Dönüşüm Stratejisi</h3>
+                    <div class="bg-slate-900 rounded p-4 text-sm text-slate-300">
+                        <div>1. <strong class="text-white">Thumbmaker parametreleri:</strong></div>
+                        <div class="ml-4 text-slate-400">- Format: WebP</div>
+                        <div class="ml-4 text-slate-400">- Quality: 85</div>
+                        <div class="ml-4 text-slate-400">- Progressive: true</div>
+                        <div class="mt-2">2. <strong class="text-white">Responsive srcset:</strong></div>
+                        <div class="ml-4 text-slate-400">- 400w, 800w, 1200w, 1600w boyutları</div>
+                        <div class="ml-4 text-slate-400">- sizes attribute ile viewport tanımla</div>
+                        <div class="mt-2">3. <strong class="text-white">Fallback:</strong></div>
+                        <div class="ml-4 text-slate-400">- WebP desteklemeyen tarayıcılar için JPG</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <h3 class="text-lg font-bold text-yellow-300 mb-3">📦 JavaScript Bundle Strategy</h3>
+                    <div class="bg-slate-900 rounded p-4 text-sm text-slate-300">
+                        <div>1. <strong class="text-white">Vendor bundle:</strong> Swiper, Alpine (cache edilebilir)</div>
+                        <div>2. <strong class="text-white">App bundle:</strong> Custom kodlar (sık değişen)</div>
+                        <div>3. <strong class="text-white">Page-specific:</strong> Sadece ilgili sayfalarda yükle</div>
+                        <div>4. <strong class="text-white">Analytics:</strong> Lazy load, kullanıcı etkileşimi sonrası</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center">
+            <div class="text-slate-400 mb-4">
+                <p class="text-lg mb-2">📊 <strong class="text-white">Toplam Potansiyel İyileştirme:</strong></p>
+                <div class="flex flex-wrap justify-center gap-4 text-sm">
+                    <span class="px-4 py-2 bg-green-900/30 border border-green-700 rounded">Veri: -2.5 MB</span>
+                    <span class="px-4 py-2 bg-blue-900/30 border border-blue-700 rounded">Hız: %60-70 artış</span>
+                    <span class="px-4 py-2 bg-purple-900/30 border border-purple-700 rounded">LCP: -1.3 sn</span>
+                    <span class="px-4 py-2 bg-yellow-900/30 border border-yellow-700 rounded">FCP: -800 ms</span>
+                </div>
+            </div>
+            <div class="text-slate-500 text-sm mt-6">
+                🤖 Claude AI tarafından oluşturuldu - Tailwind CSS
+            </div>
+            <div class="text-slate-600 text-xs mt-2">
+                b-html.txt kaynağından derlendi • 13 Aralık 2025
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

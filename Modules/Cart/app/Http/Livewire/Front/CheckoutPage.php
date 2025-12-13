@@ -683,6 +683,39 @@ class CheckoutPage extends Component
     }
 
     /**
+     * Adresi varsayılan yap (star toggle)
+     */
+    public function setDefaultAddress($addressId, $type = 'shipping')
+    {
+        try {
+            $address = Address::where('address_id', $addressId)
+                ->where('user_id', $this->customerId)
+                ->first();
+
+            if (!$address) {
+                session()->flash('error', 'Adres bulunamadı.');
+                return;
+            }
+
+            // Varsayılan yap
+            if ($type === 'shipping') {
+                $address->setAsDefaultShipping();
+                $this->shipping_address_id = $addressId; // Otomatik seç
+                \Log::info('⭐ Default shipping address set', ['address_id' => $addressId]);
+            } else {
+                $address->setAsDefaultBilling();
+                $this->billing_address_id = $addressId; // Otomatik seç
+                \Log::info('⭐ Default billing address set', ['address_id' => $addressId]);
+            }
+
+            session()->flash('success', 'Varsayılan adres güncellendi.');
+        } catch (\Exception $e) {
+            session()->flash('error', 'İşlem başarısız oldu.');
+            \Log::error('❌ Error setting default address', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
      * Adresi düzenle (form verilerini yükle)
      */
     public function editAddress($addressId, $type = 'shipping')

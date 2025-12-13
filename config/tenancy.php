@@ -16,6 +16,13 @@ return [
         'tuufi.com',
         'www.tuufi.com',
     ],
+
+    /**
+     * Parent domain for tenant aliases
+     * Tüm tenant domain'leri bu parent domain'e alias olarak eklenir
+     * Farklı sunucuya yüklenirse .env'den değiştirilebilir
+     */
+    'parent_domain' => env('TENANT_PARENT_DOMAIN', 'tuufi.com'),
     
     'bootstrappers' => [
         Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper::class,

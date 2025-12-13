@@ -184,7 +184,7 @@
         @else
 
         {{-- UNIVERSAL DELETE WARNING - Tüm delete işlemleri için tek modal --}}
-        <div x-show="showDeleteWarning" x-cloak x-transition
+        <div x-show="showDeleteWarning" x-cloak x-transition.duration.200ms
              class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
             <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-200 dark:border-gray-700 shadow-2xl">
                 <div class="flex items-start gap-4">
@@ -199,11 +199,11 @@
                         </p>
                         <div class="flex gap-3">
                             <button type="button" @click="confirmDelete()"
-                                    class="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
+                                    class="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors duration-200">
                                 <i class="fa-solid fa-check mr-2"></i>Evet, Sil
                             </button>
                             <button type="button" @click="cancelDelete()"
-                                    class="flex-1 px-4 py-2.5 bg-gray-600 hover:bg-gray-100 dark:hover:bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
+                                    class="flex-1 px-4 py-2.5 bg-gray-600 hover:bg-gray-100 dark:hover:bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors duration-200">
                                 <i class="fa-solid fa-times mr-2"></i>İptal
                             </button>
                         </div>
@@ -292,9 +292,100 @@
                             Fatura Bilgileri
                         </h2>
                         <button @click="editBillingProfileMode = false; showNewBillingProfile = !showNewBillingProfile; $wire.set('edit_billing_profile_id', null); $wire.set('new_billing_profile_title', ''); $wire.set('new_billing_profile_type', 'individual'); $wire.set('new_billing_profile_identity_number', ''); $wire.set('new_billing_profile_company_name', ''); $wire.set('new_billing_profile_tax_number', ''); $wire.set('new_billing_profile_tax_office', ''); newBillingProfileType = 'individual'; showTypeSwitchWarning = false; pendingType = null"
-                                class="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-600 dark:text-gray-400 dark:hover:text-gray-900 dark:text-white px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-100 dark:hover:bg-gray-700">
+                                class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
                             <i class="fa-solid fa-plus mr-1"></i>Ekle
                         </button>
+                    </div>
+
+                    {{-- Yeni Profil Formu --}}
+                    <div x-show="showNewBillingProfile" x-cloak x-transition.duration.200ms class="space-y-4 pt-3 border-t border-gray-200 dark:border-gray-700 mb-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span x-show="!editBillingProfileMode">Yeni Profil</span>
+                                <span x-show="editBillingProfileMode">Profil Düzenle</span>
+                            </span>
+                            <button @click="showNewBillingProfile = false; editBillingProfileMode = false; $wire.set('edit_billing_profile_id', null); $wire.set('new_billing_profile_title', ''); $wire.set('new_billing_profile_type', 'individual'); $wire.set('new_billing_profile_identity_number', ''); $wire.set('new_billing_profile_company_name', ''); $wire.set('new_billing_profile_tax_number', ''); $wire.set('new_billing_profile_tax_office', ''); showTypeSwitchWarning = false; pendingType = null"
+                                    class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-white">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" @click="checkTypeSwitch('individual')"
+                                    :class="newBillingProfileType === 'individual' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
+                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg">
+                                <i class="fa-solid fa-user mr-1.5"></i>Bireysel
+                            </button>
+                            <button type="button" @click="checkTypeSwitch('corporate')"
+                                    :class="newBillingProfileType === 'corporate' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
+                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg">
+                                <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
+                            </button>
+                        </div>
+
+                        {{-- Type Switch Warning --}}
+                        <div x-show="showTypeSwitchWarning" x-cloak x-transition.duration.200ms
+                             class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                            <p class="text-sm text-yellow-400">
+                                <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+                                <span x-show="pendingType === 'individual'">
+                                    <strong>Bireysel'e</strong> geçerseniz <strong>Kurumsal bilgiler silinecektir</strong> (Şirket ünvanı, Vergi no, Vergi dairesi).
+                                </span>
+                                <span x-show="pendingType === 'corporate'">
+                                    <strong>Kurumsal'a</strong> geçerseniz <strong>Bireysel bilgiler silinecektir</strong> (TC Kimlik No).
+                                </span>
+                            </p>
+                            <div class="flex gap-2 mt-3">
+                                <button type="button" @click="confirmTypeSwitch()"
+                                        class="px-4 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                                    <i class="fa-solid fa-check mr-1"></i>Evet, Devam Et
+                                </button>
+                                <button type="button" @click="cancelTypeSwitch()"
+                                        class="px-4 py-1.5 bg-gray-600 hover:bg-gray-100 dark:hover:bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                                    <i class="fa-solid fa-times mr-1"></i>İptal
+                                </button>
+                            </div>
+                        </div>
+                        <div x-show="newBillingProfileType === 'individual'">
+                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İsim Soyisim <span class="text-red-500">*</span></label>
+                            <input type="text" wire:model="new_billing_profile_title" placeholder="Örn: Ahmet Yılmaz"
+                                   class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_title') border-red-500 @enderror">
+                            @error('new_billing_profile_title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        <div x-show="newBillingProfileType === 'individual'">
+                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">TC Kimlik No <span class="text-gray-500">(Opsiyonel)</span></label>
+                            <input type="text" wire:model="new_billing_profile_identity_number" placeholder="XXXXXXXXXXX" maxlength="11"
+                                   class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_identity_number') border-red-500 @enderror">
+                            @error('new_billing_profile_identity_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        <div x-show="newBillingProfileType === 'corporate'" class="space-y-3">
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Şirket Ünvanı <span class="text-red-500">*</span></label>
+                                <input type="text" wire:model="new_billing_profile_company_name" placeholder="ABC Ltd. Şti."
+                                       class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_company_name') border-red-500 @enderror">
+                                @error('new_billing_profile_company_name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                <div>
+                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Vergi No <span class="text-red-500">*</span></label>
+                                    <input type="text" wire:model="new_billing_profile_tax_number" maxlength="10"
+                                           class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_tax_number') border-red-500 @enderror">
+                                    @error('new_billing_profile_tax_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Vergi Dairesi <span class="text-red-500">*</span></label>
+                                    <input type="text" wire:model="new_billing_profile_tax_office"
+                                           class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_tax_office') border-red-500 @enderror">
+                                    @error('new_billing_profile_tax_office') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button wire:click="saveNewBillingProfile" wire:loading.attr="disabled" wire:target="saveNewBillingProfile"
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-gray-600 dark:hover:bg-gray-500 disabled:bg-gray-100 dark:bg-gray-700 disabled:cursor-wait text-gray-900 dark:text-white text-sm font-medium rounded-lg">
+                                <span wire:loading.remove wire:target="saveNewBillingProfile"><i class="fa-solid fa-check mr-1"></i>Kaydet</span>
+                                <span wire:loading wire:target="saveNewBillingProfile"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Kaydediliyor...</span>
+                            </button>
+                        </div>
                     </div>
 
                     {{-- Mevcut Profiller --}}
@@ -323,20 +414,20 @@
                                 </p>
                                 <button @click="showList = !showList"
                                         title="Profilleri Düzenle"
-                                        class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-1 transition-colors">
+                                        class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-1 transition-colors duration-200">
                                     <i class="fa-solid fa-pen text-xs"></i>
                                 </button>
                             </div>
                         @endforeach
 
                         {{-- Profil Listesi (Collapsible) --}}
-                        <div x-show="showList" x-cloak x-transition class="space-y-2 mb-4">
+                        <div x-show="showList" x-cloak x-transition.duration.200ms class="space-y-2 mb-4">
                             @foreach($billingProfiles as $profile)
                                 <div wire:key="billing-profile-{{ $profile->billing_profile_id }}"
                                      class="relative"
                                      x-data="{ isEditing: false }">
                                     <div @click="billingProfileId = {{ $profile->billing_profile_id }}; showList = false"
-                                         class="p-3 rounded-xl border-2 transition-all group cursor-pointer"
+                                         class="p-3 rounded-xl border-2 transition-[border-color,background-color] duration-200 group cursor-pointer"
                                          :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400' : 'border-gray-200 bg-gray-50 dark:bg-slate-800 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'">
                                             <div class="flex items-center justify-between gap-3">
                                                 <div class="flex items-center gap-3 flex-1 min-w-0">
@@ -381,13 +472,13 @@
                                                             $wire.set('new_billing_profile_tax_office', '{{ addslashes($profile->tax_office ?? '') }}');
                                                         }
                                                     "
-                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
+                                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
                                                             title="Düzenle">
                                                         <i class="fas fa-edit text-xs"></i>
                                                     </button>
                                                     {{-- Delete Button --}}
                                                     <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $profile->billing_profile_id }}; deleteTargetType = 'billing_profile'; deleteTargetTitle = '{{ $profile->title }}'"
-                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
+                                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
                                                             title="Sil">
                                                         <i class="fas fa-trash text-xs"></i>
                                                     </button>
@@ -399,7 +490,7 @@
                                                     </div>
                                                     <button x-show="defaultBillingProfileId != {{ $profile->billing_profile_id }}"
                                                             @click.stop="defaultBillingProfileId = {{ $profile->billing_profile_id }}; $wire.setDefaultBillingProfile({{ $profile->billing_profile_id }})"
-                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-yellow-500/20 rounded text-yellow-500 hover:text-yellow-400"
+                                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-yellow-500/20 rounded text-yellow-500 hover:text-yellow-400"
                                                             title="Varsayılan Yap (Sonraki açılışta otomatik gelir)">
                                                         <i class="far fa-star text-xs"></i>
                                                     </button>
@@ -416,7 +507,7 @@
                                     </div>
 
                                     {{-- İnline Edit Form - Kartın Altında --}}
-                                    <div x-show="isEditing" x-cloak x-transition class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
+                                    <div x-show="isEditing" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
                                         <div class="flex items-center justify-between mb-3">
                                             <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Profil Düzenle</span>
                                             <button @click="isEditing = false; editBillingProfileMode = false; $wire.set('edit_billing_profile_id', null)"
@@ -424,23 +515,24 @@
                                                 <i class="fa-solid fa-times"></i>
                                             </button>
                                         </div>
-                                        {{-- Tip Seçimi: Sadece yeni profil eklerken göster --}}
-                                        @if(!$edit_billing_profile_id)
-                                            <div class="flex gap-2">
+                                        {{-- Tip Seçimi: Sadece yeni profil eklerken göster (Edit modunda gizle) --}}
+                                        <div x-show="!editBillingProfileMode" x-cloak>
+                                            <div class="flex gap-2 mb-3">
                                                 <button type="button" @click="checkTypeSwitch('individual')"
                                                         :class="newBillingProfileType === 'individual' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
-                                                        class="flex-1 py-2.5 text-sm font-medium rounded-lg">
+                                                        class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200">
                                                     <i class="fa-solid fa-user mr-1.5"></i>Bireysel
                                                 </button>
                                                 <button type="button" @click="checkTypeSwitch('corporate')"
                                                         :class="newBillingProfileType === 'corporate' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
-                                                        class="flex-1 py-2.5 text-sm font-medium rounded-lg">
+                                                        class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200">
                                                     <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
                                                 </button>
                                             </div>
-                                        @endif
-                                        <div x-show="showTypeSwitchWarning" x-cloak x-transition
-                                             class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                                        </div>
+                                        {{-- Tip Değişiklik Uyarısı: Sadece yeni profil eklerken göster (Edit modunda gizle) --}}
+                                        <div x-show="!editBillingProfileMode && showTypeSwitchWarning" x-cloak x-transition.duration.200ms
+                                             class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-3">
                                             <p class="text-sm text-yellow-400">
                                                 <i class="fa-solid fa-exclamation-triangle mr-2"></i>
                                                 <span x-show="pendingType === 'individual'">
@@ -452,18 +544,18 @@
                                             </p>
                                             <div class="flex gap-2 mt-3">
                                                 <button type="button" @click="confirmTypeSwitch()"
-                                                        class="px-4 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg">
+                                                        class="px-4 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors duration-200">
                                                     <i class="fa-solid fa-check mr-1"></i>Devam Et
                                                 </button>
                                                 <button type="button" @click="cancelTypeSwitch()"
-                                                        class="px-4 py-1.5 bg-gray-600 hover:bg-gray-100 dark:hover:bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg">
+                                                        class="px-4 py-1.5 bg-gray-600 hover:bg-gray-100 dark:hover:bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors duration-200">
                                                     <i class="fa-solid fa-times mr-1"></i>İptal
                                                 </button>
                                             </div>
                                         </div>
                                         <div x-show="newBillingProfileType === 'individual'">
-                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Kayıt Adı <span class="text-red-500">*</span></label>
-                                            <input type="text" wire:model="new_billing_profile_title" placeholder="Örn: Evim"
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İsim Soyisim <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="new_billing_profile_title" placeholder="Örn: Ahmet Yılmaz"
                                                    class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-100 dark:bg-gray-700 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
                                         </div>
                                         <div x-show="newBillingProfileType === 'individual'">
@@ -513,97 +605,6 @@
                             </p>
                         </div>
                     @endif
-
-                    {{-- Yeni Profil Formu --}}
-                    <div x-show="showNewBillingProfile" x-cloak x-transition class="space-y-4 pt-3 border-t border-gray-200 dark:border-gray-700">
-                        <div class="flex items-center justify-between">
-                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">
-                                <span x-show="!editBillingProfileMode">Yeni Profil</span>
-                                <span x-show="editBillingProfileMode">Profil Düzenle</span>
-                            </span>
-                            <button @click="showNewBillingProfile = false; editBillingProfileMode = false; $wire.set('edit_billing_profile_id', null); $wire.set('new_billing_profile_title', ''); $wire.set('new_billing_profile_type', 'individual'); $wire.set('new_billing_profile_identity_number', ''); $wire.set('new_billing_profile_company_name', ''); $wire.set('new_billing_profile_tax_number', ''); $wire.set('new_billing_profile_tax_office', ''); showTypeSwitchWarning = false; pendingType = null"
-                                    class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-white">
-                                <i class="fa-solid fa-times"></i>
-                            </button>
-                        </div>
-                        <div class="flex gap-2">
-                            <button type="button" @click="checkTypeSwitch('individual')"
-                                    :class="newBillingProfileType === 'individual' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
-                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg">
-                                <i class="fa-solid fa-user mr-1.5"></i>Bireysel
-                            </button>
-                            <button type="button" @click="checkTypeSwitch('corporate')"
-                                    :class="newBillingProfileType === 'corporate' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
-                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg">
-                                <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
-                            </button>
-                        </div>
-
-                        {{-- Type Switch Warning --}}
-                        <div x-show="showTypeSwitchWarning" x-cloak x-transition
-                             class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
-                            <p class="text-sm text-yellow-400">
-                                <i class="fa-solid fa-exclamation-triangle mr-2"></i>
-                                <span x-show="pendingType === 'individual'">
-                                    <strong>Bireysel'e</strong> geçerseniz <strong>Kurumsal bilgiler silinecektir</strong> (Şirket ünvanı, Vergi no, Vergi dairesi).
-                                </span>
-                                <span x-show="pendingType === 'corporate'">
-                                    <strong>Kurumsal'a</strong> geçerseniz <strong>Bireysel bilgiler silinecektir</strong> (TC Kimlik No).
-                                </span>
-                            </p>
-                            <div class="flex gap-2 mt-3">
-                                <button type="button" @click="confirmTypeSwitch()"
-                                        class="px-4 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
-                                    <i class="fa-solid fa-check mr-1"></i>Evet, Devam Et
-                                </button>
-                                <button type="button" @click="cancelTypeSwitch()"
-                                        class="px-4 py-1.5 bg-gray-600 hover:bg-gray-100 dark:hover:bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
-                                    <i class="fa-solid fa-times mr-1"></i>İptal
-                                </button>
-                            </div>
-                        </div>
-                        <div x-show="newBillingProfileType === 'individual'">
-                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Kayıt Adı <span class="text-gray-500">(Daha sonra kullanmak için)</span> <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="new_billing_profile_title" placeholder="Örn: Evim, İşyerim"
-                                   class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_title') border-red-500 @enderror">
-                            @error('new_billing_profile_title') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                        </div>
-                        <div x-show="newBillingProfileType === 'individual'">
-                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">TC Kimlik No <span class="text-gray-500">(Opsiyonel)</span></label>
-                            <input type="text" wire:model="new_billing_profile_identity_number" placeholder="XXXXXXXXXXX" maxlength="11"
-                                   class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_identity_number') border-red-500 @enderror">
-                            @error('new_billing_profile_identity_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                        </div>
-                        <div x-show="newBillingProfileType === 'corporate'" class="space-y-3">
-                            <div>
-                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Şirket Ünvanı <span class="text-red-500">*</span></label>
-                                <input type="text" wire:model="new_billing_profile_company_name" placeholder="ABC Ltd. Şti."
-                                       class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_company_name') border-red-500 @enderror">
-                                @error('new_billing_profile_company_name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                                <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Vergi No <span class="text-red-500">*</span></label>
-                                    <input type="text" wire:model="new_billing_profile_tax_number" maxlength="10"
-                                           class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_tax_number') border-red-500 @enderror">
-                                    @error('new_billing_profile_tax_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Vergi Dairesi <span class="text-red-500">*</span></label>
-                                    <input type="text" wire:model="new_billing_profile_tax_office"
-                                           class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_profile_tax_office') border-red-500 @enderror">
-                                    @error('new_billing_profile_tax_office') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex justify-end">
-                            <button wire:click="saveNewBillingProfile" wire:loading.attr="disabled" wire:target="saveNewBillingProfile"
-                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-gray-600 dark:hover:bg-gray-500 disabled:bg-gray-100 dark:bg-gray-700 disabled:cursor-wait text-gray-900 dark:text-white text-sm font-medium rounded-lg">
-                                <span wire:loading.remove wire:target="saveNewBillingProfile"><i class="fa-solid fa-check mr-1"></i>Kaydet</span>
-                                <span wire:loading wire:target="saveNewBillingProfile"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Kaydediliyor...</span>
-                            </button>
-                        </div>
-                    </div>
                     @error('billing_profile_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
 
@@ -652,7 +653,7 @@
                             </div>
                         @else
                             <div @click="showShippingForm = true; showNewShippingForm = true"
-                                 class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
+                                 class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 transition-colors duration-200">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">
                                     <i class="fa-solid fa-info-circle mr-2"></i>
                                     Teslimat adresi seçilmedi.
@@ -670,8 +671,8 @@
                                     <div wire:key="shipping-address-{{ $addr->address_id }}"
                                          class="relative group"
                                          x-show="showAllShipping || shippingAddressId == {{ $addr->address_id }}"
-                                         x-transition>
-                                        <div class="p-3 rounded-xl border-2 transition-all cursor-pointer"
+                                         x-transition.duration.200ms>
+                                        <div class="p-3 rounded-xl border-2 transition-[border-color,background-color] duration-200 cursor-pointer"
                                              :class="shippingAddressId == {{ $addr->address_id }} ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400' : 'border-gray-200 bg-gray-50 dark:bg-slate-800 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'"
                                              @click="shippingAddressId = {{ $addr->address_id }}">
                                             <div class="flex items-center justify-between">
@@ -685,13 +686,13 @@
                                                         showNewShippingForm = true;
                                                         $wire.editAddress({{ $addr->address_id }}, 'shipping');
                                                     "
-                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
+                                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
                                                             title="Düzenle">
                                                         <i class="fas fa-edit text-xs"></i>
                                                     </button>
                                                     {{-- Delete Button --}}
                                                     <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $addr->address_id }}; deleteTargetType = 'shipping_address'; deleteTargetTitle = '{{ $addr->title }}'"
-                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
+                                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
                                                             title="Sil">
                                                         <i class="fas fa-trash text-xs"></i>
                                                     </button>
@@ -809,20 +810,20 @@
                         <label @click="billingSameAsShipping = !billingSameAsShipping" class="inline-flex items-center gap-3 cursor-pointer group">
                             {{-- Modern Checkbox --}}
                             <div class="relative flex-shrink-0">
-                                <div class="w-5 h-5 rounded border-2 transition-all duration-200"
+                                <div class="w-5 h-5 rounded border-2 transition-colors duration-200"
                                      :class="billingSameAsShipping ? 'bg-blue-600 border-blue-600' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 group-hover:border-blue-400'">
                                     <svg x-show="billingSameAsShipping" class="w-full h-full text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 </div>
                             </div>
-                            <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                            <span class="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
                                 Fatura adresi teslimat ile aynı
                             </span>
                         </label>
 
                         {{-- Farklı Fatura Adresi --}}
-                        <div x-show="!billingSameAsShipping" x-cloak x-transition class="mt-4 space-y-3">
+                        <div x-show="!billingSameAsShipping" x-cloak x-transition.duration.200ms class="mt-4 space-y-3">
                             <div class="flex items-center justify-between">
                                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                                     <i class="fa-solid fa-file-invoice-dollar text-gray-700 dark:text-gray-500 mr-3"></i>
@@ -840,8 +841,8 @@
                                         <div wire:key="billing-address-{{ $addr->address_id }}"
                                              class="relative group"
                                              x-show="showAllBilling || billingAddressId == {{ $addr->address_id }}"
-                                             x-transition>
-                                            <div class="p-3 rounded-xl border-2 transition-all cursor-pointer"
+                                             x-transition.duration.200ms>
+                                            <div class="p-3 rounded-xl border-2 transition-[border-color,background-color] duration-200 cursor-pointer"
                                                  :class="billingAddressId == {{ $addr->address_id }} ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400' : 'border-gray-200 bg-gray-50 dark:bg-slate-800 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'"
                                                  @click="billingAddressId = {{ $addr->address_id }}">
                                                 <div class="flex items-center justify-between">
@@ -855,13 +856,13 @@
                                                             showNewBillingForm = true;
                                                             $wire.editAddress({{ $addr->address_id }}, 'billing');
                                                         "
-                                                                class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
+                                                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
                                                                 title="Düzenle">
                                                             <i class="fas fa-edit text-xs"></i>
                                                         </button>
                                                         {{-- Delete Button --}}
                                                         <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $addr->address_id }}; deleteTargetType = 'billing_address'; deleteTargetTitle = '{{ $addr->title }}'"
-                                                                class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
+                                                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
                                                                 title="Sil">
                                                             <i class="fas fa-trash text-xs"></i>
                                                         </button>
@@ -898,7 +899,7 @@
                             @endif
 
                             {{-- Yeni Fatura Adresi Formu --}}
-                            <div x-show="showNewBillingForm" x-cloak x-transition class="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-700"
+                            <div x-show="showNewBillingForm" x-cloak x-transition.duration.200ms class="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-700"
                                  x-data="{ editMode: @entangle('edit_billing_address_id').live }">
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-900 dark:text-gray-300" x-text="editMode ? 'Adresi Düzenle' : 'Yeni Adres'"></span>
@@ -1016,7 +1017,7 @@
                             </div>
                         @else
                             <div @click="showBillingAddressForm = true; showNewBillingForm = true"
-                                 class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
+                                 class="bg-gray-50 dark:bg-slate-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-gray-300 dark:hover:border-gray-500 transition-colors duration-200">
                                 <p class="text-sm text-gray-600 dark:text-gray-400">
                                     <i class="fa-solid fa-info-circle mr-2"></i>
                                     Fatura adresi seçilmedi.
@@ -1034,8 +1035,8 @@
                                     <div wire:key="billing-address-digital-{{ $addr->address_id }}"
                                          class="relative group"
                                          x-show="showAllBillingDigital || billingAddressId == {{ $addr->address_id }}"
-                                         x-transition>
-                                        <div class="p-3 rounded-xl border-2 transition-all cursor-pointer"
+                                         x-transition.duration.200ms>
+                                        <div class="p-3 rounded-xl border-2 transition-[border-color,background-color] duration-200 cursor-pointer"
                                              :class="billingAddressId == {{ $addr->address_id }} ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400' : 'border-gray-200 bg-gray-50 dark:bg-slate-800 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'"
                                              @click="billingAddressId = {{ $addr->address_id }}">
                                             <div class="flex items-center justify-between">
@@ -1049,13 +1050,13 @@
                                                         showNewBillingForm = true;
                                                         $wire.editAddress({{ $addr->address_id }}, 'billing');
                                                     "
-                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
+                                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
                                                             title="Düzenle">
                                                         <i class="fas fa-edit text-xs"></i>
                                                     </button>
                                                     {{-- Delete Button --}}
                                                     <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $addr->address_id }}; deleteTargetType = 'billing_address'; deleteTargetTitle = '{{ $addr->title }}'"
-                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
+                                                            class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
                                                             title="Sil">
                                                         <i class="fas fa-trash text-xs"></i>
                                                     </button>
@@ -1088,7 +1089,7 @@
                         </button>
 
                         {{-- Yeni Fatura Adresi Formu --}}
-                        <div x-show="showNewBillingForm" x-cloak x-transition class="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-700"
+                        <div x-show="showNewBillingForm" x-cloak x-transition.duration.200ms class="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-700"
                              x-data="{ editMode: @entangle('edit_billing_address_id').live }">
                             <div class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-900 dark:text-gray-300" x-text="editMode ? 'Adresi Düzenle' : 'Yeni Adres'"></span>
@@ -1222,7 +1223,7 @@
                                                     <p class="text-xs text-gray-500">Visa, Mastercard, Troy</p>
                                                 @endif
                                             </div>
-                                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all"
+                                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-200"
                                                  :class="selectedPaymentMethodId === {{ $method->payment_method_id }} ? 'border-blue-500 bg-blue-500' : 'border-gray-300 dark:border-gray-600'">
                                                 <i class="fa-solid fa-check text-[10px] text-gray-900 dark:text-white" x-show="selectedPaymentMethodId === {{ $method->payment_method_id }}"></i>
                                             </div>
@@ -1248,14 +1249,14 @@
                             {{-- Modern Checkbox --}}
                             <div class="relative flex-shrink-0 mt-0.5">
                                 <div @click="agreeAll = !agreeAll"
-                                     class="w-5 h-5 rounded border-2 transition-all duration-200"
+                                     class="w-5 h-5 rounded border-2 transition-colors duration-200"
                                      :class="agreeAll ? 'bg-blue-600 border-blue-600' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 group-hover:border-blue-400'">
                                     <svg x-show="agreeAll" class="w-full h-full text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 </div>
                             </div>
-                            <span class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                            <span class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
                                 <a href="/on-bilgilendirme" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
                                 <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni kabul ediyorum.
                                 <span class="text-red-500">*</span>
@@ -1286,8 +1287,8 @@
                                 wire:loading.attr="disabled"
                                 wire:target="proceedToPayment"
                                 :disabled="!localAgreeAll"
-                                :class="localAgreeAll ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-xl shadow-green-500/30 scale-100 hover:scale-[1.02]' : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-60'"
-                                class="w-full text-white font-bold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 text-lg">
+                                :class="localAgreeAll ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-xl shadow-green-500/30' : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-60'"
+                                class="w-full text-white font-bold py-4 rounded-xl transition-colors duration-300 flex items-center justify-center gap-3 text-lg">
                             <i class="fa-solid fa-lock text-lg" wire:loading.remove wire:target="proceedToPayment"></i>
                             <i class="fa-solid fa-spinner fa-spin text-lg" wire:loading wire:target="proceedToPayment"></i>
                             <span wire:loading.remove wire:target="proceedToPayment">Ödemeye Geç</span>

@@ -259,32 +259,28 @@ class TenantComponent extends Component
             if ($this->tenantId) {
                 // Mevcut tenant'ı güncelle
                 $tenant = Tenant::find($this->tenantId);
-                
+
                 if ($tenant) {
                     // Theme settings JSON oluştur
                     $themeSettings = [
                         'subheader_style' => $this->subheader_style,
                     ];
 
-                    // Direkt kolonlara kaydet (YENİ SİSTEM)
-                    DB::table('tenants')
-                        ->where('id', $tenant->id)
-                        ->update([
-                            'title'      => $this->name,
-                            'fullname'   => $this->fullname,
-                            'email'      => $this->email,
-                            'phone'      => $this->phone,
-                            'is_active'  => $this->is_active ? 1 : 0,
-                            'theme_id'     => $this->theme_id,
-                            'theme_settings' => json_encode($themeSettings),
-                            'tenant_ai_provider_id' => $this->tenant_ai_provider_id,
-                            'tenant_ai_provider_model_id' => $this->tenant_ai_provider_model_id,
-                            'updated_at' => now()
-                        ]);
-                    
-                    // Güncel tenant'ı yükle
-                    $tenant = Tenant::find($tenant->id);
-                    
+                    // ✅ FİX: Eloquent kullan, double encoding önlenir
+                    // Model'de 'theme_settings' => 'array' cast var
+                    // Eloquent otomatik encode eder, json_encode() GEREKSIZ!
+                    $tenant->update([
+                        'title'      => $this->name,
+                        'fullname'   => $this->fullname,
+                        'email'      => $this->email,
+                        'phone'      => $this->phone,
+                        'is_active'  => $this->is_active ? 1 : 0,
+                        'theme_id'     => $this->theme_id,
+                        'theme_settings' => $themeSettings, // Array olarak gönder (cast encode eder)
+                        'tenant_ai_provider_id' => $this->tenant_ai_provider_id,
+                        'tenant_ai_provider_model_id' => $this->tenant_ai_provider_model_id,
+                    ]);
+
                     // Log işlemi
                     if (function_exists('log_activity')) {
                         log_activity($tenant, 'güncellendi');
@@ -361,22 +357,38 @@ class TenantComponent extends Component
             $tenant = Tenant::find($id);
 
             if ($tenant) {
+                // Database adını kaydet (tenant silinmeden önce)
+                $dbName = $tenant->tenancy_db_name;
+
                 // Tenant dizinlerini temizle
                 $this->cleanTenantDirectories($tenant->id);
-                
+
+                // ✅ KRİTİK FİX: Tenant database'ini DROP et
+                // Sadece Laravel kaydı silinirse MySQL database ayakta kalır (orphan database)
+                // Disk alanı tüketir, temizlik gerekir
+                try {
+                    if ($dbName) {
+                        DB::statement("DROP DATABASE IF EXISTS `{$dbName}`");
+                        \Log::info("Tenant database dropped: {$dbName}");
+                    }
+                } catch (\Exception $e) {
+                    \Log::error("Tenant database DROP failed: {$dbName} - " . $e->getMessage());
+                    // Database DROP hatası olsa bile devam et (Laravel kaydını sil)
+                }
+
                 // Log işlemi
                 if (function_exists('log_activity')) {
                     log_activity($tenant, 'silindi');
                 }
-                    
+
                 $tenant->delete();
-                
+
                 $this->dispatch('toast', [
                     'title' => 'Başarılı!',
                     'message' => 'Tenant başarıyla silindi.',
                     'type' => 'success'
                 ]);
-                
+
                 $this->dispatch('itemDeleted');
             }
         } catch (\Exception $e) {
@@ -478,6 +490,49 @@ class TenantComponent extends Component
                     $domain->setAsPrimary();
                 }
 
+                // ✅ PLESK OTOMASYONU: Alias oluştur + SSL + Nginx reload
+                try {
+                    $parentDomain = config('tenancy.parent_domain');
+                    $escapedDomain = escapeshellarg($this->newDomain);
+                    $escapedParent = escapeshellarg($parentDomain);
+
+                    // 1. Plesk alias oluştur
+                    exec("plesk bin subdomain --create {$escapedDomain} -domain {$escapedParent} -www true 2>&1", $output, $returnCode);
+
+                    if ($returnCode === 0) {
+                        \Log::info("Plesk alias created: {$this->newDomain}");
+
+                        // 2. SEO redirect kapat (KRİTİK!)
+                        exec("plesk db \"UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = {$escapedDomain}\"");
+
+                        // 3. Nginx config yenile
+                        exec("plesk repair web {$escapedParent} -y 2>&1");
+                        exec("systemctl reload nginx 2>&1");
+
+                        // 4. SSL sertifika talep et (opsiyonel, DNS hazırsa)
+                        $adminEmail = env('TENANT_ADMIN_EMAIL', "admin@{$parentDomain}");
+                        $escapedEmail = escapeshellarg($adminEmail);
+                        exec("plesk bin certificate --issue -domain {$escapedDomain} -admin-email {$escapedEmail} 2>&1", $sslOutput, $sslReturn);
+
+                        if ($sslReturn === 0) {
+                            \Log::info("SSL certificate issued: {$this->newDomain}");
+                        } else {
+                            \Log::warning("SSL certificate failed (DNS may not be ready): {$this->newDomain}");
+                        }
+
+                        // 5. Test et
+                        sleep(1); // Nginx reload için kısa bekle
+                        $testUrl = "https://{$this->newDomain}/";
+                        $statusCode = exec("curl -s -o /dev/null -w '%{http_code}' -k {$testUrl}");
+                        \Log::info("Domain accessibility test: {$this->newDomain} - HTTP {$statusCode}");
+                    } else {
+                        \Log::error("Plesk alias creation failed: {$this->newDomain} - " . implode("\n", $output));
+                    }
+                } catch (\Exception $e) {
+                    \Log::error("Plesk automation failed for {$this->newDomain}: " . $e->getMessage());
+                    // Hata olsa bile domain Laravel'e eklendi, sadece log tut
+                }
+
                 if (function_exists('log_activity')) {
                     log_activity($domain, 'oluşturuldu');
                 }
@@ -532,6 +587,44 @@ class TenantComponent extends Component
                 $oldDomain = $domain->domain;
                 $domain->update(['domain' => $this->editingDomainValue]);
 
+                // ✅ PLESK OTOMASYONU: Eski alias sil, yeni alias oluştur
+                try {
+                    $parentDomain = config('tenancy.parent_domain');
+                    $escapedParent = escapeshellarg($parentDomain);
+                    $escapedOldDomain = escapeshellarg($oldDomain);
+                    $escapedNewDomain = escapeshellarg($this->editingDomainValue);
+
+                    // 1. Eski Plesk alias'ı sil
+                    exec("plesk bin subdomain --remove {$escapedOldDomain} -domain {$escapedParent} 2>&1", $removeOutput, $removeReturn);
+
+                    if ($removeReturn === 0) {
+                        \Log::info("Old Plesk alias removed: {$oldDomain}");
+                    } else {
+                        \Log::warning("Old Plesk alias removal failed (may not exist): {$oldDomain}");
+                    }
+
+                    // 2. Yeni Plesk alias oluştur
+                    exec("plesk bin subdomain --create {$escapedNewDomain} -domain {$escapedParent} -www true 2>&1", $createOutput, $createReturn);
+
+                    if ($createReturn === 0) {
+                        \Log::info("New Plesk alias created: {$this->editingDomainValue}");
+
+                        // 3. SEO redirect kapat
+                        exec("plesk db \"UPDATE domain_aliases SET seoRedirect = 'false' WHERE name = {$escapedNewDomain}\"");
+
+                        // 4. Nginx reload
+                        exec("plesk repair web {$escapedParent} -y 2>&1");
+                        exec("systemctl reload nginx 2>&1");
+
+                        \Log::info("Domain updated in Plesk: {$oldDomain} → {$this->editingDomainValue}");
+                    } else {
+                        \Log::error("New Plesk alias creation failed: {$this->editingDomainValue}");
+                    }
+                } catch (\Exception $e) {
+                    \Log::error("Plesk update automation failed: " . $e->getMessage());
+                    // Hata olsa bile Laravel'de güncellendi
+                }
+
                 if (function_exists('log_activity')) {
                     log_activity($domain, 'güncellendi');
                 }
@@ -561,13 +654,40 @@ class TenantComponent extends Component
             $domain = Domain::find($domainId);
 
             if ($domain) {
+                $domainName = $domain->domain;
+
+                // ✅ PLESK OTOMASYONU: Alias sil + Nginx reload
+                try {
+                    $parentDomain = config('tenancy.parent_domain');
+                    $escapedParent = escapeshellarg($parentDomain);
+                    $escapedDomain = escapeshellarg($domainName);
+
+                    // 1. Plesk alias'ı sil
+                    exec("plesk bin subdomain --remove {$escapedDomain} -domain {$escapedParent} 2>&1", $output, $returnCode);
+
+                    if ($returnCode === 0) {
+                        \Log::info("Plesk alias removed: {$domainName}");
+                    } else {
+                        \Log::warning("Plesk alias removal failed (may not exist): {$domainName}");
+                    }
+
+                    // 2. Nginx config yenile
+                    exec("plesk repair web {$escapedParent} -y 2>&1");
+                    exec("systemctl reload nginx 2>&1");
+
+                    \Log::info("Domain removed from Plesk and Nginx reloaded: {$domainName}");
+                } catch (\Exception $e) {
+                    \Log::error("Plesk delete automation failed for {$domainName}: " . $e->getMessage());
+                    // Hata olsa bile Laravel'den sil
+                }
+
                 if (function_exists('log_activity')) {
                     log_activity($domain, 'silindi');
                 }
-                    
+
                 $domain->delete();
                 $this->loadDomains($this->tenantId);
-                
+
                 $this->dispatch('toast', [
                     'title' => 'Başarılı!',
                     'message' => 'Domain başarıyla silindi.',
@@ -623,7 +743,7 @@ class TenantComponent extends Component
 
     /**
      * Tenant için gerekli dizinleri hazırla
-     * 
+     *
      * @param int $tenantId
      */
     protected function prepareTenantDirectories($tenantId)
@@ -633,7 +753,7 @@ class TenantComponent extends Component
         if (\Illuminate\Support\Facades\File::isDirectory($tenantPath)) {
             \Illuminate\Support\Facades\File::deleteDirectory($tenantPath);
         }
-        
+
         // Framework cache dizini
         $frameworkCachePath = storage_path("tenant{$tenantId}/framework/cache");
         \Illuminate\Support\Facades\File::ensureDirectoryExists($frameworkCachePath, 0775, true);
@@ -644,7 +764,7 @@ class TenantComponent extends Component
             storage_path("tenant{$tenantId}/framework/views"),
             storage_path("tenant{$tenantId}/framework/testing"),
         ];
-        
+
         foreach ($frameworkPaths as $path) {
             \Illuminate\Support\Facades\File::ensureDirectoryExists($path, 0775, true);
         }
@@ -667,6 +787,23 @@ class TenantComponent extends Component
             \Illuminate\Support\Facades\File::deleteDirectory($publicStoragePath);
         }
         \Illuminate\Support\Facades\File::ensureDirectoryExists($publicStoragePath, 0775, true);
+
+        // ✅ KRİTİK FİX: Owner ve permission düzelt (root:root → tuufi.com_:psaserv)
+        // File::ensureDirectoryExists() root ile çalıştığında root:root oluşturur
+        // Nginx/Apache tuufi.com_:psaserv ile çalışır, erişemez → 403/500 hatası!
+        try {
+            // Storage dizini owner/permission düzelt
+            exec("sudo chown -R tuufi.com_:psaserv " . escapeshellarg($tenantPath));
+            exec("sudo find " . escapeshellarg($tenantPath) . " -type d -exec chmod 755 {} \\;");
+            exec("sudo find " . escapeshellarg($tenantPath) . " -type f -exec chmod 644 {} \\;");
+
+            // Public storage dizini owner/permission düzelt
+            exec("sudo chown -R tuufi.com_:psaserv " . escapeshellarg($publicStoragePath));
+            exec("sudo find " . escapeshellarg($publicStoragePath) . " -type d -exec chmod 755 {} \\;");
+            exec("sudo find " . escapeshellarg($publicStoragePath) . " -type f -exec chmod 644 {} \\;");
+        } catch (\Exception $e) {
+            \Log::error("Tenant {$tenantId} permission fix failed: " . $e->getMessage());
+        }
     }
     
     /**

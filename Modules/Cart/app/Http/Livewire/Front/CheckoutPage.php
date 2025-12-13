@@ -588,10 +588,9 @@ class CheckoutPage extends Component
                 return;
             }
 
-            // Seçili profil siliniyorsa, seçimi kaldır
-            if ($this->billing_profile_id == $profileId) {
-                $this->billing_profile_id = null;
-            }
+            // Silme öncesi durumları kaydet
+            $wasDefault = $profile->is_default;
+            $wasSelected = ($this->billing_profile_id == $profileId);
 
             // Edit edilen profil siliniyorsa, edit formunu kapat
             if ($this->edit_billing_profile_id == $profileId) {
@@ -615,8 +614,32 @@ class CheckoutPage extends Component
             // Listeyi yenile
             $this->loadBillingProfiles();
 
+            // Kalan profiller varsa otomatik atama yap
+            if ($this->billingProfiles && count($this->billingProfiles) > 0) {
+                $firstProfile = $this->billingProfiles->first();
+
+                // Silinen varsayılan ise → İlk profili varsayılan yap
+                if ($wasDefault) {
+                    BillingProfile::where('billing_profile_id', $firstProfile->billing_profile_id)
+                        ->update(['is_default' => 1]);
+                    \Log::info('✅ New default profile set', ['profile_id' => $firstProfile->billing_profile_id]);
+                }
+
+                // Silinen seçili ise → İlk profili seçili yap
+                if ($wasSelected) {
+                    $this->billing_profile_id = $firstProfile->billing_profile_id;
+                    \Log::info('✅ New selected profile set', ['profile_id' => $firstProfile->billing_profile_id]);
+                }
+
+                // Listeyi tekrar yenile (varsayılan değişti)
+                $this->loadBillingProfiles();
+            } else {
+                // Hiç profil kalmadıysa seçimi kaldır
+                $this->billing_profile_id = null;
+            }
+
             session()->flash('success', 'Fatura profili başarıyla silindi.');
-            \Log::info('✅ Billing profile deleted', ['profile_id' => $profileId]);
+            \Log::info('✅ Billing profile deleted', ['profile_id' => $profileId, 'was_default' => $wasDefault, 'was_selected' => $wasSelected]);
         } catch (\Exception $e) {
             session()->flash('error', 'Silme işlemi başarısız oldu.');
             \Log::error('❌ Error deleting billing profile', ['error' => $e->getMessage()]);

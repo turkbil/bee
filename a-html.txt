@@ -1,137 +1,17 @@
-sw.js:151 [PWA] Service Worker loaded
-checkout:59 [Web Share] Helper yüklendi. Destek: true
-checkout:59 [Back to Top] Initialized - Position: Left Bottom
-checkout:59 Alpine Expression Error: showAllProfiles is not defined
-
-Expression: "showAllProfiles"
-
- <div x-show=​"showAllProfiles" x-transition class=​"space-y-2 mb-4">​…​</div>​
-console.warn @ checkout:59
-checkout:59 Alpine Expression Error: showAllProfiles is not defined
-
-Expression: "showAllProfiles ? 'fa-eye-slash' : 'fa-eye'"
-
- <i class=​"fa-solid" :class=​"showAllProfiles ? 'fa-eye-slash' :​ 'fa-eye'">​</i>​
-console.warn @ checkout:59
-checkout:59 Alpine Expression Error: showAllProfiles is not defined
-
-Expression: "showAllProfiles ? 'Daha Az Göster' : 'Tümünü Göster (3)'"
-
- <span x-text=​"showAllProfiles ? 'Daha Az Göster' :​ 'Tümünü Göster (3)​'">​</span>​
-console.warn @ checkout:59
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showAllProfiles is not defined
-    at [Alpine] showAllProfiles (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showAllProfiles is not defined
-    at [Alpine] showAllProfiles ? 'fa-eye-slash' : 'fa-eye' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showAllProfiles is not defined
-    at [Alpine] showAllProfiles ? 'Daha Az Göster' : 'Tümünü Göster (3)' (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
-checkout:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-checkout:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-checkout:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.
-checkout:59 [PWA] Service Worker registered: https://ixtif.com/
-checkout:59 Alpine Expression Error: showAllProfiles is not defined
-
-Expression: "showAllProfiles"
-
- <div x-show=​"showAllProfiles" x-transition class=​"space-y-2 mb-4" style=​"display:​ none;​">​…​</div>​
-console.warn @ checkout:59
-checkout:59 Alpine Expression Error: showAllProfiles is not defined
-
-Expression: "showAllProfiles ? 'fa-eye-slash' : 'fa-eye'"
-
- <i class=​"fa-solid" :class=​"showAllProfiles ? 'fa-eye-slash' :​ 'fa-eye'">​</i>​
-console.warn @ checkout:59
-checkout:59 Alpine Expression Error: showAllProfiles is not defined
-
-Expression: "showAllProfiles ? 'Daha Az Göster' : 'Tümünü Göster (3)'"
-
- <span x-text=​"showAllProfiles ? 'Daha Az Göster' :​ 'Tümünü Göster (3)​'">​</span>​
-console.warn @ checkout:59
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showAllProfiles is not defined
-    at [Alpine] showAllProfiles (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3626:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at livewire.js?id=df3a17f2:1956:26
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showAllProfiles is not defined
-    at [Alpine] showAllProfiles ? 'fa-eye-slash' : 'fa-eye' (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3533:19
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at livewire.js?id=df3a17f2:1956:26
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at handler2 (livewire.js?id=df3a17f2:3533:5)
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showAllProfiles is not defined
-    at [Alpine] showAllProfiles ? 'Daha Az Göster' : 'Tümünü Göster (3)' (eval at safeAsyncFunction (https://ixtif.com/livewire/livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3496:7
-    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
-    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
-    at effect (livewire.js?id=df3a17f2:764:35)
-    at livewire.js?id=df3a17f2:1956:26
-    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
-    at Function.<anonymous> (livewire.js?id=df3a17f2:3495:5)
-checkout:59 Alpine Expression Error: showAllProfiles is not defined
-
-Expression: "showAllProfiles = !showAllProfiles"
-
- <button @click=​"showAllProfiles = !showAllProfiles" data-tooltip=​"Profilleri Düzenle" class=​"text-gray-500 dark:​text-gray-400 hover:​text-gray-900 dark:​hover:​text-white p-1 transition-colors">​…​</button>​
-console.warn @ checkout:59
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showAllProfiles is not defined
-    at [Alpine] showAllProfiles = !showAllProfiles (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:51)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3881:7
-    at handler4 (livewire.js?id=df3a17f2:3183:27)
-    at livewire.js?id=df3a17f2:3247:9
-    at HTMLButtonElement.<anonymous> (livewire.js?id=df3a17f2:3185:54)
-checkout:59 Alpine Expression Error: showAllProfiles is not defined
-
-Expression: "showAllProfiles = !showAllProfiles"
-
- <button @click=​"showAllProfiles = !showAllProfiles" data-tooltip=​"Profilleri Düzenle" class=​"text-gray-500 dark:​text-gray-400 hover:​text-gray-900 dark:​hover:​text-white p-1 transition-colors">​…​</button>​
-console.warn @ checkout:59
-livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showAllProfiles is not defined
-    at [Alpine] showAllProfiles = !showAllProfiles (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:51)
-    at livewire.js?id=df3a17f2:1196:23
-    at tryCatch (livewire.js?id=df3a17f2:1116:14)
-    at livewire.js?id=df3a17f2:3881:7
-    at handler4 (livewire.js?id=df3a17f2:3183:27)
-    at livewire.js?id=df3a17f2:3247:9
-    at HTMLButtonElement.<anonymous> (livewire.js?id=df3a17f2:3185:54)
+<div wire:key="summary-6" x-show="billingProfileId == 6" style="" class="items-center justify-between py-3 px-4 mb-3 bg-gray-100 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 flex-1">
+                                    <!--[if BLOCK]><![endif]-->                                        <span class="mr-2 text-yellow-500 dark:text-yellow-400" title="Varsayılan Profil">★</span>
+                                    <!--[if ENDBLOCK]><![endif]-->
+                                    <span class="text-gray-900 dark:text-white font-medium">
+                                        asdasdas
+                                    </span>
+                                    <span class="mx-2 text-gray-400 dark:text-gray-600">•</span>
+                                    <span>
+                                        <!--[if BLOCK]><![endif]-->                                            Vergi No: 1231231231
+                                        <!--[if ENDBLOCK]><![endif]-->
+                                    </span>
+                                </p>
+                                <button @click="showList = !showList" title="Profilleri Düzenle" class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-1 transition-colors">
+                                    <i class="fa-solid fa-pen text-xs"></i>
+                                </button>
+                            </div>

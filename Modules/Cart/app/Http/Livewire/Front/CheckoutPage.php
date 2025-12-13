@@ -356,8 +356,7 @@ class CheckoutPage extends Component
         }
 
         $this->billingProfiles = BillingProfile::where('user_id', $this->customerId)
-            ->orderBy('is_default', 'desc')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('title', 'asc')
             ->get();
 
         // Varsayılan profili seç
@@ -407,16 +406,18 @@ class CheckoutPage extends Component
         }
 
         // Önce tüm profillerin is_default'unu false yap
-        Auth::user()->billingProfiles()->update(['is_default' => false]);
+        BillingProfile::where('user_id', Auth::id())->update(['is_default' => false]);
 
         // Seçili profili default yap
-        $profile = Auth::user()->billingProfiles()->find($profileId);
+        $profile = BillingProfile::where('user_id', Auth::id())->find($profileId);
         if ($profile) {
             $profile->update(['is_default' => true]);
             $this->billing_profile_id = $profileId;
 
             // Profilleri yeniden yükle
-            $this->billingProfiles = Auth::user()->billingProfiles;
+            $this->billingProfiles = BillingProfile::where('user_id', Auth::id())
+                ->orderBy('title', 'asc')
+                ->get();
         }
     }
 

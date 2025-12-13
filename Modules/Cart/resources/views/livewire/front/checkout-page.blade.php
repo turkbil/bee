@@ -7,7 +7,9 @@
 
     // Fatura Profili
     billingProfileId: {{ $billing_profile_id ?? 'null' }},
+    defaultBillingProfileId: {{ optional($billingProfiles->where('is_default', true)->first())->billing_profile_id ?? 'null' }},
     showNewBillingProfile: false,
+    showList: false,
     newBillingProfileType: 'individual',
 
     // Adres
@@ -297,17 +299,46 @@
 
                     {{-- Mevcut Profiller --}}
                     @if($billingProfiles && count($billingProfiles) > 0)
-                        <div class="space-y-2 mb-4" x-data="{ showAllProfiles: false }">
+                        {{-- Seçili Profil Özeti (Compact Minimal - Reactive) --}}
+                        @foreach($billingProfiles as $profile)
+                            <div wire:key="summary-{{ $profile->billing_profile_id }}"
+                                 x-show="billingProfileId == {{ $profile->billing_profile_id }}"
+                                 style="display: {{ $billing_profile_id == $profile->billing_profile_id ? 'flex' : 'none' }}"
+                                 class="flex items-center justify-between gap-3 py-3 px-4 mb-3 bg-gray-100 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 flex-1">
+                                    @if($profile->is_default)
+                                        <span class="mr-2 text-yellow-500 dark:text-yellow-400" title="Varsayılan Profil">★</span>
+                                    @endif
+                                    <span class="text-gray-900 dark:text-white font-medium">
+                                        {{ $profile->isCorporate() ? $profile->company_name : $profile->title }}
+                                    </span>
+                                    <span class="mx-2 text-gray-400 dark:text-gray-600">•</span>
+                                    <span>
+                                        @if($profile->isCorporate())
+                                            Vergi No: {{ $profile->tax_number }}
+                                        @else
+                                            TC: {{ $profile->identity_number ?? '-' }}
+                                        @endif
+                                    </span>
+                                </p>
+                                <button @click="showList = !showList"
+                                        title="Profilleri Düzenle"
+                                        class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-1 transition-colors">
+                                    <i class="fa-solid fa-pen text-xs"></i>
+                                </button>
+                            </div>
+                        @endforeach
+
+                        {{-- Profil Listesi (Collapsible) --}}
+                        <div x-show="showList" x-cloak x-transition class="space-y-2 mb-4">
                             @foreach($billingProfiles as $profile)
                                 <div wire:key="billing-profile-{{ $profile->billing_profile_id }}"
                                      class="relative"
-                                     x-data="{ isEditing: false }"
-                                     x-show="showAllProfiles || billingProfileId == {{ $profile->billing_profile_id }}"
-                                     x-transition>
-                                    <div class="p-3 rounded-xl border-2 transition-all cursor-pointer group"
-                                         :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400' : 'border-gray-200 bg-gray-50 dark:bg-slate-800 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'"
-                                         @click="billingProfileId = {{ $profile->billing_profile_id }}">
-                                            <div class="flex items-center justify-between">
+                                     x-data="{ isEditing: false }">
+                                    <div @click="billingProfileId = {{ $profile->billing_profile_id }}; showList = false"
+                                         class="p-3 rounded-xl border-2 transition-all group cursor-pointer"
+                                         :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-gray-300 bg-gray-100 dark:bg-gray-800 dark:border-gray-400' : 'border-gray-200 bg-gray-50 dark:bg-slate-800 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-500'">
+                                            <div class="flex items-center justify-between gap-3">
                                                 <div class="flex items-center gap-3 flex-1 min-w-0">
                                                     <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-200 dark:bg-gray-700 flex-shrink-0">
                                                         <i class="fa-solid {{ $profile->isCorporate() ? 'fa-building' : 'fa-user' }} text-gray-700 dark:text-gray-400"></i>
@@ -330,7 +361,7 @@
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div class="flex items-center gap-2 flex-shrink-0">
+                                                <div class="flex items-center gap-2 flex-shrink-0 ml-2">
                                                     {{-- Edit Button --}}
                                                     <button @click.stop="
                                                         if (isEditing) {
@@ -360,9 +391,23 @@
                                                             title="Sil">
                                                         <i class="fas fa-trash text-xs"></i>
                                                     </button>
-                                                    {{-- Checkbox --}}
-                                                    <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
-                                                         :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-blue-600 bg-blue-600' : 'border-gray-300 dark:border-gray-600'">
+                                                    {{-- Star: Varsayılan Profil (Sonraki sayfa yüklemelerinde otomatik gelir) --}}
+                                                    <div x-show="defaultBillingProfileId == {{ $profile->billing_profile_id }}"
+                                                         class="p-1.5 text-yellow-500"
+                                                         title="Varsayılan Profil (Sonraki açılışta otomatik gelir)">
+                                                        <i class="fas fa-star text-xs"></i>
+                                                    </div>
+                                                    <button x-show="defaultBillingProfileId != {{ $profile->billing_profile_id }}"
+                                                            @click.stop="defaultBillingProfileId = {{ $profile->billing_profile_id }}; $wire.setDefaultBillingProfile({{ $profile->billing_profile_id }})"
+                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-yellow-500/20 rounded text-yellow-500 hover:text-yellow-400"
+                                                            title="Varsayılan Yap (Sonraki açılışta otomatik gelir)">
+                                                        <i class="far fa-star text-xs"></i>
+                                                    </button>
+                                                    {{-- Checkbox (Profil Seç) --}}
+                                                    <div @click.stop="billingProfileId = {{ $profile->billing_profile_id }}; showList = false"
+                                                         class="w-5 h-5 rounded-full border-2 flex items-center justify-center cursor-pointer hover:border-blue-500 transition-colors"
+                                                         :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-blue-600 bg-blue-600' : 'border-gray-300 dark:border-gray-600'"
+                                                         title="Profil Seç">
                                                         <i class="fa-solid fa-check text-[10px] text-white"
                                                            :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'opacity-100' : 'opacity-0'"></i>
                                                     </div>
@@ -379,18 +424,21 @@
                                                 <i class="fa-solid fa-times"></i>
                                             </button>
                                         </div>
-                                        <div class="flex gap-2">
-                                            <button type="button" @click="checkTypeSwitch('individual')"
-                                                    :class="newBillingProfileType === 'individual' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
-                                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg">
-                                                <i class="fa-solid fa-user mr-1.5"></i>Bireysel
-                                            </button>
-                                            <button type="button" @click="checkTypeSwitch('corporate')"
-                                                    :class="newBillingProfileType === 'corporate' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
-                                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg">
-                                                <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
-                                            </button>
-                                        </div>
+                                        {{-- Tip Seçimi: Sadece yeni profil eklerken göster --}}
+                                        @if(!$edit_billing_profile_id)
+                                            <div class="flex gap-2">
+                                                <button type="button" @click="checkTypeSwitch('individual')"
+                                                        :class="newBillingProfileType === 'individual' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
+                                                        class="flex-1 py-2.5 text-sm font-medium rounded-lg">
+                                                    <i class="fa-solid fa-user mr-1.5"></i>Bireysel
+                                                </button>
+                                                <button type="button" @click="checkTypeSwitch('corporate')"
+                                                        :class="newBillingProfileType === 'corporate' ? 'bg-blue-600 text-white dark:bg-gray-600 dark:text-white' : 'bg-gray-100 text-gray-600 dark:bg-gray-100 dark:bg-gray-700 dark:text-gray-600 dark:text-gray-400'"
+                                                        class="flex-1 py-2.5 text-sm font-medium rounded-lg">
+                                                    <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
+                                                </button>
+                                            </div>
+                                        @endif
                                         <div x-show="showTypeSwitchWarning" x-cloak x-transition
                                              class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
                                             <p class="text-sm text-yellow-400">
@@ -443,24 +491,17 @@
                                             </div>
                                         </div>
                                         <div class="flex justify-end">
-                                            <button wire:click="saveNewBillingProfile" wire:loading.attr="disabled"
+                                            <button wire:click="saveNewBillingProfile"
+                                                    wire:loading.attr="disabled"
+                                                    wire:target="saveNewBillingProfile"
                                                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-900 dark:text-white text-sm font-medium rounded-lg">
-                                                <span wire:loading.remove><i class="fa-solid fa-check mr-1"></i>Kaydet</span>
-                                                <span wire:loading><i class="fa-solid fa-spinner fa-spin mr-1"></i>Kaydediliyor...</span>
+                                                <span wire:loading.remove wire:target="saveNewBillingProfile"><i class="fa-solid fa-check mr-1"></i>Kaydet</span>
+                                                <span wire:loading wire:target="saveNewBillingProfile"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Kaydediliyor...</span>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
-
-                            {{-- Tümünü Göster Butonu --}}
-                            @if(count($billingProfiles) > 1)
-                                <button @click="showAllProfiles = !showAllProfiles"
-                                        class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-white flex items-center gap-2 pt-3">
-                                    <i class="fa-solid" :class="showAllProfiles ? 'fa-eye-slash' : 'fa-eye'"></i>
-                                    <span x-text="showAllProfiles ? 'Daha Az Göster' : 'Tümünü Göster ({{ count($billingProfiles) }})'"></span>
-                                </button>
-                            @endif
                         </div>
                     @else
                         <div x-show="!showNewBillingProfile" @click="showNewBillingProfile = true"
@@ -1243,14 +1284,15 @@
                     <div class="p-5" x-data="{ localAgreeAll: @entangle('agree_all').live }">
                         <button wire:click="proceedToPayment"
                                 wire:loading.attr="disabled"
+                                wire:target="proceedToPayment"
                                 :disabled="!localAgreeAll"
                                 :class="localAgreeAll ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-xl shadow-green-500/30 scale-100 hover:scale-[1.02]' : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-60'"
                                 class="w-full text-white font-bold py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 text-lg">
-                            <i class="fa-solid fa-lock text-lg" wire:loading.remove></i>
-                            <i class="fa-solid fa-spinner fa-spin text-lg" wire:loading></i>
-                            <span wire:loading.remove>Ödemeye Geç</span>
-                            <span wire:loading>İşleniyor...</span>
-                            <i class="fa-solid fa-arrow-right text-lg" wire:loading.remove></i>
+                            <i class="fa-solid fa-lock text-lg" wire:loading.remove wire:target="proceedToPayment"></i>
+                            <i class="fa-solid fa-spinner fa-spin text-lg" wire:loading wire:target="proceedToPayment"></i>
+                            <span wire:loading.remove wire:target="proceedToPayment">Ödemeye Geç</span>
+                            <span wire:loading wire:target="proceedToPayment">İşleniyor...</span>
+                            <i class="fa-solid fa-arrow-right text-lg" wire:loading.remove wire:target="proceedToPayment"></i>
                         </button>
                         <p class="text-center text-xs text-gray-700 dark:text-gray-500 mt-4 flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-shield-halved text-green-600 dark:text-green-500"></i>

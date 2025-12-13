@@ -74,8 +74,6 @@
                 Dashboard
             </a>
 
-            <div class="border-t border-gray-100 dark:border-gray-700 my-2"></div>
-            
             <a href="{{ route('profile.edit') }}" 
                class="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
                 <svg class="w-5 h-5 mr-3 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

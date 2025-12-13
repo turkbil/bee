@@ -35,7 +35,28 @@ class PayTRCallbackService
             }
 
             // 2. Payment kaydını bul
-            $payment = Payment::where('transaction_id', $merchantOid)->first();
+            // Önce gateway_transaction_id ile ara (PayTR'ye gönderilen merchant_oid)
+            $payment = Payment::where('gateway_transaction_id', $merchantOid)->first();
+
+            // Bulamazsa payment_number'ı reconstruct et ve dene
+            if (!$payment) {
+                // merchant_oid formatı: T{tenant_id}PAY{year}{number} (örn: T2PAY202500010)
+                // payment_number formatı: PAY-2025-00010
+                // Tenant prefix'ini kaldır ve tireli formatı oluştur
+                if (preg_match('/^T\d+PAY(\d{4})(\d+)$/', $merchantOid, $matches)) {
+                    $reconstructedPaymentNumber = 'PAY-' . $matches[1] . '-' . $matches[2];
+                    $payment = Payment::where('payment_number', $reconstructedPaymentNumber)->first();
+                }
+            }
+
+            // Son çare: stripped payment_number ile ara
+            if (!$payment) {
+                // merchant_oid'den tenant prefix'ini kaldır: T2PAY202500010 -> PAY202500010
+                $strippedMerchantOid = preg_replace('/^T\d+/', '', $merchantOid);
+                $payment = Payment::where('status', 'pending')
+                    ->whereRaw("REPLACE(REPLACE(REPLACE(payment_number, '-', ''), '_', ''), ' ', '') = ?", [$strippedMerchantOid])
+                    ->first();
+            }
 
             if (!$payment) {
                 Log::error('❌ PayTR callback: Payment bulunamadı', ['merchant_oid' => $merchantOid]);

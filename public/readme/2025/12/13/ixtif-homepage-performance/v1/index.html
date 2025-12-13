@@ -207,84 +207,64 @@
                     </div>
                 </div>
 
-                <!-- KADEME 5 - Orta Risk (Build/Versiyonlama) -->
+                <!-- KADEME 5, 6, 7 - ATLANMIŞ (Tenant-Aware Risk) -->
                 <div class="mb-6">
-                    <h3 class="text-xl font-bold text-orange-400 mb-3 flex items-center gap-2">
-                        <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">KADEME 5</span>
-                        <span>🟠 Orta-Yüksek Risk - Build Değişiklikleri</span>
+                    <h3 class="text-xl font-bold text-slate-500 mb-3 flex items-center gap-2">
+                        <span class="px-3 py-1 bg-slate-700 text-white text-xs rounded-full">ATLANMIŞ</span>
+                        <span>⚠️ Tenant-Aware Risk - Global Değişiklikler</span>
                     </h3>
-                    <p class="text-slate-500 text-sm mb-3 ml-2">Geri alma: Helper/config değişikliği</p>
+                    <p class="text-yellow-500 text-sm mb-3 ml-2">Bu görevler tüm tenant'ları etkileyebilir, manuel yapılması önerilir</p>
                     <div class="space-y-2">
-                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k5">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-15" checked>
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg cursor-default transition-all todo-item line-through opacity-70" data-priority="k5">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-15" checked disabled>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">CSS/JS dosyalarına versiyonlama ekle</strong>
-                                <span class="text-green-400 text-sm ml-2">✅ mix() + ?v= query string kullanılıyor</span>
+                                <span class="text-green-400 text-sm ml-2">✅ mix() + ?v= zaten kullanılıyor</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k5">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-orange-500" data-task="task-16">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">CSS bundle oluştur</strong>
-                                <span class="text-slate-500 text-sm ml-2">(6 dosyayı birleştir - webpack config)</span>
+                        <label class="flex items-start gap-3 p-3 bg-yellow-900/20 rounded-lg cursor-default transition-all todo-item opacity-60" data-priority="k5">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-600" data-task="task-16" disabled>
+                            <span class="flex-1 text-slate-400">
+                                <strong class="text-slate-300">CSS bundle oluştur</strong>
+                                <span class="text-yellow-500 text-sm ml-2">⚠️ Atlandı - Build pipeline riski</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k5">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-orange-500" data-task="task-17">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Kritik CSS inline yap</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Above the fold CSS extract)</span>
-                            </span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- KADEME 6 - Yüksek Risk (Server Config) -->
-                <div class="mb-6">
-                    <h3 class="text-xl font-bold text-red-400 mb-3 flex items-center gap-2">
-                        <span class="px-3 py-1 bg-red-600 text-white text-xs rounded-full">KADEME 6</span>
-                        <span>🔴 Yüksek Risk - Server Konfigürasyonu</span>
-                    </h3>
-                    <p class="text-slate-500 text-sm mb-3 ml-2">Geri alma: Plesk/Nginx config geri yükle</p>
-                    <div class="space-y-2">
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k6">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-red-500" data-task="task-18">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Nginx cache headers ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Webfont/CSS/JS: 1 yıl - server config)</span>
-                            </span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- KADEME 7 - İleri Seviye (Opsiyonel) -->
-                <div class="mb-6">
-                    <h3 class="text-xl font-bold text-slate-400 mb-3 flex items-center gap-2">
-                        <span class="px-3 py-1 bg-slate-600 text-white text-xs rounded-full">KADEME 7</span>
-                        <span>⚪ İleri Seviye - Opsiyonel</span>
-                    </h3>
-                    <p class="text-slate-500 text-sm mb-3 ml-2">Bonus optimizasyonlar - gerekirse yapılır</p>
-                    <div class="space-y-2">
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k7">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-slate-500" data-task="task-19">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Polyfill temizleme</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Modern build config)</span>
+                        <label class="flex items-start gap-3 p-3 bg-yellow-900/20 rounded-lg cursor-default transition-all todo-item opacity-60" data-priority="k5">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-600" data-task="task-17" disabled>
+                            <span class="flex-1 text-slate-400">
+                                <strong class="text-slate-300">Kritik CSS inline yap</strong>
+                                <span class="text-yellow-500 text-sm ml-2">⚠️ Atlandı - FOUC riski</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k7">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-slate-500" data-task="task-20">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Forced reflow optimizasyonları</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Batch DOM reads)</span>
+                        <label class="flex items-start gap-3 p-3 bg-yellow-900/20 rounded-lg cursor-default transition-all todo-item opacity-60" data-priority="k6">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-600" data-task="task-18" disabled>
+                            <span class="flex-1 text-slate-400">
+                                <strong class="text-slate-300">Nginx cache headers ekle</strong>
+                                <span class="text-yellow-500 text-sm ml-2">⚠️ Atlandı - Server config, Plesk'ten yapılabilir</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k7">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-slate-500" data-task="task-21">
+                        <label class="flex items-start gap-3 p-3 bg-yellow-900/20 rounded-lg cursor-default transition-all todo-item opacity-60" data-priority="k7">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-600" data-task="task-19" disabled>
+                            <span class="flex-1 text-slate-400">
+                                <strong class="text-slate-300">Polyfill temizleme</strong>
+                                <span class="text-yellow-500 text-sm ml-2">⚠️ Atlandı - Global build config</span>
+                            </span>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 bg-yellow-900/20 rounded-lg cursor-default transition-all todo-item opacity-60" data-priority="k7">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-600" data-task="task-20" disabled>
+                            <span class="flex-1 text-slate-400">
+                                <strong class="text-slate-300">Forced reflow optimizasyonları</strong>
+                                <span class="text-yellow-500 text-sm ml-2">⚠️ Atlandı - İleri seviye</span>
+                            </span>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 bg-yellow-900/20 rounded-lg cursor-default transition-all todo-item opacity-60" data-priority="k7">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-600" data-task="task-21" disabled>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">CDN kurulumu</strong>
                                 <span class="text-slate-500 text-sm ml-2">(Cloudflare veya BunnyCDN)</span>

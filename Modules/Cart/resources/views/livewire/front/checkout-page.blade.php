@@ -30,6 +30,7 @@
     showNewBillingForm: false,
     showBillingList: false,
     selectedPaymentMethodId: {{ $selectedPaymentMethodId ?? 'null' }},
+    selectedGateway: '{{ $paymentMethods->firstWhere("payment_method_id", $selectedPaymentMethodId)?->gateway ?? "paytr" }}',
     agreeAll: false,
 
     // Delete State
@@ -59,6 +60,7 @@
         $wire.set('billing_address_id', (this.requiresShipping && this.billingSameAsShipping) ? this.shippingAddressId : this.billingAddressId);
         $wire.set('billing_same_as_shipping', this.billingSameAsShipping);
         $wire.set('selectedPaymentMethodId', this.selectedPaymentMethodId);
+        $wire.set('selectedGateway', this.selectedGateway); // Gateway seçimi (paytr/bank_transfer)
         $wire.set('agree_all', this.agreeAll);
     },
 
@@ -1465,7 +1467,7 @@
                         </h3>
                         <div class="space-y-3">
                             @foreach($paymentMethods as $method)
-                                <div @click="selectedPaymentMethodId = {{ $method->payment_method_id }}" class="cursor-pointer">
+                                <div @click="selectedPaymentMethodId = {{ $method->payment_method_id }}; selectedGateway = '{{ $method->gateway }}'" class="cursor-pointer">
                                     <div class="p-4 rounded-xl border-2 transition-all"
                                          :class="selectedPaymentMethodId === {{ $method->payment_method_id }} ? 'border-blue-500 bg-blue-500/10' : 'border-gray-200 dark:border-gray-700 hover:border-gray-500'">
                                         <div class="flex items-center gap-3">
@@ -1477,7 +1479,9 @@
                                             <div class="flex-1">
                                                 <span class="text-sm font-semibold" :class="selectedPaymentMethodId === {{ $method->payment_method_id }} ? 'text-blue-400' : 'text-gray-900 dark:text-white'">{{ $method->getTranslated('title') }}</span>
                                                 @if($method->gateway === 'paytr')
-                                                    <p class="text-xs text-gray-500">Visa, Mastercard, Troy</p>
+                                                    <p class="text-xs text-gray-500">{{ __('Visa, Mastercard, Troy') }}</p>
+                                                @elseif($method->gateway === 'bank_transfer' || $method->gateway === 'manual')
+                                                    <p class="text-xs text-gray-500">{{ __('Banka havalesi veya EFT') }}</p>
                                                 @endif
                                             </div>
                                             <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-200"
@@ -1485,12 +1489,12 @@
                                                 <i class="fa-solid fa-check text-[10px] text-gray-900 dark:text-white" x-show="selectedPaymentMethodId === {{ $method->payment_method_id }}"></i>
                                             </div>
                                         </div>
-                                        @if($method->gateway === 'manual')
+                                        @if($method->gateway === 'manual' || $method->gateway === 'bank_transfer')
                                             <div x-show="selectedPaymentMethodId === {{ $method->payment_method_id }}" x-cloak class="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600 text-sm text-gray-600 dark:text-gray-400">
-                                                <p><strong class="text-gray-900 dark:text-gray-200">Banka:</strong> Türkiye İş Bankası</p>
-                                                <p><strong class="text-gray-900 dark:text-gray-200">Hesap:</strong> İXTİF A.Ş.</p>
-                                                <p class="mt-2"><strong class="text-gray-900 dark:text-gray-200">IBAN:</strong></p>
-                                                <code class="block bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg mt-1 text-xs font-mono">TR51 0006 4000 0011 0372 5092 58</code>
+                                                <p class="text-gray-500 dark:text-gray-400">
+                                                    <i class="fa-solid fa-info-circle mr-1"></i>
+                                                    {{ __('Sonraki adımda banka hesap bilgileri gösterilecektir.') }}
+                                                </p>
                                             </div>
                                         @endif
                                     </div>
@@ -1575,27 +1579,42 @@
                                 });
                             "
                             :disabled="!agreeAll || processing"
-                            :class="agreeAll && !processing ? 'bg-green-600 hover:bg-green-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed opacity-60'"
+                            :class="{
+                                'bg-gray-400 cursor-not-allowed opacity-60': !agreeAll || processing,
+                                'bg-green-600 hover:bg-green-700 cursor-pointer': agreeAll && !processing && selectedGateway === 'paytr',
+                                'bg-emerald-600 hover:bg-emerald-700 cursor-pointer': agreeAll && !processing && (selectedGateway === 'bank_transfer' || selectedGateway === 'manual')
+                            }"
                             class="w-full py-4 rounded-xl font-bold text-lg text-white transition-all">
 
-                            <template x-if="!processing">
+                            <template x-if="!processing && selectedGateway === 'paytr'">
                                 <span>
-                                    <i class="fas fa-lock mr-2"></i>
-                                    Ödemeye Geç
+                                    <i class="fas fa-credit-card mr-2"></i>
+                                    {{ __('Kartla Ödemeye Geç') }}
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </span>
+                            </template>
+                            <template x-if="!processing && (selectedGateway === 'bank_transfer' || selectedGateway === 'manual')">
+                                <span>
+                                    <i class="fas fa-building-columns mr-2"></i>
+                                    {{ __('Havale Bilgilerini Gör') }}
                                     <i class="fas fa-arrow-right ml-2"></i>
                                 </span>
                             </template>
                             <template x-if="processing">
                                 <span>
                                     <i class="fas fa-spinner fa-spin mr-2"></i>
-                                    İşleniyor...
+                                    {{ __('İşleniyor...') }}
                                 </span>
                             </template>
                         </button>
 
-                        <p class="text-center text-xs text-gray-500 mt-4">
+                        <p class="text-center text-xs text-gray-500 mt-4" x-show="selectedGateway === 'paytr'">
                             <i class="fas fa-shield-halved text-green-600 mr-1"></i>
-                            256-bit SSL ile güvenli ödeme
+                            {{ __('256-bit SSL ile güvenli ödeme') }}
+                        </p>
+                        <p class="text-center text-xs text-gray-500 mt-4" x-show="selectedGateway === 'bank_transfer' || selectedGateway === 'manual'">
+                            <i class="fas fa-building-columns text-emerald-600 mr-1"></i>
+                            {{ __('Banka hesap bilgileri sonraki sayfada gösterilecek') }}
                         </p>
                     </div>
 
@@ -1745,7 +1764,7 @@
         </div>
     @endif
 
-    {{-- PayTR iframe Modal --}}
+    {{-- Kredi Kartı iframe Modal --}}
     @if($showPaymentModal ?? false)
         @teleport('body')
         <div class="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
@@ -1754,7 +1773,7 @@
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-3">
                         <i class="fa-solid fa-credit-card text-gray-600 dark:text-gray-400 text-xl"></i>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Güvenli Ödeme</h3>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('Kredi Kartı ile Ödeme') }}</h3>
                     </div>
                     <button wire:click="closePaymentModal" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-white">
                         <i class="fa-solid fa-times text-2xl"></i>
@@ -1762,19 +1781,19 @@
                 </div>
                 <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 80px);">
                     @if($paymentIframeUrl)
-                        <iframe src="{{ $paymentIframeUrl }}" id="paytriframe" frameborder="0" scrolling="no"
+                        <iframe src="{{ $paymentIframeUrl }}" id="payment-iframe" frameborder="0" scrolling="no"
                                 style="width: 100%; min-height: 600px;" class="rounded-lg"></iframe>
                     @else
                         <div class="text-center py-12">
                             <i class="fa-solid fa-spinner fa-spin text-4xl text-gray-600 dark:text-gray-400 mb-4"></i>
-                            <p class="text-gray-600 dark:text-gray-400">Ödeme ekranı yükleniyor...</p>
+                            <p class="text-gray-600 dark:text-gray-400">{{ __('Ödeme ekranı yükleniyor...') }}</p>
                         </div>
                     @endif
                 </div>
                 <div class="px-6 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-700/50">
                     <p class="text-xs text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-lock text-green-400"></i>
-                        256-bit SSL şifreli güvenli ödeme - PayTR Güvencesiyle
+                        {{ __('256-bit SSL şifreli güvenli ödeme') }}
                     </p>
                 </div>
             </div>
@@ -1783,12 +1802,12 @@
         <script src="https://www.paytr.com/js/iframeResizer.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const iframe = document.getElementById('paytriframe');
-                if (iframe) iFrameResize({ log: false, checkOrigin: false, heightCalculationMethod: 'bodyScroll' }, '#paytriframe');
+                const iframe = document.getElementById('payment-iframe');
+                if (iframe) iFrameResize({ log: false, checkOrigin: false, heightCalculationMethod: 'bodyScroll' }, '#payment-iframe');
             });
             Livewire.hook('message.processed', (message, component) => {
-                const iframe = document.getElementById('paytriframe');
-                if (iframe) iFrameResize({ log: false, checkOrigin: false, heightCalculationMethod: 'bodyScroll' }, '#paytriframe');
+                const iframe = document.getElementById('payment-iframe');
+                if (iframe) iFrameResize({ log: false, checkOrigin: false, heightCalculationMethod: 'bodyScroll' }, '#payment-iframe');
             });
         </script>
         @endpush

@@ -192,8 +192,7 @@
         ? 'flex-1 flex flex-col justify-start gap-1'
         : 'p-3 md:p-4 lg:p-6 space-y-3 md:space-y-4 lg:space-y-5';
 
-    // Grid responsive visibility (sadece homepage için)
-    $visibilityClass = ($index === 8) ? 'hidden lg:block xl:hidden' : '';
+    // Grid responsive visibility - kaldırıldı (homepage blade'de zaten var)
 
     // Badge sistemi - hem array hem model format destekli
     $productBadges = [];
@@ -439,7 +438,7 @@ document.addEventListener('alpine:init', () => {
 </script>
 @endonce
 
-<div x-data="productCard({{ $productTryPrice ? 'true' : 'false' }}, {{ $productId }})" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $visibilityClass }}">
+<div x-data="productCard({{ $productTryPrice ? 'true' : 'false' }}, {{ $productId }})" class="group relative bg-white/70 dark:bg-white/5 backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden hover:bg-white/90 dark:hover:bg-white/10 hover:shadow-xl hover:border-blue-300 dark:hover:border-white/20 transition-all {{ $attributes->get('class', '') }}">
 
     <div class="{{ $layoutClasses }}">
         {{-- Product Image --}}
@@ -542,7 +541,7 @@ document.addEventListener('alpine:init', () => {
             @endif
 
             {{-- Price & Actions --}}
-            <div class="{{ $layout === 'horizontal' ? 'flex items-center justify-between gap-4 mt-auto' : 'pt-3 md:pt-4 lg:pt-5 mt-auto flex items-center justify-between gap-3' }} {{ $layout === 'vertical' && $showDivider ? 'border-t border-gray-300 dark:border-gray-500' : '' }}">
+            <div class="{{ $layout === 'horizontal' ? 'flex items-center justify-between gap-4 mt-auto' : 'pt-3 md:pt-4 lg:pt-5 mt-auto flex items-end justify-between gap-2 md:gap-3 flex-wrap' }} {{ $layout === 'vertical' && $showDivider ? 'border-t border-gray-300 dark:border-gray-500' : '' }}">
                 {{-- Price with Transform Effect (USD ⇄ TRY) + Old Price --}}
                 <div class="flex-1 min-w-0">
                     @if($productBasePrice <= 0)

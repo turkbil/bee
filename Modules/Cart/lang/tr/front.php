@@ -27,4 +27,8 @@ return [
     'item_removed' => 'Ürün sepetten çıkarıldı',
     'item_updated' => 'Sepet güncellendi',
     'cart_cleared' => 'Sepet temizlendi',
+
+    // Orders
+    'my_orders' => 'Siparişlerim',
+    'view_order_history' => 'Sipariş geçmişinizi görüntüleyin',
 ];

@@ -85,12 +85,13 @@ class PayTRCallbackController extends Controller
     /**
      * merchant_oid içinden tenant ID parse et
      *
-     * Format: T{tenant_id}-ORD-20251112-ABC123
-     * Örnek: T2-ORD-20251112-ABC123 → tenant_id = 2
+     * Format: T{tenant_id}PAY{year}{number} (tiresiz - PayTR için)
+     * Örnek: T2PAY202500010 → tenant_id = 2
      */
     private function parseTenantId(string $merchantOid): ?int
     {
-        if (preg_match('/^T(\d+)-/', $merchantOid, $matches)) {
+        // T ile başlayıp rakam devam ediyorsa: T2PAY..., T2ORD..., T1001PAY...
+        if (preg_match('/^T(\d+)/', $merchantOid, $matches)) {
             return (int) $matches[1];
         }
 

@@ -9,24 +9,20 @@ use Symfony\Component\HttpFoundation\Response;
 class FixLegacyTenantUrls
 {
     /**
-     * Handle an incoming request - eski tenant URL'lerini düzelt
+     * Handle an incoming request
+     *
+     * ⚠️ ÖNCEKİ SORUN: Bu middleware /storage/tenant{id}/ URL'lerini /storage/ olarak değiştiriyordu
+     * Bu YANLIŞ bir işlemdi çünkü tenant-aware storage sistemi /storage/tenant{id}/ formatını kullanıyor!
+     *
+     * ✅ DÜZELTME: Bu middleware artık sadece TERS dönüşüm yapıyor - yanlış URL'leri doğru formata çeviriyor
+     * Eğer eski sistemden /storage/{id}/ formatında URL varsa → /storage/tenant{tenantId}/{id}/ formatına çevirir
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
+        // ⚠️ DEVRE DIŞI: Tenant URL manipülasyonu artık gerekli değil
+        // StorageTenancyBootstrapper doğru URL'leri üretiyor
+        // Bu middleware sadece placeholder olarak kalıyor, gelecekte eski URL redirect'leri için kullanılabilir
 
-        // Sadece HTML response'ları işle
-        if ($response->headers->get('Content-Type') && 
-            str_contains($response->headers->get('Content-Type'), 'text/html')) {
-            
-            $content = $response->getContent();
-            
-            // /storage/tenant{id}/ → /storage/ değişimi
-            $content = preg_replace('#/storage/tenant\d+/#', '/storage/', $content);
-            
-            $response->setContent($content);
-        }
-
-        return $response;
+        return $next($request);
     }
 }

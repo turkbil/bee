@@ -6,15 +6,15 @@
         "watch": "mix watch",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
-        "prod": "npm run production",
+        "prod": "npm run css:all && npm run production",
         "production": "mix --production",
-        "build": "npm run production",
+        "build": "npm run css:all && npm run production",
 
         "css:all": "node scripts/build-tenant-css.js",
         "css:default": "node scripts/build-tenant-css.js default",
         "css:ixtif": "node scripts/build-tenant-css.js 2",
         "css:muzibu": "node scripts/build-tenant-css.js 1001",
-        "build:all": "npm run css:all && npm run production"
+        "mix-only": "mix --production"
     },
     "devDependencies": {
         "@react-native-community/cli": "^20.0.1",

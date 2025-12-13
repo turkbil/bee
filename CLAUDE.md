@@ -230,12 +230,33 @@ https://ixtif.com/readme/2025/11/30/horizon-cpu-sorunu-analiz/
 
 #### 🎨 TENANT-AWARE TAİLWİND CSS
 
+**🚨 KRİTİK: Site tenant CSS kullanıyor, app.css DEĞİL!**
+
+Her tenant kendi CSS dosyasını yükler:
+- ixtif.com → `public/css/tenant-2.css`
+- muzibu.com → `public/css/tenant-1001.css`
+- app.css → Sadece merkezi/admin için
+
+**✅ DOĞRU BUILD KOMUTU:**
 ```bash
-npm run css:all      # Tüm tenant CSS'lerini build et
-npm run css:ixtif    # Sadece tenant-2
-npm run css:muzibu   # Sadece tenant-1001
+npm run prod         # ✅ Tenant CSS + app.css (HEPSİ)
+npm run build        # ✅ Aynı şey (alias)
 ```
 
+**📦 Diğer Komutlar:**
+```bash
+npm run css:all      # Sadece tüm tenant CSS'leri
+npm run css:ixtif    # Sadece tenant-2
+npm run css:muzibu   # Sadece tenant-1001
+npm run mix-only     # Sadece app.css (Laravel Mix)
+```
+
+**⚠️ Tailwind class eklediğinde:**
+1. `tailwind.config.js` → safelist'e ekle (purge koruması)
+2. `npm run prod` çalıştır (tenant CSS'leri rebuild eder)
+3. Cache temizle: `php artisan view:clear && php artisan responsecache:clear`
+
+**📁 Dosya Yapısı:**
 - Config: `tailwind/tenants/tenant-X.config.js`
 - Output: `public/css/tenant-X.css`
 - Layout: `{{ tenant_css() }}` helper kullan

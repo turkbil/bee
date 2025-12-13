@@ -27,4 +27,8 @@ return [
     'item_removed' => 'Item removed from cart',
     'item_updated' => 'Cart updated',
     'cart_cleared' => 'Cart cleared',
+
+    // Orders
+    'my_orders' => 'My Orders',
+    'view_order_history' => 'View your order history',
 ];

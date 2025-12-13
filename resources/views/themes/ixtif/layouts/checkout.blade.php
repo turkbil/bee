@@ -47,14 +47,18 @@
                         <img src="{{ $logos['light_logo_url'] }}"
                              alt="{{ $siteTitle }}"
                              class="h-8 w-auto object-contain"
-                             title="{{ $siteTitle }}">
+                             title="{{ $siteTitle }}"
+                             width="120"
+                             height="32">
                     </a>
                 @elseif($logos['has_dark'])
                     <a href="{{ $homeUrl }}" class="flex items-center">
                         <img src="{{ $logos['dark_logo_url'] }}"
                              alt="{{ $siteTitle }}"
                              class="h-8 w-auto object-contain"
-                             title="{{ $siteTitle }}">
+                             title="{{ $siteTitle }}"
+                             width="120"
+                             height="32">
                     </a>
                 @else
                     <a href="{{ $homeUrl }}" class="text-lg font-bold text-gray-900">

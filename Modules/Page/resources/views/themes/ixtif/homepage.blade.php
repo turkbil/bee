@@ -616,21 +616,24 @@
             </div>
             @endif
 
-            {{-- Regular Products (2 VIP + 15 normal = 17 toplam) --}}
-            {{-- Responsive gizleme: 2 kolon=4 göster, 3 kolon=6 göster, 4 kolon=12 göster, 5 kolon=15 göster --}}
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                @foreach($homepageProducts->skip(2)->take(15) as $index => $product)
+            {{-- Regular Products (2 VIP + 16 normal = 18 toplam) --}}
+            {{-- Responsive: Mobil(2):16✓, md/lg(3):15, xl(4):16✓, 2xl(5):15 --}}
+            @php
+                $gridProducts = $homepageProducts->skip(2)->take(16);
+            @endphp
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6">
+                @foreach($gridProducts as $index => $product)
+                    @php
+                        // Index 15: 3-kolonda (md/lg) ve 5-kolonda (2xl) gizle
+                        $hideClass = ($index == 15) ? 'md:hidden xl:block 2xl:hidden' : '';
+                    @endphp
                     <x-ixtif.product-card
                         :product="$product"
                         layout="vertical"
                         :showAddToCart="true"
                         :showDivider="false"
                         :index="$index + 2"
-                        class="
-                            {{ $index >= 4 ? 'hidden md:block' : '' }}
-                            {{ $index >= 6 ? 'hidden lg:block' : '' }}
-                            {{ $index >= 12 ? 'hidden xl:block' : '' }}
-                        "
+                        class="{{ $hideClass }}"
                     />
                 @endforeach
             </div>

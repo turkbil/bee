@@ -132,23 +132,31 @@
                     <img src="{{ $logoUrl }}"
                          alt="{{ $siteTitle }}"
                          class="dark:hidden object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto"
-                         title="{{ $siteTitle }}">
+                         title="{{ $siteTitle }}"
+                         width="320"
+                         height="128">
                     <img src="{{ $logoDarkUrl }}"
                          alt="{{ $siteTitle }}"
                          class="hidden dark:block object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto"
-                         title="{{ $siteTitle }}">
+                         title="{{ $siteTitle }}"
+                         width="320"
+                         height="128">
                 @elseif($fallbackMode === 'light_only' || $logoUrl)
                     {{-- Sadece light logo var - Dark mode'da CSS ile beyaz yap --}}
                     <img src="{{ $logoUrl }}"
                          alt="{{ $siteTitle }}"
                          class="block object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto logo-adaptive"
-                         title="{{ $siteTitle }}">
+                         title="{{ $siteTitle }}"
+                         width="320"
+                         height="128">
                 @elseif($fallbackMode === 'dark_only' || $logoDarkUrl)
                     {{-- Sadece dark logo var - Her modda göster --}}
                     <img src="{{ $logoDarkUrl }}"
                          alt="{{ $siteTitle }}"
                          class="block object-contain h-24 sm:h-28 md:h-32 w-auto mx-auto"
-                         title="{{ $siteTitle }}">
+                         title="{{ $siteTitle }}"
+                         width="320"
+                         height="128">
                 @else
                     {{-- Logo yok - Site title text göster --}}
                     <div class="flex flex-col items-center gap-3">
@@ -325,7 +333,9 @@
                 <img src="https://ixtif.com/storage/tenant2/331/kart.png"
                      alt="Ödeme Yöntemleri - Mastercard, Visa"
                      class="h-8 md:h-10 w-auto object-contain"
-                     loading="lazy">
+                     loading="lazy"
+                     width="200"
+                     height="40">
             </div>
         </div>
 

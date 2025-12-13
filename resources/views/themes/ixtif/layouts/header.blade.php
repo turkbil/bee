@@ -452,23 +452,31 @@
                                 <img src="{{ $logoUrl }}"
                                      alt="{{ $siteTitle }}"
                                      class="dark:hidden object-contain h-10 w-auto"
-                                     title="{{ $siteTitle }}">
+                                     title="{{ $siteTitle }}"
+                                     width="120"
+                                     height="40">
                                 <img src="{{ $logoDarkUrl }}"
                                      alt="{{ $siteTitle }}"
                                      class="hidden dark:block object-contain h-10 w-auto"
-                                     title="{{ $siteTitle }}">
+                                     title="{{ $siteTitle }}"
+                                     width="120"
+                                     height="40">
                             @elseif($fallbackMode === 'light_only' || $logoUrl)
                                 {{-- Sadece light logo var - Dark mode'da CSS ile beyaz yap --}}
                                 <img src="{{ $logoUrl }}"
                                      alt="{{ $siteTitle }}"
                                      class="block object-contain h-10 w-auto logo-adaptive"
-                                     title="{{ $siteTitle }}">
+                                     title="{{ $siteTitle }}"
+                                     width="120"
+                                     height="40">
                             @elseif($fallbackMode === 'dark_only' || $logoDarkUrl)
                                 {{-- Sadece dark logo var - Her modda göster --}}
                                 <img src="{{ $logoDarkUrl }}"
                                      alt="{{ $siteTitle }}"
                                      class="block object-contain h-10 w-auto"
-                                     title="{{ $siteTitle }}">
+                                     title="{{ $siteTitle }}"
+                                     width="120"
+                                     height="40">
                             @else
                                 {{-- Logo yok - Site title text göster --}}
                                 <div class="flex items-center gap-2">

@@ -33,9 +33,11 @@ Route::redirect('/muzibu/sector/{slug}', '/sectors/{slug}', 301);
 Route::get('/subscription/plans', \Modules\Subscription\App\Http\Livewire\Front\SubscriptionPlansComponent::class)->name('subscription.plans');
 Route::middleware('auth')->get('/subscription/success', \Modules\Subscription\App\Http\Controllers\Front\SubscriptionSuccessController::class)->name('subscription.success');
 
-// 💳 PAYMENT ROUTES
-Route::get('/payment/success', [\Modules\Payment\App\Http\Controllers\PaymentSuccessController::class, 'show'])->name('payment.success');
-Route::get('/payment/{orderNumber}', [\Modules\Payment\App\Http\Controllers\PaymentPageController::class, 'show'])->name('payment.page');
+// 💳 PAYMENT ROUTES - Tenant context için middleware zorunlu!
+Route::middleware([InitializeTenancy::class])->group(function () {
+    Route::get('/payment/success', [\Modules\Payment\App\Http\Controllers\PaymentSuccessController::class, 'show'])->name('payment.success');
+    Route::get('/payment/{orderNumber}', [\Modules\Payment\App\Http\Controllers\PaymentPageController::class, 'show'])->name('payment.page');
+});
 
 // PDF Export - Wildcard'dan önce tanımlanmalı
 Route::middleware([InitializeTenancy::class, 'site'])
@@ -705,16 +707,16 @@ Route::middleware([InitializeTenancy::class, 'site'])
         // Regex ile admin, api vb. system route'larını hariç tut
         Route::get('/{slug1}', function($slug1) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart)[^/]+$');
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment)[^/]+$');
 
         Route::get('/{slug1}/{slug2}', function($slug1, $slug2) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment)[^/]+$')
          ->where('slug2', '^(?!pdf|category|tag)[^/]+$');
 
         Route::get('/{slug1}/{slug2}/{slug3}', function($slug1, $slug2, $slug3) {
             return app(\App\Services\DynamicRouteService::class)->handleDynamicRoute($slug1, $slug2, $slug3);
-        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed)[^/]+$')
+        })->where('slug1', '^(?!admin|api|ai|login|logout|register|password|auth|storage|thumbmaker|css|js|assets|profile|dashboard|debug|design|feed|productfeed|cart|siparislerim|payment)[^/]+$')
          ->where('slug2', '^(?!pdf|category|tag)[^/]+$')
          ->where('slug3', '[^/]+');
     });

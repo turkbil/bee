@@ -1545,64 +1545,7 @@ class CheckoutPage extends Component
     }
 
     /**
-     * Test metodu - Livewire çalışıyor mu?
-     */
-    public function testButton()
-    {
-        \Log::info('🔥 TEST BUTTON CLICKED!');
-        session()->flash('success', 'Test başarılı! Livewire çalışıyor.');
-    }
-
-    /**
-     * Basit ödeme - Yeni sayfaya yönlendir
-     */
-    public function testPayment()
-    {
-        \Log::info('🧪 TEST PAYMENT START', [
-            'user_id' => Auth::id(),
-            'agree_all' => $this->agree_all ?? false,
-            'items_count' => $this->items ? $this->items->count() : 0,
-            'grandTotal' => $this->grandTotal
-        ]);
-
-        // TEST MOD - Validation KAPALI, direkt yönlendir
-        try {
-            // Basit sipariş numarası oluştur (ALFANUMERIK - PayTR kuralı!)
-            // Format: T{tenant}TEST{timestamp}{random}
-            $orderNumber = 'T' . tenant('id') . 'TEST' . date('YmdHis') . strtoupper(substr(md5(uniqid()), 0, 6));
-
-            // Fiyat bilgilerini session'a kaydet
-            session([
-                'test_payment_amount' => $this->grandTotal,
-                'test_payment_subtotal' => $this->subtotal,
-                'test_payment_tax' => $this->taxAmount,
-                'test_payment_item_count' => $this->itemCount,
-                'last_order_number' => $orderNumber, // Ödeme başarılı sayfası için
-            ]);
-
-            // ⚠️ SEPET TEMİZLENMEYECEK - Sadece ödeme başarılı olunca temizlenecek
-            // PayTR callback başarı dönünce sepet temizlenecek
-
-            \Log::info('✅ TEST: Redirecting to payment page', [
-                'order' => $orderNumber,
-                'amount' => $this->grandTotal,
-                'cart_cleared' => false // ARTIK TEMİZLENMİYOR
-            ]);
-
-            // 🔐 Session authorization ekle - sadece bu kullanıcı erişebilsin
-            session()->put('payment_authorized_' . $orderNumber, true);
-
-            // Yeni ödeme sayfasına yönlendir
-            return redirect()->route('payment.page', ['orderNumber' => $orderNumber]);
-        } catch (\Exception $e) {
-            \Log::error('❌ TEST PAYMENT ERROR: ' . $e->getMessage());
-            session()->flash('error', 'Test hatası: ' . $e->getMessage());
-            return;
-        }
-    }
-
-    /**
-     * Ödemeye Geç - PayTR iframe modalını aç
+     * Ödemeye Geç - Kredi kartı veya Havale sayfasına yönlendir
      */
     public function proceedToPayment()
     {
@@ -1617,7 +1560,7 @@ class CheckoutPage extends Component
             'billing_profile_id' => 'required|exists:billing_profiles,billing_profile_id',
             'agree_all' => 'accepted',
             'selectedPaymentMethodId' => 'required|exists:payment_methods,payment_method_id',
-            'selectedGateway' => 'nullable|string|in:paytr,bank_transfer', // Yeni gateway sistemi
+            'selectedGateway' => 'nullable|string|in:paytr,bank_transfer,manual', // Yeni gateway sistemi
         ];
 
         // Adres seçimi - sadece fiziksel ürün varsa teslimat zorunlu
@@ -1787,13 +1730,26 @@ class CheckoutPage extends Component
                 ],
             ]);
 
-            // ✅ Payment sayfasına redirect - PayTR token orada alınacak
-            $paymentUrl = route('payment.page', ['orderNumber' => $order->order_number]);
+            // ✅ Gateway'e göre redirect - PayTR veya Bank Transfer
+            $paymentMethod = PaymentMethod::find($this->selectedPaymentMethodId);
+            $gateway = $paymentMethod?->gateway ?? $this->selectedGateway ?? 'paytr';
 
-            \Log::info('✅ Redirecting to payment page', [
-                'order_number' => $order->order_number,
-                'payment_url' => $paymentUrl
-            ]);
+            if ($gateway === 'bank_transfer' || $gateway === 'manual') {
+                // Havale/EFT sayfasına yönlendir
+                $paymentUrl = route('payment.bank-transfer', ['orderNumber' => $order->order_number]);
+                \Log::info('✅ Redirecting to BANK TRANSFER page', [
+                    'order_number' => $order->order_number,
+                    'gateway' => $gateway,
+                    'payment_url' => $paymentUrl
+                ]);
+            } else {
+                // PayTR ödeme sayfasına yönlendir
+                $paymentUrl = route('payment.page', ['orderNumber' => $order->order_number]);
+                \Log::info('✅ Redirecting to PayTR payment page', [
+                    'order_number' => $order->order_number,
+                    'payment_url' => $paymentUrl
+                ]);
+            }
 
             return [
                 'success' => true,

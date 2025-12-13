@@ -148,6 +148,18 @@
                                 <h4 class="font-medium text-gray-900 dark:text-gray-100">{{ __('admin.change_password') }}</h4>
                                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('admin.increase_security') }}</p>
                             </a>
+
+                            @if(\Nwidart\Modules\Facades\Module::has('Cart') && \Nwidart\Modules\Facades\Module::isEnabled('Cart') && \Nwidart\Modules\Facades\Module::has('Payment') && \Nwidart\Modules\Facades\Module::isEnabled('Payment'))
+                            <a href="{{ route('shop.orders.index') }}" class="block p-5 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-green-300 dark:hover:border-green-600 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all">
+                                <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/50 flex items-center justify-center mb-3">
+                                    <svg class="h-5 w-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                    </svg>
+                                </div>
+                                <h4 class="font-medium text-gray-900 dark:text-gray-100">{{ __('cart::front.my_orders') }}</h4>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('cart::front.view_order_history') }}</p>
+                            </a>
+                            @endif
                         </div>
                     </div>
                 </div>

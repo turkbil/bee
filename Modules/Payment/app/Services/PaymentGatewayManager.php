@@ -2,7 +2,7 @@
 
 namespace Modules\Payment\App\Services;
 
-use Modules\Payment\App\Models\BankAccount;
+// BankAccount model artık kullanılmıyor - Settings tabanlı sistem
 
 /**
  * Payment Gateway Manager
@@ -92,10 +92,19 @@ class PaymentGatewayManager
             return false;
         }
 
-        // 2. En az 1 aktif banka hesabı var mı?
-        $activeBankAccounts = BankAccount::active()->count();
+        // 2. En az 1 aktif banka hesabı var mı? (Settings tabanlı)
+        $hasActiveBankAccount = false;
+        for ($i = 1; $i <= 3; $i++) {
+            $isActive = setting("payment_bank_{$i}_active");
+            $iban = setting("payment_bank_{$i}_iban");
 
-        if ($activeBankAccounts === 0) {
+            if ($isActive && !empty($iban)) {
+                $hasActiveBankAccount = true;
+                break;
+            }
+        }
+
+        if (!$hasActiveBankAccount) {
             return false;
         }
 

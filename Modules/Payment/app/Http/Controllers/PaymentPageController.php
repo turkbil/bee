@@ -62,6 +62,7 @@ class PaymentPageController extends Controller
                 })->toArray();
 
                 $orderInfo = [
+                    'order_number' => $order->order_number, // PayTR callback için zorunlu!
                     'amount' => $order->total_amount,
                     'description' => 'Sipariş: ' . $order->order_number,
                     'items' => $items,

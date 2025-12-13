@@ -37,7 +37,7 @@
                 </div>
             </div>
 
-            <!-- Tablo Bölümü -->
+            <!-- Tablo Bölümü - Minimal Tasarım -->
             <div id="table-default" class="table-responsive">
                 @if($products->count() === 0)
                     <div class="empty p-5">
@@ -56,118 +56,54 @@
                         </div>
                     </div>
                 @else
-                    <table class="table table-vcenter card-table table-hover text-nowrap datatable">
+                    <table class="table table-vcenter card-table table-hover text-nowrap datatable table-sm">
                         <thead>
                             <tr>
-                                <th style="width: 50px">
-                                    <i class="fas fa-grip-vertical text-muted" data-bs-toggle="tooltip" title="Sürükle-bırak ile sırala"></i>
-                                </th>
-                                <th style="width: 50px">ID</th>
-                                <th>Ürün Adı</th>
+                                <th class="text-center" style="width: 40px">#</th>
+                                <th style="width: 40px"></th>
+                                <th>Ürün</th>
                                 <th>Kategori</th>
-                                <th>Marka</th>
-                                <th class="text-end">Fiyat</th>
-                                <th class="text-center" style="width: 100px">Stok</th>
-                                <th class="text-center" style="width: 100px">Sıra</th>
+                                <th class="text-end" style="width: 120px">Fiyat</th>
                             </tr>
                         </thead>
                         <tbody class="table-tbody sortable-list" id="sortable-homepage-products">
-                            @foreach($products as $product)
+                            @foreach($products as $index => $product)
                                 <tr class="hover-trigger sortable-item"
                                     wire:key="homepage-product-{{ $product->product_id }}"
                                     data-product-id="{{ $product->product_id }}">
                                     <td class="text-center">
+                                        <span class="badge bg-primary-lt fw-bold">{{ $index + 1 }}</span>
+                                    </td>
+                                    <td class="text-center">
                                         <i class="fas fa-grip-vertical text-muted sortable-handle" style="cursor: grab;"></i>
                                     </td>
-                                    <td class="sort-id small">
-                                        {{ $product->product_id }}
-                                    </td>
                                     <td>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="d-flex align-items-center gap-3">
-                                                @php
-                                                    $heroImage = getFirstMediaWithFallback($product);
-                                                @endphp
-                                                @if($heroImage)
-                                                    <img src="{{ $heroImage->getUrl('thumb') }}"
-                                                         alt="Product"
-                                                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; flex-shrink: 0;">
-                                                @else
-                                                    <div style="width: 40px; height: 40px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                                        <i class="fas fa-image text-muted" style="font-size: 0.9rem;"></i>
-                                                    </div>
-                                                @endif
-                                                <span class="editable-title pr-4">
-                                                    {{ $product->getTranslated('title', $currentSiteLocale) ?? $product->getTranslated('title', 'tr') }}
-                                                </span>
-                                            </div>
-                                            @if($product->sku)
-                                                <span class="badge bg-secondary-lt ms-2">{{ $product->sku }}</span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            @php
+                                                $heroImage = getFirstMediaWithFallback($product);
+                                            @endphp
+                                            @if($heroImage)
+                                                <img src="{{ $heroImage->getUrl('thumb') }}"
+                                                     alt=""
+                                                     style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; flex-shrink: 0;">
+                                            @else
+                                                <div style="width: 32px; height: 32px; background: var(--tblr-bg-surface-secondary); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                    <i class="fas fa-image text-muted" style="font-size: 0.75rem;"></i>
+                                                </div>
                                             @endif
+                                            <span class="text-truncate" style="max-width: 280px;">
+                                                {{ $product->getTranslated('title', $currentSiteLocale) ?? $product->getTranslated('title', 'tr') }}
+                                            </span>
                                         </div>
                                     </td>
-                                    <td>
-                                        @if($product->category)
-                                            {{ $product->category->getTranslated('title', $currentSiteLocale) ?? '—' }}
-                                        @else
-                                            <span class="text-muted">—</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($product->brand)
-                                            {{ $product->brand->getTranslated('title', $currentSiteLocale) ?? '—' }}
-                                        @else
-                                            <span class="text-muted">—</span>
-                                        @endif
+                                    <td class="text-muted small">
+                                        {{ $product->category?->getTranslated('title', $currentSiteLocale) ?? '—' }}
                                     </td>
                                     <td class="text-end">
                                         @if ($product->base_price && $product->base_price > 0)
-                                            <div class="d-flex flex-column align-items-end">
-                                                <div class="mb-1">
-                                                    <span class="fw-semibold">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
-                                                    <small class="text-muted d-block" style="font-size: 0.7rem;">KDV Hariç</small>
-                                                </div>
-                                                <div>
-                                                    <span class="fw-bold text-success" style="font-size: 0.95rem;">{{ formatPrice($product->price_with_tax, $product->currency ?? 'TRY') }}</span>
-                                                    <small class="text-success d-block" style="font-size: 0.7rem;">KDV Dahil</small>
-                                                </div>
-                                                @if ($product->compare_at_price && $product->compare_at_price > $product->base_price)
-                                                    <small class="text-muted text-decoration-line-through mt-1">
-                                                        {{ formatPrice($product->compare_at_price, $product->currency ?? 'TRY') }}
-                                                    </small>
-                                                @endif
-                                            </div>
+                                            <span class="fw-semibold">{{ formatPrice($product->base_price, $product->currency ?? 'TRY') }}</span>
                                         @else
-                                            <span class="badge bg-secondary">Fiyat Talep Edilir</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        @if ($product->stock_tracking)
-                                            @php
-                                                $hasNoStockData = $product->current_stock == 0;
-                                                $isLowStock = $product->current_stock > 0 && $product->current_stock <= $product->low_stock_threshold;
-                                            @endphp
-                                            @if ($hasNoStockData)
-                                                <span class="text-muted small">0</span>
-                                            @else
-                                                <div class="d-flex flex-column align-items-center">
-                                                    <span class="fw-semibold {{ $isLowStock ? 'text-warning' : '' }}">
-                                                        {{ $product->current_stock }}
-                                                    </span>
-                                                    @if ($isLowStock)
-                                                        <small class="badge bg-warning-lt" style="font-size: 0.65rem;">Düşük</small>
-                                                    @endif
-                                                </div>
-                                            @endif
-                                        @else
-                                            <span class="text-muted small">—</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        @if($product->homepage_sort_order)
-                                            <span class="badge bg-primary">{{ $product->homepage_sort_order }}</span>
-                                        @else
-                                            <span class="text-muted">—</span>
+                                            <span class="text-muted small">Teklif</span>
                                         @endif
                                     </td>
                                 </tr>

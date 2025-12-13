@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Card Fiyat/Sepet Düzeni - Çözüm Önerileri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Product Card - Fiyat/Sepet Düzeni
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Fiyat ve "Sepete Ekle" butonu üst üste biniyor - 4 farklı çözüm önerisi
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 13 Aralık 2025</span>
+                <span>🎯 ixtif.com</span>
+            </div>
+        </header>
+
+        <!-- Mevcut Sorun -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-red-400">❌ Mevcut Sorun</h2>
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-red-500/30">
+                <div class="flex items-end gap-2 flex-wrap">
+                    <div>
+                        <div class="text-sm text-slate-500 line-through">30.000 $</div>
+                        <div class="text-2xl font-bold text-blue-400">1.086.581 ₺</div>
+                    </div>
+                    <button class="bg-blue-500/20 border border-blue-400/50 text-blue-400 px-4 py-2 rounded-xl text-sm font-medium">
+                        Sepete Ekle <i class="fa-solid fa-cart-plus ml-1"></i>
+                    </button>
+                    <span class="text-xs text-slate-500">+ KDV</span>
+                </div>
+                <p class="mt-4 text-red-300 text-sm">
+                    <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+                    Uzun fiyatlar + buton + KDV yazısı aynı satırda sığmıyor, üst üste biniyor
+                </p>
+            </div>
+        </section>
+
+        <!-- Çözüm Önerileri Grid -->
+        <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Çözüm Önerileri</h2>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-16">
+
+            <!-- Öneri 1: Dikey Stack -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-green-500/50 transition-all">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-green-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center text-sm">1</span>
+                    <h3 class="text-xl font-bold text-green-300">Dikey Stack (Önerilen)</h3>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                    <!-- Mock Product Card -->
+                    <div class="space-y-3">
+                        <div>
+                            <div class="text-sm text-slate-500 line-through">30.000 $</div>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-2xl font-bold text-blue-400">1.086.581 ₺</span>
+                                <span class="text-xs text-slate-500">+ KDV</span>
+                            </div>
+                        </div>
+                        <button class="w-full bg-blue-500/20 border border-blue-400/50 text-blue-400 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-blue-500/30 transition-all">
+                            <i class="fa-solid fa-cart-plus mr-2"></i> Sepete Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-sm text-slate-400">
+                    <p class="mb-2"><strong class="text-white">Avantajlar:</strong></p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-500">
+                        <li>Her ekran boyutunda çalışır</li>
+                        <li>Fiyat net okunur</li>
+                        <li>Buton tam genişlikte, tıklaması kolay</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Öneri 2: Kompakt - Sadece İkon -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-blue-500/50 transition-all">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-blue-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center text-sm">2</span>
+                    <h3 class="text-xl font-bold text-blue-300">Kompakt - Sadece İkon</h3>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <div class="text-sm text-slate-500 line-through">30.000 $</div>
+                            <div class="text-2xl font-bold text-blue-400">1.086.581 ₺</div>
+                            <div class="text-xs text-slate-500">+ KDV</div>
+                        </div>
+                        <button class="bg-blue-500/20 border border-blue-400/50 text-blue-400 w-12 h-12 rounded-xl flex items-center justify-center hover:bg-blue-500/30 transition-all">
+                            <i class="fa-solid fa-cart-plus text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-sm text-slate-400">
+                    <p class="mb-2"><strong class="text-white">Avantajlar:</strong></p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-500">
+                        <li>Minimum yer kaplar</li>
+                        <li>Şık ve minimal görünüm</li>
+                        <li>Her fiyat uzunluğunda çalışır</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Öneri 3: Fiyat Üstte, Buton Altta -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-purple-500/50 transition-all">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-purple-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center text-sm">3</span>
+                    <h3 class="text-xl font-bold text-purple-300">Fiyat Blok + Hover Buton</h3>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                    <div class="group relative">
+                        <div class="text-center py-2">
+                            <div class="text-sm text-slate-500 line-through">30.000 $</div>
+                            <div class="text-2xl font-bold text-blue-400">1.086.581 ₺</div>
+                            <div class="text-xs text-slate-500">+ KDV</div>
+                        </div>
+                        <div class="absolute inset-0 bg-blue-600/90 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
+                            <span class="text-white font-medium">
+                                <i class="fa-solid fa-cart-plus mr-2"></i> Sepete Ekle
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-sm text-slate-400">
+                    <p class="mb-2"><strong class="text-white">Avantajlar:</strong></p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-500">
+                        <li>Fiyat her zaman net görünür</li>
+                        <li>Buton hover'da ortaya çıkar</li>
+                        <li>Modern UX deneyimi</li>
+                    </ul>
+                    <p class="mt-2 text-yellow-400 text-xs">
+                        <i class="fa-solid fa-mobile mr-1"></i> Mobilde hover yok - dokunma gerekli
+                    </p>
+                </div>
+            </div>
+
+            <!-- Öneri 4: Flex Wrap -->
+            <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-yellow-500/50 transition-all">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-yellow-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center text-sm">4</span>
+                    <h3 class="text-xl font-bold text-yellow-300">Flex Wrap (Otomatik)</h3>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-lg p-4 mb-4">
+                    <div class="flex items-end justify-between gap-3 flex-wrap">
+                        <div class="flex-1 min-w-0">
+                            <div class="text-sm text-slate-500 line-through">30.000 $</div>
+                            <div class="flex items-baseline gap-2 flex-wrap">
+                                <span class="text-2xl font-bold text-blue-400">1.086.581 ₺</span>
+                                <span class="text-xs text-slate-500">+ KDV</span>
+                            </div>
+                        </div>
+                        <button class="bg-blue-500/20 border border-blue-400/50 text-blue-400 px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap hover:bg-blue-500/30 transition-all">
+                            <i class="fa-solid fa-cart-plus mr-1"></i> Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-sm text-slate-400">
+                    <p class="mb-2"><strong class="text-white">Avantajlar:</strong></p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-500">
+                        <li>Sığmazsa otomatik alt satıra geçer</li>
+                        <li>Mevcut yapıya en yakın</li>
+                        <li>Küçük değişiklik gerektirir</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Karşılaştırma Tablosu -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 text-slate-300">📊 Karşılaştırma</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-3 px-4 text-slate-400">Özellik</th>
+                            <th class="text-center py-3 px-4 text-green-400">1. Dikey</th>
+                            <th class="text-center py-3 px-4 text-blue-400">2. İkon</th>
+                            <th class="text-center py-3 px-4 text-purple-400">3. Hover</th>
+                            <th class="text-center py-3 px-4 text-yellow-400">4. Wrap</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Mobil Uyum</td>
+                            <td class="text-center py-3 px-4">✅ Mükemmel</td>
+                            <td class="text-center py-3 px-4">✅ İyi</td>
+                            <td class="text-center py-3 px-4">⚠️ Orta</td>
+                            <td class="text-center py-3 px-4">✅ İyi</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Kod Değişikliği</td>
+                            <td class="text-center py-3 px-4">Orta</td>
+                            <td class="text-center py-3 px-4">Az</td>
+                            <td class="text-center py-3 px-4">Çok</td>
+                            <td class="text-center py-3 px-4">Az</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="py-3 px-4">Buton Görünürlüğü</td>
+                            <td class="text-center py-3 px-4">✅ Yüksek</td>
+                            <td class="text-center py-3 px-4">⚠️ Orta</td>
+                            <td class="text-center py-3 px-4">⚠️ Hover'da</td>
+                            <td class="text-center py-3 px-4">✅ İyi</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-bold">Öneri Sırası</td>
+                            <td class="text-center py-3 px-4 text-green-400 font-bold">🥇 1.</td>
+                            <td class="text-center py-3 px-4 text-blue-400 font-bold">🥈 2.</td>
+                            <td class="text-center py-3 px-4 text-purple-400">4.</td>
+                            <td class="text-center py-3 px-4 text-yellow-400 font-bold">🥉 3.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sonuç -->
+        <section class="mb-16">
+            <div class="bg-green-900/30 border border-green-500/30 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-green-400 mb-3">
+                    <i class="fa-solid fa-lightbulb mr-2"></i> Önerim
+                </h3>
+                <p class="text-slate-300">
+                    <strong class="text-white">Öneri 1 (Dikey Stack)</strong> veya <strong class="text-white">Öneri 2 (Sadece İkon)</strong> en stabil çözümler.
+                    Her iki durumda da fiyat ve buton asla çakışmaz. Hangisini tercih edersin?
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>Claude AI tarafından hazırlandı</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -153,4 +153,28 @@ class OrderItem extends BaseModel
     {
         return $query->where('is_digital', false);
     }
+
+    /**
+     * Product accessor (alias for orderable - backward compatibility)
+     */
+    public function getProductAttribute()
+    {
+        return $this->orderable;
+    }
+
+    /**
+     * Product name accessor
+     */
+    public function getProductNameAttribute(): string
+    {
+        return $this->item_title ?? $this->orderable?->getTranslated('title') ?? 'Ürün';
+    }
+
+    /**
+     * Total price accessor
+     */
+    public function getTotalPriceAttribute(): float
+    {
+        return (float) ($this->total ?? $this->subtotal ?? 0);
+    }
 }

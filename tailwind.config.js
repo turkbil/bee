@@ -22,6 +22,8 @@ module.exports = {
         'lg:col-span-1', 'lg:col-span-2', 'lg:col-span-3', 'lg:col-span-4', 'lg:col-span-5', 'lg:col-span-6',
         'lg:col-span-7', 'lg:col-span-8', 'lg:col-span-9', 'lg:col-span-10', 'lg:col-span-11', 'lg:col-span-12',
         'md:col-span-12', 'sm:col-span-12',
+        // 2xl breakpoint (1536px+) - Homepage grid
+        '2xl:grid-cols-5', '2xl:block', '2xl:hidden',
 
         // Gradient base
         'bg-gradient-to-r',

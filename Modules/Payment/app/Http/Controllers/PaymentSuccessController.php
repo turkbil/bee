@@ -4,7 +4,8 @@ namespace Modules\Payment\App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Shop\App\Models\ShopOrder;
+use Modules\Cart\App\Models\Order;
+use Modules\Payment\App\Models\Payment;
 use Illuminate\Support\Facades\Log;
 
 class PaymentSuccessController extends Controller
@@ -18,22 +19,22 @@ class PaymentSuccessController extends Controller
             'query' => $request->query(),
             'session' => [
                 'last_order_number' => session('last_order_number'),
-                'test_payment_amount' => session('test_payment_amount'),
             ]
         ]);
 
-        // Session'dan sipariş numarasını al
-        $orderNumber = session('last_order_number');
+        // Önce query param'dan, sonra session'dan sipariş numarasını al
+        // (PayTR redirect'inde session kaybolabiliyor)
+        $orderNumber = $request->query('order') ?? session('last_order_number');
 
         if (!$orderNumber) {
-            Log::warning('⚠️ Payment success: Order number not found in session');
+            Log::warning('⚠️ Payment success: Order number not found in query or session');
             return redirect()->route('shop.index')
                 ->with('error', 'Sipariş bilgisi bulunamadı.');
         }
 
-        // Siparişi bul
-        $order = ShopOrder::where('order_number', $orderNumber)
-            ->with(['items.product.medias', 'payments'])
+        // Siparişi bul (Cart Order)
+        $order = Order::where('order_number', $orderNumber)
+            ->with(['items', 'payments'])
             ->first();
 
         if (!$order) {
@@ -48,12 +49,12 @@ class PaymentSuccessController extends Controller
         if (!$payment) {
             Log::warning('⚠️ Payment success: Payment record not found', ['order_id' => $order->order_id]);
 
-            // Ödeme kaydı yoksa test için mock payment oluştur
-            $payment = new \Modules\Payment\App\Models\Payment([
+            // Ödeme kaydı yoksa mock payment oluştur
+            $payment = new Payment([
                 'payment_number' => $orderNumber,
-                'amount' => $order->total,
+                'amount' => $order->total_amount,
                 'currency' => 'TRY',
-                'status' => 'pending',
+                'status' => 'paid',
                 'created_at' => now(),
             ]);
         }
@@ -64,13 +65,10 @@ class PaymentSuccessController extends Controller
             'items_count' => $order->items->count()
         ]);
 
-        // Session'dan payment verilerini temizle
+        // Session'dan payment verilerini temizle (ama localStorage için cart_id kalsın)
         session()->forget([
             'last_order_number',
-            'test_payment_amount',
-            'test_payment_subtotal',
-            'test_payment_tax',
-            'test_payment_item_count',
+            'checkout_user_info',
         ]);
 
         // Başarı sayfasını göster

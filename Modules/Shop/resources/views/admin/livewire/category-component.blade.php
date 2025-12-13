@@ -158,11 +158,21 @@
                                             <i class="fas fa-grip-vertical text-muted"></i>
                                         </div>
 
-                                        <!-- Icon - MenuManagement Pattern -->
-                                        <div class="{{ $depthLevel > 0 ? 'bg-secondary-lt' : 'bg-primary-lt' }} rounded-2 d-flex align-items-center justify-content-center me-2"
-                                            style="width: 2.5rem; height: 2.5rem;">
-                                            <i class="{{ $depthLevel > 0 ? 'fas fa-folder-open' : 'fas fa-folder' }}"></i>
-                                        </div>
+                                        <!-- Hero Image or Icon - MenuManagement Pattern -->
+                                        @php
+                                            $heroImage = getFirstMediaWithFallback($item);
+                                        @endphp
+                                        @if($heroImage)
+                                            <img src="{{ $heroImage->getUrl('thumb') }}"
+                                                 alt="{{ $item->getTranslated('title', app()->getLocale()) }}"
+                                                 class="rounded-2 me-2"
+                                                 style="width: 2.5rem; height: 2.5rem; object-fit: cover;">
+                                        @else
+                                            <div class="{{ $depthLevel > 0 ? 'bg-secondary-lt' : 'bg-primary-lt' }} rounded-2 d-flex align-items-center justify-content-center me-2"
+                                                style="width: 2.5rem; height: 2.5rem;">
+                                                <i class="{{ $depthLevel > 0 ? 'fas fa-folder-open' : 'fas fa-folder' }}"></i>
+                                            </div>
+                                        @endif
 
                                         <!-- Content - MenuManagement Pattern -->
                                         <div class="flex-grow-1">

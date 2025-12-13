@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banka Hesaplari Settings Yapisi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-8">
+    <div class="max-w-5xl mx-auto">
+
+        <header class="mb-10">
+            <h1 class="text-3xl font-bold text-white mb-2">Banka Hesaplari - Settings Yapisi</h1>
+            <p class="text-slate-400">Admin Panel - Ayarlar - Odeme Ayarlari gorunumu</p>
+        </header>
+
+        <!-- ADMIN PANEL MOCK -->
+        <div class="bg-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+
+            <!-- Header -->
+            <div class="bg-slate-700 px-6 py-4 border-b border-slate-600">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-cog text-blue-400"></i>
+                    <span class="font-semibold text-white">Odeme Ayarlari</span>
+                    <span class="text-slate-400 text-sm">/ Banka/Havale</span>
+                </div>
+            </div>
+
+            <div class="p-6 space-y-8">
+
+                <!-- GENEL HAVALE AYARLARI -->
+                <section>
+                    <h2 class="text-lg font-semibold text-blue-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-sliders"></i>
+                        Genel Havale Ayarlari
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Havale Aktif -->
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Havale/EFT Aktif
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_transfer_enabled</code>
+                            </label>
+                            <select class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                                <option>Kapali</option>
+                                <option selected>Acik</option>
+                            </select>
+                        </div>
+
+                        <!-- Bildirim Email -->
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Bildirim E-posta
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_transfer_notify_email</code>
+                            </label>
+                            <input type="email" placeholder="muhasebe@sirket.com" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white placeholder-slate-400">
+                        </div>
+
+                        <!-- Aciklama -->
+                        <div class="bg-slate-700/50 rounded-xl p-4 md:col-span-2">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Havale Sayfasi Aciklamasi
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_transfer_description</code>
+                            </label>
+                            <textarea rows="2" placeholder="Havale yaptiktan sonra lutfen bildirim formunu doldurun..." class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white placeholder-slate-400"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="border-slate-700">
+
+                <!-- BANKA 1 -->
+                <section>
+                    <h2 class="text-lg font-semibold text-green-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-university"></i>
+                        Banka Hesabi 1
+                        <span class="ml-auto bg-green-600 text-white text-xs px-2 py-1 rounded">Aktif</span>
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Banka Adi
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_1_name</code>
+                            </label>
+                            <input type="text" value="Ziraat Bankasi" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Hesap Sahibi
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_1_holder</code>
+                            </label>
+                            <input type="text" value="IXTIF Makine San. Tic. Ltd. Sti." class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4 md:col-span-2">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                IBAN
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_1_iban</code>
+                            </label>
+                            <input type="text" value="TR00 0000 0000 0000 0000 0000 00" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white font-mono">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Sube
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_1_branch</code>
+                            </label>
+                            <input type="text" value="Kadikoy Subesi" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-slate-400 mb-2">
+                                        Para Birimi
+                                        <code class="block text-xs bg-slate-600 px-2 py-0.5 rounded mt-1">payment_bank_1_currency</code>
+                                    </label>
+                                    <select class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                                        <option selected>TRY</option>
+                                        <option>USD</option>
+                                        <option>EUR</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-slate-400 mb-2">
+                                        Durum
+                                        <code class="block text-xs bg-slate-600 px-2 py-0.5 rounded mt-1">payment_bank_1_active</code>
+                                    </label>
+                                    <select class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                                        <option>Kapali</option>
+                                        <option selected>Acik</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="border-slate-700">
+
+                <!-- BANKA 2 -->
+                <section>
+                    <h2 class="text-lg font-semibold text-yellow-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-university"></i>
+                        Banka Hesabi 2
+                        <span class="ml-auto bg-green-600 text-white text-xs px-2 py-1 rounded">Aktif</span>
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Banka Adi
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_2_name</code>
+                            </label>
+                            <input type="text" value="Garanti BBVA" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Hesap Sahibi
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_2_holder</code>
+                            </label>
+                            <input type="text" placeholder="Sirket adi" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white placeholder-slate-500">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4 md:col-span-2">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                IBAN
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_2_iban</code>
+                            </label>
+                            <input type="text" placeholder="TR00 0000 0000 0000 0000 0000 00" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white font-mono placeholder-slate-500">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Sube
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_2_branch</code>
+                            </label>
+                            <input type="text" placeholder="Sube adi" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white placeholder-slate-500">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-slate-400 mb-2">Para Birimi</label>
+                                    <select class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                                        <option selected>TRY</option>
+                                        <option>USD</option>
+                                        <option>EUR</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-slate-400 mb-2">Durum</label>
+                                    <select class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                                        <option>Kapali</option>
+                                        <option selected>Acik</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="border-slate-700">
+
+                <!-- BANKA 3 -->
+                <section>
+                    <h2 class="text-lg font-semibold text-purple-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-university"></i>
+                        Banka Hesabi 3
+                        <span class="ml-auto bg-slate-600 text-slate-300 text-xs px-2 py-1 rounded">Kapali</span>
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-4 opacity-60">
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Banka Adi
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_3_name</code>
+                            </label>
+                            <input type="text" placeholder="Banka adi" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white placeholder-slate-500">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Hesap Sahibi
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_3_holder</code>
+                            </label>
+                            <input type="text" placeholder="Sirket adi" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white placeholder-slate-500">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4 md:col-span-2">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                IBAN
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_3_iban</code>
+                            </label>
+                            <input type="text" placeholder="TR00 0000 0000 0000 0000 0000 00" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white font-mono placeholder-slate-500">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <label class="block text-sm text-slate-400 mb-2">
+                                Sube
+                                <code class="ml-2 text-xs bg-slate-600 px-2 py-0.5 rounded">payment_bank_3_branch</code>
+                            </label>
+                            <input type="text" placeholder="Sube adi" class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white placeholder-slate-500">
+                        </div>
+
+                        <div class="bg-slate-700/50 rounded-xl p-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-slate-400 mb-2">Para Birimi</label>
+                                    <select class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                                        <option selected>TRY</option>
+                                        <option>USD</option>
+                                        <option>EUR</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-slate-400 mb-2">Durum</label>
+                                    <select class="w-full bg-slate-600 border border-slate-500 rounded-lg px-4 py-2.5 text-white">
+                                        <option selected>Kapali</option>
+                                        <option>Acik</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+        <!-- OZET TABLO -->
+        <div class="mt-12 bg-slate-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-6">Setting Key Ozeti</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700 text-left">
+                            <th class="py-3 px-4 text-slate-400">#</th>
+                            <th class="py-3 px-4 text-slate-400">Label</th>
+                            <th class="py-3 px-4 text-slate-400">Setting Key</th>
+                            <th class="py-3 px-4 text-slate-400">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-700/50 bg-blue-900/20">
+                            <td class="py-2 px-4" colspan="4"><strong class="text-blue-400">Genel Ayarlar</strong></td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-4">1</td>
+                            <td class="py-2 px-4">Havale/EFT Aktif</td>
+                            <td class="py-2 px-4 font-mono text-green-400">payment_bank_transfer_enabled</td>
+                            <td class="py-2 px-4">select</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-4">2</td>
+                            <td class="py-2 px-4">Bildirim E-posta</td>
+                            <td class="py-2 px-4 font-mono text-green-400">payment_bank_transfer_notify_email</td>
+                            <td class="py-2 px-4">email</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-4">3</td>
+                            <td class="py-2 px-4">Aciklama</td>
+                            <td class="py-2 px-4 font-mono text-green-400">payment_bank_transfer_description</td>
+                            <td class="py-2 px-4">textarea</td>
+                        </tr>
+
+                        <tr class="border-b border-slate-700/50 bg-green-900/20">
+                            <td class="py-2 px-4" colspan="4"><strong class="text-green-400">Banka 1</strong></td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-4">4</td>
+                            <td class="py-2 px-4">Banka Adi</td>
+                            <td class="py-2 px-4 font-mono text-green-400">payment_bank_1_name</td>
+                            <td class="py-2 px-4">text</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-4">5</td>
+                            <td class="py-2 px-4">Hesap Sahibi</td>
+                            <td class="py-2 px-4 font-mono text-green-400">payment_bank_1_holder</td>
+                            <td class="py-2 px-4">text</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-4">6</td>
+                            <td class="py-2 px-4">IBAN</td>
+                            <td class="py-2 px-4 font-mono text-green-400">payment_bank_1_iban</td>
+                            <td class="py-2 px-4">text</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-4">7</td>
+                            <td class="py-2 px-4">Sube</td>
+                            <td class="py-2 px-4 font-mono text-green-400">payment_bank_1_branch</td>
+                            <td class="py-2 px-4">text</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-4">8</td>
+                            <td class="py-2 px-4">Para Birimi</td>
+                            <td class="py-2 px-4 font-mono text-green-400">payment_bank_1_currency</td>
+                            <td class="py-2 px-4">select</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50">
+                            <td class="py-2 px-4">9</td>
+                            <td class="py-2 px-4">Aktif</td>
+                            <td class="py-2 px-4 font-mono text-green-400">payment_bank_1_active</td>
+                            <td class="py-2 px-4">select</td>
+                        </tr>
+
+                        <tr class="border-b border-slate-700/50 bg-yellow-900/20">
+                            <td class="py-2 px-4" colspan="4"><strong class="text-yellow-400">Banka 2</strong> (ayni yapi: payment_bank_2_*)</td>
+                        </tr>
+                        <tr class="border-b border-slate-700/50 bg-purple-900/20">
+                            <td class="py-2 px-4" colspan="4"><strong class="text-purple-400">Banka 3</strong> (ayni yapi: payment_bank_3_*)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 p-4 bg-slate-700/50 rounded-lg">
+                <p class="text-slate-300">
+                    <strong class="text-white">Toplam:</strong>
+                    3 genel + (6 x 3 banka) = <strong class="text-green-400">21 setting</strong>
+                </p>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

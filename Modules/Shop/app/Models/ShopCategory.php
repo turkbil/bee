@@ -66,7 +66,13 @@ class ShopCategory extends BaseModel implements TranslatableEntity, HasMedia
         'indent_px',
     ];
 
-    protected array $mediaConfig = [];
+    protected array $mediaConfig = [
+        'hero' => [
+            'type' => 'image',
+            'single_file' => true,
+            'conversions' => ['thumb', 'medium', 'large'],
+        ],
+    ];
 
     public function getIdAttribute(): int
     {

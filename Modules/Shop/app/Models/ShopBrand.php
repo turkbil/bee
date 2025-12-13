@@ -60,7 +60,13 @@ class ShopBrand extends BaseModel implements TranslatableEntity, HasMedia
         'description',
     ];
 
-    protected array $mediaConfig = [];
+    protected array $mediaConfig = [
+        'hero' => [
+            'type' => 'image',
+            'single_file' => true,
+            'conversions' => ['thumb', 'medium', 'large'],
+        ],
+    ];
 
     public function getIdAttribute(): int
     {

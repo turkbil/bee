@@ -158,7 +158,19 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
         'final_price',
     ];
 
-    protected array $mediaConfig = [];
+    protected array $mediaConfig = [
+        'hero' => [
+            'type' => 'image',
+            'single_file' => true,
+            'conversions' => ['thumb', 'medium', 'large', 'responsive'],
+        ],
+        'gallery' => [
+            'type' => 'image',
+            'single_file' => false,
+            'max_items' => 20,
+            'conversions' => ['thumb', 'medium', 'large', 'responsive'],
+        ],
+    ];
 
     /**
      * Boot the model

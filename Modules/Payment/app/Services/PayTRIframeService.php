@@ -39,15 +39,19 @@ class PayTRIframeService
 
             // Token oluşturma için hash string
             // PayTR merchant_oid sadece alfanumerik olmalı - özel karakter içeremez!
-            $merchantOid = str_replace(['-', '_', ' '], '', $payment->payment_number);
+            // Tenant ID prefix ekle: T{tenant_id}{payment_number_stripped}
+            $tenantId = tenant()->id ?? 1;
+            $strippedPaymentNumber = str_replace(['-', '_', ' '], '', $payment->payment_number);
+            $merchantOid = 'T' . $tenantId . $strippedPaymentNumber;
             $userIp = request()->ip();
             $email = $userInfo['email'];
             $paymentAmount = (int) ($payment->amount * 100); // Kuruş cinsinden (9.99 TL = 999)
             $currency = setting('paytr_currency', 'TL');
 
-            // Callback URL (success ve fail)
-            $merchantOkUrl = route('payment.success');
-            $merchantFailUrl = route('shop.checkout') . '?payment=failed';
+            // Callback URL (success ve fail) - order_number ekle (session kaybolabilir!)
+            $orderNumber = $orderInfo['order_number'] ?? $payment->payment_number;
+            $merchantOkUrl = route('payment.success') . '?order=' . urlencode($orderNumber);
+            $merchantFailUrl = route('shop.checkout') . '?payment=failed&order=' . urlencode($orderNumber);
 
             // Hash string oluştur (DOĞRU SIRA!)
             // merchant_id + user_ip + merchant_oid + email + payment_amount + user_basket + no_installment + max_installment + currency + test_mode
@@ -130,8 +134,10 @@ class PayTRIframeService
             // Token başarıyla alındı
             $iframeToken = $response['token'];
 
-            // Payment kaydına token'ı kaydet
+            // Payment kaydına token'ı ve merchant_oid'i kaydet
+            // NOT: gateway_transaction_id = PayTR'ye gönderilen merchant_oid (callback'te bu gelecek)
             $payment->update([
+                'gateway_transaction_id' => $merchantOid,
                 'gateway_response' => json_encode($response),
             ]);
 

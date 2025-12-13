@@ -237,4 +237,141 @@ class Order extends BaseModel
     {
         return in_array($this->status, ['delivered', 'completed']);
     }
+
+    /**
+     * Ödeme tamamlandığında çağrılır (PayTR callback)
+     * - Sipariş durumunu güncelle
+     * - Sepeti temizle
+     * - Bildirim e-postaları gönder
+     */
+    public function onPaymentCompleted(\Modules\Payment\App\Models\Payment $payment): void
+    {
+        // 1. Sipariş durumunu güncelle
+        $this->status = 'processing'; // pending -> processing
+        $this->payment_status = 'paid';
+        $this->paid_amount = $payment->amount;
+        $this->confirmed_at = now();
+        $this->save();
+
+        // 2. Kullanıcının sepetini temizle (Cart tablosunda customer_id kullanılıyor!)
+        if ($this->user_id) {
+            try {
+                $cart = \Modules\Cart\App\Models\Cart::where('customer_id', $this->user_id)
+                    ->where('status', 'active')
+                    ->first();
+
+                if ($cart) {
+                    $cartService = app(\Modules\Cart\App\Services\CartService::class);
+                    $cartService->clearCart($cart);
+                    \Log::info('🛒 Sepet temizlendi', ['customer_id' => $this->user_id, 'cart_id' => $cart->cart_id, 'order_id' => $this->order_id]);
+                }
+            } catch (\Exception $e) {
+                \Log::error('❌ Sepet temizleme hatası: ' . $e->getMessage());
+            }
+        }
+
+        // 3. Admin'e bildirim e-postası gönder
+        $this->sendAdminNotification($payment);
+
+        // 4. Müşteriye onay e-postası gönder
+        $this->sendCustomerConfirmation($payment);
+
+        \Log::info('✅ Sipariş tamamlandı', [
+            'order_id' => $this->order_id,
+            'order_number' => $this->order_number,
+            'amount' => $payment->amount
+        ]);
+    }
+
+    /**
+     * Ödeme başarısız olduğunda çağrılır
+     */
+    public function onPaymentFailed(\Modules\Payment\App\Models\Payment $payment): void
+    {
+        $this->status = 'payment_failed';
+        $this->payment_status = 'failed';
+        $this->save();
+
+        \Log::warning('⚠️ Ödeme başarısız', [
+            'order_id' => $this->order_id,
+            'order_number' => $this->order_number
+        ]);
+    }
+
+    /**
+     * Admin'e yeni sipariş bildirimi gönder
+     */
+    protected function sendAdminNotification(\Modules\Payment\App\Models\Payment $payment): void
+    {
+        $adminEmail = setting('order_notification_email', setting('contact_email'));
+
+        if (!$adminEmail) {
+            return;
+        }
+
+        try {
+            $items = $this->items->map(function ($item) {
+                return "- {$item->item_title} x{$item->quantity} = " . number_format($item->total_price, 2, ',', '.') . " ₺";
+            })->implode("\n");
+
+            \Mail::raw(
+                "🛒 YENİ SİPARİŞ ALINDI!\n\n" .
+                "Sipariş No: {$this->order_number}\n" .
+                "Tarih: " . now()->format('d.m.Y H:i') . "\n" .
+                "Tutar: " . number_format($payment->amount, 2, ',', '.') . " ₺\n\n" .
+                "MÜŞTERİ BİLGİLERİ:\n" .
+                "Ad Soyad: {$this->customer_name}\n" .
+                "E-posta: {$this->customer_email}\n" .
+                "Telefon: {$this->customer_phone}\n\n" .
+                "ÜRÜNLER:\n{$items}\n\n" .
+                "Sipariş detayları için admin paneli ziyaret edin.",
+                function ($message) use ($adminEmail) {
+                    $message->to($adminEmail)
+                        ->subject("🛒 Yeni Sipariş #{$this->order_number} - " . number_format($this->total_amount, 0, ',', '.') . " ₺");
+                }
+            );
+
+            \Log::info('📧 Admin bildirim e-postası gönderildi', ['email' => $adminEmail]);
+        } catch (\Exception $e) {
+            \Log::error('❌ Admin bildirim e-postası gönderilemedi: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Müşteriye sipariş onay e-postası gönder
+     */
+    protected function sendCustomerConfirmation(\Modules\Payment\App\Models\Payment $payment): void
+    {
+        if (!$this->customer_email) {
+            return;
+        }
+
+        try {
+            $items = $this->items->map(function ($item) {
+                return "- {$item->item_title} x{$item->quantity} = " . number_format($item->total_price, 2, ',', '.') . " ₺";
+            })->implode("\n");
+
+            $siteName = setting('site_name', config('app.name'));
+
+            \Mail::raw(
+                "Merhaba {$this->customer_name},\n\n" .
+                "Siparişiniz başarıyla alındı! Teşekkür ederiz.\n\n" .
+                "SİPARİŞ BİLGİLERİ:\n" .
+                "Sipariş No: {$this->order_number}\n" .
+                "Tarih: " . now()->format('d.m.Y H:i') . "\n" .
+                "Toplam: " . number_format($payment->amount, 2, ',', '.') . " ₺\n\n" .
+                "ÜRÜNLER:\n{$items}\n\n" .
+                "Siparişiniz en kısa sürede hazırlanacaktır.\n\n" .
+                "Teşekkürler,\n{$siteName}",
+                function ($message) use ($siteName) {
+                    $message->to($this->customer_email)
+                        ->subject("✅ Sipariş Onayı #{$this->order_number} - {$siteName}");
+                }
+            );
+
+            \Log::info('📧 Müşteri onay e-postası gönderildi', ['email' => $this->customer_email]);
+        } catch (\Exception $e) {
+            \Log::error('❌ Müşteri onay e-postası gönderilemedi: ' . $e->getMessage());
+        }
+    }
 }

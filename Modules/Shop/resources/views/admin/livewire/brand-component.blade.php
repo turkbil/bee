@@ -46,8 +46,26 @@
                                    value="{{ $brand->brand_id }}">
                         </td>
                         <td>
-                            <div class="fw-semibold">{{ $brand->getTranslated('title', app()->getLocale()) ?? \Illuminate\Support\Arr::first($brand->title) }}</div>
-                            <div class="text-muted small">{{ $brand->website_url }}</div>
+                            <div class="d-flex align-items-center gap-3">
+                                @php
+                                    $heroImage = getFirstMediaWithFallback($brand);
+                                @endphp
+                                @if($heroImage)
+                                    <img src="{{ $heroImage->getUrl('thumb') }}"
+                                         alt="{{ $brand->getTranslated('title', app()->getLocale()) }}"
+                                         class="rounded-2"
+                                         style="width: 40px; height: 40px; object-fit: cover;">
+                                @else
+                                    <div class="bg-secondary-lt rounded-2 d-flex align-items-center justify-content-center"
+                                         style="width: 40px; height: 40px;">
+                                        <i class="fas fa-tag text-muted"></i>
+                                    </div>
+                                @endif
+                                <div>
+                                    <div class="fw-semibold">{{ $brand->getTranslated('title', app()->getLocale()) ?? \Illuminate\Support\Arr::first($brand->title) }}</div>
+                                    <div class="text-muted small">{{ $brand->website_url }}</div>
+                                </div>
+                            </div>
                         </td>
                         <td>{{ $brand->country_code ?? '—' }}</td>
                         <td class="text-center">

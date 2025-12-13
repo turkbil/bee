@@ -60,10 +60,10 @@
                     @endphp
 
                     @if($fallbackMode === 'both')
-                        <img src="{{ $logoUrl }}" alt="{{ $siteTitle }}" class="dark:hidden h-10 w-auto">
-                        <img src="{{ $logoDarkUrl }}" alt="{{ $siteTitle }}" class="hidden dark:block h-10 w-auto">
+                        <img src="{{ $logoUrl }}" alt="{{ $siteTitle }}" class="dark:hidden h-10 w-auto" width="120" height="40">
+                        <img src="{{ $logoDarkUrl }}" alt="{{ $siteTitle }}" class="hidden dark:block h-10 w-auto" width="120" height="40">
                     @elseif($logoUrl)
-                        <img src="{{ $logoUrl }}" alt="{{ $siteTitle }}" class="h-10 w-auto logo-adaptive">
+                        <img src="{{ $logoUrl }}" alt="{{ $siteTitle }}" class="h-10 w-auto logo-adaptive" width="120" height="40">
                     @else
                         <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
                             <i class="fa-solid fa-industry text-white text-lg"></i>

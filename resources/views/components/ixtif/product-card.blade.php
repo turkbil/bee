@@ -443,13 +443,15 @@ document.addEventListener('alpine:init', () => {
 
     <div class="{{ $layoutClasses }}">
         {{-- Product Image --}}
-        <div class="relative {{ $imageContainerClasses }}">
+        <div class="relative {{ $imageContainerClasses }} aspect-square">
             <a href="{{ $productUrl }}" class="block w-full h-full rounded-xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-600 dark:via-slate-500 dark:to-slate-600">
                 @if($productImage)
                     <img src="{{ $productImage }}"
                          alt="{{ $productTitle }}"
                          class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark p-3 md:p-4 lg:p-6"
-                         loading="lazy">
+                         loading="lazy"
+                         width="400"
+                         height="400">
                 @else
                     <i class="{{ $productCategoryIcon }} text-4xl md:text-6xl text-blue-400 dark:text-blue-400"></i>
                 @endif

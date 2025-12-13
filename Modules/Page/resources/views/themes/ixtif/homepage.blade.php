@@ -6,13 +6,17 @@
 @extends('themes.' . $themeName . '.layouts.app')
 
 @push('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+{{-- LCP Görsel Preload - Performans için kritik --}}
+<link rel="preload" as="image" href="{{ thumb('https://ixtif.com/storage/tenant2/1510/teslimat.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" type="image/webp">
+{{-- Swiper CSS - Self-hosted (CDN bağımlılığı kaldırıldı) --}}
+<link rel="stylesheet" href="{{ asset('assets/libs/swiper/css/swiper-bundle.min.css') }}">
 <link rel="stylesheet" href="{{ asset('themes/ixtif/css/homepage.css') }}">
 @endpush
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-<script src="{{ asset('themes/ixtif/js/homepage.js') }}"></script>
+{{-- Swiper JS - Self-hosted (CDN bağımlılığı kaldırıldı) --}}
+<script src="{{ asset('assets/libs/swiper/js/swiper-bundle.min.js') }}" defer></script>
+<script src="{{ asset('themes/ixtif/js/homepage.js') }}" defer></script>
 @endpush
 
 @section('module_content')
@@ -84,8 +88,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
-                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1510/teslimat.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager">
+                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0 aspect-[3/2]">
+                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1510/teslimat.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="İXTİF Teslimat" class="h-auto object-contain" loading="eager" fetchpriority="high" width="900" height="600">
                             </div>
                         </div>
                         </div>
@@ -148,8 +152,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
-                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1436/heli.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="HELI Forklift" class="h-auto object-contain" loading="lazy">
+                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0 aspect-[3/2]">
+                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1436/heli.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="HELI Forklift" class="h-auto object-contain" loading="lazy" width="900" height="600">
                             </div>
                             </div>
                         </div>
@@ -212,8 +216,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
-                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1435/ep.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="EP Elektrikli İstif" class="h-auto object-contain" loading="lazy">
+                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0 aspect-[3/2]">
+                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/1435/ep.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="EP Elektrikli İstif" class="h-auto object-contain" loading="lazy" width="900" height="600">
                             </div>
                             </div>
                         </div>
@@ -276,8 +280,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0">
-                                <img src="https://ixtif.com/storage/tenant2/4/hero.png" alt="İXTİF İstif Makinesi" class="h-auto object-contain" loading="lazy">
+                            <div class="hero-image flex items-center justify-center lg:justify-end lg:justify-self-end opacity-0 aspect-[3/2]">
+                                <img src="{{ thumb('https://ixtif.com/storage/tenant2/4/hero.png', 900, null, ['format' => 'webp', 'quality' => 85]) }}" alt="İXTİF İstif Makinesi" class="h-auto object-contain" loading="lazy" width="900" height="600">
                             </div>
                             </div>
                         </div>
@@ -309,7 +313,7 @@
     </section>
 
 <!-- Featured Products Section -->
-<section class="w-full py-8 relative overflow-hidden" x-data="{
+<section class="w-full py-8 relative overflow-hidden min-h-[600px] md:min-h-[800px]" x-data="{
     viewMode: (window.innerWidth < 1024 ? 'list' : 'grid'),
 
     // Cookie helper functions
@@ -517,7 +521,9 @@
                                     <img src="{{ $vipProductImage }}"
                                          alt="{{ $vipProductTitle }}"
                                          class="w-full h-full object-contain drop-shadow-product-light dark:drop-shadow-product-dark p-6 md:p-8"
-                                         loading="lazy">
+                                         loading="lazy"
+                                         width="400"
+                                         height="400">
                                 @else
                                     <i class="{{ $vipProductCategoryIcon }} text-6xl md:text-8xl text-blue-400 dark:text-blue-400"></i>
                                 @endif
@@ -714,10 +720,12 @@
         <div class="grid lg:grid-cols-2 gap-16 items-center">
             {{-- Sol: Görsel (Ken Burns + Parallax Efekt) --}}
             <div class="relative rounded-3xl h-[350px] md:h-[450px] lg:h-[600px] overflow-hidden" id="aboutPhotoContainer">
-                <img src="https://ixtif.com/storage/tenant2/5/super-hero.jpg"
+                <img src="{{ thumb('https://ixtif.com/storage/tenant2/5/super-hero.jpg', 800, 600, ['format' => 'webp', 'quality' => 85]) }}"
                      alt="İxtif - Depoda, Üretimde, Dağıtımda"
                      class="w-full h-full object-cover about-hero-photo"
                      loading="lazy"
+                     width="800"
+                     height="600"
                      id="aboutHeroPhoto">
             </div>
 
@@ -779,7 +787,7 @@
 @if($latestBlogs->isNotEmpty())
 
 {{-- ==================== BLOG SECTION: STACKED GLASS LAYERS ==================== --}}
-<section class="w-full py-20 relative overflow-hidden">
+<section class="w-full py-20 relative overflow-hidden min-h-[500px]">
     <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
         <div class="flex items-center justify-between mb-12">
             <div class="flex items-center gap-4">
@@ -816,7 +824,7 @@
                         {{-- Image with Layered Glass Effect --}}
                         <div class="relative h-52 sm:h-56 lg:h-64 overflow-hidden flex-shrink-0">
                             @if($blogImage)
-                                <img src="{{ $blogImage }}" alt="{{ $blogTitle }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                                <img src="{{ $blogImage }}" alt="{{ $blogTitle }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" width="400" height="300">
                             @else
                                 <div class="w-full h-full bg-gradient-to-br from-blue-500 via-purple-600 to-pink-600 flex items-center justify-center">
                                     <i class="fa-solid fa-newspaper text-5xl text-white/30"></i>

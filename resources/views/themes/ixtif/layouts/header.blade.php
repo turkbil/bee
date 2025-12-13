@@ -95,6 +95,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
+    {{-- Performance: Preload Critical Fonts (FontAwesome) --}}
+    <link rel="preload" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/webfonts/fa-solid-900.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/webfonts/fa-light-300.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('assets/libs/fontawesome-pro@7.1.0/webfonts/fa-regular-400.woff2') }}" as="font" type="font/woff2" crossorigin>
+
     {{-- Performance: Preload Critical CSS --}}
     {{-- Tailwind CSS - Tenant-Aware (tenant-2.css veya fallback app.css) --}}
     <link rel="stylesheet" href="{{ tenant_css() }}" media="all">
@@ -109,18 +114,27 @@
     <noscript><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
 
     {{-- iXtif Theme Styles - Bundle if available, fallback to individual files --}}
+    {{-- Deferred loading with preload for non-critical CSS --}}
     @if(file_exists(public_path('css/ixtif-bundle.min.css')))
         {{-- Performance Optimized: 4 CSS files bundled --}}
-        <link rel="stylesheet" href="{{ asset('css/ixtif-bundle.min.css') }}" media="all">
+        <link rel="preload" href="{{ asset('css/ixtif-bundle.min.css') }}" as="style">
+        <link rel="stylesheet" href="{{ asset('css/ixtif-bundle.min.css') }}" media="print" onload="this.media='all'">
+        <noscript><link rel="stylesheet" href="{{ asset('css/ixtif-bundle.min.css') }}"></noscript>
     @else
-        {{-- Fallback: Individual CSS files --}}
-        <link rel="stylesheet" href="{{ asset('css/ixtif-theme.css') }}?v={{ now()->timestamp }}" media="all">
-        <link rel="stylesheet" href="{{ asset('css/custom-gradients.css') }}?v=8.0.1">
-        <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.1">
+        {{-- Fallback: Individual CSS files with defer --}}
+        <link rel="stylesheet" href="{{ asset('css/ixtif-theme.css') }}?v={{ now()->timestamp }}" media="print" onload="this.media='all'">
+        <link rel="stylesheet" href="{{ asset('css/custom-gradients.css') }}?v=8.0.1" media="print" onload="this.media='all'">
+        <link rel="stylesheet" href="{{ asset('css/core-system.css') }}?v=1.0.1" media="print" onload="this.media='all'">
+        <noscript>
+            <link rel="stylesheet" href="{{ asset('css/ixtif-theme.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/custom-gradients.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/core-system.css') }}">
+        </noscript>
     @endif
 
-    {{-- Back to Top Button Styles --}}
-    <link rel="stylesheet" href="{{ asset('css/back-to-top.css') }}">
+    {{-- Back to Top Button Styles - Non-critical, defer --}}
+    <link rel="stylesheet" href="{{ asset('css/back-to-top.css') }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ asset('css/back-to-top.css') }}"></noscript>
 
     {{-- Livewire Styles --}}
     @livewireStyles

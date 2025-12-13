@@ -30,7 +30,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-3xl font-bold text-green-400">✅ Yapılacaklar Listesi</h2>
                     <div class="text-right">
-                        <div class="text-2xl font-bold text-green-400" id="progressText">0/22</div>
+                        <div class="text-2xl font-bold text-green-400" id="progressText">15/21</div>
                         <div class="text-sm text-slate-400">Tamamlanan görev</div>
                     </div>
                 </div>
@@ -38,10 +38,10 @@
                 <!-- İlerleme Çubuğu -->
                 <div class="mb-6">
                     <div class="bg-slate-700 rounded-full h-4 overflow-hidden">
-                        <div id="progressBar" class="bg-gradient-to-r from-green-500 to-emerald-500 h-full transition-all duration-500" style="width: 0%"></div>
+                        <div id="progressBar" class="bg-gradient-to-r from-green-500 to-emerald-500 h-full transition-all duration-500" style="width: 71%"></div>
                     </div>
                     <div class="text-center mt-2">
-                        <span class="text-green-400 font-bold text-lg" id="progressPercent">%0</span>
+                        <span class="text-green-400 font-bold text-lg" id="progressPercent">%71</span>
                         <span class="text-slate-400 text-sm ml-2">tamamlandı</span>
                     </div>
                 </div>
@@ -53,178 +53,221 @@
                         <span>Hemen Yapılacaklar</span>
                     </h3>
                     <div class="space-y-2">
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p0">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-red-500" data-task="task-1">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="p0">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-1" checked>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">hero.png → WebP dönüşümü</strong>
-                                <span class="text-slate-500 text-sm ml-2">(901 KB tasarruf)</span>
+                                <span class="text-green-400 text-sm ml-2">✅ Tamamlandı (976KB → ~97KB)</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p0">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-red-500" data-task="task-2">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="p0">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-2" checked>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">Tüm ürün resimlerini WebP'ye çevir</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Thumbmaker resimleri)</span>
+                                <span class="text-green-400 text-sm ml-2">✅ Zaten WebP format kullanılıyordu</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p0">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-red-500" data-task="task-3">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="p0">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-3" checked>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">LCP görseline fetchpriority="high" ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(İXTİF Teslimat görseli)</span>
+                                <span class="text-green-400 text-sm ml-2">✅ Teslimat görseline eklendi</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p0">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-red-500" data-task="task-4">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="p0">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-4" checked>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">LCP görseli preload ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(HTML head'e &lt;link rel="preload"&gt;)</span>
+                                <span class="text-green-400 text-sm ml-2">✅ &lt;link rel="preload"&gt; eklendi</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p0">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-red-500" data-task="task-5">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="p0">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-5" checked>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">Hero dışındaki tüm resimlere loading="lazy"</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Ürün görselleri)</span>
+                                <span class="text-green-400 text-sm ml-2">✅ + width/height CLS düzeltmesi</span>
                             </span>
                         </label>
                     </div>
                 </div>
 
-                <!-- P1 - Yüksek Öncelik -->
+                <!-- KADEME 1 - Düşük Risk (Tek satır değişiklik) -->
                 <div class="mb-6">
-                    <h3 class="text-xl font-bold text-yellow-400 mb-3 flex items-center gap-2">
-                        <span class="px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">P1 - YÜKSEK</span>
-                        <span>Bu Hafta Yapılacaklar</span>
+                    <h3 class="text-xl font-bold text-emerald-400 mb-3 flex items-center gap-2">
+                        <span class="px-3 py-1 bg-emerald-600 text-white text-xs rounded-full">KADEME 1</span>
+                        <span>🟢 Düşük Risk - Font Optimizasyonu</span>
                     </h3>
+                    <p class="text-slate-500 text-sm mb-3 ml-2">Geri alma: Tek satır silmek yeterli</p>
                     <div class="space-y-2">
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p1">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-500" data-task="task-6">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Nginx cache headers ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Webfont: 1 yıl, CSS/JS: 1 yıl, Resim: 1 yıl)</span>
-                            </span>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p1">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-500" data-task="task-7">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">CSS/JS dosyalarına versiyonlama ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Hash veya timestamp)</span>
-                            </span>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p1">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-500" data-task="task-8">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k1">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-6" checked>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">FontAwesome'a font-display: swap ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(FOIT önleme)</span>
+                                <span class="text-green-400 text-sm ml-2">✅ Zaten CSS'de mevcut</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p1">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-500" data-task="task-9">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k1">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-7" checked>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">Kritik fontları preload ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(fa-solid, fa-regular)</span>
-                            </span>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p1">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-500" data-task="task-10">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Kritik CSS inline yap</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Above the fold CSS)</span>
-                            </span>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p1">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-500" data-task="task-11">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Non-critical CSS defer yap</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Preload + onload trick)</span>
-                            </span>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p1">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-yellow-500" data-task="task-12">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">CSS bundle oluştur</strong>
-                                <span class="text-slate-500 text-sm ml-2">(6 dosyayı birleştir)</span>
+                                <span class="text-green-400 text-sm ml-2">✅ fa-solid, fa-light, fa-regular preload eklendi</span>
                             </span>
                         </label>
                     </div>
                 </div>
 
-                <!-- P2 - Orta Öncelik -->
+                <!-- KADEME 2 - Düşük Risk (Script attribute) -->
                 <div class="mb-6">
-                    <h3 class="text-xl font-bold text-blue-400 mb-3 flex items-center gap-2">
-                        <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">P2 - ORTA</span>
-                        <span>2 Hafta İçinde</span>
+                    <h3 class="text-xl font-bold text-emerald-400 mb-3 flex items-center gap-2">
+                        <span class="px-3 py-1 bg-emerald-600 text-white text-xs rounded-full">KADEME 2</span>
+                        <span>🟢 Düşük Risk - Script Optimizasyonu</span>
                     </h3>
+                    <p class="text-slate-500 text-sm mb-3 ml-2">Geri alma: Attribute silmek yeterli</p>
                     <div class="space-y-2">
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p2">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-blue-500" data-task="task-13">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k2">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-8" checked>
                             <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Swiper.js yinelemesini kaldır</strong>
-                                <span class="text-slate-500 text-sm ml-2">(44 KB tasarruf)</span>
+                                <strong class="text-white">Analytics script'leri async/defer yükle</strong>
+                                <span class="text-green-400 text-sm ml-2">✅ auto-platforms component'te async var</span>
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p2">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-blue-500" data-task="task-14">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Analytics script'leri async yükle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Facebook, Yandex, Clarity)</span>
-                            </span>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p2">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-blue-500" data-task="task-15">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Responsive resimlere aspect-ratio ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Layout shift önleme)</span>
-                            </span>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p2">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-blue-500" data-task="task-16">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Dinamik içeriklere min-height ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Ürün listesi section)</span>
-                            </span>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p2">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-blue-500" data-task="task-17">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k2">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-9" checked>
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">Alpine.js elementlerine x-cloak ekle</strong>
-                                <span class="text-slate-500 text-sm ml-2">(Render öncesi gizle)</span>
-                            </span>
-                        </label>
-
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p2">
-                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-blue-500" data-task="task-18">
-                            <span class="flex-1 text-slate-300">
-                                <strong class="text-white">Swiper'ı self-host yap</strong>
-                                <span class="text-slate-500 text-sm ml-2">(CDN bağımlılığı azalt)</span>
+                                <span class="text-green-400 text-sm ml-2">✅ header.blade.php'de mevcut</span>
                             </span>
                         </label>
                     </div>
                 </div>
 
-                <!-- P3 - Düşük Öncelik -->
+                <!-- KADEME 3 - Orta Risk (CSS değişiklikleri) -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-yellow-400 mb-3 flex items-center gap-2">
+                        <span class="px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">KADEME 3</span>
+                        <span>🟡 Orta Risk - CSS Optimizasyonu</span>
+                    </h3>
+                    <p class="text-slate-500 text-sm mb-3 ml-2">Geri alma: CSS değişikliklerini revert etmek</p>
+                    <div class="space-y-2">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k3">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-10" checked>
+                            <span class="flex-1 text-slate-300">
+                                <strong class="text-white">Responsive resimlere aspect-ratio ekle</strong>
+                                <span class="text-green-400 text-sm ml-2">✅ Hero + product-card'a eklendi</span>
+                            </span>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k3">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-11" checked>
+                            <span class="flex-1 text-slate-300">
+                                <strong class="text-white">Dinamik içeriklere min-height ekle</strong>
+                                <span class="text-green-400 text-sm ml-2">✅ Products (800px) + Blog (500px)</span>
+                            </span>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k3">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-12" checked>
+                            <span class="flex-1 text-slate-300">
+                                <strong class="text-white">Non-critical CSS defer yap</strong>
+                                <span class="text-green-400 text-sm ml-2">✅ Theme CSS preload + onload trick</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- KADEME 4 - Orta Risk (JS bundle değişiklikleri) -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-yellow-400 mb-3 flex items-center gap-2">
+                        <span class="px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">KADEME 4</span>
+                        <span>🟡 Orta Risk - JS Optimizasyonu</span>
+                    </h3>
+                    <p class="text-slate-500 text-sm mb-3 ml-2">Geri alma: Import/script geri eklemek</p>
+                    <div class="space-y-2">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k4">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-13" checked>
+                            <span class="flex-1 text-slate-300">
+                                <strong class="text-white">Swiper.js yinelemesini kaldır</strong>
+                                <span class="text-green-400 text-sm ml-2">✅ Tek import + defer eklendi</span>
+                            </span>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k4">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-14" checked>
+                            <span class="flex-1 text-slate-300">
+                                <strong class="text-white">Swiper'ı self-host yap</strong>
+                                <span class="text-green-400 text-sm ml-2">✅ assets/libs/swiper/ kullanılıyor</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- KADEME 5 - Orta Risk (Build/Versiyonlama) -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-orange-400 mb-3 flex items-center gap-2">
+                        <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">KADEME 5</span>
+                        <span>🟠 Orta-Yüksek Risk - Build Değişiklikleri</span>
+                    </h3>
+                    <p class="text-slate-500 text-sm mb-3 ml-2">Geri alma: Helper/config değişikliği</p>
+                    <div class="space-y-2">
+                        <label class="flex items-start gap-3 p-3 bg-green-900/30 rounded-lg hover:bg-green-900/50 cursor-pointer transition-all todo-item line-through opacity-70" data-priority="k5">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-green-500" data-task="task-15" checked>
+                            <span class="flex-1 text-slate-300">
+                                <strong class="text-white">CSS/JS dosyalarına versiyonlama ekle</strong>
+                                <span class="text-green-400 text-sm ml-2">✅ mix() + ?v= query string kullanılıyor</span>
+                            </span>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k5">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-orange-500" data-task="task-16">
+                            <span class="flex-1 text-slate-300">
+                                <strong class="text-white">CSS bundle oluştur</strong>
+                                <span class="text-slate-500 text-sm ml-2">(6 dosyayı birleştir - webpack config)</span>
+                            </span>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k5">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-orange-500" data-task="task-17">
+                            <span class="flex-1 text-slate-300">
+                                <strong class="text-white">Kritik CSS inline yap</strong>
+                                <span class="text-slate-500 text-sm ml-2">(Above the fold CSS extract)</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- KADEME 6 - Yüksek Risk (Server Config) -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-red-400 mb-3 flex items-center gap-2">
+                        <span class="px-3 py-1 bg-red-600 text-white text-xs rounded-full">KADEME 6</span>
+                        <span>🔴 Yüksek Risk - Server Konfigürasyonu</span>
+                    </h3>
+                    <p class="text-slate-500 text-sm mb-3 ml-2">Geri alma: Plesk/Nginx config geri yükle</p>
+                    <div class="space-y-2">
+                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k6">
+                            <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-red-500" data-task="task-18">
+                            <span class="flex-1 text-slate-300">
+                                <strong class="text-white">Nginx cache headers ekle</strong>
+                                <span class="text-slate-500 text-sm ml-2">(Webfont/CSS/JS: 1 yıl - server config)</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- KADEME 7 - İleri Seviye (Opsiyonel) -->
                 <div class="mb-6">
                     <h3 class="text-xl font-bold text-slate-400 mb-3 flex items-center gap-2">
-                        <span class="px-3 py-1 bg-slate-600 text-white text-xs rounded-full">P3 - DÜŞÜK</span>
-                        <span>1 Ay İçinde</span>
+                        <span class="px-3 py-1 bg-slate-600 text-white text-xs rounded-full">KADEME 7</span>
+                        <span>⚪ İleri Seviye - Opsiyonel</span>
                     </h3>
+                    <p class="text-slate-500 text-sm mb-3 ml-2">Bonus optimizasyonlar - gerekirse yapılır</p>
                     <div class="space-y-2">
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p3">
+                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k7">
                             <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-slate-500" data-task="task-19">
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">Polyfill temizleme</strong>
@@ -232,7 +275,7 @@
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p3">
+                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k7">
                             <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-slate-500" data-task="task-20">
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">Forced reflow optimizasyonları</strong>
@@ -240,7 +283,7 @@
                             </span>
                         </label>
 
-                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="p3">
+                        <label class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 cursor-pointer transition-all todo-item" data-priority="k7">
                             <input type="checkbox" class="todo-checkbox mt-1 w-5 h-5 rounded border-2 border-slate-500" data-task="task-21">
                             <span class="flex-1 text-slate-300">
                                 <strong class="text-white">CDN kurulumu</strong>
@@ -268,13 +311,25 @@
         </section>
 
         <script>
-            // LocalStorage'dan todo durumlarını yükle
+            // LocalStorage'dan todo durumlarını yükle (HTML checked attribute öncelikli)
             function loadTodos() {
                 const checkboxes = document.querySelectorAll('.todo-checkbox');
                 checkboxes.forEach(checkbox => {
                     const taskId = checkbox.getAttribute('data-task');
-                    const isChecked = localStorage.getItem(taskId) === 'true';
-                    checkbox.checked = isChecked;
+                    const storedValue = localStorage.getItem(taskId);
+
+                    // HTML'de checked attribute varsa (varsayılan tamamlanmış görevler)
+                    const htmlChecked = checkbox.hasAttribute('checked');
+
+                    // Öncelik: localStorage > HTML attribute
+                    // Ama ilk yüklemede HTML'deki checked değerlerini localStorage'a kaydet
+                    if (storedValue === null && htmlChecked) {
+                        localStorage.setItem(taskId, 'true');
+                        checkbox.checked = true;
+                    } else if (storedValue !== null) {
+                        checkbox.checked = storedValue === 'true';
+                    }
+
                     updateItemStyle(checkbox);
                 });
                 updateProgress();

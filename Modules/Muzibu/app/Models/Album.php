@@ -214,8 +214,8 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackCanonicalUrl(): ?string
     {
-        $slug = $this->getTranslated('slug', app()->getLocale());
-        return $slug ? url('/muzibu/album/' . ltrim($slug, '/')) : null;
+        // Use existing getUrl() method for consistency
+        return $this->getUrl();
     }
 
     public function getSeoFallbackImage(): ?string

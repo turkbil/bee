@@ -97,20 +97,25 @@
 
                             <!-- Delete Button -->
                             <button @click="if(confirm('Bu playlist\'i silmek istediğinize emin misiniz?')) {
-                                        fetch('/api/muzibu/playlists/{{ $playlist->playlist_id }}', {
-                                            method: 'DELETE',
-                                            headers: {
-                                                'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
-                                                'Accept': 'application/json'
-                                            }
-                                        }).then(response => response.json())
-                                          .then(data => {
-                                              if(data.success) {
-                                                  window.location.reload();
-                                              } else {
-                                                  alert(data.message || 'Bir hata oluştu');
-                                              }
-                                          });
+                                        try {
+                                            const token = localStorage.getItem('auth_token');
+                                            fetch('/api/muzibu/playlists/{{ $playlist->playlist_id }}', {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'Authorization': 'Bearer ' + (token || ''),
+                                                    'Accept': 'application/json'
+                                                }
+                                            }).then(response => response.json())
+                                              .then(data => {
+                                                  if(data.success) {
+                                                      window.location.reload();
+                                                  } else {
+                                                      alert(data.message || 'Bir hata oluştu');
+                                                  }
+                                              });
+                                        } catch (e) {
+                                            alert('Storage erişim hatası');
+                                        }
                                     }"
                                     class="text-gray-400 hover:text-red-500 transition-colors"
                                     title="Sil">

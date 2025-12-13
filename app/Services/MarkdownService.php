@@ -358,7 +358,7 @@ class MarkdownService
                 // URL oluştur
                 if ($module === 'shop') {
                     if ($type === 'product') {
-                        $url = "/shop/product/{$id}";
+                        $url = "/shop/{$id}";
                     } elseif ($type === 'category') {
                         $url = "/shop/category-by-id/{$id}";
                     } elseif ($type === 'brand') {
@@ -387,7 +387,7 @@ class MarkdownService
             function ($matches) {
                 $linkText = trim($matches[1]);
                 $productId = $matches[2];
-                $url = "/shop/product/{$productId}";
+                $url = "/shop/{$productId}";
 
                 return "[**{$linkText}**]({$url})";
             },

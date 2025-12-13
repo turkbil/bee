@@ -599,7 +599,7 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
             return null;
         }
 
-        return url('/shop/product/' . ltrim($slug, '/'));
+        return url('/shop/' . ltrim($slug, '/'));
     }
 
     public function getSeoFallbackImage(): ?string

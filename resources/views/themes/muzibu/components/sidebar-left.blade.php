@@ -151,7 +151,7 @@
                     </template>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <h3 class="text-white font-bold text-sm truncate" x-text="currentUser?.name || 'Kullanici'"></h3>
+                    <h3 class="text-white font-bold text-sm break-words" x-text="currentUser?.name || 'Kullanici'"></h3>
 
                     {{-- Uyelik Tipi ve Kalan Sure (Tek Component) --}}
                     <div class="text-white/90 text-xs">

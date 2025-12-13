@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Infinite Queue Test - Simülasyon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 py-12">
+
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
+                🧪 Infinite Queue Test Senaryosu
+            </h1>
+            <p class="text-xl text-slate-300 mb-6">
+                Otomatik test ile tüm context akışlarını doğrulayın
+            </p>
+            <div class="flex gap-4 text-sm text-slate-400">
+                <span>📅 12 Aralık 2025</span>
+                <span>⚡ Hızlandırılmış Simülasyon</span>
+            </div>
+        </header>
+
+        <!-- Test Adımları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">📋 Test Adımları</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300 mb-2">Muzibu'ya Git</h3>
+                            <p class="text-slate-300 mb-3">
+                                <a href="https://muzibu.com.tr" target="_blank" class="text-green-400 hover:text-green-300 underline">
+                                    https://muzibu.com.tr
+                                </a>
+                            </p>
+                            <p class="text-slate-400 text-sm">Test edeceğiniz context'i seçin (Genre, Album, Playlist, Sector, Radio vb.)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-300 mb-2">Bir Şarkı Başlat</h3>
+                            <p class="text-slate-300 mb-3">Test etmek istediğiniz context'ten bir şarkı başlatın:</p>
+                            <ul class="text-slate-400 text-sm space-y-1 ml-4">
+                                <li>• <strong class="text-green-300">Album Test:</strong> Bir album seç, çal</li>
+                                <li>• <strong class="text-blue-300">Genre Test:</strong> Bir genre seç, çal</li>
+                                <li>• <strong class="text-purple-300">Playlist Test:</strong> Bir playlist seç, çal</li>
+                                <li>• <strong class="text-red-300">Sector Test:</strong> Bir sector seç, çal</li>
+                                <li>• <strong class="text-yellow-300">Popular Test:</strong> Popular'dan bir şarkı çal</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-purple-300 mb-2">Browser Console Aç</h3>
+                            <p class="text-slate-300 mb-3">Klavye kısayolu:</p>
+                            <div class="grid md:grid-cols-3 gap-3 text-sm">
+                                <div class="bg-slate-900/50 rounded p-3">
+                                    <span class="text-slate-500">Windows/Linux:</span>
+                                    <code class="block text-green-400 mt-1">F12</code>
+                                    <code class="block text-green-400">Ctrl + Shift + I</code>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-3">
+                                    <span class="text-slate-500">Mac:</span>
+                                    <code class="block text-green-400 mt-1">Cmd + Option + I</code>
+                                </div>
+                                <div class="bg-slate-900/50 rounded p-3">
+                                    <span class="text-slate-500">veya:</span>
+                                    <code class="block text-green-400 mt-1">Sağ tık → İncele</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-yellow-300 mb-2">Test Script'ini Çalıştır</h3>
+                            <p class="text-slate-300 mb-3">
+                                <a href="../test-script.js" target="_blank" class="text-blue-400 hover:text-blue-300 underline">
+                                    test-script.js
+                                </a> dosyasını açın, tüm kodu kopyalayın ve console'a yapıştırıp Enter'a basın.
+                            </p>
+                            <div class="bg-slate-900/50 rounded p-4 mt-3">
+                                <p class="text-slate-500 text-xs mb-2">Veya direkt kodu buradan kopyalayın:</p>
+                                <div class="relative">
+                                    <button
+                                        onclick="copyTestScript()"
+                                        class="absolute top-2 right-2 bg-green-600 hover:bg-green-500 text-white px-3 py-1 rounded text-xs font-bold">
+                                        📋 Kopyala
+                                    </button>
+                                    <pre id="testScript" class="text-green-400 text-xs overflow-x-auto pr-20">fetch('https://ixtif.com/readme/2025/12/12/infinite-queue-test/test-script.js')
+  .then(r => r.text())
+  .then(code => eval(code));</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300 mb-2">Test Sonuçlarını İzle</h3>
+                            <p class="text-slate-300 mb-3">Console'da şu mesajları göreceksiniz:</p>
+                            <ul class="text-slate-400 text-sm space-y-2">
+                                <li>• <code class="text-green-400">🎵 [1/20] Test: Song Title</code> - Her şarkı testi</li>
+                                <li>• <code class="text-blue-400">🔄 TRANSITION TESPİT EDİLDİ!</code> - Context geçişleri</li>
+                                <li>• <code class="text-purple-400">📊 Ara Özet</code> - Her 5 şarkıda bir özet</li>
+                                <li>• <code class="text-yellow-400">✅ TEST TAMAMLANDI!</code> - Final rapor</li>
+                                <li>• <code class="text-green-400">♾️ INFINITE LOOP AKTİF!</code> - Sonsuz döngü onayı</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Ayarları -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">⚙️ Test Ayarları</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-bold text-purple-300 mb-3">Varsayılan Ayarlar</h3>
+                        <ul class="text-slate-300 space-y-2 text-sm">
+                            <li>• <strong>Test Edilecek Şarkı:</strong> 20</li>
+                            <li>• <strong>Her Şarkı Süresi:</strong> 3 saniye</li>
+                            <li>• <strong>Bitiş Testi:</strong> Aktif (son 2 saniye)</li>
+                            <li>• <strong>Transition Kontrolü:</strong> Aktif</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-blue-300 mb-3">Özelleştirme (Opsiyonel)</h3>
+                        <p class="text-slate-400 text-sm mb-2">Script içinde <code class="text-green-400">config</code> objesini düzenleyin:</p>
+                        <div class="bg-slate-900/50 rounded p-3">
+                            <pre class="text-green-400 text-xs">const config = {
+  songsToTest: 50,    // Daha fazla test
+  playDuration: 2000, // Daha hızlı
+  skipToEnd: true,
+  checkTransition: true
+};</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beklenen Sonuçlar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Beklenen Sonuçlar</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border-l-4 border-green-500 rounded-lg p-6">
+                    <h3 class="font-bold text-green-300 mb-3">Genre Test</h3>
+                    <p class="text-slate-300 text-sm mb-2">Başlangıç: Genre seçildi</p>
+                    <p class="text-slate-400 text-sm">Beklenen: Hiç transition olmaz, sonsuz loop</p>
+                    <code class="block text-green-400 text-xs mt-2">Genre → Genre → Genre ♾️</code>
+                </div>
+
+                <div class="bg-purple-900/20 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="font-bold text-purple-300 mb-3">Album Test</h3>
+                    <p class="text-slate-300 text-sm mb-2">Başlangıç: Album seçildi</p>
+                    <p class="text-slate-400 text-sm">Beklenen: Album biter → Genre geçişi</p>
+                    <code class="block text-purple-400 text-xs mt-2">Album → Genre ♾️</code>
+                </div>
+
+                <div class="bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-6">
+                    <h3 class="font-bold text-blue-300 mb-3">Playlist Test</h3>
+                    <p class="text-slate-300 text-sm mb-2">Başlangıç: Playlist seçildi</p>
+                    <p class="text-slate-400 text-sm">Beklenen: Playlist biter → Genre geçişi</p>
+                    <code class="block text-blue-400 text-xs mt-2">Playlist → Genre ♾️</code>
+                </div>
+
+                <div class="bg-red-900/20 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="font-bold text-red-300 mb-3">Sector Test</h3>
+                    <p class="text-slate-300 text-sm mb-2">Başlangıç: Sector seçildi</p>
+                    <p class="text-slate-400 text-sm">Beklenen: Sector self-loop (genre'ye GEÇMİYOR)</p>
+                    <code class="block text-red-400 text-xs mt-2">Sector → Sector ♾️</code>
+                </div>
+
+                <div class="bg-yellow-900/20 border-l-4 border-yellow-500 rounded-lg p-6">
+                    <h3 class="font-bold text-yellow-300 mb-3">Popular Test</h3>
+                    <p class="text-slate-300 text-sm mb-2">Başlangıç: Popular şarkı</p>
+                    <p class="text-slate-400 text-sm">Beklenen: Popular → Album → Genre</p>
+                    <code class="block text-yellow-400 text-xs mt-2">Popular → Album → Genre ♾️</code>
+                </div>
+
+                <div class="bg-cyan-900/20 border-l-4 border-cyan-500 rounded-lg p-6">
+                    <h3 class="font-bold text-cyan-300 mb-3">Favorites Test</h3>
+                    <p class="text-slate-300 text-sm mb-2">Başlangıç: Favorites şarkı</p>
+                    <p class="text-slate-400 text-sm">Beklenen: Favorites → Album → Genre</p>
+                    <code class="block text-cyan-400 text-xs mt-2">Favorites → Album → Genre ♾️</code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Log Örnekleri -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">📊 Örnek Console Logları</h2>
+
+            <div class="bg-slate-900/50 rounded-lg p-6 font-mono text-xs">
+                <div class="space-y-2">
+                    <p class="text-green-400">🧪 MUZIBU INFINITE QUEUE TEST BAŞLADI</p>
+                    <p class="text-slate-500">============================================================</p>
+                    <p class="text-slate-300">📊 Test Bilgileri:</p>
+                    <p class="text-slate-400">  Context Type: album</p>
+                    <p class="text-slate-400">  Context ID: 12</p>
+                    <p class="text-slate-400">  Queue Length: 15</p>
+                    <p class="text-slate-500">============================================================</p>
+                    <p class="text-blue-400">🎵 [1/20] Test: Blue in Green</p>
+                    <p class="text-slate-400">   Queue: 1/15</p>
+                    <p class="text-slate-400">   Context: album (12)</p>
+                    <p class="text-slate-400">   ▶️ Başlangıç testi (3sn)...</p>
+                    <p class="text-slate-400">   ⏩ Bitiş testi (son 2 saniye)...</p>
+                    <p class="text-slate-400">   ⏭️ Sonraki şarkıya geçiliyor...</p>
+                    <p class="text-green-500 mt-3">🔄 TRANSITION TESPİT EDİLDİ!</p>
+                    <p class="text-green-400">   album → genre</p>
+                    <p class="text-green-400">   Context ID: 9</p>
+                    <p class="text-yellow-400 mt-3">✅ TEST TAMAMLANDI!</p>
+                    <p class="text-green-500">♾️ INFINITE LOOP AKTİF!</p>
+                    <p class="text-green-400">   Genre: 9</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI - Muzibu Infinite Queue Test</p>
+            <p class="mt-2">
+                <a href="https://muzibu.com.tr" target="_blank" class="text-blue-400 hover:text-blue-300">
+                    muzibu.com.tr'ye git →
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+    function copyTestScript() {
+        const code = document.getElementById('testScript').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('✅ Test kodu kopyalandı! Console\'a yapıştırın.');
+        });
+    }
+    </script>
+</body>
+</html>

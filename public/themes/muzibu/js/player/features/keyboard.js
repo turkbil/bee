@@ -67,11 +67,10 @@ function muzibuKeyboard() {
                 // Play/Pause
                 case ' ':
                 case 'k':
+                    const wasPlaying = this.isPlaying;
                     this.togglePlayPause();
-                    // Show feedback based on state AFTER toggle
-                    setTimeout(() => {
-                        this.showKeyboardFeedback(this.isPlaying ? '▶️ Çalıyor' : '⏸️ Durduruldu');
-                    }, 10);
+                    // Show feedback based on state BEFORE toggle (will be opposite after)
+                    this.showKeyboardFeedback(!wasPlaying ? '▶️ Çalıyor' : '⏸️ Durduruldu');
                     break;
 
                 // Seek backward (5 seconds)
@@ -97,13 +96,13 @@ function muzibuKeyboard() {
                 // Volume up
                 case 'arrowup':
                     this.volumeUp();
-                    this.showKeyboardFeedback(`🔊 Ses %${Math.round(this.volume * 100)}`);
+                    this.showKeyboardFeedback(`🔊 Ses %${Math.round(this.volume)}`);
                     break;
 
                 // Volume down
                 case 'arrowdown':
                     this.volumeDown();
-                    this.showKeyboardFeedback(`🔉 Ses %${Math.round(this.volume * 100)}`);
+                    this.showKeyboardFeedback(`🔉 Ses %${Math.round(this.volume)}`);
                     break;
 
                 // Mute/Unmute
@@ -200,24 +199,42 @@ function muzibuKeyboard() {
 
         /**
          * Volume up (10%)
+         * 🔥 FIX: Use 0-100 format (same as player-core.js)
          */
         volumeUp() {
-            this.volume = Math.min(1, this.volume + 0.1);
+            this.volume = Math.min(100, this.volume + 10);
+            const volumeValue = this.volume / 100;
+
             if (this.howl) {
-                this.howl.volume(this.volume);
+                this.howl.volume(volumeValue);
             }
-            safeStorage.setItem('player_volume', this.volume);
+            if (this.hls) {
+                const audio = this.getActiveHlsAudio();
+                if (audio) {
+                    audio.volume = volumeValue;
+                }
+            }
+            safeStorage.setItem('volume', Math.round(this.volume));
         },
 
         /**
          * Volume down (10%)
+         * 🔥 FIX: Use 0-100 format (same as player-core.js)
          */
         volumeDown() {
-            this.volume = Math.max(0, this.volume - 0.1);
+            this.volume = Math.max(0, this.volume - 10);
+            const volumeValue = this.volume / 100;
+
             if (this.howl) {
-                this.howl.volume(this.volume);
+                this.howl.volume(volumeValue);
             }
-            safeStorage.setItem('player_volume', this.volume);
+            if (this.hls) {
+                const audio = this.getActiveHlsAudio();
+                if (audio) {
+                    audio.volume = volumeValue;
+                }
+            }
+            safeStorage.setItem('volume', Math.round(this.volume));
         },
 
         /**

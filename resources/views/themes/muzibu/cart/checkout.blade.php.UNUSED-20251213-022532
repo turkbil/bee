@@ -1,3 +1,38 @@
+@push('styles')
+<style>
+/* Tooltip CSS */
+[data-tooltip] {
+    position: relative;
+}
+[data-tooltip]:hover::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+}
+[data-tooltip]:hover::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+    z-index: 999;
+    pointer-events: none;
+}
+</style>
+@endpush
+
 <div class="min-h-screen py-6 bg-gradient-to-b from-spotify-black via-[#0a0a0a] to-spotify-black" x-data="{
     // Form Data
     contactFirstName: '{{ $contact_first_name }}',
@@ -23,6 +58,8 @@
     showNewBillingForm: false,
     selectedPaymentMethodId: {{ $selectedPaymentMethodId ?? 'null' }},
     agreeAll: {{ $agree_all ? 'true' : 'false' }},
+    showBillingList: false,
+    editingBillingProfileId: null,
 
     // Delete State
     showDeleteWarning: false,
@@ -276,84 +313,206 @@
                     </div>
                 </div>
 
-                {{-- 2. FATURA BİLGİLERİ --}}
+                {{-- 2. FATURA BİLGİLERİ - COMPACT MINIMAL --}}
                 <div class="bg-spotify-gray rounded-2xl p-6 mb-4">
-                    <div class="flex items-center justify-between mb-5">
+                    {{-- Header --}}
+                    <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-semibold text-white flex items-center">
                             <i class="fa-solid fa-file-invoice text-gray-500 mr-3"></i>
                             Fatura Bilgileri
                         </h2>
+                        @auth
                         <button @click="editBillingProfileMode = false; showNewBillingProfile = !showNewBillingProfile; $wire.set('edit_billing_profile_id', null); $wire.set('new_billing_profile_title', ''); $wire.set('new_billing_profile_type', 'individual'); $wire.set('new_billing_profile_identity_number', ''); $wire.set('new_billing_profile_company_name', ''); $wire.set('new_billing_profile_tax_number', ''); $wire.set('new_billing_profile_tax_office', ''); newBillingProfileType = 'individual'; showTypeSwitchWarning = false; pendingType = null"
-                                class="text-sm text-gray-400 hover:text-white px-3 py-1.5 rounded-lg hover:bg-gray-700">
+                                data-tooltip="Yeni Profil Ekle"
+                                class="text-sm text-gray-400 hover:text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-colors">
                             <i class="fa-solid fa-plus mr-1"></i>Ekle
                         </button>
+                        @endauth
                     </div>
 
-                    {{-- Mevcut Profiller --}}
+                    @auth
                     @if($billingProfiles && count($billingProfiles) > 0)
-                        <div class="space-y-2 mb-4">
+                        @php
+                            $selectedProfile = $billingProfiles->firstWhere('billing_profile_id', $billing_profile_id) ?? $billingProfiles->first();
+                        @endphp
+
+                        {{-- Seçili Profil Özeti (Tek Satır) --}}
+                        @if($selectedProfile)
+                            <div class="flex items-center justify-between py-3 px-4 mb-3 bg-spotify-gray rounded-xl">
+                                <p class="text-sm text-gray-400 flex-1">
+                                    <span class="text-white font-medium">
+                                        {{ $selectedProfile->isCorporate() ? $selectedProfile->company_name : $selectedProfile->title }}
+                                    </span>
+                                    <span class="mx-2 text-gray-600">•</span>
+                                    <span>
+                                        @if($selectedProfile->isCorporate())
+                                            Vergi No: {{ $selectedProfile->tax_number }}
+                                        @else
+                                            {{ $selectedProfile->identity_number ? 'TC: ' . $selectedProfile->identity_number : '-' }}
+                                        @endif
+                                    </span>
+                                </p>
+                                <button @click="showBillingList = !showBillingList"
+                                        data-tooltip="Profilleri Düzenle"
+                                        class="text-gray-400 hover:text-white p-1 transition-colors">
+                                    <i class="fa-solid fa-pen text-xs"></i>
+                                </button>
+                            </div>
+                        @endif
+
+                        {{-- Profil Listesi (Collapsible) --}}
+                        <div x-show="showBillingList" x-cloak x-transition class="space-y-2">
                             @foreach($billingProfiles as $profile)
                                 <div wire:key="billing-profile-{{ $profile->billing_profile_id }}" class="relative group">
-                                    <label class="block cursor-pointer" @click="selectBillingProfile({{ $profile->billing_profile_id }})">
-                                        <div class="p-3 rounded-xl border-2 transition-all"
-                                             :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-gray-400 bg-spotify-gray' : 'border-white/10 hover:border-gray-500'">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex items-center gap-3 flex-1 min-w-0">
-                                                    <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-700 flex-shrink-0">
-                                                        <i class="fa-solid {{ $profile->isCorporate() ? 'fa-building' : 'fa-user' }} text-gray-400"></i>
-                                                    </div>
-                                                    <div class="flex-1 min-w-0">
-                                                        <div class="flex items-center gap-2">
-                                                            <span class="text-sm font-medium text-white truncate">
-                                                                {{ $profile->isCorporate() ? $profile->company_name : $profile->title }}
-                                                            </span>
-                                                            <span class="text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded flex-shrink-0">
-                                                                {{ $profile->isCorporate() ? 'Kurumsal' : 'Bireysel' }}
-                                                            </span>
-                                                        </div>
-                                                        <p class="text-xs text-gray-500 mt-0.5 truncate">
-                                                            @if($profile->isCorporate())
-                                                                {{ $profile->company_name }}
-                                                            @else
-                                                                {{ $profile->identity_number ? 'TC: ' . $profile->identity_number : '-' }}
-                                                            @endif
-                                                        </p>
-                                                    </div>
+                                    {{-- Profil Kartı --}}
+                                    <div @click="selectBillingProfile({{ $profile->billing_profile_id }}); showBillingList = false"
+                                         class="p-3 rounded-xl border-2 transition-all cursor-pointer"
+                                         :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-gray-400 bg-spotify-gray' : 'border-white/10 hover:border-gray-500'">
+                                        <div class="flex items-center justify-between">
+                                            {{-- Sol: Profil Bilgisi --}}
+                                            <div class="flex items-center gap-3 flex-1 min-w-0">
+                                                <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-gray-700 flex-shrink-0">
+                                                    <i class="fa-solid {{ $profile->isCorporate() ? 'fa-building text-blue-400' : 'fa-user text-green-400' }}"></i>
                                                 </div>
-                                                <div class="flex items-center gap-2 flex-shrink-0">
-                                                    {{-- Edit Button --}}
-                                                    <button @click.stop="
-                                                        editBillingProfileMode = true;
-                                                        showNewBillingProfile = true;
-                                                        newBillingProfileType = '{{ $profile->type }}';
-                                                        $wire.set('edit_billing_profile_id', {{ $profile->billing_profile_id }});
-                                                        $wire.set('new_billing_profile_title', '{{ addslashes($profile->title) }}');
-                                                        $wire.set('new_billing_profile_type', '{{ $profile->type }}');
-                                                        $wire.set('new_billing_profile_identity_number', '{{ $profile->identity_number ?? '' }}');
-                                                        $wire.set('new_billing_profile_company_name', '{{ addslashes($profile->company_name ?? '') }}');
-                                                        $wire.set('new_billing_profile_tax_number', '{{ $profile->tax_number ?? '' }}');
-                                                        $wire.set('new_billing_profile_tax_office', '{{ addslashes($profile->tax_office ?? '') }}');
-                                                    "
-                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-muzibu-coral/20 rounded text-blue-400 hover:text-blue-300"
-                                                            title="Düzenle">
-                                                        <i class="fas fa-edit text-xs"></i>
-                                                    </button>
-                                                    {{-- Delete Button --}}
-                                                    <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $profile->billing_profile_id }}; deleteTargetType = 'billing_profile'; deleteTargetTitle = '{{ $profile->title }}'"
-                                                            class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
-                                                            title="Sil">
-                                                        <i class="fas fa-trash text-xs"></i>
-                                                    </button>
-                                                    {{-- Checkbox --}}
-                                                    <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
-                                                         :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-white bg-white' : 'border-gray-600'">
-                                                        <i class="fa-solid fa-check text-[10px] text-gray-900"
-                                                           :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'opacity-100' : 'opacity-0'"></i>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-sm font-medium text-white truncate">
+                                                            {{ $profile->isCorporate() ? $profile->company_name : $profile->title }}
+                                                        </span>
+                                                        <span class="text-[10px] bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded flex-shrink-0">
+                                                            {{ $profile->isCorporate() ? 'Kurumsal' : 'Bireysel' }}
+                                                        </span>
                                                     </div>
+                                                    <p class="text-xs text-gray-500 mt-0.5 truncate">
+                                                        @if($profile->isCorporate())
+                                                            Vergi No: {{ $profile->tax_number }}
+                                                        @else
+                                                            {{ $profile->identity_number ? 'TC: ' . $profile->identity_number : '-' }}
+                                                        @endif
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {{-- Sağ: Minimal Butonlar --}}
+                                            <div class="flex items-center gap-2 flex-shrink-0">
+                                                {{-- Varsayılan Yap --}}
+                                                @if(!$profile->is_default)
+                                                <button @click.stop="$wire.setDefaultBillingProfile({{ $profile->billing_profile_id }})"
+                                                        data-tooltip="Varsayılan Yap"
+                                                        class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-yellow-500/20 rounded text-yellow-400 hover:text-yellow-300">
+                                                    <i class="fas fa-star text-xs"></i>
+                                                </button>
+                                                @endif
+                                                {{-- Edit (Toggle) --}}
+                                                <button @click.stop="editingBillingProfileId = editingBillingProfileId === {{ $profile->billing_profile_id }} ? null : {{ $profile->billing_profile_id }}"
+                                                        data-tooltip="Düzenle"
+                                                        class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-blue-500/20 rounded transition-colors"
+                                                        :class="editingBillingProfileId === {{ $profile->billing_profile_id }} ? 'text-blue-300 bg-blue-500/20 opacity-100' : 'text-blue-400'">
+                                                    <i class="fas fa-edit text-xs"></i>
+                                                </button>
+                                                {{-- Delete --}}
+                                                <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $profile->billing_profile_id }}; deleteTargetType = 'billing_profile'; deleteTargetTitle = '{{ addslashes($profile->title) }}'"
+                                                        data-tooltip="Sil"
+                                                        class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300">
+                                                    <i class="fas fa-trash text-xs"></i>
+                                                </button>
+                                                {{-- Checkbox --}}
+                                                <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center"
+                                                     :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-white bg-white' : 'border-gray-600'">
+                                                    <i class="fa-solid fa-check text-[10px] text-gray-900"
+                                                       :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'opacity-100' : 'opacity-0'"></i>
                                                 </div>
                                             </div>
                                         </div>
-                                    </label>
+                                    </div>
+
+                                    {{-- Inline Edit Form (Profil Altında) --}}
+                                    <div x-show="editingBillingProfileId === {{ $profile->billing_profile_id }}"
+                                         x-cloak x-transition @click.stop
+                                         class="mt-2 bg-gray-800/80 border border-gray-700 rounded-xl p-5">
+
+                                        {{-- Edit Header --}}
+                                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-700">
+                                            <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+                                                <i class="fa-solid fa-edit text-blue-400"></i>
+                                                Profil Düzenle
+                                            </h4>
+                                            <button @click="editingBillingProfileId = null"
+                                                    data-tooltip="Kapat"
+                                                    class="text-gray-400 hover:text-white p-1 transition-colors">
+                                                <i class="fa-solid fa-times"></i>
+                                            </button>
+                                        </div>
+
+                                        {{-- Edit Form Fields --}}
+                                        <div class="space-y-4">
+                                            {{-- Profil Tipi (Display Only) --}}
+                                            <div>
+                                                <label class="block text-xs text-gray-400 mb-2">Profil Tipi</label>
+                                                <div class="flex gap-2">
+                                                    <div class="flex-1 py-2 text-xs font-medium rounded-lg text-center {{ $profile->type === 'individual' ? 'bg-gray-600 text-white' : 'bg-gray-700 text-gray-400' }}">
+                                                        <i class="fa-solid fa-user mr-1.5"></i>Bireysel
+                                                    </div>
+                                                    <div class="flex-1 py-2 text-xs font-medium rounded-lg text-center {{ $profile->type === 'corporate' ? 'bg-gray-600 text-white' : 'bg-gray-700 text-gray-400' }}">
+                                                        <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Bireysel Fields --}}
+                                            @if(!$profile->isCorporate())
+                                                <div>
+                                                    <label class="block text-xs text-gray-400 mb-1">Profil Adı <span class="text-red-500">*</span></label>
+                                                    <input type="text" value="{{ $profile->title }}" readonly
+                                                           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm opacity-60 cursor-not-allowed">
+                                                    <p class="text-xs text-gray-500 mt-1">Profil adını değiştirmek için silip yeniden oluşturun</p>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-xs text-gray-400 mb-1">TC Kimlik No</label>
+                                                    <input type="text" value="{{ $profile->identity_number }}" readonly maxlength="11"
+                                                           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm opacity-60 cursor-not-allowed">
+                                                </div>
+                                            @endif
+
+                                            {{-- Kurumsal Fields --}}
+                                            @if($profile->isCorporate())
+                                                <div>
+                                                    <label class="block text-xs text-gray-400 mb-1">Şirket Ünvanı <span class="text-red-500">*</span></label>
+                                                    <input type="text" value="{{ $profile->company_name }}" readonly
+                                                           class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm opacity-60 cursor-not-allowed">
+                                                </div>
+                                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                                    <div>
+                                                        <label class="block text-xs text-gray-400 mb-1">Vergi No <span class="text-red-500">*</span></label>
+                                                        <input type="text" value="{{ $profile->tax_number }}" readonly maxlength="10"
+                                                               class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm opacity-60 cursor-not-allowed">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-xs text-gray-400 mb-1">Vergi Dairesi <span class="text-red-500">*</span></label>
+                                                        <input type="text" value="{{ $profile->tax_office }}" readonly
+                                                               class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white text-sm opacity-60 cursor-not-allowed">
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            {{-- Info Note --}}
+                                            <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                                                <p class="text-xs text-blue-400">
+                                                    <i class="fa-solid fa-info-circle mr-2"></i>
+                                                    Profil bilgilerini değiştirmek için profili silin ve yenisini oluşturun.
+                                                </p>
+                                            </div>
+
+                                            {{-- Actions --}}
+                                            <div class="flex gap-2 pt-3 border-t border-gray-700">
+                                                <button @click="editingBillingProfileId = null"
+                                                        class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 text-sm font-medium rounded-lg transition-colors">
+                                                    <i class="fa-solid fa-times mr-1"></i>Kapat
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
@@ -369,7 +528,7 @@
                     @endif
 
                     {{-- Yeni Profil Formu --}}
-                    <div x-show="showNewBillingProfile" x-cloak x-transition class="space-y-4 pt-3 border-t border-white/10">
+                    <div x-show="showNewBillingProfile" x-cloak x-transition class="space-y-4 pt-3 border-t border-white/10 mt-4">
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-medium text-gray-300">
                                 <span x-show="!editBillingProfileMode">Yeni Profil</span>
@@ -459,6 +618,51 @@
                         </div>
                     </div>
                     @error('billing_profile_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    @else
+                    {{-- Guest: Basit Form (Profil sistemi yok) --}}
+                    <div class="text-sm text-gray-400 space-y-3">
+                        <div class="flex gap-2 mb-4">
+                            <button type="button" wire:click="$set('billing_type', 'individual')"
+                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $billing_type === 'individual' ? 'bg-gray-600 text-white' : 'bg-gray-700 text-gray-400' }}">
+                                <i class="fa-solid fa-user mr-1.5"></i>Bireysel
+                            </button>
+                            <button type="button" wire:click="$set('billing_type', 'corporate')"
+                                    class="flex-1 py-2.5 text-sm font-medium rounded-lg transition-colors {{ $billing_type === 'corporate' ? 'bg-gray-600 text-white' : 'bg-gray-700 text-gray-400' }}">
+                                <i class="fa-solid fa-building mr-1.5"></i>Kurumsal
+                            </button>
+                        </div>
+
+                        @if($billing_type === 'individual')
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">TC Kimlik No <span class="text-gray-500">(Opsiyonel)</span></label>
+                                <input type="text" wire:model="billing_tax_number" maxlength="11" placeholder="XXXXXXXXXXX"
+                                       class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm">
+                                @error('billing_tax_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                        @else
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Şirket Ünvanı <span class="text-red-500">*</span></label>
+                                <input type="text" wire:model="billing_company_name"
+                                       class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm">
+                                @error('billing_company_name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Vergi No <span class="text-red-500">*</span></label>
+                                    <input type="text" wire:model="billing_tax_number" maxlength="10"
+                                           class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm">
+                                    @error('billing_tax_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Vergi Dairesi <span class="text-red-500">*</span></label>
+                                    <input type="text" wire:model="billing_tax_office"
+                                           class="w-full px-3 py-2.5 bg-spotify-gray border border-gray-600 rounded-lg text-white text-sm">
+                                    @error('billing_tax_office') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    @endauth
                 </div>
 
                 @php
@@ -1208,12 +1412,17 @@
 
 @script
 <script>
-    const storedCartId = localStorage.getItem('cart_id');
-    if (storedCartId) {
-        $wire.loadCartById(parseInt(storedCartId)).then(() => {
-            const emptyMsg = document.getElementById('empty-cart-message');
-            if (emptyMsg && $wire.items && $wire.items.length > 0) emptyMsg.style.display = 'none';
-        });
+    try {
+        const storedCartId = localStorage.getItem('cart_id');
+        if (storedCartId) {
+            $wire.loadCartById(parseInt(storedCartId)).then(() => {
+                const emptyMsg = document.getElementById('empty-cart-message');
+                if (emptyMsg && $wire.items && $wire.items.length > 0) emptyMsg.style.display = 'none';
+            });
+        }
+    } catch (e) {
+        // localStorage access denied (private mode, security settings)
+        console.warn('Checkout: localStorage access denied');
     }
 </script>
 @endscript

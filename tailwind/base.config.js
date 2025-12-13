@@ -51,6 +51,22 @@ module.exports = {
 
         // Text colors for dark mode
         'dark:text-white',
+
+        // Checkout Billing Profiles - Compact Minimal Design
+        'border-blue-500', 'border-blue-400', 'border-blue-300', 'border-blue-600',
+        'bg-blue-50', 'bg-blue-100',
+        'dark:border-blue-400', 'dark:border-blue-500', 'dark:border-blue-600',
+        'dark:bg-blue-900/20', 'dark:bg-blue-900/10',
+        'border-white/10', 'hover:border-gray-500',
+        'bg-yellow-100', 'dark:bg-yellow-900/20',
+        'text-yellow-600', 'dark:text-yellow-400',
+        'hover:text-yellow-700', 'dark:hover:text-yellow-300',
+        'bg-red-100', 'dark:bg-red-900/20',
+        'text-red-600', 'dark:text-red-400',
+        'hover:text-red-700', 'dark:hover:text-red-300',
+        'bg-blue-500/20', 'hover:bg-blue-500/20',
+        'text-blue-400', 'hover:text-blue-300',
+        'border-gray-600', 'bg-blue-600', 'dark:bg-blue-400',
     ],
 
     theme: {

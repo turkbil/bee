@@ -102,7 +102,7 @@ class ProductComparisonNode extends AbstractNode
                 'description' => strip_tags($product->description ?? ''),
                 'category' => $product->category->title ?? '',
                 'features' => $this->extractFeatures($product),
-                'url' => "/shop/product/{$product->slug}",
+                'url' => "/shop/{$product->slug}",
             ];
         })->toArray();
     }

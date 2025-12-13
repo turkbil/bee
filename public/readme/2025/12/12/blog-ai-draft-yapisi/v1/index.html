@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog AI Draft Yapısı - İxtif Tenant Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                📊 Blog AI Draft Yapısı
+            </h1>
+            <div class="text-slate-400 text-lg">
+                İxtif.com (Tenant 2) database'indeki blog AI draft sisteminin detaylı analizi
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 12 Aralık 2025</span>
+                <span>🎯 Tenant: ixtif.com</span>
+                <span>👤 Blog AI Draft İnceleme</span>
+            </div>
+        </header>
+
+        <!-- Sistem Genel Bakış -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🎯 Sistem Genel Bakış</h2>
+
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-blue-300 mb-3">Blog AI Draft Sistemi Nedir?</h3>
+                <p class="text-slate-300 leading-relaxed mb-3">
+                    Blog AI Draft sistemi, yapay zeka kullanarak otomatik blog taslakları oluşturan ve bunları tam blog yazılarına dönüştüren
+                    <span class="text-yellow-300 font-semibold">iki aşamalı</span> bir içerik üretim sürecidir.
+                </p>
+                <p class="text-slate-300 leading-relaxed">
+                    Sistem, <span class="text-green-400 font-semibold">OpenAI GPT-4</span> kullanarak SEO-uyumlu, uzun ve detaylı blog yazıları üretir.
+                    Her blog, <span class="text-purple-300 font-semibold">2500+ kelime</span>, FAQ, HowTo ve AI-generated görseller içerir.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <div class="text-3xl mb-3">🎨</div>
+                    <h3 class="text-xl font-bold mb-3 text-green-400">Adım 1: Draft Oluşturma</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p>✅ AI ile toplu taslak üretimi (25-100 adet)</p>
+                        <p>✅ SEO keywords, outline, meta açıklama</p>
+                        <p>✅ Duplicate kontrolü</p>
+                        <p>✅ 1.0 AI kredisi kullanımı</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <div class="text-3xl mb-3">👨‍💼</div>
+                    <h3 class="text-xl font-bold mb-3 text-yellow-400">Adım 2: Manuel Seçim</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p>✅ Admin taslakları inceler</p>
+                        <p>✅ İstenen taslakları seçer</p>
+                        <p>✅ <code class="bg-slate-900 px-2 py-1 rounded">is_selected = true</code></p>
+                        <p>✅ Toplu veya tekil seçim</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <div class="text-3xl mb-3">✍️</div>
+                    <h3 class="text-xl font-bold mb-3 text-purple-400">Adım 3: Blog Üretimi</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p>✅ Seçilen taslaktan tam blog yazısı</p>
+                        <p>✅ 2500+ kelime, FAQ, HowTo</p>
+                        <p>✅ Leonardo AI görseli</p>
+                        <p>✅ 1.0 AI kredisi kullanımı</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Database Yapısı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">🗄️ Database Yapısı</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700 mb-6">
+                <h3 class="text-xl font-bold text-green-300 mb-4">Tablo: <code class="bg-slate-900 px-3 py-1 rounded text-yellow-300">blog_ai_drafts</code></h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-600">
+                                <th class="text-left py-3 px-4 text-blue-300">Alan</th>
+                                <th class="text-left py-3 px-4 text-blue-300">Tip</th>
+                                <th class="text-left py-3 px-4 text-blue-300">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-300">
+                            <tr class="border-b border-slate-700">
+                                <td class="py-3 px-4"><code class="text-yellow-300">id</code></td>
+                                <td class="py-3 px-4">bigint(20)</td>
+                                <td class="py-3 px-4">Primary key, auto increment</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-3 px-4"><code class="text-yellow-300">topic_keyword</code></td>
+                                <td class="py-3 px-4">varchar(255)</td>
+                                <td class="py-3 px-4">Ana konu/başlık (örn: "Forklift Bakım Rehberi")</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-3 px-4"><code class="text-yellow-300">category_suggestions</code></td>
+                                <td class="py-3 px-4">longtext (JSON)</td>
+                                <td class="py-3 px-4">Önerilen kategori ID'leri <span class="text-green-400">[14, 6]</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-3 px-4"><code class="text-yellow-300">seo_keywords</code></td>
+                                <td class="py-3 px-4">longtext (JSON)</td>
+                                <td class="py-3 px-4">SEO anahtar kelimeleri <span class="text-green-400">["forklift", "bakım", "rehber"]</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-3 px-4"><code class="text-yellow-300">outline</code></td>
+                                <td class="py-3 px-4">longtext (JSON)</td>
+                                <td class="py-3 px-4">Blog anahattı (H2 başlıkları) <span class="text-green-400">["Bakım Nedir?", "Periyotlar"]</span></td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-3 px-4"><code class="text-yellow-300">meta_description</code></td>
+                                <td class="py-3 px-4">text</td>
+                                <td class="py-3 px-4">SEO meta açıklama (155 karakter)</td>
+                            </tr>
+                            <tr class="border-b border-slate-700 bg-blue-900/20">
+                                <td class="py-3 px-4"><code class="text-yellow-300">is_selected</code></td>
+                                <td class="py-3 px-4">tinyint(1)</td>
+                                <td class="py-3 px-4"><span class="text-blue-300 font-semibold">Admin bu taslağı seçti mi?</span> (0/1, default: 0)</td>
+                            </tr>
+                            <tr class="border-b border-slate-700 bg-purple-900/20">
+                                <td class="py-3 px-4"><code class="text-yellow-300">is_generated</code></td>
+                                <td class="py-3 px-4">tinyint(1)</td>
+                                <td class="py-3 px-4"><span class="text-purple-300 font-semibold">Blog yazısı oluşturuldu mu?</span> (0/1, default: 0)</td>
+                            </tr>
+                            <tr class="border-b border-slate-700 bg-purple-900/20">
+                                <td class="py-3 px-4"><code class="text-yellow-300">generated_blog_id</code></td>
+                                <td class="py-3 px-4">bigint(20)</td>
+                                <td class="py-3 px-4">Oluşturulan blog ID'si (blogs.blog_id foreign key)</td>
+                            </tr>
+                            <tr class="border-b border-slate-700">
+                                <td class="py-3 px-4"><code class="text-yellow-300">created_at</code></td>
+                                <td class="py-3 px-4">timestamp</td>
+                                <td class="py-3 px-4">Taslak oluşturulma zamanı (indexed)</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4"><code class="text-yellow-300">updated_at</code></td>
+                                <td class="py-3 px-4">timestamp</td>
+                                <td class="py-3 px-4">Son güncelleme zamanı</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-700 rounded-lg p-6">
+                <h3 class="text-xl font-bold text-blue-300 mb-3">💡 Önemli Notlar</h3>
+                <ul class="space-y-2 text-slate-300">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span><code class="text-yellow-300">category_suggestions</code>, <code class="text-yellow-300">seo_keywords</code>, <code class="text-yellow-300">outline</code> alanları <strong>JSON array</strong> formatında saklanır</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span>Model'de <strong>automatic cast</strong> vardır: <code class="text-blue-300">'array'</code> → PHP array olarak döner</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span><code class="text-yellow-300">is_selected</code> indexli → Hızlı sorgu için optimize edilmiş</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-400">✓</span>
+                        <span><code class="text-yellow-300">created_at</code> indexli → Tarih bazlı sıralama için optimize edilmiş</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Model & İlişkiler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-purple-400">🔗 Model & İlişkiler</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700 mb-6">
+                <h3 class="text-xl font-bold text-purple-300 mb-4">Model: <code class="bg-slate-900 px-3 py-1 rounded text-yellow-300">BlogAIDraft</code></h3>
+
+                <div class="space-y-4 text-slate-300">
+                    <div>
+                        <h4 class="font-bold text-blue-300 mb-2">📦 Fillable Fields</h4>
+                        <p class="text-sm bg-slate-900/50 p-3 rounded">
+                            topic_keyword, category_suggestions, seo_keywords, outline, meta_description, is_selected, is_generated, generated_blog_id
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-green-300 mb-2">🔄 Automatic Casts</h4>
+                        <ul class="text-sm space-y-1 bg-slate-900/50 p-3 rounded">
+                            <li><code class="text-yellow-300">category_suggestions</code> → <span class="text-green-400">array</span></li>
+                            <li><code class="text-yellow-300">seo_keywords</code> → <span class="text-green-400">array</span></li>
+                            <li><code class="text-yellow-300">outline</code> → <span class="text-green-400">array</span></li>
+                            <li><code class="text-yellow-300">is_selected</code> → <span class="text-blue-400">boolean</span></li>
+                            <li><code class="text-yellow-300">is_generated</code> → <span class="text-blue-400">boolean</span></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-purple-300 mb-2">🔗 İlişkiler</h4>
+                        <div class="text-sm bg-slate-900/50 p-3 rounded">
+                            <code class="text-blue-300">generatedBlog()</code>
+                            <span class="text-slate-400 ml-2">→ BelongsTo</span>
+                            <span class="text-green-400 ml-2">Blog</span>
+                            <p class="text-slate-400 mt-2">Oluşturulan blog yazısına referans (generated_blog_id → blogs.blog_id)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-xl font-bold text-yellow-300 mb-4">🎯 Query Scopes (Hızlı Sorgular)</h3>
+
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-slate-900/50 p-4 rounded">
+                        <code class="text-green-400 font-bold">selected()</code>
+                        <p class="text-slate-400 mt-2">Seçilmiş taslaklar (is_selected = true)</p>
+                        <p class="text-blue-300 mt-1 text-xs">Admin'in seçtiği taslakları listeler</p>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded">
+                        <code class="text-yellow-400 font-bold">pending()</code>
+                        <p class="text-slate-400 mt-2">Seçili ama henüz blog oluşturulmamış</p>
+                        <p class="text-blue-300 mt-1 text-xs">is_selected=true AND is_generated=false</p>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded">
+                        <code class="text-purple-400 font-bold">generated()</code>
+                        <p class="text-slate-400 mt-2">Blog yazısı oluşturulmuş taslaklar</p>
+                        <p class="text-blue-300 mt-1 text-xs">is_generated = true</p>
+                    </div>
+
+                    <div class="bg-slate-900/50 p-4 rounded">
+                        <code class="text-blue-400 font-bold">unselected()</code>
+                        <p class="text-slate-400 mt-2">Henüz seçilmemiş yeni taslaklar</p>
+                        <p class="text-blue-300 mt-1 text-xs">is_selected = false (varsayılan)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İş Akışı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">⚙️ İş Akışı (Workflow)</h2>
+
+            <!-- Adım 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Draft Oluşturma
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">AI Powered</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            <code class="bg-slate-900 px-2 py-1 rounded text-yellow-300">BlogAIDraftGenerator</code> servisi kullanılarak
+                            toplu taslak oluşturulur. Admin arayüzünden "25 Taslak Oluştur" veya "100 Taslak Oluştur" butonlarına tıklanır.
+                        </p>
+                        <div class="bg-slate-900/50 p-4 rounded mt-3">
+                            <h4 class="text-blue-300 font-semibold mb-2">🔧 Teknik Detaylar:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li>• <span class="text-yellow-300">OpenAI GPT-4o-mini</span> modeli kullanılır (maliyet optimizasyonu)</li>
+                                <li>• <span class="text-green-400">Duplicate kontrolü</span>: Mevcut blog başlıkları ve draft'lar kontrol edilir</li>
+                                <li>• <span class="text-purple-400">Kategori önerileri</span>: Tenant context bazlı kategori önerir</li>
+                                <li>• <span class="text-blue-400">Tenant-aware prompts</span>: İxtif için forklift/transpalet konuları</li>
+                                <li>• <span class="text-red-400">1.0 AI kredisi</span> kullanılır (tüm draft batch için)</li>
+                            </ul>
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Beklenen Sonuç:</strong> 25-100 adet taslak database'e kaydedilir (is_selected = false)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            Manuel Seçim
+                            <span class="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Admin Panel</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Admin, oluşturulan taslakları inceler ve istediği konuları seçer. Seçilen taslakların
+                            <code class="bg-slate-900 px-2 py-1 rounded text-yellow-300">is_selected</code> alanı
+                            <span class="text-green-400 font-semibold">true</span> olarak işaretlenir.
+                        </p>
+                        <div class="bg-slate-900/50 p-4 rounded mt-3">
+                            <h4 class="text-blue-300 font-semibold mb-2">👨‍💼 Admin İşlemleri:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li>• Taslakları <span class="text-yellow-300">topic_keyword</span> ve <span class="text-yellow-300">meta_description</span> bazlı inceler</li>
+                                <li>• İstenen konuları <span class="text-green-400">checkbox</span> ile seçer</li>
+                                <li>• "Seçilenleri Blogla Dönüştür" butonuna tıklar</li>
+                                <li>• Toplu veya tekil seçim yapılabilir</li>
+                            </ul>
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Beklenen Sonuç:</strong> Seçilen taslaklar pending durumuna geçer (scope: pending())</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">
+                            Blog Üretimi
+                            <span class="ml-3 px-3 py-1 bg-purple-600 text-white text-xs rounded-full">AI + Leonardo AI</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            <code class="bg-slate-900 px-2 py-1 rounded text-yellow-300">BlogAIContentWriter</code> servisi, seçilen her taslak için
+                            tam bir blog yazısı oluşturur. Bu süreç <span class="text-red-400 font-semibold">iterative generation</span> yaklaşımı kullanır.
+                        </p>
+                        <div class="bg-slate-900/50 p-4 rounded mt-3">
+                            <h4 class="text-purple-300 font-semibold mb-2">🎨 Blog Oluşturma Süreci:</h4>
+                            <ul class="space-y-2 text-sm text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 font-bold">1.</span>
+                                    <span><strong class="text-blue-300">Outline Oluştur:</strong> AI ile 4-5 H2 başlık belirle (yasaklı başlıkları filtrele: "Giriş", "Sonuç" vb.)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 font-bold">2.</span>
+                                    <span><strong class="text-blue-300">Her H2'yi Genişlet:</strong> Her bölüm için 500-600 kelime, 3-4 H3 alt başlık, detaylı paragraflar</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 font-bold">3.</span>
+                                    <span><strong class="text-blue-300">FAQ Üret:</strong> 10 sık sorulan soru ve cevapları (her cevap 50-80 kelime, FontAwesome ikonlar)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 font-bold">4.</span>
+                                    <span><strong class="text-blue-300">HowTo Üret:</strong> 7 adımlı nasıl yapılır rehberi (her adım 80-100 kelime, FontAwesome ikonlar)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 font-bold">5.</span>
+                                    <span><strong class="text-blue-300">Leonardo AI Görsel:</strong> Blog başlığına uygun profesyonel görsel oluştur (hero collection)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 font-bold">6.</span>
+                                    <span><strong class="text-blue-300">Kategori Ata:</strong> AI ile dinamik kategori seçimi veya draft'tan öneriyi kullan</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-green-400 font-bold">7.</span>
+                                    <span><strong class="text-blue-300">SEO Ayarları:</strong> Meta title, description, keywords ekle (HasSeo trait)</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-900/30 border border-blue-700 p-4 rounded mt-3">
+                            <h4 class="text-yellow-300 font-semibold mb-2">⚡ Özel Özellikler:</h4>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li>• <span class="text-purple-400">3 Yazım Stili:</span> Profesyonel, Samimi, Uzman (random seçim)</li>
+                                <li>• <span class="text-green-400">Firma Adı İnjection:</span> İxtif ismi minimum 3 kez kullanılır</li>
+                                <li>• <span class="text-blue-400">Duplicate Prevention:</span> Cache lock ile race condition önlenir</li>
+                                <li>• <span class="text-yellow-400">Retry Mekanizması:</span> AI response validation (min 1500 kelime, firma adı kontrolü)</li>
+                                <li>• <span class="text-red-400">1.0 AI kredisi</span> kullanılır (her blog için)</li>
+                            </ul>
+                        </div>
+                        <p class="mt-3 text-slate-400"><strong class="text-white">Beklenen Sonuç:</strong> 2500+ kelime, SEO-uyumlu, görselli blog yayınlanır. Draft: is_generated=true, generated_blog_id set edilir</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Özel Özellikler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🚀 Özel Özellikler & Optimizasyonlar</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-green-400">✅ Outline Validation</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p class="text-slate-400 mb-2">AI'ın amatör başlıklar üretmesini engeller:</p>
+                        <p><span class="text-red-400">❌</span> "Giriş", "Sonuç", "Hakkında" → <strong>YASAK</strong></p>
+                        <p><span class="text-green-400">✅</span> "Forklift Bakım Periyotları" → <strong>Kabul</strong></p>
+                        <p><span class="text-green-400">✅</span> "Manuel vs Elektrikli Transpalet" → <strong>Kabul</strong></p>
+                        <p class="text-blue-300 mt-2">Duplicate başlıklar temizlenir, maksimum 5 H2'ye sınırlanır</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-blue-400">🎨 3 Yazım Stili</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p><strong class="text-yellow-300">Profesyonel:</strong> Kurumsal, resmi, B2B sektörler için</p>
+                        <p><strong class="text-green-300">Samimi:</strong> Dostça, konuşur gibi, B2C için (opsiyonel)</p>
+                        <p><strong class="text-purple-300">Uzman:</strong> Derinlemesine teknik, akademik ton</p>
+                        <p class="text-blue-300 mt-2">Settings'ten <code class="bg-slate-900 px-2 py-1 rounded">blog_ai_professional_only</code> ile kontrol edilir</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-purple-400">🏢 Firma Adı İnjection</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p class="text-slate-400 mb-2">Blog içinde firma adı otomatik kullanılır:</p>
+                        <p><span class="text-green-400">✓</span> Minimum <strong>3 kez</strong> firma adı geçmeli</p>
+                        <p><span class="text-green-400">✓</span> Context'ten kısa ad kullanılır: <code class="text-yellow-300">"İxtif"</code></p>
+                        <p><span class="text-red-400">✗</span> Uzun ad kullanılmaz: <code class="text-slate-500">"İxtif Endüstriyel..."</code></p>
+                        <p class="text-blue-300 mt-2">Validation başarısız olursa AI retry yapar (max 3 deneme)</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold mb-4 text-yellow-400">🔒 Duplicate Prevention</h3>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <p class="text-slate-400 mb-2">Race condition önlenir:</p>
+                        <p><span class="text-green-400">✓</span> Cache lock: 2 dakika (blog oluşturma süresi)</p>
+                        <p><span class="text-green-400">✓</span> Slug bazlı kontrol</p>
+                        <p><span class="text-green-400">✓</span> Tam başlık eşleşmesi kontrolü</p>
+                        <p class="text-blue-300 mt-2">Aynı konuda aynı anda 2 blog oluşturulamaz</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kullanılan Servisler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-cyan-400">📦 Kullanılan Servisler & Sınıflar</h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-green-500">
+                    <h3 class="text-lg font-bold text-green-300 mb-2">
+                        <code class="bg-slate-900 px-3 py-1 rounded">BlogAIDraftGenerator</code>
+                    </h3>
+                    <p class="text-sm text-slate-400">Toplu taslak oluşturur. OpenAI GPT-4o-mini, tenant context, duplicate kontrolü. 1.0 kredi.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-purple-500">
+                    <h3 class="text-lg font-bold text-purple-300 mb-2">
+                        <code class="bg-slate-900 px-3 py-1 rounded">BlogAIContentWriter</code>
+                    </h3>
+                    <p class="text-sm text-slate-400">Draft'tan tam blog oluşturur. Iterative generation, FAQ, HowTo, Leonardo AI görsel, SEO. 1.0 kredi.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-blue-500">
+                    <h3 class="text-lg font-bold text-blue-300 mb-2">
+                        <code class="bg-slate-900 px-3 py-1 rounded">TenantPromptLoader</code>
+                    </h3>
+                    <p class="text-sm text-slate-400">Tenant-aware prompt'ları yükler. İxtif için forklift/transpalet keyword'leri, context bilgileri.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-yellow-500">
+                    <h3 class="text-lg font-bold text-yellow-300 mb-2">
+                        <code class="bg-slate-900 px-3 py-1 rounded">TenantBlogPromptEnhancer</code>
+                    </h3>
+                    <p class="text-sm text-slate-400">Tenant-specific enhancement'ler ekler. Sektörel bilgiler, firma context, hedef kitle.</p>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-5 border-l-4 border-red-500">
+                    <h3 class="text-lg font-bold text-red-300 mb-2">
+                        <code class="bg-slate-900 px-3 py-1 rounded">LeonardoAIService</code>
+                    </h3>
+                    <p class="text-sm text-slate-400">Blog için AI görsel oluşturur. Blog başlığından prompt üretir, Leonardo API ile görsel generate eder.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Credit Sistemi -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">💰 AI Kredi Kullanımı</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-700 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-green-300 mb-3">Draft Oluşturma</h3>
+                    <div class="text-4xl font-bold text-green-400 mb-2">1.0 Kredi</div>
+                    <p class="text-slate-300 text-sm">25-100 adet taslak için toplam (batch işlem)</p>
+                    <p class="text-slate-400 text-xs mt-2">Model: GPT-4o-mini (maliyet optimizasyonu)</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-900/30 to-purple-800/20 border border-purple-700 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-300 mb-3">Blog Üretimi</h3>
+                    <div class="text-4xl font-bold text-purple-400 mb-2">1.0 Kredi</div>
+                    <p class="text-slate-300 text-sm">Her blog yazısı için (2500+ kelime + görsel)</p>
+                    <p class="text-slate-400 text-xs mt-2">Model: GPT-4o-mini + Leonardo AI</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-6 mt-6">
+                <h3 class="text-lg font-bold text-blue-300 mb-2">📊 Kredi Kontrolü</h3>
+                <p class="text-slate-300 text-sm">
+                    Her işlem öncesi <code class="bg-slate-900 px-2 py-1 rounded text-yellow-300">ai_can_use_credits()</code>
+                    kontrolü yapılır. Yetersiz kredi durumunda exception fırlatılır.
+                </p>
+                <p class="text-slate-300 text-sm mt-2">
+                    İşlem başarılı olunca <code class="bg-slate-900 px-2 py-1 rounded text-yellow-300">ai_use_credits()</code>
+                    ile kredi düşülür ve log'lanır.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+            <p class="mt-2">İxtif.com Tenant 2 Database Analizi</p>
+        </footer>
+    </div>
+</body>
+</html>

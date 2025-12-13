@@ -111,8 +111,8 @@
     @livewireStyles
 
     {{-- Custom Styles --}}
-    <link rel="stylesheet" href="{{ asset('themes/muzibu/css/muzibu-layout.css') }}?v={{ time() }}">
-    <link rel="stylesheet" href="{{ asset('themes/muzibu/css/muzibu-custom.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-layout.css') }}">
+    <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-custom.css') }}">
 
     @yield('styles')
 
@@ -156,7 +156,7 @@
     @endphp
     <div
         id="main-app-grid"
-        class="grid grid-rows-[56px_1fr_65px] grid-cols-1 lg:grid-cols-[220px_1fr] h-screen gap-0 lg:gap-3 px-0 pb-0 lg:px-3 lg:pb-3"
+        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] h-[100dvh] gap-0 lg:gap-3 px-0 pb-0 lg:px-3 lg:pb-3"
         x-data="{
             isHomepage: {{ $initialIsHomepage ? 'true' : 'false' }},
             checkIsHomepage() {
@@ -189,7 +189,7 @@
         @include('themes.muzibu.components.main-content')
 
         {{-- Right Sidebar - Shows on homepage, XL+ screens only --}}
-        <aside class="overflow-y-auto rounded-2xl xl:block" x-show="isHomepage" x-cloak style="display: none;">
+        <aside class="muzibu-right-sidebar overflow-y-auto rounded-2xl hidden xl:block" x-show="isHomepage" x-cloak style="display: none;">
             @include('themes.muzibu.components.sidebar-right')
         </aside>
 
@@ -223,31 +223,31 @@
     {{-- 🎯 MODULAR JAVASCRIPT ARCHITECTURE --}}
 
     {{-- 1. Core Utilities (önce yükle - diğerleri bağımlı) --}}
-    <script src="{{ asset('themes/muzibu/js/player/core/safe-storage.js') }}?v={{ time() }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/core/safe-storage.js') }}"></script>
 
     {{-- 2. Alpine Store --}}
-    <script src="{{ asset('themes/muzibu/js/muzibu-store.js') }}?v={{ time() }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/muzibu-store.js') }}"></script>
 
     {{-- 3. Player Features (modular - player-core bunları spread eder) --}}
-    <script src="{{ asset('themes/muzibu/js/player/features/favorites.js') }}?v={{ time() }}"></script>
-    <script src="{{ asset('themes/muzibu/js/player/features/auth.js') }}?v={{ time() }}"></script>
-    <script src="{{ asset('themes/muzibu/js/player/features/keyboard.js') }}?v={{ time() }}"></script>
-    <script src="{{ asset('themes/muzibu/js/player/features/api.js') }}?v={{ time() }}"></script>
-    <script src="{{ asset('themes/muzibu/js/player/features/session.js') }}?v={{ time() }}"></script>
-    <script src="{{ asset('themes/muzibu/js/player/features/spa-router.js') }}?v={{ time() }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/favorites.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/auth.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/keyboard.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/api.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/session.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/spa-router.js') }}"></script>
 
     {{-- 4. Player Core (en son - features'ı spread eder) --}}
-    <script src="{{ asset('themes/muzibu/js/player/core/player-core.js') }}?v={{ time() }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/core/player-core.js') }}"></script>
 
     {{-- 5. Utils --}}
-    <script src="{{ asset('themes/muzibu/js/utils/muzibu-cache.js') }}?v={{ time() }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/utils/muzibu-cache.js') }}"></script>
 
     {{-- 6. UI Components --}}
-    <script src="{{ asset('themes/muzibu/js/ui/muzibu-toast.js') }}?v={{ time() }}"></script>
-    <script src="{{ asset('themes/muzibu/js/ui/muzibu-theme.js') }}?v={{ time() }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/ui/muzibu-toast.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/ui/muzibu-theme.js') }}"></script>
 
     {{-- 7. 🚀 SPA Router (Alpine Store'dan sonra yükle) --}}
-    <script src="{{ asset('themes/muzibu/js/router/muzibu-router.js') }}?v={{ time() }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/router/muzibu-router.js') }}"></script>
 
     <script>
         // 🔇 Suppress storage access errors (browser privacy/extension related)
@@ -401,7 +401,7 @@
     </script>
 
     {{-- 🎯 Context Menu Init - SPA Safe --}}
-    <script src="{{ asset('themes/muzibu/js/context-menu/init.js') }}?v={{ filemtime(public_path('themes/muzibu/js/context-menu/init.js')) }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/context-menu/init.js') }}"></script>
 
     @yield('scripts')
 </body>

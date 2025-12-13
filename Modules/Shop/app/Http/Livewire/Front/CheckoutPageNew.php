@@ -4,6 +4,7 @@ namespace Modules\Shop\App\Http\Livewire\Front;
 
 use Livewire\Component;
 use Modules\Cart\App\Services\CartService;
+use Modules\Cart\App\Models\BillingProfile;
 use Modules\Shop\App\Models\ShopCustomer;
 use Modules\Shop\App\Models\ShopCustomerAddress;
 use Modules\Shop\App\Models\ShopOrder;
@@ -30,11 +31,18 @@ class CheckoutPageNew extends Component
     public $contact_email = '';
     public $contact_phone = '';
 
-    // Fatura bilgileri
+    // Fatura bilgileri - Billing Profile sistemi
+    public $billingProfiles; // Collection of saved billing profiles
+    public $selectedBillingProfileId = null; // Selected billing profile
+    public $showBillingProfileList = false; // Profile listesi göster/gizle
+    public $editingBillingProfileId = null; // Düzenlenen profile ID
+
+    // Fatura bilgileri - Form fields
     public $billing_type = 'individual'; // individual veya corporate
     public $billing_tax_number = ''; // TC (11 haneli) veya VKN (10 haneli)
     public $billing_company_name = '';
     public $billing_tax_office = '';
+    public $billing_profile_title = ''; // Profile title (Ev, İş vb.)
 
     // Fatura adresi
     public $billing_address_id;
@@ -194,6 +202,9 @@ class CheckoutPageNew extends Component
             // ✅ Checkbox'ı sıfırla
             $this->agree_all = false;
 
+            // ✅ Billing profiles başlat (guest için empty collection)
+            $this->billingProfiles = collect([]);
+
             $this->loadCart();
 
             // Sepet boşsa sepet sayfasına yönlendir (modal gösterme, sayfa zaten boş UI gösteriyor)
@@ -352,6 +363,9 @@ class CheckoutPageNew extends Component
 
             // Varsayılan adresleri yükle
             $this->loadDefaultAddresses();
+
+            // Billing profiles yükle
+            $this->loadBillingProfiles();
         } else if (Auth::check()) {
             // Müşteri yok ama kullanıcı login - Customer oluştur
             $fullName = Auth::user()->name ?? '';
@@ -419,6 +433,158 @@ class CheckoutPageNew extends Component
             'billing_address_id' => $this->billing_address_id,
             'shipping_address_id' => $this->shipping_address_id,
         ]);
+    }
+
+    /**
+     * Billing Profile Fonksiyonları
+     */
+    public function loadBillingProfiles()
+    {
+        if (!Auth::check()) {
+            $this->billingProfiles = collect([]);
+            return;
+        }
+
+        $this->billingProfiles = BillingProfile::where('user_id', Auth::id())
+            ->orderBy('is_default', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Varsayılan profile'ı seç
+        $defaultProfile = $this->billingProfiles->where('is_default', true)->first();
+
+        if ($defaultProfile) {
+            $this->selectBillingProfile($defaultProfile->billing_profile_id);
+        } elseif ($this->billingProfiles->count() > 0) {
+            $this->selectBillingProfile($this->billingProfiles->first()->billing_profile_id);
+        }
+    }
+
+    public function selectBillingProfile($profileId)
+    {
+        $profile = BillingProfile::find($profileId);
+
+        if (!$profile || $profile->user_id !== Auth::id()) {
+            return;
+        }
+
+        $this->selectedBillingProfileId = $profileId;
+        $this->billing_type = $profile->type;
+        $this->billing_tax_number = $profile->isCorporate() ? $profile->tax_number : $profile->identity_number;
+        $this->billing_company_name = $profile->company_name ?? '';
+        $this->billing_tax_office = $profile->tax_office ?? '';
+        $this->billing_profile_title = $profile->title;
+
+        \Log::info('✅ Billing profile selected', ['profile_id' => $profileId]);
+    }
+
+    public function toggleBillingProfileList()
+    {
+        $this->showBillingProfileList = !$this->showBillingProfileList;
+    }
+
+    public function toggleEditBillingProfile($profileId)
+    {
+        if ($this->editingBillingProfileId === $profileId) {
+            $this->editingBillingProfileId = null;
+        } else {
+            $this->editingBillingProfileId = $profileId;
+
+            // Form'u profile bilgileri ile doldur
+            $profile = BillingProfile::find($profileId);
+            if ($profile && $profile->user_id === Auth::id()) {
+                $this->billing_type = $profile->type;
+                $this->billing_tax_number = $profile->isCorporate() ? $profile->tax_number : $profile->identity_number;
+                $this->billing_company_name = $profile->company_name ?? '';
+                $this->billing_tax_office = $profile->tax_office ?? '';
+                $this->billing_profile_title = $profile->title;
+            }
+        }
+    }
+
+    public function saveBillingProfile()
+    {
+        if (!Auth::check()) {
+            session()->flash('error', 'Profil kaydetmek için giriş yapmalısınız.');
+            return;
+        }
+
+        // Validation
+        $rules = [
+            'billing_profile_title' => 'required|string|max:255',
+            'billing_type' => 'required|in:individual,corporate',
+        ];
+
+        if ($this->billing_type === 'corporate') {
+            $rules['billing_company_name'] = 'required|string|max:255';
+            $rules['billing_tax_office'] = 'required|string|max:255';
+            $rules['billing_tax_number'] = 'required|string|size:10';
+        } else {
+            if (!empty($this->billing_tax_number)) {
+                $rules['billing_tax_number'] = 'nullable|string|size:11';
+            }
+        }
+
+        $this->validate($rules);
+
+        // Create or update
+        if ($this->editingBillingProfileId) {
+            $profile = BillingProfile::find($this->editingBillingProfileId);
+
+            if ($profile && $profile->user_id === Auth::id()) {
+                $profile->update([
+                    'title' => $this->billing_profile_title,
+                    'type' => $this->billing_type,
+                    'identity_number' => $this->billing_type === 'individual' ? $this->billing_tax_number : null,
+                    'company_name' => $this->billing_type === 'corporate' ? $this->billing_company_name : null,
+                    'tax_number' => $this->billing_type === 'corporate' ? $this->billing_tax_number : null,
+                    'tax_office' => $this->billing_type === 'corporate' ? $this->billing_tax_office : null,
+                ]);
+
+                session()->flash('success', 'Fatura profili güncellendi.');
+            }
+        } else {
+            // Yeni profil oluştur
+            $profile = BillingProfile::create([
+                'user_id' => Auth::id(),
+                'title' => $this->billing_profile_title,
+                'type' => $this->billing_type,
+                'identity_number' => $this->billing_type === 'individual' ? $this->billing_tax_number : null,
+                'company_name' => $this->billing_type === 'corporate' ? $this->billing_company_name : null,
+                'tax_number' => $this->billing_type === 'corporate' ? $this->billing_tax_number : null,
+                'tax_office' => $this->billing_type === 'corporate' ? $this->billing_tax_office : null,
+                'is_default' => $this->billingProfiles->count() === 0, // İlk profile varsayılan
+            ]);
+
+            session()->flash('success', 'Fatura profili oluşturuldu.');
+        }
+
+        // Reload
+        $this->loadBillingProfiles();
+        $this->editingBillingProfileId = null;
+        $this->closeBillingModal();
+    }
+
+    public function deleteBillingProfile($profileId)
+    {
+        $profile = BillingProfile::find($profileId);
+
+        if ($profile && $profile->user_id === Auth::id()) {
+            $profile->delete();
+            session()->flash('success', 'Fatura profili silindi.');
+            $this->loadBillingProfiles();
+        }
+    }
+
+    public function setDefaultBillingProfile($profileId)
+    {
+        $profile = BillingProfile::find($profileId);
+
+        if ($profile && $profile->user_id === Auth::id()) {
+            $profile->setAsDefault();
+            session()->flash('success', 'Varsayılan profil güncellendi.');
+            $this->loadBillingProfiles();
+        }
     }
 
     public function openBillingModal()

@@ -22,6 +22,22 @@ class FixResponseCacheHeaders
         // JSON Response UTF-8 Sanitization
         $this->sanitizeJsonResponse($response);
 
+        // 🔑 HLS Encryption Key - FORCE CACHE HEADERS (highest priority!)
+        if ($request->is('api/muzibu/songs/*/key') || $request->is('*/api/muzibu/songs/*/key')) {
+            // Force cache-friendly headers AFTER all other middleware
+            $response->headers->set('Cache-Control', 'public, max-age=86400, immutable', true);
+            $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT', true);
+            $response->headers->remove('Pragma');
+
+            // Remove ALL session cookies (aggressive removal)
+            $cookies = $response->headers->getCookies();
+            foreach ($cookies as $cookie) {
+                $response->headers->removeCookie($cookie->getName(), $cookie->getPath(), $cookie->getDomain());
+            }
+
+            return $response;
+        }
+
         // Admin sayfaları zaten cache'lenmiyor, dokunma
         if ($request->is('admin/*') || $request->is('*/admin/*')) {
             return $response;

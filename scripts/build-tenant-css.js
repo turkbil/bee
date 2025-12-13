@@ -63,8 +63,9 @@ function buildTenant(tenantId, tenant) {
     }
 
     try {
-        // Tailwind build komutu
-        const cmd = `npx tailwindcss -c ${tenant.config} -i ${INPUT_CSS} -o ${tenant.output} --minify`;
+        // Tailwind build komutu - local binary kullan
+        const tailwindBin = path.join(__dirname, '..', 'node_modules', '.bin', 'tailwindcss');
+        const cmd = `${tailwindBin} -c ${tenant.config} -i ${INPUT_CSS} -o ${tenant.output} --minify`;
 
         execSync(cmd, { stdio: 'pipe' });
 

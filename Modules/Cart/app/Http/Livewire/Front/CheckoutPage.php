@@ -398,6 +398,29 @@ class CheckoutPage extends Component
     }
 
     /**
+     * Fatura profilini varsayılan yap
+     */
+    public function setDefaultBillingProfile($profileId)
+    {
+        if (!Auth::check()) {
+            return;
+        }
+
+        // Önce tüm profillerin is_default'unu false yap
+        Auth::user()->billingProfiles()->update(['is_default' => false]);
+
+        // Seçili profili default yap
+        $profile = Auth::user()->billingProfiles()->find($profileId);
+        if ($profile) {
+            $profile->update(['is_default' => true]);
+            $this->billing_profile_id = $profileId;
+
+            // Profilleri yeniden yükle
+            $this->billingProfiles = Auth::user()->billingProfiles;
+        }
+    }
+
+    /**
      * Billing Profile'ı legacy property'lere sync et (backward compatibility)
      */
     private function syncBillingProfileToLegacy($profile)

@@ -765,9 +765,9 @@ class TenantSitemapService
                         continue;
                     }
 
-                    // URL pattern: /shop/product/{slug} veya /{locale}/shop/product/{slug}
+                    // URL pattern: /shop/{slug} veya /{locale}/shop/{slug}
                     $baseUrl = $languageCode !== $defaultLanguage ? '/' . $languageCode : '';
-                    $url = $baseUrl . '/shop/product/' . $slug;
+                    $url = $baseUrl . '/shop/' . $slug;
 
                     $sitemap->add(
                         Url::create($url)

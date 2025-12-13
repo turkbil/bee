@@ -63,6 +63,11 @@ class SongStreamController extends Controller
                         'id' => $song->song_id,
                         'title' => $song->getTranslated('title', app()->getLocale()),
                         'cover_url' => $song->getCoverUrl(600, 600),
+                        // 🎯 AUTO-CONTEXT: Include album & genre for auto-context detection
+                        'album_id' => $song->album_id,
+                        'genre_id' => $song->genre_id,
+                        'album_name' => $song->album ? $song->album->getTranslated('title', app()->getLocale()) : null,
+                        'genre_name' => $song->genre ? $song->genre->getTranslated('title', app()->getLocale()) : null,
                     ]
                 ], 401);
             }
@@ -91,6 +96,11 @@ class SongStreamController extends Controller
                         'id' => $song->song_id,
                         'title' => $song->getTranslated('title', app()->getLocale()),
                         'cover_url' => $song->getCoverUrl(600, 600),
+                        // 🎯 AUTO-CONTEXT: Include album & genre for auto-context detection
+                        'album_id' => $song->album_id,
+                        'genre_id' => $song->genre_id,
+                        'album_name' => $song->album ? $song->album->getTranslated('title', app()->getLocale()) : null,
+                        'genre_name' => $song->genre ? $song->genre->getTranslated('title', app()->getLocale()) : null,
                     ]
                 ], 402);
             }
@@ -118,6 +128,11 @@ class SongStreamController extends Controller
                         'duration' => $song->getFormattedDuration(),
                         'bitrate' => $song->getFormattedBitrate(),
                         'cover_url' => $song->getCoverUrl(600, 600),
+                        // 🎯 AUTO-CONTEXT: Include album & genre for auto-context detection
+                        'album_id' => $song->album_id,
+                        'genre_id' => $song->genre_id,
+                        'album_name' => $song->album ? $song->album->getTranslated('title', app()->getLocale()) : null,
+                        'genre_name' => $song->genre ? $song->genre->getTranslated('title', app()->getLocale()) : null,
                     ]
                 ], $this->getSubscriptionData($user)));
             }
@@ -139,6 +154,11 @@ class SongStreamController extends Controller
                     'duration' => $song->getFormattedDuration(),
                     'bitrate' => $song->getFormattedBitrate(),
                     'cover_url' => $song->getCoverUrl(600, 600),
+                    // 🎯 AUTO-CONTEXT: Include album & genre for auto-context detection
+                    'album_id' => $song->album_id,
+                    'genre_id' => $song->genre_id,
+                    'album_name' => $song->album ? $song->album->getTranslated('title', app()->getLocale()) : null,
+                    'genre_name' => $song->genre ? $song->genre->getTranslated('title', app()->getLocale()) : null,
                 ]
             ], $subscriptionData));
 

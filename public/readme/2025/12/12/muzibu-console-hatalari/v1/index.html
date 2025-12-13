@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Console Hatası Analiz & Çözüm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                🔍 Muzibu Console Hata Analizi
+            </h1>
+            <div class="text-slate-400 text-lg">
+                HLS Key Load Error & MP3 Fallback Sorunu
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 12 Aralık 2025</span>
+                <span>🎯 Tenant: muzibu.com.tr</span>
+                <span>📊 138 satır console log analiz edildi</span>
+            </div>
+        </header>
+
+        <!-- Summary Stats -->
+        <section class="grid md:grid-cols-4 gap-4 mb-16">
+            <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-6 text-center">
+                <div class="text-3xl font-bold text-green-400 mb-2">✅</div>
+                <div class="text-slate-300">Infinite Queue</div>
+                <div class="text-xs text-slate-500 mt-1">Çalışıyor</div>
+            </div>
+            <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-6 text-center">
+                <div class="text-3xl font-bold text-green-400 mb-2">✅</div>
+                <div class="text-slate-300">Auto-Refill</div>
+                <div class="text-xs text-slate-500 mt-1">13 şarkı ekledi</div>
+            </div>
+            <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-6 text-center">
+                <div class="text-3xl font-bold text-red-400 mb-2">❌</div>
+                <div class="text-slate-300">HLS Key Load</div>
+                <div class="text-xs text-slate-500 mt-1">2 şarkı fail</div>
+            </div>
+            <div class="bg-orange-500/10 border border-orange-500/30 rounded-lg p-6 text-center">
+                <div class="text-3xl font-bold text-orange-400 mb-2">2</div>
+                <div class="text-slate-300">MP3 Fallback</div>
+                <div class="text-xs text-slate-500 mt-1">Olmamalı!</div>
+            </div>
+        </section>
+
+        <!-- Çalışan Sistemler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Çalışan Sistemler</h2>
+
+            <!-- Infinite Queue -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Infinite Queue System ♾️
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">ÇALIŞIYOR</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-white">Line 17:</strong> "Auto-starting music from Genre (infinite loop)..."</p>
+                            <p><strong class="text-white">Context:</strong> Genre ID 3 (Elektronik)</p>
+                            <p><strong class="text-white">İlk Load:</strong> 13 şarkı yüklendi (offset: 0)</p>
+                        </div>
+                        <div class="mt-3 p-3 bg-green-900/20 border border-green-700/30 rounded text-sm text-green-300">
+                            <strong>✅ Başarılı:</strong> Müzik otomatik başladı, sonsuz döngü aktif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auto-Refill -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Queue Auto-Refill
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">ÇALIŞIYOR</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-white">Line 103-104:</strong> Queue 3 şarkıya düştü → "Queue running low! Auto-refilling..."</p>
+                            <p><strong class="text-white">Line 107:</strong> Refilling queue (offset: 13, limit: 15)</p>
+                            <p><strong class="text-white">Line 109:</strong> ✅ Queue refilled: 13 songs</p>
+                            <p><strong class="text-white">Line 112:</strong> Total queue: 13 → 26 şarkı</p>
+                        </div>
+                        <div class="mt-3 p-3 bg-green-900/20 border border-green-700/30 rounded text-sm text-green-300">
+                            <strong>✅ Başarılı:</strong> Kuyruk bitmeden 13 yeni şarkı eklendi
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gapless Playback -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Gapless Playback
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">ÇALIŞIYOR</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-white">Line 98-100:</strong> Song 354 HLS loaded → ✅ HLS başarıyla başladı</p>
+                            <p><strong class="text-white">Line 131-133:</strong> Song 355 HLS loaded → ✅ HLS başarıyla başladı</p>
+                            <p><strong class="text-white">Geçiş:</strong> Anında, kesinti yok</p>
+                        </div>
+                        <div class="mt-3 p-3 bg-green-900/20 border border-green-700/30 rounded text-sm text-green-300">
+                            <strong>✅ Başarılı:</strong> Şarkı geçişlerinde ses kesintisi yok
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sorunlar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">❌ Tespit Edilen Sorunlar</h2>
+
+            <!-- HLS Key Load Error -->
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">!</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-red-300 mb-2">
+                            HLS Key Load Error
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">KRİTİK</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-3">
+                            <div class="p-3 bg-red-900/20 border border-red-700/30 rounded">
+                                <p class="font-bold text-red-300 mb-1">Song 344 (Cold Love)</p>
+                                <p class="text-sm"><strong>Line 28:</strong> 🔑 Key loading started</p>
+                                <p class="text-sm"><strong>Line 32:</strong> ⚠️ Key load retry (sadece 1 retry!)</p>
+                                <p class="text-sm"><strong>Line 35:</strong> ❌ HLS fatal error: keyLoadError</p>
+                                <p class="text-sm"><strong>Line 37:</strong> 🔄 Falling back to MP3</p>
+                            </div>
+                            <div class="p-3 bg-red-900/20 border border-red-700/30 rounded">
+                                <p class="font-bold text-red-300 mb-1">Song 353 (Enchanted Forest)</p>
+                                <p class="text-sm"><strong>Line 60:</strong> 🔑 Key loading started</p>
+                                <p class="text-sm"><strong>Line 61:</strong> ⚠️ Key load retry (sadece 1 retry!)</p>
+                                <p class="text-sm"><strong>Line 64:</strong> ❌ HLS fatal error: keyLoadError</p>
+                                <p class="text-sm"><strong>Line 66:</strong> 🔄 Falling back to MP3</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Retry Ayarları Yüklenmemiş -->
+            <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">!</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-orange-300 mb-2">
+                            Yeni Retry Ayarları Yüklenmemiş
+                            <span class="ml-3 px-3 py-1 bg-orange-600 text-white text-xs rounded-full">CACHE</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p><strong class="text-white">Console Version:</strong> player-core.js?v=1765511635</p>
+                            <p><strong class="text-white">File Version:</strong> player-core.js?v=1765511402</p>
+                            <p><strong class="text-red-300">❌ Eşleşmiyor!</strong> Kullanıcı eski JS dosyasını kullanıyor</p>
+                            <div class="mt-3 p-3 bg-orange-900/20 border border-orange-700/30 rounded text-sm">
+                                <p class="font-bold text-orange-300">Sorun:</p>
+                                <ul class="list-disc list-inside mt-2 space-y-1">
+                                    <li>Yeni retry ayarları: 6 timeout + 8 error retry</li>
+                                    <li>Eski kod: Sadece 1 retry yapıyor</li>
+                                    <li>Timeout: 30 saniye yerine 15 saniye</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Çözümler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">🔧 Çözümler</h2>
+
+            <!-- 1. Hard Refresh -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            Hard Refresh Yap
+                            <span class="ml-3 px-3 py-1 bg-blue-600 text-white text-xs rounded-full">ZORUNLU</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p>Browser cache'i temizle, yeni JS dosyasını yükle:</p>
+                            <div class="mt-3 p-4 bg-blue-900/20 border border-blue-700/30 rounded">
+                                <p class="font-bold text-blue-300 mb-2">Windows/Linux:</p>
+                                <code class="text-yellow-300 text-lg">Ctrl + Shift + R</code>
+                                <p class="font-bold text-blue-300 mb-2 mt-4">Mac:</p>
+                                <code class="text-yellow-300 text-lg">Cmd + Shift + R</code>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3 bg-blue-900/20 border border-blue-700/30 rounded text-sm text-blue-300">
+                            <strong>Beklenen Sonuç:</strong> Version ?v=1765511402 veya daha yüksek olmalı
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Otomatik Versioning Aktif -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Otomatik Versioning Aktif
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">KALICI ÇÖZÜM</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p>Artık dosya güncellendiğinde browser cache otomatik temizlenecek:</p>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                <li><code class="text-yellow-300">versioned_asset()</code> helper eklendi</li>
+                                <li>Version = dosyanın son değiştirilme tarihi</li>
+                                <li>Player güncelleme → Version otomatik değişir</li>
+                                <li>Gelecekte hard refresh gerekmeycek</li>
+                            </ul>
+                        </div>
+                        <div class="mt-3 p-3 bg-green-900/20 border border-green-700/30 rounded text-sm text-green-300">
+                            <strong>✅ Kalıcı:</strong> Bu sorun bir daha yaşanmayacak
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Yeni HLS Retry Ayarları -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">
+                            Yeni HLS Key Loading Ayarları
+                            <span class="ml-3 px-3 py-1 bg-purple-600 text-white text-xs rounded-full">GÜÇLÜ</span>
+                        </h3>
+                        <div class="text-slate-300 space-y-2">
+                            <p>Hard refresh sonrası bu ayarlar devreye girecek:</p>
+                            <div class="grid md:grid-cols-2 gap-4 mt-3">
+                                <div class="p-3 bg-purple-900/20 border border-purple-700/30 rounded">
+                                    <p class="font-bold text-purple-300 mb-1">Timeout</p>
+                                    <p class="text-sm">İlk byte: 8s → <strong>15s</strong></p>
+                                    <p class="text-sm">Toplam: 15s → <strong>30s</strong></p>
+                                </div>
+                                <div class="p-3 bg-purple-900/20 border border-purple-700/30 rounded">
+                                    <p class="font-bold text-purple-300 mb-1">Retry Count</p>
+                                    <p class="text-sm">Timeout retry: 3 → <strong>6</strong></p>
+                                    <p class="text-sm">Error retry: 5 → <strong>8</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3 bg-purple-900/20 border border-purple-700/30 rounded text-sm text-purple-300">
+                            <strong>💪 Sonuç:</strong> HLS key loading çok daha güçlü, MP3 fallback artık nadir
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test Planı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">🧪 Test Planı</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-xl font-bold text-yellow-300 mb-4">Hard Refresh Sonrası Yapılacak Testler</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-500"></div>
+                        <span class="text-slate-300">Console'da version numarasını kontrol et → ?v=1765511402+</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-500"></div>
+                        <span class="text-slate-300">Song 344 veya 353'ü çal → HLS key load retry sayısını kontrol et (6-8 olmalı)</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-500"></div>
+                        <span class="text-slate-300">MP3 fallback olup olmadığını izle → "Falling back to MP3" görülmemeli</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-500"></div>
+                        <span class="text-slate-300">Infinite queue çalışmaya devam ediyor mu → 3 şarkıda auto-refill</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-6 h-6 rounded-full border-2 border-slate-500"></div>
+                        <span class="text-slate-300">Console'a yeni /var/www/.../a-console.txt dosyası gönder → Sonuçları analiz et</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+            <p class="mt-2">📅 12 Aralık 2025 - Muzibu Platform</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -301,7 +301,7 @@
 .item-stagger-8 { animation-delay: 640ms; }
 .item-stagger-9 { animation-delay: 720ms; }
 
-/* ==================== CUSTOM SCROLLBAR (TRANSPARAN - HOVER BELIRGIN) ==================== */
+/* ==================== CUSTOM SCROLLBAR (SADECE HOVER'DA GÖRÜNÜR) ==================== */
 /* Webkit browsers (Chrome, Safari, Edge) */
 .muzibu-left-sidebar::-webkit-scrollbar,
 .muzibu-right-sidebar::-webkit-scrollbar,
@@ -315,27 +315,27 @@
     background: transparent;
 }
 
-/* Her zaman transparan görünür */
+/* Normal durum - NEREDEYSE GİZLİ (minimum renk yoksa tarayıcı render etmiyor) */
 .muzibu-left-sidebar::-webkit-scrollbar-thumb,
 .muzibu-right-sidebar::-webkit-scrollbar-thumb,
 .muzibu-main::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
     border-radius: 4px;
     transition: background 0.2s ease;
 }
 
-/* Sadece ilgili section'a hover'da daha belirgin */
+/* Sidebar'a hover - GÖRÜNÜR */
 .muzibu-left-sidebar:hover::-webkit-scrollbar-thumb,
 .muzibu-right-sidebar:hover::-webkit-scrollbar-thumb,
 .muzibu-main:hover::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.3);
 }
 
-/* Scrollbar thumb'a direkt hover'da en belirgin */
+/* Scrollbar thumb'a direkt hover - DAHA BELİRGİN */
 .muzibu-left-sidebar::-webkit-scrollbar-thumb:hover,
 .muzibu-right-sidebar::-webkit-scrollbar-thumb:hover,
 .muzibu-main::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.5);
 }
 
 /* Firefox */
@@ -343,12 +343,12 @@
 .muzibu-right-sidebar,
 .muzibu-main {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.02) transparent;
     transition: scrollbar-color 0.2s ease;
 }
 
 .muzibu-left-sidebar:hover,
 .muzibu-right-sidebar:hover,
 .muzibu-main:hover {
-    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }

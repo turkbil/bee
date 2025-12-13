@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop URL Yapısı Hatası - Acil SEO Sorunu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="bg-red-600 text-white px-4 py-2 rounded-full font-bold text-sm">🚨 ACİL SEO SORUNU</div>
+                <div class="bg-yellow-600 text-white px-4 py-2 rounded-full font-bold text-sm">8 DOSYA ETKİLENDİ</div>
+            </div>
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                🔴 Shop URL Yapısı Hatası
+            </h1>
+            <div class="text-slate-300 text-lg">
+                Sistemde <strong class="text-red-400">/shop/product/{slug}</strong> şeklinde yanlış URL yapısı kullanılıyor,
+                ancak route tanımı <strong class="text-green-400">/shop/{slug}</strong> olarak ayarlanmış.
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 12 Aralık 2025</span>
+                <span>🎯 Tenant: ixtif.com</span>
+                <span>👤 URL yapısı sorunu tespiti</span>
+            </div>
+        </header>
+
+        <!-- Sorun Özeti -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🔍 Sorun Tespit Edildi</h2>
+
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-red-300 mb-4">Yanlış URL Yapısı</h3>
+
+                <div class="space-y-4">
+                    <div class="bg-red-900/30 border border-red-700 rounded-lg p-4">
+                        <div class="text-red-300 font-semibold mb-2">❌ Kullanılan (YANLIŞ):</div>
+                        <code class="text-red-400 font-mono">https://www.ixtif.com/shop/product/celik-plate-1253</code>
+                    </div>
+
+                    <div class="text-center text-slate-500">↓ Olması Gereken ↓</div>
+
+                    <div class="bg-green-900/30 border border-green-700 rounded-lg p-4">
+                        <div class="text-green-300 font-semibold mb-2">✅ Route Tanımı (DOĞRU):</div>
+                        <code class="text-green-400 font-mono">https://www.ixtif.com/shop/celik-plate-1253</code>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-slate-300">
+                    <strong class="text-yellow-300">Sebep:</strong> Route dosyasında
+                    <code class="bg-slate-900 px-2 py-1 rounded text-green-400">Route::get('/{slug}')</code> tanımlı,
+                    ancak sistem genelinde <code class="bg-slate-900 px-2 py-1 rounded text-red-400">/product/{slug}</code> kullanılıyor.
+                </div>
+            </div>
+        </section>
+
+        <!-- Etkilenen Dosyalar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-orange-400">📂 Etkilenen Dosyalar (8 Adet)</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- 1. Sitemap -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-red-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">1</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-red-300">TenantSitemapService.php</h3>
+                            <p class="text-xs text-slate-500">Line 770</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        <strong class="text-red-400">EN KRİTİK!</strong> Sitemap tüm ürünler için yanlış URL üretiyor.
+                        Google bu yanlış URL'leri index ediyor.
+                    </p>
+                    <div class="bg-slate-900 rounded p-3 text-xs">
+                        <div class="text-red-400 font-mono">❌ $url = $baseUrl . '/shop/product/' . $slug;</div>
+                    </div>
+                </div>
+
+                <!-- 2. ShopProduct Model -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-red-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">2</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-red-300">ShopProduct.php</h3>
+                            <p class="text-xs text-slate-500">Line 602</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Model'in <code class="bg-slate-900 px-1 rounded text-yellow-300">getUrl()</code> metodu yanlış URL döndürüyor.
+                        Tüm frontend linkler hatalı!
+                    </p>
+                    <div class="bg-slate-900 rounded p-3 text-xs">
+                        <div class="text-red-400 font-mono">❌ return url('/shop/product/' . $slug);</div>
+                    </div>
+                </div>
+
+                <!-- 3. AI Chat - ProductSearchNode -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-orange-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">3</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-orange-300">ProductSearchNode.php</h3>
+                            <p class="text-xs text-slate-500">Line 194</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        AI Chat ürün arama sonuçlarında yanlış link üretiyor.
+                    </p>
+                    <div class="bg-slate-900 rounded p-3 text-xs">
+                        <div class="text-red-400 font-mono">❌ 'url' => "/shop/product/{$slug}"</div>
+                    </div>
+                </div>
+
+                <!-- 4. AI Chat - ProductComparisonNode -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-orange-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">4</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-orange-300">ProductComparisonNode.php</h3>
+                            <p class="text-xs text-slate-500">Line 105</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        AI Chat ürün karşılaştırma sonuçlarında yanlış link.
+                    </p>
+                    <div class="bg-slate-900 rounded p-3 text-xs">
+                        <div class="text-red-400 font-mono">❌ 'url' => "/shop/product/{$product->slug}"</div>
+                    </div>
+                </div>
+
+                <!-- 5. AI Chat - PriceQueryNode -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-orange-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">5</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-orange-300">PriceQueryNode.php</h3>
+                            <p class="text-xs text-slate-500">Line 135</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        AI Chat fiyat sorgulamalarında yanlış link.
+                    </p>
+                    <div class="bg-slate-900 rounded p-3 text-xs">
+                        <div class="text-red-400 font-mono">❌ 'url' => "/shop/product/{$product->slug}"</div>
+                    </div>
+                </div>
+
+                <!-- 6. AI Chat - LinkGeneratorNode -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-orange-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">6</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-orange-300">LinkGeneratorNode.php</h3>
+                            <p class="text-xs text-slate-500">Line 81</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        AI Chat genel link üretiminde yanlış pattern.
+                    </p>
+                    <div class="bg-slate-900 rounded p-3 text-xs">
+                        <div class="text-red-400 font-mono">❌ 'product' => "/shop/product/{$identifier}"</div>
+                    </div>
+                </div>
+
+                <!-- 7. MarkdownService -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-yellow-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">7</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-yellow-300">MarkdownService.php</h3>
+                            <p class="text-xs text-slate-500">Line 361, 390</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Markdown içinde ürün linklerini yanlış üretiyor (2 yerde).
+                    </p>
+                    <div class="bg-slate-900 rounded p-3 text-xs">
+                        <div class="text-red-400 font-mono">❌ $url = "/shop/product/{$id}";</div>
+                    </div>
+                </div>
+
+                <!-- 8. Blog Component -->
+                <div class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-yellow-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 text-sm">8</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-yellow-300">product-grid-inline.blade.php</h3>
+                            <p class="text-xs text-slate-500">Line 27</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-300 text-sm mb-3">
+                        Blog içinde ürün linklerini yanlış gösteriyor.
+                    </p>
+                    <div class="bg-slate-900 rounded p-3 text-xs">
+                        <div class="text-red-400 font-mono">❌ url('/shop/product/' . $slug)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEO Etkisi -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400">🚨 SEO Etkisi (Google'a Yansıma)</h2>
+
+            <div class="space-y-6">
+                <div class="bg-red-900/30 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-4">🔴 Google Index Sorunu</h3>
+                    <ul class="space-y-3 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-400 flex-shrink-0">❌</span>
+                            <div>
+                                <strong>Sitemap</strong> yanlış URL'ler üretiyor → Google bu URL'leri tarayıp index ediyor
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-400 flex-shrink-0">❌</span>
+                            <div>
+                                Kullanıcılar Google'da <code class="bg-slate-900 px-2 py-1 rounded text-red-400">/shop/product/x</code>
+                                URL'sine tıklıyor → <strong class="text-red-400">404 Not Found!</strong>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-400 flex-shrink-0">❌</span>
+                            <div>
+                                Doğru route <code class="bg-slate-900 px-2 py-1 rounded text-green-400">/shop/{slug}</code>
+                                olmasına rağmen, hiçbir yerde kullanılmıyor!
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-400 flex-shrink-0">❌</span>
+                            <div>
+                                <strong class="text-yellow-300">Duplicate Content riski:</strong> Hem yanlış hem doğru URL aynı içeriği gösterirse
+                                Google duplicate content cezası verebilir
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-orange-900/30 border-l-4 border-orange-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-orange-300 mb-4">⚠️ Kullanıcı Deneyimi Sorunu</h3>
+                    <ul class="space-y-3 text-slate-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-orange-400 flex-shrink-0">⚠️</span>
+                            <div>
+                                Frontend sayfalarında ürün linkleri yanlış → Kullanıcı tıklıyor → 404 hatası
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-orange-400 flex-shrink-0">⚠️</span>
+                            <div>
+                                AI Chat yanlış link üretiyor → Chatbot kullanıcıyı hatalı sayfaya yönlendiriyor
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-orange-400 flex-shrink-0">⚠️</span>
+                            <div>
+                                Blog içinde ürün linkleri çalışmıyor → Satış kaybı!
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Çözüm Planı -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-green-400">✅ Çözüm Planı</h2>
+
+            <!-- Adım 1 -->
+            <div class="bg-slate-800/50 border-l-4 border-green-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-green-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-300 mb-2">
+                            Tüm Dosyalarda Find & Replace
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">Yüksek Öncelik</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            8 dosyada <code class="bg-slate-900 px-2 py-1 rounded text-red-400">/shop/product/</code>
+                            ifadesini <code class="bg-slate-900 px-2 py-1 rounded text-green-400">/shop/</code> ile değiştireceğiz.
+                        </p>
+                        <div class="bg-slate-900/50 rounded-lg p-4 space-y-2 text-sm">
+                            <div class="text-slate-400 font-semibold mb-2">Değiştirilecek Dosyalar:</div>
+                            <div class="text-green-300">✅ app/Services/TenantSitemapService.php</div>
+                            <div class="text-green-300">✅ Modules/Shop/app/Models/ShopProduct.php</div>
+                            <div class="text-green-300">✅ app/Services/ConversationNodes/Shop/ProductSearchNode.php</div>
+                            <div class="text-green-300">✅ app/Services/ConversationNodes/Shop/ProductComparisonNode.php</div>
+                            <div class="text-green-300">✅ app/Services/ConversationNodes/Shop/PriceQueryNode.php</div>
+                            <div class="text-green-300">✅ app/Services/ConversationNodes/Common/LinkGeneratorNode.php</div>
+                            <div class="text-green-300">✅ app/Services/MarkdownService.php (2 yerde)</div>
+                            <div class="text-green-300">✅ Modules/Blog/resources/views/components/product-grid-inline.blade.php</div>
+                        </div>
+                        <p class="mt-3 text-slate-400">
+                            <strong class="text-white">Beklenen Sonuç:</strong> Tüm sistem doğru URL yapısını kullanacak
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 2 -->
+            <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-blue-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">
+                            Sitemap Yeniden Üret
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">Yüksek Öncelik</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Değişiklikler tamamlandıktan sonra sitemap'i yeniden üreteceğiz.
+                            Bu sayede Google'a doğru URL'ler gönderilecek.
+                        </p>
+                        <div class="bg-slate-900/50 rounded-lg p-4 space-y-2 text-sm">
+                            <div class="text-slate-400 font-semibold mb-2">Komut:</div>
+                            <code class="text-blue-300">php artisan sitemap:generate</code>
+                        </div>
+                        <p class="mt-3 text-slate-400">
+                            <strong class="text-white">Beklenen Sonuç:</strong>
+                            <code class="bg-slate-900 px-2 py-1 rounded text-green-400">public/sitemap.xml</code>
+                            dosyası doğru URL'lerle güncellenecek
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 3 -->
+            <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-purple-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">
+                            Google Search Console Bilgilendirme
+                            <span class="ml-3 px-3 py-1 bg-yellow-600 text-white text-xs rounded-full">Orta Öncelik</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Google'a sitemap güncellendiğini bildireceğiz ve yanlış URL'lerin silinmesini isteyeceğiz.
+                        </p>
+                        <div class="bg-slate-900/50 rounded-lg p-4 space-y-3 text-sm">
+                            <div>
+                                <div class="text-slate-400 font-semibold mb-1">1. Yeni Sitemap Gönder:</div>
+                                <div class="text-purple-300">Google Search Console → Sitemaps → Add new sitemap</div>
+                            </div>
+                            <div>
+                                <div class="text-slate-400 font-semibold mb-1">2. Eski URL'leri Kaldır (Opsiyonel):</div>
+                                <div class="text-purple-300">Removals → New Request → Remove URLs with this prefix:
+                                    <code class="bg-slate-800 px-2 py-1 rounded">/shop/product/</code>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-slate-400 font-semibold mb-1">3. Doğru URL'leri İndeksleme İste:</div>
+                                <div class="text-purple-300">URL Inspection → Request Indexing (öncelikli ürünler için)</div>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-slate-400">
+                            <strong class="text-white">Beklenen Sonuç:</strong> 1-2 hafta içinde Google yeni URL'leri index edecek
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 4 -->
+            <div class="bg-slate-800/50 border-l-4 border-yellow-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-yellow-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-yellow-300 mb-2">
+                            301 Redirect Ekle (Güvenlik Ağı)
+                            <span class="ml-3 px-3 py-1 bg-green-600 text-white text-xs rounded-full">Düşük Öncelik</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Google eski URL'leri index'ten silene kadar 301 redirect ile kullanıcıları doğru sayfaya yönlendirebiliriz.
+                        </p>
+                        <div class="bg-slate-900/50 rounded-lg p-4 space-y-2 text-sm">
+                            <div class="text-slate-400 font-semibold mb-2">Mantık:</div>
+                            <div class="text-yellow-300">Eğer URL <code class="bg-slate-800 px-2 py-1 rounded">/shop/product/{slug}</code>
+                            şeklindeyse → <code class="bg-slate-800 px-2 py-1 rounded">/shop/{slug}</code> adresine 301 redirect
+                            </div>
+                        </div>
+                        <p class="mt-3 text-slate-400">
+                            <strong class="text-white">Beklenen Sonuç:</strong> Google eski URL'leri index'ten silse bile kullanıcı 404 görmez
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adım 5 -->
+            <div class="bg-slate-800/50 border-l-4 border-cyan-500 rounded-lg p-6 mb-4">
+                <div class="flex items-start gap-4">
+                    <div class="bg-cyan-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">5</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-cyan-300 mb-2">
+                            Test ve Doğrulama
+                            <span class="ml-3 px-3 py-1 bg-red-600 text-white text-xs rounded-full">Yüksek Öncelik</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed mb-3">
+                            Tüm değişiklikler tamamlandıktan sonra kapsamlı test yapacağız.
+                        </p>
+                        <div class="bg-slate-900/50 rounded-lg p-4 space-y-3 text-sm">
+                            <div>
+                                <div class="text-cyan-300">✅ Sitemap kontrol: Tüm ürün URL'lerinin doğru formatta olduğunu doğrula</div>
+                            </div>
+                            <div>
+                                <div class="text-cyan-300">✅ Frontend test: Ana sayfadaki ürün linklerine tıklayıp çalıştığını kontrol et</div>
+                            </div>
+                            <div>
+                                <div class="text-cyan-300">✅ AI Chat test: Chatbot'a ürün sor, verdiği linke tıkla, çalışıyor mu?</div>
+                            </div>
+                            <div>
+                                <div class="text-cyan-300">✅ Blog test: Blog içindeki ürün widget'larının linklerini test et</div>
+                            </div>
+                            <div>
+                                <div class="text-cyan-300">✅ Model test: ShopProduct model'inin getUrl() metodunu test et</div>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-slate-400">
+                            <strong class="text-white">Beklenen Sonuç:</strong> Tüm linkler doğru çalışmalı, 404 hatası yok!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-slate-400">🔧 Teknik Detaylar</h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-xl font-bold text-slate-300 mb-4">Route Tanımı (Doğru)</h3>
+                <div class="bg-slate-900 rounded-lg p-4 mb-4">
+                    <div class="text-xs text-slate-500 mb-2">Modules/Shop/routes/web.php - Line 57</div>
+                    <code class="text-green-400 font-mono">Route::get('/{slug}', [ShopController::class, 'show'])->name('shop.show');</code>
+                </div>
+                <p class="text-slate-400 text-sm mb-4">
+                    Bu route tanımı şu demek: <code class="bg-slate-900 px-2 py-1 rounded text-green-400">/shop/{slug}</code>
+                    formatında URL bekliyor. Ortada <code class="text-red-400">/product/</code> YOK!
+                </p>
+
+                <h3 class="text-xl font-bold text-slate-300 mb-4 mt-6">Kod Değişikliği Örneği</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-red-400 font-semibold mb-2 text-sm">❌ Önce (Yanlış):</div>
+                        <div class="bg-red-900/30 border border-red-700 rounded-lg p-3">
+                            <code class="text-red-400 font-mono text-xs">$url = '/shop/product/' . $slug;</code>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-green-400 font-semibold mb-2 text-sm">✅ Sonra (Doğru):</div>
+                        <div class="bg-green-900/30 border border-green-700 rounded-lg p-3">
+                            <code class="text-green-400 font-mono text-xs">$url = '/shop/' . $slug;</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Öncelik Sıralaması -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400">⚡ İşlem Öncelik Sırası</h2>
+
+            <div class="space-y-3">
+                <div class="flex items-center gap-4 bg-red-900/30 border-l-4 border-red-500 rounded-lg p-4">
+                    <div class="bg-red-600 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">🔥1</div>
+                    <div class="text-slate-200 font-semibold">8 dosyada find & replace yap</div>
+                </div>
+
+                <div class="flex items-center gap-4 bg-red-900/30 border-l-4 border-red-500 rounded-lg p-4">
+                    <div class="bg-red-600 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">🔥2</div>
+                    <div class="text-slate-200 font-semibold">Sitemap yeniden üret</div>
+                </div>
+
+                <div class="flex items-center gap-4 bg-red-900/30 border-l-4 border-red-500 rounded-lg p-4">
+                    <div class="bg-red-600 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">🔥3</div>
+                    <div class="text-slate-200 font-semibold">Test yap (frontend, AI chat, blog, model)</div>
+                </div>
+
+                <div class="flex items-center gap-4 bg-yellow-900/30 border-l-4 border-yellow-500 rounded-lg p-4">
+                    <div class="bg-yellow-600 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">⚠️4</div>
+                    <div class="text-slate-200 font-semibold">Google Search Console'a yeni sitemap gönder</div>
+                </div>
+
+                <div class="flex items-center gap-4 bg-green-900/30 border-l-4 border-green-500 rounded-lg p-4">
+                    <div class="bg-green-600 text-white font-bold rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0">✅5</div>
+                    <div class="text-slate-200 font-semibold">301 Redirect ekle (opsiyonel güvenlik ağı)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p class="mb-2">🤖 Claude AI tarafından oluşturuldu - 12 Aralık 2025</p>
+            <p class="text-red-400 font-semibold">⚠️ ACİL SEO SORUNU - Hemen düzeltilmesi önerilir!</p>
+        </footer>
+    </div>
+</body>
+</html>

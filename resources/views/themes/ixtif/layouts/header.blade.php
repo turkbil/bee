@@ -5,22 +5,63 @@
 @endphp
 <html lang="{{ $currentLocale }}"
       dir="{{ $isRtl }}"
-      x-data="{ darkMode: localStorage.getItem('darkMode') || 'light' }"
-      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
-      :class="{ 'dark': darkMode === 'dark' }">
+      style="background-color:#ffffff"
+      x-data="{
+        darkMode: localStorage.getItem('darkMode') || 'auto',
+        get effectiveMode() {
+            if (this.darkMode === 'auto') {
+                const hour = new Date().getHours();
+                return (hour >= 6 && hour < 18) ? 'light' : 'dark';
+            }
+            return this.darkMode;
+        }
+      }"
+      x-init="
+        $watch('darkMode', val => {
+            localStorage.setItem('darkMode', val);
+            document.documentElement.setAttribute('data-theme-mode', val);
+        });
+        setInterval(() => { if (darkMode === 'auto') { $el.classList.toggle('dark', effectiveMode === 'dark'); } }, 60000);
+      "
+      :class="{ 'dark': effectiveMode === 'dark' }">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    {{-- 🔇 CONSOLE FILTER - MUST BE FIRST! Suppress tracking/marketing noise --}}
+    {{-- ⚡ CRITICAL: Theme Flash Fix - MUST BE FIRST! Prevents white flash --}}
+    <script>
+    (function(){
+        const mode = localStorage.getItem('darkMode') || 'auto';
+        const html = document.documentElement;
+
+        // Set theme mode attribute for icon visibility
+        html.setAttribute('data-theme-mode', mode);
+
+        // Determine if dark mode should be active
+        let isDark = false;
+        if (mode === 'dark') {
+            isDark = true;
+        } else if (mode === 'auto') {
+            const hour = new Date().getHours();
+            isDark = (hour < 6 || hour >= 18);
+        }
+
+        // Apply dark class and inline background color INSTANTLY
+        if (isDark) {
+            html.classList.add('dark');
+            html.style.backgroundColor = '#111827'; // gray-900 (Tailwind dark mode bg)
+        } else {
+            html.style.backgroundColor = '#ffffff'; // white
+        }
+    })();
+    </script>
+
+    {{-- 🔇 CONSOLE FILTER - Suppress tracking/marketing noise --}}
     <script>
     (function(){const p=[/yandex/i,/attestation/i,/topics/i,/googletagmanager/i,/facebook/i,/ERR_BLOCKED_BY_CLIENT/i];const s=m=>!m?false:p.some(x=>x.test(m));const e=console.error;console.error=function(){const m=Array.from(arguments).join(' ');if(!s(m))e.apply(console,arguments);};const w=console.warn;console.warn=function(){const m=Array.from(arguments).join(' ');if(!s(m))w.apply(console,arguments);};const l=console.log;console.log=function(){const m=Array.from(arguments).join(' ');if(!s(m))l.apply(console,arguments);};})();
     </script>
-
-    {{-- Theme Flash Fix: Minimal inline script (1 line) - Prevents flash before Alpine.js loads --}}
-    <script>if(localStorage.getItem('darkMode')==='dark')document.documentElement.classList.add('dark')</script>
 
     {{-- ✅ Alpine.js is included in Livewire - DO NOT load separately to avoid conflicts --}}
 
@@ -116,19 +157,30 @@
             display: inline-block !important;
         }
 
-        /* Dark mode icon visibility (CSS-based, instant) */
-        html:not(.dark) .dark-mode-icon-moon {
-            display: inline-block !important;
+        /* Theme mode icon visibility - Initial state (before Alpine.js loads) */
+        .theme-icon-light,
+        .theme-icon-dark,
+        .theme-icon-auto {
+            display: none;
         }
-        html:not(.dark) .dark-mode-icon-sun {
-            display: none !important;
+
+        /* Default: show auto icon (most common case) */
+        .theme-icon-auto {
+            display: inline-block;
         }
-        html.dark .dark-mode-icon-moon {
-            display: none !important;
-        }
-        html.dark .dark-mode-icon-sun {
-            display: inline-block !important;
-        }
+
+        /* JS will set html attribute instantly */
+        html[data-theme-mode="light"] .theme-icon-light { display: inline-block; }
+        html[data-theme-mode="light"] .theme-icon-dark,
+        html[data-theme-mode="light"] .theme-icon-auto { display: none; }
+
+        html[data-theme-mode="dark"] .theme-icon-dark { display: inline-block; }
+        html[data-theme-mode="dark"] .theme-icon-light,
+        html[data-theme-mode="dark"] .theme-icon-auto { display: none; }
+
+        html[data-theme-mode="auto"] .theme-icon-auto { display: inline-block; }
+        html[data-theme-mode="auto"] .theme-icon-light,
+        html[data-theme-mode="auto"] .theme-icon-dark { display: none; }
 
         /* Search icon visibility (will be controlled by Alpine.js) */
         .search-icon-default {
@@ -145,14 +197,6 @@
         }
         .skeleton-shimmer {
             animation: shimmer 1.5s infinite;
-        }
-
-        /* Topbar Background - Header'ın koyusu */
-        #top-bar {
-            background-color: #f3f4f6; /* gray-100 - light mode */
-        }
-        .dark #top-bar {
-            background-color: #0a0f1a; /* slate-900'dan koyu - dark mode */
         }
     </style>
 
@@ -208,16 +252,15 @@
     @search-toggle.window="searchOpen = $event.detail; if (!searchOpen) { activeMegaMenu = null; }"
     @keydown.escape.window="searchOpen = false; activeMegaMenu = null; mobileMenuOpen = false"
     @close-megamenu.window="activeMegaMenu = null"
-    @close-other-menus.window="searchOpen = false; mobileMenuOpen = false; activeMegaMenu = null"
+    @close-other-menus.window="searchOpen = false; mobileMenuOpen = false; activeMegaMenu = null">
 
         {{-- Top Info Bar - CSS ile yukarı kayacak --}}
         <div id="top-bar"
-             class="overflow-hidden"
-             style="background-color: #0a0f1a;"
+             class="overflow-hidden bg-gray-100 dark:bg-[#0a0f1a]"
              @mouseenter="activeMegaMenu = null">
             <div class="container mx-auto px-4 sm:px-4 md:px-2">
                 <div class="flex items-center justify-between text-sm py-3">
-                    <div class="flex items-center gap-4 sm:gap-6 text-gray-300">
+                    <div class="flex items-center gap-4 sm:gap-6 text-gray-700 dark:text-gray-300">
                         @php
                             $contactPhone = setting('contact_phone_1');
                             $contactWhatsapp = setting('contact_whatsapp_1');
@@ -225,7 +268,7 @@
 
                         {{-- Telefon (Tıklanabilir) --}}
                         @if($contactPhone)
-                            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}" class="hover:text-white transition flex items-center gap-2 text-sm font-medium">
+                            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}" class="hover:text-blue-600 dark:hover:text-white transition flex items-center gap-2 text-sm font-medium">
                                 <i class="fa-solid fa-phone"></i>
                                 <span>{{ $contactPhone }}</span>
                             </a>
@@ -233,7 +276,7 @@
 
                         {{-- WhatsApp (Tıklanabilir) --}}
                         @if($contactWhatsapp)
-                            <a href="{{ whatsapp_link() }}" target="_blank" class="hover:text-green-400 transition flex items-center gap-2 text-sm font-medium">
+                            <a href="{{ whatsapp_link() }}" target="_blank" class="hover:text-green-600 dark:hover:text-green-400 transition flex items-center gap-2 text-sm font-medium">
                                 <i class="fa-brands fa-whatsapp text-base"></i>
                                 <span>{{ $contactWhatsapp }}</span>
                             </a>
@@ -241,7 +284,7 @@
                     </div>
                     <div class="flex items-center gap-3 sm:gap-4">
                         {{-- İletişim - xs/sm'de gizli, md+'da görünür --}}
-                        <a href="{{ href('Page', 'show', 'iletisim') }}" class="hidden md:inline-block text-gray-300 hover:text-white transition text-xs sm:text-sm font-medium">
+                        <a href="{{ href('Page', 'show', 'iletisim') }}" class="hidden md:inline-block text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white transition text-xs sm:text-sm font-medium">
                             <i class="fa-solid fa-envelope mr-1"></i>
                             İletişim
                         </a>
@@ -317,7 +360,7 @@
                             @endphp
 
                             <button @click="open = !open"
-                                    class="flex items-center gap-1 text-gray-300 hover:text-white transition text-xs sm:text-sm">
+                                    class="flex items-center gap-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white transition text-xs sm:text-sm">
                                 <span class="text-base">{{ $currentLangData['flag'] }}</span>
                                 <span class="hidden sm:inline">{{ $currentLangData['name'] }}</span>
                             </button>
@@ -681,15 +724,20 @@
                             </div>
                         </div>
 
-                        {{-- Dark/Light Mode Toggle with Tooltip --}}
+                        {{-- Dark/Light/Auto Mode Toggle with Tooltip --}}
                         <div x-data="{ showTooltip: false }" class="relative">
-                            <button @click="darkMode = darkMode === 'dark' ? 'light' : 'dark'"
+                            <button @click="
+                                    if (darkMode === 'light') darkMode = 'dark';
+                                    else if (darkMode === 'dark') darkMode = 'auto';
+                                    else darkMode = 'light';
+                                "
                                     @mouseenter="showTooltip = true"
                                     @mouseleave="showTooltip = false"
-                                    :aria-label="darkMode === 'dark' ? 'Aydınlık moda geç' : 'Karanlık moda geç'"
+                                    :aria-label="darkMode === 'light' ? 'Karanlık moda geç' : (darkMode === 'dark' ? 'Otomatik moda geç' : 'Aydınlık moda geç')"
                                     class="w-10 h-10 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
-                                <i class="fa-light fa-moon text-lg dark-mode-icon-moon"></i>
-                                <i class="fa-regular fa-sun-bright text-lg dark-mode-icon-sun hidden"></i>
+                                <i class="fa-light fa-moon-stars text-lg theme-icon-light"></i>
+                                <i class="fa-light fa-sun text-lg theme-icon-dark"></i>
+                                <i class="fa-light fa-eclipse text-lg theme-icon-auto"></i>
                             </button>
                             {{-- Tooltip --}}
                             <div x-show="showTooltip"
@@ -701,7 +749,7 @@
                                  x-transition:leave-end="opacity-0 scale-95"
                                  class="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-4 py-2.5 bg-gradient-to-br from-purple-600/95 to-purple-700/95 dark:from-purple-500/95 dark:to-purple-600/95 backdrop-blur-sm text-white text-xs font-semibold rounded-xl whitespace-nowrap pointer-events-none z-50 shadow-2xl border border-white/10"
                                  x-cloak>
-                                <span x-text="darkMode === 'dark' ? 'Aydınlık Mod' : 'Karanlık Mod'"></span>
+                                <span x-text="darkMode === 'light' ? 'Aydınlık Mod' : (darkMode === 'dark' ? 'Karanlık Mod' : 'Otomatik Mod')"></span>
                                 {{-- Tooltip Arrow --}}
                                 <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-px">
                                     <div class="border-[5px] border-transparent border-b-purple-600/95 dark:border-b-purple-500/95"></div>

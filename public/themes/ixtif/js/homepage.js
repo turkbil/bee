@@ -35,9 +35,9 @@ function homepage() {
                     crossFade: true
                 },
                 speed: 800,
-                loop: false, // Loop kapalı - temiz navigation
-                grabCursor: false,
-                allowTouchMove: false,
+                loop: true, // Infinite loop - grab ile başa dönmeli
+                grabCursor: true, // Mobil ve PC'de el işareti
+                allowTouchMove: true, // Swipe aktif (mobil + PC)
                 preloadImages: false,
                 lazy: {
                     loadPrevNext: true,
@@ -55,12 +55,6 @@ function homepage() {
                         updateCustomPagination(this);
                         startProgressBar();
                         remainingTime = 7000;
-                    },
-                    reachEnd: function() {
-                        // Son slayta gelince başa dön
-                        setTimeout(() => {
-                            this.slideTo(0);
-                        }, 7000);
                     }
                 }
             });

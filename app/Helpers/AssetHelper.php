@@ -26,6 +26,24 @@ class AssetHelper
     }
 
     /**
+     * Get asset URL with automatic file-based versioning
+     * Version = dosyanın son değiştirilme tarihi (filemtime)
+     * Dosya değiştiğinde browser cache otomatik temizlenir
+     */
+    public static function versioned($path, $secure = null)
+    {
+        $url = asset($path, $secure);
+        $fullPath = public_path($path);
+
+        // Dosya varsa son değiştirilme tarihini kullan, yoksa time() kullan
+        $version = file_exists($fullPath) ? filemtime($fullPath) : time();
+
+        // Version query string ekle
+        $separator = str_contains($url, '?') ? '&' : '?';
+        return $url . $separator . 'v=' . $version;
+    }
+
+    /**
      * Get CDN or local asset URL (tenant-aware)
      */
     public static function cdn($path, $fallback = true)

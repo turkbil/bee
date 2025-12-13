@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobil Player - Kalp Butonu Varyasyonları - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        muzibu: {
+                            coral: '#ff7f50',
+                            black: '#000000',
+                            dark: '#121212',
+                            gray: '#181818',
+                            'gray-light': '#282828',
+                            'text-gray': '#b3b3b3',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                ❤️ Mobil Player - Kalp Butonu Varyasyonları
+            </h1>
+            <div class="text-slate-400 text-lg">
+                Like/Favorite butonu için 3 farklı yerleşim seçeneği
+            </div>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 2025-12-12</span>
+                <span>🎯 Tenant: muzibu.com.tr</span>
+                <span>❤️ Feature: Kalp butonu</span>
+            </div>
+        </header>
+
+        <!-- Varyasyon 1: Kalp YOK (Referans) -->
+        <section class="mb-16">
+            <div class="bg-slate-800/50 border-l-4 border-slate-500 rounded-lg p-6">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="bg-slate-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">1</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-300 mb-2">
+                            Kalp YOK (Referans - Mevcut Minimal)
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            Like butonu <strong class="text-white">yok</strong>. Swipe up ile açılacak genişletilmiş player'da gösterilir.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mobil Preview -->
+                <div class="bg-black rounded-2xl p-3 max-w-md mx-auto shadow-2xl">
+                    <div class="text-center text-xs text-slate-500 mb-2">📱 Mobil Görünüm</div>
+
+                    <div class="bg-gradient-to-r from-muzibu-gray to-muzibu-dark rounded-xl p-3">
+                        <div class="flex items-center gap-3">
+                            <!-- Kapak -->
+                            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex-shrink-0 shadow-lg">
+                                <img src="https://via.placeholder.com/48" alt="Cover" class="w-full h-full object-cover rounded">
+                            </div>
+
+                            <!-- Song Info (Kalp YOK) -->
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-semibold text-white truncate">Şarkı Başlığı</h4>
+                                <p class="text-xs text-muzibu-text-gray truncate">Sanatçı Adı</p>
+                            </div>
+
+                            <!-- Controls -->
+                            <div class="flex items-center gap-3">
+                                <button class="text-slate-400 hover:text-white">
+                                    <i class="fas fa-step-backward"></i>
+                                </button>
+                                <button class="w-9 h-9 bg-white rounded-full flex items-center justify-center text-black shadow-lg">
+                                    <i class="fas fa-play ml-0.5"></i>
+                                </button>
+                                <button class="text-slate-400 hover:text-white">
+                                    <i class="fas fa-step-forward"></i>
+                                </button>
+                                <button class="text-muzibu-coral">
+                                    <i class="fas fa-list text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress -->
+                        <div class="mt-2">
+                            <div class="h-1 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-muzibu-coral rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-bold text-green-400 mb-2">✅ Artıları</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• En minimal, az yer kaplar</li>
+                            <li>• Kontroller net görünür</li>
+                            <li>• Temiz, sade tasarım</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-red-400 mb-2">❌ Eksileri</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Like için swipe up gerekli</li>
+                            <li>• Hızlı erişim yok</li>
+                            <li>• 1 ekstra adım</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Varyasyon 2: Mini Kalp (Kapak Üzerinde) -->
+        <section class="mb-16">
+            <div class="bg-slate-800/50 border-l-4 border-pink-500 rounded-lg p-6">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="bg-pink-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">2</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-pink-300 mb-2">
+                            Mini Kalp (Kapak Üzerinde Overlay)
+                            <span class="ml-3 px-3 py-1 bg-pink-600 text-white text-xs rounded-full">Önerilen</span>
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            Kapak resminin <strong class="text-white">sağ üst köşesinde</strong> küçük kalp icon. Dokunmatik kullanıma uygun, yer kaplamaz.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mobil Preview -->
+                <div class="bg-black rounded-2xl p-3 max-w-md mx-auto shadow-2xl">
+                    <div class="text-center text-xs text-slate-500 mb-2">📱 Mobil Görünüm</div>
+
+                    <div class="bg-gradient-to-r from-muzibu-gray to-muzibu-dark rounded-xl p-3">
+                        <div class="flex items-center gap-3">
+                            <!-- Kapak + Mini Kalp Overlay -->
+                            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex-shrink-0 shadow-lg relative">
+                                <img src="https://via.placeholder.com/48" alt="Cover" class="w-full h-full object-cover rounded">
+                                <!-- Mini Kalp (Sağ Üst Köşe) -->
+                                <button class="absolute -top-1 -right-1 w-5 h-5 bg-black/80 backdrop-blur rounded-full flex items-center justify-center text-muzibu-coral border border-muzibu-coral shadow-lg">
+                                    <i class="fas fa-heart text-[10px]"></i>
+                                </button>
+                            </div>
+
+                            <!-- Song Info -->
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-semibold text-white truncate">Şarkı Başlığı</h4>
+                                <p class="text-xs text-muzibu-text-gray truncate">Sanatçı Adı</p>
+                            </div>
+
+                            <!-- Controls -->
+                            <div class="flex items-center gap-3">
+                                <button class="text-slate-400 hover:text-white">
+                                    <i class="fas fa-step-backward"></i>
+                                </button>
+                                <button class="w-9 h-9 bg-white rounded-full flex items-center justify-center text-black shadow-lg">
+                                    <i class="fas fa-play ml-0.5"></i>
+                                </button>
+                                <button class="text-slate-400 hover:text-white">
+                                    <i class="fas fa-step-forward"></i>
+                                </button>
+                                <button class="text-muzibu-coral">
+                                    <i class="fas fa-list text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress -->
+                        <div class="mt-2">
+                            <div class="h-1 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-muzibu-coral rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-bold text-green-400 mb-2">✅ Artıları</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Hızlı erişim (tek dokunuş)</li>
+                            <li>• Yer kaplamaz (overlay)</li>
+                            <li>• Görsel olarak şık</li>
+                            <li>• Minimal kalır, buton sayısı aynı</li>
+                            <li>• Instagram/TikTok tarzı modern</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-red-400 mb-2">❌ Eksileri</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Küçük hedef (dokunmatik hassas)</li>
+                            <li>• Kapak resmini kısmen gizler</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-pink-900/30 border border-pink-700 rounded text-pink-300 text-sm">
+                    <strong>💡 İpucu:</strong> Active state'te kalp dolu olur, passive state'te outline (far fa-heart).
+                    Backdrop blur ile her kapakta görünür kalır.
+                </div>
+            </div>
+        </section>
+
+        <!-- Varyasyon 3: Kalp Buton (Song Info Yanında) -->
+        <section class="mb-16">
+            <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="bg-red-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">3</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-red-300 mb-2">
+                            Kalp Buton (Song Info Yanında)
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            Şarkı adının <strong class="text-white">sağında</strong> ayrı bir kalp butonu. Klasik yaklaşım.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mobil Preview -->
+                <div class="bg-black rounded-2xl p-3 max-w-md mx-auto shadow-2xl">
+                    <div class="text-center text-xs text-slate-500 mb-2">📱 Mobil Görünüm</div>
+
+                    <div class="bg-gradient-to-r from-muzibu-gray to-muzibu-dark rounded-xl p-3">
+                        <div class="flex items-center gap-3">
+                            <!-- Kapak -->
+                            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex-shrink-0 shadow-lg">
+                                <img src="https://via.placeholder.com/48" alt="Cover" class="w-full h-full object-cover rounded">
+                            </div>
+
+                            <!-- Song Info + Kalp -->
+                            <div class="flex-1 min-w-0 flex items-center gap-2">
+                                <div class="flex-1 min-w-0">
+                                    <h4 class="text-sm font-semibold text-white truncate">Şarkı Başlığı</h4>
+                                    <p class="text-xs text-muzibu-text-gray truncate">Sanatçı Adı</p>
+                                </div>
+                                <button class="text-muzibu-coral flex-shrink-0">
+                                    <i class="fas fa-heart text-sm"></i>
+                                </button>
+                            </div>
+
+                            <!-- Controls (Sıkışık) -->
+                            <div class="flex items-center gap-2">
+                                <button class="text-slate-400 hover:text-white text-sm">
+                                    <i class="fas fa-step-backward"></i>
+                                </button>
+                                <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black shadow-lg">
+                                    <i class="fas fa-play ml-0.5 text-sm"></i>
+                                </button>
+                                <button class="text-slate-400 hover:text-white text-sm">
+                                    <i class="fas fa-step-forward"></i>
+                                </button>
+                                <button class="text-muzibu-coral text-sm">
+                                    <i class="fas fa-list text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress -->
+                        <div class="mt-2">
+                            <div class="h-1 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-muzibu-coral rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-bold text-green-400 mb-2">✅ Artıları</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Net görünür, açık pozisyon</li>
+                            <li>• Klasik Spotify/YouTube tarzı</li>
+                            <li>• Kullanıcı alışık</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-red-400 mb-2">❌ Eksileri</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Kontroller sıkışık (buton küçülür)</li>
+                            <li>• Song info alanı daralır</li>
+                            <li>• Play/Pause butonu küçük (8x8 → 9x9)</li>
+                            <li>• Mobilde aşırı yoğun</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-red-900/30 border border-red-700 rounded text-red-300 text-sm">
+                    <strong>⚠️ Uyarı:</strong> Bu varyasyon mobilde kontrolleri küçültüyor. Dokunmatik kullanım için ideal değil.
+                </div>
+            </div>
+        </section>
+
+        <!-- Varyasyon 4: Kalp Buton (Kontroller Arasında) -->
+        <section class="mb-16">
+            <div class="bg-slate-800/50 border-l-4 border-orange-500 rounded-lg p-6">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="bg-orange-500 text-white font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">4</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-orange-300 mb-2">
+                            Kalp Buton (Kontroller Arasında - Prev Yerine)
+                        </h3>
+                        <p class="text-slate-300 leading-relaxed">
+                            <strong class="text-white">Prev butonu kaldırılır</strong>, yerine kalp konur. Prev swipe left ile (gesture).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Mobil Preview -->
+                <div class="bg-black rounded-2xl p-3 max-w-md mx-auto shadow-2xl">
+                    <div class="text-center text-xs text-slate-500 mb-2">📱 Mobil Görünüm</div>
+
+                    <div class="bg-gradient-to-r from-muzibu-gray to-muzibu-dark rounded-xl p-3">
+                        <div class="flex items-center gap-3">
+                            <!-- Kapak -->
+                            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex-shrink-0 shadow-lg">
+                                <img src="https://via.placeholder.com/48" alt="Cover" class="w-full h-full object-cover rounded">
+                            </div>
+
+                            <!-- Song Info -->
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-semibold text-white truncate">Şarkı Başlığı</h4>
+                                <p class="text-xs text-muzibu-text-gray truncate">Sanatçı Adı</p>
+                            </div>
+
+                            <!-- Controls (Kalp + Play + Next + Queue) -->
+                            <div class="flex items-center gap-3">
+                                <button class="text-muzibu-coral hover:text-red-400">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                                <button class="w-9 h-9 bg-white rounded-full flex items-center justify-center text-black shadow-lg">
+                                    <i class="fas fa-play ml-0.5"></i>
+                                </button>
+                                <button class="text-slate-400 hover:text-white">
+                                    <i class="fas fa-step-forward"></i>
+                                </button>
+                                <button class="text-muzibu-coral">
+                                    <i class="fas fa-list text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress -->
+                        <div class="mt-2">
+                            <div class="h-1 bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-muzibu-coral rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gesture Hint -->
+                    <div class="mt-3 text-center text-xs text-slate-500 bg-slate-900/50 rounded p-2">
+                        <i class="fas fa-arrow-left mr-1"></i> Swipe left: Prev track
+                    </div>
+                </div>
+
+                <div class="mt-6 grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-bold text-green-400 mb-2">✅ Artıları</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Kalp net görünür</li>
+                            <li>• Buton sayısı aynı (4 adet)</li>
+                            <li>• Swipe gesture modern (TikTok/Instagram)</li>
+                            <li>• Like daha erişilebilir</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-red-400 mb-2">❌ Eksileri</h4>
+                        <ul class="text-sm text-slate-300 space-y-1">
+                            <li>• Prev buton yok (gesture gerekli)</li>
+                            <li>• Kullanıcı gesture öğrenmeli</li>
+                            <li>• Eski kullanıcılar alışık değil</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-orange-900/30 border border-orange-700 rounded text-orange-300 text-sm">
+                    <strong>💡 İpucu:</strong> Swipe left/right gesture eklenirse çok modern olur. YouTube Music/Spotify mobil uygulamaları gibi.
+                </div>
+            </div>
+        </section>
+
+        <!-- Karşılaştırma -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400">📊 Karşılaştırma</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left p-3 text-slate-300">Özellik</th>
+                            <th class="text-center p-3 text-slate-400">1. Kalp YOK</th>
+                            <th class="text-center p-3 text-pink-400">2. Mini (Overlay)</th>
+                            <th class="text-center p-3 text-red-400">3. Song Info Yanı</th>
+                            <th class="text-center p-3 text-orange-400">4. Prev Yerine</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-300">
+                        <tr class="border-b border-slate-800">
+                            <td class="p-3">Hızlı Like</td>
+                            <td class="text-center">❌</td>
+                            <td class="text-center text-green-400">✅</td>
+                            <td class="text-center text-green-400">✅</td>
+                            <td class="text-center text-green-400">✅</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="p-3">Yer Tasarrufu</td>
+                            <td class="text-center text-green-400">⭐⭐⭐⭐⭐</td>
+                            <td class="text-center text-green-400">⭐⭐⭐⭐⭐</td>
+                            <td class="text-center text-red-400">⭐⭐</td>
+                            <td class="text-center text-yellow-400">⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="p-3">Dokunmatik Kolay</td>
+                            <td class="text-center text-green-400">⭐⭐⭐⭐⭐</td>
+                            <td class="text-center text-yellow-400">⭐⭐⭐</td>
+                            <td class="text-center text-red-400">⭐⭐</td>
+                            <td class="text-center text-green-400">⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="p-3">Minimal Görünüm</td>
+                            <td class="text-center text-green-400">⭐⭐⭐⭐⭐</td>
+                            <td class="text-center text-green-400">⭐⭐⭐⭐⭐</td>
+                            <td class="text-center text-red-400">⭐⭐</td>
+                            <td class="text-center text-yellow-400">⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="p-3">Prev Buton</td>
+                            <td class="text-center text-green-400">✅</td>
+                            <td class="text-center text-green-400">✅</td>
+                            <td class="text-center text-green-400">✅</td>
+                            <td class="text-center text-red-400">❌ (Swipe)</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3">Modern Görünüm</td>
+                            <td class="text-center text-green-400">⭐⭐⭐⭐</td>
+                            <td class="text-center text-green-400">⭐⭐⭐⭐⭐</td>
+                            <td class="text-center text-yellow-400">⭐⭐⭐</td>
+                            <td class="text-center text-green-400">⭐⭐⭐⭐⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Öneri -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-pink-400">🏆 Öneri</h2>
+
+            <div class="bg-gradient-to-r from-pink-900/50 to-red-900/50 border border-pink-600 rounded-xl p-8">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">❤️</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Varyasyon 2: Mini Kalp (Kapak Üzerinde Overlay)</h3>
+
+                        <div class="space-y-3 text-slate-200">
+                            <p>
+                                <strong class="text-pink-400">✅ En dengeli çözüm:</strong> Hızlı erişim + minimal görünüm + yer tasarrufu
+                            </p>
+                            <p>
+                                <strong class="text-pink-400">✅ Modern tasarım:</strong> Instagram/TikTok tarzı overlay
+                            </p>
+                            <p>
+                                <strong class="text-pink-400">✅ Buton sayısı korunur:</strong> Prev, Play, Next, Queue aynı kalır
+                            </p>
+                            <p>
+                                <strong class="text-pink-400">✅ Görsel olarak şık:</strong> Kapak üzerinde küçük ama dikkat çekici
+                            </p>
+                        </div>
+
+                        <div class="mt-6 p-4 bg-black/30 rounded-lg">
+                            <h4 class="font-bold text-white mb-2">💡 Uygulama Detayları:</h4>
+                            <ul class="text-sm text-slate-300 space-y-1">
+                                <li>• Kalp boyutu: 20x20px (dokunmatik için yeterli)</li>
+                                <li>• Pozisyon: Kapak sağ üst köşe (-4px top/right)</li>
+                                <li>• Background: black/80 + backdrop-blur</li>
+                                <li>• Active: fas fa-heart (dolu), Passive: far fa-heart (outline)</li>
+                                <li>• Border: 1px muzibu-coral (daha net)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+        </footer>
+    </div>
+</body>
+</html>

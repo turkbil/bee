@@ -148,11 +148,35 @@ class QueueRefillController extends Controller
 
     /**
      * Get songs by album
+     * 🔄 TRANSITION: Album biter → Genre'ye geç (PLAN v4)
      */
     private function getAlbumSongs(int $albumId, int $offset, int $limit): array
     {
-        $album = Album::find($albumId);
+        $album = Album::with('songs')->find($albumId);
         if (!$album) {
+            return [];
+        }
+
+        $totalCount = $album->songs()->where('is_active', 1)->count();
+
+        // Album songs bitti mi?
+        if ($offset >= $totalCount) {
+            // ✅ TRANSITION: Album → Genre (son şarkının genre'sine geç)
+            $lastSong = $album->songs()
+                ->where('is_active', 1)
+                ->orderBy('song_id', 'desc')
+                ->first();
+
+            if ($lastSong && $lastSong->genre_id) {
+                // Genre'ye geç (infinite loop başlar)
+                \Log::info('🔄 Context Transition: Album → Genre', [
+                    'album_id' => $albumId,
+                    'genre_id' => $lastSong->genre_id
+                ]);
+
+                return $this->getGenreSongs($lastSong->genre_id, 0, $limit);
+            }
+
             return [];
         }
 
@@ -169,11 +193,43 @@ class QueueRefillController extends Controller
 
     /**
      * Get songs by playlist
+     * 🔄 TRANSITION: Playlist biter → Genre'ye geç (son 5 şarkının en çok genre'si)
      */
     private function getPlaylistSongs(int $playlistId, int $offset, int $limit): array
     {
-        $playlist = Playlist::find($playlistId);
+        $playlist = Playlist::with('songs')->find($playlistId);
         if (!$playlist) {
+            return [];
+        }
+
+        $totalCount = $playlist->songs()->where('is_active', 1)->count();
+
+        // Playlist songs bitti mi?
+        if ($offset >= $totalCount) {
+            // ✅ TRANSITION: Playlist → Genre (son 5 şarkının en çok genre'si)
+            $lastSongs = $playlist->songs()
+                ->where('is_active', 1)
+                ->orderBy('pivot_id', 'desc')
+                ->take(5)
+                ->get();
+
+            if ($lastSongs->isNotEmpty()) {
+                // En çok kullanılan genre'yi bul
+                $genreCounts = $lastSongs->groupBy('genre_id')->map->count();
+                $mostCommonGenreId = $genreCounts->sortDesc()->keys()->first();
+
+                if ($mostCommonGenreId) {
+                    // Genre'ye geç (infinite loop başlar)
+                    \Log::info('🔄 Context Transition: Playlist → Genre', [
+                        'playlist_id' => $playlistId,
+                        'genre_id' => $mostCommonGenreId,
+                        'genre_count' => $genreCounts[$mostCommonGenreId]
+                    ]);
+
+                    return $this->getGenreSongs($mostCommonGenreId, 0, $limit);
+                }
+            }
+
             return [];
         }
 
@@ -198,6 +254,7 @@ class QueueRefillController extends Controller
 
     /**
      * Get songs by sector (sector playlists - infinite)
+     * ♾️ SELF-LOOP: Sector kendi içinde infinite loop (Genre'ye GEÇMİYOR!)
      */
     private function getSectorSongs(int $sectorId, int $offset, int $limit): array
     {
@@ -208,7 +265,7 @@ class QueueRefillController extends Controller
 
         // Get all playlists in this sector
         $playlists = $sector->playlists()->where('is_active', 1)->get();
-        
+
         if ($playlists->isEmpty()) {
             return [];
         }
@@ -223,14 +280,38 @@ class QueueRefillController extends Controller
             $allSongs = $allSongs->merge($playlistSongs);
         }
 
+        $totalCount = $allSongs->count();
+
+        if ($totalCount === 0) {
+            return [];
+        }
+
+        // ♾️ INFINITE LOOP: If offset exceeds total, wrap around (başa sar)
+        $actualOffset = $offset % $totalCount;
+
         // Apply offset and limit
-        $songs = $allSongs->skip($offset)->take($limit);
+        $songs = $allSongs->skip($actualOffset)->take($limit);
+
+        // If we didn't get enough songs, wrap around and get from beginning
+        if ($songs->count() < $limit && $actualOffset > 0) {
+            $remaining = $limit - $songs->count();
+            $moreSongs = $allSongs->take($remaining);
+            $songs = $songs->merge($moreSongs);
+        }
+
+        \Log::info('🔄 Sector Self-Loop', [
+            'sector_id' => $sectorId,
+            'offset' => $offset,
+            'actual_offset' => $actualOffset,
+            'total_songs' => $totalCount
+        ]);
 
         return $this->formatSongs($songs);
     }
 
     /**
      * Get songs by radio (radio playlists - infinite)
+     * ♾️ SELF-LOOP: Radio kendi içinde infinite loop (Genre'ye GEÇMİYOR!)
      */
     private function getRadioSongs(int $radioId, int $offset, int $limit): array
     {
@@ -241,7 +322,7 @@ class QueueRefillController extends Controller
 
         // Radios have assigned playlists
         $playlists = $radio->playlists()->where('is_active', 1)->get();
-        
+
         if ($playlists->isEmpty()) {
             return [];
         }
@@ -259,17 +340,62 @@ class QueueRefillController extends Controller
         // Shuffle for radio feel
         $allSongs = $allSongs->shuffle();
 
+        $totalCount = $allSongs->count();
+
+        if ($totalCount === 0) {
+            return [];
+        }
+
+        // ♾️ INFINITE LOOP: If offset exceeds total, wrap around (başa sar)
+        $actualOffset = $offset % $totalCount;
+
         // Apply offset and limit
-        $songs = $allSongs->skip($offset)->take($limit);
+        $songs = $allSongs->skip($actualOffset)->take($limit);
+
+        // If we didn't get enough songs, wrap around and get from beginning
+        if ($songs->count() < $limit && $actualOffset > 0) {
+            $remaining = $limit - $songs->count();
+            $moreSongs = $allSongs->take($remaining);
+            $songs = $songs->merge($moreSongs);
+        }
+
+        \Log::info('🔄 Radio Self-Loop', [
+            'radio_id' => $radioId,
+            'offset' => $offset,
+            'actual_offset' => $actualOffset,
+            'total_songs' => $totalCount
+        ]);
 
         return $this->formatSongs($songs);
     }
 
     /**
      * Get popular songs
+     * 🔄 TRANSITION: Popular biter → Album → Genre
      */
     private function getPopularSongs(int $offset, int $limit): array
     {
+        $totalCount = Song::where('is_active', 1)->count();
+
+        // Popular songs bitti mi?
+        if ($offset >= $totalCount) {
+            // ✅ TRANSITION: Popular → Album → Genre
+            $lastSong = Song::where('is_active', 1)
+                ->orderBy('play_count', 'desc')
+                ->skip($totalCount - 1)
+                ->first();
+
+            if ($lastSong && $lastSong->album_id) {
+                \Log::info('🔄 Context Transition: Popular → Album', [
+                    'album_id' => $lastSong->album_id
+                ]);
+
+                return $this->getAlbumSongs($lastSong->album_id, 0, $limit);
+            }
+
+            return [];
+        }
+
         // Most played songs (from play count or rating)
         $songs = Song::where('is_active', 1)
             ->with(['album.artist'])
@@ -283,23 +409,51 @@ class QueueRefillController extends Controller
 
     /**
      * Get recent songs (continues backward from last ID)
+     * ♾️ SELF-LOOP: Recent geriye doğru infinite loop
      */
     private function getRecentSongs(int $offset, int $limit, ?string $subType = null): array
     {
-        // Recently added songs (newest first)
-        $query = Song::where('is_active', 1)
-            ->with(['album.artist'])
-            ->orderBy('created_at', 'desc');
+        $totalCount = Song::where('is_active', 1)->count();
 
-        $songs = $query->skip($offset)
+        if ($totalCount === 0) {
+            return [];
+        }
+
+        // ♾️ INFINITE LOOP: If offset exceeds total, wrap around (başa sar)
+        $actualOffset = $offset % $totalCount;
+
+        // Recently added songs (newest first)
+        $songs = Song::where('is_active', 1)
+            ->with(['album.artist'])
+            ->orderBy('created_at', 'desc')
+            ->skip($actualOffset)
             ->take($limit)
             ->get();
+
+        // If we didn't get enough songs, wrap around and get from beginning
+        if ($songs->count() < $limit && $actualOffset > 0) {
+            $remaining = $limit - $songs->count();
+            $moreSongs = Song::where('is_active', 1)
+                ->with(['album.artist'])
+                ->orderBy('created_at', 'desc')
+                ->take($remaining)
+                ->get();
+
+            $songs = $songs->merge($moreSongs);
+        }
+
+        \Log::info('🔄 Recent Self-Loop (Backward)', [
+            'offset' => $offset,
+            'actual_offset' => $actualOffset,
+            'total_songs' => $totalCount
+        ]);
 
         return $this->formatSongs($songs);
     }
 
     /**
      * Get favorite songs
+     * 🔄 TRANSITION: Favorites biter → Album → Genre
      */
     private function getFavoriteSongs(int $offset, int $limit): array
     {
@@ -318,6 +472,27 @@ class QueueRefillController extends Controller
             return [];
         }
 
+        $totalCount = $favoriteSongIds->count();
+
+        // Favorites bitti mi?
+        if ($offset >= $totalCount) {
+            // ✅ TRANSITION: Favorites → Album → Genre
+            $lastSong = Song::whereIn('song_id', $favoriteSongIds)
+                ->where('is_active', 1)
+                ->orderBy('song_id', 'desc')
+                ->first();
+
+            if ($lastSong && $lastSong->album_id) {
+                \Log::info('🔄 Context Transition: Favorites → Album', [
+                    'album_id' => $lastSong->album_id
+                ]);
+
+                return $this->getAlbumSongs($lastSong->album_id, 0, $limit);
+            }
+
+            return [];
+        }
+
         $songs = Song::whereIn('song_id', $favoriteSongIds)
             ->where('is_active', 1)
             ->with(['album.artist'])
@@ -330,6 +505,7 @@ class QueueRefillController extends Controller
 
     /**
      * Get songs by artist
+     * 🔄 TRANSITION: Artist biter → Album → Genre
      */
     private function getArtistSongs(int $artistId, int $offset, int $limit): array
     {
@@ -337,6 +513,30 @@ class QueueRefillController extends Controller
         $albumIds = Album::where('artist_id', $artistId)->pluck('album_id');
 
         if ($albumIds->isEmpty()) {
+            return [];
+        }
+
+        $totalCount = Song::whereIn('album_id', $albumIds)
+            ->where('is_active', 1)
+            ->count();
+
+        // Artist songs bitti mi?
+        if ($offset >= $totalCount) {
+            // ✅ TRANSITION: Artist → Album → Genre
+            $lastSong = Song::whereIn('album_id', $albumIds)
+                ->where('is_active', 1)
+                ->orderBy('song_id', 'desc')
+                ->first();
+
+            if ($lastSong && $lastSong->album_id) {
+                \Log::info('🔄 Context Transition: Artist → Album', [
+                    'artist_id' => $artistId,
+                    'album_id' => $lastSong->album_id
+                ]);
+
+                return $this->getAlbumSongs($lastSong->album_id, 0, $limit);
+            }
+
             return [];
         }
 

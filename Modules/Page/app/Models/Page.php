@@ -152,13 +152,8 @@ class Page extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getSeoFallbackCanonicalUrl(): ?string
     {
-        $slug = $this->getTranslated('slug', app()->getLocale()) ?? $this->slug;
-
-        if ($slug) {
-            return url('/' . ltrim($slug, '/'));
-        }
-
-        return null;
+        // Use existing getUrl() method which includes correct module prefix
+        return $this->getUrl();
     }
 
     /**

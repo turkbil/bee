@@ -163,11 +163,16 @@
 
 @script
 <script>
-    const storedCartId = localStorage.getItem('cart_id');
-    if (storedCartId) {
-        $wire.loadCartById(parseInt(storedCartId)).then(() => {
-            console.log('Cart loaded from localStorage');
-        });
+    try {
+        const storedCartId = localStorage.getItem('cart_id');
+        if (storedCartId) {
+            $wire.loadCartById(parseInt(storedCartId)).then(() => {
+                console.log('Cart loaded from localStorage');
+            });
+        }
+    } catch (e) {
+        // localStorage access denied (private mode, security settings)
+        console.warn('Cart: localStorage access denied');
     }
 </script>
 @endscript

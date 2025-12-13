@@ -326,6 +326,9 @@ class SongController extends Controller
     public function serveEncryptionKey(int $id)
     {
         try {
+            // 🔥 DISABLE SESSION FOR THIS REQUEST (before any session starts)
+            config(['session.driver' => 'array']); // Temporary in-memory session (won't persist or set cookies)
+
             // 🚀 PERFORMANCE: Cache encryption key (key never changes)
             $tenantId = tenant() ? tenant()->id : 'central';
             $cacheKey = "song_encryption_key_{$tenantId}_{$id}";
@@ -365,12 +368,24 @@ class SongController extends Controller
             }
 
             // Return binary key with proper headers
-            return response($keyBinary, 200, [
-                'Content-Type' => 'application/octet-stream',
-                'Content-Length' => strlen($keyBinary),
-                'Cache-Control' => 'public, max-age=86400', // Browser cache 24h
-                'Expires' => gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT',
-            ]);
+            // 🔥 USE BASE RESPONSE TO BYPASS ALL MIDDLEWARE HEADER MANIPULATION
+            $response = new \Symfony\Component\HttpFoundation\Response($keyBinary, 200);
+
+            $response->headers->set('Content-Type', 'application/octet-stream');
+            $response->headers->set('Content-Length', strlen($keyBinary));
+            $response->headers->set('Cache-Control', 'public, max-age=86400, immutable');
+            $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Range');
+            $response->headers->set('Access-Control-Expose-Headers', 'Content-Length');
+
+            // Remove session cookies added by middleware
+            $response->headers->removeCookie('XSRF-TOKEN');
+            $response->headers->removeCookie('tuufi_session');
+            $response->headers->remove('Pragma');
+
+            return $response;
 
         } catch (\Exception $e) {
             \Log::error('Encryption key serve error:', [

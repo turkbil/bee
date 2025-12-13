@@ -292,8 +292,8 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackCanonicalUrl(): ?string
     {
-        $slug = $this->getTranslated('slug', app()->getLocale());
-        return $slug ? url('/muzibu/song/' . ltrim($slug, '/')) : null;
+        // Use existing getUrl() method for consistency
+        return $this->getUrl();
     }
 
     public function getSeoFallbackImage(): ?string
@@ -421,10 +421,10 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/song/{$slug}");
+            return url("/muzibu/song/{$slug}");
         }
 
-        return url("/{$locale}/song/{$slug}");
+        return url("/{$locale}/muzibu/song/{$slug}");
     }
 
     /**

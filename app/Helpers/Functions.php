@@ -654,3 +654,25 @@ if (!function_exists('ai_deduct_credits_properly')) {
         }
     }
 }
+
+if (!function_exists('versioned_asset')) {
+    /**
+     * Get asset URL with automatic file-based cache busting
+     *
+     * Dosyanın son değiştirilme tarihine göre otomatik version ekler.
+     * Dosya güncellendiğinde browser cache otomatik temizlenir.
+     *
+     * @param string $path Asset path (örn: 'themes/muzibu/js/player/core/player-core.js')
+     * @param bool|null $secure HTTPS kullan
+     * @return string Versioned asset URL
+     *
+     * @example
+     * // Blade'de kullanım:
+     * <script src="{{ versioned_asset('themes/muzibu/js/player/core/player-core.js') }}"></script>
+     * // Output: https://muzibu.com.tr/themes/muzibu/js/player/core/player-core.js?v=1765511474
+     */
+    function versioned_asset($path, $secure = null)
+    {
+        return \App\Helpers\AssetHelper::versioned($path, $secure);
+    }
+}

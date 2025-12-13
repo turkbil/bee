@@ -78,7 +78,7 @@ class LinkGeneratorNode extends AbstractNode
     protected function buildShopUrl(string $type, string $identifier): string
     {
         return match ($type) {
-            'product' => "/shop/product/{$identifier}",
+            'product' => "/shop/{$identifier}",
             'category' => "/shop/category/{$identifier}",
             'brand' => "/shop/brand/{$identifier}",
             default => "/shop/{$identifier}",

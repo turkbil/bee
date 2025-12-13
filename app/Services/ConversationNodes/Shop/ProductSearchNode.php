@@ -191,7 +191,7 @@ class ProductSearchNode extends AbstractNode
                 'stock' => $product->current_stock ?? 0,
                 'is_featured' => $product->is_featured ?? false,
                 'image' => $product->media->first()?->getUrl() ?? null,
-                'url' => "/shop/product/{$slug}",
+                'url' => "/shop/{$slug}",
             ];
         })->toArray();
     }

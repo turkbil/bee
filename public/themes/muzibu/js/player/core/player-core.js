@@ -135,7 +135,7 @@ function muzibuApp() {
         showDeviceLimitModal: false, // 🔐 Show device limit exceeded modal
 
         // Crossfade settings (using Howler.js + HLS.js)
-        crossfadeEnabled: true,
+        crossfadeEnabled: false, // 🔥 DISABLED: Using gapless playback instead (instant transitions)
         crossfadeDuration: 7000, // 7 seconds for automatic song transitions - smooth crossfade
         fadeOutDuration: 800, // 0.8 seconds for pause/play/manual change fade (was 5s - too slow!)
         isCrossfading: false,
@@ -592,9 +592,17 @@ function muzibuApp() {
                 // ✅ Alpine store check
                 const muzibuStore = Alpine.store('muzibu');
 
+                // 🧹 MINIMAL QUEUE SAVE: Sadece current + sonraki 20 şarkıyı kaydet
+                // Eski çalınan şarkıları kaydetmeye gerek yok (DB'den yüklenecek)
+                const minimalQueue = this.queue.slice(
+                    Math.max(0, this.queueIndex - 2), // 2 önceki (geri gitmek için)
+                    this.queueIndex + 20 // 20 sonraki
+                );
+                const adjustedQueueIndex = Math.min(this.queueIndex, 2);
+
                 const state = {
-                    queue: this.queue,
-                    queueIndex: this.queueIndex,
+                    queue: minimalQueue, // Minimal queue (max 22 şarkı)
+                    queueIndex: adjustedQueueIndex,
                     currentSong: this.currentSong,
                     currentTime: this.currentTime,
                     shuffle: this.shuffle,
@@ -911,6 +919,19 @@ function muzibuApp() {
             const self = this;
             const targetVolume = this.isMuted ? 0 : this.volume / 100;
 
+            // 🔥 FIX: Save current audio volume BEFORE creating next player
+            // (createNextHlsPlayer might reuse the same audio element!)
+            console.log('🔍 Audio element check:', {
+                hasActiveHls: hasActiveHls,
+                audio: audio,
+                audioId: audio?.id,
+                audioVolume: audio?.volume,
+                audioPaused: audio?.paused,
+                activeHlsAudioId: this.activeHlsAudioId
+            });
+            const currentAudioVolume = hasActiveHls ? audio.volume : null;
+            console.log('🔍 Crossfade volumes: current=' + currentAudioVolume + ', target=' + targetVolume + ', duration=' + this.crossfadeDuration + 'ms');
+
             // Get next song URL and type - USE CACHE FIRST!
             try {
                 let data;
@@ -954,7 +975,9 @@ function muzibuApp() {
                 if (hasActiveHowler) {
                     this.howl.fade(targetVolume, 0, this.crossfadeDuration);
                 } else if (hasActiveHls) {
-                    this.fadeAudioElement(audio, audio.volume, 0, this.crossfadeDuration);
+                    // 🔥 FIX: Use saved volume instead of audio.volume
+                    // (audio.volume might be 0 if createNextHlsPlayer reused the same element!)
+                    this.fadeAudioElement(audio, currentAudioVolume, 0, this.crossfadeDuration);
                 }
 
                 // After crossfade duration, complete the transition
@@ -1000,14 +1023,23 @@ function muzibuApp() {
         async createNextHlsPlayer(url, targetVolume) {
             const self = this;
 
-            // Create a second audio element for crossfade
-            let nextAudio = document.getElementById('hlsAudioNext');
+            // 🔥 FIX: Use the INACTIVE audio element for crossfade
+            // If hlsAudio is active, use hlsAudioNext. If hlsAudioNext is active, use hlsAudio.
+            const currentAudioId = this.activeHlsAudioId || 'hlsAudio';
+            const nextAudioId = currentAudioId === 'hlsAudio' ? 'hlsAudioNext' : 'hlsAudio';
+            console.log('🔍 Crossfade audio swap: current=' + currentAudioId + ', next=' + nextAudioId);
+
+            // Create or get the inactive audio element
+            let nextAudio = document.getElementById(nextAudioId);
             if (!nextAudio) {
                 nextAudio = document.createElement('audio');
-                nextAudio.id = 'hlsAudioNext';
+                nextAudio.id = nextAudioId;
                 nextAudio.style.display = 'none';
                 document.body.appendChild(nextAudio);
             }
+
+            // Store next audio ID for completeCrossfade
+            this.nextHlsAudioId = nextAudioId;
 
             return new Promise((resolve, reject) => {
                 if (Hls.isSupported()) {
@@ -1063,10 +1095,15 @@ function muzibuApp() {
 
             // Stop and unload old HLS
             if (this.hls) {
-                const oldAudio = this.$refs.hlsAudio;
+                // 🔥 FIX: Get the CURRENT active audio element (not always hlsAudio!)
+                const currentAudioId = this.activeHlsAudioId || 'hlsAudio';
+                const oldAudio = document.getElementById(currentAudioId);
+                console.log('🔍 Stopping old audio:', currentAudioId);
+
                 if (oldAudio) {
                     oldAudio.pause();
                     oldAudio.src = '';
+                    oldAudio.load(); // Reset audio element
                 }
                 this.hls.destroy();
                 this.hls = null;
@@ -1084,11 +1121,12 @@ function muzibuApp() {
                 this.hlsNext = null;
                 this.isHlsStream = true;
 
-                // Mark hlsAudioNext as the active audio element
-                this.activeHlsAudioId = 'hlsAudioNext';
+                // 🔥 FIX: Use nextHlsAudioId (set in createNextHlsPlayer)
+                this.activeHlsAudioId = this.nextHlsAudioId;
+                console.log('🔍 New active audio:', this.activeHlsAudioId);
 
                 // Get reference to the next audio element (now becomes main)
-                const nextAudio = document.getElementById('hlsAudioNext');
+                const nextAudio = document.getElementById(this.nextHlsAudioId);
                 if (nextAudio) {
                     this.duration = nextAudio.duration || 0;
 
@@ -1494,6 +1532,40 @@ function muzibuApp() {
                     }
                     if (streamData.subscription_ends_at !== undefined) {
                         this.currentUser.subscription_ends_at = streamData.subscription_ends_at;
+                    }
+                }
+
+                // 🎯 AUTO-CONTEXT: Set context automatically if not already set
+                // User wants infinite loop system to work from ANYWHERE (homepage, search, random, etc.)
+                const muzibuStore = Alpine.store('muzibu');
+                const currentContext = muzibuStore?.getPlayContext();
+
+                if (!currentContext && streamData.song) {
+                    console.log('🎯 AUTO-CONTEXT: No context detected, setting automatically...');
+
+                    // Priority: Album → Genre
+                    // If song has album_id, set context to album (will transition to genre when album ends)
+                    // If no album, set context to genre directly (infinite loop)
+                    if (streamData.song.album_id) {
+                        muzibuStore.setPlayContext({
+                            type: 'album',
+                            id: streamData.song.album_id,
+                            name: streamData.song.album_name || 'Album',
+                            offset: 0,
+                            source: 'auto_detect'
+                        });
+                        console.log(`✅ AUTO-CONTEXT: Album ${streamData.song.album_id} (${streamData.song.album_name})`);
+                    } else if (streamData.song.genre_id) {
+                        muzibuStore.setPlayContext({
+                            type: 'genre',
+                            id: streamData.song.genre_id,
+                            name: streamData.song.genre_name || 'Genre',
+                            offset: 0,
+                            source: 'auto_detect'
+                        });
+                        console.log(`✅ AUTO-CONTEXT: Genre ${streamData.song.genre_id} (${streamData.song.genre_name})`);
+                    } else {
+                        console.warn('⚠️ AUTO-CONTEXT: Song has no album_id or genre_id, cannot set context');
                     }
                 }
 
@@ -1917,21 +1989,21 @@ onplay: function() {
                 this.hls = new Hls({
                     enableWorker: true,
                     lowLatencyMode: false,
-                    // 🔑 KEY LOADING POLICY - Prevent keyLoadError with retries
+                    // 🔑 KEY LOADING POLICY - Prevent keyLoadError with aggressive retries
                     keyLoadPolicy: {
                         default: {
-                            maxTimeToFirstByteMs: 8000,  // 8 second timeout for first byte
-                            maxLoadTimeMs: 15000,        // 15 second total timeout
+                            maxTimeToFirstByteMs: 15000,  // 15 second timeout for first byte (increased from 8s)
+                            maxLoadTimeMs: 30000,         // 30 second total timeout (increased from 15s)
                             timeoutRetry: {
-                                maxNumRetry: 3,          // 3 timeout retries
-                                retryDelayMs: 1000,      // 1 second delay
-                                maxRetryDelayMs: 4000    // Max 4 seconds
+                                maxNumRetry: 6,           // 6 timeout retries (increased from 3)
+                                retryDelayMs: 1000,       // 1 second delay
+                                maxRetryDelayMs: 5000     // Max 5 seconds (increased from 4s)
                             },
                             errorRetry: {
-                                maxNumRetry: 5,          // 5 error retries (critical for key)
-                                retryDelayMs: 500,       // 500ms initial delay
-                                maxRetryDelayMs: 3000,   // Max 3 seconds
-                                backoff: 'exponential'   // Exponential backoff
+                                maxNumRetry: 8,           // 8 error retries (increased from 5)
+                                retryDelayMs: 500,        // 500ms initial delay
+                                maxRetryDelayMs: 4000,    // Max 4 seconds (increased from 3s)
+                                backoff: 'exponential'    // Exponential backoff
                             }
                         }
                     },
@@ -2063,7 +2135,7 @@ onplay: function() {
 
                 this.hls.on(Hls.Events.ERROR, function(event, data) {
                     if (data.fatal) {
-                        console.error('HLS fatal error:', data);
+                        console.warn('⚠️ HLS error (fallback to MP3):', data.details);
 
                         // 🛡️ Set abort flag FIRST to prevent MANIFEST_PARSED from calling play()
                         hlsAborted = true;
@@ -2072,7 +2144,7 @@ onplay: function() {
                         // HLS yüklenemezse MP3'e fallback (SIGNED URL)
                         // Sadece NETWORK_ERROR degil, TUM fatal error'larda fallback yap
                         if (self.currentSong && self.currentFallbackUrl) {
-                            console.log('🔄 HLS failed, falling back to signed MP3...');
+                            console.info('🔄 Fallback: Switching to MP3...');
                             console.log('🔍 currentFallbackUrl:', self.currentFallbackUrl);
                             console.log('🔍 currentFallbackUrl type:', typeof self.currentFallbackUrl);
 
@@ -2217,7 +2289,11 @@ onplay: function() {
         fadeAudioElement(audio, fromVolume, toVolume, duration) {
             console.log(`🎚️ Fade: ${fromVolume.toFixed(2)} → ${toVolume.toFixed(2)} (${duration}ms)`);
             return new Promise(resolve => {
-                if (this._fadeAnimation) cancelAnimationFrame(this._fadeAnimation);
+                // 🔥 FIX: Store animation frame PER audio element (not global)
+                // This allows multiple audio elements to fade simultaneously during crossfade
+                if (audio._fadeAnimation) {
+                    cancelAnimationFrame(audio._fadeAnimation);
+                }
 
                 const startTime = performance.now();
                 const volumeDiff = toVolume - fromVolume;
@@ -2229,14 +2305,15 @@ onplay: function() {
                     audio.volume = fromVolume + (volumeDiff * progress);
 
                     if (progress < 1) {
-                        this._fadeAnimation = requestAnimationFrame(animate);
+                        audio._fadeAnimation = requestAnimationFrame(animate);
                     } else {
                         audio.volume = toVolume;
+                        audio._fadeAnimation = null;
                         resolve();
                     }
                 };
 
-                this._fadeAnimation = requestAnimationFrame(animate);
+                audio._fadeAnimation = requestAnimationFrame(animate);
             });
         },
 
@@ -3199,12 +3276,17 @@ onplay: function() {
                     const context = Alpine.store('muzibu')?.getPlayContext();
 
                     if (!context) {
-                        // Sadece ilk kez uyar (boş queue spam yapmasın)
-                        if (this.queue.length > 0) {
+                        // Sadece ilk kez uyar (spam yapmasın)
+                        if (!this._noContextWarningShown && this.queue.length > 0) {
                             console.warn('⚠️ No play context - cannot auto-refill queue');
+                            console.info('💡 Play a song from homepage, search, or genre to enable infinite loop');
+                            this._noContextWarningShown = true;
                         }
                         return;
                     }
+
+                    // Context varsa flag'i resetle (yeni session için)
+                    this._noContextWarningShown = false;
 
                     console.warn('⚠️ Queue running low! Auto-refilling...');
 
@@ -3215,7 +3297,20 @@ onplay: function() {
                     const newSongs = await Alpine.store('muzibu').refillQueue(currentOffset, 15);
 
                     if (newSongs && newSongs.length > 0) {
-                        // Queue'ya ekle (mevcut queue'nun sonuna)
+                        // 🧹 QUEUE CLEANUP: Eski çalınan şarkıları sil (memory optimization)
+                        // currentIndex'ten önce sadece 5 şarkı tut (geri gitmek için)
+                        const keepPreviousSongs = 5;
+                        const cleanupStartIndex = Math.max(0, this.queueIndex - keepPreviousSongs);
+
+                        if (cleanupStartIndex > 0) {
+                            // Eski şarkıları sil
+                            const removedCount = cleanupStartIndex;
+                            this.queue = this.queue.slice(cleanupStartIndex);
+                            this.queueIndex = this.queueIndex - cleanupStartIndex;
+                            console.log(`🧹 Queue cleaned: ${removedCount} old songs removed (kept last ${keepPreviousSongs})`);
+                        }
+
+                        // Queue'ya yeni şarkıları ekle
                         this.queue = [...this.queue, ...newSongs];
                         console.log(`✅ Auto-refilled: ${newSongs.length} songs added (Total queue: ${this.queue.length})`);
 

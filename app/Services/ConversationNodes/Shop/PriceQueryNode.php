@@ -132,7 +132,7 @@ class PriceQueryNode extends AbstractNode
                 'base_price_formatted' => number_format($product->base_price, 0, ',', '.') . ' TL',
                 'category' => $product->category->title ?? 'Uncategorized',
                 'stock' => $product->stock ?? 0,
-                'url' => "/shop/product/{$product->slug}",
+                'url' => "/shop/{$product->slug}",
                 'image' => $product->media->first()?->getUrl() ?? null,
             ];
         })->toArray();

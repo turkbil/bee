@@ -24,7 +24,7 @@
                     $discountPercentage = $product->discount_percentage;
                 @endphp
 
-                <a href="{{ url('/shop/product/' . $slug) }}"
+                <a href="{{ url('/shop/' . $slug) }}"
                    class="group bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
 
                     {{-- Ürün Görseli --}}

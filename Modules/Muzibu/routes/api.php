@@ -21,10 +21,8 @@ use Modules\Muzibu\app\Http\Controllers\Front\SearchController;
  *
  */
 
-// 🚀 LIGHTWEIGHT KEY ENDPOINT - Outside api prefix to avoid Sanctum middleware overhead
-Route::get('/muzibu/songs/{id}/key', [SongController::class, 'serveEncryptionKey'])
-    ->middleware('tenant') // Only tenant context, no session/auth overhead
-    ->name('api.muzibu.songs.encryption-key');
+// 🔑 HLS ENCRYPTION KEY - MOVED TO MuzibuServiceProvider::loadApiRoutes()
+// Route registered separately without session middleware for performance
 
 Route::prefix('muzibu')->group(function () {
 

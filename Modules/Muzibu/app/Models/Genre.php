@@ -175,8 +175,8 @@ class Genre extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackCanonicalUrl(): ?string
     {
-        $slug = $this->getTranslated('slug', app()->getLocale());
-        return $slug ? url('/muzibu/genre/' . ltrim($slug, '/')) : null;
+        // Use existing getUrl() method for consistency
+        return $this->getUrl();
     }
 
     public function getSeoFallbackImage(): ?string

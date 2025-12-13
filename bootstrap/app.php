@@ -118,6 +118,8 @@ $app = Application::configure(basePath: dirname(__DIR__))
             'throttle.user' => \App\Http\Middleware\ThrottleByUserType::class,
             // Signed URL validation for protected resources
             'signed.url' => \App\Http\Middleware\ValidateSignedUrl::class,
+            // HLS encryption key - No session middleware
+            'hls.nosession' => \App\Http\Middleware\NoSessionForHlsKey::class,
         ]);
                 
         // Admin middleware grubu

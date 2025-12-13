@@ -28,7 +28,7 @@
             <div class="swiper-wrapper">
 
                     <!-- Slide 1: Teslimatlar -->
-                    <div class="swiper-slide slide-1-bg">
+                    <div class="swiper-slide swiper-slide-active slide-1-bg">
                         <div class="container mx-auto px-4 sm:px-4 md:px-0 relative z-10">
                             <div class="grid lg:grid-cols-2 gap-8 items-center">
                             <div class="text-gray-900 dark:text-white">
@@ -299,7 +299,7 @@
                 <div class="flex justify-start items-center gap-4 mt-4">
                     <!-- Play/Pause Button -->
                     <button id="heroPlayPause" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/30 dark:bg-slate-700/30 backdrop-blur-sm hover:bg-blue-500/60 dark:hover:bg-blue-500/50 transition-all duration-300 group">
-                        <i class="fa-solid fa-pause text-slate-900 dark:text-slate-300 text-sm group-hover:text-white transition-colors"></i>
+                        <i class="fa-solid fa-pause text-slate-900 dark:text-white text-sm group-hover:text-white transition-colors"></i>
                     </button>
 
                     <!-- Pagination Dots -->

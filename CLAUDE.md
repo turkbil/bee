@@ -789,12 +789,66 @@ sudo find public/readme/2025/ -type d -exec chmod 755 {} \;
 sudo find public/readme/2025/ -type f -exec chmod 644 {} \;
 ```
 
+#### 🔴 HTML RAPOR OLUŞTURURKEN ZORUNLU TEST (KRİTİK!)
+
+**⚠️ ASLA 200 OK TEST ETMEDEN LİNK VERME!**
+
+```bash
+# HTML oluşturduktan sonra MUTLAKA test et:
+
+# 1. Klasör oluştur
+sudo -u tuufi.com_ mkdir -p public/readme/2025/12/12/konu/v1/
+
+# 2. HTML dosyası yaz (Write tool ile)
+# ... HTML içeriği ...
+
+# 3. İzinleri düzelt (ZORUNLU!)
+sudo chown tuufi.com_:psaserv public/readme/2025/12/12/konu/v1/index.html
+sudo chmod 644 public/readme/2025/12/12/konu/v1/index.html
+
+# 4. TEST ET (ZORUNLU!) - Trailing slash ile
+curl -s -k -I https://ixtif.com/readme/2025/12/12/konu/v1/ | head -n 1
+# Beklenen: HTTP/2 200
+
+# 5. Eğer 403 Forbidden → Permission düzelt
+sudo chown -R tuufi.com_:psaserv public/readme/2025/12/12/
+sudo find public/readme/2025/12/12/ -type d -exec chmod 755 {} \;
+sudo find public/readme/2025/12/12/ -type f -exec chmod 644 {} \;
+
+# 6. Tekrar test et
+curl -s -k -I https://ixtif.com/readme/2025/12/12/konu/v1/ | head -n 1
+# Mutlaka HTTP/2 200 dönmeli!
+```
+
+**🚨 KRİTİK KURALLAR:**
+1. ❌ **200 OK almadan kullanıcıya link ASLA verme!**
+2. ✅ **Trailing slash kullan:** `/v1/` doğru, `/v1` yanlış
+3. ✅ **Her HTML sonrası curl test zorunlu**
+4. ✅ **403 hatası → permission düzelt, tekrar test et**
+5. ✅ **Test geçmeden "Rapor hazır" deme!**
+
+**⚠️ HATALI ÖRNEK (YAPMA!):**
+```
+❌ "Rapor hazır: https://ixtif.com/readme/2025/12/12/konu/"
+   (Test etmeden link vermiş, 403 hatası verecek!)
+```
+
+**✅ DOĞRU ÖRNEK:**
+```
+1. HTML oluştur
+2. Permission düzelt
+3. curl ile test et → 200 OK
+4. "✅ Rapor hazır: https://ixtif.com/readme/2025/12/12/konu/v1/"
+```
+
 **UNUTMA:**
 - ✅ Her zaman `sudo -u tuufi.com_` kullan!
 - ✅ Write/Edit tool kullandıysan → chown + chmod + test!
 - ✅ Bash mkdir kullandıysan → chown + chmod + test!
+- ✅ **HTML oluşturduysan → chown + chmod + curl test + 200 OK + link ver!**
 - ❌ ASLA root olarak dosya/klasör oluşturma!
 - ❌ Bash mkdir bile root:root oluşturur → sudo -u tuufi.com_ zorunlu!
+- ❌ **200 OK olmadan link verme!**
 
 ---
 

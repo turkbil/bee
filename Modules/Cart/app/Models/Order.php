@@ -19,6 +19,9 @@ class Order extends BaseModel
     protected $table = 'cart_orders';
     protected $primaryKey = 'order_id';
 
+    // BaseModel'deki is_active default'unu devre dışı bırak (cart_orders tablosunda yok)
+    protected $attributes = [];
+
     protected $fillable = [
         'order_number',
         'user_id',
@@ -110,7 +113,7 @@ class Order extends BaseModel
     }
 
     /**
-     * Generate order number
+     * Generate order number (PayTR: sadece alfanumerik, özel karakter yok)
      */
     public static function generateOrderNumber(): string
     {
@@ -118,7 +121,7 @@ class Order extends BaseModel
         $date = date('Ymd');
         $random = strtoupper(substr(uniqid(), -6));
 
-        return "{$prefix}-{$date}-{$random}";
+        return "{$prefix}{$date}{$random}"; // Tire yok - PayTR uyumlu
     }
 
     /**

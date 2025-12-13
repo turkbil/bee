@@ -35,6 +35,7 @@ Route::middleware('auth')->get('/subscription/success', \Modules\Subscription\Ap
 
 // 💳 PAYMENT ROUTES
 Route::get('/payment/success', [\Modules\Payment\App\Http\Controllers\PaymentSuccessController::class, 'show'])->name('payment.success');
+Route::get('/payment/{orderNumber}', [\Modules\Payment\App\Http\Controllers\PaymentPageController::class, 'show'])->name('payment.page');
 
 // PDF Export - Wildcard'dan önce tanımlanmalı
 Route::middleware([InitializeTenancy::class, 'site'])

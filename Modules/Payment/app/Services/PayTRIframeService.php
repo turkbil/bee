@@ -38,7 +38,8 @@ class PayTRIframeService
             $basket = $this->prepareBasket($orderInfo);
 
             // Token oluşturma için hash string
-            $merchantOid = $payment->payment_number; // Sipariş numarası (benzersiz olmalı!)
+            // PayTR merchant_oid sadece alfanumerik olmalı - özel karakter içeremez!
+            $merchantOid = str_replace(['-', '_', ' '], '', $payment->payment_number);
             $userIp = request()->ip();
             $email = $userInfo['email'];
             $paymentAmount = (int) ($payment->amount * 100); // Kuruş cinsinden (9.99 TL = 999)

@@ -1474,9 +1474,11 @@ class CheckoutPage extends Component
                 'payment_method_id' => $this->selectedPaymentMethodId,
                 'payable_type' => Order::class,
                 'payable_id' => $order->order_id,
-                'transaction_id' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
+                'gateway_transaction_id' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
                 'amount' => $this->grandTotal,
                 'currency' => 'TRY',
+                'exchange_rate' => 1,
+                'amount_in_base_currency' => $this->grandTotal,
                 'status' => 'pending',
                 'installment_count' => $this->selectedInstallment,
                 'installment_fee' => $this->installmentFee,
@@ -1495,9 +1497,9 @@ class CheckoutPage extends Component
                 session([
                     'pending_payment_id' => $payment->payment_id,
                     'pending_customer' => [
-                        'name' => $customer->full_name,
-                        'email' => $customer->email,
-                        'phone' => $customer->phone,
+                        'name' => trim($this->contact_first_name . ' ' . $this->contact_last_name),
+                        'email' => $this->contact_email,
+                        'phone' => $this->contact_phone,
                         'address' => $shippingAddress->address_line_1 . ', ' . $shippingAddress->city,
                     ],
                     'pending_order_info' => [
@@ -1760,75 +1762,49 @@ class CheckoutPage extends Component
                 'payment_method_id' => $this->selectedPaymentMethodId,
                 'payable_type' => Order::class,
                 'payable_id' => $order->order_id,
-                'transaction_id' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
+                'gateway_transaction_id' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
                 'amount' => $this->grandTotal,
                 'currency' => 'TRY',
+                'exchange_rate' => 1,
+                'amount_in_base_currency' => $this->grandTotal,
                 'status' => 'pending',
                 'installment_count' => $this->selectedInstallment,
                 'installment_fee' => $this->installmentFee,
             ]);
 
+            // ✅ Commit - Order ve Payment oluşturuldu
             DB::commit();
 
-            // PayTR iframe token al
-            $paymentMethod = PaymentMethod::find($this->selectedPaymentMethodId);
+            // Session'a bilgileri kaydet (payment sayfası için)
+            session([
+                'last_order_number' => $order->order_number,
+                'payment_authorized_' . $order->order_number => true,
+                'checkout_user_info' => [
+                    'name' => trim($this->contact_first_name . ' ' . $this->contact_last_name),
+                    'email' => $this->contact_email,
+                    'phone' => $this->contact_phone,
+                    'address' => $shippingAddress ? ($shippingAddress->address_line_1 . ', ' . $shippingAddress->city) : '',
+                ],
+            ]);
 
-            if ($paymentMethod && $paymentMethod->gateway === 'paytr') {
-                // PayTRIframeService kullan
-                $iframeService = app(\Modules\Payment\App\Services\PayTRIframeService::class);
+            // ✅ Payment sayfasına redirect - PayTR token orada alınacak
+            $paymentUrl = route('payment.page', ['orderNumber' => $order->order_number]);
 
-                $userInfo = [
-                    'name' => $customer->full_name,
-                    'email' => $customer->email,
-                    'phone' => $customer->phone,
-                    'address' => $shippingAddress->address_line_1 . ', ' . $shippingAddress->city,
-                ];
+            \Log::info('✅ Redirecting to payment page', [
+                'order_number' => $order->order_number,
+                'payment_url' => $paymentUrl
+            ]);
 
-                $orderInfo = [
-                    'amount' => $this->grandTotal,
-                    'description' => 'Sipariş No: ' . $order->order_number,
-                    'items' => $this->items->map(function ($item) {
-                        return [
-                            'name' => $item->product->getTranslated('title', app()->getLocale()),
-                            'price' => $item->unit_price,
-                            'quantity' => $item->quantity,
-                        ];
-                    })->toArray(),
-                ];
-
-                $result = $iframeService->prepareIframePayment($payment, $userInfo, $orderInfo);
-
-                if ($result['success']) {
-                    // Sipariş numarasını session'a kaydet (PayTR callback için)
-                    session(['last_order_number' => $order->order_number]);
-
-                    // 🔐 Session authorization ekle - ödeme sayfası için
-                    session()->put('payment_authorized_' . $order->order_number, true);
-
-                    // ⚠️ SEPET TEMİZLENMEYECEK - Sadece ödeme başarılı olunca temizlenecek
-                    // PayTR callback başarı dönünce sepet temizlenecek
-
-                    DB::commit();
-
-                    // ✅ PayTR iframe modal aç
-                    $this->paymentIframeUrl = $result['iframe_url'];
-                    $this->showPaymentModal = true;
-
-                    \Log::info('✅ PayTR iframe modal opened', [
-                        'url' => $result['iframe_url'],
-                        'order_number' => $order->order_number
-                    ]);
-                } else {
-                    DB::rollBack();
-                    session()->flash('error', 'Ödeme hazırlanamadı: ' . $result['message']);
-                    \Log::error('❌ PayTR token failed', ['message' => $result['message']]);
-                }
-            }
+            return [
+                'success' => true,
+                'redirectUrl' => $paymentUrl
+            ];
 
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('❌ proceedToPayment ERROR', ['message' => $e->getMessage()]);
             session()->flash('error', 'Sipariş oluşturulurken hata: ' . $e->getMessage());
+            return ['success' => false, 'error' => $e->getMessage()];
         }
     }
 

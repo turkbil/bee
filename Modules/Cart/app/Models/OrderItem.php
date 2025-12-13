@@ -16,6 +16,9 @@ class OrderItem extends BaseModel
     protected $table = 'cart_order_items';
     protected $primaryKey = 'order_item_id';
 
+    // BaseModel'deki is_active default'unu devre dışı bırak (cart_order_items tablosunda yok)
+    protected $attributes = [];
+
     protected $fillable = [
         'order_id',
         'orderable_type',

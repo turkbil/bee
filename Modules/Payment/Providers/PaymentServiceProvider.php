@@ -8,6 +8,7 @@ use Modules\Payment\App\Http\Livewire\Admin\PaymentsComponent;
 use Modules\Payment\App\Http\Livewire\Admin\PaymentDetailComponent;
 use Modules\Payment\App\Http\Livewire\Admin\PaymentMethodsComponent;
 use Modules\Payment\App\Http\Livewire\Admin\PaymentMethodManageComponent;
+use Modules\Payment\App\Http\Livewire\Front\PaymentPage;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -50,6 +51,9 @@ class PaymentServiceProvider extends ServiceProvider
         Livewire::component('payment::admin.payment-detail-component', PaymentDetailComponent::class);
         Livewire::component('payment::admin.payment-methods-component', PaymentMethodsComponent::class);
         Livewire::component('payment::admin.payment-method-manage-component', PaymentMethodManageComponent::class);
+
+        // Frontend Livewire Components
+        Livewire::component('payment::front.payment-page', PaymentPage::class);
     }
 
     /**

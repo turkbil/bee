@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Payment\App\Http\Controllers\PayTRCallbackController;
+use Modules\Payment\App\Http\Controllers\PaymentPageController;
 
 // ⚠️  FRONTEND ROUTES DynamicRouteService TARAFINDAN YÖNETİLİYOR
 // Bu dosyada sadece özel route'lar (homepayment gibi) tanımlanmalı
@@ -15,3 +16,6 @@ use Modules\Payment\App\Http\Controllers\PayTRCallbackController;
 Route::prefix('payment/callback')->name('payment.callback.')->group(function () {
     Route::post('paytr', [PayTRCallbackController::class, 'handle'])->name('paytr');
 });
+
+// Payment Page (Frontend - Controller based, no middleware for debugging)
+Route::get('/payment/{orderNumber}', [PaymentPageController::class, 'show'])->name('payment.page');

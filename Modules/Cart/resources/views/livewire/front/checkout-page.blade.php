@@ -1,4 +1,6 @@
-<div class="min-h-screen py-6 bg-gray-50 dark:bg-gray-900" x-data="{
+<div class="min-h-screen py-6 bg-gray-50 dark:bg-gray-900"
+     @redirect-to-payment.window="console.log('🚀 Redirect event received:', $event.detail.url); window.location.href = $event.detail.url"
+     x-data="{
     // Form Data
     contactFirstName: '{{ $contact_first_name }}',
     contactLastName: '{{ $contact_last_name }}',
@@ -28,7 +30,7 @@
     showNewBillingForm: false,
     showBillingList: false,
     selectedPaymentMethodId: {{ $selectedPaymentMethodId ?? 'null' }},
-    agreeAll: {{ $agree_all ? 'true' : 'false' }},
+    agreeAll: false,
 
     // Delete State
     showDeleteWarning: false,
@@ -1500,13 +1502,13 @@
 
                     {{-- Sözleşmeler --}}
                     <div class="p-5 border-b border-gray-200 dark:border-gray-700">
-                        <label class="flex items-start gap-3 cursor-pointer group" x-data="{ agreeAll: @entangle('agree_all').live }">
-                            {{-- Modern Checkbox --}}
+                        <label class="flex items-start gap-3 cursor-pointer group">
+                            {{-- Modern Checkbox (Alpine only - no server roundtrip) --}}
                             <div class="relative flex-shrink-0 mt-0.5">
                                 <div @click="agreeAll = !agreeAll"
                                      class="w-5 h-5 rounded border-2 transition-colors duration-200"
                                      :class="agreeAll ? 'bg-blue-600 border-blue-600' : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 group-hover:border-blue-400'">
-                                    <svg x-show="agreeAll" class="w-full h-full text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg x-show="agreeAll" x-cloak class="w-full h-full text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 </div>
@@ -1554,40 +1556,46 @@
                     @endif
 
                     {{-- Ödeme Butonu --}}
-                    <div class="p-5" x-data="{
-                        localAgreeAll: @entangle('agree_all').live,
-                        processing: false
-                    }">
-                        <button @click="
-                                console.log('🔍 Starting payment...', {
-                                    agree_all: localAgreeAll,
-                                    payment_method: selectedPaymentMethodId,
-                                    shipping: shippingAddressId,
-                                    billing: billingAddressId,
-                                    billing_profile: billingProfileId
-                                });
+                    <div class="p-5">
+                        <button
+                            x-data="{ processing: false }"
+                            @click="
+                                if (!agreeAll || processing) return;
                                 processing = true;
-                                $wire.call('proceedToPayment').then(() => {
-                                    console.log('✅ Payment SUCCESS');
-                                    processing = false;
-                                }).catch((error) => {
-                                    console.error('❌ Payment ERROR:', error);
-                                    alert('Ödeme hatası: ' + (error.message || error));
+                                syncToLivewire();
+                                $wire.proceedToPayment().then(response => {
+                                    if (response && response.redirectUrl) {
+                                        window.location.href = response.redirectUrl;
+                                    } else {
+                                        processing = false;
+                                    }
+                                }).catch(error => {
+                                    console.error('Payment error:', error);
                                     processing = false;
                                 });
                             "
-                                :disabled="!localAgreeAll || processing"
-                                :class="localAgreeAll && !processing ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-xl shadow-green-500/30' : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-60'"
-                                class="w-full text-white font-bold py-4 rounded-xl transition-colors duration-300 flex items-center justify-center gap-3 text-lg">
-                            <i class="fa-solid fa-lock text-lg" x-show="!processing"></i>
-                            <i class="fa-solid fa-spinner fa-spin text-lg" x-show="processing"></i>
-                            <span x-show="!processing">Ödemeye Geç</span>
-                            <span x-show="processing">İşleniyor...</span>
-                            <i class="fa-solid fa-arrow-right text-lg" x-show="!processing"></i>
+                            :disabled="!agreeAll || processing"
+                            :class="agreeAll && !processing ? 'bg-green-600 hover:bg-green-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed opacity-60'"
+                            class="w-full py-4 rounded-xl font-bold text-lg text-white transition-all">
+
+                            <template x-if="!processing">
+                                <span>
+                                    <i class="fas fa-lock mr-2"></i>
+                                    Ödemeye Geç
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </span>
+                            </template>
+                            <template x-if="processing">
+                                <span>
+                                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                                    İşleniyor...
+                                </span>
+                            </template>
                         </button>
-                        <p class="text-center text-xs text-gray-700 dark:text-gray-500 mt-4 flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-shield-halved text-green-600 dark:text-green-500"></i>
-                            <span>256-bit SSL ile güvenli ödeme</span>
+
+                        <p class="text-center text-xs text-gray-500 mt-4">
+                            <i class="fas fa-shield-halved text-green-600 mr-1"></i>
+                            256-bit SSL ile güvenli ödeme
                         </p>
                     </div>
 

@@ -13,8 +13,10 @@
     newBillingProfileType: 'individual',
 
     // Adres
-    shippingAddressId: {{ $shipping_address_id ?? 'null' }},
-    billingAddressId: {{ $billing_address_id ?? 'null' }},
+    shippingAddressId: @entangle('shipping_address_id').live,
+    billingAddressId: @entangle('billing_address_id').live,
+    defaultShippingAddressId: {{ optional($userAddresses->where('is_default_shipping', true)->first())->address_id ?? 'null' }},
+    defaultBillingAddressId: {{ optional($userAddresses->where('is_default_billing', true)->first())->address_id ?? 'null' }},
     billingSameAsShipping: {{ $billing_same_as_shipping ? 'true' : 'false' }},
     requiresShipping: {{ $requiresShipping ? 'true' : 'false' }},
 
@@ -498,10 +500,10 @@
                                                     </button>
                                                     {{-- Checkbox (Profil Seç) --}}
                                                     <div @click.stop="billingProfileId = {{ $profile->billing_profile_id }}; showList = false"
-                                                         class="w-5 h-5 rounded-full border-2 flex items-center justify-center cursor-pointer hover:border-blue-500 transition-colors"
+                                                         class="w-5 h-5 rounded-full border-2 flex items-center justify-center cursor-pointer hover:border-blue-500 transition-colors duration-200"
                                                          :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'border-blue-600 bg-blue-600' : 'border-gray-300 dark:border-gray-600'"
                                                          title="Profil Seç">
-                                                        <i class="fa-solid fa-check text-[10px] text-white"
+                                                        <i class="fa-solid fa-check text-[10px] text-white transition-opacity duration-200"
                                                            :class="billingProfileId == {{ $profile->billing_profile_id }} ? 'opacity-100' : 'opacity-0'"></i>
                                                     </div>
                                                 </div>
@@ -652,6 +654,7 @@
                                 <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
                                 <select wire:model="new_address_city" id="shipping_city"
                                         @change="
+                                            $wire.set('new_address_district', '');
                                             fetch('/api/get-districts/' + $event.target.value)
                                                 .then(r => r.json())
                                                 .then(data => {
@@ -703,12 +706,16 @@
                     </div>
 
                     @if($userAddresses->count() > 0)
-                        {{-- Seçili Adres Özeti (Compact Minimal) --}}
+                        {{-- Seçili Adres Özeti (Compact Minimal - Reactive) --}}
                         @foreach($userAddresses as $addr)
-                            @if($shipping_address_id == $addr->address_id)
-                                <div wire:key="shipping-summary-{{ $addr->address_id }}"
-                                     class="flex items-center justify-between gap-3 py-3 px-4 mb-3 bg-gray-100 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                            <div wire:key="shipping-summary-{{ $addr->address_id }}"
+                                 x-show="shippingAddressId == {{ $addr->address_id }}"
+                                 style="display: {{ $shipping_address_id == $addr->address_id ? 'flex' : 'none' }}"
+                                 class="flex items-center justify-between gap-3 py-3 px-4 mb-3 bg-gray-100 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                     <p class="text-sm text-gray-600 dark:text-gray-400 flex-1">
+                                        @if($addr->is_default_shipping)
+                                            <span class="mr-2 text-yellow-500 dark:text-yellow-400" title="Varsayılan Teslimat Adresi">★</span>
+                                        @endif
                                         <span class="text-gray-900 dark:text-white font-medium">{{ $addr->title }}</span>
                                         <span class="mx-2 text-gray-400 dark:text-gray-600">•</span>
                                         <span>{{ $addr->city }}</span>
@@ -719,7 +726,6 @@
                                         <i class="fa-solid fa-pen text-xs"></i>
                                     </button>
                                 </div>
-                            @endif
                         @endforeach
 
                         {{-- Adres Listesi (Collapsible) --}}
@@ -744,41 +750,120 @@
                                                 </div>
                                             </div>
                                             <div class="flex items-center gap-2 flex-shrink-0 ml-2">
-                                                {{-- Star (Varsayılan) - Filled --}}
-                                                @if($addr->is_default_shipping)
-                                                    <div class="p-1.5 text-yellow-500" title="Varsayılan Teslimat Adresi">
-                                                        <i class="fas fa-star text-xs"></i>
-                                                    </div>
-                                                @endif
-                                                {{-- Star (Varsayılan) - Empty --}}
-                                                <button @if(!$addr->is_default_shipping) x-show="!{{ $addr->is_default_shipping ? 'true' : 'false' }}" @endif
-                                                        @click.stop="$wire.setDefaultAddress({{ $addr->address_id }}, 'shipping')"
+                                                {{-- Edit Button --}}
+                                                <button @click.stop="
+                                                    if (isEditing) {
+                                                        isEditing = false;
+                                                        $wire.set('edit_address_id', null);
+                                                    } else {
+                                                        isEditing = true;
+                                                        $wire.set('edit_address_id', {{ $addr->address_id }});
+                                                        $wire.set('new_address_title', '{{ addslashes($addr->title) }}');
+                                                        $wire.set('new_address_phone', '{{ $addr->phone ?? '' }}');
+                                                        $wire.set('new_address_line', '{{ addslashes($addr->address_line_1) }}');
+                                                        $wire.set('new_address_city', '{{ $addr->city }}');
+                                                        $wire.set('new_address_district', '{{ $addr->district }}');
+                                                        $wire.set('new_address_postal', '{{ $addr->postal_code ?? '' }}');
+                                                    }
+                                                "
+                                                        class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
+                                                        title="Düzenle">
+                                                    <i class="fas fa-edit text-xs"></i>
+                                                </button>
+                                                {{-- Delete Button --}}
+                                                <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $addr->address_id }}; deleteTargetType = 'shipping_address'; deleteTargetTitle = '{{ $addr->title }}'"
+                                                        class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
+                                                        title="Sil">
+                                                    <i class="fas fa-trash text-xs"></i>
+                                                </button>
+                                                {{-- Star: Varsayılan Adres (Sonraki sayfa yüklemelerinde otomatik gelir) --}}
+                                                <div x-show="defaultShippingAddressId == {{ $addr->address_id }}"
+                                                     class="p-1.5 text-yellow-500"
+                                                     title="Varsayılan Teslimat Adresi (Sonraki açılışta otomatik gelir)">
+                                                    <i class="fas fa-star text-xs"></i>
+                                                </div>
+                                                <button x-show="defaultShippingAddressId != {{ $addr->address_id }}"
+                                                        @click.stop="defaultShippingAddressId = {{ $addr->address_id }}; shippingAddressId = {{ $addr->address_id }}; $wire.setDefaultAddress({{ $addr->address_id }}, 'shipping')"
                                                         class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-yellow-500/20 rounded text-yellow-500 hover:text-yellow-400"
                                                         title="Varsayılan Yap (Sonraki açılışta otomatik gelir)">
                                                     <i class="far fa-star text-xs"></i>
                                                 </button>
-                                                {{-- Edit Button --}}
-                                                <button @click.stop="
-                                                    isEditing = true;
-                                                    showNewShippingForm = true;
-                                                    showShippingList = false;
-                                                    $wire.editAddress({{ $addr->address_id }}, 'shipping');
-                                                "
-                                                        class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300">
-                                                    <i class="fa-solid fa-pen text-xs"></i>
-                                                </button>
-                                                {{-- Delete Button --}}
-                                                <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $addr->address_id }}; deleteTargetType = 'shipping_address'; deleteTargetTitle = '{{ $addr->title }}'"
-                                                        class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300">
-                                                    <i class="fa-solid fa-trash text-xs"></i>
-                                                </button>
-                                                {{-- Checkbox --}}
-                                                <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center pointer-events-none"
-                                                     :class="shippingAddressId == {{ $addr->address_id }} ? 'border-blue-600 bg-blue-600' : 'border-gray-300 dark:border-gray-600'">
-                                                    <i class="fa-solid fa-check text-[10px] text-white"
+                                                {{-- Checkbox (Adres Seç) --}}
+                                                <div @click.stop="shippingAddressId = {{ $addr->address_id }}; showShippingList = false"
+                                                     class="w-5 h-5 rounded-full border-2 flex items-center justify-center cursor-pointer hover:border-blue-500 transition-colors duration-200"
+                                                     :class="shippingAddressId == {{ $addr->address_id }} ? 'border-blue-600 bg-blue-600' : 'border-gray-300 dark:border-gray-600'"
+                                                     title="Adres Seç">
+                                                    <i class="fa-solid fa-check text-[10px] text-white transition-opacity duration-200"
                                                        :class="shippingAddressId == {{ $addr->address_id }} ? 'opacity-100' : 'opacity-0'"></i>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- İnline Edit Form - Kartın Altında --}}
+                                    <div x-show="isEditing" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Adresi Düzenle</span>
+                                            <button @click="isEditing = false; $wire.set('edit_address_id', null)"
+                                                    class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                                                <i class="fa-solid fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres Adı <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="new_address_title" placeholder="Örn: Evim"
+                                                   class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
+                                                <select wire:model="new_address_city" id="shipping_city_edit_{{ $addr->address_id }}"
+                                                        @change="
+                                                            $wire.set('new_address_district', '');
+                                                            fetch('/api/get-districts/' + $event.target.value)
+                                                                .then(r => r.json())
+                                                                .then(data => {
+                                                                    let select = document.getElementById('shipping_district_edit_{{ $addr->address_id }}');
+                                                                    select.innerHTML = '<option value=\'\'>Seçin</option>';
+                                                                    data.forEach(d => {
+                                                                        select.innerHTML += '<option value=\'' + d + '\'>' + d + '</option>';
+                                                                    });
+                                                                });
+                                                        "
+                                                        class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                                    <option value="">Seçin</option>
+                                                    @foreach($cities ?? [] as $city)
+                                                        <option value="{{ $city }}">{{ $city }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
+                                                <select wire:model="new_address_district" id="shipping_district_edit_{{ $addr->address_id }}"
+                                                        class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                                    <option value="">{{ empty($new_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
+                                                    @foreach($districts ?? [] as $district)
+                                                        <option value="{{ $district }}">{{ $district }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Posta Kodu</label>
+                                                <input type="text" wire:model="new_address_postal" placeholder="34000"
+                                                       class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres <span class="text-red-500">*</span></label>
+                                            <textarea wire:model="new_address_line" rows="2" placeholder="Mahalle, sokak, bina no, daire"
+                                                      class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm resize-none"></textarea>
+                                        </div>
+                                        <div class="flex justify-end">
+                                            <button wire:click="saveNewAddress('shipping')" wire:loading.attr="disabled" wire:target="saveNewAddress"
+                                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-gray-600 dark:hover:bg-gray-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-wait text-white text-sm font-medium rounded-lg">
+                                                <span wire:loading.remove wire:target="saveNewAddress"><i class="fa-solid fa-check mr-1"></i>Kaydet</span>
+                                                <span wire:loading wire:target="saveNewAddress"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Kaydediliyor...</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -848,6 +933,7 @@
                                         <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
                                         <select wire:model="new_billing_address_city" id="billing_city"
                                                 @change="
+                                                    $wire.set('new_billing_address_district', '');
                                                     fetch('/api/get-districts/' + $event.target.value)
                                                         .then(r => r.json())
                                                         .then(data => {
@@ -899,12 +985,16 @@
                             </div>
 
                             @if($userAddresses->count() > 0)
-                                {{-- Seçili Fatura Adresi Özeti (Compact Minimal) --}}
+                                {{-- Seçili Fatura Adresi Özeti (Compact Minimal - Reactive) --}}
                                 @foreach($userAddresses as $addr)
-                                    @if($billing_address_id == $addr->address_id)
-                                        <div wire:key="billing-summary-{{ $addr->address_id }}"
-                                             class="flex items-center justify-between gap-3 py-3 px-4 mb-3 bg-gray-100 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                                    <div wire:key="billing-summary-{{ $addr->address_id }}"
+                                         x-show="billingAddressId == {{ $addr->address_id }}"
+                                         style="display: {{ $billing_address_id == $addr->address_id ? 'flex' : 'none' }}"
+                                         class="flex items-center justify-between gap-3 py-3 px-4 mb-3 bg-gray-100 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
                                             <p class="text-sm text-gray-600 dark:text-gray-400 flex-1">
+                                                @if($addr->is_default_billing)
+                                                    <span class="mr-2 text-yellow-500 dark:text-yellow-400" title="Varsayılan Fatura Adresi">★</span>
+                                                @endif
                                                 <span class="text-gray-900 dark:text-white font-medium">{{ $addr->title }}</span>
                                                 <span class="mx-2 text-gray-400 dark:text-gray-600">•</span>
                                                 <span>{{ $addr->city }}</span>
@@ -915,7 +1005,6 @@
                                                 <i class="fa-solid fa-pen text-xs"></i>
                                             </button>
                                         </div>
-                                    @endif
                                 @endforeach
 
                                 {{-- Fatura Adresi Listesi (Collapsible) --}}
@@ -940,40 +1029,119 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex items-center gap-2 flex-shrink-0 ml-2">
-                                                        {{-- Star (Varsayılan) - Filled --}}
-                                                        @if($addr->is_default_billing)
-                                                            <div class="p-1.5 text-yellow-500" title="Varsayılan Fatura Adresi">
-                                                                <i class="fas fa-star text-xs"></i>
-                                                            </div>
-                                                        @endif
-                                                        {{-- Star (Varsayılan) - Empty --}}
-                                                        <button @if(!$addr->is_default_billing) x-show="!{{ $addr->is_default_billing ? 'true' : 'false' }}" @endif
-                                                                @click.stop="$wire.setDefaultAddress({{ $addr->address_id }}, 'billing')"
+                                                        {{-- Edit Button --}}
+                                                        <button @click.stop="
+                                                            if (isEditing) {
+                                                                isEditing = false;
+                                                                $wire.set('edit_billing_address_id', null);
+                                                            } else {
+                                                                isEditing = true;
+                                                                $wire.set('edit_billing_address_id', {{ $addr->address_id }});
+                                                                $wire.set('new_billing_address_title', '{{ addslashes($addr->title) }}');
+                                                                $wire.set('new_billing_address_phone', '{{ $addr->phone ?? '' }}');
+                                                                $wire.set('new_billing_address_line', '{{ addslashes($addr->address_line_1) }}');
+                                                                $wire.set('new_billing_address_city', '{{ $addr->city }}');
+                                                                $wire.set('new_billing_address_district', '{{ $addr->district }}');
+                                                                $wire.set('new_billing_address_postal', '{{ $addr->postal_code ?? '' }}');
+                                                            }
+                                                        "
+                                                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
+                                                                title="Düzenle">
+                                                            <i class="fas fa-edit text-xs"></i>
+                                                        </button>
+                                                        {{-- Delete Button --}}
+                                                        <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $addr->address_id }}; deleteTargetType = 'billing_address'; deleteTargetTitle = '{{ $addr->title }}'"
+                                                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
+                                                                title="Sil">
+                                                            <i class="fas fa-trash text-xs"></i>
+                                                        </button>
+                                                        {{-- Star: Varsayılan Adres (Sonraki sayfa yüklemelerinde otomatik gelir) --}}
+                                                        <div x-show="defaultBillingAddressId == {{ $addr->address_id }}"
+                                                             class="p-1.5 text-yellow-500"
+                                                             title="Varsayılan Fatura Adresi (Sonraki açılışta otomatik gelir)">
+                                                            <i class="fas fa-star text-xs"></i>
+                                                        </div>
+                                                        <button x-show="defaultBillingAddressId != {{ $addr->address_id }}"
+                                                                @click.stop="defaultBillingAddressId = {{ $addr->address_id }}; billingAddressId = {{ $addr->address_id }}; $wire.setDefaultAddress({{ $addr->address_id }}, 'billing')"
                                                                 class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-yellow-500/20 rounded text-yellow-500 hover:text-yellow-400"
                                                                 title="Varsayılan Yap (Sonraki açılışta otomatik gelir)">
                                                             <i class="far fa-star text-xs"></i>
                                                         </button>
-                                                        {{-- Edit Button --}}
-                                                        <button @click.stop="
-                                                            isEditing = true;
-                                                            showNewBillingForm = true;
-                                                            showBillingList = false;
-                                                            $wire.editAddress({{ $addr->address_id }}, 'billing');
-                                                        "
-                                                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300">
-                                                            <i class="fa-solid fa-pen text-xs"></i>
-                                                        </button>
-                                                        {{-- Delete Button --}}
-                                                        <button @click.stop="showDeleteWarning = true; deleteTargetId = {{ $addr->address_id }}; deleteTargetType = 'billing_address'; deleteTargetTitle = '{{ $addr->title }}'"
-                                                                class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300">
-                                                            <i class="fa-solid fa-trash text-xs"></i>
-                                                        </button>
-                                                        {{-- Checkbox --}}
-                                                        <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center pointer-events-none"
-                                                             :class="billingAddressId == {{ $addr->address_id }} ? 'border-blue-600 bg-blue-600' : 'border-gray-300 dark:border-gray-600'">
-                                                            <i class="fa-solid fa-check text-[10px] text-white"
+                                                        {{-- Checkbox (Adres Seç) --}}
+                                                        <div @click.stop="billingAddressId = {{ $addr->address_id }}; showBillingList = false"
+                                                             class="w-5 h-5 rounded-full border-2 flex items-center justify-center cursor-pointer hover:border-blue-500 transition-colors duration-200"
+                                                             :class="billingAddressId == {{ $addr->address_id }} ? 'border-blue-600 bg-blue-600' : 'border-gray-300 dark:border-gray-600'"
+                                                             title="Adres Seç">
+                                                            <i class="fa-solid fa-check text-[10px] text-white transition-opacity duration-200"
                                                                :class="billingAddressId == {{ $addr->address_id }} ? 'opacity-100' : 'opacity-0'"></i>
                                                         </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- İnline Edit Form - Kartın Altında --}}
+                                                <div x-show="isEditing" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
+                                                    <div class="flex items-center justify-between mb-3">
+                                                        <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Adresi Düzenle</span>
+                                                        <button @click="isEditing = false; $wire.set('edit_billing_address_id', null)"
+                                                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                                                            <i class="fa-solid fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres Adı <span class="text-red-500">*</span></label>
+                                                        <input type="text" wire:model="new_billing_address_title"
+                                                               class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                                    </div>
+                                                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
+                                                        <div>
+                                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
+                                                            <select wire:model="new_billing_address_city" id="billing_city_edit_{{ $addr->address_id }}"
+                                                                    @change="
+                                                                        $wire.set('new_billing_address_district', '');
+                                                                        fetch('/api/get-districts/' + $event.target.value)
+                                                                            .then(r => r.json())
+                                                                            .then(data => {
+                                                                                let select = document.getElementById('billing_district_edit_{{ $addr->address_id }}');
+                                                                                select.innerHTML = '<option value=\'\'>Seçin</option>';
+                                                                                data.forEach(d => {
+                                                                                    select.innerHTML += '<option value=\'' + d + '\'>' + d + '</option>';
+                                                                                });
+                                                                            });
+                                                                    "
+                                                                    class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                                                <option value="">Seçin</option>
+                                                                @foreach($cities ?? [] as $city)
+                                                                    <option value="{{ $city }}">{{ $city }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
+                                                            <select wire:model="new_billing_address_district" id="billing_district_edit_{{ $addr->address_id }}"
+                                                                    class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                                                <option value="">{{ empty($new_billing_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
+                                                                @foreach($billingDistricts ?? [] as $district)
+                                                                    <option value="{{ $district }}">{{ $district }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Posta Kodu</label>
+                                                            <input type="text" wire:model="new_billing_address_postal"
+                                                                   class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres <span class="text-red-500">*</span></label>
+                                                        <textarea wire:model="new_billing_address_line" rows="2"
+                                                                  class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm resize-none"></textarea>
+                                                    </div>
+                                                    <div class="flex justify-end">
+                                                        <button wire:click="saveNewAddress('billing')" wire:loading.attr="disabled" wire:target="saveNewAddress"
+                                                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-wait text-white text-sm font-medium rounded-lg">
+                                                            <span wire:loading.remove wire:target="saveNewAddress"><i class="fa-solid fa-check mr-1"></i>Kaydet</span>
+                                                            <span wire:loading wire:target="saveNewAddress"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Kaydediliyor...</span>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1037,6 +1205,7 @@
                                 <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
                                 <select wire:model="new_billing_address_city" id="billing_city_digital"
                                         @change="
+                                            $wire.set('new_billing_address_district', '');
                                             fetch('/api/get-districts/' + $event.target.value)
                                                 .then(r => r.json())
                                                 .then(data => {
@@ -1132,24 +1301,21 @@
                                                 </p>
                                             </div>
                                             <div class="flex items-center gap-2 flex-shrink-0">
-                                                {{-- Star (Varsayılan) - Filled --}}
-                                                @if($addr->is_default_billing)
-                                                    <div class="p-1.5 text-yellow-500" title="Varsayılan Fatura Adresi">
-                                                        <i class="fas fa-star text-xs"></i>
-                                                    </div>
-                                                @endif
-                                                {{-- Star (Varsayılan) - Empty --}}
-                                                <button @if(!$addr->is_default_billing) x-show="!{{ $addr->is_default_billing ? 'true' : 'false' }}" @endif
-                                                        @click.stop="$wire.setDefaultAddress({{ $addr->address_id }}, 'billing')"
-                                                        class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-yellow-500/20 rounded text-yellow-500 hover:text-yellow-400"
-                                                        title="Varsayılan Yap (Sonraki açılışta otomatik gelir)">
-                                                    <i class="far fa-star text-xs"></i>
-                                                </button>
                                                 {{-- Edit Button --}}
                                                 <button @click.stop="
-                                                    showNewBillingForm = true;
-                                                    showBillingList = false;
-                                                    $wire.editAddress({{ $addr->address_id }}, 'billing');
+                                                    if (isEditing) {
+                                                        isEditing = false;
+                                                        $wire.set('edit_billing_address_id', null);
+                                                    } else {
+                                                        isEditing = true;
+                                                        $wire.set('edit_billing_address_id', {{ $addr->address_id }});
+                                                        $wire.set('new_billing_address_title', '{{ addslashes($addr->title) }}');
+                                                        $wire.set('new_billing_address_phone', '{{ $addr->phone ?? '' }}');
+                                                        $wire.set('new_billing_address_line', '{{ addslashes($addr->address_line_1) }}');
+                                                        $wire.set('new_billing_address_city', '{{ $addr->city }}');
+                                                        $wire.set('new_billing_address_district', '{{ $addr->district }}');
+                                                        $wire.set('new_billing_address_postal', '{{ $addr->postal_code ?? '' }}');
+                                                    }
                                                 "
                                                         class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-blue-500/20 rounded text-blue-400 hover:text-blue-300"
                                                         title="Düzenle">
@@ -1161,13 +1327,94 @@
                                                         title="Sil">
                                                     <i class="fas fa-trash text-xs"></i>
                                                 </button>
-                                                {{-- Checkbox --}}
-                                                <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center pointer-events-none"
-                                                     :class="billingAddressId == {{ $addr->address_id }} ? 'border-blue-600 bg-blue-600' : 'border-gray-300 dark:border-gray-600'">
-                                                    <i class="fa-solid fa-check text-[10px] text-white"
+                                                {{-- Star: Varsayılan Adres (Sonraki sayfa yüklemelerinde otomatik gelir) --}}
+                                                <div x-show="defaultBillingAddressId == {{ $addr->address_id }}"
+                                                     class="p-1.5 text-yellow-500"
+                                                     title="Varsayılan Fatura Adresi (Sonraki açılışta otomatik gelir)">
+                                                    <i class="fas fa-star text-xs"></i>
+                                                </div>
+                                                <button x-show="defaultBillingAddressId != {{ $addr->address_id }}"
+                                                        @click.stop="defaultBillingAddressId = {{ $addr->address_id }}; billingAddressId = {{ $addr->address_id }}; $wire.setDefaultAddress({{ $addr->address_id }}, 'billing')"
+                                                        class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-yellow-500/20 rounded text-yellow-500 hover:text-yellow-400"
+                                                        title="Varsayılan Yap (Sonraki açılışta otomatik gelir)">
+                                                    <i class="far fa-star text-xs"></i>
+                                                </button>
+                                                {{-- Checkbox (Adres Seç) --}}
+                                                <div @click.stop="billingAddressId = {{ $addr->address_id }}; showBillingList = false"
+                                                     class="w-5 h-5 rounded-full border-2 flex items-center justify-center cursor-pointer hover:border-blue-500 transition-colors duration-200"
+                                                     :class="billingAddressId == {{ $addr->address_id }} ? 'border-blue-600 bg-blue-600' : 'border-gray-300 dark:border-gray-600'"
+                                                     title="Adres Seç">
+                                                    <i class="fa-solid fa-check text-[10px] text-white transition-opacity duration-200"
                                                        :class="billingAddressId == {{ $addr->address_id }} ? 'opacity-100' : 'opacity-0'"></i>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- İnline Edit Form - Kartın Altında --}}
+                                    <div x-show="isEditing" x-cloak x-transition.duration.200ms class="mt-2 p-4 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-800/80 dark:border-gray-700 space-y-3">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Adresi Düzenle</span>
+                                            <button @click="isEditing = false; $wire.set('edit_billing_address_id', null)"
+                                                    class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                                                <i class="fa-solid fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres Adı <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model="new_billing_address_title"
+                                                   class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                        </div>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
+                                                <select wire:model="new_billing_address_city" id="billing_city_edit_digital_{{ $addr->address_id }}"
+                                                        @change="
+                                                            $wire.set('new_billing_address_district', '');
+                                                            fetch('/api/get-districts/' + $event.target.value)
+                                                                .then(r => r.json())
+                                                                .then(data => {
+                                                                    let select = document.getElementById('billing_district_edit_digital_{{ $addr->address_id }}');
+                                                                    select.innerHTML = '<option value=\'\'>Seçin</option>';
+                                                                    data.forEach(d => {
+                                                                        select.innerHTML += '<option value=\'' + d + '\'>' + d + '</option>';
+                                                                    });
+                                                                });
+                                                        "
+                                                        class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                                    <option value="">Seçin</option>
+                                                    @foreach($cities ?? [] as $city)
+                                                        <option value="{{ $city }}">{{ $city }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
+                                                <select wire:model="new_billing_address_district" id="billing_district_edit_digital_{{ $addr->address_id }}"
+                                                        class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                                    <option value="">{{ empty($new_billing_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
+                                                    @foreach($billingDistricts ?? [] as $district)
+                                                        <option value="{{ $district }}">{{ $district }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Posta Kodu</label>
+                                                <input type="text" wire:model="new_billing_address_postal"
+                                                       class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Adres <span class="text-red-500">*</span></label>
+                                            <textarea wire:model="new_billing_address_line" rows="2"
+                                                      class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm resize-none"></textarea>
+                                        </div>
+                                        <div class="flex justify-end">
+                                            <button wire:click="saveNewAddress('billing')" wire:loading.attr="disabled" wire:target="saveNewAddress"
+                                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-wait text-white text-sm font-medium rounded-lg">
+                                                <span wire:loading.remove wire:target="saveNewAddress"><i class="fa-solid fa-check mr-1"></i>Kaydet</span>
+                                                <span wire:loading wire:target="saveNewAddress"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Kaydediliyor...</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -1265,7 +1512,7 @@
                                 </div>
                             </div>
                             <span class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
-                                <a href="/on-bilgilendirme" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
+                                <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Ön Bilgilendirme Formu</a>'nu ve
                                 <a href="/mesafeli-satis" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Mesafeli Satış Sözleşmesi</a>'ni kabul ediyorum.
                                 <span class="text-red-500">*</span>
                             </span>
@@ -1289,19 +1536,54 @@
                         </div>
                     @endif
 
+                    {{-- Validation Errors Summary --}}
+                    @if ($errors->any())
+                        <div class="mx-5 mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                            <div class="flex items-start gap-3">
+                                <i class="fa-solid fa-exclamation-triangle text-red-400 text-xl mt-0.5"></i>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-red-400 mb-2">Lütfen aşağıdaki hataları düzeltin:</p>
+                                    <ul class="text-sm text-red-300 space-y-1 list-disc list-inside">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     {{-- Ödeme Butonu --}}
-                    <div class="p-5" x-data="{ localAgreeAll: @entangle('agree_all').live }">
-                        <button wire:click="proceedToPayment"
-                                wire:loading.attr="disabled"
-                                wire:target="proceedToPayment"
-                                :disabled="!localAgreeAll"
-                                :class="localAgreeAll ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-xl shadow-green-500/30' : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-60'"
+                    <div class="p-5" x-data="{
+                        localAgreeAll: @entangle('agree_all').live,
+                        processing: false
+                    }">
+                        <button @click="
+                                console.log('🔍 Starting payment...', {
+                                    agree_all: localAgreeAll,
+                                    payment_method: selectedPaymentMethodId,
+                                    shipping: shippingAddressId,
+                                    billing: billingAddressId,
+                                    billing_profile: billingProfileId
+                                });
+                                processing = true;
+                                $wire.call('proceedToPayment').then(() => {
+                                    console.log('✅ Payment SUCCESS');
+                                    processing = false;
+                                }).catch((error) => {
+                                    console.error('❌ Payment ERROR:', error);
+                                    alert('Ödeme hatası: ' + (error.message || error));
+                                    processing = false;
+                                });
+                            "
+                                :disabled="!localAgreeAll || processing"
+                                :class="localAgreeAll && !processing ? 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-xl shadow-green-500/30' : 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed opacity-60'"
                                 class="w-full text-white font-bold py-4 rounded-xl transition-colors duration-300 flex items-center justify-center gap-3 text-lg">
-                            <i class="fa-solid fa-lock text-lg" wire:loading.remove wire:target="proceedToPayment"></i>
-                            <i class="fa-solid fa-spinner fa-spin text-lg" wire:loading wire:target="proceedToPayment"></i>
-                            <span wire:loading.remove wire:target="proceedToPayment">Ödemeye Geç</span>
-                            <span wire:loading wire:target="proceedToPayment">İşleniyor...</span>
-                            <i class="fa-solid fa-arrow-right text-lg" wire:loading.remove wire:target="proceedToPayment"></i>
+                            <i class="fa-solid fa-lock text-lg" x-show="!processing"></i>
+                            <i class="fa-solid fa-spinner fa-spin text-lg" x-show="processing"></i>
+                            <span x-show="!processing">Ödemeye Geç</span>
+                            <span x-show="processing">İşleniyor...</span>
+                            <i class="fa-solid fa-arrow-right text-lg" x-show="!processing"></i>
                         </button>
                         <p class="text-center text-xs text-gray-700 dark:text-gray-500 mt-4 flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-shield-halved text-green-600 dark:text-green-500"></i>

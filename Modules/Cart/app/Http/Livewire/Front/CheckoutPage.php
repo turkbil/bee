@@ -35,6 +35,9 @@ class CheckoutPage extends Component
     public $billing_profile_id;
     public $billingProfiles = []; // Kullanıcının fatura profilleri
 
+    // Adresler
+    public $userAddresses = []; // Kullanıcının adresleri
+
     // Yeni Fatura Profili Formu
     public $edit_billing_profile_id = null; // Edit mode için
     public $new_billing_profile_title = '';
@@ -277,6 +280,7 @@ class CheckoutPage extends Component
             $this->loadCart();
             $this->loadOrCreateCustomer();
             $this->loadBillingProfiles(); // Fatura profillerini yükle
+            $this->loadAddresses(); // Adresleri yükle
             $this->loadPaymentMethods();
             $this->loadAvailableGateways();
             $this->loadCities();
@@ -386,6 +390,27 @@ class CheckoutPage extends Component
             return null;
         }
         return BillingProfile::find($this->billing_profile_id);
+    }
+
+    /**
+     * Kullanıcı adreslerini yükle
+     */
+    public function loadAddresses()
+    {
+        if (!$this->customerId) {
+            $this->userAddresses = collect([]);
+            return;
+        }
+
+        $this->userAddresses = Address::where('user_id', $this->customerId)
+            ->orderBy('title', 'asc')
+            ->get();
+
+        \Log::info('📍 Addresses loaded', [
+            'count' => $this->userAddresses->count(),
+            'shipping_selected' => $this->shipping_address_id,
+            'billing_selected' => $this->billing_address_id
+        ]);
     }
 
     /**
@@ -661,21 +686,78 @@ class CheckoutPage extends Component
                 return;
             }
 
-            // Seçili adres siliniyorsa, seçimi kaldır
-            if ($this->shipping_address_id == $addressId) {
-                $this->shipping_address_id = null;
-            }
-            if ($this->billing_address_id == $addressId) {
-                $this->billing_address_id = null;
-            }
+            // Silinen adresin durumlarını kaydet
+            $wasDefaultShipping = $address->is_default_shipping;
+            $wasDefaultBilling = $address->is_default_billing;
+            $wasSelectedShipping = ($this->shipping_address_id == $addressId);
+            $wasSelectedBilling = ($this->billing_address_id == $addressId);
 
+            // Adresi sil
             $address->delete();
+            \Log::info('🗑️ Address deleted', [
+                'address_id' => $addressId,
+                'was_default_shipping' => $wasDefaultShipping,
+                'was_default_billing' => $wasDefaultBilling,
+                'was_selected_shipping' => $wasSelectedShipping,
+                'was_selected_billing' => $wasSelectedBilling,
+            ]);
 
-            // Adresleri yenile
-            $this->loadDefaultAddresses();
+            // ===== OTOMATİK ATAMA MANTIGI (Fatura Profili gibi) =====
+
+            // SHIPPING ADDRESS OTOMASYONU
+            if ($wasDefaultShipping || $wasSelectedShipping) {
+                $firstShippingAddress = Address::where('user_id', $this->customerId)
+                    ->shipping()
+                    ->orderBy('title', 'asc')
+                    ->first();
+
+                if ($firstShippingAddress) {
+                    // Varsayılan silinmişse → İlk kalan varsayılan olsun
+                    if ($wasDefaultShipping) {
+                        $firstShippingAddress->setAsDefaultShipping();
+                        \Log::info('⭐ Auto-assigned default shipping', ['address_id' => $firstShippingAddress->address_id]);
+                    }
+
+                    // Seçili silinmişse → İlk kalan seçili olsun
+                    if ($wasSelectedShipping) {
+                        $this->shipping_address_id = $firstShippingAddress->address_id;
+                        \Log::info('✅ Auto-selected shipping', ['address_id' => $firstShippingAddress->address_id]);
+                    }
+                } else {
+                    // Hiç adres kalmamış
+                    $this->shipping_address_id = null;
+                    \Log::warning('❌ No shipping addresses left');
+                }
+            }
+
+            // BILLING ADDRESS OTOMASYONU
+            if ($wasDefaultBilling || $wasSelectedBilling) {
+                $firstBillingAddress = Address::where('user_id', $this->customerId)
+                    ->billing()
+                    ->orderBy('title', 'asc')
+                    ->first();
+
+                if ($firstBillingAddress) {
+                    // Varsayılan silinmişse → İlk kalan varsayılan olsun
+                    if ($wasDefaultBilling) {
+                        $firstBillingAddress->setAsDefaultBilling();
+                        \Log::info('⭐ Auto-assigned default billing', ['address_id' => $firstBillingAddress->address_id]);
+                    }
+
+                    // Seçili silinmişse → İlk kalan seçili olsun
+                    if ($wasSelectedBilling) {
+                        $this->billing_address_id = $firstBillingAddress->address_id;
+                        \Log::info('✅ Auto-selected billing', ['address_id' => $firstBillingAddress->address_id]);
+                    }
+                } else {
+                    // Hiç adres kalmamış
+                    $this->billing_address_id = null;
+                    \Log::warning('❌ No billing addresses left');
+                }
+            }
 
             session()->flash('success', 'Adres başarıyla silindi.');
-            \Log::info('✅ Address deleted', ['address_id' => $addressId]);
+            $this->loadAddresses(); // Adres listesini yenile
         } catch (\Exception $e) {
             session()->flash('error', 'Silme işlemi başarısız oldu.');
             \Log::error('❌ Error deleting address', ['error' => $e->getMessage()]);
@@ -709,6 +791,7 @@ class CheckoutPage extends Component
             }
 
             session()->flash('success', 'Varsayılan adres güncellendi.');
+            $this->loadAddresses(); // Adres listesini yenile
         } catch (\Exception $e) {
             session()->flash('error', 'İşlem başarısız oldu.');
             \Log::error('❌ Error setting default address', ['error' => $e->getMessage()]);
@@ -888,6 +971,9 @@ class CheckoutPage extends Component
             // Form temizle
             $this->reset(['edit_address_id', 'new_address_title', 'new_address_phone', 'new_address_line', 'new_address_city', 'new_address_district', 'new_address_postal']);
 
+            // Adres listesini yenile
+            $this->loadAddresses();
+
             // Alpine'a formu kapat sinyali gönder
             $this->dispatch('address-saved', type: 'shipping', addressId: $address->address_id);
 
@@ -952,6 +1038,9 @@ class CheckoutPage extends Component
 
             // Form temizle
             $this->reset(['edit_billing_address_id', 'new_billing_address_title', 'new_billing_address_phone', 'new_billing_address_line', 'new_billing_address_city', 'new_billing_address_district', 'new_billing_address_postal']);
+
+            // Adres listesini yenile
+            $this->loadAddresses();
 
             // Alpine'a formu kapat sinyali gönder
             $this->dispatch('address-saved', type: 'billing', addressId: $address->address_id);

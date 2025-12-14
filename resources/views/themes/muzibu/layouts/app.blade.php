@@ -150,46 +150,17 @@
     <audio id="hlsAudio" x-ref="hlsAudio" class="hidden"></audio>
     <audio id="hlsAudioNext" class="hidden"></audio>
 
-    {{-- Main App Grid - Homepage has right sidebar, other pages don't --}}
-    @php
-        $initialIsHomepage = empty(trim(request()->path(), '/'));
-    @endphp
+    {{-- Main App Grid - Right sidebar on XL+ screens (all pages) --}}
     <div
         id="main-app-grid"
-        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] h-[100dvh] gap-0 lg:gap-3 px-0 pb-0 lg:px-3 lg:pb-3"
-        x-data="{
-            isHomepage: {{ $initialIsHomepage ? 'true' : 'false' }},
-            checkIsHomepage() {
-                const currentPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
-                this.isHomepage = (currentPath === '' || currentPath === '/');
-            }
-        }"
-        x-init="
-            // URL değişikliklerini dinle
-            window.addEventListener('route-changed', (e) => {
-                checkIsHomepage();
-            });
-
-            // SPA navigation sonrası da kontrol et
-            window.addEventListener('popstate', () => {
-                checkIsHomepage();
-            });
-
-            // Livewire navigation sonrası da kontrol et
-            document.addEventListener('livewire:navigated', () => {
-                checkIsHomepage();
-            });
-        "
-        :class="{
-            '2xl:grid-cols-[220px_1fr_360px] xl:grid-cols-[220px_1fr_320px]': isHomepage
-        }"
+        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px] h-[100dvh] gap-0 lg:gap-3 px-0 pb-0 lg:px-3 lg:pb-3"
     >
         @include('themes.muzibu.components.header')
         @include('themes.muzibu.components.sidebar-left')
         @include('themes.muzibu.components.main-content')
 
-        {{-- Right Sidebar - Shows on homepage, XL+ screens only --}}
-        <aside class="muzibu-right-sidebar overflow-y-auto rounded-2xl hidden xl:block" x-show="isHomepage" x-cloak style="display: none;">
+        {{-- Right Sidebar - XL+ screens, all pages --}}
+        <aside class="muzibu-right-sidebar overflow-y-auto rounded-2xl hidden xl:block">
             @include('themes.muzibu.components.sidebar-right')
         </aside>
 

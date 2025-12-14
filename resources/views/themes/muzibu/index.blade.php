@@ -3,6 +3,20 @@
 @section('title', 'Muzibu - Ana Sayfa')
 
 @section('content')
+{{-- 🎯 Reset sidebar to homepage state --}}
+<script>
+if (window.Alpine && window.Alpine.store('sidebar')) {
+    window.Alpine.store('sidebar').reset();
+}
+document.addEventListener('alpine:init', () => {
+    setTimeout(() => {
+        if (window.Alpine && window.Alpine.store('sidebar')) {
+            window.Alpine.store('sidebar').reset();
+        }
+    }, 100);
+});
+</script>
+
 <div class="px-6 py-8">
 
 {{-- Quick Access Cards (Spotify Style - 2 rows, Horizontal Scroll) --}}

@@ -564,6 +564,49 @@ document.addEventListener('alpine:init', () => {
         }
     });
 
+    // 🎯 Sidebar Store - Dynamic sidebar content management
+    Alpine.store('sidebar', {
+        pageType: 'home', // 'home', 'playlist', 'album', 'genre', 'sector', 'artist', 'radio'
+        tracks: [],
+        entityInfo: null, // { title, cover, type, id }
+
+        /**
+         * Set sidebar content for a detail page
+         * @param {string} type - Page type
+         * @param {Array} tracks - Track list
+         * @param {Object} info - Entity info (title, cover, etc.)
+         */
+        setContent(type, tracks = [], info = null) {
+            this.pageType = type;
+            this.tracks = tracks || [];
+            this.entityInfo = info;
+            console.log('🎯 Sidebar content set:', type, tracks?.length || 0, 'tracks');
+        },
+
+        /**
+         * Reset sidebar to homepage state
+         */
+        reset() {
+            this.pageType = 'home';
+            this.tracks = [];
+            this.entityInfo = null;
+        },
+
+        /**
+         * Check if we're on a detail page
+         */
+        get isDetailPage() {
+            return this.pageType !== 'home';
+        },
+
+        /**
+         * Check if tracks are available
+         */
+        get hasTracks() {
+            return this.tracks && this.tracks.length > 0;
+        }
+    });
+
     // 🔗 ALIAS: 'muzibu' store references 'player' store for backward compatibility
     // Some code uses Alpine.store('muzibu') instead of Alpine.store('player')
     Alpine.store('muzibu', Alpine.store('player'));

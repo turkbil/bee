@@ -1,3 +1,52 @@
+{{-- 🎯 Sidebar Data - Track list for right sidebar --}}
+<script>
+document.addEventListener('alpine:init', () => {
+    // Wait for store to be ready
+    setTimeout(() => {
+        if (window.Alpine && window.Alpine.store('sidebar')) {
+            window.Alpine.store('sidebar').setContent(
+                'playlist',
+                @json($songs->map(function($song) {
+                    return [
+                        'id' => $song->song_id,
+                        'title' => $song->getTranslation('title', app()->getLocale()),
+                        'artist' => $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '',
+                        'duration' => gmdate('i:s', $song->duration ?? 0)
+                    ];
+                })),
+                {
+                    type: 'Playlist',
+                    title: @json($playlist->getTranslation('title', app()->getLocale())),
+                    cover: @json($playlist->getFirstMedia('cover') ? thumb($playlist->getFirstMedia('cover'), 100, 100, ['scale' => 1]) : null),
+                    id: {{ $playlist->playlist_id }}
+                }
+            );
+        }
+    }, 100);
+});
+
+// Also set immediately if Alpine is already initialized
+if (window.Alpine && window.Alpine.store('sidebar')) {
+    window.Alpine.store('sidebar').setContent(
+        'playlist',
+        @json($songs->map(function($song) {
+            return [
+                'id' => $song->song_id,
+                'title' => $song->getTranslation('title', app()->getLocale()),
+                'artist' => $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '',
+                'duration' => gmdate('i:s', $song->duration ?? 0)
+            ];
+        })),
+        {
+            type: 'Playlist',
+            title: @json($playlist->getTranslation('title', app()->getLocale())),
+            cover: @json($playlist->getFirstMedia('cover') ? thumb($playlist->getFirstMedia('cover'), 100, 100, ['scale' => 1]) : null),
+            id: {{ $playlist->playlist_id }}
+        }
+    );
+}
+</script>
+
 {{-- Hero Section with Gradient Background --}}
 <div class="relative mb-8">
     {{-- Dynamic Gradient Background --}}

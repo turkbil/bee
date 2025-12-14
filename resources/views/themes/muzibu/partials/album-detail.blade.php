@@ -1,3 +1,50 @@
+{{-- 🎯 Sidebar Data - Track list for right sidebar --}}
+<script>
+document.addEventListener('alpine:init', () => {
+    setTimeout(() => {
+        if (window.Alpine && window.Alpine.store('sidebar')) {
+            window.Alpine.store('sidebar').setContent(
+                'album',
+                @json($songs->map(function($song) {
+                    return [
+                        'id' => $song->song_id,
+                        'title' => $song->getTranslation('title', app()->getLocale()),
+                        'artist' => $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '',
+                        'duration' => gmdate('i:s', $song->duration ?? 0)
+                    ];
+                })),
+                {
+                    type: 'Albüm',
+                    title: @json($album->getTranslation('title', app()->getLocale())),
+                    cover: @json($album->getFirstMedia('album_cover') ? thumb($album->getFirstMedia('album_cover'), 100, 100, ['scale' => 1]) : null),
+                    id: {{ $album->album_id }}
+                }
+            );
+        }
+    }, 100);
+});
+
+if (window.Alpine && window.Alpine.store('sidebar')) {
+    window.Alpine.store('sidebar').setContent(
+        'album',
+        @json($songs->map(function($song) {
+            return [
+                'id' => $song->song_id,
+                'title' => $song->getTranslation('title', app()->getLocale()),
+                'artist' => $song->artist ? $song->artist->getTranslation('title', app()->getLocale()) : '',
+                'duration' => gmdate('i:s', $song->duration ?? 0)
+            ];
+        })),
+        {
+            type: 'Albüm',
+            title: @json($album->getTranslation('title', app()->getLocale())),
+            cover: @json($album->getFirstMedia('album_cover') ? thumb($album->getFirstMedia('album_cover'), 100, 100, ['scale' => 1]) : null),
+            id: {{ $album->album_id }}
+        }
+    );
+}
+</script>
+
 {{-- Hero Section with Gradient Background --}}
 <div class="relative mb-8">
     {{-- Dynamic Gradient Background --}}

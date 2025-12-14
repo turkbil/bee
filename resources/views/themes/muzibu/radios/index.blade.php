@@ -1,6 +1,13 @@
 @extends('themes.muzibu.layouts.app')
 
 @section('content')
+{{-- 🎯 Reset sidebar to homepage state --}}
+<script>
+if (window.Alpine && window.Alpine.store('sidebar')) {
+    window.Alpine.store('sidebar').reset();
+}
+</script>
+
     <div class="px-4 sm:px-6 py-6 sm:py-8">
         {{-- Header --}}
         <div class="mb-8 animate-slide-up">

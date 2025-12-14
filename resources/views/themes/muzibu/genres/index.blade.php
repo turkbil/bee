@@ -20,7 +20,14 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 animate-slide-up" style="animation-delay: 100ms">
             @foreach($genres as $genre)
                 <a href="{{ route('muzibu.genres.show', $genre->getTranslation('slug', app()->getLocale())) }}"
-                   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300">
+                   wire:navigate
+                   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
+                   @mouseenter="$store.sidebar.showPreview('genre', {{ $genre->genre_id }}, {
+                       type: 'Tür',
+                       title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',
+                       cover: '{{ $genre->media_id && $genre->iconMedia ? thumb($genre->iconMedia, 100, 100, ['scale' => 1]) : '' }}'
+                   })"
+                   @mouseleave="$store.sidebar.hidePreview()">
                     <div class="relative mb-4">
                         @if($genre->media_id && $genre->iconMedia)
                             <img src="{{ thumb($genre->iconMedia, 300, 300, ['scale' => 1]) }}"

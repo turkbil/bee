@@ -20,7 +20,14 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 animate-slide-up" style="animation-delay: 100ms">
             @foreach($albums as $album)
                 <a href="{{ route('muzibu.albums.show', $album->getTranslation('slug', app()->getLocale())) }}"
-                   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300">
+                   wire:navigate
+                   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
+                   @mouseenter="$store.sidebar.showPreview('album', {{ $album->album_id }}, {
+                       type: 'Albüm',
+                       title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
+                       cover: '{{ $album->getFirstMedia('album_cover') ? thumb($album->getFirstMedia('album_cover'), 100, 100, ['scale' => 1]) : '' }}'
+                   })"
+                   @mouseleave="$store.sidebar.hidePreview()">
                     <div class="relative mb-4">
                         @if($album->getFirstMedia('album_cover'))
                             <img src="{{ thumb($album->getFirstMedia('album_cover'), 300, 300, ['scale' => 1]) }}"

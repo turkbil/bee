@@ -570,6 +570,13 @@ document.addEventListener('alpine:init', () => {
         tracks: [],
         entityInfo: null, // { title, cover, type, id }
 
+        // Preview mode (for list page hover)
+        previewMode: false,
+        previewTracks: [],
+        previewInfo: null,
+        previewLoading: false,
+        previewCache: {}, // Cache for fetched tracks
+
         /**
          * Set sidebar content for a detail page
          * @param {string} type - Page type
@@ -580,6 +587,7 @@ document.addEventListener('alpine:init', () => {
             this.pageType = type;
             this.tracks = tracks || [];
             this.entityInfo = info;
+            this.previewMode = false; // Exit preview mode on detail page
             console.log('🎯 Sidebar content set:', type, tracks?.length || 0, 'tracks');
         },
 
@@ -590,6 +598,109 @@ document.addEventListener('alpine:init', () => {
             this.pageType = 'home';
             this.tracks = [];
             this.entityInfo = null;
+            this.previewMode = false;
+            this.previewTracks = [];
+            this.previewInfo = null;
+        },
+
+        /**
+         * Show preview for a list item (on hover)
+         * @param {string} type - Item type (playlist, album, genre)
+         * @param {number} id - Item ID
+         * @param {Object} info - Item info (title, cover)
+         */
+        async showPreview(type, id, info) {
+            if (this.pageType !== 'home') return; // Only on list pages
+
+            this.previewMode = true;
+            this.previewInfo = info;
+
+            // Check cache first
+            const cacheKey = `${type}_${id}`;
+            if (this.previewCache[cacheKey]) {
+                this.previewTracks = this.previewCache[cacheKey];
+                return;
+            }
+
+            // Build API URL based on type
+            let apiUrl;
+            switch (type) {
+                case 'playlist':
+                    apiUrl = `/api/muzibu/playlists/${id}`;
+                    break;
+                case 'album':
+                    apiUrl = `/api/muzibu/albums/${id}`;
+                    break;
+                case 'genre':
+                    apiUrl = `/api/muzibu/genres/${id}/songs`;
+                    break;
+                default:
+                    return;
+            }
+
+            // Fetch tracks from API
+            this.previewLoading = true;
+            try {
+                const response = await fetch(apiUrl);
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Extract tracks based on response format
+                    let tracks = [];
+                    if (type === 'genre') {
+                        // Genre returns array directly or paginated
+                        tracks = Array.isArray(data) ? data : (data.data || []);
+                    } else {
+                        // Playlist/Album returns object with songs
+                        tracks = data.songs || [];
+                    }
+
+                    // Transform to sidebar format
+                    this.previewTracks = tracks.slice(0, 20).map(song => ({
+                        id: song.song_id,
+                        title: this.getLocalizedTitle(song.song_title || song.title),
+                        artist: this.getLocalizedTitle(song.artist_title || song.artist?.title || ''),
+                        duration: this.formatDuration(song.duration)
+                    }));
+
+                    this.previewCache[cacheKey] = this.previewTracks;
+                }
+            } catch (e) {
+                console.error('Preview fetch error:', e);
+                this.previewTracks = [];
+            } finally {
+                this.previewLoading = false;
+            }
+        },
+
+        /**
+         * Get localized title from JSON or string
+         */
+        getLocalizedTitle(title) {
+            if (!title) return '';
+            if (typeof title === 'string') return title;
+            // JSON object with locale keys
+            const locale = document.documentElement.lang || 'tr';
+            return title[locale] || title.tr || title.en || Object.values(title)[0] || '';
+        },
+
+        /**
+         * Format duration from seconds to mm:ss
+         */
+        formatDuration(seconds) {
+            if (!seconds) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        },
+
+        /**
+         * Hide preview (on mouse leave)
+         */
+        hidePreview() {
+            this.previewMode = false;
+            this.previewTracks = [];
+            this.previewInfo = null;
         },
 
         /**
@@ -604,6 +715,13 @@ document.addEventListener('alpine:init', () => {
          */
         get hasTracks() {
             return this.tracks && this.tracks.length > 0;
+        },
+
+        /**
+         * Check if preview has tracks
+         */
+        get hasPreviewTracks() {
+            return this.previewTracks && this.previewTracks.length > 0;
         }
     });
 

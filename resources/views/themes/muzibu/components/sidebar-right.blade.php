@@ -1,6 +1,66 @@
 {{-- RIGHT SIDEBAR - Dynamic Content based on page type --}}
 <div class="muzibu-right-sidebar space-y-6 p-4" x-data>
 
+    {{-- PREVIEW MODE: Track List (when hovering on list item) --}}
+    <template x-if="!$store.sidebar.isDetailPage && $store.sidebar.previewMode">
+        <div class="animate-fade-in">
+            {{-- Preview Header --}}
+            <div class="mb-4" x-show="$store.sidebar.previewInfo">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-lg overflow-hidden shadow-lg flex-shrink-0 bg-gradient-to-br from-blue-500 to-purple-600">
+                        <template x-if="$store.sidebar.previewInfo?.cover">
+                            <img :src="$store.sidebar.previewInfo.cover" :alt="$store.sidebar.previewInfo?.title" class="w-full h-full object-cover">
+                        </template>
+                        <template x-if="!$store.sidebar.previewInfo?.cover">
+                            <div class="w-full h-full flex items-center justify-center text-xl">🎵</div>
+                        </template>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[10px] font-bold text-blue-400 uppercase tracking-wider" x-text="$store.sidebar.previewInfo?.type || 'Önizleme'"></p>
+                        <h3 class="text-sm font-bold text-white truncate" x-text="$store.sidebar.previewInfo?.title"></h3>
+                        <p class="text-xs text-gray-400" x-text="$store.sidebar.previewTracks.length + ' şarkı'"></p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Loading State --}}
+            <template x-if="$store.sidebar.previewLoading">
+                <div class="flex items-center justify-center py-8">
+                    <i class="fas fa-spinner fa-spin text-gray-500"></i>
+                </div>
+            </template>
+
+            {{-- Preview Track List --}}
+            <template x-if="!$store.sidebar.previewLoading && $store.sidebar.hasPreviewTracks">
+                <div class="space-y-0.5 max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                    <template x-for="(track, index) in $store.sidebar.previewTracks" :key="track.id">
+                        <div
+                            class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 cursor-pointer group transition-all"
+                            @click="$dispatch('play-song', { songId: track.id })">
+                            <div class="w-5 text-center flex-shrink-0">
+                                <span class="text-xs text-gray-500 group-hover:hidden" x-text="index + 1"></span>
+                                <i class="fas fa-play text-[10px] text-white hidden group-hover:inline"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium text-white truncate group-hover:text-blue-400 transition-colors" x-text="track.title"></p>
+                                <p class="text-[10px] text-gray-500 truncate" x-text="track.artist"></p>
+                            </div>
+                            <div class="text-[10px] text-gray-500 flex-shrink-0" x-text="track.duration"></div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            {{-- Empty State --}}
+            <template x-if="!$store.sidebar.previewLoading && !$store.sidebar.hasPreviewTracks">
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-music text-lg mb-2"></i>
+                    <p class="text-xs">Şarkı bulunamadı</p>
+                </div>
+            </template>
+        </div>
+    </template>
+
     {{-- DETAIL PAGE: Track List (when on detail page) --}}
     <template x-if="$store.sidebar.isDetailPage && $store.sidebar.hasTracks">
         <div class="animate-fade-in">
@@ -49,8 +109,8 @@
         </div>
     </template>
 
-    {{-- HOMEPAGE: Featured Content (default) --}}
-    <template x-if="!$store.sidebar.isDetailPage">
+    {{-- HOMEPAGE: Featured Content (default - when not in preview or detail mode) --}}
+    <template x-if="!$store.sidebar.isDetailPage && !$store.sidebar.previewMode">
         <div class="space-y-8">
             {{-- Section 1: Sizin İçin --}}
             <div>

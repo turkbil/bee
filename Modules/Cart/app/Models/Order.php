@@ -311,14 +311,14 @@ class Order extends BaseModel
 
         try {
             $items = $this->items->map(function ($item) {
-                return "- {$item->item_title} x{$item->quantity} = " . number_format($item->total_price, 2, ',', '.') . " ₺";
+                return "- {$item->item_title} x{$item->quantity} = " . number_format((float) $item->total_price, 2, ',', '.') . " ₺";
             })->implode("\n");
 
             \Mail::raw(
                 "🛒 YENİ SİPARİŞ ALINDI!\n\n" .
                 "Sipariş No: {$this->order_number}\n" .
                 "Tarih: " . now()->format('d.m.Y H:i') . "\n" .
-                "Tutar: " . number_format($payment->amount, 2, ',', '.') . " ₺\n\n" .
+                "Tutar: " . number_format((float) $payment->amount, 2, ',', '.') . " ₺\n\n" .
                 "MÜŞTERİ BİLGİLERİ:\n" .
                 "Ad Soyad: {$this->customer_name}\n" .
                 "E-posta: {$this->customer_email}\n" .
@@ -327,7 +327,7 @@ class Order extends BaseModel
                 "Sipariş detayları için admin paneli ziyaret edin.",
                 function ($message) use ($adminEmail) {
                     $message->to($adminEmail)
-                        ->subject("🛒 Yeni Sipariş #{$this->order_number} - " . number_format($this->total_amount, 0, ',', '.') . " ₺");
+                        ->subject("🛒 Yeni Sipariş #{$this->order_number} - " . number_format((float) $this->total_amount, 0, ',', '.') . " ₺");
                 }
             );
 
@@ -348,7 +348,7 @@ class Order extends BaseModel
 
         try {
             $items = $this->items->map(function ($item) {
-                return "- {$item->item_title} x{$item->quantity} = " . number_format($item->total_price, 2, ',', '.') . " ₺";
+                return "- {$item->item_title} x{$item->quantity} = " . number_format((float) $item->total_price, 2, ',', '.') . " ₺";
             })->implode("\n");
 
             $siteName = setting('site_name', config('app.name'));
@@ -359,7 +359,7 @@ class Order extends BaseModel
                 "SİPARİŞ BİLGİLERİ:\n" .
                 "Sipariş No: {$this->order_number}\n" .
                 "Tarih: " . now()->format('d.m.Y H:i') . "\n" .
-                "Toplam: " . number_format($payment->amount, 2, ',', '.') . " ₺\n\n" .
+                "Toplam: " . number_format((float) $payment->amount, 2, ',', '.') . " ₺\n\n" .
                 "ÜRÜNLER:\n{$items}\n\n" .
                 "Siparişiniz en kısa sürede hazırlanacaktır.\n\n" .
                 "Teşekkürler,\n{$siteName}",

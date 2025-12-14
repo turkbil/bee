@@ -87,12 +87,22 @@ class PayTRCallbackController extends Controller
      *
      * Format: T{tenant_id}PAY{year}{number} (tiresiz - PayTR için)
      * Örnek: T2PAY202500010 → tenant_id = 2
+     *
+     * Fallback: T prefix'i yoksa (eski format) default tenant 2 kullan
      */
     private function parseTenantId(string $merchantOid): ?int
     {
-        // T ile başlayıp rakam devam ediyorsa: T2PAY..., T2ORD..., T1001PAY...
+        // Yeni format: T ile başlayıp rakam devam ediyorsa: T2PAY..., T2ORD..., T1001PAY...
         if (preg_match('/^T(\d+)/', $merchantOid, $matches)) {
             return (int) $matches[1];
+        }
+
+        // Eski format fallback: PAY ile başlıyorsa default tenant 2 (ixtif)
+        if (preg_match('/^PAY|^ORD/', $merchantOid)) {
+            Log::info('⚠️ PayTR callback: Eski format merchant_oid, default tenant 2 kullanılıyor', [
+                'merchant_oid' => $merchantOid
+            ]);
+            return 2;
         }
 
         return null;

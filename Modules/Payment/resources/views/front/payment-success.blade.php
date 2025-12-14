@@ -137,7 +137,7 @@
                 <div class="space-y-3">
                     <a href="{{ $homeUrl }}"
                        class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition-colors">
-                        Alışverişe Devam Et
+                        <i class="fa-solid fa-home mr-2"></i> Siteye Dön
                     </a>
 
                     @if($contactWhatsapp)

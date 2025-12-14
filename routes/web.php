@@ -13,8 +13,8 @@ use Modules\Search\App\Http\Controllers\SearchPageController;
 // 🛒 SHOP & CART PRIORITY ROUTES (Wildcard'dan önce tanımlanmalı!)
 // NOT: Bu route'lar modülde tanımlanabilirdi ama Livewire component'ler modül route'unda catch-all'dan önce olmalı
 Route::get('/cart', \Modules\Cart\App\Http\Livewire\Front\CartPage::class)->name('cart.index');
-Route::get('/shop/checkout', \Modules\Shop\App\Http\Livewire\Front\CheckoutPageNew::class)->name('shop.checkout');
-Route::get('/shop/payment/{orderNumber}', [\Modules\Shop\App\Http\Controllers\PaymentPageController::class, 'show'])->name('shop.payment.page');
+// shop.checkout kaldırıldı - Cart modülü kullanılıyor: /cart/checkout
+// Route::get('/shop/payment/{orderNumber}', [\Modules\Shop\App\Http\Controllers\PaymentPageController::class, 'show'])->name('shop.payment.page');
 
 // 🎵 MUZIBU SEARCH (Livewire) - Priority route (wildcard'dan önce)
 Route::middleware([InitializeTenancy::class, 'tenant', 'locale.site'])

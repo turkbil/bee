@@ -76,14 +76,14 @@
                 {{-- Aksiyonlar --}}
                 <div class="mt-8 flex flex-col sm:flex-row gap-4">
                     @if($order)
-                        <a href="{{ route('shop.checkout') }}"
+                        <a href="{{ route('cart.checkout') }}"
                            class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
                             <i class="fa-solid fa-rotate-right mr-2"></i>
                             {{ __('payment::front.try_again') }}
                         </a>
                     @endif
 
-                    <a href="{{ route('shop.index') }}"
+                    <a href="{{ url('/') }}"
                        class="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium rounded-lg transition-colors">
                         <i class="fa-solid fa-home mr-2"></i>
                         {{ __('payment::front.back_to_home') }}

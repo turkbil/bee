@@ -10,3 +10,12 @@ Route::prefix('admin/cart')
         // Cart Management
         Route::get('/', \Modules\Cart\App\Http\Livewire\Admin\CartComponent::class)->name('index');
     });
+
+// Admin Orders Routes
+Route::prefix('admin/orders')
+    ->middleware(['web', 'admin', 'tenant'])
+    ->name('admin.orders.')
+    ->group(function () {
+        // Orders Management
+        Route::get('/', \Modules\Cart\App\Http\Livewire\Admin\OrdersComponent::class)->name('index');
+    });

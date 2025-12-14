@@ -42,6 +42,7 @@ class CartServiceProvider extends ServiceProvider
 
         // Register Livewire components - Admin
         \Livewire\Livewire::component('cart::admin.cart-component', \Modules\Cart\App\Http\Livewire\Admin\CartComponent::class);
+        \Livewire\Livewire::component('cart::admin.orders-component', \Modules\Cart\App\Http\Livewire\Admin\OrdersComponent::class);
 
         // Register Livewire components - Front
         \Livewire\Livewire::component('cart::front.cart-widget', \Modules\Cart\App\Http\Livewire\Front\CartWidget::class);

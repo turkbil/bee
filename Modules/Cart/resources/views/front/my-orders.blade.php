@@ -52,9 +52,10 @@
                                         </span>
                                     </div>
 
-                                    {{-- Status Badge --}}
-                                    <div>
+                                    {{-- Status Badges --}}
+                                    <div class="flex flex-col gap-1 items-end">
                                         @php
+                                            // Sipariş Durumu
                                             $statusColors = [
                                                 'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
                                                 'processing' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
@@ -75,7 +76,28 @@
                                             ];
                                             $statusColor = $statusColors[$order->status] ?? 'bg-gray-100 text-gray-800';
                                             $statusLabel = $statusLabels[$order->status] ?? $order->status;
+
+                                            // Ödeme Durumu
+                                            $paymentColors = [
+                                                'pending' => 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
+                                                'paid' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
+                                                'failed' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+                                                'refunded' => 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400',
+                                            ];
+                                            $paymentLabels = [
+                                                'pending' => 'Ödeme Bekliyor',
+                                                'paid' => 'Ödendi',
+                                                'failed' => 'Ödeme Başarısız',
+                                                'refunded' => 'İade Edildi',
+                                            ];
+                                            $paymentColor = $paymentColors[$order->payment_status] ?? 'bg-gray-100 text-gray-800';
+                                            $paymentLabel = $paymentLabels[$order->payment_status] ?? $order->payment_status;
                                         @endphp
+                                        {{-- Ödeme Durumu Badge --}}
+                                        <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $paymentColor }}">
+                                            <i class="fa-solid fa-credit-card mr-1"></i>{{ $paymentLabel }}
+                                        </span>
+                                        {{-- Sipariş Durumu Badge --}}
                                         <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusColor }}">
                                             {{ $statusLabel }}
                                         </span>

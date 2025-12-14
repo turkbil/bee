@@ -51,7 +51,7 @@ class PayTRIframeService
             // Callback URL (success ve fail) - order_number ekle (session kaybolabilir!)
             $orderNumber = $orderInfo['order_number'] ?? $payment->payment_number;
             $merchantOkUrl = route('payment.success') . '?order=' . urlencode($orderNumber);
-            $merchantFailUrl = route('shop.checkout') . '?payment=failed&order=' . urlencode($orderNumber);
+            $merchantFailUrl = route('cart.checkout') . '?payment=failed&order=' . urlencode($orderNumber);
 
             // Hash string oluştur (DOĞRU SIRA!)
             // merchant_id + user_ip + merchant_oid + email + payment_amount + user_basket + no_installment + max_installment + currency + test_mode

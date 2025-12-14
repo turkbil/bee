@@ -16,13 +16,22 @@
                     </div>
                 </div>
                 <!-- Status Filter -->
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <select wire:model.live="status" class="form-select">
                         <option value="">{{ __('cart::admin.all_statuses') }}</option>
                         @foreach($statuses as $statusOption)
                             <option value="{{ $statusOption }}">{{ __('cart::admin.status_' . $statusOption) }}</option>
                         @endforeach
                     </select>
+                </div>
+                <!-- Misafir Toggle -->
+                <div class="col-md-2">
+                    <label class="form-check form-switch mb-0 d-flex align-items-center h-100">
+                        <input class="form-check-input" type="checkbox" wire:model.live="includeGuests">
+                        <span class="form-check-label ms-2">
+                            <i class="fas fa-user-secret text-muted me-1"></i> Misafirler
+                        </span>
+                    </label>
                 </div>
                 <!-- Ortadaki Loading -->
                 <div class="col position-relative">
@@ -82,14 +91,27 @@
                                         <strong>#{{ $cart->cart_id }}</strong>
                                     </td>
                                     <td>
-                                        @if($cart->customer_id)
+                                        @if($cart->customer_id && $cart->customer)
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar avatar-sm bg-primary-lt me-2">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                                <div>
+                                                    <strong>{{ $cart->customer->name }}</strong>
+                                                    <br>
+                                                    <small class="text-muted">{{ $cart->customer->email }}</small>
+                                                </div>
+                                            </div>
+                                        @elseif($cart->customer_id)
                                             <div class="d-flex align-items-center">
                                                 <i class="fas fa-user text-blue me-2"></i>
                                                 <span>{{ __('cart::admin.customer') }} #{{ $cart->customer_id }}</span>
                                             </div>
                                         @else
                                             <div class="d-flex align-items-center">
-                                                <i class="fas fa-user-secret text-muted me-2"></i>
+                                                <div class="avatar avatar-sm bg-secondary-lt me-2">
+                                                    <i class="fas fa-user-secret"></i>
+                                                </div>
                                                 <div>
                                                     <span class="text-muted">{{ __('cart::admin.guest') }}</span>
                                                     <br>
@@ -187,10 +209,26 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <strong>Müşteri:</strong>
-                                @if($selectedCart->customer_id)
+                                @if($selectedCart->customer_id && $selectedCart->customer)
+                                    <div class="d-inline-flex align-items-center">
+                                        <div class="avatar avatar-sm bg-primary-lt me-2">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <strong>{{ $selectedCart->customer->name }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ $selectedCart->customer->email }}</small>
+                                        </div>
+                                    </div>
+                                @elseif($selectedCart->customer_id)
                                     <i class="fas fa-user text-blue me-1"></i> Müşteri #{{ $selectedCart->customer_id }}
                                 @else
-                                    <i class="fas fa-user-secret text-muted me-1"></i> Misafir
+                                    <div class="d-inline-flex align-items-center">
+                                        <div class="avatar avatar-sm bg-secondary-lt me-2">
+                                            <i class="fas fa-user-secret"></i>
+                                        </div>
+                                        <span>Misafir</span>
+                                    </div>
                                 @endif
                             </div>
                             <div class="col-md-6">
@@ -251,6 +289,7 @@
                                             <th class="text-end">Birim Fiyat</th>
                                             <th class="text-center">Adet</th>
                                             <th class="text-end">Toplam</th>
+                                            <th class="text-center" style="width: 60px;">İşlem</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -285,28 +324,37 @@
                                                 <td class="text-end">
                                                     <strong>{{ number_format($item->total, 2) }} {{ $selectedCart->currency_code }}</strong>
                                                 </td>
+                                                <td class="text-center">
+                                                    <button type="button"
+                                                            wire:click="removeItem({{ $item->cart_item_id }})"
+                                                            wire:confirm="Bu ürünü sepetten çıkarmak istediğinizden emin misiniz?"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            title="Ürünü Çıkar">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="3" class="text-end"><strong>Ara Toplam:</strong></td>
+                                            <td colspan="4" class="text-end"><strong>Ara Toplam:</strong></td>
                                             <td class="text-end"><strong>{{ number_format($selectedCart->subtotal, 2) }} {{ $selectedCart->currency_code }}</strong></td>
                                         </tr>
                                         @if($selectedCart->discount_amount > 0)
                                             <tr>
-                                                <td colspan="3" class="text-end text-success"><strong>İndirim:</strong></td>
+                                                <td colspan="4" class="text-end text-success"><strong>İndirim:</strong></td>
                                                 <td class="text-end text-success"><strong>-{{ number_format($selectedCart->discount_amount, 2) }} {{ $selectedCart->currency_code }}</strong></td>
                                             </tr>
                                         @endif
                                         @if($selectedCart->tax_amount > 0)
                                             <tr>
-                                                <td colspan="3" class="text-end"><strong>KDV:</strong></td>
+                                                <td colspan="4" class="text-end"><strong>KDV:</strong></td>
                                                 <td class="text-end"><strong>{{ number_format($selectedCart->tax_amount, 2) }} {{ $selectedCart->currency_code }}</strong></td>
                                             </tr>
                                         @endif
                                         <tr class="table-active">
-                                            <td colspan="3" class="text-end"><h4>Genel Toplam:</h4></td>
+                                            <td colspan="4" class="text-end"><h4>Genel Toplam:</h4></td>
                                             <td class="text-end"><h4>{{ number_format($selectedCart->total, 2) }} {{ $selectedCart->currency_code }}</h4></td>
                                         </tr>
                                     </tfoot>

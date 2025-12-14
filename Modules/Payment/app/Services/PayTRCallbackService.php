@@ -64,7 +64,7 @@ class PayTRCallbackService
             }
 
             // 3. Duplicate kontrolü (payment zaten işlenmiş mi?)
-            if (in_array($payment->status, ['paid', 'failed', 'refunded'])) {
+            if (in_array($payment->status, ['completed', 'failed', 'refunded'])) {
                 if (setting('paytr_debug', false)) {
                     Log::info('⚠️ PayTR callback: Duplicate - payment zaten işlenmiş', [
                         'payment_id' => $payment->payment_id,
@@ -139,7 +139,7 @@ class PayTRCallbackService
     {
         // Payment status güncelle
         $payment->update([
-            'status' => 'paid',
+            'status' => 'completed',
             'paid_at' => now(),
             'gateway_response' => json_encode($callbackData),
         ]);

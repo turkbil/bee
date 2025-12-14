@@ -102,6 +102,14 @@ class Cart extends BaseModel
     }
 
     /**
+     * Sepet sahibi kullanıcı (Central DB'den)
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\User::class, 'customer_id', 'id');
+    }
+
+    /**
      * Sepet para birimi (Shop modülü varsa)
      * NOT: Bu relationship optional - Shop modülü olmayan sistemlerde çalışmaz
      */

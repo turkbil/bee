@@ -910,6 +910,9 @@
                                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                                     <i class="fa-solid fa-file-invoice-dollar text-gray-700 dark:text-gray-500 mr-3"></i>
                                     Fatura Adresi
+                                    @if($billing_type === 'individual')
+                                        <span class="ml-2 text-xs font-normal text-gray-500">(Opsiyonel)</span>
+                                    @endif
                                 </h2>
                                 <button @click="showNewBillingForm = !showNewBillingForm; $wire.set('edit_billing_address_id', null)"
                                         class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
@@ -1175,18 +1178,14 @@
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
                             <i class="fa-solid fa-file-invoice text-gray-700 dark:text-gray-500 mr-3"></i>
                             Fatura Adresi
+                            @if($billing_type === 'individual')
+                                <span class="ml-2 text-xs font-normal text-gray-500">(Opsiyonel)</span>
+                            @endif
                         </h2>
                         <button @click="showNewBillingForm = !showNewBillingForm; $wire.set('edit_billing_address_id', null)"
                                 class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
                             <i class="fa-solid fa-plus mr-1"></i>Ekle
                         </button>
-                    </div>
-
-                    <div class="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 mb-4">
-                        <p class="text-sm text-blue-400">
-                            <i class="fa-solid fa-info-circle mr-2"></i>
-                            Dijital ürün satın alıyorsunuz. Teslimat adresi gerekmez, sadece fatura adresi yeterlidir.
-                        </p>
                     </div>
 
                     {{-- Yeni Fatura Adresi Formu (Header'ın hemen altında) --}}
@@ -1526,35 +1525,24 @@
                         @error('agree_all') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
                     </div>
 
-                    {{-- Hatalar --}}
-                    @if ($errors->any())
-                        <div class="px-5 pt-4">
-                            <div class="bg-red-900/20 border border-red-700 rounded-xl p-4">
-                                <p class="text-sm text-red-300 font-semibold mb-2">
-                                    <i class="fa-solid fa-exclamation-triangle mr-2"></i>Lütfen eksikleri tamamlayın:
-                                </p>
-                                <ul class="text-sm text-red-400 space-y-1">
-                                    @foreach ($errors->all() as $error)
-                                        <li>• {{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-
                     {{-- Validation Errors Summary --}}
                     @if ($errors->any())
-                        <div class="mx-5 mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-                            <div class="flex items-start gap-3">
-                                <i class="fa-solid fa-exclamation-triangle text-red-400 text-xl mt-0.5"></i>
-                                <div class="flex-1">
-                                    <p class="font-semibold text-red-400 mb-2">Lütfen aşağıdaki hataları düzeltin:</p>
-                                    <ul class="text-sm text-red-300 space-y-1 list-disc list-inside">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
+                        <div class="px-5 pb-4">
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-xl p-4">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-8 h-8 bg-red-100 dark:bg-red-900/40 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-exclamation text-red-500 dark:text-red-400 text-sm"></i>
+                                    </div>
+                                    <p class="text-sm font-medium text-red-700 dark:text-red-300">Eksik bilgiler var</p>
                                 </div>
+                                <ul class="space-y-1.5 pl-11">
+                                    @foreach ($errors->all() as $error)
+                                        <li class="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                                            <i class="fa-solid fa-circle text-[4px] text-red-400 dark:text-red-500"></i>
+                                            {{ $error }}
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </div>
                         </div>
                     @endif

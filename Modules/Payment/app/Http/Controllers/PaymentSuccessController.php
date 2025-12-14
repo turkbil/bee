@@ -28,7 +28,7 @@ class PaymentSuccessController extends Controller
 
         if (!$orderNumber) {
             Log::warning('⚠️ Payment success: Order number not found in query or session');
-            return redirect()->route('shop.index')
+            return redirect()->to('/')
                 ->with('error', 'Sipariş bilgisi bulunamadı.');
         }
 
@@ -39,7 +39,7 @@ class PaymentSuccessController extends Controller
 
         if (!$order) {
             Log::warning('⚠️ Payment success: Order not found', ['order_number' => $orderNumber]);
-            return redirect()->route('shop.index')
+            return redirect()->to('/')
                 ->with('error', 'Sipariş bulunamadı.');
         }
 

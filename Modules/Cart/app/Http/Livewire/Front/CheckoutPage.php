@@ -1321,15 +1321,17 @@ class CheckoutPage extends Component
             // Fiziksel ürün varsa teslimat adresi zorunlu
             if ($this->requiresShipping) {
                 $rules['shipping_address_id'] = 'required';
-                // Fatura adresi sadece "teslimat ile aynı" kapalıysa zorunlu
-                if (!$this->billing_same_as_shipping) {
+                // Kurumsal müşteri için fatura adresi zorunlu (bireysel için opsiyonel)
+                if (!$this->billing_same_as_shipping && $this->billing_type === 'corporate') {
                     $rules['billing_address_id'] = 'required';
                 }
             } else {
-                // Dijital ürün - sadece fatura adresi zorunlu
-                $rules['billing_address_id'] = 'required';
+                // Dijital ürün - kurumsal için fatura adresi zorunlu, bireysel için opsiyonel
+                if ($this->billing_type === 'corporate') {
+                    $rules['billing_address_id'] = 'required';
+                }
             }
-            \Log::info('📍 Login user - Address validation', ['requires_shipping' => $this->requiresShipping]);
+            \Log::info('📍 Login user - Address validation', ['requires_shipping' => $this->requiresShipping, 'billing_type' => $this->billing_type]);
         } else {
             // Guest user için inline adres formu zorunlu (fiziksel ürünler için)
             if ($this->requiresShipping) {
@@ -1567,13 +1569,15 @@ class CheckoutPage extends Component
         if ($this->customerId) {
             if ($this->requiresShipping) {
                 $rules['shipping_address_id'] = 'required';
-                // Fatura adresi sadece "teslimat ile aynı" kapalıysa zorunlu
-                if (!$this->billing_same_as_shipping) {
+                // Kurumsal müşteri için fatura adresi zorunlu
+                if (!$this->billing_same_as_shipping && $this->billing_type === 'corporate') {
                     $rules['billing_address_id'] = 'required';
                 }
             } else {
-                // Dijital ürün - sadece fatura adresi zorunlu
-                $rules['billing_address_id'] = 'required';
+                // Dijital ürün - kurumsal için fatura adresi zorunlu, bireysel için opsiyonel
+                if ($this->billing_type === 'corporate') {
+                    $rules['billing_address_id'] = 'required';
+                }
             }
         } else {
             if ($this->requiresShipping) {
@@ -1658,6 +1662,20 @@ class CheckoutPage extends Component
             $billingAddress = Address::find($this->billing_address_id);
             $shippingAddress = $this->shipping_address_id ? Address::find($this->shipping_address_id) : null;
 
+            // Bireysel müşteri için varsayılan fatura adresi (adres seçilmemişse)
+            $billingAddressData = null;
+            if ($billingAddress) {
+                $billingAddressData = $billingAddress->toSnapshot();
+            } elseif ($this->billing_type === 'individual') {
+                // Bireysel müşteri - varsayılan Türkiye adresi
+                $billingAddressData = [
+                    'country' => 'Türkiye',
+                    'city' => null,
+                    'district' => null,
+                    'address_line_1' => null,
+                ];
+            }
+
             // Sipariş oluştur
             $order = Order::create([
                 'user_id' => $customer->id,
@@ -1670,7 +1688,7 @@ class CheckoutPage extends Component
                 'customer_tax_office' => $this->billing_tax_office,
                 'customer_tax_number' => $this->billing_tax_number,
 
-                'billing_address' => $billingAddress ? $billingAddress->toSnapshot() : null,
+                'billing_address' => $billingAddressData,
                 'shipping_address' => $shippingAddress ? $shippingAddress->toSnapshot() : null,
 
                 'customer_notes' => $shippingAddress?->delivery_notes ?? null,
@@ -1700,11 +1718,15 @@ class CheckoutPage extends Component
             // 🆕 Subscription oluştur (eğer sepette subscription varsa)
             $this->createSubscriptionsFromOrder($order);
 
-            // Payment kaydı
+            // Payment kaydı - Gateway'i PaymentMethod'dan al
+            $paymentMethod = PaymentMethod::find($this->selectedPaymentMethodId);
+            $gateway = $paymentMethod?->gateway ?? 'paytr';
+
             $payment = Payment::create([
                 'payment_method_id' => $this->selectedPaymentMethodId,
                 'payable_type' => Order::class,
                 'payable_id' => $order->order_id,
+                'gateway' => $gateway,
                 'gateway_transaction_id' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
                 'amount' => $this->grandTotal,
                 'currency' => 'TRY',
@@ -1731,8 +1753,7 @@ class CheckoutPage extends Component
             ]);
 
             // ✅ Gateway'e göre redirect - PayTR veya Bank Transfer
-            $paymentMethod = PaymentMethod::find($this->selectedPaymentMethodId);
-            $gateway = $paymentMethod?->gateway ?? $this->selectedGateway ?? 'paytr';
+            // $paymentMethod ve $gateway zaten yukarıda tanımlandı
 
             if ($gateway === 'bank_transfer' || $gateway === 'manual') {
                 // Havale/EFT sayfasına yönlendir

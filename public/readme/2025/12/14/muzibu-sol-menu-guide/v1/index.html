@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Sol Menu & Iccerik Mimarisi - Kapsamli Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .checkbox-item:has(input:checked) .task-text { text-decoration: line-through; opacity: 0.6; }
+        .checkbox-item:has(input:checked) .status-badge { background: #22c55e !important; }
+        .checkbox-item:has(input:checked) .status-badge::after { content: 'Tamamlandi'; }
+        .checkbox-item .status-badge::after { content: 'Bekliyor'; }
+        .draft-preview { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-[#121212] via-[#1a1a1a] to-[#0d0d0d] text-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-[#121212]/95 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-[#ff7f50] to-[#ff6a3d] rounded-xl flex items-center justify-center">
+                        <i class="fas fa-music text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">Muzibu Sol Menu Mimarisi</h1>
+                        <p class="text-sm text-gray-400">Kapsamli Gelistirme Rehberi & Todo Listesi</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-sm text-gray-500">
+                    <span><i class="fas fa-calendar mr-2"></i>14 Aralik 2025</span>
+                    <span><i class="fas fa-code-branch mr-2"></i>v1.0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Quick Navigation -->
+    <nav class="bg-[#181818] border-b border-gray-800 sticky top-[73px] z-40">
+        <div class="max-w-7xl mx-auto px-6 py-3">
+            <div class="flex gap-3 overflow-x-auto scrollbar-hide">
+                <a href="#menu-yapisi" class="px-4 py-2 bg-[#ff7f50] text-white rounded-full text-sm font-semibold whitespace-nowrap">Menu Yapisi</a>
+                <a href="#sayfa-davranislari" class="px-4 py-2 bg-gray-700 hover:bg-[#ff7f50] text-white rounded-full text-sm font-semibold whitespace-nowrap transition-all">Sayfa Davranislari</a>
+                <a href="#context-menu" class="px-4 py-2 bg-gray-700 hover:bg-[#ff7f50] text-white rounded-full text-sm font-semibold whitespace-nowrap transition-all">Context Menu</a>
+                <a href="#favori-sistemi" class="px-4 py-2 bg-gray-700 hover:bg-[#ff7f50] text-white rounded-full text-sm font-semibold whitespace-nowrap transition-all">Favori Sistemi</a>
+                <a href="#kullanici-playlist" class="px-4 py-2 bg-gray-700 hover:bg-[#ff7f50] text-white rounded-full text-sm font-semibold whitespace-nowrap transition-all">Kullanici Playlist</a>
+                <a href="#todo-listesi" class="px-4 py-2 bg-gray-700 hover:bg-[#ff7f50] text-white rounded-full text-sm font-semibold whitespace-nowrap transition-all">Todo Listesi</a>
+                <a href="#draft-tasarimlar" class="px-4 py-2 bg-gray-700 hover:bg-[#ff7f50] text-white rounded-full text-sm font-semibold whitespace-nowrap transition-all">Draft Tasarimlar</a>
+                <a href="#sag-sidebar" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-full text-sm font-semibold whitespace-nowrap transition-all">Sag Sidebar</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+
+        <!-- SECTION 1: Menu Yapisi -->
+        <section id="menu-yapisi" class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-gradient-to-br from-[#ff7f50] to-[#e91e63] rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-bars text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Sol Menu Yapisi</h2>
+                    <p class="text-gray-400">Kesfet bolumu ve navigasyon hiyerarsisi</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Mevcut Yapi -->
+                <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800">
+                    <h3 class="text-xl font-bold text-[#ff7f50] mb-6 flex items-center gap-2">
+                        <i class="fas fa-folder-open"></i> Mevcut Menu Yapisi
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="text-xs text-gray-500 uppercase tracking-wider mb-3">Kitapligim</div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-list text-gray-400 w-5"></i>
+                            <span class="text-gray-300">Playlistlerim</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-heart text-gray-400 w-5"></i>
+                            <span class="text-gray-300">Favorilerim</span>
+                        </div>
+
+                        <div class="h-px bg-gray-700 my-4"></div>
+
+                        <div class="text-xs text-gray-500 uppercase tracking-wider mb-3">Kesfet</div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-[#ff7f50]/20 rounded-lg border border-[#ff7f50]/30">
+                            <i class="fas fa-fire text-[#ff7f50] w-5"></i>
+                            <span class="text-white font-medium">Populer Playlistler</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-compact-disc text-gray-400 w-5"></i>
+                            <span class="text-gray-300">Albumler</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-music text-gray-400 w-5"></i>
+                            <span class="text-gray-300">Turler</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-compass text-gray-400 w-5"></i>
+                            <span class="text-gray-300">Sektorler</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-radio text-gray-400 w-5"></i>
+                            <span class="text-gray-300">Canli Radyolar</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yeni/Guncellenecek Yapi -->
+                <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-green-500/30">
+                    <h3 class="text-xl font-bold text-green-400 mb-6 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i> Onaylanan Menu Yapisi
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="text-xs text-gray-500 uppercase tracking-wider mb-3">Kitapligim</div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-list text-gray-400 w-5"></i>
+                            <span class="text-gray-300">Playlistlerim</span>
+                            <span class="ml-auto text-xs text-gray-500">Kullanici playlistleri</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-gray-800/50 rounded-lg">
+                            <i class="fas fa-heart text-gray-400 w-5"></i>
+                            <span class="text-gray-300">Favorilerim</span>
+                            <span class="ml-auto text-xs text-gray-500">Tum favori tipleri</span>
+                        </div>
+
+                        <div class="h-px bg-gray-700 my-4"></div>
+
+                        <div class="text-xs text-green-400 uppercase tracking-wider mb-3">Kesfet (Guncel)</div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-purple-500/20 rounded-lg border border-purple-500/30">
+                            <i class="fas fa-list-music text-purple-400 w-5"></i>
+                            <span class="text-white font-medium">Playlistler</span>
+                            <span class="ml-auto text-xs bg-purple-500/30 px-2 py-1 rounded">Sistem</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-blue-500/20 rounded-lg border border-blue-500/30">
+                            <i class="fas fa-compact-disc text-blue-400 w-5"></i>
+                            <span class="text-white font-medium">Albumler</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-pink-500/20 rounded-lg border border-pink-500/30">
+                            <i class="fas fa-music text-pink-400 w-5"></i>
+                            <span class="text-white font-medium">Turler</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-cyan-500/20 rounded-lg border border-cyan-500/30">
+                            <i class="fas fa-building text-cyan-400 w-5"></i>
+                            <span class="text-white font-medium">Sektorler</span>
+                            <span class="ml-auto text-xs bg-cyan-500/30 px-2 py-1 rounded">2 bolum</span>
+                        </div>
+                        <div class="flex items-center gap-3 px-4 py-3 bg-orange-500/20 rounded-lg border border-orange-500/30">
+                            <i class="fas fa-broadcast-tower text-orange-400 w-5"></i>
+                            <span class="text-white font-medium">Radyolar</span>
+                            <span class="ml-auto text-xs bg-orange-500/30 px-2 py-1 rounded">Direkt cal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Sayfa Davranislari -->
+        <section id="sayfa-davranislari" class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-sitemap text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Sayfa Davranislari</h2>
+                    <p class="text-gray-400">Her icerik tipi icin liste ve detay davranislari</p>
+                </div>
+            </div>
+
+            <!-- Playlistler -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-list-music text-purple-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-purple-400">Playlistler</h3>
+                        <p class="text-sm text-gray-400">Sistem playlistleri ve kullanici etklesimi</p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-th-large text-gray-400"></i> Liste Sayfasi (/playlists)
+                        </h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Grid gorünümünde playlist kartlari</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Her kartta cover, baslik, aciklama</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-image text-blue-400 mt-1"></i> <strong>Gorsele tikla</strong> &rarr; Detay sayfasina git</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-play text-[#ff7f50] mt-1"></i> <strong>Play tusuna tikla</strong> &rarr; Playlist sarkilerini cal</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-heart text-red-400 mt-1"></i> Favori butonu (kalp ikonu)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-ellipsis-v text-gray-400 mt-1"></i> Menu butonu &rarr; Context menu ac</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-file-alt text-gray-400"></i> Detay Sayfasi (/playlists/{slug})
+                        </h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Playlist hero (cover + bilgiler)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Sarki listesi (standart tasarim)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-play text-[#ff7f50] mt-1"></i> Tum playlist'i cal butonu</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-random text-purple-400 mt-1"></i> Karistir modu</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-plus text-blue-400 mt-1"></i> Sarkilari kendi playlist'ine ekle</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-copy text-cyan-400 mt-1"></i> Playlist'i kopyala (kullaniciya)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Albumler -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-compact-disc text-blue-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-400">Albumler</h3>
+                        <p class="text-sm text-gray-400">Album listesi ve sarki icerikleri</p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-th-large text-gray-400"></i> Liste Sayfasi (/albums)
+                        </h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Grid görünümünde album kartlari</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Cover, album adi, sanatci adi</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-image text-blue-400 mt-1"></i> <strong>Gorsele tikla</strong> &rarr; Detay sayfasina git</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-play text-[#ff7f50] mt-1"></i> <strong>Play tusuna tikla</strong> &rarr; Album sarkilerini cal</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-heart text-red-400 mt-1"></i> Favori butonu</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-ellipsis-v text-gray-400 mt-1"></i> Menu butonu &rarr; Context menu</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-file-alt text-gray-400"></i> Detay Sayfasi (/albums/{slug})
+                        </h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Album hero (cover + sanatci + yil)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Sarki listesi (standart tasarim)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-play text-[#ff7f50] mt-1"></i> Tum albumu cal butonu</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-plus text-blue-400 mt-1"></i> Sarkilari kendi playlist'ine ekle</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-user text-purple-400 mt-1"></i> Sanatci sayfasina link</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Turler -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-music text-pink-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-pink-400">Turler (Genre)</h3>
+                        <p class="text-sm text-gray-400">Muzik turleri ve ture bagli sarkilar</p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-th-large text-gray-400"></i> Liste Sayfasi (/genres)
+                        </h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Rengarenk gradient kartlar</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Tur adi (Pop, Rock, Jazz vb.)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-image text-blue-400 mt-1"></i> <strong>Karta tikla</strong> &rarr; Detay sayfasina git</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-play text-[#ff7f50] mt-1"></i> <strong>Play tusuna tikla</strong> &rarr; Ture ait sarkilari cal</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-heart text-red-400 mt-1"></i> Favori butonu</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-file-alt text-gray-400"></i> Detay Sayfasi (/genres/{slug})
+                        </h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Tur hero (gradient + tur adi)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Sarki listesi (standart tasarim)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-play text-[#ff7f50] mt-1"></i> Tum tur sarkilerini cal</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-plus text-blue-400 mt-1"></i> Sarkilari playlist'e ekle</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-random text-purple-400 mt-1"></i> Karistir modu</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sektorler -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-cyan-500/30 mb-6">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-building text-cyan-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-cyan-400">Sektorler</h3>
+                        <p class="text-sm text-gray-400">Isletme sektorleri - OZEL YAPI (2 bolum)</p>
+                    </div>
+                    <span class="ml-auto px-3 py-1 bg-cyan-500/20 text-cyan-400 text-xs font-bold rounded-full">OZEL TASARIM</span>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-th-large text-gray-400"></i> Liste Sayfasi (/sectors)
+                        </h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Grid gorunumunde sektor kartlari</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Sektor adi, ikon, aciklama</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-image text-blue-400 mt-1"></i> <strong>Karta tikla</strong> &rarr; Detay sayfasina git</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-heart text-red-400 mt-1"></i> Favori butonu</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-xl p-5 border-2 border-cyan-500/30">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-file-alt text-cyan-400"></i> Detay Sayfasi (/sectors/{slug})
+                            <span class="ml-2 px-2 py-0.5 bg-cyan-500/30 text-cyan-300 text-xs rounded">2 BOLUM</span>
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="bg-cyan-500/10 rounded-lg p-3 border border-cyan-500/20">
+                                <h5 class="font-bold text-cyan-300 text-sm mb-2"><i class="fas fa-broadcast-tower mr-2"></i>Bolum 1: Sektore Ait Radyolar</h5>
+                                <ul class="space-y-1 text-xs text-gray-300">
+                                    <li>&bull; Sektor ile iliskilendirilen radyolar</li>
+                                    <li>&bull; Radyo kartlari (tikla = direkt cal)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-500/10 rounded-lg p-3 border border-purple-500/20">
+                                <h5 class="font-bold text-purple-300 text-sm mb-2"><i class="fas fa-list-music mr-2"></i>Bolum 2: Sektore Ait Playlistler</h5>
+                                <ul class="space-y-1 text-xs text-gray-300">
+                                    <li>&bull; Sektor ile iliskilendirilen playlistler</li>
+                                    <li>&bull; Playlist kartlari (normal davranis)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Radyolar -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-orange-500/30">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-broadcast-tower text-orange-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-orange-400">Radyolar</h3>
+                        <p class="text-sm text-gray-400">Canli radyo yayinlari - DIREKT CALMA</p>
+                    </div>
+                    <span class="ml-auto px-3 py-1 bg-orange-500/20 text-orange-400 text-xs font-bold rounded-full">DETAY YOK</span>
+                </div>
+                <div class="bg-gray-800/50 rounded-xl p-5">
+                    <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-th-large text-gray-400"></i> Liste Sayfasi (/radios) - TEK SAYFA
+                    </h4>
+                    <div class="bg-orange-500/10 border border-orange-500/30 rounded-lg p-4 mb-4">
+                        <p class="text-orange-300 text-sm font-medium"><i class="fas fa-exclamation-triangle mr-2"></i>ONEMLI: Radyolarin detay sayfasi YOKTUR!</p>
+                    </div>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Grid gorunumunde radyo kartlari</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Radyo adi, logo, sektor bilgisi</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-play text-[#ff7f50] mt-1"></i> <strong>Gorsele VEYA Play'e tikla</strong> &rarr; DIREKT CAL</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-random text-purple-400 mt-1"></i> Radyoya atanan playlistlerden KARISIK sarkilar</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-heart text-red-400 mt-1"></i> Favori butonu</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-ellipsis-v text-gray-400 mt-1"></i> Menu butonu &rarr; Context menu</li>
+                    </ul>
+                    <div class="mt-4 p-3 bg-gray-900/50 rounded-lg">
+                        <p class="text-xs text-gray-400"><strong class="text-white">Calma Mantigi:</strong> Radyo tiklandiginda, radyoya atanmis tum playlistlerdeki sarkilar karistirilir ve sirasiz calinir. Kullanici bunu player'daki siraya ekleyebilir.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Context Menu -->
+        <section id="context-menu" class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-mouse-pointer text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Context Menu Sistemi</h2>
+                    <p class="text-gray-400">Sag tik + menu butonu ile acilan aksiyonlar</p>
+                </div>
+            </div>
+
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-6">
+                    <p class="text-green-300 text-sm"><i class="fas fa-info-circle mr-2"></i><strong>YENI:</strong> Her icerik kartina 3 nokta menu butonu eklenecek. Sag tik + bu buton ayni context menu'yu acacak.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Sarki Context Menu -->
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-music text-[#ff7f50]"></i> Sarki
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-play w-4 text-gray-500"></i> Simdi Cal</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-list-ul w-4 text-gray-500"></i> Siraya Ekle</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-step-forward w-4 text-gray-500"></i> Siradakinin Ardindan Cal</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-plus w-4 text-gray-500"></i> Playlist'e Ekle</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-heart w-4 text-gray-500"></i> Favorilere Ekle/Cikar</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-compact-disc w-4 text-gray-500"></i> Albume Git</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-user w-4 text-gray-500"></i> Sanatciya Git</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-share w-4 text-gray-500"></i> Paylas</li>
+                        </ul>
+                    </div>
+
+                    <!-- Album Context Menu -->
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-compact-disc text-blue-400"></i> Album
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-play w-4 text-gray-500"></i> Albumu Cal</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-random w-4 text-gray-500"></i> Karistirarak Cal</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-list-ul w-4 text-gray-500"></i> Siraya Ekle</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-heart w-4 text-gray-500"></i> Favorilere Ekle/Cikar</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-user w-4 text-gray-500"></i> Sanatciya Git</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-share w-4 text-gray-500"></i> Paylas</li>
+                        </ul>
+                    </div>
+
+                    <!-- Playlist Context Menu -->
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-list-music text-purple-400"></i> Playlist
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-play w-4 text-gray-500"></i> Playlist'i Cal</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-random w-4 text-gray-500"></i> Karistirarak Cal</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-list-ul w-4 text-gray-500"></i> Siraya Ekle</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-copy w-4 text-gray-500"></i> Playlist'i Kopyala</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-heart w-4 text-gray-500"></i> Favorilere Ekle/Cikar</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-share w-4 text-gray-500"></i> Paylas</li>
+                        </ul>
+                    </div>
+
+                    <!-- Tur Context Menu -->
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-guitar text-pink-400"></i> Tur (Genre)
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-play w-4 text-gray-500"></i> Turu Cal</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-random w-4 text-gray-500"></i> Karistirarak Cal</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-list-ul w-4 text-gray-500"></i> Siraya Ekle</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-heart w-4 text-gray-500"></i> Favorilere Ekle/Cikar</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-share w-4 text-gray-500"></i> Paylas</li>
+                        </ul>
+                    </div>
+
+                    <!-- Radyo Context Menu -->
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-broadcast-tower text-orange-400"></i> Radyo
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-play w-4 text-gray-500"></i> Radyoyu Cal</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-list-ul w-4 text-gray-500"></i> Siraya Ekle</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-heart w-4 text-gray-500"></i> Favorilere Ekle/Cikar</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-share w-4 text-gray-500"></i> Paylas</li>
+                        </ul>
+                    </div>
+
+                    <!-- Sanatci Context Menu -->
+                    <div class="bg-gray-800/50 rounded-xl p-5">
+                        <h4 class="font-bold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-user-music text-teal-400"></i> Sanatci
+                        </h4>
+                        <ul class="space-y-2 text-sm">
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-play w-4 text-gray-500"></i> Sanatciyi Cal</li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-random w-4 text-gray-500"></i> Karistirarak Cal</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-heart w-4 text-gray-500"></i> Favorilere Ekle/Cikar</li>
+                            <li class="border-t border-gray-700 my-2"></li>
+                            <li class="flex items-center gap-2 text-gray-300"><i class="fas fa-share w-4 text-gray-500"></i> Paylas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Favori Sistemi -->
+        <section id="favori-sistemi" class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-heart text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Favori Sistemi</h2>
+                    <p class="text-gray-400">Tum icerik tipleri icin favori yonetimi</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800">
+                    <h3 class="text-xl font-bold text-white mb-6">Favori Eklenebilir Icerikler</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                            <span class="flex items-center gap-3"><i class="fas fa-music text-[#ff7f50]"></i> Sarki</span>
+                            <span class="text-green-400 text-sm"><i class="fas fa-check"></i> Mevcut</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                            <span class="flex items-center gap-3"><i class="fas fa-compact-disc text-blue-400"></i> Album</span>
+                            <span class="text-green-400 text-sm"><i class="fas fa-check"></i> Mevcut</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                            <span class="flex items-center gap-3"><i class="fas fa-list-music text-purple-400"></i> Playlist</span>
+                            <span class="text-green-400 text-sm"><i class="fas fa-check"></i> Mevcut</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                            <span class="flex items-center gap-3"><i class="fas fa-guitar text-pink-400"></i> Tur</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-plus"></i> Eklenecek</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                            <span class="flex items-center gap-3"><i class="fas fa-broadcast-tower text-orange-400"></i> Radyo</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-plus"></i> Eklenecek</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                            <span class="flex items-center gap-3"><i class="fas fa-user text-teal-400"></i> Sanatci</span>
+                            <span class="text-yellow-400 text-sm"><i class="fas fa-plus"></i> Eklenecek</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800">
+                    <h3 class="text-xl font-bold text-white mb-6">Favorilerim Sayfasi (/favorites)</h3>
+                    <div class="space-y-4">
+                        <p class="text-gray-300 text-sm">Tum favori tipleri tek sayfada, tab'lar ile filtrelenebilir sekilde gosterilecek.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1.5 bg-[#ff7f50] text-white text-sm rounded-full">Tumu</span>
+                            <span class="px-3 py-1.5 bg-gray-700 text-gray-300 text-sm rounded-full">Sarkilar</span>
+                            <span class="px-3 py-1.5 bg-gray-700 text-gray-300 text-sm rounded-full">Albumler</span>
+                            <span class="px-3 py-1.5 bg-gray-700 text-gray-300 text-sm rounded-full">Playlistler</span>
+                            <span class="px-3 py-1.5 bg-gray-700 text-gray-300 text-sm rounded-full">Turler</span>
+                            <span class="px-3 py-1.5 bg-gray-700 text-gray-300 text-sm rounded-full">Radyolar</span>
+                            <span class="px-3 py-1.5 bg-gray-700 text-gray-300 text-sm rounded-full">Sanatcilar</span>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <p class="text-xs text-gray-400"><strong class="text-white">Teknik:</strong> HasFavorites trait zaten mevcut. Genre, Radio, Artist modellerine trait eklenecek.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Kullanici Playlist -->
+        <section id="kullanici-playlist" class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-user-plus text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Kullanici Playlist Sistemi</h2>
+                    <p class="text-gray-400">Kullanicilarin kendi playlistlerini olusturmasi ve yonetmesi</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Playlist Olusturma -->
+                <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800">
+                    <h3 class="text-lg font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-plus-circle"></i> Playlist Olusturma
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Sol menude "Playlist Olustur" butonu</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Modal acilir (ad, aciklama, kapak)</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> is_system = false olarak kaydedilir</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> user_id = auth user</li>
+                    </ul>
+                </div>
+
+                <!-- Sarki Ekleme -->
+                <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800">
+                    <h3 class="text-lg font-bold text-purple-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-music"></i> Sarki Ekleme
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Context menu &rarr; "Playlist'e Ekle"</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Kullanici playlistleri listelenir</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> "Yeni Playlist Olustur" secenegi</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Sarki pivot tabloya eklenir</li>
+                    </ul>
+                </div>
+
+                <!-- Playlist Duzenleme -->
+                <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800">
+                    <h3 class="text-lg font-bold text-teal-400 mb-4 flex items-center gap-2">
+                        <i class="fas fa-edit"></i> Playlist Duzenleme
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Playlistlerim sayfasindan erisim</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Sarki siralama (drag & drop)</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Sarki silme</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1"></i> Playlist bilgilerini guncelleme</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sistem Playlist Kopyalama -->
+            <div class="mt-6 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 rounded-2xl p-6 border border-purple-500/30">
+                <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-copy text-purple-400"></i> Sistem Playlist'i Kopyalama
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-gray-300 text-sm mb-4">Kullanicilar sistem playlistlerini kendi hesaplarina kopyalayabilir:</p>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-1 text-purple-400 mt-0.5 w-4"></i> Context menu &rarr; "Playlist'i Kopyala"</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-2 text-purple-400 mt-0.5 w-4"></i> Yeni isim girilir (varsayilan: "Kopya - [orijinal]")</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-3 text-purple-400 mt-0.5 w-4"></i> Tum sarkilar ile birlikte kopyalanir</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-4 text-purple-400 mt-0.5 w-4"></i> is_system = false, user_id = auth user</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-xl p-4">
+                        <p class="text-xs text-gray-400 mb-2"><strong class="text-white">Teknik Akis:</strong></p>
+                        <pre class="text-xs text-gray-500 overflow-x-auto">
+1. Yeni Playlist olustur (user_id, is_system=false)
+2. Orijinal playlist sarkilarini cek
+3. Pivot tabloya yeni playlist_id ile ekle
+4. Kullaniciya basarili mesaji goster</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: Todo Listesi -->
+        <section id="todo-listesi" class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-tasks text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Gelistirme Todo Listesi</h2>
+                    <p class="text-gray-400">Tamamlanacak gorevler (AI tarafindan guncellenecek)</p>
+                </div>
+            </div>
+
+            <!-- FAZE 1: Temel Altyapi -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <h3 class="text-xl font-bold text-yellow-400 mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-yellow-400 text-black rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                    Faze 1: Temel Altyapi
+                </h3>
+                <div class="space-y-3">
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Genre modeline HasFavorites trait ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Radio modeline HasFavorites trait ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Artist modeline HasFavorites trait ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Sector modeline HasFavorites trait ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZE 2: Sol Menu -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <h3 class="text-xl font-bold text-blue-400 mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-blue-400 text-black rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                    Faze 2: Sol Menu Guncellemeleri
+                </h3>
+                <div class="space-y-3">
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">sidebar-left.blade.php - Menu yapisini guncelle (Kesfet bolumu)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">"Populer Playlistler" &rarr; "Playlistler" olarak degistir</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">"Canli Radyolar" &rarr; "Radyolar" olarak degistir</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Menu siralama: Playlistler, Albumler, Turler, Sektorler, Radyolar</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZE 3: Kart Componentleri -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <h3 class="text-xl font-bold text-green-400 mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-green-400 text-black rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                    Faze 3: Kart Componentleri (3 Nokta Menu)
+                </h3>
+                <div class="space-y-3">
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Playlist kartlarina 3 nokta menu butonu ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Album kartlarina 3 nokta menu butonu ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Genre kartlarina 3 nokta menu butonu ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Sector kartlarina 3 nokta menu butonu ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Radio kartlarina 3 nokta menu butonu ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Sarki satirlarina 3 nokta menu butonu ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZE 4: Context Menu JS -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <h3 class="text-xl font-bold text-purple-400 mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-purple-400 text-black rounded-full flex items-center justify-center text-sm font-bold">4</span>
+                    Faze 4: Context Menu JavaScript
+                </h3>
+                <div class="space-y-3">
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">muzibu-store.js - contextMenu store guncelle (tip bazli aksiyon)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Sarki icin context menu aksiyonlari tanimla</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Album icin context menu aksiyonlari tanimla</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Playlist icin context menu aksiyonlari tanimla</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Genre icin context menu aksiyonlari tanimla</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Radio icin context menu aksiyonlari tanimla</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Artist icin context menu aksiyonlari tanimla</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZE 5: Sektor Detay Sayfasi -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-cyan-500/30 mb-6">
+                <h3 class="text-xl font-bold text-cyan-400 mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-cyan-400 text-black rounded-full flex items-center justify-center text-sm font-bold">5</span>
+                    Faze 5: Sektor Detay Sayfasi (2 Bolum)
+                </h3>
+                <div class="space-y-3">
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">sectors/show.blade.php - 2 bolumlu yapi olustur</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Bolum 1: Sektore ait radyolar listesi</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Bolum 2: Sektore ait playlistler listesi</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Controller'da sektor->radios ve sektor->playlists iliskileri cek</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZE 6: Radyo Calma Mantigi -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-orange-500/30 mb-6">
+                <h3 class="text-xl font-bold text-orange-400 mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-orange-400 text-black rounded-full flex items-center justify-center text-sm font-bold">6</span>
+                    Faze 6: Radyo Calma Mantigi
+                </h3>
+                <div class="space-y-3">
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">playRadio() fonksiyonu olustur (player-core.js)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">API: /api/radio/{id}/songs endpoint (karisik sarki listesi)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Radyo tiklandiginda direkt calma (detay sayfasi yok)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">radios-grid.blade.php - tiklanabilirlik guncelle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZE 7: Kullanici Playlist -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-indigo-500/30 mb-6">
+                <h3 class="text-xl font-bold text-indigo-400 mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-indigo-400 text-black rounded-full flex items-center justify-center text-sm font-bold">7</span>
+                    Faze 7: Kullanici Playlist Sistemi
+                </h3>
+                <div class="space-y-3">
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">"Playlist'e Ekle" modal componenti olustur</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">API: /api/user/playlists endpoint (kullanici playlistleri)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">API: /api/user/playlists/{id}/add-song endpoint</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">API: /api/playlists/{id}/copy endpoint (sistem playlist kopyala)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Playlistlerim sayfasi - drag & drop siralama</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Playlistlerim sayfasi - sarki silme ozellligi</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZE 8: Favorilerim Sayfasi -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-red-500/30 mb-6">
+                <h3 class="text-xl font-bold text-red-400 mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-red-400 text-black rounded-full flex items-center justify-center text-sm font-bold">8</span>
+                    Faze 8: Favorilerim Sayfasi
+                </h3>
+                <div class="space-y-3">
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">favorites/index.blade.php - tab sistemi ekle</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Tab: Tumu (karma liste)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Tab: Sarkilar</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Tab: Albumler</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Tab: Playlistler</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Tab: Turler</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Tab: Radyolar</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Tab: Sanatcilar</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- FAZE 9: Test & QA -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800">
+                <h3 class="text-xl font-bold text-gray-400 mb-6 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-gray-400 text-black rounded-full flex items-center justify-center text-sm font-bold">9</span>
+                    Faze 9: Test & QA
+                </h3>
+                <div class="space-y-3">
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Tum sayfalarda sag tik context menu test</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Tum sayfalarda 3 nokta menu butonu test</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Radyo calma testi (karisik playlist)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Kullanici playlist olusturma/duzenleme testi</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Favori ekleme/cikarma testi (tum tipler)</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                    <label class="checkbox-item flex items-center gap-3 p-3 bg-gray-800/50 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors">
+                        <input type="checkbox" class="w-5 h-5 rounded border-gray-600 text-[#ff7f50] focus:ring-[#ff7f50]">
+                        <span class="task-text flex-1">Mobil responsive test</span>
+                        <span class="status-badge px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: Draft Tasarimlar -->
+        <section id="draft-tasarimlar" class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-palette text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Draft Tasarimlar</h2>
+                    <p class="text-gray-400">Muzibu tasarimina uygun ornek componentler</p>
+                </div>
+            </div>
+
+            <!-- Draft 1: Playlist Karti - SECILDI: Versiyon B -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border-2 border-green-500/50 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-white">Draft 1: Playlist Karti</h3>
+                    <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full">✓ SECILDI</span>
+                </div>
+                <div class="draft-preview rounded-xl p-8 flex justify-center">
+                    <!-- Versiyon B: Cover Uzerinde Sag Ust - SECILEN TASARIM -->
+                    <div>
+                        <p class="text-xs text-green-400 mb-3 font-medium text-center">Spotify Tarzi: Cover Sag Ust</p>
+                        <div class="w-[200px]">
+                            <div class="group bg-[#181818] hover:bg-[#282828] rounded-lg p-4 transition-all duration-300">
+                                <div class="relative mb-3">
+                                    <div class="w-full aspect-square bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center shadow-lg">
+                                        <i class="fas fa-headphones text-white/80 text-4xl"></i>
+                                    </div>
+                                    <!-- 3 Nokta - Cover Sag Ust -->
+                                    <button class="absolute top-2 right-2 w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg z-10">
+                                        <i class="fas fa-ellipsis-h text-white text-sm"></i>
+                                    </button>
+                                    <!-- Play Button - Sag Alt -->
+                                    <button class="absolute bottom-2 right-2 w-12 h-12 bg-[#ff7f50] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-xl transition-all transform translate-y-2 group-hover:translate-y-0">
+                                        <i class="fas fa-play text-black ml-1"></i>
+                                    </button>
+                                </div>
+                                <!-- Yazilar Sola Dayali -->
+                                <h3 class="font-bold text-white mb-1 truncate text-left">Jazz Classics</h3>
+                                <p class="text-sm text-gray-400 truncate text-left">28 sarki</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <p class="text-sm text-green-300"><i class="fab fa-spotify mr-2"></i><strong>Spotify Tarzi Secildi:</strong> 3 nokta menu cover uzerinde sag ust kosede. Play butonu sag altta. Yazilar sola dayali.</p>
+                </div>
+                <div class="mt-4 p-4 bg-[#ff7f50]/10 border border-[#ff7f50]/30 rounded-lg">
+                    <p class="text-sm text-[#ff7f50]"><i class="fas fa-heart-broken mr-2"></i><strong>Favori Butonu Yok!</strong> Tum aksiyonlar (favori dahil) 3 nokta menu icerisinden erisiliyor. Sistem tutarli.</p>
+                </div>
+            </div>
+
+            <!-- Draft 2: Radyo Karti -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-orange-500/30 mb-8">
+                <h3 class="text-xl font-bold text-white mb-6">Draft 2: Radyo Karti (Direkt Calma)</h3>
+                <div class="draft-preview rounded-xl p-8">
+                    <div class="max-w-[200px]">
+                        <div class="group bg-[#181818] hover:bg-[#282828] rounded-lg p-4 transition-all duration-300 cursor-pointer relative">
+                            <!-- 3 Nokta Menu -->
+                            <button class="absolute top-2 right-2 w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10" onclick="event.stopPropagation()">
+                                <i class="fas fa-ellipsis-v text-white text-sm"></i>
+                            </button>
+
+                            <div class="relative mb-4">
+                                <div class="w-full aspect-square bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg relative overflow-hidden">
+                                    <i class="fas fa-broadcast-tower text-white/80 text-4xl"></i>
+                                    <!-- Canli Animasyonu -->
+                                    <div class="absolute bottom-2 left-2 flex items-center gap-1">
+                                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                        <span class="text-[10px] text-white font-bold">CANLI</span>
+                                    </div>
+                                </div>
+                                <!-- Play Overlay (Tum kart tiklanabilir) -->
+                                <div class="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div class="w-14 h-14 bg-[#ff7f50] rounded-full flex items-center justify-center shadow-xl">
+                                        <i class="fas fa-play text-black ml-1 text-lg"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="font-bold text-white mb-1 truncate">Cafe Radyo</h3>
+                            <p class="text-sm text-gray-400 truncate">Cafe & Restaurant</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-lg">
+                    <p class="text-xs text-orange-300"><i class="fas fa-info-circle mr-2"></i><strong>Not:</strong> Radyo kartina herhangi bir yere tiklandiginda direkt calma baslar. Detay sayfasi yok.</p>
+                </div>
+            </div>
+
+            <!-- Draft 3: Sarki Satiri -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-8">
+                <h3 class="text-xl font-bold text-white mb-6">Draft 3: Sarki Satiri (Favori + Playlist Disarida)</h3>
+                <div class="draft-preview rounded-xl p-8">
+                    <div class="space-y-1">
+                        <!-- Sarki Satiri 1 -->
+                        <div class="group grid grid-cols-[40px_50px_1fr_auto_60px] gap-4 items-center px-4 py-3 hover:bg-white/5 rounded-lg cursor-pointer transition-colors">
+                            <!-- Numara / Play -->
+                            <div class="text-center text-sm text-gray-400">
+                                <span class="group-hover:hidden">1</span>
+                                <i class="fas fa-play text-[#ff7f50] hidden group-hover:inline"></i>
+                            </div>
+                            <!-- Cover -->
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded flex items-center justify-center text-lg">
+                                <i class="fas fa-music text-white/80"></i>
+                            </div>
+                            <!-- Bilgi -->
+                            <div class="min-w-0">
+                                <h4 class="text-white font-medium truncate group-hover:text-[#ff7f50] transition-colors">Hayal Kahvesi</h4>
+                                <p class="text-sm text-gray-400 truncate">Sezen Aksu</p>
+                            </div>
+                            <!-- Aksiyon Butonlari (Disarida) -->
+                            <div class="flex items-center gap-1">
+                                <!-- Favori -->
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-white/10 transition-all" title="Favorilere Ekle">
+                                    <i class="far fa-heart text-gray-400 hover:text-red-400 transition-colors"></i>
+                                </button>
+                                <!-- Playlist'e Ekle -->
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-white/10 transition-all" title="Playlist'e Ekle">
+                                    <i class="fas fa-plus text-gray-400 hover:text-[#ff7f50] transition-colors"></i>
+                                </button>
+                                <!-- 3 Nokta Menu -->
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-white/10 transition-all" title="Diger Secenekler">
+                                    <i class="fas fa-ellipsis-h text-gray-400"></i>
+                                </button>
+                            </div>
+                            <!-- Sure -->
+                            <div class="text-sm text-gray-400 text-right">3:45</div>
+                        </div>
+
+                        <!-- Sarki Satiri 2 (Favori Aktif) -->
+                        <div class="group grid grid-cols-[40px_50px_1fr_auto_60px] gap-4 items-center px-4 py-3 hover:bg-white/5 rounded-lg cursor-pointer transition-colors">
+                            <div class="text-center text-sm text-gray-400">
+                                <span class="group-hover:hidden">2</span>
+                                <i class="fas fa-play text-[#ff7f50] hidden group-hover:inline"></i>
+                            </div>
+                            <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-red-600 rounded flex items-center justify-center text-lg">
+                                <i class="fas fa-music text-white/80"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="text-white font-medium truncate group-hover:text-[#ff7f50] transition-colors">Gibi Gibi</h4>
+                                <p class="text-sm text-gray-400 truncate">Tarkan</p>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <!-- Favori (AKTIF) -->
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition-all" title="Favorilerden Cikar">
+                                    <i class="fas fa-heart text-red-500"></i>
+                                </button>
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-white/10 transition-all">
+                                    <i class="fas fa-plus text-gray-400 hover:text-[#ff7f50] transition-colors"></i>
+                                </button>
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-white/10 transition-all">
+                                    <i class="fas fa-ellipsis-h text-gray-400"></i>
+                                </button>
+                            </div>
+                            <div class="text-sm text-gray-400 text-right">4:12</div>
+                        </div>
+
+                        <!-- Sarki Satiri 3 (Simdi Caliniyor) -->
+                        <div class="group grid grid-cols-[40px_50px_1fr_auto_60px] gap-4 items-center px-4 py-3 bg-[#ff7f50]/10 rounded-lg cursor-pointer transition-colors border-l-2 border-[#ff7f50]">
+                            <div class="text-center text-sm">
+                                <i class="fas fa-volume-up text-[#ff7f50] animate-pulse"></i>
+                            </div>
+                            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded flex items-center justify-center text-lg">
+                                <i class="fas fa-music text-white/80"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="text-[#ff7f50] font-medium truncate">Simdi Caliniyor</h4>
+                                <p class="text-sm text-gray-400 truncate">Sanatci Adi</p>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition-all">
+                                    <i class="far fa-heart text-gray-400 hover:text-red-400 transition-colors"></i>
+                                </button>
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition-all">
+                                    <i class="fas fa-plus text-gray-400 hover:text-[#ff7f50] transition-colors"></i>
+                                </button>
+                                <button class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10 transition-all">
+                                    <i class="fas fa-ellipsis-h text-gray-400"></i>
+                                </button>
+                            </div>
+                            <div class="text-sm text-[#ff7f50] text-right font-medium">2:18</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 grid md:grid-cols-3 gap-4">
+                    <div class="p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-center">
+                        <i class="fas fa-heart text-red-400 mb-1"></i>
+                        <p class="text-xs text-gray-300">Favori butonu her zaman gorunur (hover'da daha belirgin)</p>
+                    </div>
+                    <div class="p-3 bg-[#ff7f50]/10 border border-[#ff7f50]/30 rounded-lg text-center">
+                        <i class="fas fa-plus text-[#ff7f50] mb-1"></i>
+                        <p class="text-xs text-gray-300">Playlist'e ekle - hizli erisim</p>
+                    </div>
+                    <div class="p-3 bg-gray-700/50 rounded-lg text-center">
+                        <i class="fas fa-ellipsis-h text-gray-400 mb-1"></i>
+                        <p class="text-xs text-gray-300">Diger aksiyonlar (siraya ekle, albume git vb.)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft 4: Context Menu -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800">
+                <h3 class="text-xl font-bold text-white mb-6">Draft 4: Context Menu Tasarimi</h3>
+                <div class="draft-preview rounded-xl p-8 flex justify-center">
+                    <div class="w-[220px] bg-[#282828] rounded-lg shadow-2xl border border-gray-700 overflow-hidden">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-[#ff7f50] to-[#ff6a3d] px-4 py-3">
+                            <div class="text-sm font-bold text-white uppercase">Sarki</div>
+                            <div class="text-xs text-white/80 truncate">Hayal Kahvesi - Sezen Aksu</div>
+                        </div>
+                        <!-- Actions -->
+                        <div class="py-2">
+                            <button class="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-play w-4 text-gray-500"></i> Simdi Cal
+                            </button>
+                            <button class="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-list-ul w-4 text-gray-500"></i> Siraya Ekle
+                            </button>
+                            <button class="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-step-forward w-4 text-gray-500"></i> Siradakinin Ardindan
+                            </button>
+                            <div class="border-t border-gray-700 my-1"></div>
+                            <button class="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-plus w-4 text-gray-500"></i> Playlist'e Ekle
+                                <i class="fas fa-chevron-right ml-auto text-gray-600 text-xs"></i>
+                            </button>
+                            <button class="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-heart w-4 text-gray-500"></i> Favorilere Ekle
+                            </button>
+                            <div class="border-t border-gray-700 my-1"></div>
+                            <button class="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-compact-disc w-4 text-gray-500"></i> Albume Git
+                            </button>
+                            <button class="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-user w-4 text-gray-500"></i> Sanatciya Git
+                            </button>
+                            <div class="border-t border-gray-700 my-1"></div>
+                            <button class="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 flex items-center gap-3 transition-colors">
+                                <i class="fas fa-share w-4 text-gray-500"></i> Paylas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: Sag Sidebar Analizi -->
+        <section id="sag-sidebar" class="mb-20">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-columns text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white">Sag Sidebar Analizi</h2>
+                    <p class="text-gray-400">"Sizin Icin" alani - Kullanmak mi, Kaldirmak mi?</p>
+                </div>
+                <span class="ml-auto px-4 py-2 bg-amber-500/20 text-amber-400 text-sm font-bold rounded-full">KARAR GEREKLI</span>
+            </div>
+
+            <!-- Mevcut Durum -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="fas fa-search text-blue-400"></i> Mevcut Durum Analizi
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-gray-300 mb-3">Teknik Yapi</h4>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li class="flex items-start gap-2"><i class="fas fa-code text-blue-400 mt-1 w-4"></i> <code class="bg-gray-800 px-1 rounded">x-show="isHomepage"</code> ile kontrol ediliyor</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-desktop text-blue-400 mt-1 w-4"></i> Sadece XL+ ekranlarda gorunur (<code class="bg-gray-800 px-1 rounded">xl:block</code>)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-home text-blue-400 mt-1 w-4"></i> Sadece anasayfada aktif</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-server text-blue-400 mt-1 w-4"></i> Server-side rendered (Blade)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-300 mb-3">Mevcut Icerik</h4>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li class="flex items-start gap-2"><i class="fas fa-list text-purple-400 mt-1 w-4"></i> Sizin Icin (Featured Playlists)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-fire text-orange-400 mt-1 w-4"></i> Populer Sarkilar (Statik/Dummy)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-sparkles text-green-400 mt-1 w-4"></i> Yeni Eklenenler (Statik/Dummy)</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-guitar text-pink-400 mt-1 w-4"></i> Turler (Statik Liste)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUG DETAYI - Teknik Analiz -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-yellow-500/30 mb-6">
+                <h3 class="text-xl font-bold text-yellow-400 mb-6 flex items-center gap-2">
+                    <i class="fas fa-bug"></i> Bug Detayi: Tutarsizlik Neden Olusuyor?
+                </h3>
+
+                <div class="mb-6">
+                    <h4 class="font-bold text-white mb-3">Kullanici Senaryosu</h4>
+                    <div class="grid md:grid-cols-4 gap-3 text-sm">
+                        <div class="bg-green-500/10 rounded-lg p-3 border border-green-500/30">
+                            <div class="text-green-400 font-bold mb-1">1. Anasayfa</div>
+                            <div class="text-gray-400 text-xs">Sag sidebar GORUNUR</div>
+                            <div class="text-green-300 text-xs mt-1">✓ Dogru</div>
+                        </div>
+                        <div class="bg-red-500/10 rounded-lg p-3 border border-red-500/30">
+                            <div class="text-red-400 font-bold mb-1">2. Uyelik Uzat</div>
+                            <div class="text-gray-400 text-xs">Sag sidebar KALIYOR</div>
+                            <div class="text-red-300 text-xs mt-1">✗ Yanlis (kaybolmali)</div>
+                        </div>
+                        <div class="bg-green-500/10 rounded-lg p-3 border border-green-500/30">
+                            <div class="text-green-400 font-bold mb-1">3. Album Tikla</div>
+                            <div class="text-gray-400 text-xs">Sag sidebar KAYBOLUYOR</div>
+                            <div class="text-green-300 text-xs mt-1">✓ Dogru</div>
+                        </div>
+                        <div class="bg-amber-500/10 rounded-lg p-3 border border-amber-500/30">
+                            <div class="text-amber-400 font-bold mb-1">4. Uyelik Uzat</div>
+                            <div class="text-gray-400 text-xs">Sag sidebar GELMIYOR</div>
+                            <div class="text-amber-300 text-xs mt-1">? Tutarsiz</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-bold text-white mb-3">Teknik Sebep: <code class="bg-gray-800 px-2 py-0.5 rounded text-sm">isHomepage</code> State Senkronizasyonu</h4>
+                    <div class="bg-gray-900 rounded-lg p-4 font-mono text-xs overflow-x-auto mb-4">
+                        <div class="text-gray-500">// app.blade.php - Satir 155-164</div>
+                        <div class="text-blue-300">$initialIsHomepage = <span class="text-yellow-300">empty</span>(<span class="text-green-300">trim</span>(request()->path(), '/'));</div>
+                        <div class="text-gray-500 mt-2">// JavaScript checkIsHomepage()</div>
+                        <div class="text-blue-300">const currentPath = window.location.pathname.<span class="text-yellow-300">replace</span>(/^\/+|\/+$/g, '');</div>
+                        <div class="text-blue-300">this.isHomepage = (currentPath === '' || currentPath === '/');</div>
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-300">
+                        <p><i class="fas fa-exclamation-circle text-red-400 mr-2"></i><strong>Problem:</strong> <code class="bg-gray-800 px-1 rounded">wire:navigate</code> (Livewire SPA) ile sayfa gecisinde <code class="bg-gray-800 px-1 rounded">livewire:navigated</code> event'i <strong>gecikmeyle</strong> fire ediliyor.</p>
+                        <p><i class="fas fa-exclamation-circle text-red-400 mr-2"></i><strong>Race Condition:</strong> Alpine state (<code class="bg-gray-800 px-1 rounded">isHomepage</code>) ile DOM guncellemesi (<code class="bg-gray-800 px-1 rounded">x-show</code>, <code class="bg-gray-800 px-1 rounded">:class</code>) arasinda zamanlama uyusmazligi.</p>
+                        <p><i class="fas fa-exclamation-circle text-red-400 mr-2"></i><strong>Grid Kaymasi:</strong> 3-kolon &rarr; 2-kolon gecisinde grid class'i (<code class="bg-gray-800 px-1 rounded">grid-cols-[220px_1fr_360px]</code>) ve sidebar visibility (<code class="bg-gray-800 px-1 rounded">x-show</code>) ayni anda guncellenmiyor.</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800/50 rounded-lg p-4">
+                    <h4 class="font-bold text-white mb-2 text-sm">Event Dinleyicileri (Mevcut)</h4>
+                    <div class="grid md:grid-cols-3 gap-3 text-xs">
+                        <div class="bg-gray-900 rounded p-2">
+                            <div class="text-purple-400 font-mono">route-changed</div>
+                            <div class="text-gray-500 mt-1">Custom event (bazi durumlarda fire edilmiyor)</div>
+                        </div>
+                        <div class="bg-gray-900 rounded p-2">
+                            <div class="text-blue-400 font-mono">popstate</div>
+                            <div class="text-gray-500 mt-1">Browser geri/ileri (OK)</div>
+                        </div>
+                        <div class="bg-gray-900 rounded p-2">
+                            <div class="text-green-400 font-mono">livewire:navigated</div>
+                            <div class="text-gray-500 mt-1">SPA navigation (gecikme sorunu)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sorunlar -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-red-500/30 mb-6">
+                <h3 class="text-xl font-bold text-red-400 mb-6 flex items-center gap-2">
+                    <i class="fas fa-exclamation-triangle"></i> Tespit Edilen Sorunlar (Ozet)
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4 p-4 bg-red-500/10 rounded-lg">
+                        <div class="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-red-400 font-bold">1</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">SPA State Sync Sorunu</h4>
+                            <p class="text-sm text-gray-400"><code class="bg-gray-800 px-1 rounded">livewire:navigated</code> event'i ile Alpine state guncellemesi arasinda race condition var.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-4 bg-red-500/10 rounded-lg">
+                        <div class="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-red-400 font-bold">2</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">isHomepage Kontrolu Yetersiz</h4>
+                            <p class="text-sm text-gray-400"><code class="bg-gray-800 px-1 rounded">window.location.pathname</code> bazli kontrol SPA navigation'da gecikme yasiyor.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-4 bg-red-500/10 rounded-lg">
+                        <div class="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-red-400 font-bold">3</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Grid Layout Kaymasi</h4>
+                            <p class="text-sm text-gray-400">3 kolonlu grid (sol + ana + sag) vs 2 kolonlu grid (sol + ana) gecislerinde layout kayiyor.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-4 bg-red-500/10 rounded-lg">
+                        <div class="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-red-400 font-bold">4</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Dinamik Kullanim Zorluğu</h4>
+                            <p class="text-sm text-gray-400">Album/Playlist detaylarini sag sidebar'da gostermek SPA mimarisinde karmasik state yonetimi gerektirir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spotify Referans - GUNCELLENMIS -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border-2 border-green-500/50 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                        <i class="fab fa-spotify text-green-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-green-400">Spotify Referans - Sag Sidebar KULLANILIYOR!</h3>
+                        <span class="text-xs text-green-300 bg-green-500/20 px-2 py-0.5 rounded">REFERANS MODEL</span>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-white mb-3 text-sm">Spotify Sag Sidebar Icerigi</h4>
+                        <ul class="space-y-2 text-sm text-gray-300">
+                            <li class="flex items-start gap-2"><i class="fas fa-user text-green-400 mt-1"></i> <strong>Sanatci hakkinda:</strong> Bio, foto, dinleyici sayisi</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-users text-purple-400 mt-1"></i> <strong>Katkida bulunanlar:</strong> Ana sanatci, besteci, soz yazari</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-map-marker-alt text-orange-400 mt-1"></i> <strong>Turnede:</strong> Konser bilgileri</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-heart text-pink-400 mt-1"></i> <strong>Begenilen Sarkilar:</strong> Kullanici listesi</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white mb-3 text-sm">Onemli Farklar</h4>
+                        <div class="bg-green-500/10 rounded-lg p-3 text-sm text-gray-300 space-y-2">
+                            <p><i class="fas fa-check-circle text-green-400 mr-2"></i>Sidebar <strong>HER ZAMAN gorunur</strong> (sadece anasayfa degil)</p>
+                            <p><i class="fas fa-sync text-blue-400 mr-2"></i>Icerik <strong>KONTEKSTE GORE</strong> degisir (calan sarkiya/secili iceriklere gore)</p>
+                            <p><i class="fas fa-expand text-purple-400 mr-2"></i>Desktop'ta sabit, mobilde slide-panel</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECILEN YAKLASIM: Dinamik Sidebar - Pratik Cozum -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border-2 border-green-500/50 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-green-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-green-400">SECILEN: Dinamik Sidebar (Pratik Yaklasim)</h3>
+                            <p class="text-xs text-gray-400">PC'de hizli onizleme / sarki listesine kolay erisim</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full">✓ ONAYLANDI</span>
+                </div>
+
+                <!-- Mantik -->
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h4 class="font-bold text-white mb-3 text-sm">Sidebar Icerigi (Sayfaya Gore)</h4>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
+                                <i class="fas fa-home text-blue-400 w-5"></i>
+                                <span class="text-sm text-gray-300">Anasayfa</span>
+                                <span class="text-xs text-gray-500 ml-auto">Featured playlistler</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
+                                <i class="fas fa-compact-disc text-purple-400 w-5"></i>
+                                <span class="text-sm text-gray-300">Album/Playlist Detay</span>
+                                <span class="text-xs text-gray-500 ml-auto">Sarki listesi</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
+                                <i class="fas fa-guitar text-green-400 w-5"></i>
+                                <span class="text-sm text-gray-300">Tur/Sektor Detay</span>
+                                <span class="text-xs text-gray-500 ml-auto">Sarki listesi</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg">
+                                <i class="fas fa-mobile-alt text-gray-400 w-5"></i>
+                                <span class="text-sm text-gray-300">Mobil</span>
+                                <span class="text-xs text-gray-500 ml-auto">Sidebar YOK</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white mb-3 text-sm">Faydalar</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start gap-2 text-gray-300">
+                                <i class="fas fa-bolt text-yellow-400 mt-1"></i>
+                                <span>Hizli album/playlist goruntuleme</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-gray-300">
+                                <i class="fas fa-list text-blue-400 mt-1"></i>
+                                <span>Sarki listesine aninda erisim</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-gray-300">
+                                <i class="fas fa-play text-green-400 mt-1"></i>
+                                <span>Sayfa degistirmeden dinlemeye baslama</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-gray-300">
+                                <i class="fas fa-mobile-alt text-purple-400 mt-1"></i>
+                                <span>Mobilde gereksiz karmasiklik yok</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAZLAR -->
+            <div class="bg-[#1a1a1a] rounded-2xl p-6 border border-gray-800 mb-6">
+                <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="fas fa-tasks text-[#ff7f50]"></i> Uygulama Fazlari
+                </h3>
+
+                <!-- FAZ 1 -->
+                <div class="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</span>
+                        <div>
+                            <h4 class="font-bold text-green-400">FAZ 1: Temel Dinamik Sidebar</h4>
+                            <p class="text-xs text-gray-400">~4-6 saat</p>
+                        </div>
+                        <span class="ml-auto px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded">ONCELIKLI</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-xs text-gray-400 mb-2">Yapilacaklar:</p>
+                            <ul class="text-sm text-gray-300 space-y-1">
+                                <li class="flex items-center gap-2"><i class="fas fa-square text-gray-600 text-xs"></i> <code class="bg-gray-800 px-1 rounded text-xs">isHomepage</code> kontrolunu kaldir</li>
+                                <li class="flex items-center gap-2"><i class="fas fa-square text-gray-600 text-xs"></i> Sidebar'i her sayfada goster (xl+)</li>
+                                <li class="flex items-center gap-2"><i class="fas fa-square text-gray-600 text-xs"></i> Detay sayfalarinda sarki listesi</li>
+                                <li class="flex items-center gap-2"><i class="fas fa-square text-gray-600 text-xs"></i> Anasayfada featured icerik</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 mb-2">Sonuc:</p>
+                            <ul class="text-sm text-gray-300 space-y-1">
+                                <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Tutarli layout (her sayfada)</li>
+                                <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Hizli sarki listesi erisimi</li>
+                                <li class="flex items-center gap-2"><i class="fas fa-check text-green-400"></i> Mobil etkilenmez</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAZ 2 -->
+                <div class="p-4 bg-gray-800/30 border border-gray-700 rounded-lg">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</span>
+                        <div>
+                            <h4 class="font-bold text-gray-400">FAZ 2: Liste Sayfasi Onizleme (Opsiyonel)</h4>
+                            <p class="text-xs text-gray-500">Sonra yapilabilir</p>
+                        </div>
+                        <span class="ml-auto px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">SONRA</span>
+                    </div>
+                    <ul class="text-sm text-gray-400 space-y-1">
+                        <li class="flex items-center gap-2"><i class="fas fa-mouse-pointer text-gray-500"></i> Liste sayfasinda oge secimi</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-arrow-right text-gray-500"></i> Secilen ogenin sidebar'da onizlemesi</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-hand-pointer text-gray-500"></i> Tikla &rarr; SPA ic sayfa navigasyonu</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sonuc / Oneri - GUNCELLENMIS -->
+            <div class="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-2xl p-6 border-2 border-green-500/50">
+                <h3 class="text-xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                    <i class="fas fa-lightbulb"></i> Sonuc & Oneri (Guncel)
+                </h3>
+                <div class="bg-green-500/20 rounded-lg p-4 mb-6">
+                    <p class="text-lg text-green-300 font-bold mb-2"><i class="fab fa-spotify mr-2"></i>ONERILEN: Spotify Tarzi Dinamik Sidebar</p>
+                    <p class="text-sm text-gray-300">Spotify sag sidebar'i aktif olarak kullaniyor. Muzibu da ayni standardi hedeflemeli.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-white mb-3">Uygulama Plani</h4>
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <ol class="text-sm text-gray-300 space-y-2">
+                                <li class="flex items-start gap-2">
+                                    <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 text-xs">1</span>
+                                    <span><code class="bg-gray-800 px-1 rounded text-xs">isHomepage</code> kontrolunu kaldir &rarr; her sayfada goster</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 text-xs">2</span>
+                                    <span>Alpine store ile kontekst-bazli icerik yonetimi</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 text-xs">3</span>
+                                    <span>Sayfa tipine gore sidebar icerigi degistir</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="bg-green-500 text-white rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 text-xs">4</span>
+                                    <span>Mobilde slide-panel/drawer olarak goster</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white mb-3">Beklenen Sonuc</h4>
+                        <div class="bg-gray-800/50 rounded-lg p-4 space-y-2">
+                            <div class="flex items-start gap-2 text-sm text-gray-300">
+                                <i class="fas fa-check text-green-400 mt-1"></i>
+                                <span>Spotify standartinda profesyonel UX</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-sm text-gray-300">
+                                <i class="fas fa-check text-green-400 mt-1"></i>
+                                <span>Tutarli davranis - her sayfada ayni layout</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-sm text-gray-300">
+                                <i class="fas fa-check text-green-400 mt-1"></i>
+                                <span>Zengin kontekst bilgisi (sanatci, sarki listesi, vb.)</span>
+                            </div>
+                            <div class="flex items-start gap-2 text-sm text-gray-300">
+                                <i class="fas fa-check text-green-400 mt-1"></i>
+                                <span>Mobil-desktop uyumlu responsive tasarim</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                    <p class="text-sm text-amber-300"><i class="fas fa-info-circle mr-2"></i><strong>Alternatif (Hizli Cozum):</strong> Eger zaman kisitliysa, sidebar tamamen kaldirilabilir ve 2 kolonlu layout kullanilabilir. Ancak bu, Spotify tarzi zengin deneyimden vazgecmek demektir.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#0a0a0a] border-t border-gray-800 py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-gray-500 text-sm">
+                <i class="fas fa-robot mr-2"></i>Claude AI tarafindan olusturuldu | Muzibu Sol Menu Mimarisi Guide v1.0
+            </p>
+            <p class="text-gray-600 text-xs mt-2">14 Aralik 2025 - Tailwind CSS</p>
+        </div>
+    </footer>
+
+    <!-- LocalStorage for checkbox state -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.checkbox-item input[type="checkbox"]');
+            const storageKey = 'muzibu-sol-menu-todo-v1';
+
+            // Load saved state
+            const savedState = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            checkboxes.forEach((checkbox, index) => {
+                if (savedState[index]) {
+                    checkbox.checked = true;
+                }
+            });
+
+            // Save state on change
+            checkboxes.forEach((checkbox, index) => {
+                checkbox.addEventListener('change', function() {
+                    const state = {};
+                    checkboxes.forEach((cb, i) => {
+                        if (cb.checked) state[i] = true;
+                    });
+                    localStorage.setItem(storageKey, JSON.stringify(state));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

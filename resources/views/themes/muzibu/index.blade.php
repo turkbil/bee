@@ -549,4 +549,8 @@ document.addEventListener('alpine:init', () => {
 
 
 </div>
+
+{{-- Footer (Sadece ana sayfada gösterilir) --}}
+@include('themes.muzibu.components.footer')
+
 @endsection

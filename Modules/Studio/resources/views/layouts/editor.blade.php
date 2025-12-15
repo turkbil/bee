@@ -211,7 +211,7 @@
     </div>
 
     <div class="page-wrapper">
-        {{ $slot }}
+        @yield('content')
     </div>
 
     

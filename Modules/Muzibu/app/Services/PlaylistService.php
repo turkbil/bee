@@ -201,7 +201,19 @@ class PlaylistService
             $playlist = new Playlist();
             $playlist->user_id = $userId;
             $playlist->title = $data['title'];
-            $playlist->slug = $data['slug'] ?? $data['title'];
+
+            // 🔧 FIX: Auto-generate slug from title
+            if (isset($data['slug'])) {
+                $playlist->slug = $data['slug'];
+            } else {
+                // Title'dan slug oluştur (multilang support)
+                $slugBase = \Illuminate\Support\Str::slug($data['title']);
+                $playlist->slug = [
+                    'tr' => $slugBase,
+                    'en' => $slugBase,
+                ];
+            }
+
             $playlist->description = $data['description'] ?? null;
             $playlist->is_system = false;
             $playlist->is_public = $data['is_public'] ?? true;

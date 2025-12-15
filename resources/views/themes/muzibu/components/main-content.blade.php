@@ -12,7 +12,7 @@
         {{-- Content (Gradient ile birlikte scroll yapar) --}}
         <div class="relative z-10">
             {{-- 🚀 SPA Loading Skeleton --}}
-            <div x-show="$store.player.isLoading" x-cloak class="spa-loading-skeleton">
+            <div x-show="isLoading" x-cloak class="spa-loading-skeleton">
                 @include('themes.muzibu.partials.loading-skeleton')
             </div>
 
@@ -20,7 +20,7 @@
             <div
                 class="spa-content-wrapper"
                 id="spaContent"
-                x-show="!$store.player.isLoading"
+                x-show="!isLoading"
             >
                 {{ $slot ?? '' }}
                 @yield('content')

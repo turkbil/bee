@@ -82,9 +82,64 @@ document.addEventListener('alpine:init', () => {
         currentSong: null,
         isLoading: false, // SPA loading state için
         playContext: null, // Current play context (genre, album, playlist, etc.)
+        recentlyPlayed: [], // 🎯 Son çalınan şarkılar (son 300 şarkı)
+        maxRecentlyPlayed: 300, // Son kaç şarkı saklanacak (performans dengesi)
 
         showToast(message, type) {
             Alpine.store('toast').show(message, type);
+        },
+
+        /**
+         * 🎯 Add song to recently played list (exclude mekanizması)
+         * @param {number} songId - Song ID to add
+         */
+        addToRecentlyPlayed(songId) {
+            if (!songId) return;
+
+            // Eğer zaten varsa çıkar (en başa ekleyeceğiz)
+            this.recentlyPlayed = this.recentlyPlayed.filter(id => id !== songId);
+
+            // Başa ekle
+            this.recentlyPlayed.unshift(songId);
+
+            // Max limit aşarsa sondan sil
+            if (this.recentlyPlayed.length > this.maxRecentlyPlayed) {
+                this.recentlyPlayed = this.recentlyPlayed.slice(0, this.maxRecentlyPlayed);
+            }
+
+            // localStorage'a kaydet
+            _safeStorage.setItem('muzibu_recently_played', JSON.stringify(this.recentlyPlayed));
+
+            console.log('🎯 Recently played updated:', this.recentlyPlayed.length, 'songs');
+        },
+
+        /**
+         * 🎯 Get recently played song IDs
+         * @returns {Array<number>} Recently played song IDs
+         */
+        getRecentlyPlayed() {
+            // Bellekten dön
+            if (this.recentlyPlayed.length > 0) {
+                return this.recentlyPlayed;
+            }
+
+            // localStorage'dan yükle
+            const stored = _safeStorage.getItem('muzibu_recently_played');
+            if (stored) {
+                this.recentlyPlayed = JSON.parse(stored);
+                return this.recentlyPlayed;
+            }
+
+            return [];
+        },
+
+        /**
+         * 🎯 Clear recently played list
+         */
+        clearRecentlyPlayed() {
+            this.recentlyPlayed = [];
+            _safeStorage.removeItem('muzibu_recently_played');
+            console.log('🗑️ Recently played cleared');
         },
 
         /**
@@ -170,8 +225,16 @@ document.addEventListener('alpine:init', () => {
                 return [];
             }
 
+            // 🎯 Son çalınan şarkıları al (exclude için)
+            const excludeSongIds = this.getRecentlyPlayed();
+
             try {
-                console.log('🔄 Refilling queue...', { context, currentOffset, limit });
+                console.log('🔄 Refilling queue...', {
+                    context,
+                    currentOffset,
+                    limit,
+                    excludeCount: excludeSongIds.length
+                });
 
                 const response = await fetch('/api/muzibu/queue/refill', {
                     method: 'POST',
@@ -187,6 +250,7 @@ document.addEventListener('alpine:init', () => {
                         limit: limit,
                         subType: context.subType,
                         source: context.source,
+                        exclude_song_ids: excludeSongIds, // 🎯 Son çalınan şarkıları gönder
                     })
                 });
 

@@ -656,19 +656,7 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
                             <div>
                                 <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
-                                <select wire:model="new_address_city" id="shipping_city"
-                                        @change="
-                                            $wire.set('new_address_district', '');
-                                            fetch('/api/get-districts/' + $event.target.value)
-                                                .then(r => r.json())
-                                                .then(data => {
-                                                    let select = document.getElementById('shipping_district');
-                                                    select.innerHTML = '<option value=\'\'>Seçin</option>';
-                                                    data.forEach(d => {
-                                                        select.innerHTML += '<option value=\'' + d + '\'>' + d + '</option>';
-                                                    });
-                                                });
-                                        "
+                                <select wire:model.live="new_address_city" id="shipping_city"
                                         class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_address_city') border-red-500 @enderror">
                                     <option value="">Seçin</option>
                                     @foreach($cities ?? [] as $city)
@@ -679,7 +667,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                <select wire:model="new_address_district" id="shipping_district"
+                                <select wire:model.live="new_address_district" id="shipping_district"
                                         class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_address_district') border-red-500 @enderror">
                                     <option value="">{{ empty($new_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
                                     @foreach($districts ?? [] as $district)
@@ -843,7 +831,7 @@
                                             </div>
                                             <div>
                                                 <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                                <select wire:model="new_address_district" id="shipping_district_edit_{{ $addr->address_id }}"
+                                                <select wire:model.live="new_address_district" id="shipping_district_edit_{{ $addr->address_id }}"
                                                         class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
                                                     <option value="">{{ empty($new_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
                                                     @foreach($districts ?? [] as $district)
@@ -938,19 +926,7 @@
                                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
                                     <div>
                                         <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
-                                        <select wire:model="new_billing_address_city" id="billing_city"
-                                                @change="
-                                                    $wire.set('new_billing_address_district', '');
-                                                    fetch('/api/get-districts/' + $event.target.value)
-                                                        .then(r => r.json())
-                                                        .then(data => {
-                                                            let select = document.getElementById('billing_district');
-                                                            select.innerHTML = '<option value=\'\'>Seçin</option>';
-                                                            data.forEach(d => {
-                                                                select.innerHTML += '<option value=\'' + d + '\'>' + d + '</option>';
-                                                            });
-                                                        });
-                                                "
+                                        <select wire:model.live="new_billing_address_city" id="billing_city"
                                                 class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_address_city') border-red-500 @enderror">
                                             <option value="">Seçin</option>
                                             @foreach($cities ?? [] as $city)
@@ -961,7 +937,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                        <select wire:model="new_billing_address_district" id="billing_district"
+                                        <select wire:model.live="new_billing_address_district" id="billing_district"
                                                 class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_address_district') border-red-500 @enderror">
                                             <option value="">{{ empty($new_billing_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
                                             @foreach($billingDistricts ?? [] as $district)
@@ -1124,7 +1100,7 @@
                                                         </div>
                                                         <div>
                                                             <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                                            <select wire:model="new_billing_address_district" id="billing_district_edit_{{ $addr->address_id }}"
+                                                            <select wire:model.live="new_billing_address_district" id="billing_district_edit_{{ $addr->address_id }}"
                                                                     class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
                                                                 <option value="">{{ empty($new_billing_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
                                                                 @foreach($billingDistricts ?? [] as $district)
@@ -1206,19 +1182,7 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
                             <div>
                                 <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İl <span class="text-red-500">*</span></label>
-                                <select wire:model="new_billing_address_city" id="billing_city_digital"
-                                        @change="
-                                            $wire.set('new_billing_address_district', '');
-                                            fetch('/api/get-districts/' + $event.target.value)
-                                                .then(r => r.json())
-                                                .then(data => {
-                                                    let select = document.getElementById('billing_district_digital');
-                                                    select.innerHTML = '<option value=\'\'>Seçin</option>';
-                                                    data.forEach(d => {
-                                                        select.innerHTML += '<option value=\'' + d + '\'>' + d + '</option>';
-                                                    });
-                                                });
-                                        "
+                                <select wire:model.live="new_billing_address_city" id="billing_city_digital"
                                         class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_address_city') border-red-500 @enderror">
                                     <option value="">Seçin</option>
                                     @foreach($cities ?? [] as $city)
@@ -1229,7 +1193,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                <select wire:model="new_billing_address_district" id="billing_district_digital"
+                                <select wire:model.live="new_billing_address_district" id="billing_district_digital"
                                         class="w-full px-3 py-2.5 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm @error('new_billing_address_district') border-red-500 @enderror">
                                     <option value="">{{ empty($new_billing_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
                                     @foreach($billingDistricts ?? [] as $district)
@@ -1393,7 +1357,7 @@
                                             </div>
                                             <div>
                                                 <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">İlçe <span class="text-red-500">*</span></label>
-                                                <select wire:model="new_billing_address_district" id="billing_district_edit_digital_{{ $addr->address_id }}"
+                                                <select wire:model.live="new_billing_address_district" id="billing_district_edit_digital_{{ $addr->address_id }}"
                                                         class="w-full px-3 py-2 bg-white border border-gray-300 dark:bg-gray-800 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white text-sm">
                                                     <option value="">{{ empty($new_billing_address_city) ? 'Önce il seçin' : 'Seçin' }}</option>
                                                     @foreach($billingDistricts ?? [] as $district)

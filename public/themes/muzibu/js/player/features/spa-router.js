@@ -257,6 +257,11 @@ const MuzibuSpaRouter = {
      * Navigate to URL using SPA
      */
     async navigateTo(url) {
+        // ⚡ INSTANT FEEDBACK: Set loading state immediately (UX improvement)
+        console.log('🔄 navigateTo() called, setting isLoading = true');
+        this.isLoading = true;
+        console.log('🔍 Current isLoading state:', this.isLoading);
+
         history.pushState({ url: url }, '', url);
         await this.loadPage(url, true);
     },
@@ -283,10 +288,18 @@ const MuzibuSpaRouter = {
      * Load page content via AJAX (uses cache if available)
      */
     async loadPage(url, addToHistory = true) {
+        const loadStartTime = Date.now();
+        const minLoadingTime = 150; // 🎯 UX Psychology: Minimum 150ms for user feedback
+        const maxLoadingTime = 10000; // ⏱️ 10 second timeout
+
         try {
-            this.isLoading = true;
+            // Note: isLoading already set in navigateTo() for instant feedback
+            if (!this.isLoading) {
+                this.isLoading = true;
+            }
 
             let html;
+            let fetchPromise;
 
             // 🚀 CHECK CACHE FIRST (instant navigation!)
             const cached = this.prefetchCache.get(url);
@@ -295,15 +308,23 @@ const MuzibuSpaRouter = {
                 if (age < this.cacheTimeout) {
                     console.log('⚡ Using cached page (instant!):', url);
                     html = cached.html;
+                    fetchPromise = Promise.resolve(html);
                 } else {
                     // Cache expired, fetch fresh
                     this.prefetchCache.delete(url);
-                    html = await this.fetchPage(url);
+                    fetchPromise = this.fetchPage(url);
                 }
             } else {
                 // Not cached, fetch now
-                html = await this.fetchPage(url);
+                fetchPromise = this.fetchPage(url);
             }
+
+            // ⏱️ TIMEOUT: Race between fetch and timeout
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Page load timeout')), maxLoadingTime);
+            });
+
+            html = await Promise.race([fetchPromise, timeoutPromise]);
 
             // Parse HTML and extract main content
             const parser = new DOMParser();
@@ -320,6 +341,15 @@ const MuzibuSpaRouter = {
                     // Remove ALL script tags from cloned content
                     clonedContent.querySelectorAll('script').forEach(script => script.remove());
 
+                    // 🎯 MINIMUM LOADING TIME: Ensure user sees feedback (UX psychology)
+                    const elapsedTime = Date.now() - loadStartTime;
+                    const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+
+                    if (remainingTime > 0) {
+                        console.log(`⏱️ Minimum loading time: waiting ${remainingTime}ms for better UX`);
+                        await new Promise(resolve => setTimeout(resolve, remainingTime));
+                    }
+
                     // Safely replace content using modern DOM API (prevents script execution)
                     currentMain.replaceChildren(...clonedContent.childNodes);
 
@@ -331,7 +361,7 @@ const MuzibuSpaRouter = {
                     }
 
                     this.currentPath = url;
-                    console.log('Page loaded:', url);
+                    console.log('✅ Page loaded:', url);
 
                     // 🔥 RE-OBSERVE NEW LINKS for viewport prefetch
                     setTimeout(() => this.observeLinks(), 100);
@@ -345,14 +375,27 @@ const MuzibuSpaRouter = {
                 return;
             }
 
+            console.log('✅ loadPage complete, setting isLoading = false');
             this.isLoading = false;
+            console.log('🔍 Final isLoading state:', this.isLoading);
         } catch (error) {
-            console.error('Failed to load page:', error);
-            this.showToast('Sayfa yüklenemedi', 'error');
+            console.error('❌ Failed to load page:', error);
+
+            // User-friendly error messages
+            if (error.message === 'Page load timeout') {
+                this.showToast('Sayfa yüklenemedi (zaman aşımı)', 'error');
+            } else if (!navigator.onLine) {
+                this.showToast('İnternet bağlantınızı kontrol edin', 'error');
+            } else {
+                this.showToast('Sayfa yüklenemedi', 'error');
+            }
+
             this.isLoading = false;
 
             // Fallback to full page reload on error
-            window.location.href = url;
+            setTimeout(() => {
+                window.location.href = url;
+            }, 1000);
         }
     }
 };

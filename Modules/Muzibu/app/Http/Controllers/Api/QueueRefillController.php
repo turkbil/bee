@@ -249,20 +249,27 @@ class QueueRefillController extends Controller
      */
     private function getPlaylistSongs(int $playlistId, int $offset, int $limit, array $excludeSongIds = []): array
     {
-        $playlist = Playlist::with('songs')->find($playlistId);
+        $playlist = Playlist::find($playlistId);
         if (!$playlist) {
             return [];
         }
 
-        // 🎯 Toplam şarkı sayısı (exclude öncesi)
-        $totalSongsBeforeExclude = $playlist->songs()->where('is_active', 1)->count();
+        // 🎲 SQL SEVİYESİNDE RANDOM: Önce song ID'leri al (pivot table issue çözümü)
+        $songIds = DB::table('muzibu_playlist_song')
+            ->where('playlist_id', $playlistId)
+            ->pluck('song_id')
+            ->unique();
 
-        // 🎲 SQL SEVİYESİNDE RANDOM
-        $songs = $playlist->songs()
+        if ($songIds->isEmpty()) {
+            return [];
+        }
+
+        $totalSongsBeforeExclude = $songIds->count();
+
+        // SQL random ile şarkıları çek
+        $songs = Song::whereIn('song_id', $songIds)
             ->where('is_active', 1)
-            ->when(!empty($excludeSongIds), function($query) use ($excludeSongIds) {
-                $query->whereNotIn('muzibu_songs.song_id', $excludeSongIds);
-            })
+            ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
             ->with(['album.artist'])
             ->inRandomOrder()
             ->limit($limit)
@@ -270,7 +277,7 @@ class QueueRefillController extends Controller
 
         // Yeterli şarkı gelmezse, exclude'sız tekrar dene
         if ($songs->count() < $limit && !empty($excludeSongIds)) {
-            $songs = $playlist->songs()
+            $songs = Song::whereIn('song_id', $songIds)
                 ->where('is_active', 1)
                 ->with(['album.artist'])
                 ->inRandomOrder()
@@ -281,9 +288,9 @@ class QueueRefillController extends Controller
         // Playlist songs bitti mi?
         if ($songs->isEmpty()) {
             // ✅ TRANSITION: Playlist → Genre (son 5 şarkının en çok genre'si)
-            $lastSongs = $playlist->songs()
+            $lastSongs = Song::whereIn('song_id', $songIds)
                 ->where('is_active', 1)
-                ->orderBy('muzibu_playlist_song.position', 'desc')
+                ->orderBy('song_id', 'desc')
                 ->take(5)
                 ->get();
 
@@ -338,7 +345,7 @@ class QueueRefillController extends Controller
         }
 
         // Get all playlist IDs in this sector
-        $playlistIds = $sector->playlists()->where('is_active', 1)->pluck('playlist_id');
+        $playlistIds = $sector->playlists()->where('muzibu_playlists.is_active', 1)->pluck('muzibu_playlists.playlist_id');
 
         if ($playlistIds->isEmpty()) {
             return [];
@@ -402,7 +409,7 @@ class QueueRefillController extends Controller
         }
 
         // Get all playlist IDs in this radio
-        $playlistIds = $radio->playlists()->where('is_active', 1)->pluck('playlist_id');
+        $playlistIds = $radio->playlists()->where('muzibu_playlists.is_active', 1)->pluck('muzibu_playlists.playlist_id');
 
         if ($playlistIds->isEmpty()) {
             return [];

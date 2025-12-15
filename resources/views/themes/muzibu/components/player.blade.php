@@ -23,7 +23,7 @@
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
         {{-- Album Cover + Mini Heart Overlay (Mobile) --}}
         <div class="w-10 h-10 sm:w-14 sm:h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex items-center justify-center text-xl sm:text-2xl flex-shrink-0 shadow-lg overflow-hidden relative">
-            <template x-if="currentSong && currentSong.album_cover">
+            <template x-if="currentSong && currentSong.album_cover" x-cloak>
                 <img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover">
             </template>
             <template x-if="!currentSong || !currentSong.album_cover">
@@ -44,8 +44,8 @@
         </div>
 
         <div class="min-w-0 flex-1 hidden xs:block sm:block">
-            <h4 class="text-xs sm:text-sm font-semibold text-white truncate" x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı seç'"></h4>
-            <p class="text-[10px] sm:text-xs text-muzibu-text-gray truncate" x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || 'Sanatçı') : 'Sanatçı'"></p>
+            <h4 class="text-xs sm:text-sm font-semibold text-white truncate" x-text="currentSong ? (currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı') : 'Şarkı seç'">Şarkı seç</h4>
+            <p class="text-[10px] sm:text-xs text-muzibu-text-gray truncate" x-text="currentSong ? (currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || 'Sanatçı') : 'Sanatçı'">Sanatçı</p>
         </div>
 
         {{-- Desktop Heart Button (Desktop Only) --}}
@@ -63,8 +63,13 @@
             <button class="text-muzibu-text-gray hover:text-white transition-all" @click="previousTrack()" aria-label="Önceki şarkı">
                 <i class="fas fa-step-backward"></i>
             </button>
-            <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black transition-all shadow-lg hover:shadow-white/50" @click="togglePlayPause()" :aria-label="isPlaying ? 'Duraklat' : 'Çal'">
-                <i :class="isPlaying ? 'fas fa-stop' : 'fas fa-play ml-0.5'"></i>
+            <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black transition-all shadow-lg hover:shadow-white/50" @click="togglePlayPause()" :aria-label="isSongLoading ? 'Yükleniyor...' : (isPlaying ? 'Duraklat' : 'Çal')">
+                {{-- 🎵 Loading state: Spinner animation --}}
+                <i x-show="isSongLoading" x-cloak class="fas fa-spinner fa-spin"></i>
+                {{-- Playing state: Stop icon --}}
+                <i x-show="!isSongLoading && isPlaying" x-cloak class="fas fa-stop"></i>
+                {{-- Paused state: Play icon (visible by default) --}}
+                <i x-show="!isSongLoading && !isPlaying" class="fas fa-play ml-0.5"></i>
             </button>
             <button class="text-muzibu-text-gray hover:text-white transition-all" @click="nextTrack()" aria-label="Sonraki şarkı">
                 <i class="fas fa-step-forward"></i>

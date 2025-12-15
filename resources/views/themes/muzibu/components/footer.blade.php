@@ -1,101 +1,137 @@
-<footer class="ml-64 bg-muzibu-dark text-white border-t border-white/10 pb-32">
+@php
+    // Tenant-aware sayılar (direkt tenant DB'den çek)
+    $tenantDb = config('tenancy.database.prefix') . 'muzibu_' . substr(md5('1001'), 0, 6);
+
+    try {
+        // Tenant DB'den direkt sayıları çek
+        $songs = \DB::connection('tenant')->table('muzibu_songs')->count();
+        $albums = \DB::connection('tenant')->table('muzibu_albums')->count();
+        $playlists = \DB::connection('tenant')->table('muzibu_playlists')->count();
+
+        // x3 ile çarp
+        $songs = $songs * 3;
+        $albums = $albums * 3;
+        $playlists = $playlists * 3;
+
+        // Akıllı formatlama (1000'den büyükse K+ formatı)
+        $songCount = $songs >= 1000 ? number_format($songs / 1000, 0) . 'K+' : number_format($songs);
+        $albumCount = $albums >= 1000 ? number_format($albums / 1000, 1) . 'K+' : number_format($albums);
+        $playlistCount = $playlists >= 1000 ? number_format($playlists / 1000, 0) . 'K+' : number_format($playlists);
+    } catch (\Exception $e) {
+        // Hata durumunda default değerler
+        $songCount = '150';
+        $albumCount = '18';
+        $playlistCount = '27';
+    }
+@endphp
+
+<footer class="bg-muzibu-dark text-white border-t border-white/10 pb-20">
     <div class="max-w-7xl mx-auto px-8 py-12">
-        <div class="grid md:grid-cols-2 gap-12">
-            <!-- Sol Taraf - İçerik -->
-            <div>
-                <div class="mb-8">
-                    <div class="mb-4">
-                        {!! app(\App\Services\LogoService::class)->renderFooterLogo(['class' => 'h-10 w-auto']) !!}
-                    </div>
-                    <p class="text-gray-400 leading-relaxed">
-                        İşletmenize yasal ve telifsiz müzik. Cafe, restoran, mağaza ve ofisleriniz için profesyonel müzik çözümü.
-                    </p>
-                </div>
 
-                <div class="grid grid-cols-2 gap-6 mb-8">
-                    <div>
-                        <h5 class="font-bold mb-4 text-sm uppercase tracking-wider text-gray-500">ŞİRKET</h5>
-                        <ul class="space-y-2">
-                            <li><a href="/hakkimizda" class="text-gray-400 hover:text-white transition-colors">Hakkımızda</a></li>
-                            <li><a href="/iletisim" class="text-gray-400 hover:text-white transition-colors">İletişim</a></li>
-                            <li><a href="/sss" class="text-gray-400 hover:text-white transition-colors">Sık Sorulan Sorular</a></li>
-                            <li><a href="/blog" class="text-gray-400 hover:text-white transition-colors">Blog</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h5 class="font-bold mb-4 text-sm uppercase tracking-wider text-gray-500">YASAL</h5>
-                        <ul class="space-y-2">
-                            <li><a href="/kullanim-sartlari" class="text-gray-400 hover:text-white transition-colors">Kullanım Şartları</a></li>
-                            <li><a href="/gizlilik-politikasi" class="text-gray-400 hover:text-white transition-colors">Gizlilik Politikası</a></li>
-                            <li><a href="/cerez-politikasi" class="text-gray-400 hover:text-white transition-colors">Çerez Politikası</a></li>
-                            <li><a href="/iptal-iade" class="text-gray-400 hover:text-white transition-colors">İptal ve İade</a></li>
-                        </ul>
-                    </div>
-                </div>
+        {{-- Logo Ortada Büyük --}}
+        <div class="text-center mb-12">
+            <h2 class="text-6xl md:text-8xl font-black bg-clip-text text-transparent bg-gradient-to-r from-muzibu-coral via-muzibu-coral-light to-muzibu-coral-dark mb-4">
+                muzibu
+            </h2>
+            <p class="text-xl md:text-2xl text-gray-400 font-semibold">İşletmenize Yasal ve Telifsiz Müzik</p>
+        </div>
 
-                <div class="border-t border-white/10 pt-6 mb-6">
-                    <h5 class="font-bold mb-4 text-sm">Bizi Takip Edin</h5>
-                    <div class="flex gap-3">
-                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
-                            <i class="fab fa-facebook-f text-white"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
-                            <i class="fab fa-instagram text-white"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
-                            <i class="fab fa-twitter text-white"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
-                            <i class="fab fa-youtube text-white"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-muzibu-gray hover:bg-white/10 rounded-lg flex items-center justify-center transition-all">
-                            <i class="fab fa-linkedin-in text-white"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="text-sm text-gray-500">
-                    &copy; {{ date('Y') }} Muzibu. Tüm hakları saklıdır.
-                </div>
+        {{-- İstatistikler --}}
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-muzibu-coral to-muzibu-coral-light mb-2">{{ $songCount }}</div>
+                <div class="text-gray-400">Şarkı</div>
             </div>
-
-            <!-- Sağ Taraf - İletişim -->
-            <div class="bg-muzibu-gray rounded-2xl p-8">
-                <h4 class="text-2xl font-bold mb-6">Destek</h4>
-
-                <div class="space-y-4">
-                    <a href="https://wa.me/908501234567" target="_blank" class="flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all group">
-                        <div class="w-12 h-12 bg-[#25D366] rounded-xl flex items-center justify-center flex-shrink-0">
-                            <i class="fab fa-whatsapp text-white text-2xl"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm text-gray-400 mb-1">WhatsApp</div>
-                            <div class="font-semibold text-white group-hover:text-muzibu-coral transition-colors">Hemen Mesaj Gönder</div>
-                        </div>
-                    </a>
-
-                    <a href="mailto:destek@muzibu.com" class="flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-xl transition-all group">
-                        <div class="w-12 h-12 bg-muzibu-coral rounded-xl flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-envelope text-white text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="text-sm text-gray-400 mb-1">E-posta</div>
-                            <div class="font-semibold text-white group-hover:text-muzibu-coral transition-colors">destek@muzibu.com</div>
-                        </div>
-                    </a>
-
-                    <button class="w-full flex items-center gap-4 p-4 bg-muzibu-coral hover:bg-muzibu-coral-light rounded-xl transition-all group">
-                        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-comment-dots text-white text-xl"></i>
-                        </div>
-                        <div class="text-left">
-                            <div class="text-sm text-white/80 mb-1">Canlı Destek</div>
-                            <div class="font-bold text-white">Hemen Sohbet Başlat</div>
-                        </div>
-                    </button>
-                </div>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 mb-2">{{ $albumCount }}</div>
+                <div class="text-gray-400">Albüm</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-400 mb-2">{{ $playlistCount }}+</div>
+                <div class="text-gray-400">Playlist</div>
+            </div>
+            <div class="text-center">
+                <div class="text-3xl md:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-muzibu-coral to-red-400 mb-2">24/7</div>
+                <div class="text-gray-400">Destek</div>
             </div>
         </div>
+
+        {{-- Linkler 3 Sütun --}}
+        <div class="flex justify-center mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-32">
+            {{-- Hızlı Erişim --}}
+            <div>
+                <h3 class="text-lg font-bold text-white mb-4">Hızlı Erişim</h3>
+                <ul class="space-y-2">
+                    <li><a href="/playlists" class="text-gray-400 hover:text-muzibu-coral transition-colors">Oynatma Listeleri</a></li>
+                    <li><a href="/albums" class="text-gray-400 hover:text-muzibu-coral transition-colors">Albümler</a></li>
+                    <li><a href="/playlists?type=radio" class="text-gray-400 hover:text-muzibu-coral transition-colors">Radyolar</a></li>
+                    <li><a href="/genres" class="text-gray-400 hover:text-muzibu-coral transition-colors">Türler</a></li>
+                </ul>
+            </div>
+
+            {{-- Hesap --}}
+            <div>
+                <h3 class="text-lg font-bold text-white mb-4">Hesap</h3>
+                <ul class="space-y-2">
+                    <li><a href="/login" class="text-gray-400 hover:text-muzibu-coral transition-colors">Giriş Yap</a></li>
+                    <li><a href="/register" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kayıt Ol</a></li>
+                </ul>
+            </div>
+
+            {{-- Kurumsal --}}
+            <div>
+                <h3 class="text-lg font-bold text-white mb-4">Kurumsal</h3>
+                <ul class="space-y-2">
+                    <li><a href="/about" class="text-gray-400 hover:text-muzibu-coral transition-colors">Hakkımızda</a></li>
+                    <li><a href="/blog" class="text-gray-400 hover:text-muzibu-coral transition-colors">Blog</a></li>
+                    <li><a href="/contact" class="text-gray-400 hover:text-muzibu-coral transition-colors">İletişim</a></li>
+                    <li><a href="/legal" class="text-gray-400 hover:text-muzibu-coral transition-colors">Yasal Metinler</a></li>
+                </ul>
+            </div>
+        </div>
+        </div>
+
+        {{-- Sosyal Medya --}}
+        <div class="flex justify-center gap-4 mb-10">
+            <a href="#" class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center hover:scale-110 transition-transform">
+                <i class="fab fa-facebook-f text-lg md:text-xl"></i>
+            </a>
+            <a href="#" class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center hover:scale-110 transition-transform">
+                <i class="fab fa-instagram text-lg md:text-xl"></i>
+            </a>
+            <a href="#" class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center hover:scale-110 transition-transform">
+                <i class="fab fa-twitter text-lg md:text-xl"></i>
+            </a>
+            <a href="#" class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center hover:scale-110 transition-transform">
+                <i class="fab fa-youtube text-lg md:text-xl"></i>
+            </a>
+            <a href="https://wa.me/908501234567" target="_blank" class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center hover:scale-110 transition-transform">
+                <i class="fab fa-whatsapp text-lg md:text-xl"></i>
+            </a>
+        </div>
+
+        {{-- İletişim Bilgileri --}}
+        <div class="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-8 mb-6 text-gray-400 text-sm md:text-base">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-phone text-muzibu-coral"></i>
+                <a href="tel:08501234567" class="hover:text-white transition-colors">0850 123 45 67</a>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-envelope text-purple-400"></i>
+                <a href="mailto:destek@muzibu.com" class="hover:text-white transition-colors">destek@muzibu.com</a>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-comment-dots text-green-400"></i>
+                <a href="#" class="hover:text-white transition-colors">Canlı Destek</a>
+            </div>
+        </div>
+
+        {{-- Copyright --}}
+        <div class="text-center text-gray-500 text-xs md:text-sm border-t border-white/10 pt-6">
+            © {{ date('Y') }} Muzibu - Tüm hakları saklıdır.
+        </div>
+
     </div>
 </footer>
 

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 İxtif Ürün İçerik Sorun Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                🔍 İxtif Ürün İçerik Sorun Analizi
+            </h1>
+            <p class="text-slate-400 text-lg mb-6">
+                Başlık, Features, FAQ ve Teknik Özellikleri eksik ürünler
+            </p>
+
+            <!-- İstatistikler -->
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">📦 Toplam Ürün</div>
+                    <div class="text-3xl font-bold text-blue-400">1019</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">🔴 Sorunlu Ürün</div>
+                    <div class="text-3xl font-bold text-red-400">7</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">✅ Düzgün Ürün</div>
+                    <div class="text-3xl font-bold text-green-400">1012</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <div class="text-slate-400 text-sm mb-1">📊 Sorun Oranı</div>
+                    <div class="text-3xl font-bold text-yellow-400">0.7%</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sorunlu Ürünler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-red-400 flex items-center gap-3">
+                <span class="text-4xl">🔴</span> Sorunlu 7 Ürün (Jant Kategorisi)
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Ürün 639 -->
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-red-300">Ürün 639 - Jant (İXTİF-125)</h3>
+                            <p class="text-slate-400 text-sm mt-1">Başlık: "Jant" - ÇOK KISA!</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-5 gap-2 text-sm">
+                        <div class="bg-red-900/30 border border-red-700 rounded p-3">
+                            <div class="text-red-300 font-semibold">❌ Başlık</div>
+                            <div class="text-slate-300 text-xs mt-1">4 karakter (Min: 10)</div>
+                        </div>
+                        <div class="bg-green-900/30 border border-green-700 rounded p-3">
+                            <div class="text-green-300 font-semibold">✅ Body</div>
+                            <div class="text-slate-300 text-xs mt-1">957 karakter</div>
+                        </div>
+                        <div class="bg-red-900/30 border border-red-700 rounded p-3">
+                            <div class="text-red-300 font-semibold">❌ Features</div>
+                            <div class="text-slate-300 text-xs mt-1">0/3 gerekli</div>
+                        </div>
+                        <div class="bg-red-900/30 border border-red-700 rounded p-3">
+                            <div class="text-red-300 font-semibold">❌ FAQ</div>
+                            <div class="text-slate-300 text-xs mt-1">0/4 gerekli</div>
+                        </div>
+                        <div class="bg-red-900/30 border border-red-700 rounded p-3">
+                            <div class="text-red-300 font-semibold">❌ Tech Specs</div>
+                            <div class="text-slate-300 text-xs mt-1">0/6 gerekli</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ürün 640-645 Summary -->
+                <div class="bg-slate-800/50 border-l-4 border-red-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-red-300 mb-4">📋 Ürünler 640-645 (Aynı Sorunlar)</h3>
+                    <p class="text-slate-300 mb-4">
+                        Ürün 640 (İXTİF-126), 641 (İXTİF-127), 642 (İXTİF-128), 643 (İXTİF-129), 644 (İXTİF-130), 645 (İXTİF-132) ürünleri <strong>tamamen aynı sorunlara</strong> sahiptir:
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-slate-300">
+                            <span class="text-red-300">❌</span> <strong>Başlık:</strong> Sadece "Jant" (çok kısa, açıklayıcı değil)
+                        </p>
+                        <p class="text-slate-300">
+                            <span class="text-green-300">✅</span> <strong>Body:</strong> 957 karakter (aynı içerik, template gibi görünüyor)
+                        </p>
+                        <p class="text-slate-300">
+                            <span class="text-red-300">❌</span> <strong>Features:</strong> Hiç yok (0/3)
+                        </p>
+                        <p class="text-slate-300">
+                            <span class="text-red-300">❌</span> <strong>FAQ Data:</strong> Hiç yok (0/4)
+                        </p>
+                        <p class="text-slate-300">
+                            <span class="text-red-300">❌</span> <strong>Technical Specs:</strong> Hiç yok (0/6)
+                        </p>
+                        <p class="text-slate-300">
+                            <span class="text-red-300">❌</span> <strong>Primary Specs:</strong> Hiç yok (0/4)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sorun Özeti -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400 flex items-center gap-3">
+                <span class="text-4xl">📊</span> Sorun Detayları
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-red-300 mb-4">🔴 Eksik Alanlar (7 ürün)</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Boş/Kısa Başlık</span>
+                            <span class="font-bold text-red-400">7/7 (100%)</span>
+                        </div>
+                        <div class="h-1 bg-red-900/30 rounded"></div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Features Eksik</span>
+                            <span class="font-bold text-red-400">7/7 (100%)</span>
+                        </div>
+                        <div class="h-1 bg-red-900/30 rounded"></div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">FAQ Data Eksik</span>
+                            <span class="font-bold text-red-400">7/7 (100%)</span>
+                        </div>
+                        <div class="h-1 bg-red-900/30 rounded"></div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Technical Specs Eksik</span>
+                            <span class="font-bold text-red-400">7/7 (100%)</span>
+                        </div>
+                        <div class="h-1 bg-red-900/30 rounded"></div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Primary Specs Eksik</span>
+                            <span class="font-bold text-red-400">7/7 (100%)</span>
+                        </div>
+                        <div class="h-1 bg-red-900/30 rounded"></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                    <h3 class="text-xl font-bold text-green-300 mb-4">✅ Mevcut Alanlar</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Body Açıklaması</span>
+                            <span class="font-bold text-green-400">7/7 (100%)</span>
+                        </div>
+                        <div class="h-1 bg-green-900/30 rounded"></div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">SKU Kodu</span>
+                            <span class="font-bold text-green-400">7/7 (100%)</span>
+                        </div>
+                        <div class="h-1 bg-green-900/30 rounded"></div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-300">Kategori</span>
+                            <span class="font-bold text-green-400">7/7 (100%)</span>
+                        </div>
+                        <div class="h-1 bg-green-900/30 rounded"></div>
+                        <p class="text-slate-400 text-sm mt-6 pt-4 border-t border-slate-600">
+                            💡 Body alanı var ama başlık ve structured data (Features, FAQ, Specs) eksik
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Doldurulması Gereken İçerikler -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-blue-400 flex items-center gap-3">
+                <span class="text-4xl">📝</span> Doldurulması Gereken İçerikler
+            </h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <div class="space-y-6">
+                    <!-- Başlık -->
+                    <div>
+                        <h3 class="text-lg font-bold text-yellow-300 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">1️⃣</span> Başlık Düzeltme
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            "Jant" yerine ürüne özgü, açıklayıcı başlıklar yazılmalı:
+                        </p>
+                        <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300 space-y-2">
+                            <p>❌ <strong>Şimdiki:</strong> "Jant"</p>
+                            <p>✅ <strong>Olması Gereken:</strong> "İXTİF [Model Numarası] [Boy] [Tür] Tekerlek"</p>
+                            <p class="text-slate-400 mt-3">Örneğin:</p>
+                            <p className="text-slate-200">• "İXTİF JT-125 10x00-20 Siyah Dolgu Tekerlek"</p>
+                            <p className="text-slate-200">• "İXTİF JT-126 [Spesifikasyon] Endüstriyel Tekerlek"</p>
+                        </div>
+                    </div>
+
+                    <!-- Features -->
+                    <div>
+                        <h3 class="text-lg font-bold text-green-300 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">2️⃣</span> Features (3-5 özellik)
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            Her tekerlek için temel özellikler:
+                        </p>
+                        <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300 space-y-2">
+                            <p>• Tekerlekler için özgü özellikler (dayanıklılık, adezyonculuk, sıcaklık direnci vb.)</p>
+                            <p>• Kullanım alanı ve sektör (endüstri, depo, dış mekan vb.)</p>
+                            <p>• Teknik avantajlar (aşınma direnci, ses azaltma, titreşim vb.)</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ -->
+                    <div>
+                        <h3 class="text-lg font-bold text-purple-300 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">3️⃣</span> FAQ Data (4 soru-cevap)
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            Tekerlek alıcılarının sık sorduğu sorular:
+                        </p>
+                        <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300 space-y-2">
+                            <p>❓ Hangi araçlara/makinelere uyar?</p>
+                            <p>❓ Ömrü ne kadar?</p>
+                            <p>❓ Maksimum yük ve hız kapasitesi nedir?</p>
+                            <p>❓ Bakım ve depolama nasıl yapılır?</p>
+                        </div>
+                    </div>
+
+                    <!-- Technical Specs -->
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-300 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">4️⃣</span> Technical Specs (6 parametre)
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            Tekerlek teknik özellikleri:
+                        </p>
+                        <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300 space-y-2">
+                            <p>• Ölçü/Boyut</p>
+                            <p>• Renk/Tip</p>
+                            <p>• Yük Kapasitesi</p>
+                            <p>• Malzeme/Yapı</p>
+                            <p>• Sıcaklık Direnci</p>
+                            <p>• Ömür/Garanti</p>
+                        </div>
+                    </div>
+
+                    <!-- Primary Specs -->
+                    <div>
+                        <h3 class="text-lg font-bold text-cyan-300 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">5️⃣</span> Primary Specs (4 ana özellik)
+                        </h3>
+                        <p class="text-slate-300 mb-3">
+                            Ürün sayfasında vurgulu gösterilen 4 ana özellik:
+                        </p>
+                        <div class="bg-slate-900/50 rounded p-4 text-sm text-slate-300 space-y-2">
+                            <p>[ 🎨 İkon ] [ 🏷️ Label ] [ 📊 Value ]</p>
+                            <p>Örneğin:</p>
+                            <p>• 📏 Boyut: 10x00-20 inç</p>
+                            <p>• ⚖️ Kapasite: 10-15 Ton</p>
+                            <p>• 🔨 Malzeme: Siyah Dolgu</p>
+                            <p>• ⏱️ Ömür: 5-7 Yıl</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yapılacaklar -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-8 text-emerald-400 flex items-center gap-3">
+                <span class="text-4xl">✅</span> Yapılacaklar
+            </h2>
+
+            <div class="space-y-4">
+                <div class="bg-slate-800/50 border-l-4 border-emerald-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-emerald-300 mb-3">1️⃣ Başlık Düzeltme</h3>
+                    <p class="text-slate-300">
+                        7 tekerlek ürünün başlıklarını "Jant" yerine model numarası, boyut ve tip bilgilerini içerecek şekilde güncellemek.
+                    </p>
+                    <p class="text-slate-400 text-sm mt-3">
+                        <strong>Ürünler:</strong> 639, 640, 641, 642, 643, 644, 645
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-blue-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-blue-300 mb-3">2️⃣ Features Ekleme</h3>
+                    <p class="text-slate-300">
+                        Her tekerlek için 3-5 temel özellik yazılmalı. Tekerlek üretim teknolojisinden yola çıkılarak özellikler belirlenecek.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-purple-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-purple-300 mb-3">3️⃣ FAQ Data Ekleme</h3>
+                    <p class="text-slate-300">
+                        4 soru-cevap çiftinin hazırlanması. Tekerleklere özgü yaygın sorular ve cevapları.
+                    </p>
+                </div>
+
+                <div class="bg-slate-800/50 border-l-4 border-cyan-500 rounded-lg p-6">
+                    <h3 class="text-xl font-bold text-cyan-300 mb-3">4️⃣ Technical & Primary Specs Ekleme</h3>
+                    <p class="text-slate-300">
+                        6 teknik parametre + 4 ana özellik. Body alanındaki bilgilerden yola çıkılarak yapılandırılacak.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Öncelik -->
+        <section>
+            <h2 class="text-3xl font-bold mb-8 text-orange-400 flex items-center gap-3">
+                <span class="text-4xl">⚡</span> Öncelik
+            </h2>
+
+            <div class="bg-slate-800/50 rounded-lg p-8 border border-slate-700">
+                <h3 class="text-2xl font-bold text-orange-300 mb-4">🎯 Bu 7 Ürün DÜŞÜK ÖNCELİK</h3>
+                <p class="text-slate-300 mb-4">
+                    Sebepler:
+                </p>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-orange-400 mt-1">•</span>
+                        <span><strong>Toplam ürünün sadece %0.7'si</strong> - Büyük çoğunluk (%99.3) tamamen hazır</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-orange-400 mt-1">•</span>
+                        <span><strong>Body alanı zaten dolu</strong> - Sadece structured data eksik</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-orange-400 mt-1">•</span>
+                        <span><strong>Tekerlek kategorisi</strong> - Ana ürün kategorileri (çatal, mast, batarya) daha önemli</span>
+                    </li>
+                </ul>
+                <div class="mt-8 pt-6 border-t border-slate-600">
+                    <p class="text-slate-400 text-sm">
+                        ℹ️ İsteğe bağlı olarak sonradan tamamlanabilir veya şimdi yapılabilir.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>📅 Oluşturulma Tarihi: 16 Aralık 2025</p>
+            <p>🤖 Claude AI tarafından oluşturuldu - Tailwind CSS</p>
+        </footer>
+    </div>
+</body>
+</html>

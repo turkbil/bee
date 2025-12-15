@@ -1,7 +1,7 @@
 {{-- Device Selection Modal - KAPATILMAZ (Cihaz seçmeden devam edemez) --}}
 <div x-show="showDeviceSelectionModal"
      x-cloak
-     class="fixed inset-0 z-[9999] flex items-center justify-center bg-transparent backdrop-blur-sm">
+     class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm">
 
     <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full mx-4 border border-red-500/50">
 

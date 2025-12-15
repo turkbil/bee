@@ -175,6 +175,11 @@
                 font-size: 13px;
             }
         }
+
+        /* 🔧 Alpine.js x-cloak: Hide elements until Alpine initializes */
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="bg-black text-white overflow-hidden" @play-song.window="playSong($event.detail.songId)">
@@ -247,7 +252,7 @@
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/debug.js') }}"></script>
 
     {{-- 4. Player Core (en son - features'ı spread eder) --}}
-    <script src="{{ versioned_asset('themes/muzibu/js/player/core/player-core.js') }}"></script>
+    <script src="{{ asset('themes/muzibu/js/player/core/player-core.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/core/player-core.js')) }}"></script>
 
     {{-- 5. Utils --}}
     <script src="{{ versioned_asset('themes/muzibu/js/utils/muzibu-cache.js') }}"></script>

@@ -24,6 +24,7 @@ function muzibuApp() {
         ...(window.MuzibuApi || {}),
         ...(window.MuzibuSession || {}),
         ...(window.MuzibuSpaRouter || {}),
+        ...(window.debugFeature || {}), // 🧪 Debug feature (showDebugInfo, showDebugPanel)
 
         // Tenant-specific translations
         lang: config.lang || {},
@@ -105,6 +106,7 @@ function muzibuApp() {
 
         // Loading & UI states (KRITIK - bunlar eksikti!)
         isLoading: true,
+        isSongLoading: false, // Şarkı yüklenirken spinner
         contentLoaded: false,
         searchQuery: '',
         searchResults: [],
@@ -3047,29 +3049,23 @@ onplay: function() {
                 this.sessionPollInterval = null;
             }
 
-            try {
-                // 🔐 FETCH-BASED LOGOUT: API'ye POST yapıp sonra redirect et
-                const response = await fetch('/api/auth/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    credentials: 'same-origin'
-                });
+            // 🔐 FORM-BASED LOGOUT: CSRF token ile hidden form oluştur ve submit et
+            // Bu yöntem CSRF mismatch sorununu çözer
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/logout';
+            form.style.display = 'none';
 
-                const data = await response.json();
-                console.log('✅ Logout response:', data);
-            } catch (error) {
-                console.error('❌ Logout error:', error);
-            }
+            // CSRF token
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            form.appendChild(csrfInput);
 
-            // 🔄 Her durumda ana sayfaya yönlendir (cookie temizliği için)
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 100);
+            // Form'u body'e ekle ve submit et
+            document.body.appendChild(form);
+            form.submit();
         },
 
         // 🧹 Clean queue: Remove null/undefined songs

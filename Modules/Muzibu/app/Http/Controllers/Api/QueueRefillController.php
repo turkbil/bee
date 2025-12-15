@@ -37,25 +37,36 @@ class QueueRefillController extends Controller
                 'limit' => 'nullable|integer|min:1|max:50',
                 'subType' => 'nullable|string',
                 'source' => 'nullable|string',
+                'exclude_song_ids' => 'nullable|array', // 🎯 Son çalınan şarkıları exclude et
+                'exclude_song_ids.*' => 'integer',
             ]);
 
             $type = $context['type'];
             $id = $context['id'] ?? null;
             $offset = $context['offset'] ?? 0;
             $limit = $context['limit'] ?? 15;
+            $excludeSongIds = $context['exclude_song_ids'] ?? []; // 🎯 Exclude list
+
+            // 🎯 PERFORMANCE: Limit exclude list to 500 max (SQL whereNotIn performance)
+            if (count($excludeSongIds) > 500) {
+                $excludeSongIds = array_slice($excludeSongIds, 0, 500);
+                \Log::info('⚠️ Exclude list trimmed to 500 (performance)', [
+                    'original_count' => count($context['exclude_song_ids'] ?? [])
+                ]);
+            }
 
             $songs = match($type) {
-                'genre' => $this->getGenreSongs($id, $offset, $limit),
-                'album' => $this->getAlbumSongs($id, $offset, $limit),
-                'playlist' => $this->getPlaylistSongs($id, $offset, $limit),
-                'user_playlist' => $this->getUserPlaylistSongs($id, $offset, $limit),
-                'sector' => $this->getSectorSongs($id, $offset, $limit),
-                'radio' => $this->getRadioSongs($id, $offset, $limit),
-                'popular' => $this->getPopularSongs($offset, $limit),
-                'recent' => $this->getRecentSongs($offset, $limit, $context['subType'] ?? null),
-                'favorites' => $this->getFavoriteSongs($offset, $limit),
-                'artist' => $this->getArtistSongs($id, $offset, $limit),
-                'search' => $this->getSearchSongs($id, $offset, $limit),
+                'genre' => $this->getGenreSongs($id, $offset, $limit, $excludeSongIds),
+                'album' => $this->getAlbumSongs($id, $offset, $limit, $excludeSongIds),
+                'playlist' => $this->getPlaylistSongs($id, $offset, $limit, $excludeSongIds),
+                'user_playlist' => $this->getUserPlaylistSongs($id, $offset, $limit, $excludeSongIds),
+                'sector' => $this->getSectorSongs($id, $offset, $limit, $excludeSongIds),
+                'radio' => $this->getRadioSongs($id, $offset, $limit, $excludeSongIds),
+                'popular' => $this->getPopularSongs($offset, $limit, $excludeSongIds),
+                'recent' => $this->getRecentSongs($offset, $limit, $context['subType'] ?? null, $excludeSongIds),
+                'favorites' => $this->getFavoriteSongs($offset, $limit, $excludeSongIds),
+                'artist' => $this->getArtistSongs($id, $offset, $limit, $excludeSongIds),
+                'search' => $this->getSearchSongs($id, $offset, $limit, $excludeSongIds),
                 default => [],
             };
 
@@ -109,73 +120,58 @@ class QueueRefillController extends Controller
     }
 
     /**
-     * Get songs by genre (INFINITE LOOP - başa sarar + shuffle)
-     * 🎵 Aynı tarz, farklı sıra - Her loop'ta shuffle edilir
+     * Get songs by genre (INFINITE LOOP - başa sarar + HER ZAMAN SQL random)
+     * 🎵 Aynı tarz, farklı sıra - SQL seviyesinde inRandomOrder()
      */
-    private function getGenreSongs(int $genreId, int $offset, int $limit): array
+    private function getGenreSongs(int $genreId, int $offset, int $limit, array $excludeSongIds = []): array
     {
         $genre = Genre::find($genreId);
         if (!$genre) {
             return [];
         }
 
-        // Get total count first
-        $totalCount = $genre->songs()->where('is_active', 1)->count();
+        // 🎯 Toplam şarkı sayısı (exclude öncesi)
+        $totalSongsBeforeExclude = $genre->songs()->where('is_active', 1)->count();
 
-        if ($totalCount === 0) {
-            return [];
-        }
+        // 🎲 SQL SEVİYESİNDE RANDOM: inRandomOrder() kullan (her query farklı sonuç)
+        $songs = $genre->songs()
+            ->where('is_active', 1)
+            ->when(!empty($excludeSongIds), function($query) use ($excludeSongIds) {
+                // 🎯 Exclude: Son çalınan şarkıları hariç tut
+                $query->whereNotIn('song_id', $excludeSongIds);
+            })
+            ->with(['album.artist'])
+            ->inRandomOrder() // SQL: ORDER BY RAND()
+            ->limit($limit)
+            ->get();
 
-        // ♾️ INFINITE LOOP: If offset exceeds total, wrap around (başa sar)
-        $actualOffset = $offset % $totalCount;
-        $isWrappingAround = $offset >= $totalCount;
-
-        // 🎲 SHUFFLE: Başa sardığında veya ilk kez çalıyorsa shuffle et
-        if ($isWrappingAround || $offset === 0) {
-            // Tüm şarkıları al ve shuffle et
-            $allSongs = $genre->songs()
-                ->where('is_active', 1)
-                ->with(['album.artist'])
-                ->get()
-                ->shuffle(); // Laravel Collection shuffle
-
-            // Offset'e göre al
-            $songs = $allSongs->skip($actualOffset)->take($limit);
-
-            // Wrap around için baştan al
-            if ($songs->count() < $limit && $actualOffset > 0) {
-                $remaining = $limit - $songs->count();
-                $moreSongs = $allSongs->take($remaining);
-                $songs = $songs->merge($moreSongs);
-            }
-
-            \Log::info('🎲 Genre songs shuffled', [
+        // Yeterli şarkı gelmezse (exclude çok fazlaysa), exclude'sız tekrar dene
+        if ($songs->count() < $limit && !empty($excludeSongIds)) {
+            \Log::info('🔄 Genre exhausted with exclude, retrying without exclude (reset loop)', [
                 'genre_id' => $genreId,
-                'offset' => $offset,
-                'is_wrapping' => $isWrappingAround,
-                'returned' => $songs->count()
+                'excluded_count' => count($excludeSongIds),
+                'got' => $songs->count(),
+                'needed' => $limit
             ]);
-        } else {
-            // Normal sıralı çalma (ilk pass)
+
             $songs = $genre->songs()
                 ->where('is_active', 1)
                 ->with(['album.artist'])
-                ->skip($actualOffset)
-                ->take($limit)
+                ->inRandomOrder()
+                ->limit($limit)
                 ->get();
-
-            // If we didn't get enough songs, wrap around and get from beginning
-            if ($songs->count() < $limit && $actualOffset > 0) {
-                $remaining = $limit - $songs->count();
-                $moreSongs = $genre->songs()
-                    ->where('is_active', 1)
-                    ->with(['album.artist'])
-                    ->take($remaining)
-                    ->get();
-
-                $songs = $songs->merge($moreSongs);
-            }
         }
+
+        if ($songs->isEmpty()) {
+            return [];
+        }
+
+        \Log::info('🎲 Genre SQL random selection (inRandomOrder, infinite loop)', [
+            'genre_id' => $genreId,
+            'total_songs' => $totalSongsBeforeExclude,
+            'excluded' => count($excludeSongIds),
+            'returned' => $songs->count()
+        ]);
 
         return $this->formatSongs($songs);
     }
@@ -183,18 +179,41 @@ class QueueRefillController extends Controller
     /**
      * Get songs by album
      * 🔄 TRANSITION: Album biter → Genre'ye geç (PLAN v4)
+     * 🎲 SQL RANDOM: inRandomOrder() ile her query farklı
      */
-    private function getAlbumSongs(int $albumId, int $offset, int $limit): array
+    private function getAlbumSongs(int $albumId, int $offset, int $limit, array $excludeSongIds = []): array
     {
         $album = Album::with('songs')->find($albumId);
         if (!$album) {
             return [];
         }
 
-        $totalCount = $album->songs()->where('is_active', 1)->count();
+        // 🎯 Toplam şarkı sayısı (exclude öncesi)
+        $totalSongsBeforeExclude = $album->songs()->where('is_active', 1)->count();
+
+        // 🎲 SQL SEVİYESİNDE RANDOM
+        $songs = $album->songs()
+            ->where('is_active', 1)
+            ->when(!empty($excludeSongIds), function($query) use ($excludeSongIds) {
+                $query->whereNotIn('muzibu_songs.song_id', $excludeSongIds);
+            })
+            ->with(['album.artist'])
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
+        if ($songs->count() < $limit && !empty($excludeSongIds)) {
+            $songs = $album->songs()
+                ->where('is_active', 1)
+                ->with(['album.artist'])
+                ->inRandomOrder()
+                ->limit($limit)
+                ->get();
+        }
 
         // Album songs bitti mi?
-        if ($offset >= $totalCount) {
+        if ($songs->isEmpty()) {
             // ✅ TRANSITION: Album → Genre (son şarkının genre'sine geç)
             $lastSong = $album->songs()
                 ->where('is_active', 1)
@@ -202,25 +221,23 @@ class QueueRefillController extends Controller
                 ->first();
 
             if ($lastSong && $lastSong->genre_id) {
-                // Genre'ye geç (infinite loop başlar)
                 \Log::info('🔄 Context Transition: Album → Genre', [
                     'album_id' => $albumId,
                     'genre_id' => $lastSong->genre_id
                 ]);
 
-                return $this->getGenreSongs($lastSong->genre_id, 0, $limit);
+                return $this->getGenreSongs($lastSong->genre_id, 0, $limit, $excludeSongIds);
             }
 
             return [];
         }
 
-        $songs = $album->songs()
-            ->where('is_active', 1)
-            ->with(['album.artist'])
-            ->orderBy('song_id', 'asc')
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+        \Log::info('🎲 Album SQL random selection', [
+            'album_id' => $albumId,
+            'total_songs' => $totalSongsBeforeExclude,
+            'excluded' => count($excludeSongIds),
+            'returned' => $songs->count()
+        ]);
 
         return $this->formatSongs($songs);
     }
@@ -228,18 +245,41 @@ class QueueRefillController extends Controller
     /**
      * Get songs by playlist
      * 🔄 TRANSITION: Playlist biter → Genre'ye geç (son 5 şarkının en çok genre'si)
+     * 🎲 SQL RANDOM: inRandomOrder() ile her query farklı
      */
-    private function getPlaylistSongs(int $playlistId, int $offset, int $limit): array
+    private function getPlaylistSongs(int $playlistId, int $offset, int $limit, array $excludeSongIds = []): array
     {
         $playlist = Playlist::with('songs')->find($playlistId);
         if (!$playlist) {
             return [];
         }
 
-        $totalCount = $playlist->songs()->where('is_active', 1)->count();
+        // 🎯 Toplam şarkı sayısı (exclude öncesi)
+        $totalSongsBeforeExclude = $playlist->songs()->where('is_active', 1)->count();
+
+        // 🎲 SQL SEVİYESİNDE RANDOM
+        $songs = $playlist->songs()
+            ->where('is_active', 1)
+            ->when(!empty($excludeSongIds), function($query) use ($excludeSongIds) {
+                $query->whereNotIn('muzibu_songs.song_id', $excludeSongIds);
+            })
+            ->with(['album.artist'])
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
+        if ($songs->count() < $limit && !empty($excludeSongIds)) {
+            $songs = $playlist->songs()
+                ->where('is_active', 1)
+                ->with(['album.artist'])
+                ->inRandomOrder()
+                ->limit($limit)
+                ->get();
+        }
 
         // Playlist songs bitti mi?
-        if ($offset >= $totalCount) {
+        if ($songs->isEmpty()) {
             // ✅ TRANSITION: Playlist → Genre (son 5 şarkının en çok genre'si)
             $lastSongs = $playlist->songs()
                 ->where('is_active', 1)
@@ -253,26 +293,25 @@ class QueueRefillController extends Controller
                 $mostCommonGenreId = $genreCounts->sortDesc()->keys()->first();
 
                 if ($mostCommonGenreId) {
-                    // Genre'ye geç (infinite loop başlar)
                     \Log::info('🔄 Context Transition: Playlist → Genre', [
                         'playlist_id' => $playlistId,
                         'genre_id' => $mostCommonGenreId,
                         'genre_count' => $genreCounts[$mostCommonGenreId]
                     ]);
 
-                    return $this->getGenreSongs($mostCommonGenreId, 0, $limit);
+                    return $this->getGenreSongs($mostCommonGenreId, 0, $limit, $excludeSongIds);
                 }
             }
 
             return [];
         }
 
-        $songs = $playlist->songs()
-            ->where('is_active', 1)
-            ->with(['album.artist'])
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+        \Log::info('🎲 Playlist SQL random selection', [
+            'playlist_id' => $playlistId,
+            'total_songs' => $totalSongsBeforeExclude,
+            'excluded' => count($excludeSongIds),
+            'returned' => $songs->count()
+        ]);
 
         return $this->formatSongs($songs);
     }
@@ -280,64 +319,71 @@ class QueueRefillController extends Controller
     /**
      * Get songs by user playlist
      */
-    private function getUserPlaylistSongs(int $playlistId, int $offset, int $limit): array
+    private function getUserPlaylistSongs(int $playlistId, int $offset, int $limit, array $excludeSongIds = []): array
     {
         // User playlists use same table, just filter by user
-        return $this->getPlaylistSongs($playlistId, $offset, $limit);
+        return $this->getPlaylistSongs($playlistId, $offset, $limit, $excludeSongIds);
     }
 
     /**
      * Get songs by sector (sector playlists - infinite)
      * ♾️ SELF-LOOP: Sector kendi içinde infinite loop (Genre'ye GEÇMİYOR!)
+     * 🎲 SQL RANDOM: inRandomOrder() ile her query farklı
      */
-    private function getSectorSongs(int $sectorId, int $offset, int $limit): array
+    private function getSectorSongs(int $sectorId, int $offset, int $limit, array $excludeSongIds = []): array
     {
         $sector = Sector::find($sectorId);
         if (!$sector) {
             return [];
         }
 
-        // Get all playlists in this sector
-        $playlists = $sector->playlists()->where('is_active', 1)->get();
+        // Get all playlist IDs in this sector
+        $playlistIds = $sector->playlists()->where('is_active', 1)->pluck('playlist_id');
 
-        if ($playlists->isEmpty()) {
+        if ($playlistIds->isEmpty()) {
             return [];
         }
 
-        // Collect all songs from all playlists
-        $allSongs = collect();
-        foreach ($playlists as $playlist) {
-            $playlistSongs = $playlist->songs()
+        // 🎲 SQL SEVİYESİNDE RANDOM: Tüm playlist'lerdeki song ID'leri al
+        $songIds = DB::table('muzibu_playlist_song')
+            ->whereIn('playlist_id', $playlistIds)
+            ->pluck('song_id')
+            ->unique();
+
+        if ($songIds->isEmpty()) {
+            return [];
+        }
+
+        $totalSongsBeforeExclude = $songIds->count();
+
+        // SQL random ile şarkıları çek
+        $songs = Song::whereIn('song_id', $songIds)
+            ->where('is_active', 1)
+            ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
+            ->with(['album.artist'])
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
+        if ($songs->count() < $limit && !empty($excludeSongIds)) {
+            $songs = Song::whereIn('song_id', $songIds)
                 ->where('is_active', 1)
                 ->with(['album.artist'])
+                ->inRandomOrder()
+                ->limit($limit)
                 ->get();
-            $allSongs = $allSongs->merge($playlistSongs);
         }
 
-        $totalCount = $allSongs->count();
-
-        if ($totalCount === 0) {
+        if ($songs->isEmpty()) {
             return [];
         }
 
-        // ♾️ INFINITE LOOP: If offset exceeds total, wrap around (başa sar)
-        $actualOffset = $offset % $totalCount;
-
-        // Apply offset and limit
-        $songs = $allSongs->skip($actualOffset)->take($limit);
-
-        // If we didn't get enough songs, wrap around and get from beginning
-        if ($songs->count() < $limit && $actualOffset > 0) {
-            $remaining = $limit - $songs->count();
-            $moreSongs = $allSongs->take($remaining);
-            $songs = $songs->merge($moreSongs);
-        }
-
-        \Log::info('🔄 Sector Self-Loop', [
+        \Log::info('🎲 Sector SQL random selection (infinite loop)', [
             'sector_id' => $sectorId,
-            'offset' => $offset,
-            'actual_offset' => $actualOffset,
-            'total_songs' => $totalCount
+            'total_songs' => $totalSongsBeforeExclude,
+            'excluded' => count($excludeSongIds),
+            'returned' => $songs->count()
         ]);
 
         return $this->formatSongs($songs);
@@ -346,58 +392,62 @@ class QueueRefillController extends Controller
     /**
      * Get songs by radio (radio playlists - infinite)
      * ♾️ SELF-LOOP: Radio kendi içinde infinite loop (Genre'ye GEÇMİYOR!)
+     * 🎲 SHUFFLE: Her refill'de rastgele şarkılar
      */
-    private function getRadioSongs(int $radioId, int $offset, int $limit): array
+    private function getRadioSongs(int $radioId, int $offset, int $limit, array $excludeSongIds = []): array
     {
         $radio = Radio::find($radioId);
         if (!$radio) {
             return [];
         }
 
-        // Radios have assigned playlists
-        $playlists = $radio->playlists()->where('is_active', 1)->get();
+        // Get all playlist IDs in this radio
+        $playlistIds = $radio->playlists()->where('is_active', 1)->pluck('playlist_id');
 
-        if ($playlists->isEmpty()) {
+        if ($playlistIds->isEmpty()) {
             return [];
         }
 
-        // Collect all songs from all playlists
-        $allSongs = collect();
-        foreach ($playlists as $playlist) {
-            $playlistSongs = $playlist->songs()
+        // 🎲 SQL SEVİYESİNDE RANDOM
+        $songIds = DB::table('muzibu_playlist_song')
+            ->whereIn('playlist_id', $playlistIds)
+            ->pluck('song_id')
+            ->unique();
+
+        if ($songIds->isEmpty()) {
+            return [];
+        }
+
+        $totalSongsBeforeExclude = $songIds->count();
+
+        // SQL random ile şarkıları çek
+        $songs = Song::whereIn('song_id', $songIds)
+            ->where('is_active', 1)
+            ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
+            ->with(['album.artist'])
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
+        if ($songs->count() < $limit && !empty($excludeSongIds)) {
+            $songs = Song::whereIn('song_id', $songIds)
                 ->where('is_active', 1)
                 ->with(['album.artist'])
+                ->inRandomOrder()
+                ->limit($limit)
                 ->get();
-            $allSongs = $allSongs->merge($playlistSongs);
         }
 
-        // Shuffle for radio feel
-        $allSongs = $allSongs->shuffle();
-
-        $totalCount = $allSongs->count();
-
-        if ($totalCount === 0) {
+        if ($songs->isEmpty()) {
             return [];
         }
 
-        // ♾️ INFINITE LOOP: If offset exceeds total, wrap around (başa sar)
-        $actualOffset = $offset % $totalCount;
-
-        // Apply offset and limit
-        $songs = $allSongs->skip($actualOffset)->take($limit);
-
-        // If we didn't get enough songs, wrap around and get from beginning
-        if ($songs->count() < $limit && $actualOffset > 0) {
-            $remaining = $limit - $songs->count();
-            $moreSongs = $allSongs->take($remaining);
-            $songs = $songs->merge($moreSongs);
-        }
-
-        \Log::info('🔄 Radio Self-Loop', [
+        \Log::info('🎲 Radio SQL random selection (infinite loop)', [
             'radio_id' => $radioId,
-            'offset' => $offset,
-            'actual_offset' => $actualOffset,
-            'total_songs' => $totalCount
+            'total_songs' => $totalSongsBeforeExclude,
+            'excluded' => count($excludeSongIds),
+            'returned' => $songs->count()
         ]);
 
         return $this->formatSongs($songs);
@@ -406,17 +456,42 @@ class QueueRefillController extends Controller
     /**
      * Get popular songs
      * 🔄 TRANSITION: Popular biter → Album → Genre
+     * 🎲 SQL RANDOM: Top 100'den inRandomOrder() ile
      */
-    private function getPopularSongs(int $offset, int $limit): array
+    private function getPopularSongs(int $offset, int $limit, array $excludeSongIds = []): array
     {
-        $totalCount = Song::where('is_active', 1)->count();
+        // 🎲 Top 100 song ID'lerini al (play_count sıralı)
+        $popularSongIds = Song::where('is_active', 1)
+            ->orderBy('play_count', 'desc')
+            ->take(100)
+            ->pluck('song_id');
+
+        if ($popularSongIds->isEmpty()) {
+            return [];
+        }
+
+        // SQL random ile şarkıları çek
+        $songs = Song::whereIn('song_id', $popularSongIds)
+            ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
+            ->with(['album.artist'])
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
+        if ($songs->count() < $limit && !empty($excludeSongIds)) {
+            $songs = Song::whereIn('song_id', $popularSongIds)
+                ->with(['album.artist'])
+                ->inRandomOrder()
+                ->limit($limit)
+                ->get();
+        }
 
         // Popular songs bitti mi?
-        if ($offset >= $totalCount) {
+        if ($songs->isEmpty()) {
             // ✅ TRANSITION: Popular → Album → Genre
             $lastSong = Song::where('is_active', 1)
                 ->orderBy('play_count', 'desc')
-                ->skip($totalCount - 1)
                 ->first();
 
             if ($lastSong && $lastSong->album_id) {
@@ -424,19 +499,16 @@ class QueueRefillController extends Controller
                     'album_id' => $lastSong->album_id
                 ]);
 
-                return $this->getAlbumSongs($lastSong->album_id, 0, $limit);
+                return $this->getAlbumSongs($lastSong->album_id, 0, $limit, $excludeSongIds);
             }
 
             return [];
         }
 
-        // Most played songs (from play count or rating)
-        $songs = Song::where('is_active', 1)
-            ->with(['album.artist'])
-            ->orderBy('play_count', 'desc')
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+        \Log::info('🎲 Popular SQL random selection (Top 100)', [
+            'excluded' => count($excludeSongIds),
+            'returned' => $songs->count()
+        ]);
 
         return $this->formatSongs($songs);
     }
@@ -444,42 +516,44 @@ class QueueRefillController extends Controller
     /**
      * Get recent songs (continues backward from last ID)
      * ♾️ SELF-LOOP: Recent geriye doğru infinite loop
+     * 🎲 SQL RANDOM: Son 200'den inRandomOrder() ile
      */
-    private function getRecentSongs(int $offset, int $limit, ?string $subType = null): array
+    private function getRecentSongs(int $offset, int $limit, ?string $subType = null, array $excludeSongIds = []): array
     {
-        $totalCount = Song::where('is_active', 1)->count();
+        // 🎲 Son 200 song ID'lerini al (created_at sıralı)
+        $recentSongIds = Song::where('is_active', 1)
+            ->orderBy('created_at', 'desc')
+            ->take(200)
+            ->pluck('song_id');
 
-        if ($totalCount === 0) {
+        if ($recentSongIds->isEmpty()) {
             return [];
         }
 
-        // ♾️ INFINITE LOOP: If offset exceeds total, wrap around (başa sar)
-        $actualOffset = $offset % $totalCount;
-
-        // Recently added songs (newest first)
-        $songs = Song::where('is_active', 1)
+        // SQL random ile şarkıları çek
+        $songs = Song::whereIn('song_id', $recentSongIds)
+            ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
             ->with(['album.artist'])
-            ->orderBy('created_at', 'desc')
-            ->skip($actualOffset)
-            ->take($limit)
+            ->inRandomOrder()
+            ->limit($limit)
             ->get();
 
-        // If we didn't get enough songs, wrap around and get from beginning
-        if ($songs->count() < $limit && $actualOffset > 0) {
-            $remaining = $limit - $songs->count();
-            $moreSongs = Song::where('is_active', 1)
+        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
+        if ($songs->count() < $limit && !empty($excludeSongIds)) {
+            $songs = Song::whereIn('song_id', $recentSongIds)
                 ->with(['album.artist'])
-                ->orderBy('created_at', 'desc')
-                ->take($remaining)
+                ->inRandomOrder()
+                ->limit($limit)
                 ->get();
-
-            $songs = $songs->merge($moreSongs);
         }
 
-        \Log::info('🔄 Recent Self-Loop (Backward)', [
-            'offset' => $offset,
-            'actual_offset' => $actualOffset,
-            'total_songs' => $totalCount
+        if ($songs->isEmpty()) {
+            return [];
+        }
+
+        \Log::info('🎲 Recent SQL random selection (last 200 songs)', [
+            'excluded' => count($excludeSongIds),
+            'returned' => $songs->count()
         ]);
 
         return $this->formatSongs($songs);
@@ -488,8 +562,9 @@ class QueueRefillController extends Controller
     /**
      * Get favorite songs
      * 🔄 TRANSITION: Favorites biter → Album → Genre
+     * 🎲 SQL RANDOM: inRandomOrder() ile her query farklı
      */
-    private function getFavoriteSongs(int $offset, int $limit): array
+    private function getFavoriteSongs(int $offset, int $limit, array $excludeSongIds = []): array
     {
         $userId = auth()->id();
         if (!$userId) {
@@ -506,10 +581,29 @@ class QueueRefillController extends Controller
             return [];
         }
 
-        $totalCount = $favoriteSongIds->count();
+        $totalSongsBeforeExclude = $favoriteSongIds->count();
+
+        // 🎲 SQL SEVİYESİNDE RANDOM
+        $songs = Song::whereIn('song_id', $favoriteSongIds)
+            ->where('is_active', 1)
+            ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
+            ->with(['album.artist'])
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
+        if ($songs->count() < $limit && !empty($excludeSongIds)) {
+            $songs = Song::whereIn('song_id', $favoriteSongIds)
+                ->where('is_active', 1)
+                ->with(['album.artist'])
+                ->inRandomOrder()
+                ->limit($limit)
+                ->get();
+        }
 
         // Favorites bitti mi?
-        if ($offset >= $totalCount) {
+        if ($songs->isEmpty()) {
             // ✅ TRANSITION: Favorites → Album → Genre
             $lastSong = Song::whereIn('song_id', $favoriteSongIds)
                 ->where('is_active', 1)
@@ -521,18 +615,17 @@ class QueueRefillController extends Controller
                     'album_id' => $lastSong->album_id
                 ]);
 
-                return $this->getAlbumSongs($lastSong->album_id, 0, $limit);
+                return $this->getAlbumSongs($lastSong->album_id, 0, $limit, $excludeSongIds);
             }
 
             return [];
         }
 
-        $songs = Song::whereIn('song_id', $favoriteSongIds)
-            ->where('is_active', 1)
-            ->with(['album.artist'])
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+        \Log::info('🎲 Favorites SQL random selection', [
+            'total_favorites' => $totalSongsBeforeExclude,
+            'excluded' => count($excludeSongIds),
+            'returned' => $songs->count()
+        ]);
 
         return $this->formatSongs($songs);
     }
@@ -540,8 +633,9 @@ class QueueRefillController extends Controller
     /**
      * Get songs by artist
      * 🔄 TRANSITION: Artist biter → Album → Genre
+     * 🎲 SQL RANDOM: inRandomOrder() ile her query farklı
      */
-    private function getArtistSongs(int $artistId, int $offset, int $limit): array
+    private function getArtistSongs(int $artistId, int $offset, int $limit, array $excludeSongIds = []): array
     {
         // Get albums by artist, then songs
         $albumIds = Album::where('artist_id', $artistId)->pluck('album_id');
@@ -550,12 +644,31 @@ class QueueRefillController extends Controller
             return [];
         }
 
-        $totalCount = Song::whereIn('album_id', $albumIds)
+        $totalSongsBeforeExclude = Song::whereIn('album_id', $albumIds)
             ->where('is_active', 1)
             ->count();
 
+        // 🎲 SQL SEVİYESİNDE RANDOM
+        $songs = Song::whereIn('album_id', $albumIds)
+            ->where('is_active', 1)
+            ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
+            ->with(['album.artist'])
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+
+        // Yeterli şarkı gelmezse, exclude'sız tekrar dene
+        if ($songs->count() < $limit && !empty($excludeSongIds)) {
+            $songs = Song::whereIn('album_id', $albumIds)
+                ->where('is_active', 1)
+                ->with(['album.artist'])
+                ->inRandomOrder()
+                ->limit($limit)
+                ->get();
+        }
+
         // Artist songs bitti mi?
-        if ($offset >= $totalCount) {
+        if ($songs->isEmpty()) {
             // ✅ TRANSITION: Artist → Album → Genre
             $lastSong = Song::whereIn('album_id', $albumIds)
                 ->where('is_active', 1)
@@ -568,18 +681,18 @@ class QueueRefillController extends Controller
                     'album_id' => $lastSong->album_id
                 ]);
 
-                return $this->getAlbumSongs($lastSong->album_id, 0, $limit);
+                return $this->getAlbumSongs($lastSong->album_id, 0, $limit, $excludeSongIds);
             }
 
             return [];
         }
 
-        $songs = Song::whereIn('album_id', $albumIds)
-            ->where('is_active', 1)
-            ->with(['album.artist'])
-            ->skip($offset)
-            ->take($limit)
-            ->get();
+        \Log::info('🎲 Artist SQL random selection', [
+            'artist_id' => $artistId,
+            'total_songs' => $totalSongsBeforeExclude,
+            'excluded' => count($excludeSongIds),
+            'returned' => $songs->count()
+        ]);
 
         return $this->formatSongs($songs);
     }
@@ -587,7 +700,7 @@ class QueueRefillController extends Controller
     /**
      * Get songs by search
      */
-    private function getSearchSongs(int $songId, int $offset, int $limit): array
+    private function getSearchSongs(int $songId, int $offset, int $limit, array $excludeSongIds = []): array
     {
         // For search, get the selected song's album songs
         $song = Song::find($songId);
@@ -595,7 +708,7 @@ class QueueRefillController extends Controller
             return [];
         }
 
-        return $this->getAlbumSongs($song->album_id, $offset, $limit);
+        return $this->getAlbumSongs($song->album_id, $offset, $limit, $excludeSongIds);
     }
 
     /**
@@ -640,53 +753,50 @@ class QueueRefillController extends Controller
                 $playlist = Playlist::find($id);
                 $sourceName = $playlist?->title ?? "Playlist #{$id}";
                 $totalSongs = $playlist?->songs()->where('is_active', 1)->count() ?? 0;
-                $algorithm = "Playlist sırasına göre ({$offset}. şarkıdan itibaren)";
+                $algorithm = "🎲 Rastgele seçim (son 300 şarkı hariç)";
                 break;
 
             case 'album':
                 $album = Album::with('artist')->find($id);
                 $sourceName = $album?->title ?? "Albüm #{$id}";
                 $totalSongs = $album?->songs()->where('is_active', 1)->count() ?? 0;
-                $algorithm = "Albüm sırasına göre ({$offset}. şarkıdan itibaren)";
+                $algorithm = "🎲 Rastgele seçim (son 300 şarkı hariç)";
                 break;
 
             case 'genre':
                 $genre = Genre::find($id);
                 $sourceName = $genre?->title ?? "Tür #{$id}";
                 $totalSongs = $genre?->songs()->where('is_active', 1)->count() ?? 0;
-                $isWrap = $offset >= $totalSongs && $totalSongs > 0;
-                $algorithm = $isWrap
-                    ? "♾️ Tür başa sardı (sonsuz döngü) + karıştırıldı"
-                    : "Tür şarkıları ({$offset}. şarkıdan itibaren)";
+                $algorithm = "🎲 Rastgele seçim (♾️ sonsuz döngü, son 300 hariç)";
                 break;
 
             case 'sector':
                 $sector = Sector::find($id);
                 $sourceName = $sector?->title ?? "Sektör #{$id}";
-                $algorithm = "♾️ Sektör playlistlerinden sonsuz döngü";
+                $algorithm = "🎲 Rastgele seçim (♾️ sonsuz döngü, son 300 hariç)";
                 break;
 
             case 'radio':
                 $radio = Radio::find($id);
                 $sourceName = $radio?->title ?? "Radyo #{$id}";
-                $algorithm = "♾️ Radyo karışık çalma (shuffle)";
+                $algorithm = "🎲 Rastgele seçim (♾️ radyo modu, son 300 hariç)";
                 break;
 
             case 'popular':
                 $sourceName = 'Popüler Şarkılar';
                 $totalSongs = Song::where('is_active', 1)->count();
-                $algorithm = "Çalınma sayısına göre sıralı";
+                $algorithm = "🎲 Rastgele seçim (Top 100'den, son 300 hariç)";
                 break;
 
             case 'favorites':
                 $sourceName = 'Favorilerim';
-                $algorithm = "Favori ekleme sırasına göre";
+                $algorithm = "🎲 Rastgele seçim (favorilerden, son 300 hariç)";
                 break;
 
             case 'recent':
                 $sourceName = 'Son Eklenenler';
                 $totalSongs = Song::where('is_active', 1)->count();
-                $algorithm = "Eklenme tarihine göre (yeniden eskiye)";
+                $algorithm = "🎲 Rastgele seçim (son 200'den, son 300 hariç)";
                 break;
 
             default:

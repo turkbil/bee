@@ -279,6 +279,21 @@ document.addEventListener('alpine:init', () => {
         // User playlists (backend'den gelecek)
         userPlaylists: [],
 
+        // Playlist search & filtering
+        playlistSearchQuery: '',
+        songExistsInPlaylists: [], // Playlist IDs where current song already exists
+
+        // Computed: filtered playlists based on search
+        get filteredPlaylists() {
+            if (!this.playlistSearchQuery || this.playlistSearchQuery.trim() === '') {
+                return this.userPlaylists;
+            }
+            const query = this.playlistSearchQuery.toLowerCase().trim();
+            return this.userPlaylists.filter(p =>
+                p.title && p.title.toLowerCase().includes(query)
+            );
+        },
+
         // Touch/Long Press
         touchTimer: null,
         touchStartPos: { x: 0, y: 0 },
@@ -353,7 +368,7 @@ document.addEventListener('alpine:init', () => {
                     { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
                     { divider: true },
                     // Favorilerime Ekle
-                    { icon: 'fa-heart', label: 'Favorilerime Ekle', action: 'toggleFavorite' },
+                    { icon: 'fa-heart', label: data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle', action: 'toggleFavorite' },
                     { divider: true },
                     // Puan Ver
                     { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
@@ -364,6 +379,58 @@ document.addEventListener('alpine:init', () => {
                     ] : [
                         { icon: 'fa-copy', label: 'Playlisti Kopyala', action: 'copy' }
                     ])
+                ],
+                genre: [
+                    // Çal
+                    { icon: 'fa-play', label: 'Çal', action: 'play' },
+                    // Sıraya Ekle
+                    { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
+                    { divider: true },
+                    // Favorilerime Ekle
+                    { icon: 'fa-heart', label: data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle', action: 'toggleFavorite' },
+                    { divider: true },
+                    // Puan Ver
+                    { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                    // Detaya Git
+                    { icon: 'fa-music', label: 'Türe Git', action: 'goToDetail' }
+                ],
+                sector: [
+                    // Çal
+                    { icon: 'fa-play', label: 'Çal', action: 'play' },
+                    // Sıraya Ekle
+                    { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
+                    { divider: true },
+                    // Favorilerime Ekle
+                    { icon: 'fa-heart', label: data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle', action: 'toggleFavorite' },
+                    { divider: true },
+                    // Puan Ver
+                    { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                    // Detaya Git
+                    { icon: 'fa-compass', label: 'Sektöre Git', action: 'goToDetail' }
+                ],
+                radio: [
+                    // Çal
+                    { icon: 'fa-play', label: 'Şimdi Dinle', action: 'play' },
+                    { divider: true },
+                    // Favorilerime Ekle
+                    { icon: 'fa-heart', label: data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle', action: 'toggleFavorite' },
+                    { divider: true },
+                    // Puan Ver
+                    { icon: 'fa-star', label: 'Puan Ver', action: 'rate' }
+                ],
+                artist: [
+                    // Çal
+                    { icon: 'fa-play', label: 'Çal', action: 'play' },
+                    // Sıraya Ekle
+                    { icon: 'fa-plus-circle', label: 'Sıraya Ekle', action: 'addToQueue' },
+                    { divider: true },
+                    // Favorilerime Ekle
+                    { icon: 'fa-heart', label: data.is_favorite ? 'Favorilerimden Çıkar' : 'Favorilerime Ekle', action: 'toggleFavorite' },
+                    { divider: true },
+                    // Puan Ver
+                    { icon: 'fa-star', label: 'Puan Ver', action: 'rate' },
+                    // Sanatçıya Git
+                    { icon: 'fa-user', label: 'Sanatçıya Git', action: 'goToDetail' }
                 ]
             };
 
@@ -405,6 +472,21 @@ document.addEventListener('alpine:init', () => {
                 case 'goToAlbum':
                     if (data.album_id) {
                         window.location.href = `/albums/${data.album_id}`;
+                    }
+                    break;
+                case 'goToDetail':
+                    // Type'a göre doğru URL'e git
+                    const urlMap = {
+                        genre: '/genres/',
+                        sector: '/sectors/',
+                        artist: '/artists/',
+                        playlist: '/playlists/',
+                        album: '/albums/'
+                    };
+                    if (urlMap[type] && data.slug) {
+                        window.location.href = urlMap[type] + data.slug;
+                    } else if (urlMap[type] && data.id) {
+                        window.location.href = urlMap[type] + data.id;
                     }
                     break;
                 case 'edit':
@@ -457,12 +539,79 @@ document.addEventListener('alpine:init', () => {
         },
 
         fetchUserPlaylists() {
-            fetch('/api/muzibu/my-playlists')
+            // Reset search query when fetching
+            this.playlistSearchQuery = '';
+            this.songExistsInPlaylists = [];
+
+            const songId = this.data?.id;
+
+            // Fetch user playlists
+            fetch('/api/muzibu/playlists/my-playlists')
                 .then(res => res.json())
                 .then(data => {
-                    this.userPlaylists = data.data || [];
+                    this.userPlaylists = data.data || data || [];
+
+                    // If we have a song ID, check which playlists contain it
+                    if (songId && this.type === 'song') {
+                        this.checkSongInPlaylists(songId);
+                    }
                 })
                 .catch(err => console.error('Fetch playlists error:', err));
+        },
+
+        // Check which playlists contain the current song
+        async checkSongInPlaylists(songId) {
+            try {
+                const response = await fetch(`/api/muzibu/songs/${songId}/playlists`);
+                const data = await response.json();
+                this.songExistsInPlaylists = data.playlist_ids || [];
+            } catch (err) {
+                console.error('Check song in playlists error:', err);
+                this.songExistsInPlaylists = [];
+            }
+        },
+
+        // Add song to multiple playlists at once
+        async addToMultiplePlaylists(playlistIds) {
+            const { type, data } = this;
+
+            if (!playlistIds || playlistIds.length === 0) return;
+
+            const promises = playlistIds.map(playlistId =>
+                fetch(`/api/muzibu/playlists/${playlistId}/add-song`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: JSON.stringify({
+                        song_id: data.id
+                    })
+                }).then(res => res.json())
+            );
+
+            try {
+                const results = await Promise.all(promises);
+                const successCount = results.filter(r => r.success).length;
+
+                if (successCount > 0) {
+                    Alpine.store('toast').show(
+                        `📋 "${data.title}" ${successCount} playlist'e eklendi`,
+                        'success'
+                    );
+
+                    // Update songExistsInPlaylists
+                    this.songExistsInPlaylists = [
+                        ...this.songExistsInPlaylists,
+                        ...playlistIds
+                    ];
+                }
+
+                this.playlistModal.open = false;
+            } catch (err) {
+                console.error('Add to multiple playlists error:', err);
+                Alpine.store('toast').show('Bir hata oluştu', 'error');
+            }
         },
 
         createNewPlaylist() {

@@ -146,23 +146,18 @@ class SubscriptionPlansComponent extends Component
 
     public function render()
     {
-        // Tema-aware view ve layout
-        $theme = tenant()->theme ?? 'ixtif';
-
-        // Önce tema-specific view'ı dene, yoksa default kullan
-        $viewPath = "themes.{$theme}.subscription-plans";
-        $defaultViewPath = 'subscription::livewire.front.subscription-plans';
-
-        // Layout - Tema-aware
+        // Layout: Tenant temasından (header/footer için)
+        // View: Module default (içerik fallback'ten)
+        $theme = tenant()->theme ?? 'simple';
         $layoutPath = "themes.{$theme}.layouts.app";
 
-        if (view()->exists($viewPath)) {
-            return view($viewPath, [
-                'plans' => $this->plans,
-            ])->layout($layoutPath);
+        // Tenant layout yoksa simple fallback
+        if (!view()->exists($layoutPath)) {
+            $layoutPath = 'themes.simple.layouts.app';
         }
 
-        return view($defaultViewPath, [
+        // View her zaman module default (orta kısım fallback)
+        return view('subscription::livewire.front.subscription-plans', [
             'plans' => $this->plans,
         ])->layout($layoutPath);
     }

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Panel Drafts - Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-dark': '#121212',
+                        'muzibu-gray': '#1e1e1e',
+                        'muzibu-coral': '#ff6b6b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 3px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <header class="mb-12 pb-6 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-3 bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text text-transparent">
+                🎵 Playlist Panel Drafts
+            </h1>
+            <p class="text-slate-400 text-lg">Hızlı playlist oluşturma ve düzenleme paneli tasarımları</p>
+            <div class="mt-4 flex gap-4 text-sm text-slate-500">
+                <span>📅 14 Aralık 2025</span>
+                <span>🎯 Tenant: muzibu.com.tr</span>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="flex gap-4 mb-12 flex-wrap">
+            <a href="#draft1" class="px-4 py-2 bg-muzibu-coral/20 text-muzibu-coral rounded-full hover:bg-muzibu-coral/30 transition">Draft 1: Slide Panel</a>
+            <a href="#draft2" class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full hover:bg-blue-500/30 transition">Draft 2: Full Modal</a>
+            <a href="#draft3" class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-full hover:bg-purple-500/30 transition">Draft 3: Split View</a>
+        </nav>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- DRAFT 1: Slide Panel (Spotify Style) -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="draft1" class="mb-20">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="px-3 py-1 bg-muzibu-coral text-white text-sm font-bold rounded-full">DRAFT 1</span>
+                <h2 class="text-2xl font-bold text-white">Slide Panel (Spotify Style)</h2>
+            </div>
+            <p class="text-slate-400 mb-8">Sağdan kayan panel - hızlı erişim, minimal</p>
+
+            <!-- Mock Browser -->
+            <div class="bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                <!-- Browser Bar -->
+                <div class="bg-zinc-900 px-4 py-3 flex items-center gap-3 border-b border-white/5">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="flex-1 bg-zinc-800 rounded-lg px-4 py-1.5 text-sm text-zinc-400">
+                        muzibu.com.tr
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="relative h-[600px] flex">
+                    <!-- Main Content (dimmed) -->
+                    <div class="flex-1 bg-muzibu-dark p-6 opacity-50">
+                        <div class="grid grid-cols-4 gap-4">
+                            <div class="aspect-square bg-zinc-800 rounded-lg"></div>
+                            <div class="aspect-square bg-zinc-800 rounded-lg"></div>
+                            <div class="aspect-square bg-zinc-800 rounded-lg"></div>
+                            <div class="aspect-square bg-zinc-800 rounded-lg"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide Panel -->
+                    <div class="w-[400px] bg-gradient-to-b from-zinc-900 to-black border-l border-white/10 flex flex-col">
+                        <!-- Panel Header -->
+                        <div class="p-6 border-b border-white/10">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-bold text-white">Yeni Playlist</h3>
+                                <button class="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <!-- Cover Upload -->
+                            <div class="flex gap-4">
+                                <div class="w-32 h-32 bg-zinc-800 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-zinc-700 transition group">
+                                    <i class="fas fa-image text-3xl text-zinc-600 group-hover:text-zinc-400 mb-2"></i>
+                                    <span class="text-xs text-zinc-500">Kapak Ekle</span>
+                                </div>
+                                <div class="flex-1 space-y-3">
+                                    <input type="text" placeholder="Playlist adı" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-muzibu-coral focus:border-transparent">
+                                    <textarea placeholder="Açıklama (isteğe bağlı)" rows="2" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-muzibu-coral focus:border-transparent resize-none text-sm"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Song Search -->
+                        <div class="p-4 border-b border-white/10">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+                                <input type="text" placeholder="Şarkı ara ve ekle..." class="w-full pl-12 pr-4 py-3 bg-zinc-800/50 border border-zinc-700/50 rounded-full text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-muzibu-coral/50">
+                            </div>
+                        </div>
+
+                        <!-- Added Songs -->
+                        <div class="flex-1 overflow-y-auto scrollbar-thin p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-sm text-zinc-400">Eklenen Şarkılar</span>
+                                <span class="text-xs text-zinc-500">3 şarkı</span>
+                            </div>
+
+                            <!-- Song Items -->
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-3 p-2 bg-white/5 rounded-lg group">
+                                    <i class="fas fa-grip-vertical text-zinc-600 cursor-grab"></i>
+                                    <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-white truncate">Yıldızların Altında</p>
+                                        <p class="text-xs text-zinc-500 truncate">Tarkan</p>
+                                    </div>
+                                    <span class="text-xs text-zinc-500">3:42</span>
+                                    <button class="w-6 h-6 flex items-center justify-center text-zinc-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-times text-xs"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-2 bg-white/5 rounded-lg group">
+                                    <i class="fas fa-grip-vertical text-zinc-600 cursor-grab"></i>
+                                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-white truncate">Gece Golgenin Rahatına Bak</p>
+                                        <p class="text-xs text-zinc-500 truncate">Şebnem Ferah</p>
+                                    </div>
+                                    <span class="text-xs text-zinc-500">4:15</span>
+                                    <button class="w-6 h-6 flex items-center justify-center text-zinc-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-times text-xs"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-2 bg-white/5 rounded-lg group">
+                                    <i class="fas fa-grip-vertical text-zinc-600 cursor-grab"></i>
+                                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-white truncate">Aşk</p>
+                                        <p class="text-xs text-zinc-500 truncate">Sezen Aksu</p>
+                                    </div>
+                                    <span class="text-xs text-zinc-500">5:02</span>
+                                    <button class="w-6 h-6 flex items-center justify-center text-zinc-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-times text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Privacy & Actions -->
+                        <div class="p-4 border-t border-white/10 space-y-4">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <div class="relative">
+                                    <input type="checkbox" class="sr-only peer">
+                                    <div class="w-10 h-6 bg-zinc-700 rounded-full peer-checked:bg-muzibu-coral transition"></div>
+                                    <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-4 transition"></div>
+                                </div>
+                                <div>
+                                    <span class="text-sm text-white">Herkese Açık</span>
+                                    <p class="text-xs text-zinc-500">Diğer kullanıcılar görebilir</p>
+                                </div>
+                            </label>
+
+                            <div class="flex gap-3">
+                                <button class="flex-1 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-full transition">
+                                    İptal
+                                </button>
+                                <button class="flex-1 py-3 bg-muzibu-coral hover:bg-red-500 text-white font-bold rounded-full transition flex items-center justify-center gap-2">
+                                    <i class="fas fa-plus"></i>
+                                    Oluştur
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="mt-6 grid grid-cols-3 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Drag & Drop sıralama</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Anlık şarkı arama</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Kapak yükleme</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- DRAFT 2: Full Modal (YouTube Music Style) -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="draft2" class="mb-20">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="px-3 py-1 bg-blue-500 text-white text-sm font-bold rounded-full">DRAFT 2</span>
+                <h2 class="text-2xl font-bold text-white">Full Modal (YouTube Music Style)</h2>
+            </div>
+            <p class="text-slate-400 mb-8">Tam ekran modal - detaylı düzenleme, güçlü özellikler</p>
+
+            <!-- Mock Browser -->
+            <div class="bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                <!-- Browser Bar -->
+                <div class="bg-zinc-900 px-4 py-3 flex items-center gap-3 border-b border-white/5">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="flex-1 bg-zinc-800 rounded-lg px-4 py-1.5 text-sm text-zinc-400">
+                        muzibu.com.tr
+                    </div>
+                </div>
+
+                <!-- Content with Modal Overlay -->
+                <div class="relative h-[650px] bg-muzibu-dark">
+                    <!-- Background (blurred) -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-zinc-900 to-black opacity-95"></div>
+
+                    <!-- Modal -->
+                    <div class="absolute inset-8 bg-gradient-to-br from-zinc-900 via-zinc-900 to-black rounded-2xl border border-white/10 shadow-2xl flex flex-col overflow-hidden">
+                        <!-- Modal Header -->
+                        <div class="flex items-center justify-between p-6 border-b border-white/10">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-list-music text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-white">Playlist Düzenle</h3>
+                                    <p class="text-sm text-zinc-400">12 şarkı • 45 dakika</p>
+                                </div>
+                            </div>
+                            <button class="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition">
+                                <i class="fas fa-times text-lg"></i>
+                            </button>
+                        </div>
+
+                        <!-- Modal Content -->
+                        <div class="flex-1 flex overflow-hidden">
+                            <!-- Left: Playlist Info -->
+                            <div class="w-80 p-6 border-r border-white/10 flex flex-col">
+                                <!-- Cover -->
+                                <div class="relative mb-6 group">
+                                    <div class="aspect-square bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl shadow-xl overflow-hidden">
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <i class="fas fa-music text-white/30 text-6xl"></i>
+                                        </div>
+                                    </div>
+                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition rounded-xl flex items-center justify-center">
+                                        <button class="px-4 py-2 bg-white text-black font-medium rounded-full flex items-center gap-2">
+                                            <i class="fas fa-camera"></i>
+                                            Değiştir
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Form -->
+                                <div class="space-y-4 flex-1">
+                                    <div>
+                                        <label class="block text-sm font-medium text-zinc-400 mb-2">Playlist Adı</label>
+                                        <input type="text" value="Yaz Hitleri 2025" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-zinc-400 mb-2">Açıklama</label>
+                                        <textarea rows="3" class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none" placeholder="Bu playlist hakkında...">En sevdiğim yaz şarkıları koleksiyonu</textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-zinc-400 mb-2">Gizlilik</label>
+                                        <select class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
+                                            <option>🌍 Herkese Açık</option>
+                                            <option>🔗 Link ile Erişim</option>
+                                            <option selected>🔒 Gizli</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Stats -->
+                                <div class="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-3">
+                                    <div class="text-center p-3 bg-white/5 rounded-lg">
+                                        <p class="text-2xl font-bold text-white">12</p>
+                                        <p class="text-xs text-zinc-500">Şarkı</p>
+                                    </div>
+                                    <div class="text-center p-3 bg-white/5 rounded-lg">
+                                        <p class="text-2xl font-bold text-white">45:32</p>
+                                        <p class="text-xs text-zinc-500">Süre</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Song List -->
+                            <div class="flex-1 flex flex-col">
+                                <!-- Search & Actions -->
+                                <div class="p-4 border-b border-white/10 flex items-center gap-4">
+                                    <div class="flex-1 relative">
+                                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+                                        <input type="text" placeholder="Şarkı ara veya yeni ekle..." class="w-full pl-12 pr-4 py-2.5 bg-zinc-800/50 border border-zinc-700/50 rounded-full text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                                    </div>
+                                    <button class="px-4 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full flex items-center gap-2 transition">
+                                        <i class="fas fa-plus"></i>
+                                        Şarkı Ekle
+                                    </button>
+                                </div>
+
+                                <!-- Song List -->
+                                <div class="flex-1 overflow-y-auto scrollbar-thin">
+                                    <table class="w-full">
+                                        <thead class="sticky top-0 bg-zinc-900/95 backdrop-blur">
+                                            <tr class="text-left text-xs text-zinc-500 uppercase tracking-wider">
+                                                <th class="px-4 py-3 w-12">#</th>
+                                                <th class="px-4 py-3">Şarkı</th>
+                                                <th class="px-4 py-3">Albüm</th>
+                                                <th class="px-4 py-3 w-20 text-right">Süre</th>
+                                                <th class="px-4 py-3 w-16"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-white/5">
+                                            <tr class="group hover:bg-white/5 transition">
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="fas fa-grip-vertical text-zinc-600 opacity-0 group-hover:opacity-100 cursor-grab"></i>
+                                                        <span class="text-zinc-500 group-hover:hidden">1</span>
+                                                        <button class="hidden group-hover:block text-zinc-400 hover:text-white">
+                                                            <i class="fas fa-play text-sm"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex-shrink-0"></div>
+                                                        <div>
+                                                            <p class="font-medium text-white">Yıldızların Altında</p>
+                                                            <p class="text-sm text-zinc-500">Tarkan</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-zinc-400">Karma</td>
+                                                <td class="px-4 py-3 text-sm text-zinc-500 text-right">3:42</td>
+                                                <td class="px-4 py-3">
+                                                    <button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition rounded-full hover:bg-white/10">
+                                                        <i class="fas fa-trash-alt text-sm"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="group hover:bg-white/5 transition">
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="fas fa-grip-vertical text-zinc-600 opacity-0 group-hover:opacity-100 cursor-grab"></i>
+                                                        <span class="text-zinc-500 group-hover:hidden">2</span>
+                                                        <button class="hidden group-hover:block text-zinc-400 hover:text-white">
+                                                            <i class="fas fa-play text-sm"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded flex-shrink-0"></div>
+                                                        <div>
+                                                            <p class="font-medium text-white">Gece Gölgenin Rahatına Bak</p>
+                                                            <p class="text-sm text-zinc-500">Şebnem Ferah</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-zinc-400">Sil Baştan</td>
+                                                <td class="px-4 py-3 text-sm text-zinc-500 text-right">4:15</td>
+                                                <td class="px-4 py-3">
+                                                    <button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition rounded-full hover:bg-white/10">
+                                                        <i class="fas fa-trash-alt text-sm"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="group hover:bg-white/5 transition">
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="fas fa-grip-vertical text-zinc-600 opacity-0 group-hover:opacity-100 cursor-grab"></i>
+                                                        <span class="text-zinc-500 group-hover:hidden">3</span>
+                                                        <button class="hidden group-hover:block text-zinc-400 hover:text-white">
+                                                            <i class="fas fa-play text-sm"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded flex-shrink-0"></div>
+                                                        <div>
+                                                            <p class="font-medium text-white">Aşk</p>
+                                                            <p class="text-sm text-zinc-500">Sezen Aksu</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-zinc-400">Gülümse</td>
+                                                <td class="px-4 py-3 text-sm text-zinc-500 text-right">5:02</td>
+                                                <td class="px-4 py-3">
+                                                    <button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition rounded-full hover:bg-white/10">
+                                                        <i class="fas fa-trash-alt text-sm"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="p-4 border-t border-white/10 flex items-center justify-between bg-zinc-900/50">
+                            <button class="text-red-400 hover:text-red-300 font-medium flex items-center gap-2 transition">
+                                <i class="fas fa-trash-alt"></i>
+                                Playlist'i Sil
+                            </button>
+                            <div class="flex gap-3">
+                                <button class="px-6 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-full transition">
+                                    İptal
+                                </button>
+                                <button class="px-6 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-full transition flex items-center gap-2">
+                                    <i class="fas fa-check"></i>
+                                    Kaydet
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="mt-6 grid grid-cols-4 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Tablo görünümü</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Gizlilik seçenekleri</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">İstatistikler</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Playlist silme</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- DRAFT 3: Split View (Apple Music Style) -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section id="draft3" class="mb-20">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="px-3 py-1 bg-purple-500 text-white text-sm font-bold rounded-full">DRAFT 3</span>
+                <h2 class="text-2xl font-bold text-white">Split View (Apple Music Style)</h2>
+            </div>
+            <p class="text-slate-400 mb-8">İki panelli görünüm - sol tarafta arama, sağ tarafta playlist</p>
+
+            <!-- Mock Browser -->
+            <div class="bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                <!-- Browser Bar -->
+                <div class="bg-zinc-900 px-4 py-3 flex items-center gap-3 border-b border-white/5">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="flex-1 bg-zinc-800 rounded-lg px-4 py-1.5 text-sm text-zinc-400">
+                        muzibu.com.tr/playlist/create
+                    </div>
+                </div>
+
+                <!-- Split Content -->
+                <div class="h-[600px] flex bg-muzibu-dark">
+                    <!-- Left Panel: Search & Browse -->
+                    <div class="w-1/2 border-r border-white/10 flex flex-col">
+                        <!-- Header -->
+                        <div class="p-6 border-b border-white/10">
+                            <h3 class="text-xl font-bold text-white mb-4">Şarkı Ekle</h3>
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+                                <input type="text" placeholder="Şarkı, sanatçı veya albüm ara..." value="tarkan" class="w-full pl-12 pr-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                        </div>
+
+                        <!-- Tabs -->
+                        <div class="flex border-b border-white/10">
+                            <button class="flex-1 py-3 text-sm font-medium text-purple-400 border-b-2 border-purple-400">Şarkılar</button>
+                            <button class="flex-1 py-3 text-sm font-medium text-zinc-500 hover:text-zinc-300">Albümler</button>
+                            <button class="flex-1 py-3 text-sm font-medium text-zinc-500 hover:text-zinc-300">Sanatçılar</button>
+                        </div>
+
+                        <!-- Search Results -->
+                        <div class="flex-1 overflow-y-auto scrollbar-thin p-4">
+                            <p class="text-xs text-zinc-500 mb-3">"tarkan" için sonuçlar</p>
+
+                            <div class="space-y-2">
+                                <!-- Result Item -->
+                                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition cursor-pointer group">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-white truncate">Yıldızların Altında</p>
+                                        <p class="text-sm text-zinc-500">Tarkan • Karma</p>
+                                    </div>
+                                    <span class="text-sm text-zinc-500">3:42</span>
+                                    <button class="w-10 h-10 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition cursor-pointer group">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-600 rounded-lg flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-white truncate">Dudu</p>
+                                        <p class="text-sm text-zinc-500">Tarkan • Karma</p>
+                                    </div>
+                                    <span class="text-sm text-zinc-500">4:08</span>
+                                    <button class="w-10 h-10 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition cursor-pointer group">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-lg flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-white truncate">Şımarık</p>
+                                        <p class="text-sm text-zinc-500">Tarkan • Ölürüm Sana</p>
+                                    </div>
+                                    <span class="text-sm text-zinc-500">3:56</span>
+                                    <button class="w-10 h-10 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition cursor-pointer group">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-white truncate">Kuzu Kuzu</p>
+                                        <p class="text-sm text-zinc-500">Tarkan • Dudu</p>
+                                    </div>
+                                    <span class="text-sm text-zinc-500">4:21</span>
+                                    <button class="w-10 h-10 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition cursor-pointer group">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-white truncate">Hüp</p>
+                                        <p class="text-sm text-zinc-500">Tarkan • 10</p>
+                                    </div>
+                                    <span class="text-sm text-zinc-500">3:33</span>
+                                    <button class="w-10 h-10 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Playlist Builder -->
+                    <div class="w-1/2 flex flex-col bg-gradient-to-br from-zinc-900/50 to-black/50">
+                        <!-- Playlist Header -->
+                        <div class="p-6 border-b border-white/10">
+                            <div class="flex gap-4">
+                                <!-- Cover -->
+                                <div class="w-24 h-24 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 rounded-xl flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition group">
+                                    <i class="fas fa-camera text-white/50 text-2xl group-hover:text-white/80"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <input type="text" placeholder="Playlist adı..." value="Tarkan Klasikleri" class="w-full text-2xl font-bold text-white bg-transparent border-none focus:outline-none placeholder-zinc-600 mb-2">
+                                    <input type="text" placeholder="Açıklama ekle..." class="w-full text-sm text-zinc-400 bg-transparent border-none focus:outline-none placeholder-zinc-600">
+                                    <div class="flex items-center gap-4 mt-3">
+                                        <span class="text-xs text-zinc-500">3 şarkı • 11:46</span>
+                                        <button class="text-xs text-purple-400 hover:text-purple-300 font-medium">
+                                            <i class="fas fa-globe mr-1"></i>
+                                            Gizli
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Playlist Songs -->
+                        <div class="flex-1 overflow-y-auto scrollbar-thin p-4">
+                            <div class="space-y-1">
+                                <!-- Added Song -->
+                                <div class="flex items-center gap-3 p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl group">
+                                    <i class="fas fa-grip-vertical text-zinc-600 cursor-grab"></i>
+                                    <span class="w-6 text-center text-zinc-500 text-sm">1</span>
+                                    <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-white truncate">Yıldızların Altında</p>
+                                        <p class="text-xs text-zinc-500">Tarkan</p>
+                                    </div>
+                                    <span class="text-xs text-zinc-500">3:42</span>
+                                    <button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl group">
+                                    <i class="fas fa-grip-vertical text-zinc-600 cursor-grab"></i>
+                                    <span class="w-6 text-center text-zinc-500 text-sm">2</span>
+                                    <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-600 rounded flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-white truncate">Dudu</p>
+                                        <p class="text-xs text-zinc-500">Tarkan</p>
+                                    </div>
+                                    <span class="text-xs text-zinc-500">4:08</span>
+                                    <button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center gap-3 p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl group">
+                                    <i class="fas fa-grip-vertical text-zinc-600 cursor-grab"></i>
+                                    <span class="w-6 text-center text-zinc-500 text-sm">3</span>
+                                    <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-amber-600 rounded flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-white truncate">Şımarık</p>
+                                        <p class="text-xs text-zinc-500">Tarkan</p>
+                                    </div>
+                                    <span class="text-xs text-zinc-500">3:56</span>
+                                    <button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Empty State -->
+                                <div class="py-12 text-center">
+                                    <div class="w-16 h-16 mx-auto mb-4 bg-zinc-800 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-music text-zinc-600 text-2xl"></i>
+                                    </div>
+                                    <p class="text-zinc-500 text-sm">Soldan şarkı ara ve ekle</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="p-4 border-t border-white/10 flex justify-between items-center">
+                            <button class="text-zinc-500 hover:text-zinc-300 font-medium">
+                                İptal
+                            </button>
+                            <button class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-full shadow-lg shadow-purple-500/25 transition flex items-center gap-2">
+                                <i class="fas fa-check"></i>
+                                Playlist Oluştur
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features -->
+            <div class="mt-6 grid grid-cols-4 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Yan yana görünüm</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Tab'lı arama</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Anlık ekleme</span>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                    <i class="fas fa-check text-green-400 mr-2"></i>
+                    <span class="text-sm text-slate-300">Inline düzenleme</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- COMPARISON TABLE -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section class="mb-20">
+            <h2 class="text-2xl font-bold text-white mb-6">📊 Karşılaştırma</h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-700">
+                            <th class="text-left py-4 px-4 text-slate-400 font-medium">Özellik</th>
+                            <th class="text-center py-4 px-4 text-muzibu-coral font-medium">Draft 1<br><span class="font-normal text-xs">Slide Panel</span></th>
+                            <th class="text-center py-4 px-4 text-blue-400 font-medium">Draft 2<br><span class="font-normal text-xs">Full Modal</span></th>
+                            <th class="text-center py-4 px-4 text-purple-400 font-medium">Draft 3<br><span class="font-normal text-xs">Split View</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Kullanım Kolaylığı</td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">⭐⭐⭐⭐⭐</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-yellow-400">⭐⭐⭐</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">⭐⭐⭐⭐</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Özellik Zenginliği</td>
+                            <td class="py-3 px-4 text-center"><span class="text-yellow-400">⭐⭐⭐</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">⭐⭐⭐⭐⭐</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">⭐⭐⭐⭐</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Mobil Uyumluluk</td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">⭐⭐⭐⭐⭐</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">⭐⭐⭐⭐</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-red-400">⭐⭐</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">Geliştirme Zorluğu</td>
+                            <td class="py-3 px-4 text-center"><span class="text-green-400">Kolay</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-yellow-400">Orta</span></td>
+                            <td class="py-3 px-4 text-center"><span class="text-red-400">Zor</span></td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 text-slate-300">En İyi Kullanım</td>
+                            <td class="py-3 px-4 text-center text-slate-400">Hızlı oluşturma</td>
+                            <td class="py-3 px-4 text-center text-slate-400">Detaylı düzenleme</td>
+                            <td class="py-3 px-4 text-center text-slate-400">Şarkı arama & ekleme</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!-- RECOMMENDATION -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <section class="mb-12">
+            <div class="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-8">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-lightbulb text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-green-400 mb-2">Önerim: Hibrit Yaklaşım</h3>
+                        <p class="text-slate-300 mb-4">
+                            En iyi kullanıcı deneyimi için <strong>Draft 1 (Slide Panel)</strong> ile başlayıp,
+                            "Gelişmiş Düzenleme" butonu ile <strong>Draft 2 (Full Modal)</strong>'a geçiş yapan bir sistem öneririm.
+                        </p>
+                        <ul class="space-y-2 text-sm text-slate-400">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Hızlı playlist oluşturma → Slide Panel (Draft 1)</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Detaylı düzenleme → Full Modal (Draft 2)</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>Mobil cihazlar → Sadece Slide Panel</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t border-slate-700 text-center text-slate-500 text-sm">
+            <p>🤖 Claude AI tarafından oluşturuldu</p>
+            <p class="mt-2">Onay için: "UYGUNDUR" veya değişiklik isteyin</p>
+        </footer>
+    </div>
+</body>
+</html>

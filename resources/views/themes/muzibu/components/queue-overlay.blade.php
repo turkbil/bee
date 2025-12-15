@@ -1,7 +1,7 @@
-{{-- QUEUE OVERLAY - Slides in from right when queue button clicked --}}
-{{-- x-if guard: Render only when parent scope has 'queue' defined --}}
+{{-- QUEUE OVERLAY - Modern Spotify-style Design --}}
 <template x-if="typeof queue !== 'undefined'">
 <div>
+{{-- Backdrop --}}
 <div
     x-show="showQueue"
     x-transition:enter="transition ease-out duration-300"
@@ -15,6 +15,7 @@
     style="display: none;"
 ></div>
 
+{{-- Panel --}}
 <aside
     x-show="showQueue"
     x-transition:enter="transition ease-out duration-300"
@@ -24,98 +25,167 @@
     x-transition:leave-start="transform translate-x-0"
     x-transition:leave-end="transform translate-x-full"
     style="display: none;"
-    class="fixed top-0 right-0 bottom-0 w-full sm:w-80 md:w-96 bg-muzibu-gray border-l border-white/10 shadow-2xl z-50 flex flex-col"
+    class="fixed top-0 right-0 bottom-0 w-full sm:w-96 bg-gradient-to-b from-zinc-900 via-zinc-900 to-black border-l border-white/5 shadow-2xl z-50 flex flex-col"
 >
     {{-- Header --}}
-    <div class="flex items-center justify-between p-4 border-b border-white/10">
-        <h3 class="text-lg font-bold bg-gradient-to-r from-white via-zinc-100 to-muzibu-text-gray bg-clip-text text-transparent">
-            Çalma Listesi
-        </h3>
-        <div class="flex items-center gap-2">
-            <button @click="clearQueue()" class="text-xs text-muzibu-text-gray hover:text-muzibu-coral transition-colors px-2 py-1">
-                <i class="fas fa-trash-alt"></i> Temizle
+    <div class="flex items-center justify-between px-5 py-4 border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-muzibu-coral/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-stream text-muzibu-coral text-sm"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-white">Sira</h3>
+                <p class="text-xs text-zinc-500" x-text="(queue || []).length + ' sarki'"></p>
+            </div>
+        </div>
+        <div class="flex items-center gap-1">
+            <button
+                @click="clearQueue()"
+                class="p-2 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all"
+                title="Sirayi Temizle"
+            >
+                <i class="fas fa-trash-alt text-sm"></i>
             </button>
-            <button @click="showQueue = false" class="text-muzibu-text-gray hover:text-white transition-colors p-2">
+            <button
+                @click="showQueue = false"
+                class="p-2 text-zinc-500 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+            >
                 <i class="fas fa-times"></i>
             </button>
         </div>
     </div>
 
-    {{-- Content --}}
-    <div class="flex-1 overflow-y-auto p-4">
-        {{-- Current Playing --}}
-        <template x-if="currentSong">
-            <div class="mb-4 pb-4 border-b border-white/10">
-                <div class="text-xs text-muzibu-coral font-semibold mb-2 flex items-center gap-2">
-                    <i class="fas fa-play"></i> Şimdi Çalıyor
-                </div>
-                <div class="flex items-center gap-3 px-2 py-2 bg-muzibu-gray-light rounded">
-                    <div class="w-10 h-10 rounded bg-gradient-to-br from-pink-500 to-purple-600 flex-shrink-0 overflow-hidden">
-                        <template x-if="currentSong.album_cover">
-                            <img :src="getCoverUrl(currentSong.album_cover, 40, 40)" :alt="currentSong.song_title" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!currentSong.album_cover">
-                            <div class="w-full h-full flex items-center justify-center text-lg">🎵</div>
-                        </template>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-sm font-semibold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Şarkı'"></h4>
-                        <p class="text-xs text-muzibu-text-gray truncate" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || 'Sanatçı'"></p>
-                    </div>
-                </div>
+    {{-- Now Playing --}}
+    <template x-if="currentSong">
+        <div class="px-5 py-4 bg-gradient-to-r from-muzibu-coral/10 to-transparent border-b border-white/5">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="w-1.5 h-1.5 bg-muzibu-coral rounded-full animate-pulse"></div>
+                <span class="text-xs font-semibold text-muzibu-coral uppercase tracking-wider">Simdi Caliniyor</span>
             </div>
-        </template>
-
-        {{-- Queue Count --}}
-        <div class="text-xs text-muzibu-text-gray font-semibold mb-3">
-            Sırada <span x-text="(queue || []).length"></span> şarkı
+            <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-muzibu-coral to-pink-600 flex-shrink-0 overflow-hidden shadow-lg shadow-muzibu-coral/20">
+                    <template x-if="currentSong.album_cover">
+                        <img :src="getCoverUrl(currentSong.album_cover, 56, 56)" :alt="currentSong.song_title" class="w-full h-full object-cover">
+                    </template>
+                    <template x-if="!currentSong.album_cover">
+                        <div class="w-full h-full flex items-center justify-center text-2xl">🎵</div>
+                    </template>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-sm font-bold text-white truncate" x-text="currentSong.song_title?.tr || currentSong.song_title?.en || currentSong.song_title || 'Sarki'"></h4>
+                    <p class="text-xs text-zinc-400 truncate mt-0.5" x-text="currentSong.artist_title?.tr || currentSong.artist_title?.en || currentSong.artist_title || 'Sanatci'"></p>
+                </div>
+                <button
+                    @click="toggleLike()"
+                    class="p-2 transition-all"
+                    :class="isLiked ? 'text-muzibu-coral' : 'text-zinc-500 hover:text-white'"
+                >
+                    <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'"></i>
+                </button>
+            </div>
         </div>
+    </template>
 
+    {{-- Queue Header --}}
+    <div class="px-5 py-3 flex items-center justify-between border-b border-white/5">
+        <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Siradaki Sarkilar</span>
+        <span class="text-xs text-zinc-600" x-show="queue && queue.length > 0">Suruklemeyle sirala</span>
+    </div>
+
+    {{-- Queue Content --}}
+    <div class="flex-1 overflow-y-auto">
         {{-- Empty State --}}
         <template x-if="!queue || queue.length === 0">
-            <div class="text-center py-8 text-muzibu-text-gray">
-                <i class="fas fa-music text-3xl mb-2 opacity-30"></i>
-                <p class="text-sm">Çalma listesi boş</p>
+            <div class="flex flex-col items-center justify-center h-full text-center px-8">
+                <div class="w-20 h-20 bg-zinc-800/50 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-music text-3xl text-zinc-600"></i>
+                </div>
+                <h4 class="text-base font-semibold text-zinc-400 mb-1">Sira Bos</h4>
+                <p class="text-sm text-zinc-600">Sarki eklemek icin bir playlist veya albume gidin</p>
             </div>
         </template>
 
         {{-- Queue List --}}
-        <div id="queue-list" class="space-y-1">
+        <div id="queue-list" class="py-2">
             <template x-for="(song, index) in (queue || [])" :key="'queue-' + index + '-' + (song?.song_id || 'song')">
                 <div
                     @click="playFromQueue(index)"
                     @dragstart="dragStart($event, index)"
-                    @dragover.prevent
-                    @drop="drop($event, index)"
+                    @dragover.prevent="dragOver(index)"
+                    @dragleave="dropTargetIndex = null"
+                    @drop.prevent="drop(index)"
+                    @dragend="draggedIndex = null; dropTargetIndex = null"
                     draggable="true"
-                    class="flex items-center gap-3 px-2 py-2 hover:bg-muzibu-gray-light cursor-pointer group transition-all duration-200 border-l-2 border-transparent hover:border-muzibu-coral rounded"
-                    :class="{ 'bg-muzibu-gray-light/50 border-muzibu-coral': queueIndex === index }"
+                    class="group flex items-center gap-3 px-5 py-2.5 cursor-pointer transition-all duration-150"
+                    :class="{
+                        'bg-white/5': queueIndex === index,
+                        'hover:bg-white/5': queueIndex !== index,
+                        'border-t-2 border-muzibu-coral': dropTargetIndex === index && draggedIndex !== null,
+                        'opacity-50': draggedIndex === index
+                    }"
                 >
-                    <div class="w-8 h-8 rounded bg-gradient-to-br from-blue-500 to-purple-600 flex-shrink-0 overflow-hidden relative">
+                    {{-- Index/Play Icon --}}
+                    <div class="w-6 flex-shrink-0 text-center">
+                        <span
+                            class="text-xs text-zinc-500 group-hover:hidden"
+                            :class="queueIndex === index && 'text-muzibu-coral font-bold'"
+                            x-text="index + 1"
+                        ></span>
+                        <i class="fas fa-play text-xs text-white hidden group-hover:inline"></i>
+                    </div>
+
+                    {{-- Cover --}}
+                    <div class="w-10 h-10 rounded-lg bg-zinc-800 flex-shrink-0 overflow-hidden">
                         <template x-if="song.album_cover">
-                            <img :src="getCoverUrl(song.album_cover, 32, 32)" :alt="song.song_title" class="w-full h-full object-cover">
+                            <img :src="getCoverUrl(song.album_cover, 40, 40)" :alt="song.song_title" class="w-full h-full object-cover">
                         </template>
                         <template x-if="!song.album_cover">
-                            <div class="w-full h-full flex items-center justify-center text-xs">🎵</div>
+                            <div class="w-full h-full flex items-center justify-center text-sm text-zinc-600">🎵</div>
                         </template>
-                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <i class="fas fa-play text-white text-xs"></i>
-                        </div>
                     </div>
+
+                    {{-- Info --}}
                     <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-semibold text-white truncate group-hover:text-muzibu-coral transition-colors" x-text="song.song_title?.tr || song.song_title?.en || song.song_title || 'Şarkı'"></h4>
-                        <p class="text-[10px] text-muzibu-text-gray truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || 'Sanatçı'"></p>
+                        <h4
+                            class="text-sm font-medium truncate transition-colors"
+                            :class="queueIndex === index ? 'text-muzibu-coral' : 'text-white group-hover:text-white'"
+                            x-text="song.song_title?.tr || song.song_title?.en || song.song_title || 'Sarki'"
+                        ></h4>
+                        <p class="text-xs text-zinc-500 truncate" x-text="song.artist_title?.tr || song.artist_title?.en || song.artist_title || 'Sanatci'"></p>
                     </div>
-                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button @click.stop="removeFromQueue(index)" class="text-muzibu-text-gray hover:text-red-500 transition-colors">
+
+                    {{-- Duration (if available) --}}
+                    <span class="text-xs text-zinc-600 group-hover:hidden" x-show="song.duration" x-text="formatTime(song.duration)"></span>
+
+                    {{-- Actions --}}
+                    <div class="hidden group-hover:flex items-center gap-1">
+                        <button
+                            @click.stop="removeFromQueue(index)"
+                            class="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-all"
+                            title="Siradan Cikar"
+                        >
                             <i class="fas fa-times text-xs"></i>
                         </button>
-                        <button class="text-muzibu-text-gray hover:text-white cursor-move">
+                        <div class="p-1.5 text-zinc-500 cursor-grab active:cursor-grabbing" title="Surukle">
                             <i class="fas fa-grip-vertical text-xs"></i>
-                        </button>
+                        </div>
                     </div>
                 </div>
             </template>
+        </div>
+    </div>
+
+    {{-- Footer Info --}}
+    <div class="px-5 py-3 border-t border-white/5 bg-black/30">
+        <div class="flex items-center justify-between text-xs text-zinc-600">
+            <span x-show="queue && queue.length > 0">
+                <i class="fas fa-info-circle mr-1"></i>
+                Sarkilara tiklayarak cal
+            </span>
+            <span x-show="queue && queue.length > 0">
+                <i class="fas fa-keyboard mr-1"></i>
+                0-9 ile hizli erisim
+            </span>
         </div>
     </div>
 </aside>

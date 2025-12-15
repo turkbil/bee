@@ -1,4 +1,4 @@
-@extends('themes.ixtif.layouts.app')
+@extends('themes.simple.layouts.app')
 
 @section('title', 'Sipariş Onaylandı - ' . $order->order_number)
 

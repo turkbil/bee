@@ -4,6 +4,9 @@
 @include('themes.simple.layouts.notification')
 
 <main class="flex-1 min-h-[60vh]">
+    {{-- Livewire component içeriği --}}
+    {{ $slot ?? '' }}
+
     @php
         ob_start();
     @endphp

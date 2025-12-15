@@ -56,7 +56,7 @@
 
                 loading = true;
 
-                fetch('/api/muzibu/playlists', {
+                fetch('/api/muzibu/playlists/quick-create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -64,8 +64,8 @@
                         'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')?.content || ''
                     },
                     body: JSON.stringify({
-                        title: { tr: title },
-                        description: description ? { tr: description } : null,
+                        title: title.trim(),
+                        description: description.trim() || null,
                         is_public: false
                     })
                 }).then(r => r.json())

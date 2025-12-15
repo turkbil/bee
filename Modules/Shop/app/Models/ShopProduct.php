@@ -181,6 +181,9 @@ class ShopProduct extends BaseModel implements TranslatableEntity, HasMedia
     protected static function booted(): void
     {
         parent::booted();
+
+        // MegaMenu cache invalidation (for products shown in megamenu)
+        static::observe(\App\Observers\MegaMenuCacheObserver::class);
     }
 
     public function getIdAttribute(): int

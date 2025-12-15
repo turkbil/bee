@@ -12,7 +12,7 @@ class AlbumController extends Controller
     public function index()
     {
         // Only show albums with at least 1 active song
-        $albums = Album::with('artist')
+        $albums = Album::with(['artist', 'coverMedia'])
             ->where('is_active', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
@@ -25,7 +25,7 @@ class AlbumController extends Controller
 
     public function show($slug)
     {
-        $album = Album::with('artist')
+        $album = Album::with(['artist', 'coverMedia'])
             ->where(function($query) use ($slug) {
                 $query->where('slug->tr', $slug)
                       ->orWhere('slug->en', $slug);
@@ -49,7 +49,7 @@ class AlbumController extends Controller
     public function apiIndex()
     {
         // Only show albums with at least 1 active song
-        $albums = Album::with('artist')
+        $albums = Album::with(['artist', 'coverMedia'])
             ->where('is_active', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
@@ -66,8 +66,8 @@ class AlbumController extends Controller
 
     public function apiShow($slug)
     {
-        $album = Album::with('artist')->where(function($q) use ($slug) { $q->where('slug->tr', $slug)->orWhere('slug->en', $slug); })->where('is_active', 1)->firstOrFail();
-        $songs = Song::with('artist')->where('album_id', $album->album_id)->where('is_active', 1)->orderBy('song_id')->get();
+        $album = Album::with(['artist', 'coverMedia'])->where(function($q) use ($slug) { $q->where('slug->tr', $slug)->orWhere('slug->en', $slug); })->where('is_active', 1)->firstOrFail();
+        $songs = Song::with(['artist', 'coverMedia', 'album.coverMedia'])->where('album_id', $album->album_id)->where('is_active', 1)->orderBy('song_id')->get();
         $html = view('themes.muzibu.partials.album-detail', compact('album', 'songs'))->render();
         $titleJson = @json_decode($album->title);
         $title = $titleJson && isset($titleJson->tr) ? $titleJson->tr : $album->title;

@@ -202,3 +202,42 @@ if (!function_exists('filter_session')) {
         return tenant_session()->filterSession($page, $filters);
     }
 }
+
+if (!function_exists('megamenu_html')) {
+    /**
+     * Get cached megamenu HTML
+     *
+     * Usage in blade: {!! megamenu_html('products') !!}
+     *
+     * @param string $type Menu type (products, hakkimizda)
+     * @return string Cached HTML
+     */
+    function megamenu_html(string $type = 'products'): string
+    {
+        return \App\Services\MegaMenuCacheService::getHtml($type);
+    }
+}
+
+if (!function_exists('megamenu_invalidate')) {
+    /**
+     * Invalidate megamenu cache
+     *
+     * Usage: megamenu_invalidate() - clears all megamenu caches
+     */
+    function megamenu_invalidate(): void
+    {
+        \App\Services\MegaMenuCacheService::invalidate();
+    }
+}
+
+if (!function_exists('megamenu_warmup')) {
+    /**
+     * Warm up megamenu cache
+     *
+     * Usage: megamenu_warmup() - regenerates cache
+     */
+    function megamenu_warmup(): void
+    {
+        \App\Services\MegaMenuCacheService::warmUp();
+    }
+}

@@ -1,12 +1,44 @@
 @if($radios && $radios->count() > 0)
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 animate-slide-up" style="animation-delay: 100ms">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-6 animate-slide-up" style="animation-delay: 100ms">
         @foreach($radios as $radio)
-            <div class="group bg-muzibu-gray hover:bg-gray-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-muzibu-coral/20">
+            <div class="radio-card group bg-muzibu-gray hover:bg-gray-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-muzibu-coral/20"
+                 data-radio-id="{{ $radio->radio_id }}"
+                 data-radio-title="{{ $radio->getTranslation('title', app()->getLocale()) }}"
+                 data-is-favorite="{{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? '1' : '0' }}"
+                 x-data="{
+                     touchTimer: null,
+                     touchStartPos: { x: 0, y: 0 }
+                 }"
+                 x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'radio', {
+                     id: {{ $radio->radio_id }},
+                     title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
+                     is_favorite: {{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                 })"
+                 x-on:touchstart="
+                     touchStartPos = { x: $event.touches[0].clientX, y: $event.touches[0].clientY };
+                     touchTimer = setTimeout(() => {
+                         if (navigator.vibrate) navigator.vibrate(50);
+                         $store.contextMenu.openContextMenu({
+                             clientX: $event.touches[0].clientX,
+                             clientY: $event.touches[0].clientY
+                         }, 'radio', {
+                             id: {{ $radio->radio_id }},
+                             title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
+                             is_favorite: {{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                         });
+                     }, 500);
+                 "
+                 x-on:touchend="clearTimeout(touchTimer)"
+                 x-on:touchmove="
+                     const moved = Math.abs($event.touches[0].clientX - touchStartPos.x) > 10 ||
+                                  Math.abs($event.touches[0].clientY - touchStartPos.y) > 10;
+                     if (moved) clearTimeout(touchTimer);
+                 ">
                 {{-- Radio Logo/Icon --}}
                 <div class="relative mb-4 sm:mb-6">
-                    @if($radio->getFirstMedia('logo'))
+                    @if($radio->media_id && $radio->logoMedia)
                         <div class="w-full aspect-square bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl sm:rounded-2xl flex items-center justify-center p-4 sm:p-6 shadow-lg overflow-hidden">
-                            <img src="{{ thumb($radio->getFirstMedia('logo'), 300, 300, ['scale' => 1]) }}"
+                            <img src="{{ thumb($radio->logoMedia, 300, 300, ['scale' => 1]) }}"
                                  alt="{{ $radio->getTranslation('title', app()->getLocale()) }}"
                                  class="w-full h-full object-contain"
                                  loading="lazy">
@@ -20,19 +52,7 @@
                     {{-- Large Play Button Overlay --}}
                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 rounded-xl sm:rounded-2xl flex items-center justify-center">
                         <button
-                            @click="
-                                $store.player.setPlayContext({
-                                    type: 'radio',
-                                    id: {{ $radio->radio_id }},
-                                    name: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
-                                    streamUrl: '{{ $radio->stream_url }}'
-                                });
-                                $dispatch('play-radio', {
-                                    radioId: {{ $radio->radio_id }},
-                                    title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
-                                    streamUrl: '{{ $radio->stream_url }}'
-                                });
-                            "
+                            @click.stop.prevent="$store.player.playRadio({{ $radio->radio_id }})"
                             class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-110 transition-all duration-300 bg-muzibu-coral hover:bg-opacity-90 text-white rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center shadow-2xl hover:scale-125 hover:shadow-muzibu-coral/50"
                         >
                             <i class="fas fa-play text-2xl sm:text-3xl ml-1"></i>
@@ -45,6 +65,17 @@
                             <span class="w-2 h-2 bg-white rounded-full"></span>
                             CANLI
                         </div>
+                    </div>
+
+                    {{-- Menu Button (3 nokta) - HOVER'DA GÖRÜNÜR --}}
+                    <div class="absolute top-2 sm:top-3 right-2 sm:right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop.prevent>
+                        <button @click="Alpine.store('contextMenu').openContextMenu($event, 'radio', {
+                            id: {{ $radio->radio_id }},
+                            title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
+                            is_favorite: {{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                        })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
                     </div>
                 </div>
 

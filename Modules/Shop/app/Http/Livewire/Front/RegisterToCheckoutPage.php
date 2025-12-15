@@ -79,7 +79,17 @@ class RegisterToCheckoutPage extends Component
 
     public function render()
     {
+        // Layout: Tenant temasından (header/footer için)
+        // View: Module default (içerik fallback'ten)
+        $theme = tenant()->theme ?? 'simple';
+        $layoutPath = "themes.{$theme}.layouts.app";
+
+        // Tenant layout yoksa simple fallback
+        if (!view()->exists($layoutPath)) {
+            $layoutPath = 'themes.simple.layouts.app';
+        }
+
         return view('shop::livewire.front.register-to-checkout')
-            ->layout('themes.ixtif.layouts.app');
+            ->layout($layoutPath);
     }
 }

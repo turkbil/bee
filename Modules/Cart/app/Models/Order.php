@@ -156,6 +156,92 @@ class Order extends BaseModel
         $this->paid_amount = $amount ?? $this->total_amount;
         $this->payment_status = 'paid';
         $this->save();
+
+        // Subscription item varsa aktifleştir
+        $this->activateSubscriptionItems();
+    }
+
+    /**
+     * Siparişteki subscription item'larını aktifleştir
+     * Manuel ödeme onayı veya PayTR callback sonrası çağrılır
+     */
+    protected function activateSubscriptionItems(): void
+    {
+        // Subscription modülü yüklü mü?
+        if (!class_exists(\Modules\Subscription\App\Models\Subscription::class)) {
+            return;
+        }
+
+        foreach ($this->items as $item) {
+            // SubscriptionPlan item mı?
+            if ($item->orderable_type !== 'Modules\\Subscription\\App\\Models\\SubscriptionPlan') {
+                continue;
+            }
+
+            try {
+                $plan = $item->orderable;
+                if (!$plan) {
+                    \Log::warning('⚠️ SubscriptionPlan bulunamadı', ['item_id' => $item->order_item_id]);
+                    continue;
+                }
+
+                // Cycle bilgisini item metadata'dan al
+                $cycleKey = $item->metadata['cycle_key'] ?? null;
+                $cycleMetadata = $item->metadata['cycle_metadata'] ?? null;
+
+                if (!$cycleKey) {
+                    // Fallback: Plan'ın ilk cycle'ını kullan
+                    $cycles = $plan->getSortedCycles();
+                    $cycleKey = array_key_first($cycles) ?? 'monthly';
+                    $cycleMetadata = $cycles[$cycleKey] ?? null;
+                }
+
+                // Cycle süresi
+                $durationDays = $cycleMetadata['duration_days'] ?? 30;
+
+                // Subscription oluştur
+                $subscription = \Modules\Subscription\App\Models\Subscription::create([
+                    'user_id' => $this->user_id,
+                    'subscription_plan_id' => $plan->subscription_plan_id,
+                    'subscription_number' => \Modules\Subscription\App\Models\Subscription::generateSubscriptionNumber(),
+                    'status' => 'active',
+                    'cycle_key' => $cycleKey,
+                    'cycle_metadata' => $cycleMetadata,
+                    'price_per_cycle' => $item->unit_price,
+                    'currency' => $this->currency ?? 'TRY',
+                    'has_trial' => false,
+                    'trial_days' => 0,
+                    'started_at' => now(),
+                    'current_period_start' => now(),
+                    'current_period_end' => now()->addDays($durationDays),
+                    'next_billing_date' => now()->addDays($durationDays),
+                    'auto_renew' => true,
+                    'billing_cycles_completed' => 1,
+                    'total_paid' => $item->total_price,
+                    'metadata' => [
+                        'order_id' => $this->order_id,
+                        'order_number' => $this->order_number,
+                        'activated_at' => now()->toDateTimeString(),
+                    ],
+                ]);
+
+                \Log::info('✅ Subscription aktifleştirildi', [
+                    'subscription_id' => $subscription->subscription_id,
+                    'user_id' => $this->user_id,
+                    'plan_id' => $plan->subscription_plan_id,
+                    'order_number' => $this->order_number,
+                    'duration_days' => $durationDays,
+                    'ends_at' => $subscription->current_period_end->toDateTimeString(),
+                ]);
+
+            } catch (\Exception $e) {
+                \Log::error('❌ Subscription aktivasyon hatası', [
+                    'order_id' => $this->order_id,
+                    'item_id' => $item->order_item_id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
     /**
@@ -275,6 +361,9 @@ class Order extends BaseModel
 
         // 4. Müşteriye onay e-postası gönder
         $this->sendCustomerConfirmation($payment);
+
+        // 5. Subscription item varsa aktifleştir
+        $this->activateSubscriptionItems();
 
         \Log::info('✅ Sipariş tamamlandı', [
             'order_id' => $this->order_id,

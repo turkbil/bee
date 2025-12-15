@@ -30,7 +30,7 @@
                                      loading="lazy">
                             @else
                                 <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral via-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-list-music text-white text-4xl opacity-50"></i>
+                                    <i class="fas fa-stream text-white text-4xl opacity-50"></i>
                                 </div>
                             @endif
 
@@ -83,6 +83,7 @@
                         <div class="flex items-center space-x-2">
                             <!-- Edit Button -->
                             <a href="{{ route('muzibu.playlist.edit', $playlist->playlist_id) }}"
+                               wire:navigate
                                class="text-gray-400 hover:text-muzibu-coral transition-colors"
                                title="Düzenle">
                                 <i class="fas fa-edit"></i>
@@ -136,7 +137,7 @@
         <!-- Empty State -->
         <div class="text-center py-16">
             <div class="mb-6">
-                <i class="fas fa-list-music text-gray-600 text-6xl"></i>
+                <i class="fas fa-stream text-gray-600 text-6xl"></i>
             </div>
             <h3 class="text-2xl font-bold text-white mb-2">Henüz playlist oluşturmadın</h3>
             <p class="text-gray-400 mb-6">Favori şarkılarını bir araya getirerek kendi playlistlerini oluşturabilirsin</p>

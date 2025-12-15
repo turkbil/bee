@@ -1,9 +1,9 @@
-@extends('themes::' . config('theme.active_theme') . '.layouts.app')
+@extends($layoutPath)
 
 @section('title', __('payment::front.payment_failed'))
 
 @section('content')
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+<div class="min-h-[60vh] bg-gray-50 dark:bg-gray-900 py-12">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
             {{-- Hata İkonu --}}

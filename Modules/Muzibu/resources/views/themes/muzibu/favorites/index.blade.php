@@ -128,7 +128,7 @@
                                              loading="lazy">
                                     @else
                                         <div class="w-full aspect-square bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center">
-                                            <i class="fas fa-list-music text-white text-4xl opacity-50"></i>
+                                            <i class="fas fa-stream text-white text-4xl opacity-50"></i>
                                         </div>
                                     @endif
 

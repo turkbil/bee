@@ -117,10 +117,12 @@ class MuzibuServiceProvider extends ServiceProvider
             ->toArray();
 
         foreach ($domains as $index => $domain) {
-            // 🔑 HLS ENCRYPTION KEY - NO SESSION! (Separate from main API routes)
+            // 🔑 HLS ENCRYPTION KEY - WITH AUTH! (Şarkı indirme koruması)
             \Illuminate\Support\Facades\Route::middleware([
+                'web', // Session/Cookie support
                 \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
-                \App\Http\Middleware\FixResponseCacheHeaders::class, // 🔥 FORCE CACHE HEADERS!
+                'auth', // 🔐 Giriş yapmamış kullanıcılar key alamaz!
+                \App\Http\Middleware\FixResponseCacheHeaders::class,
             ])
                 ->domain($domain)
                 ->get('/api/muzibu/songs/{id}/key', [\Modules\Muzibu\app\Http\Controllers\Api\SongController::class, 'serveEncryptionKey'])

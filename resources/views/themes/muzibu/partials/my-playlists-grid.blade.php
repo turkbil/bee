@@ -43,8 +43,8 @@
                    "
                    class="group bg-muzibu-gray hover:bg-gray-700 rounded-xl p-4 transition-all duration-300 hover:shadow-2xl hover:shadow-muzibu-coral/20">
                     <div class="relative mb-4">
-                        @if($playlist->getFirstMedia('cover'))
-                            <img src="{{ thumb($playlist->getFirstMedia('cover'), 300, 300, ['scale' => 1]) }}"
+                        @if($playlist->media_id && $playlist->coverMedia)
+                            <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
                                  alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
                                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                                  loading="lazy">
@@ -54,12 +54,10 @@
                             </div>
                         @endif
 
-                        {{-- Play Button Overlay --}}
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                            <button class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
-                                <i class="fas fa-play ml-1"></i>
-                            </button>
-                        </div>
+                        {{-- Play Button - Spotify Style Bottom Right --}}
+                        <button x-on:click.stop.prevent class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+                            <i class="fas fa-play ml-1"></i>
+                        </button>
 
                         {{-- Favorite Button --}}
                         <div class="absolute top-2 right-2" x-on:click.stop>
@@ -129,7 +127,7 @@
         {{-- Modern Empty State --}}
         <div class="text-center py-16 sm:py-24">
             <div class="mb-6 sm:mb-8 animate-pulse">
-                <i class="fas fa-list-music text-gray-600 text-6xl sm:text-7xl md:text-8xl"></i>
+                <i class="fas fa-stream text-gray-600 text-6xl sm:text-7xl md:text-8xl"></i>
             </div>
             <h3 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">
                 Henüz playlist oluşturmadın

@@ -12,10 +12,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
+use Modules\Favorite\App\Traits\HasFavorites;
 
 class Genre extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites;
 
     protected $table = 'muzibu_genres';
     protected $primaryKey = 'genre_id';

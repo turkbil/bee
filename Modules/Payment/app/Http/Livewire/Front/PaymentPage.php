@@ -119,21 +119,21 @@ class PaymentPage extends Component
 
     public function render()
     {
-        try {
-            $theme = tenant()->theme ?? 'ixtif';
-            $layoutPath = "themes.{$theme}.layouts.app";
+        // Layout: Tenant temasından (header/footer için)
+        // View: Module default (içerik fallback'ten)
+        $theme = tenant()->theme ?? 'simple';
+        $layoutPath = "themes.{$theme}.layouts.app";
 
-            return view('payment::livewire.front.payment-page')
-                ->layout($layoutPath, [
-                    'pageTitle' => 'Ödeme',
-                    'metaDescription' => 'Güvenli ödeme sayfası',
-                ]);
-        } catch (\Exception $e) {
-            \Log::error('❌ PaymentPage render error', ['error' => $e->getMessage()]);
-            $this->error = 'Sayfa render hatası: ' . $e->getMessage();
-
-            return view('payment::livewire.front.payment-page')
-                ->layout('themes.ixtif.layouts.app');
+        // Tenant layout yoksa simple fallback
+        if (!view()->exists($layoutPath)) {
+            $layoutPath = 'themes.simple.layouts.app';
         }
+
+        // View her zaman module default (orta kısım fallback)
+        return view('payment::livewire.front.payment-page')
+            ->layout($layoutPath, [
+                'pageTitle' => 'Ödeme',
+                'metaDescription' => 'Güvenli ödeme sayfası',
+            ]);
     }
 }

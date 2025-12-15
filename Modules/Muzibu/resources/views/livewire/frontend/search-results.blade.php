@@ -21,36 +21,43 @@
             @if($totalCount > 0)
                 <div class="mt-4 flex items-center gap-3 text-sm text-zinc-400">
                     <span><strong class="text-white">{{ number_format($totalCount) }}</strong> sonuç bulundu</span>
-                    <span class="text-xs text-zinc-500">({{ $responseTime }}ms)</span>
+                    <span class="text-xs text-zinc-500">({{ $responseTime }}ms{{ $fromCache ? ' • cache' : '' }})</span>
                 </div>
             @endif
         </div>
 
-        {{-- Tabs --}}
+        {{-- Tabs - Client-side filtering (no server roundtrip) --}}
         <div class="mb-6 flex flex-wrap gap-2">
             @php
                 $tabs = [
-                    'all' => ['label' => 'Tümü', 'icon' => 'fa-grid-2'],
-                    'songs' => ['label' => 'Şarkılar', 'icon' => 'fa-music'],
-                    'albums' => ['label' => 'Albümler', 'icon' => 'fa-compact-disc'],
-                    'artists' => ['label' => 'Sanatçılar', 'icon' => 'fa-microphone'],
-                    'playlists' => ['label' => 'Playlistler', 'icon' => 'fa-list-music'],
-                    'genres' => ['label' => 'Türler', 'icon' => 'fa-guitar'],
-                    'sectors' => ['label' => 'Sektörler', 'icon' => 'fa-building'],
-                    'radios' => ['label' => 'Radyolar', 'icon' => 'fa-radio'],
+                    'all' => ['label' => 'Tümü', 'icon' => 'fa-grid-2', 'count' => $totalCount],
+                    'songs' => ['label' => 'Şarkılar', 'icon' => 'fa-music', 'count' => $counts['songs'] ?? 0],
+                    'albums' => ['label' => 'Albümler', 'icon' => 'fa-compact-disc', 'count' => $counts['albums'] ?? 0],
+                    'artists' => ['label' => 'Sanatçılar', 'icon' => 'fa-microphone', 'count' => $counts['artists'] ?? 0],
+                    'playlists' => ['label' => 'Playlistler', 'icon' => 'fa-list-music', 'count' => $counts['playlists'] ?? 0],
+                    'genres' => ['label' => 'Türler', 'icon' => 'fa-guitar', 'count' => $counts['genres'] ?? 0],
+                    'sectors' => ['label' => 'Sektörler', 'icon' => 'fa-building', 'count' => $counts['sectors'] ?? 0],
+                    'radios' => ['label' => 'Radyolar', 'icon' => 'fa-radio', 'count' => $counts['radios'] ?? 0],
                 ];
             @endphp
 
             @foreach($tabs as $key => $tab)
+                @if($tab['count'] > 0 || $key === 'all')
                 <button
                     wire:click="$set('activeTab', '{{ $key }}')"
-                    class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200
+                    class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center gap-2
                         {{ $activeTab === $key
                             ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30'
                             : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-zinc-700' }}">
-                    <i class="fas {{ $tab['icon'] }} mr-2"></i>
-                    {{ $tab['label'] }}
+                    <i class="fas {{ $tab['icon'] }}"></i>
+                    <span>{{ $tab['label'] }}</span>
+                    @if($tab['count'] > 0)
+                        <span class="px-1.5 py-0.5 text-xs rounded-full {{ $activeTab === $key ? 'bg-white/20' : 'bg-zinc-700' }}">
+                            {{ $tab['count'] }}
+                        </span>
+                    @endif
                 </button>
+                @endif
             @endforeach
         </div>
 

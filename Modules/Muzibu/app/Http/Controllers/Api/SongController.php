@@ -395,4 +395,37 @@ class SongController extends Controller
             abort(500, 'Internal error');
         }
     }
+
+    /**
+     * Get playlist IDs that contain this song (for current user)
+     *
+     * @param int $id Song ID
+     * @return JsonResponse
+     */
+    public function getPlaylistsContainingSong(int $id): JsonResponse
+    {
+        try {
+            $userId = auth()->id();
+
+            if (!$userId) {
+                return response()->json(['playlist_ids' => []]);
+            }
+
+            // Get user's playlists that contain this song
+            $playlistIds = DB::table('muzibu_playlists')
+                ->join('muzibu_playlist_songs', 'muzibu_playlists.playlist_id', '=', 'muzibu_playlist_songs.playlist_id')
+                ->where('muzibu_playlists.user_id', $userId)
+                ->where('muzibu_playlist_songs.song_id', $id)
+                ->pluck('muzibu_playlists.playlist_id')
+                ->toArray();
+
+            return response()->json([
+                'playlist_ids' => $playlistIds
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Get playlists containing song error:', ['message' => $e->getMessage()]);
+            return response()->json(['playlist_ids' => []]);
+        }
+    }
 }

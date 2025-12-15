@@ -376,4 +376,49 @@ class Playlist extends BaseModel implements TranslatableEntity, HasMedia
 
         return url("/{$locale}/muzibu/playlist/{$slug}");
     }
+
+    /**
+     * Meilisearch - Get searchable data
+     */
+    public function toSearchableArray(): array
+    {
+        try {
+            $connection = (tenant() && !tenant()->central) ? 'tenant' : 'mysql';
+            $langCodes = \DB::connection($connection)->table('tenant_languages')->where('is_active', 1)->pluck('code')->toArray();
+        } catch (\Exception $e) {
+            $langCodes = ['tr', 'en'];
+        }
+
+        $data = [
+            'id' => $this->playlist_id,
+            'is_active' => $this->is_active,
+            'is_public' => $this->is_public,
+            'is_system' => $this->is_system,
+            'is_radio' => $this->is_radio,
+            'created_at' => $this->created_at?->timestamp,
+        ];
+
+        foreach ($langCodes as $langCode) {
+            $data["title_{$langCode}"] = $this->getTranslated('title', $langCode);
+            $data["description_{$langCode}"] = $this->getTranslated('description', $langCode);
+        }
+
+        return $data;
+    }
+
+    public function searchableAs(): string
+    {
+        $tenantId = tenant() ? tenant()->id : 'central';
+        return "tenant_{$tenantId}_playlists";
+    }
+
+    public function getScoutKey()
+    {
+        return $this->playlist_id;
+    }
+
+    public function getScoutKeyName()
+    {
+        return 'playlist_id';
+    }
 }

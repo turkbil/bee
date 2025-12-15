@@ -21,33 +21,30 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-8">
             @foreach($playlists as $playlist)
                 <div class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300 cursor-pointer">
-                    <a href="{{ route('muzibu.playlist.show', $playlist->getTranslation('slug', app()->getLocale())) }}">
+                    <a href="{{ route('muzibu.playlists.show', $playlist->getTranslation('slug', app()->getLocale())) }}" wire:navigate>
                         <div class="relative mb-4">
-                            @if($playlist->getFirstMedia('cover'))
-                                <img src="{{ thumb($playlist->getFirstMedia('cover'), 300, 300, ['scale' => 1]) }}"
+                            @if($playlist->media_id && $playlist->coverMedia)
+                                <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
                                      alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
                                      class="w-full aspect-square object-cover rounded-lg shadow-lg"
                                      loading="lazy">
                             @else
                                 <div class="w-full aspect-square bg-gradient-to-br from-muzibu-coral via-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                                    <i class="fas fa-list-music text-white text-4xl opacity-50"></i>
+                                    <i class="fas fa-stream text-white text-4xl opacity-50"></i>
                                 </div>
                             @endif
 
-                            <!-- Play Button Overlay -->
-                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                                <button class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110"
-                                        @click.prevent="
-                                            $store.player.setPlayContext({
-                                                type: 'user_playlist',
-                                                id: {{ $playlist->playlist_id }},
-                                                name: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}'
-                                            });
-                                            $dispatch('play-playlist', { playlistId: {{ $playlist->playlist_id }} });
-                                        ">
-                                    <i class="fas fa-play ml-1"></i>
-                                </button>
-                            </div>
+                            <!-- Play Button - Spotify Style Bottom Right -->
+                            <button @click.prevent="
+                                $store.player.setPlayContext({
+                                    type: 'user_playlist',
+                                    id: {{ $playlist->playlist_id }},
+                                    name: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}'
+                                });
+                                $dispatch('play-playlist', { playlistId: {{ $playlist->playlist_id }} });
+                            " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+                                <i class="fas fa-play ml-1"></i>
+                            </button>
 
                             <!-- Favorite Button -->
                             <div class="absolute top-2 right-2" x-on:click.stop>
@@ -90,6 +87,7 @@
                         <div class="flex items-center space-x-2">
                             <!-- Edit Button -->
                             <a href="{{ route('muzibu.playlist.edit', $playlist->playlist_id) }}"
+                               wire:navigate
                                class="text-gray-400 hover:text-muzibu-coral transition-colors"
                                title="Düzenle">
                                 <i class="fas fa-edit"></i>
@@ -125,7 +123,7 @@
 
                         <!-- Share Button (if public) -->
                         @if($playlist->is_public)
-                            <button @click="navigator.clipboard.writeText('{{ route('muzibu.playlist.show', $playlist->getTranslation('slug', app()->getLocale())) }}');
+                            <button @click="navigator.clipboard.writeText('{{ route('muzibu.playlists.show', $playlist->getTranslation('slug', app()->getLocale())) }}');
                                            alert('Link kopyalandı!');"
                                     class="text-gray-400 hover:text-muzibu-coral transition-colors"
                                     title="Paylaş">
@@ -148,7 +146,7 @@
         <!-- Empty State -->
         <div class="text-center py-16">
             <div class="mb-6">
-                <i class="fas fa-list-music text-gray-600 text-6xl"></i>
+                <i class="fas fa-stream text-gray-600 text-6xl"></i>
             </div>
             <h3 class="text-2xl font-bold text-white mb-2">Henüz playlist oluşturmadın</h3>
             <p class="text-gray-400 mb-6">Favori şarkılarını bir araya getirerek kendi playlistlerini oluşturabilirsin</p>
@@ -160,7 +158,7 @@
                     İlk Playlist'ini Oluştur
                 </button>
 
-                <a href="{{ route('muzibu.home') }}"
+                <a href="{{ route('muzibu.home') }}" wire:navigate
                    class="inline-flex items-center px-6 py-3 bg-gray-700 text-white font-semibold rounded-full hover:bg-gray-600 transition-all">
                     <i class="fas fa-home mr-2"></i>
                     Ana Sayfaya Dön

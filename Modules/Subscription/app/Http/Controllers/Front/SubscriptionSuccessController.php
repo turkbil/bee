@@ -29,7 +29,7 @@ class SubscriptionSuccessController extends Controller
         $isTrial = $request->query('trial', false);
 
         // Theme-aware view
-        $theme = tenant()->theme ?? 'ixtif';
+        $theme = tenant()->theme ?? 'simple';
         $viewPath = "themes.{$theme}.subscription-success";
 
         if (!view()->exists($viewPath)) {

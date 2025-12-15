@@ -548,17 +548,17 @@
 
             <!-- SLIDE 1: ANA HERO - TÜRKİYE'NİN İSTİF PAZARI -->
             <div class="swiper-slide slide-1-bg">
-                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 relative z-10">
+                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 pt-20 pb-8 md:py-12 lg:py-16 relative z-10">
                     <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <!-- Left Content -->
                         <div class="text-gray-900 dark:text-white">
                             <!-- Main Title -->
                             <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2]" style="font-weight: 900;">
                                 <span class="gradient-animate block py-2">
-                                    TÜRKİYE'NİN
+                                    81 ŞEHRE
                                 </span>
                                 <span class="gradient-animate block py-2">
-                                    İSTİF PAZARI
+                                    HIZLI TESLİMAT
                                 </span>
                             </h1>
 
@@ -621,7 +621,7 @@
 
             <!-- SLIDE 3: FORKLIFT SATIŞ ODAKLI -->
             <div class="swiper-slide slide-3-bg">
-                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 relative z-10">
+                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 pt-20 pb-8 md:py-12 lg:py-16 relative z-10">
                     <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <div class="text-gray-900 dark:text-white">
                             <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2]" style="font-weight: 900;">
@@ -700,7 +700,7 @@
 
             <!-- SLIDE 4: KİRALAMA ODAKLI -->
             <div class="swiper-slide slide-4-bg">
-                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 relative z-10">
+                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 pt-20 pb-8 md:py-12 lg:py-16 relative z-10">
                     <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <div class="text-gray-900 dark:text-white">
                             <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2]" style="font-weight: 900;">
@@ -779,7 +779,7 @@
 
             <!-- SLIDE 5: SERVİS & BAKIM -->
             <div class="swiper-slide slide-5-bg">
-                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 relative z-10">
+                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 pt-20 pb-8 md:py-12 lg:py-16 relative z-10">
                     <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <div class="text-gray-900 dark:text-white">
                             <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2]" style="font-weight: 900;">
@@ -858,7 +858,7 @@
 
             <!-- SLIDE 2: TRANSPALETLER -->
             <div class="swiper-slide slide-2-bg">
-                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 relative z-10">
+                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 pt-20 pb-8 md:py-12 lg:py-16 relative z-10">
                     <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <div class="text-gray-900 dark:text-white">
                             <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2]" style="font-weight: 900;">
@@ -934,7 +934,7 @@
 
             <!-- SLIDE 6: YEDEK PARÇA -->
             <div class="swiper-slide slide-6-bg">
-                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 py-8 md:py-12 lg:py-16 relative z-10">
+                <div class="container mx-auto px-4 sm:px-4 md:px-8 lg:px-16 pt-20 pb-8 md:py-12 lg:py-16 relative z-10">
                     <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <div class="text-gray-900 dark:text-white">
                             <h1 class="animate-title text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.2]" style="font-weight: 900;">

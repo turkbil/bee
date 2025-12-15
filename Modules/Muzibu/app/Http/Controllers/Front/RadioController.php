@@ -9,7 +9,8 @@ class RadioController extends Controller
 {
     public function index()
     {
-        $radios = Radio::where('is_active', 1)
+        $radios = Radio::with('logoMedia')
+            ->where('is_active', 1)
             ->orderBy('created_at', 'desc')
             ->paginate(200);
 
@@ -18,7 +19,8 @@ class RadioController extends Controller
 
     public function apiIndex()
     {
-        $radios = Radio::where('is_active', 1)
+        $radios = Radio::with('logoMedia')
+            ->where('is_active', 1)
             ->orderBy('created_at', 'desc')
             ->paginate(200);
 

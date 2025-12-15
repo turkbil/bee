@@ -12,10 +12,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
+use Modules\Favorite\App\Traits\HasFavorites;
 
 class Radio extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites;
 
     protected $table = 'muzibu_radios';
     protected $primaryKey = 'radio_id';
@@ -155,7 +156,7 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function logoMedia()
     {
-        return $this->belongsTo(\Modules\MediaManagement\App\Models\Media::class, 'media_id');
+        return $this->belongsTo(\Spatie\MediaLibrary\MediaCollections\Models\Media::class, 'media_id');
     }
 
     /**

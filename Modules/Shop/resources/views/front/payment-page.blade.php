@@ -1,4 +1,4 @@
-@extends('themes.ixtif.layouts.app')
+@extends('themes.simple.layouts.app')
 
 @section('content')
 <div class="container mx-auto px-4 py-12">

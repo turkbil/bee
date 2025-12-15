@@ -9,8 +9,25 @@ use Modules\Payment\App\Models\Payment;
 
 class BankTransferPageController extends Controller
 {
+    /**
+     * Get tenant theme layout path
+     */
+    protected function getLayoutPath(): string
+    {
+        $theme = tenant()->theme ?? 'simple';
+        $layoutPath = "themes.{$theme}.layouts.app";
+
+        if (!view()->exists($layoutPath)) {
+            $layoutPath = 'themes.simple.layouts.app';
+        }
+
+        return $layoutPath;
+    }
+
     public function show($orderNumber)
     {
+        $layoutPath = $this->getLayoutPath();
+
         // Havale aktif mi kontrol et
         if (!setting('bank_transfer_enabled')) {
             return redirect()->route('cart.checkout')->with('error', 'Havale/EFT şu anda aktif değil.');
@@ -20,7 +37,8 @@ class BankTransferPageController extends Controller
 
         if (!$order) {
             return view('payment::front.payment-error', [
-                'error' => 'Sipariş bulunamadı: ' . $orderNumber
+                'error' => 'Sipariş bulunamadı: ' . $orderNumber,
+                'layoutPath' => $layoutPath,
             ]);
         }
 
@@ -45,7 +63,8 @@ class BankTransferPageController extends Controller
         if (empty($banks)) {
             return view('payment::front.payment-error', [
                 'error' => 'Havale için aktif banka hesabı bulunamadı.',
-                'order' => $order
+                'order' => $order,
+                'layoutPath' => $layoutPath,
             ]);
         }
 
@@ -57,11 +76,17 @@ class BankTransferPageController extends Controller
             'orderNumber' => $orderNumber,
             'banks' => $banks,
             'description' => $description,
+            'layoutPath' => $layoutPath,
         ]);
     }
 
     public function confirm(Request $request, $orderNumber)
     {
+        // Havale aktif mi kontrol et
+        if (!setting('bank_transfer_enabled')) {
+            return redirect()->route('cart.checkout')->with('error', 'Havale/EFT şu anda aktif değil.');
+        }
+
         $order = Order::where('order_number', $orderNumber)->first();
 
         if (!$order) {
@@ -108,6 +133,13 @@ class BankTransferPageController extends Controller
 
     public function success($orderNumber)
     {
+        // Havale aktif mi kontrol et
+        if (!setting('bank_transfer_enabled')) {
+            return redirect()->route('cart.checkout')->with('error', 'Havale/EFT şu anda aktif değil.');
+        }
+
+        $layoutPath = $this->getLayoutPath();
+
         $order = Order::where('order_number', $orderNumber)->first();
 
         if (!$order) {
@@ -117,6 +149,7 @@ class BankTransferPageController extends Controller
         return view('payment::front.payment-bank-transfer-success', [
             'order' => $order,
             'orderNumber' => $orderNumber,
+            'layoutPath' => $layoutPath,
         ]);
     }
 

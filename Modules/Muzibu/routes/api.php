@@ -6,6 +6,8 @@ use Modules\Muzibu\app\Http\Controllers\Api\AlbumController;
 use Modules\Muzibu\app\Http\Controllers\Api\SongController;
 use Modules\Muzibu\app\Http\Controllers\Api\GenreController;
 use Modules\Muzibu\app\Http\Controllers\Api\SectorController;
+use Modules\Muzibu\app\Http\Controllers\Api\RadioController;
+use Modules\Muzibu\app\Http\Controllers\Api\RatingController;
 use Modules\Muzibu\app\Http\Controllers\Api\DeviceController;
 use Modules\Muzibu\app\Http\Controllers\Api\QueueRefillController;
 use Modules\Muzibu\app\Http\Controllers\Front\SearchController;
@@ -37,14 +39,16 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/featured', [PlaylistController::class, 'featured'])->name('api.muzibu.playlists.featured');
         Route::get('/{id}', [PlaylistController::class, 'show'])->name('api.muzibu.playlists.show');
 
-        // User Playlist Management (auth required)
-        Route::middleware('auth:sanctum')->group(function () {
+        // User Playlist Management (auth required - supports both web session and sanctum token)
+        Route::middleware(['web', 'auth'])->group(function () {
             Route::get('/my-playlists', [PlaylistController::class, 'myPlaylists'])->name('api.muzibu.playlists.my-playlists');
             Route::post('/clone', [PlaylistController::class, 'clone'])->name('api.muzibu.playlists.clone');
             Route::post('/quick-create', [PlaylistController::class, 'quickCreate'])->name('api.muzibu.playlists.quick-create');
             Route::post('/{id}/add-song', [PlaylistController::class, 'addSong'])->name('api.muzibu.playlists.add-song');
+            Route::post('/{id}/copy', [PlaylistController::class, 'copy'])->name('api.muzibu.playlists.copy');
             Route::delete('/{id}/remove-song/{songId}', [PlaylistController::class, 'removeSong'])->name('api.muzibu.playlists.remove-song');
             Route::put('/{id}/reorder', [PlaylistController::class, 'reorder'])->name('api.muzibu.playlists.reorder');
+            Route::put('/{id}', [PlaylistController::class, 'update'])->name('api.muzibu.playlists.update');
             Route::delete('/{id}', [PlaylistController::class, 'delete'])->name('api.muzibu.playlists.delete');
         });
     });
@@ -62,6 +66,9 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/popular', [SongController::class, 'popular'])->name('api.muzibu.songs.popular')->middleware('throttle.user:api');
         Route::get('/last-played', [SongController::class, 'lastPlayed'])->name('api.muzibu.songs.last-played')->middleware('throttle.user:api');
         Route::post('/{id}/track-play', [SongController::class, 'trackPlay'])->name('api.muzibu.songs.track-play')->middleware(['auth:sanctum', 'throttle.user:api']);
+
+        // Get which playlists contain a song (for playlist select modal)
+        Route::get('/{id}/playlists', [SongController::class, 'getPlaylistsContainingSong'])->name('api.muzibu.songs.playlists')->middleware(['web', 'auth']);
 
         // Premium Limit System - SongStreamController (HLS conversion logic) - STRICT STREAM THROTTLE
         // 🔥 FIX: StartSession middleware eklendi - auth('web')->user() çalışsın diye
@@ -96,6 +103,18 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/{id}/playlists', [SectorController::class, 'playlists'])->name('api.muzibu.sectors.playlists');
         Route::get('/{id}/songs', [SectorController::class, 'songs'])->name('api.muzibu.sectors.songs');
     });
+
+    // Radios - General API throttle
+    Route::prefix('radios')->middleware('throttle.user:api')->group(function () {
+        Route::get('/', [RadioController::class, 'index'])->name('api.muzibu.radios.index');
+        Route::get('/{id}/songs', [RadioController::class, 'songs'])->name('api.muzibu.radios.songs');
+    });
+
+    // Rating - Universal rating for all content types (auth required)
+    Route::post('/{type}/{id}/rate', [RatingController::class, 'rate'])
+        ->name('api.muzibu.rate')
+        ->middleware(['auth:sanctum', 'throttle.user:api'])
+        ->where('type', 'songs|albums|playlists|genres|sectors|radios');
 
     // Queue Refill - Context-based infinite queue system
     Route::post('/queue/refill', [QueueRefillController::class, 'refill'])

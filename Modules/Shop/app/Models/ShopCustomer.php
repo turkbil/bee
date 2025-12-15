@@ -72,11 +72,11 @@ class ShopCustomer extends Model
     }
 
     /**
-     * İlişki: Siparişler
+     * İlişki: Siparişler (Cart modülündeki Order kullanılıyor)
      */
     public function orders(): HasMany
     {
-        return $this->hasMany(ShopOrder::class, 'customer_id', 'customer_id');
+        return $this->hasMany(\Modules\Cart\App\Models\Order::class, 'user_id', 'user_id');
     }
 
     /**

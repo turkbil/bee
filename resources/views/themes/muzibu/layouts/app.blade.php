@@ -142,7 +142,7 @@
         }
     </style>
 </head>
-<body class="bg-black text-white overflow-hidden">
+<body class="bg-black text-white overflow-hidden" @play-song.window="playSong($event.detail.songId)">
     {{-- Mobile Menu Overlay - Sidebar açıkken arka planı karartır --}}
     <div class="muzibu-mobile-overlay" onclick="toggleMobileMenu()"></div>
 

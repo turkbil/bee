@@ -1159,12 +1159,8 @@
              x-cloak>
             <div class="py-2 max-h-[70vh] overflow-y-auto">
                 @php
-                    // Sistemden kategorileri çek
-                    $allCategories = \Modules\Shop\app\Models\ShopCategory::where('is_active', 1)
-                        ->where('show_in_menu', 1)
-                        ->whereNull('parent_id')
-                        ->orderBy('sort_order', 'asc')
-                        ->get();
+                    // 🚀 CACHED: Redis cache kullanarak kategorileri çek (<1ms)
+                    $allCategories = \App\Services\MegaMenuCacheService::getCategories();
 
                     // İkonlar (fallback)
                     $categoryIcons = [

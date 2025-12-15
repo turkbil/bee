@@ -164,7 +164,7 @@ class PlaylistController extends Controller
     public function myPlaylists(Request $request): JsonResponse
     {
         try {
-            $userId = auth('sanctum')->id();
+            $userId = auth()->id();
             $perPage = $request->input('per_page', 15);
 
             $playlists = $this->playlistService->getUserPlaylists($userId, $perPage);
@@ -186,7 +186,7 @@ class PlaylistController extends Controller
                 'playlist_id' => 'required|integer|exists:muzibu_playlists,playlist_id',
             ]);
 
-            $userId = auth('sanctum')->id();
+            $userId = auth()->id();
             $result = $this->playlistService->clonePlaylist(
                 $request->input('playlist_id'),
                 $userId
@@ -216,7 +216,7 @@ class PlaylistController extends Controller
                 'is_public' => 'nullable|boolean',
             ]);
 
-            $userId = auth('sanctum')->id();
+            $userId = auth()->id();
             $result = $this->playlistService->createPlaylistWithSongs(
                 $request->all(),
                 $userId
@@ -242,7 +242,7 @@ class PlaylistController extends Controller
                 'song_id' => 'required|integer|exists:muzibu_songs,song_id',
             ]);
 
-            $userId = auth('sanctum')->id();
+            $userId = auth()->id();
             $result = $this->playlistService->addSongToPlaylist(
                 $id,
                 $request->input('song_id'),
@@ -265,7 +265,7 @@ class PlaylistController extends Controller
     public function removeSong(int $id, int $songId): JsonResponse
     {
         try {
-            $userId = auth('sanctum')->id();
+            $userId = auth()->id();
             $result = $this->playlistService->removeSongFromPlaylist(
                 $id,
                 $songId,
@@ -294,7 +294,7 @@ class PlaylistController extends Controller
                 'song_positions.*.position' => 'required|integer',
             ]);
 
-            $userId = auth('sanctum')->id();
+            $userId = auth()->id();
             $result = $this->playlistService->reorderSongs(
                 $id,
                 $request->input('song_positions'),
@@ -312,12 +312,103 @@ class PlaylistController extends Controller
     }
 
     /**
+     * Copy playlist to user's library (different URL format for context menu)
+     * POST /api/muzibu/playlists/{id}/copy
+     */
+    public function copy(Request $request, int $id): JsonResponse
+    {
+        try {
+            $userId = auth()->id();
+
+            // Get custom title from request or use default
+            $customTitle = $request->input('title');
+
+            $result = $this->playlistService->clonePlaylist($id, $userId, $customTitle);
+
+            return response()->json($result, $result['success'] ? 200 : 400);
+        } catch (\Exception $e) {
+            \Log::error('Playlist copy error:', ['playlist_id' => $id, 'message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Playlist kopyalama başarısız',
+            ], 500);
+        }
+    }
+
+    /**
+     * Update user playlist
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'is_public' => 'nullable|boolean',
+            ]);
+
+            $userId = auth()->id();
+            $playlist = Playlist::find($id);
+
+            if (!$playlist) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Playlist bulunamadı',
+                ], 404);
+            }
+
+            // Sadece playlist sahibi güncelleyebilir
+            if ($playlist->user_id !== $userId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bu playlist\'i güncelleyemezsiniz',
+                ], 403);
+            }
+
+            // Sistem playlistleri güncellenemez
+            if ($playlist->is_system) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sistem playlistleri güncellenemez',
+                ], 403);
+            }
+
+            // Playlist'i güncelle
+            $playlist->title = $request->input('title');
+            $playlist->description = $request->input('description');
+
+            if ($request->has('is_public')) {
+                $playlist->is_public = $request->input('is_public');
+            }
+
+            $playlist->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Playlist güncellendi',
+                'data' => [
+                    'playlist_id' => $playlist->playlist_id,
+                    'title' => $playlist->title,
+                    'description' => $playlist->description,
+                    'is_public' => $playlist->is_public,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Update playlist error:', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Playlist güncelleme başarısız',
+            ], 500);
+        }
+    }
+
+    /**
      * Delete user playlist
      */
     public function delete(int $id): JsonResponse
     {
         try {
-            $userId = auth('sanctum')->id();
+            $userId = auth()->id();
             $playlist = Playlist::find($id);
 
             if (!$playlist) {

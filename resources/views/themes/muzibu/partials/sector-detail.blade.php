@@ -8,8 +8,8 @@
         <div class="flex flex-col sm:flex-row items-center sm:items-end gap-6 sm:gap-8 mb-8 animate-slide-up">
             {{-- Sector Cover with Shadow --}}
             <div class="relative flex-shrink-0 group">
-                @if($sector->getFirstMedia('cover'))
-                    <img src="{{ thumb($sector->getFirstMedia('cover'), 300, 300, ['scale' => 1]) }}"
+                @if($sector->media_id && $sector->iconMedia)
+                    <img src="{{ thumb($sector->iconMedia, 300, 300, ['scale' => 1]) }}"
                          alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
                          class="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 object-cover rounded-xl shadow-2xl shadow-black/50">
                 @else
@@ -106,14 +106,14 @@
 
     {{-- Playlists Grid --}}
     @if($playlists && $playlists->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($playlists as $playlist)
                 <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}" wire:navigate
                    
                    class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300">
                     <div class="relative mb-4">
-                        @if($playlist->getFirstMedia('cover'))
-                            <img src="{{ thumb($playlist->getFirstMedia('cover'), 300, 300, ['scale' => 1]) }}"
+                        @if($playlist->media_id && $playlist->coverMedia)
+                            <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
                                  alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
                                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                                  loading="lazy">

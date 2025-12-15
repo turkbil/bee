@@ -17,20 +17,17 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
     {{-- Albums Grid --}}
     @if($albums && $albums->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 animate-slide-up" style="animation-delay: 100ms">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4 animate-slide-up" style="animation-delay: 100ms">
             @foreach($albums as $album)
                 <a href="{{ route('muzibu.albums.show', $album->getTranslation('slug', app()->getLocale())) }}"
                    wire:navigate
-                   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
-                   @mouseenter="$store.sidebar.showPreview('album', {{ $album->album_id }}, {
-                       type: 'Albüm',
-                       title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
-                       cover: '{{ $album->getFirstMedia('album_cover') ? thumb($album->getFirstMedia('album_cover'), 100, 100, ['scale' => 1]) : '' }}'
-                   })"
-                   @mouseleave="$store.sidebar.hidePreview()">
+                   class="album-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
+                   data-album-id="{{ $album->album_id }}"
+                   data-album-title="{{ $album->getTranslation('title', app()->getLocale()) }}"
+                   data-is-favorite="{{ auth()->check() && $album->isFavoritedBy(auth()->user()) ? '1' : '0' }}">
                     <div class="relative mb-4">
-                        @if($album->getFirstMedia('album_cover'))
-                            <img src="{{ thumb($album->getFirstMedia('album_cover'), 300, 300, ['scale' => 1]) }}"
+                        @if($album->media_id && $album->coverMedia)
+                            <img src="{{ thumb($album->coverMedia, 300, 300, ['scale' => 1]) }}"
                                  alt="{{ $album->getTranslation('title', app()->getLocale()) }}"
                                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                                  loading="lazy">
@@ -40,23 +37,27 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                             </div>
                         @endif
 
-                        {{-- Play Button Overlay --}}
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                            <button @click.stop="
-                                $store.player.setPlayContext({
-                                    type: 'album',
-                                    id: {{ $album->album_id }},
-                                    name: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}'
-                                });
-                                playAlbum({{ $album->album_id }});
-                            " class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
-                                <i class="fas fa-play ml-1"></i>
-                            </button>
-                        </div>
+                        {{-- Play Button - Spotify Style Bottom Right --}}
+                        <button @click.stop.prevent="
+                            $store.player.setPlayContext({
+                                type: 'album',
+                                id: {{ $album->album_id }},
+                                name: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}'
+                            });
+                            playAlbum({{ $album->album_id }});
+                        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+                            <i class="fas fa-play ml-1"></i>
+                        </button>
 
-                        {{-- Favorite Button --}}
-                        <div class="absolute top-2 right-2" x-on:click.stop>
-                            <x-common.favorite-button :model="$album" size="sm" iconOnly="true" />
+                        {{-- 3-Dot Menu Button (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
+                        <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop.prevent>
+                            <button @click="Alpine.store('contextMenu').openContextMenu($event, 'album', {
+                                id: {{ $album->album_id }},
+                                title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
+                                is_favorite: {{ auth()->check() && $album->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                                <i class="fas fa-ellipsis-v text-sm"></i>
+                            </button>
                         </div>
                     </div>
 

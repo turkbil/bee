@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
+use Modules\Favorite\App\Traits\HasFavorites;
 
 class Sector extends BaseModel implements HasMedia
 {
-    use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes, Searchable;
+    use Sluggable, HasTranslations, HasFactory, HasMediaManagement, SoftDeletes, Searchable, HasFavorites;
 
     protected $table = 'muzibu_sectors';
     protected $primaryKey = 'sector_id';
@@ -158,5 +159,47 @@ class Sector extends BaseModel implements HasMedia
         }
 
         return url("/{$locale}/muzibu/sector/{$slug}");
+    }
+
+    /**
+     * Meilisearch - Get searchable data
+     */
+    public function toSearchableArray(): array
+    {
+        try {
+            $connection = (tenant() && !tenant()->central) ? 'tenant' : 'mysql';
+            $langCodes = \DB::connection($connection)->table('tenant_languages')->where('is_active', 1)->pluck('code')->toArray();
+        } catch (\Exception $e) {
+            $langCodes = ['tr', 'en'];
+        }
+
+        $data = [
+            'id' => $this->sector_id,
+            'is_active' => $this->is_active,
+            'created_at' => $this->created_at?->timestamp,
+        ];
+
+        foreach ($langCodes as $langCode) {
+            $data["title_{$langCode}"] = $this->getTranslated('title', $langCode);
+            $data["description_{$langCode}"] = $this->getTranslated('description', $langCode);
+        }
+
+        return $data;
+    }
+
+    public function searchableAs(): string
+    {
+        $tenantId = tenant() ? tenant()->id : 'central';
+        return "tenant_{$tenantId}_sectors";
+    }
+
+    public function getScoutKey()
+    {
+        return $this->sector_id;
+    }
+
+    public function getScoutKeyName()
+    {
+        return 'sector_id';
     }
 }

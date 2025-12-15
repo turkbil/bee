@@ -55,6 +55,15 @@ class ShopCategory extends BaseModel implements TranslatableEntity, HasMedia
         'show_in_homepage' => 'boolean',
     ];
 
+    /**
+     * Boot the model and register observers
+     */
+    protected static function booted(): void
+    {
+        // MegaMenu cache invalidation
+        static::observe(\App\Observers\MegaMenuCacheObserver::class);
+    }
+
     protected array $translatable = [
         'title',
         'slug',

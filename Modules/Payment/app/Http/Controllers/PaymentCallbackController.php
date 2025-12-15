@@ -18,6 +18,21 @@ class PaymentCallbackController extends Controller
     }
 
     /**
+     * Get tenant theme layout path
+     */
+    protected function getLayoutPath(): string
+    {
+        $theme = tenant()->theme ?? 'simple';
+        $layoutPath = "themes.{$theme}.layouts.app";
+
+        if (!view()->exists($layoutPath)) {
+            $layoutPath = 'themes.simple.layouts.app';
+        }
+
+        return $layoutPath;
+    }
+
+    /**
      * PayTR callback (POST)
      */
     public function paytr(Request $request)
@@ -51,6 +66,7 @@ class PaymentCallbackController extends Controller
         return view('payment::front.payment-success', [
             'payment' => $payment,
             'order' => $payment->payable, // ShopOrder, Subscription vs.
+            'layoutPath' => $this->getLayoutPath(),
         ]);
     }
 
@@ -63,6 +79,7 @@ class PaymentCallbackController extends Controller
         return view('payment::front.payment-fail', [
             'payment' => $payment,
             'order' => $payment->payable,
+            'layoutPath' => $this->getLayoutPath(),
         ]);
     }
 }

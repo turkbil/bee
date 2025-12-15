@@ -95,6 +95,12 @@ class OrderItem extends BaseModel
      */
     public static function createFromCartItem(CartItem $cartItem, int $orderId): self
     {
+        // Subscription için is_digital = true
+        $isDigital = in_array($cartItem->cartable_type, [
+            'Modules\\Subscription\\App\\Models\\SubscriptionPlan',
+            'Modules\\Subscription\\App\\Models\\Subscription',
+        ]);
+
         return self::create([
             'order_id' => $orderId,
             'orderable_type' => $cartItem->cartable_type,
@@ -112,7 +118,8 @@ class OrderItem extends BaseModel
             'original_currency' => $cartItem->original_currency,
             'original_price' => $cartItem->original_price,
             'conversion_rate' => $cartItem->conversion_rate ?? 1,
-            'is_digital' => false, // TODO: Cartable'dan al
+            'is_digital' => $isDigital,
+            'metadata' => $cartItem->metadata, // Subscription cycle bilgisi için önemli!
         ]);
     }
 

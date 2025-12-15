@@ -1,5 +1,68 @@
 {{-- PLAYER BAR --}}
 <div class="muzibu-player xl:col-span-3 lg:col-span-2 col-span-1 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[1fr_2fr_1fr] items-center px-2 sm:px-3 py-1.5 gap-2 sm:gap-3">
+
+    {{-- 🧪 TEST INFO BADGE --}}
+    <div
+        x-show="currentSong"
+        x-cloak
+        class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-black/90 backdrop-blur border border-yellow-500/50 rounded-lg px-3 py-2 text-xs font-mono shadow-lg"
+    >
+        <div class="flex items-center gap-4">
+            {{-- Stream Type --}}
+            <div class="flex items-center gap-1.5">
+                <span class="text-yellow-500">STREAM:</span>
+                <span
+                    class="px-1.5 py-0.5 rounded text-[10px] font-bold"
+                    :class="currentStreamType === 'hls' ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400'"
+                    x-text="currentStreamType?.toUpperCase() || 'N/A'"
+                ></span>
+                <span
+                    x-show="currentStreamType === 'mp3' && lastFallbackReason"
+                    class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400"
+                >FALLBACK!</span>
+            </div>
+
+            {{-- Encryption Key --}}
+            <div class="flex items-center gap-1.5">
+                <span class="text-yellow-500">ENC_KEY:</span>
+                <span
+                    class="px-1.5 py-0.5 rounded text-[10px] font-bold"
+                    :class="currentSong?.has_encryption_key ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'"
+                    x-text="currentSong?.has_encryption_key ? 'VAR' : 'YOK'"
+                ></span>
+            </div>
+
+            {{-- Encryption IV --}}
+            <div class="flex items-center gap-1.5">
+                <span class="text-yellow-500">ENC_IV:</span>
+                <span
+                    class="px-1.5 py-0.5 rounded text-[10px] font-bold"
+                    :class="currentSong?.has_encryption_iv ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'"
+                    x-text="currentSong?.has_encryption_iv ? 'VAR' : 'YOK'"
+                ></span>
+            </div>
+
+            {{-- HLS Path --}}
+            <div class="flex items-center gap-1.5">
+                <span class="text-yellow-500">HLS_PATH:</span>
+                <span
+                    class="px-1.5 py-0.5 rounded text-[10px] font-bold"
+                    :class="currentSong?.has_hls_path ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'"
+                    x-text="currentSong?.has_hls_path ? 'VAR' : 'YOK'"
+                ></span>
+            </div>
+
+            {{-- Fallback Reason --}}
+            <div class="flex items-center gap-1.5" x-show="lastFallbackReason">
+                <span class="text-yellow-500">FALLBACK:</span>
+                <span
+                    class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-orange-500/20 text-orange-400"
+                    x-text="lastFallbackReason"
+                ></span>
+            </div>
+        </div>
+    </div>
+    {{-- END TEST INFO --}}
     {{-- Song Info --}}
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
         {{-- Album Cover + Mini Heart Overlay (Mobile) --}}

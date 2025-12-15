@@ -14,7 +14,8 @@ class PlaylistController extends Controller
     public function index()
     {
         // Only show playlists with at least 1 active song
-        $playlists = Playlist::where('is_active', 1)
+        $playlists = Playlist::with('coverMedia')
+            ->where('is_active', 1)
             ->where('is_public', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
@@ -33,7 +34,8 @@ class PlaylistController extends Controller
      */
     public function show($slug)
     {
-        $playlist = Playlist::where(function($query) use ($slug) {
+        $playlist = Playlist::with('coverMedia')
+            ->where(function($query) use ($slug) {
                 $query->where('slug->tr', $slug)
                       ->orWhere('slug->en', $slug);
             })
@@ -55,7 +57,8 @@ class PlaylistController extends Controller
     public function apiIndex()
     {
         // Only show playlists with at least 1 active song
-        $playlists = Playlist::where('is_active', 1)
+        $playlists = Playlist::with('coverMedia')
+            ->where('is_active', 1)
             ->where('is_public', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
@@ -82,7 +85,8 @@ class PlaylistController extends Controller
      */
     public function apiShow($slug)
     {
-        $playlist = Playlist::where(function($query) use ($slug) {
+        $playlist = Playlist::with('coverMedia')
+            ->where(function($query) use ($slug) {
                 $query->where('slug->tr', $slug)
                       ->orWhere('slug->en', $slug);
             })

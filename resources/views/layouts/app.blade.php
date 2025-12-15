@@ -1,10 +1,20 @@
 @php
-    $themeService = app('App\Services\ThemeService');
-    $activeTheme = $themeService->getActiveTheme();
-    $themeName = $activeTheme->folder_name ?? 'ixtif';
+    // Tenant temasını al (accessor ile)
+    $themeName = tenant()->theme ?? 'simple';
+
+    // Tema layout'u var mı kontrol et
+    $headerPath = "themes.{$themeName}.layouts.header";
+    $footerPath = "themes.{$themeName}.layouts.footer";
+
+    // Fallback to simple if theme doesn't exist
+    if (!view()->exists($headerPath)) {
+        $themeName = 'simple';
+        $headerPath = 'themes.simple.layouts.header';
+        $footerPath = 'themes.simple.layouts.footer';
+    }
 @endphp
 
-@include("themes.{$themeName}.layouts.header")
+@include($headerPath)
 
 <!-- Main Content -->
 <main class="py-8">
@@ -15,10 +25,10 @@
             {{ $header }}
         </div>
         @endisset
-        
+
         <!-- Dashboard Content -->
         {{ $slot ?? '' }}
     </div>
 </main>
 
-@include("themes.{$themeName}.layouts.footer")
+@include($footerPath)

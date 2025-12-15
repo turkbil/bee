@@ -156,7 +156,7 @@ class PageController extends Controller
             Log::error("Theme Error: " . $e->getMessage());
 
             // Fallback homepage view'a yönlendir
-            return view('page::themes.ixtif.homepage', [
+            return view('page::themes.simple.homepage', [
                 'item' => $page,
                 'is_homepage' => true,
                 'homepageProducts' => $homepageProducts

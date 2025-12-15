@@ -37,8 +37,8 @@
                             <div class="grid lg:grid-cols-2 gap-8 items-center">
                             <div class="text-gray-900 dark:text-white">
                                 <h1 class="hero-title text-3xl md:text-5xl lg:text-7xl font-black mb-6 leading-[1.2] overflow-visible opacity-0">
-                                    <span class="gradient-animate block py-2">İXTİF TÜRKİYE'DE</span>
-                                    <span class="gradient-animate block py-2">HER YERDE</span>
+                                    <span class="gradient-animate block py-2">81 ŞEHRE</span>
+                                    <span class="gradient-animate block py-2">HIZLI TESLİMAT</span>
                                 </h1>
                                 <p class="hero-desc text-base md:text-xl lg:text-2xl text-gray-700 dark:text-gray-200 mb-8 leading-relaxed font-medium opacity-0">
                                     Güvenli paketleme ve hızlı kargo ile sorunsuz teslimat, her zaman zamanında ve güvenle

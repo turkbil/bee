@@ -10,13 +10,31 @@ use Modules\Payment\App\Services\PayTRIframeService;
 
 class PaymentPageController extends Controller
 {
+    /**
+     * Get tenant theme layout path
+     */
+    protected function getLayoutPath(): string
+    {
+        $theme = tenant()->theme ?? 'simple';
+        $layoutPath = "themes.{$theme}.layouts.app";
+
+        if (!view()->exists($layoutPath)) {
+            $layoutPath = 'themes.simple.layouts.app';
+        }
+
+        return $layoutPath;
+    }
+
     public function show($orderNumber)
     {
+        $layoutPath = $this->getLayoutPath();
+
         $order = Order::where('order_number', $orderNumber)->first();
 
         if (!$order) {
             return view('payment::front.payment-error', [
-                'error' => 'Sipariş bulunamadı: ' . $orderNumber
+                'error' => 'Sipariş bulunamadı: ' . $orderNumber,
+                'layoutPath' => $layoutPath,
             ]);
         }
 
@@ -26,7 +44,8 @@ class PaymentPageController extends Controller
 
         if (!$payment) {
             return view('payment::front.payment-error', [
-                'error' => 'Ödeme kaydı bulunamadı.'
+                'error' => 'Ödeme kaydı bulunamadı.',
+                'layoutPath' => $layoutPath,
             ]);
         }
 
@@ -86,7 +105,11 @@ class PaymentPageController extends Controller
         }
 
         if ($error) {
-            return view('payment::front.payment-error', compact('error', 'order'));
+            return view('payment::front.payment-error', [
+                'error' => $error,
+                'order' => $order,
+                'layoutPath' => $layoutPath,
+            ]);
         }
 
         return view('payment::front.payment-page', [
@@ -94,6 +117,7 @@ class PaymentPageController extends Controller
             'payment' => $payment,
             'paymentIframeUrl' => $paymentIframeUrl,
             'orderNumber' => $orderNumber,
+            'layoutPath' => $layoutPath,
         ]);
     }
 }

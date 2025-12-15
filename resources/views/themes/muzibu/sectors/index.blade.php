@@ -17,13 +17,17 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
     {{-- Sectors Grid --}}
     @if($sectors && $sectors->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 animate-slide-up" style="animation-delay: 100ms">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4 animate-slide-up" style="animation-delay: 100ms">
             @foreach($sectors as $sector)
                 <a href="{{ route('muzibu.sectors.show', $sector->getTranslation('slug', app()->getLocale())) }}"
-                   class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300">
+                   wire:navigate
+                   class="sector-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
+                   data-sector-id="{{ $sector->sector_id }}"
+                   data-sector-title="{{ $sector->getTranslation('title', app()->getLocale()) }}"
+                   data-is-favorite="{{ auth()->check() && $sector->isFavoritedBy(auth()->user()) ? '1' : '0' }}">
                     <div class="relative mb-4">
-                        @if($sector->getFirstMedia('cover'))
-                            <img src="{{ thumb($sector->getFirstMedia('cover'), 300, 300, ['scale' => 1]) }}"
+                        @if($sector->media_id && $sector->iconMedia)
+                            <img src="{{ thumb($sector->iconMedia, 300, 300, ['scale' => 1]) }}"
                                  alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
                                  class="w-full aspect-square object-cover rounded-lg shadow-lg"
                                  loading="lazy">
@@ -33,25 +37,28 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                             </div>
                         @endif
 
-                        {{-- Play Button Overlay --}}
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-lg flex items-center justify-center">
-                            <button @click.stop="
-                                $store.player.setPlayContext({
-                                    type: 'sector',
-                                    id: {{ $sector->sector_id }},
-                                    name: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}'
-                                });
-                                playSectors({{ $sector->sector_id }});
-                            " class="opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:scale-110">
-                                <i class="fas fa-play ml-1"></i>
+                        {{-- Play Button - Spotify Style Bottom Right --}}
+                        <button @click.stop.prevent="
+                            $store.player.setPlayContext({
+                                type: 'sector',
+                                id: {{ $sector->sector_id }},
+                                name: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}'
+                            });
+                            playSector({{ $sector->sector_id }});
+                        " class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-12 h-12 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
+                            <i class="fas fa-play ml-1"></i>
+                        </button>
+
+                        {{-- 3-Dot Menu Button (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
+                        <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop.prevent>
+                            <button @click="Alpine.store('contextMenu').openContextMenu($event, 'sector', {
+                                id: {{ $sector->sector_id }},
+                                title: '{{ addslashes($sector->getTranslation('title', app()->getLocale())) }}',
+                                is_favorite: {{ auth()->check() && $sector->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                                <i class="fas fa-ellipsis-v text-sm"></i>
                             </button>
                         </div>
-
-                        {{-- Favorite Button - Geçici olarak kaldırıldı (hata veriyor)
-                        <div class="absolute top-2 right-2" x-on:click.stop>
-                            <x-common.favorite-button :model="$sector" size="sm" iconOnly="true" />
-                        </div>
-                        --}}
                     </div>
 
                     <h3 class="font-semibold text-white mb-1 truncate">

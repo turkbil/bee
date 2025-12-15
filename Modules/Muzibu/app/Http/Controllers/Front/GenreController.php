@@ -12,7 +12,8 @@ class GenreController extends Controller
     public function index()
     {
         // Only show genres with at least 1 active song
-        $genres = Genre::where('is_active', 1)
+        $genres = Genre::with('iconMedia')
+            ->where('is_active', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
             })
@@ -26,7 +27,8 @@ class GenreController extends Controller
 
     public function show($slug)
     {
-        $genre = Genre::where(function($query) use ($slug) {
+        $genre = Genre::with('iconMedia')
+            ->where(function($query) use ($slug) {
                 $query->where('slug->tr', $slug)
                       ->orWhere('slug->en', $slug);
             })
@@ -45,7 +47,8 @@ class GenreController extends Controller
     public function apiIndex()
     {
         // Only show genres with at least 1 active song
-        $genres = Genre::where('is_active', 1)
+        $genres = Genre::with('iconMedia')
+            ->where('is_active', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
             })
@@ -59,8 +62,8 @@ class GenreController extends Controller
 
     public function apiShow($slug)
     {
-        $genre = Genre::where(function($q) use ($slug) { $q->where('slug->tr', $slug)->orWhere('slug->en', $slug); })->where('is_active', 1)->firstOrFail();
-        $songs = Song::with(['album', 'artist'])->where('genre_id', $genre->genre_id)->where('is_active', 1)->orderBy('play_count', 'desc')->paginate(200);
+        $genre = Genre::with('iconMedia')->where(function($q) use ($slug) { $q->where('slug->tr', $slug)->orWhere('slug->en', $slug); })->where('is_active', 1)->firstOrFail();
+        $songs = Song::with(['album', 'artist', 'coverMedia', 'album.coverMedia'])->where('genre_id', $genre->genre_id)->where('is_active', 1)->orderBy('play_count', 'desc')->paginate(200);
         $html = view('themes.muzibu.partials.genre-detail', compact('genre', 'songs'))->render();
         $titleJson = @json_decode($genre->title);
         $title = $titleJson && isset($titleJson->tr) ? $titleJson->tr : $genre->title;

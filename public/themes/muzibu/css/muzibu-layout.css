@@ -406,9 +406,8 @@
 .muzibu-right-sidebar {
     border-radius: 12px 12px 0 0;
     background: #121212;
-    padding: 24px 8px 12px 8px;
+    padding: 16px 6px 12px 6px;
     overflow-y: auto;
-    border-left: 1px solid #000;
 }
 
 .muzibu-sidebar-header {

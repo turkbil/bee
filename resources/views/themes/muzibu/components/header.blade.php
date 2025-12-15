@@ -80,24 +80,35 @@
             <i class="fas fa-sync-alt text-sm group-hover:rotate-180 transition-transform duration-500"></i>
         </button>
 
-        {{-- Search Box - Meilisearch Powered --}}
+        {{-- Search Box - Meilisearch Powered (All Types) --}}
         <div class="relative flex-1 max-w-2xl mx-auto hidden md:block"
              x-data="{
                 query: '',
-                songs: [],
+                results: { songs: [], albums: [], artists: [], playlists: [], genres: [], sectors: [], radios: [] },
                 total: 0,
                 isOpen: false,
                 loading: false,
                 error: null,
                 highlightIndex: -1,
+                get allResults() {
+                    const all = [];
+                    if (this.results.songs?.length) all.push(...this.results.songs.map(s => ({...s, _type: 'song'})));
+                    if (this.results.albums?.length) all.push(...this.results.albums.map(a => ({...a, _type: 'album'})));
+                    if (this.results.artists?.length) all.push(...this.results.artists.map(a => ({...a, _type: 'artist'})));
+                    if (this.results.playlists?.length) all.push(...this.results.playlists.map(p => ({...p, _type: 'playlist'})));
+                    if (this.results.genres?.length) all.push(...this.results.genres.map(g => ({...g, _type: 'genre'})));
+                    if (this.results.sectors?.length) all.push(...this.results.sectors.map(s => ({...s, _type: 'sector'})));
+                    if (this.results.radios?.length) all.push(...this.results.radios.map(r => ({...r, _type: 'radio'})));
+                    return all.slice(0, 10);
+                },
                 get hasResults() {
-                    return this.songs.length > 0;
+                    return this.allResults.length > 0;
                 },
                 get resultCount() {
-                    return this.songs.length;
+                    return this.allResults.length;
                 },
                 resetSuggestions() {
-                    this.songs = [];
+                    this.results = { songs: [], albums: [], artists: [], playlists: [], genres: [], sectors: [], radios: [] };
                     this.total = 0;
                     this.highlightIndex = -1;
                 },
@@ -122,7 +133,7 @@
                     this.loading = true;
                     this.error = null;
                     try {
-                        const response = await fetch(`/api/muzibu/search?q=${encodeURIComponent(trimmed)}&type=songs`, {
+                        const response = await fetch(`/api/muzibu/search?q=${encodeURIComponent(trimmed)}&type=all`, {
                             headers: { 'Accept': 'application/json' }
                         });
 
@@ -131,14 +142,17 @@
                         }
 
                         const data = await response.json();
-
-                        if (data.songs) {
-                            this.songs = data.songs.slice(0, 6);
-                            this.total = data.songs.length;
-                            this.highlightIndex = -1;
-                        } else {
-                            this.resetSuggestions();
-                        }
+                        this.results = {
+                            songs: (data.songs || []).slice(0, 4),
+                            albums: (data.albums || []).slice(0, 2),
+                            artists: (data.artists || []).slice(0, 2),
+                            playlists: (data.playlists || []).slice(0, 2),
+                            genres: (data.genres || []).slice(0, 2),
+                            sectors: (data.sectors || []).slice(0, 2),
+                            radios: (data.radios || []).slice(0, 2)
+                        };
+                        this.total = (data.songs?.length || 0) + (data.albums?.length || 0) + (data.artists?.length || 0) + (data.playlists?.length || 0) + (data.genres?.length || 0) + (data.sectors?.length || 0) + (data.radios?.length || 0);
+                        this.highlightIndex = -1;
                     } catch (e) {
                         console.error('Search error:', e);
                         this.resetSuggestions();
@@ -177,17 +191,61 @@
                         this.goToSearch();
                         return;
                     }
-                    const song = this.songs[this.highlightIndex];
-                    if (song) {
-                        this.selectSong(song);
+                    const item = this.allResults[this.highlightIndex];
+                    if (item) {
+                        this.selectItem(item);
                     }
                 },
-                selectSong(song) {
-                    if (song?.slug) {
-                        const locale = '{{ app()->getLocale() }}';
-                        const slug = typeof song.slug === 'object' ? song.slug[locale] || song.slug.tr || song.slug.en : song.slug;
-                        window.location.href = `/muzibu/song/${slug}`;
+                getSlug(item) {
+                    const locale = '{{ app()->getLocale() }}';
+                    return typeof item.slug === 'object' ? item.slug[locale] || item.slug.tr || item.slug.en : item.slug;
+                },
+                getTitle(item) {
+                    const locale = '{{ app()->getLocale() }}';
+                    return typeof item.title === 'object' ? item.title[locale] || item.title.tr || item.title.en : item.title;
+                },
+                selectItem(item) {
+                    const slug = this.getSlug(item);
+                    if (!slug) return;
+                    const routes = {
+                        song: `/muzibu/song/${slug}`,
+                        album: `/muzibu/album/${slug}`,
+                        artist: `/muzibu/artist/${slug}`,
+                        playlist: `/muzibu/playlist/${slug}`,
+                        genre: `/muzibu/genre/${slug}`,
+                        sector: `/muzibu/sector/${slug}`,
+                        radio: `/muzibu/radio/${slug}`
+                    };
+                    window.location.href = routes[item._type] || '#';
+                },
+                playSong(song, event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (window.Alpine?.store('player')?.playSingle) {
+                        window.Alpine.store('player').playSingle({
+                            song_id: song.song_id,
+                            title: song.title,
+                            slug: song.slug,
+                            duration: song.duration,
+                            file_path: song.file_path,
+                            hls_path: song.hls_path,
+                            album: song.album,
+                            artist: song.artist
+                        });
                     }
+                    this.closeDropdown();
+                },
+                getBadge(type) {
+                    const badges = {
+                        song: { icon: 'fa-music', label: 'Şarkı', color: 'bg-pink-500/20 text-pink-400' },
+                        album: { icon: 'fa-compact-disc', label: 'Albüm', color: 'bg-purple-500/20 text-purple-400' },
+                        artist: { icon: 'fa-user', label: 'Sanatçı', color: 'bg-blue-500/20 text-blue-400' },
+                        playlist: { icon: 'fa-list', label: 'Playlist', color: 'bg-green-500/20 text-green-400' },
+                        genre: { icon: 'fa-guitar', label: 'Tür', color: 'bg-yellow-500/20 text-yellow-400' },
+                        sector: { icon: 'fa-building', label: 'Sektör', color: 'bg-orange-500/20 text-orange-400' },
+                        radio: { icon: 'fa-broadcast-tower', label: 'Radyo', color: 'bg-red-500/20 text-red-400' }
+                    };
+                    return badges[type] || { icon: 'fa-circle', label: type, color: 'bg-gray-500/20 text-gray-400' };
                 },
                 handleFocus() {
                     if (this.query.trim().length >= 2) {
@@ -231,7 +289,7 @@
                 </button>
             </div>
 
-            {{-- Search Results Dropdown --}}
+            {{-- Search Results Dropdown - 2 Column Layout --}}
             <div x-show="isOpen"
                  x-transition:enter="transition ease-out duration-200"
                  x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
@@ -239,7 +297,7 @@
                  x-transition:leave="transition ease-in duration-150"
                  x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                  x-transition:leave-end="opacity-0 scale-95 -translate-y-2"
-                 class="absolute top-full left-0 right-0 mt-3 bg-zinc-900/95 backdrop-blur-xl shadow-2xl rounded-xl border border-white/10 overflow-hidden z-50"
+                 class="absolute top-full left-0 right-0 mt-3 bg-zinc-900/95 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/10 overflow-hidden z-50"
                  style="display: none;">
 
                 {{-- Error State --}}
@@ -250,50 +308,166 @@
                     </div>
                 </template>
 
-                {{-- Results --}}
-                <div class="max-h-96 overflow-y-auto">
-                    <div x-show="songs.length > 0" class="p-3">
-                        <div class="flex items-center justify-between text-xs font-semibold text-zinc-400 uppercase tracking-wide mb-3 px-2">
-                            <span><i class="fas fa-music text-muzibu-coral mr-1"></i> Şarkılar</span>
-                            <span class="text-[10px]" x-text="`${songs.length}`"></span>
-                        </div>
-
-                        <div class="space-y-1">
-                            <template x-for="(song, index) in songs" :key="'s-'+index">
+                {{-- Results - 2 Column Grid Layout --}}
+                <div class="max-h-[500px] overflow-y-auto p-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        {{-- Left Column: Songs --}}
+                        <div x-show="results.songs?.length > 0" class="space-y-2">
+                            <div class="flex items-center gap-2 mb-3 pb-2 border-b border-white/5">
+                                <i class="fas fa-music text-pink-400 text-xs"></i>
+                                <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Şarkılar</span>
+                                <span class="ml-auto text-[10px] text-zinc-500" x-text="results.songs.length"></span>
+                            </div>
+                            <template x-for="(song, index) in results.songs" :key="'song-'+song.song_id">
                                 <a href="#"
-                                   @click.prevent="selectSong(song)"
-                                   @mouseenter="setHighlight(index)"
-                                   @mouseleave="clearHighlight()"
-                                   :class="[
-                                        'flex items-center gap-3 p-3 rounded-lg transition-all duration-200 group',
-                                        isHighlighted(index)
-                                            ? 'bg-muzibu-coral/20 border border-muzibu-coral/40'
-                                            : 'hover:bg-white/5 border border-transparent'
-                                    ]">
-
-                                    {{-- Song Cover --}}
-                                    <div class="w-12 h-12 rounded-lg bg-zinc-800 flex items-center justify-center overflow-hidden flex-shrink-0">
-                                        <i class="fas fa-music text-zinc-600 text-sm"></i>
+                                   @click.prevent="selectItem({...song, _type: 'song'})"
+                                   class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 transition-all group">
+                                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                                        <i class="fas fa-music text-pink-400/60 text-sm"></i>
+                                        <button
+                                            @click="playSong(song, $event)"
+                                            class="absolute inset-0 bg-muzibu-coral flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
+                                            title="Çal"
+                                        >
+                                            <i class="fas fa-play text-white text-xs ml-0.5"></i>
+                                        </button>
                                     </div>
-
-                                    {{-- Song Info --}}
                                     <div class="flex-1 min-w-0">
-                                        <div class="font-medium text-sm text-white leading-tight truncate" x-text="typeof song.title === 'object' ? (song.title.tr || song.title.en || song.title.ar) : song.title"></div>
-                                        <div class="text-xs text-zinc-400 truncate mt-1">
-                                            <span x-show="song.artist?.title" x-text="typeof song.artist?.title === 'object' ? (song.artist.title.tr || song.artist.title.en) : song.artist?.title"></span>
-                                            <span x-show="song.album?.title">
-                                                <span x-show="song.artist?.title"> • </span>
-                                                <span x-text="typeof song.album?.title === 'object' ? (song.album.title.tr || song.album.title.en) : song.album?.title"></span>
-                                            </span>
-                                        </div>
+                                        <div class="text-sm font-medium text-white truncate" x-text="getTitle(song)"></div>
+                                        <div class="text-xs text-zinc-500 truncate" x-text="song.artist?.title ? (typeof song.artist.title === 'object' ? song.artist.title.tr || song.artist.title.en : song.artist.title) : ''"></div>
                                     </div>
-
-                                    {{-- Duration --}}
-                                    <div class="text-xs text-zinc-500 flex-shrink-0">
-                                        <span x-text="song.duration ? Math.floor(song.duration/60) + ':' + String(song.duration%60).padStart(2,'0') : ''"></span>
-                                    </div>
+                                    <span class="text-[10px] text-zinc-600 group-hover:hidden" x-text="song.duration ? Math.floor(song.duration/60) + ':' + String(song.duration%60).padStart(2,'0') : ''"></span>
                                 </a>
                             </template>
+                        </div>
+
+                        {{-- Right Column: Other Types --}}
+                        <div class="space-y-4">
+                            {{-- Albums --}}
+                            <div x-show="results.albums?.length > 0" class="space-y-2">
+                                <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
+                                    <i class="fas fa-compact-disc text-purple-400 text-xs"></i>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Albümler</span>
+                                </div>
+                                <template x-for="album in results.albums" :key="'album-'+album.album_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...album, _type: 'album'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-compact-disc text-purple-400/60 text-xs"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-sm text-white truncate" x-text="getTitle(album)"></div>
+                                        </div>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-purple-500/20 text-purple-400">Albüm</span>
+                                    </a>
+                                </template>
+                            </div>
+
+                            {{-- Artists --}}
+                            <div x-show="results.artists?.length > 0" class="space-y-2">
+                                <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
+                                    <i class="fas fa-user text-blue-400 text-xs"></i>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Sanatçılar</span>
+                                </div>
+                                <template x-for="artist in results.artists" :key="'artist-'+artist.artist_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...artist, _type: 'artist'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-user text-blue-400/60 text-xs"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-sm text-white truncate" x-text="getTitle(artist)"></div>
+                                        </div>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-blue-500/20 text-blue-400">Sanatçı</span>
+                                    </a>
+                                </template>
+                            </div>
+
+                            {{-- Playlists --}}
+                            <div x-show="results.playlists?.length > 0" class="space-y-2">
+                                <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
+                                    <i class="fas fa-list text-green-400 text-xs"></i>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Playlistler</span>
+                                </div>
+                                <template x-for="playlist in results.playlists" :key="'playlist-'+playlist.playlist_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...playlist, _type: 'playlist'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-list text-green-400/60 text-xs"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-sm text-white truncate" x-text="getTitle(playlist)"></div>
+                                        </div>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-green-500/20 text-green-400">Playlist</span>
+                                    </a>
+                                </template>
+                            </div>
+
+                            {{-- Genres --}}
+                            <div x-show="results.genres?.length > 0" class="space-y-2">
+                                <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
+                                    <i class="fas fa-guitar text-yellow-400 text-xs"></i>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Türler</span>
+                                </div>
+                                <template x-for="genre in results.genres" :key="'genre-'+genre.genre_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...genre, _type: 'genre'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-yellow-500/20 to-orange-500/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-guitar text-yellow-400/60 text-xs"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-sm text-white truncate" x-text="getTitle(genre)"></div>
+                                        </div>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-yellow-500/20 text-yellow-400">Tür</span>
+                                    </a>
+                                </template>
+                            </div>
+
+                            {{-- Sectors --}}
+                            <div x-show="results.sectors?.length > 0" class="space-y-2">
+                                <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
+                                    <i class="fas fa-building text-orange-400 text-xs"></i>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Sektörler</span>
+                                </div>
+                                <template x-for="sector in results.sectors" :key="'sector-'+sector.sector_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...sector, _type: 'sector'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-orange-500/20 to-red-500/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-building text-orange-400/60 text-xs"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-sm text-white truncate" x-text="getTitle(sector)"></div>
+                                        </div>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-orange-500/20 text-orange-400">Sektör</span>
+                                    </a>
+                                </template>
+                            </div>
+
+                            {{-- Radios --}}
+                            <div x-show="results.radios?.length > 0" class="space-y-2">
+                                <div class="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/5">
+                                    <i class="fas fa-broadcast-tower text-red-400 text-xs"></i>
+                                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Radyolar</span>
+                                </div>
+                                <template x-for="radio in results.radios" :key="'radio-'+radio.radio_id">
+                                    <a href="#"
+                                       @click.prevent="selectItem({...radio, _type: 'radio'})"
+                                       class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/5 transition-all">
+                                        <div class="w-8 h-8 rounded bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-broadcast-tower text-red-400/60 text-xs"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-sm text-white truncate" x-text="getTitle(radio)"></div>
+                                        </div>
+                                        <span class="px-1.5 py-0.5 text-[9px] font-semibold rounded bg-red-500/20 text-red-400">Radyo</span>
+                                    </a>
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -307,7 +481,7 @@
                 {{-- View All Results Link --}}
                 <a :href="`/search?q=${encodeURIComponent(query || '')}`"
                    x-show="total > 0"
-                   class="block p-3 text-center text-muzibu-coral hover:bg-muzibu-coral/10 font-medium transition border-t border-white/10 text-sm">
+                   class="block p-3 text-center text-muzibu-coral hover:bg-muzibu-coral/10 font-medium transition border-t border-white/10 text-sm rounded-b-2xl">
                     <i class="fas fa-arrow-right mr-2"></i>
                     <span x-text="`Tüm ${total} sonucu gör`"></span>
                 </a>

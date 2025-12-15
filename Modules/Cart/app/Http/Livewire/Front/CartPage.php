@@ -131,20 +131,18 @@ class CartPage extends Component
 
     public function render()
     {
-        // Tema-aware view ve layout
-        $theme = tenant()->theme ?? 'ixtif';
-
-        // Önce tema-specific view'ı dene, yoksa default kullan
-        $viewPath = "themes.{$theme}.cart.cart";
-        $defaultViewPath = 'cart::livewire.front.cart-page';
-
-        // Layout - Tema-aware
+        // Layout: Tenant temasından (header/footer için)
+        // View: Module default (içerik fallback'ten)
+        $theme = tenant()->theme ?? 'simple';
         $layoutPath = "themes.{$theme}.layouts.app";
 
-        if (view()->exists($viewPath)) {
-            return view($viewPath)->layout($layoutPath);
+        // Tenant layout yoksa simple fallback
+        if (!view()->exists($layoutPath)) {
+            $layoutPath = 'themes.simple.layouts.app';
         }
 
-        return view($defaultViewPath)->layout($layoutPath);
+        // View her zaman module default (orta kısım fallback)
+        return view('cart::livewire.front.cart-page')
+            ->layout($layoutPath);
     }
 }

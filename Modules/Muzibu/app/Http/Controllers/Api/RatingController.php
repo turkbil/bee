@@ -2,141 +2,90 @@
 
 namespace Modules\Muzibu\app\Http\Controllers\Api;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Muzibu\app\Models\Song;
-use Modules\Muzibu\app\Models\Album;
-use Modules\Muzibu\app\Models\Playlist;
-use Modules\ReviewSystem\app\Models\Review;
+use Modules\Muzibu\App\Models\Song;
+use Modules\Muzibu\App\Models\Album;
+use Modules\Muzibu\App\Models\Playlist;
+use Modules\Muzibu\App\Models\Genre;
+use Modules\Muzibu\App\Models\Sector;
+use Modules\Muzibu\App\Models\Radio;
+use Modules\ReviewSystem\App\Models\Rating;
 
 class RatingController extends Controller
 {
-    /**
-     * Şarkıya puan ver
-     * 4-5 yıldız verince otomatik favoriye ekle
-     */
-    public function rateSong(Request $request, $id)
+    protected $modelMap = [
+        'songs' => Song::class,
+        'albums' => Album::class,
+        'playlists' => Playlist::class,
+        'genres' => Genre::class,
+        'sectors' => Sector::class,
+        'radios' => Radio::class,
+    ];
+
+    public function rate(Request $request, string $type, int $id): JsonResponse
     {
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:1000'
-        ]);
-
-        $song = Song::findOrFail($id);
-        $user = auth()->user();
-
-        // Rating kaydet/güncelle
-        $review = Review::updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'reviewable_type' => Song::class,
-                'reviewable_id' => $song->id
-            ],
-            [
-                'rating' => $request->rating,
-                'comment' => $request->comment
-            ]
-        );
-
-        // 4-5 yıldız verdiyse otomatik favoriye ekle
-        if ($request->rating >= 4) {
-            if (!$user->hasFavorite('song', $song->id)) {
-                $user->addFavorite('song', $song->id);
-                $autoFavorited = true;
+        try {
+            // Auth check
+            if (!auth()->check()) {
+                return response()->json(['success' => false, 'message' => 'Giriş yapmalısınız'], 401);
             }
-        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Puan kaydedildi',
-            'rating' => $request->rating,
-            'auto_favorited' => $autoFavorited ?? false
-        ]);
-    }
-
-    /**
-     * Albüme puan ver
-     * 4-5 yıldız verince otomatik favoriye ekle
-     */
-    public function rateAlbum(Request $request, $id)
-    {
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:1000'
-        ]);
-
-        $album = Album::findOrFail($id);
-        $user = auth()->user();
-
-        // Rating kaydet/güncelle
-        $review = Review::updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'reviewable_type' => Album::class,
-                'reviewable_id' => $album->id
-            ],
-            [
-                'rating' => $request->rating,
-                'comment' => $request->comment
-            ]
-        );
-
-        // 4-5 yıldız verdiyse otomatik favoriye ekle
-        if ($request->rating >= 4) {
-            if (!$user->hasFavorite('album', $album->id)) {
-                $user->addFavorite('album', $album->id);
-                $autoFavorited = true;
+            // Validate type
+            if (!isset($this->modelMap[$type])) {
+                return response()->json(['success' => false, 'message' => 'Geçersiz içerik türü'], 400);
             }
-        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Puan kaydedildi',
-            'rating' => $request->rating,
-            'auto_favorited' => $autoFavorited ?? false
-        ]);
-    }
+            // Validate request
+            $request->validate([
+                'rating' => 'required|integer|min:1|max:5',
+            ]);
 
-    /**
-     * Playlist'e puan ver
-     * 4-5 yıldız verince otomatik favoriye ekle
-     */
-    public function ratePlaylist(Request $request, $id)
-    {
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:1000'
-        ]);
+            $modelClass = $this->modelMap[$type];
+            $model = $modelClass::find($id);
 
-        $playlist = Playlist::findOrFail($id);
-        $user = auth()->user();
-
-        // Rating kaydet/güncelle
-        $review = Review::updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'reviewable_type' => Playlist::class,
-                'reviewable_id' => $playlist->id
-            ],
-            [
-                'rating' => $request->rating,
-                'comment' => $request->comment
-            ]
-        );
-
-        // 4-5 yıldız verdiyse otomatik favoriye ekle
-        if ($request->rating >= 4) {
-            if (!$user->hasFavorite('playlist', $playlist->id)) {
-                $user->addFavorite('playlist', $playlist->id);
-                $autoFavorited = true;
+            if (!$model) {
+                return response()->json(['success' => false, 'message' => 'İçerik bulunamadı'], 404);
             }
-        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Puan kaydedildi',
-            'rating' => $request->rating,
-            'auto_favorited' => $autoFavorited ?? false
-        ]);
+            $user = auth()->user();
+            $ratingValue = $request->input('rating');
+
+            // Save rating using ReviewSystem Rating model
+            Rating::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'ratable_type' => $modelClass,
+                    'ratable_id' => $id,
+                ],
+                [
+                    'rating_value' => $ratingValue,
+                ]
+            );
+
+            // Auto-favorite if rating is 4 or 5
+            $autoFavorited = false;
+            if ($ratingValue >= 4 && method_exists($model, 'isFavoritedBy')) {
+                if (!$model->isFavoritedBy($user->id)) {
+                    // Add to favorites using HasFavorites trait
+                    $model->favorites()->create(['user_id' => $user->id]);
+                    $autoFavorited = true;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Puanınız kaydedildi',
+                'rating' => $ratingValue,
+                'auto_favorited' => $autoFavorited,
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
+        } catch (\Exception $e) {
+            \Log::error('Rating error:', ['type' => $type, 'id' => $id, 'message' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Bir hata oluştu'], 500);
+        }
     }
 }

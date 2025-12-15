@@ -82,6 +82,27 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         return $this->hasMany(\Stancl\Tenancy\Database\Models\Domain::class, 'tenant_id', 'id');
     }
 
+    /**
+     * Theme folder_name accessor
+     * tenant()->theme ile tema klasör adını döndürür
+     */
+    public function getThemeAttribute(): ?string
+    {
+        if (!$this->theme_id) {
+            return null;
+        }
+
+        // Cache ile Theme model'den folder_name al
+        static $themeCache = [];
+
+        if (!isset($themeCache[$this->theme_id])) {
+            $theme = \Modules\ThemeManagement\App\Models\Theme::find($this->theme_id);
+            $themeCache[$this->theme_id] = $theme?->folder_name;
+        }
+
+        return $themeCache[$this->theme_id];
+    }
+
     public function getDatabaseName()
     {
         return $this->tenancy_db_name;

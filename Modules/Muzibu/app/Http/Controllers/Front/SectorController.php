@@ -11,7 +11,8 @@ class SectorController extends Controller
     public function index()
     {
         // Only show sectors with at least 1 active playlist (that has active songs)
-        $sectors = Sector::where('is_active', 1)
+        $sectors = Sector::with('iconMedia')
+            ->where('is_active', 1)
             ->whereHas('playlists', function($q) {
                 $q->where('is_active', 1)
                   ->whereHas('songs', function($sq) {
@@ -31,15 +32,23 @@ class SectorController extends Controller
 
     public function show($slug)
     {
-        $sector = Sector::where(function($query) use ($slug) {
+        $sector = Sector::with('iconMedia')
+            ->where(function($query) use ($slug) {
                 $query->where('slug->tr', $slug)
                       ->orWhere('slug->en', $slug);
             })
             ->where('is_active', 1)
             ->firstOrFail();
 
-        // Only show playlists with active songs
+        // Sektöre ait aktif radyolar (üstte gösterilecek)
+        $radios = $sector->radios()
+            ->with('logoMedia')
+            ->where('muzibu_radios.is_active', 1)
+            ->get();
+
+        // Only show playlists with active songs (altta gösterilecek)
         $playlists = $sector->playlists()
+            ->with('coverMedia')
             ->where('muzibu_playlists.is_active', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
@@ -49,13 +58,14 @@ class SectorController extends Controller
             }])
             ->get();
 
-        return view('themes.muzibu.sectors.show', compact('sector', 'playlists'));
+        return view('themes.muzibu.sectors.show', compact('sector', 'radios', 'playlists'));
     }
 
     public function apiIndex()
     {
         // Only show sectors with at least 1 active playlist (that has active songs)
-        $sectors = Sector::where('is_active', 1)
+        $sectors = Sector::with('iconMedia')
+            ->where('is_active', 1)
             ->whereHas('playlists', function($q) {
                 $q->where('is_active', 1)
                   ->whereHas('songs', function($sq) {
@@ -75,8 +85,9 @@ class SectorController extends Controller
 
     public function apiShow($slug)
     {
-        $sector = Sector::where(function($q) use ($slug) { $q->where('slug->tr', $slug)->orWhere('slug->en', $slug); })->where('is_active', 1)->firstOrFail();
+        $sector = Sector::with('iconMedia')->where(function($q) use ($slug) { $q->where('slug->tr', $slug)->orWhere('slug->en', $slug); })->where('is_active', 1)->firstOrFail();
         $playlists = $sector->playlists()
+            ->with('coverMedia')
             ->where('muzibu_playlists.is_active', 1)
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);

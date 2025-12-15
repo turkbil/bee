@@ -16,7 +16,7 @@ document.addEventListener('alpine:init', () => {
                 {
                     type: 'Tür',
                     title: @json($genre->getTranslation('title', app()->getLocale())),
-                    cover: @json($genre->getFirstMedia('cover') ? thumb($genre->getFirstMedia('cover'), 100, 100, ['scale' => 1]) : null),
+                    cover: @json($genre->media_id && $genre->iconMedia ? thumb($genre->iconMedia, 100, 100, ['scale' => 1]) : null),
                     id: {{ $genre->genre_id }}
                 }
             );
@@ -55,8 +55,8 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
         <div class="flex flex-col sm:flex-row items-center sm:items-end gap-6 sm:gap-8 mb-8 animate-slide-up">
             {{-- Genre Cover with Shadow --}}
             <div class="relative flex-shrink-0 group">
-                @if($genre->getFirstMedia('cover'))
-                    <img src="{{ thumb($genre->getFirstMedia('cover'), 300, 300, ['scale' => 1]) }}"
+                @if($genre->media_id && $genre->iconMedia)
+                    <img src="{{ thumb($genre->iconMedia, 300, 300, ['scale' => 1]) }}"
                          alt="{{ $genre->getTranslation('title', app()->getLocale()) }}"
                          class="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 object-cover rounded-xl shadow-2xl shadow-black/50">
                 @else

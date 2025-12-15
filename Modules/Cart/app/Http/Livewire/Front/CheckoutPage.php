@@ -1053,6 +1053,13 @@ class CheckoutPage extends Component
             ->orderBy('sort_order')
             ->get();
 
+        // Havale/EFT kapalıysa bank_transfer ve manual gateway'leri filtrele
+        if (!setting('bank_transfer_enabled')) {
+            $this->paymentMethods = $this->paymentMethods->filter(function ($method) {
+                return !in_array($method->gateway, ['bank_transfer', 'manual']);
+            })->values();
+        }
+
         // İlk aktif ödeme yöntemini varsayılan olarak seç
         if ($this->paymentMethods->count() > 0 && !$this->selectedPaymentMethodId) {
             $this->selectedPaymentMethodId = $this->paymentMethods->first()->payment_method_id;
@@ -1942,20 +1949,18 @@ class CheckoutPage extends Component
 
     public function render()
     {
-        // Tema-aware view ve layout
-        $theme = tenant()->theme ?? 'ixtif';
-
-        // Önce tema-specific view'ı dene, yoksa default kullan
-        $viewPath = "themes.{$theme}.cart.checkout";
-        $defaultViewPath = 'cart::livewire.front.checkout-page';
-
-        // Layout - Tema-aware
+        // Layout: Tenant temasından (header/footer için)
+        // View: Module default (içerik fallback'ten)
+        $theme = tenant()->theme ?? 'simple';
         $layoutPath = "themes.{$theme}.layouts.app";
 
-        if (view()->exists($viewPath)) {
-            return view($viewPath)->layout($layoutPath);
+        // Tenant layout yoksa simple fallback
+        if (!view()->exists($layoutPath)) {
+            $layoutPath = 'themes.simple.layouts.app';
         }
 
-        return view($defaultViewPath)->layout($layoutPath);
+        // View her zaman module default (orta kısım fallback)
+        return view('cart::livewire.front.checkout-page')
+            ->layout($layoutPath);
     }
 }

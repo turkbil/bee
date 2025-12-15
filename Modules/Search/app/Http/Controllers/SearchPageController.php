@@ -15,6 +15,12 @@ class SearchPageController extends Controller
      */
     public function show(Request $request, ?string $query = null)
     {
+        // 🎵 MUZIBU TENANT: Redirect to /ara (Livewire search page)
+        if (tenant() && tenant()->id === 1001) {
+            $searchQuery = $query ?? $request->get('q', '');
+            return redirect('/ara' . ($searchQuery ? '?q=' . urlencode($searchQuery) : ''));
+        }
+
         // 🚀 CLEAN URL REDIRECT: /search?q=F4 → /search/F4 (SEO Friendly)
         if (!$query && $request->has('q')) {
             $queryString = $request->get('q');

@@ -71,10 +71,20 @@ class PaymentSuccessController extends Controller
             'checkout_user_info',
         ]);
 
+        // Layout: Tenant temasından (header/footer için)
+        $theme = tenant()->theme ?? 'simple';
+        $layoutPath = "themes.{$theme}.layouts.app";
+
+        // Tenant layout yoksa simple fallback
+        if (!view()->exists($layoutPath)) {
+            $layoutPath = 'themes.simple.layouts.app';
+        }
+
         // Başarı sayfasını göster
         return view('payment::front.payment-success', [
             'payment' => $payment,
             'order' => $order,
+            'layoutPath' => $layoutPath,
         ]);
     }
 }

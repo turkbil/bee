@@ -41,11 +41,13 @@ class SubscriptionCartBridge
         // Abonelik bilgileri
         $subscriptionInfo = $this->getSubscriptionInfo($plan, $cycle, $cycleKey, $autoRenew);
 
-        // Metadata (JSON - cart view'da cycle bilgisi için)
+        // Metadata (JSON - cart view'da cycle bilgisi için + subscription aktivasyonu için!)
         $metadata = [
+            'cycle_key' => $cycleKey, // Subscription aktivasyonu için kritik!
             'cycle_label' => $cycle['label'],
             'duration_days' => $cycle['duration_days'],
             'trial_days' => $cycle['trial_days'] ?? null,
+            'cycle_metadata' => $cycle, // Tam cycle bilgisi
         ];
 
         // Merge all data

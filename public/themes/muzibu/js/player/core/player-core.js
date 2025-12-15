@@ -35,6 +35,7 @@ function muzibuApp() {
         showAuthModal: null,
         showQueue: false,
         showLyrics: false,
+        showKeyboardHelp: false, // 🎹 Keyboard shortcuts overlay
         progressPercent: 0,
         authLoading: false,
         authError: '',
@@ -144,6 +145,7 @@ function muzibuApp() {
         hls: null, // Current HLS.js instance
         hlsNext: null, // Next HLS.js instance for crossfade
         isHlsStream: false, // Whether current stream is HLS
+        lastFallbackReason: null, // 🧪 TEST: Why MP3 fallback was triggered
         activeHlsAudioId: 'hlsAudio', // Which HLS audio element is active ('hlsAudio' or 'hlsAudioNext')
         progressInterval: null, // Interval for updating progress
         _fadeAnimation: null, // For requestAnimationFrame fade
@@ -1414,6 +1416,50 @@ function muzibuApp() {
             }
         },
 
+        async playRadio(id) {
+            try {
+                // 🚀 INSTANT FEEDBACK: Show loading state immediately
+                this.isLoading = true;
+                this.showToast('Radyo yükleniyor...', 'info');
+
+                const response = await fetch(`/api/muzibu/radios/${id}/songs`);
+                const data = await response.json();
+
+                if (data.songs && data.songs.length > 0) {
+                    // Shuffle songs for radio experience
+                    const shuffledSongs = this.shuffleArray([...data.songs]);
+                    this.queue = this.cleanQueue(shuffledSongs);
+
+                    if (this.queue.length === 0) {
+                        this.showToast('Radyoda çalınabilir şarkı bulunamadı', 'error');
+                        return;
+                    }
+
+                    this.queueIndex = 0;
+                    await this.playSongFromQueue(0);
+
+                    const radioTitle = data.radio?.title?.tr || data.radio?.title?.en || data.radio?.title || 'Radyo';
+                    this.showToast(`📻 ${radioTitle} çalınıyor`, 'success');
+                } else {
+                    this.showToast('Radyoda şarkı bulunamadı', 'error');
+                }
+            } catch (error) {
+                console.error('Failed to play radio:', error);
+                this.showToast('Radyo yüklenemedi', 'error');
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        // Helper: Shuffle array (Fisher-Yates)
+        shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        },
+
         async playSong(id) {
             try {
                 // 🚫 FRONTEND PREMIUM CHECK: Şarkı çalmaya çalışmadan önce kontrol et
@@ -1516,7 +1562,8 @@ function muzibuApp() {
                 // Create queue with just this song
                 this.queue = [song];
                 this.queueIndex = 0;
-                this.currentSong = song;
+                // 🧪 Merge API song data (has_encryption_key, has_hls_path etc.) into currentSong
+                this.currentSong = streamData.song ? { ...song, ...streamData.song } : song;
                 this.playTracked = false;
 
                 // 🔄 Her şarkı çalmada premium status ve subscription bilgilerini güncelle
@@ -1566,6 +1613,27 @@ function muzibuApp() {
                         console.log(`✅ AUTO-CONTEXT: Genre ${streamData.song.genre_id} (${streamData.song.genre_name})`);
                     } else {
                         console.warn('⚠️ AUTO-CONTEXT: Song has no album_id or genre_id, cannot set context');
+                    }
+                }
+
+                // 🔥 INSTANT QUEUE REFILL: Context var ise (detail page veya auto-detect), queue'yu doldur!
+                // Kullanıcı playlist/album/genre'den şarkı tıkladığında diğer şarkılar anında gelsin
+                const finalContext = muzibuStore?.getPlayContext();
+                if (finalContext) {
+                    try {
+                        console.log('🔥 INSTANT QUEUE REFILL: Context mevcut, queue dolduruluyor...', finalContext);
+                        const nextSongs = await muzibuStore.refillQueue(1, 15); // offset=1 (mevcut şarkıdan sonraki)
+
+                        if (nextSongs && nextSongs.length > 0) {
+                            // Queue'ya ekle (mevcut şarkı zaten 0. index'te)
+                            this.queue = [song, ...nextSongs];
+                            console.log(`✅ INSTANT QUEUE REFILL: ${nextSongs.length} şarkı queue'ya eklendi! Total: ${this.queue.length}`);
+                        } else {
+                            console.warn('⚠️ INSTANT QUEUE REFILL: API den şarkı gelmedi, sadece bu şarkı çalacak');
+                        }
+                    } catch (error) {
+                        console.error('❌ INSTANT QUEUE REFILL hatası:', error);
+                        // Hata olsa bile çalmaya devam et (sadece tek şarkı çalar)
                     }
                 }
 
@@ -1979,6 +2047,7 @@ onplay: function() {
             const markHlsSuccess = () => {
                 hlsPlayStarted = true;
                 clearTimeout(hlsTimeoutId);
+                self.lastFallbackReason = null; // 🧪 TEST: Clear fallback reason on success
             };
 
             // Check HLS.js support
@@ -2026,9 +2095,9 @@ onplay: function() {
                     },
                     // Custom XHR setup to preserve query strings (tokens) for chunks only
                     xhrSetup: function(xhr, url) {
-                        // 🔑 For encryption key requests - ensure proper handling
+                        // 🔑 For encryption key requests - MUST send cookies for auth!
                         if (url.includes('/key') || url.includes('/key/')) {
-                            xhr.withCredentials = false;
+                            xhr.withCredentials = true; // 🔐 Session cookie gönder (auth için)
                             return;
                         }
 
@@ -2260,6 +2329,7 @@ onplay: function() {
         // 🔥 HLS Timeout/Error icin MP3 Fallback Helper
         triggerMp3Fallback(audio, targetVolume, reason = 'unknown') {
             console.log('🔄 MP3 fallback tetiklendi, sebep:', reason);
+            this.lastFallbackReason = reason; // 🧪 TEST: Track fallback reason
 
             // HLS audio element'i temizle
             if (audio) {

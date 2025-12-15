@@ -62,8 +62,8 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                                        @if($item->album && $item->album->getFirstMedia('album_cover'))
-                                            <img src="{{ thumb($item->album->getFirstMedia('album_cover'), 200, 200, ['scale' => 1]) }}"
+                                        @if($item->album && $item->album->media_id && $item->album->coverMedia)
+                                            <img src="{{ thumb($item->album->coverMedia, 200, 200, ['scale' => 1]) }}"
                                                  alt="{{ $item->getTranslation('title', app()->getLocale()) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy">
@@ -99,14 +99,14 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                                        @if($item->getFirstMedia('album_cover'))
-                                            <img src="{{ thumb($item->getFirstMedia('album_cover'), 200, 200, ['scale' => 1]) }}"
+                                        @if($item->media_id && $item->coverMedia)
+                                            <img src="{{ thumb($item->coverMedia, 200, 200, ['scale' => 1]) }}"
                                                  alt="{{ $item->getTranslation('title', app()->getLocale()) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy">
                                         @else
                                             <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-4xl">
-                                                🎸
+                                                💿
                                             </div>
                                         @endif
                                     </div>
@@ -131,19 +131,19 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                     @elseif($item instanceof \Modules\Muzibu\App\Models\Playlist)
                         {{-- Playlist Card --}}
                         <div class="group relative">
-                            <a href="{{ route('muzibu.playlist.show', $item->getTranslation('slug', app()->getLocale())) }}"
+                            <a href="{{ route('muzibu.playlists.show', $item->getTranslation('slug', app()->getLocale())) }}"
                                wire:navigate
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                                        @if($item->getFirstMedia('cover'))
-                                            <img src="{{ thumb($item->getFirstMedia('cover'), 200, 200, ['scale' => 1]) }}"
+                                        @if($item->media_id && $item->coverMedia)
+                                            <img src="{{ thumb($item->coverMedia, 200, 200, ['scale' => 1]) }}"
                                                  alt="{{ $item->getTranslation('title', app()->getLocale()) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy">
                                         @else
                                             <div class="w-full h-full bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center text-4xl">
-                                                📋
+                                                🎵
                                             </div>
                                         @endif
                                     </div>

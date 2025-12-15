@@ -25,8 +25,8 @@
         <h3 class="px-4 text-xs font-bold text-muzibu-text-gray uppercase tracking-wider mb-2">Keşfet</h3>
         <nav class="space-y-1">
             <a href="/playlists" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
-                <i class="fas fa-fire w-5 text-base"></i>
-                <span class="font-medium text-sm">Popüler Playlistler</span>
+                <i class="fas fa-stream w-5 text-base"></i>
+                <span class="font-medium text-sm">Playlistler</span>
             </a>
             <a href="/albums" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-compact-disc w-5 text-base"></i>
@@ -41,8 +41,8 @@
                 <span class="font-medium text-sm">Sektörler</span>
             </a>
             <a href="/radios" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
-                <i class="fas fa-radio w-5 text-base"></i>
-                <span class="font-medium text-sm">Canlı Radyolar</span>
+                <i class="fas fa-broadcast-tower w-5 text-base"></i>
+                <span class="font-medium text-sm">Radyolar</span>
             </a>
         </nav>
     </div>

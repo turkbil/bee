@@ -4,8 +4,8 @@
 <div class="px-4 sm:px-6 py-6 sm:py-8">
     {{-- Playlist Header - Responsive --}}
     <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8 animate-slide-up">
-        @if($playlist->getFirstMedia('cover'))
-            <img src="{{ thumb($playlist->getFirstMedia('cover'), 300, 300, ['scale' => 1]) }}"
+        @if($playlist->media_id && $playlist->coverMedia)
+            <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $playlist->getTranslation('title', app()->getLocale()) }}"
                  class="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 object-cover rounded-lg shadow-2xl flex-shrink-0">
         @else

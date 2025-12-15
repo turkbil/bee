@@ -17,6 +17,7 @@ Route::get('/cart', \Modules\Cart\App\Http\Livewire\Front\CartPage::class)->name
 // Route::get('/shop/payment/{orderNumber}', [\Modules\Shop\App\Http\Controllers\PaymentPageController::class, 'show'])->name('shop.payment.page');
 
 // 🎵 MUZIBU SEARCH (Livewire) - Priority route (wildcard'dan önce)
+// /search Muzibu tenant'ında SearchPageController'dan /ara'ya redirect yapıyor
 Route::middleware([InitializeTenancy::class, 'tenant', 'locale.site'])
     ->get('/ara', \Modules\Muzibu\App\Http\Livewire\Frontend\SearchResults::class)
     ->name('muzibu.search');

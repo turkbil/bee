@@ -133,6 +133,10 @@ class SongStreamController extends Controller
                         'genre_id' => $song->genre_id,
                         'album_name' => $song->album ? $song->album->getTranslated('title', app()->getLocale()) : null,
                         'genre_name' => $song->genre ? $song->genre->getTranslated('title', app()->getLocale()) : null,
+                        // 🧪 TEST: HLS encryption info
+                        'has_encryption_key' => !empty($song->encryption_key),
+                        'has_encryption_iv' => !empty($song->encryption_iv),
+                        'has_hls_path' => !empty($song->hls_path),
                     ]
                 ], $this->getSubscriptionData($user)));
             }
@@ -159,6 +163,10 @@ class SongStreamController extends Controller
                     'genre_id' => $song->genre_id,
                     'album_name' => $song->album ? $song->album->getTranslated('title', app()->getLocale()) : null,
                     'genre_name' => $song->genre ? $song->genre->getTranslated('title', app()->getLocale()) : null,
+                    // 🧪 TEST: HLS encryption info (sadece var/yok - güvenlik için key değeri yok)
+                    'has_encryption_key' => !empty($song->encryption_key),
+                    'has_encryption_iv' => !empty($song->encryption_iv),
+                    'has_hls_path' => !empty($song->hls_path),
                 ]
             ], $subscriptionData));
 

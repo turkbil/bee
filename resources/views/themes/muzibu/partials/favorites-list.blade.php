@@ -29,7 +29,7 @@
             <a href="/favorites?type=playlists" wire:navigate
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'playlists' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
-                <i class="fas fa-list-music mr-2"></i>
+                <i class="fas fa-stream mr-2"></i>
                 Playlistler
             </a>
         </nav>
@@ -52,8 +52,8 @@
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                                        @if($item->album && $item->album->getFirstMedia('album_cover'))
-                                            <img src="{{ thumb($item->album->getFirstMedia('album_cover'), 200, 200, ['scale' => 1]) }}"
+                                        @if($item->album && $item->album->media_id && $item->album->coverMedia)
+                                            <img src="{{ thumb($item->album->coverMedia, 200, 200, ['scale' => 1]) }}"
                                                  alt="{{ $item->getTranslation('title', app()->getLocale()) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy">
@@ -89,14 +89,14 @@
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                                        @if($item->getFirstMedia('album_cover'))
-                                            <img src="{{ thumb($item->getFirstMedia('album_cover'), 200, 200, ['scale' => 1]) }}"
+                                        @if($item->media_id && $item->coverMedia)
+                                            <img src="{{ thumb($item->coverMedia, 200, 200, ['scale' => 1]) }}"
                                                  alt="{{ $item->getTranslation('title', app()->getLocale()) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy">
                                         @else
                                             <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-4xl">
-                                                🎸
+                                                💿
                                             </div>
                                         @endif
                                     </div>
@@ -126,14 +126,14 @@
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
-                                        @if($item->getFirstMedia('cover'))
-                                            <img src="{{ thumb($item->getFirstMedia('cover'), 200, 200, ['scale' => 1]) }}"
+                                        @if($item->media_id && $item->coverMedia)
+                                            <img src="{{ thumb($item->coverMedia, 200, 200, ['scale' => 1]) }}"
                                                  alt="{{ $item->getTranslation('title', app()->getLocale()) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy">
                                         @else
                                             <div class="w-full h-full bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center text-4xl">
-                                                📋
+                                                🎵
                                             </div>
                                         @endif
                                     </div>

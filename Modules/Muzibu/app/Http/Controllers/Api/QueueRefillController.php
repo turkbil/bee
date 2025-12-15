@@ -547,7 +547,16 @@ class QueueRefillController extends Controller
                 ->get();
         }
 
+        // ♾️ INFINITE LOOP: Recent boşsa exclude'sız başa sar
         if ($songs->isEmpty()) {
+            if (!empty($excludeSongIds)) {
+                \Log::info('🔄 Recent exhausted with exclude, retrying without exclude (infinite loop)', [
+                    'excluded_count' => count($excludeSongIds)
+                ]);
+
+                return $this->getRecentSongs($offset, $limit, $subType, []);
+            }
+
             return [];
         }
 

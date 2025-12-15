@@ -65,18 +65,12 @@
                     <template x-for="(track, index) in $store.sidebar.previewTracks" :key="track.id">
                         <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
                              :class="track.isPlaying ? 'bg-muzibu-coral/10 border border-muzibu-coral/20' : ''"
-                             @click="
-                                // 🎯 PREVIEW MODE: Set context from preview info
-                                if ($store.sidebar.previewMode && $store.sidebar.previewInfo) {
-                                    $store.player.setPlayContext({
-                                        type: $store.sidebar.previewInfo.type || 'playlist',
-                                        id: $store.sidebar.previewInfo.id,
-                                        name: $store.sidebar.previewInfo.title,
-                                        offset: index
-                                    });
-                                }
-                                $dispatch('play-song', { songId: track.id })
-                             ">
+                             @click="(($store.sidebar.previewMode && $store.sidebar.previewInfo) ? $store.player.setPlayContext({
+                                 type: $store.sidebar.previewInfo.type || 'playlist',
+                                 id: $store.sidebar.previewInfo.id,
+                                 name: $store.sidebar.previewInfo.title,
+                                 offset: index
+                             }) : null), $dispatch('play-song', { songId: track.id })">
 
                             {{-- Track Number / Play Icon --}}
                             <div class="w-5 text-center flex-shrink-0">
@@ -194,18 +188,12 @@
                 <template x-for="(track, index) in $store.sidebar.tracks" :key="track.id">
                     <div class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer group transition-all"
                          :class="track.isPlaying ? 'bg-muzibu-coral/10 border border-muzibu-coral/20' : ''"
-                         @click="
-                            // 🎯 DETAIL PAGE: Set context from sidebar entity info
-                            if ($store.sidebar.isDetailPage && $store.sidebar.entityInfo) {
-                                $store.player.setPlayContext({
-                                    type: $store.sidebar.pageType,
-                                    id: $store.sidebar.entityInfo.id,
-                                    name: $store.sidebar.entityInfo.title,
-                                    offset: index
-                                });
-                            }
-                            $dispatch('play-song', { songId: track.id })
-                         ">
+                         @click="(($store.sidebar.isDetailPage && $store.sidebar.entityInfo) ? $store.player.setPlayContext({
+                             type: $store.sidebar.pageType,
+                             id: $store.sidebar.entityInfo.id,
+                             name: $store.sidebar.entityInfo.title,
+                             offset: index
+                         }) : null), $dispatch('play-song', { songId: track.id })">
 
                         {{-- Track Number / Play Icon --}}
                         <div class="w-5 text-center flex-shrink-0">
@@ -276,7 +264,7 @@
                 <div class="space-y-1">
                     @foreach($featuredPlaylists->take(5) as $playlist)
                     <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
-                       wire:navigate
+                      
                        class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer transition-all group">
                         <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex-shrink-0 overflow-hidden shadow-lg">
                             @if($playlist->coverMedia)
@@ -361,7 +349,7 @@
                 <div class="space-y-1">
                     @foreach($recentAlbums as $album)
                     <a href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}"
-                       wire:navigate
+                      
                        class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-white/5 cursor-pointer transition-all group">
                         <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-teal-600 flex-shrink-0 overflow-hidden shadow-lg">
                             @if($album->coverMedia)
@@ -396,7 +384,7 @@
                 <div class="grid grid-cols-2 gap-1.5">
                     @foreach($genres->take(6) as $genre)
                     <a href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}"
-                       wire:navigate
+                      
                        class="bg-gradient-to-br from-white/5 to-white/0 hover:from-white/10 hover:to-white/5 border border-white/5 rounded-xl p-2.5 text-center transition-all group">
                         <div class="text-base mb-1">🎸</div>
                         <div class="text-xs font-medium text-white group-hover:text-muzibu-coral transition-colors truncate">

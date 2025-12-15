@@ -1,7 +1,7 @@
 {{-- Device Limit Warning Modal (Session Polling) --}}
 <div x-show="showDeviceLimitWarning"
      x-cloak
-     class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+     class="fixed inset-0 z-[9999] flex items-center justify-center bg-transparent backdrop-blur-sm"
      @click.self="showDeviceLimitWarning = false">
 
     <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-yellow-500/30"

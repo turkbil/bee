@@ -1,14 +1,8 @@
 {{-- LYRICS OVERLAY - Slides in from right when lyrics button clicked --}}
 <div
     x-show="showLyrics"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0"
-    x-transition:enter-end="opacity-100"
-    x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-100"
-    x-transition:leave-end="opacity-0"
     @click="showLyrics = false"
-    class="fixed inset-0 bg-black/60 z-40"
+    class="fixed inset-0 bg-transparent z-40"
     style="display: none;"
 ></div>
 

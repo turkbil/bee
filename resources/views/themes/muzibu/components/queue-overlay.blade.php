@@ -1,17 +1,11 @@
 {{-- QUEUE OVERLAY - Modern Spotify-style Design --}}
 <template x-if="typeof queue !== 'undefined'">
 <div>
-{{-- Backdrop --}}
+{{-- Backdrop (invisible - no darkening) --}}
 <div
     x-show="showQueue"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0"
-    x-transition:enter-end="opacity-100"
-    x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-100"
-    x-transition:leave-end="opacity-0"
     @click="showQueue = false"
-    class="fixed inset-0 bg-black/60 z-40"
+    class="fixed inset-0 bg-transparent z-40"
     style="display: none;"
 ></div>
 
@@ -159,7 +153,9 @@
 
                     {{-- Actions --}}
                     <div class="hidden group-hover:flex items-center gap-1">
+                        {{-- 🚫 Son şarkıyken silme butonu gizlenir --}}
                         <button
+                            x-show="queue.length > 1"
                             @click.stop="removeFromQueue(index)"
                             class="p-1.5 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-all"
                             title="Siradan Cikar"
@@ -176,7 +172,7 @@
     </div>
 
     {{-- Footer Info --}}
-    <div class="px-5 py-3 border-t border-white/5 bg-black/30">
+    <div class="px-5 py-3 border-t border-white/5 bg-transparent">
         <div class="flex items-center justify-between text-xs text-zinc-600">
             <span x-show="queue && queue.length > 0">
                 <i class="fas fa-info-circle mr-1"></i>

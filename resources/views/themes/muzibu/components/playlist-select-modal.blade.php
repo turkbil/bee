@@ -41,7 +41,7 @@
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              @click="$store.contextMenu.playlistModal.open = false"
-             class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+             class="absolute inset-0 bg-transparent backdrop-blur-sm"></div>
 
         {{-- Desktop: Centered Modal --}}
         <div class="hidden md:flex items-center justify-center h-full p-4">

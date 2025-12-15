@@ -3,7 +3,7 @@
 @section('content')
 <div class="px-6 py-8">
     {{-- Sector Header --}}
-    <div class="flex items-end gap-6 mb-8 animate-slide-up">
+    <div class="flex items-end gap-6 mb-8">
         @if($sector->media_id && $sector->iconMedia)
             <img src="{{ thumb($sector->iconMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $sector->getTranslation('title', app()->getLocale()) }}"
@@ -123,7 +123,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                 @foreach($playlists as $playlist)
                     <a href="{{ route('muzibu.playlists.show', $playlist->getTranslation('slug', app()->getLocale())) }}"
-                       wire:navigate
+                      
                        class="playlist-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
                        data-playlist-id="{{ $playlist->playlist_id }}"
                        data-playlist-title="{{ $playlist->getTranslation('title', app()->getLocale()) }}"

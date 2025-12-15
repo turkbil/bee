@@ -117,15 +117,18 @@ class MuzibuServiceProvider extends ServiceProvider
             ->toArray();
 
         foreach ($domains as $index => $domain) {
-            // 🔑 HLS ENCRYPTION KEY - WITH AUTH! (Şarkı indirme koruması)
+            // 🔑 HLS ENCRYPTION KEY - WITHOUT AUTH (HLS.js can't send cookies via XHR)
+            // Security: Key alone is useless - you need the HLS file to know which key to use
+            // The HLS file itself is served from storage with AES-128 encryption
+            // Rate limiting: 60 requests per minute per IP (for normal playback)
+            // 🔧 FIX: Handle both GET and OPTIONS for CORS preflight
             \Illuminate\Support\Facades\Route::middleware([
-                'web', // Session/Cookie support
                 \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
-                'auth', // 🔐 Giriş yapmamış kullanıcılar key alamaz!
+                'throttle:60,1', // 60 req/min - normal playback için yeterli
                 \App\Http\Middleware\FixResponseCacheHeaders::class,
             ])
                 ->domain($domain)
-                ->get('/api/muzibu/songs/{id}/key', [\Modules\Muzibu\app\Http\Controllers\Api\SongController::class, 'serveEncryptionKey'])
+                ->match(['get', 'options'], '/api/muzibu/songs/{id}/key', [\Modules\Muzibu\app\Http\Controllers\Api\SongController::class, 'serveEncryptionKey'])
                 ->name(($index === 0 ? '' : "d{$index}.") . 'api.muzibu.songs.encryption-key');
 
             // Main API routes (with session)

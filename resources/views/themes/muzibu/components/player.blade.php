@@ -1,68 +1,24 @@
 {{-- PLAYER BAR --}}
 <div class="muzibu-player xl:col-span-3 lg:col-span-2 col-span-1 grid grid-cols-[auto_1fr_auto] sm:grid-cols-[1fr_2fr_1fr] items-center px-2 sm:px-3 py-1.5 gap-2 sm:gap-3">
 
-    {{-- 🧪 TEST INFO BADGE --}}
+    {{-- 🎵 Stream Type Indicator (minimal) - showDebugInfo ile kontrol edilir --}}
     <div
-        x-show="currentSong"
+        x-show="showDebugInfo && currentSong"
         x-cloak
-        class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-black/90 backdrop-blur border border-yellow-500/50 rounded-lg px-3 py-2 text-xs font-mono shadow-lg"
+        class="fixed bottom-20 right-4 z-40 flex items-center gap-1"
     >
-        <div class="flex items-center gap-4">
-            {{-- Stream Type --}}
-            <div class="flex items-center gap-1.5">
-                <span class="text-yellow-500">STREAM:</span>
-                <span
-                    class="px-1.5 py-0.5 rounded text-[10px] font-bold"
-                    :class="currentStreamType === 'hls' ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400'"
-                    x-text="currentStreamType?.toUpperCase() || 'N/A'"
-                ></span>
-                <span
-                    x-show="currentStreamType === 'mp3' && lastFallbackReason"
-                    class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400"
-                >FALLBACK!</span>
-            </div>
-
-            {{-- Encryption Key --}}
-            <div class="flex items-center gap-1.5">
-                <span class="text-yellow-500">ENC_KEY:</span>
-                <span
-                    class="px-1.5 py-0.5 rounded text-[10px] font-bold"
-                    :class="currentSong?.has_encryption_key ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'"
-                    x-text="currentSong?.has_encryption_key ? 'VAR' : 'YOK'"
-                ></span>
-            </div>
-
-            {{-- Encryption IV --}}
-            <div class="flex items-center gap-1.5">
-                <span class="text-yellow-500">ENC_IV:</span>
-                <span
-                    class="px-1.5 py-0.5 rounded text-[10px] font-bold"
-                    :class="currentSong?.has_encryption_iv ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'"
-                    x-text="currentSong?.has_encryption_iv ? 'VAR' : 'YOK'"
-                ></span>
-            </div>
-
-            {{-- HLS Path --}}
-            <div class="flex items-center gap-1.5">
-                <span class="text-yellow-500">HLS_PATH:</span>
-                <span
-                    class="px-1.5 py-0.5 rounded text-[10px] font-bold"
-                    :class="currentSong?.has_hls_path ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'"
-                    x-text="currentSong?.has_hls_path ? 'VAR' : 'YOK'"
-                ></span>
-            </div>
-
-            {{-- Fallback Reason --}}
-            <div class="flex items-center gap-1.5" x-show="lastFallbackReason">
-                <span class="text-yellow-500">FALLBACK:</span>
-                <span
-                    class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-orange-500/20 text-orange-400"
-                    x-text="lastFallbackReason"
-                ></span>
-            </div>
-        </div>
+        <span
+            class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide"
+            :class="currentStreamType === 'hls' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'"
+            x-text="currentStreamType || 'N/A'"
+        ></span>
+        <span
+            x-show="lastFallbackReason"
+            class="px-2 py-1 rounded text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30"
+            x-text="lastFallbackReason"
+        ></span>
     </div>
-    {{-- END TEST INFO --}}
+
     {{-- Song Info --}}
     <div class="flex items-center gap-2 sm:gap-3 min-w-0">
         {{-- Album Cover + Mini Heart Overlay (Mobile) --}}
@@ -80,7 +36,8 @@
                 @click="toggleLike()"
                 :class="{ 'text-muzibu-coral border-muzibu-coral': isLiked, 'text-white border-white/50': !isLiked }"
                 class="absolute -top-1 -right-1 w-5 h-5 bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center border shadow-lg transition-all sm:hidden"
-                title="Favorilere ekle/çıkar"
+                :aria-label="isLiked ? 'Favorilerden çıkar' : 'Favorilere ekle'"
+                :aria-pressed="isLiked"
             >
                 <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'" class="text-[10px]"></i>
             </button>
@@ -92,7 +49,7 @@
         </div>
 
         {{-- Desktop Heart Button (Desktop Only) --}}
-        <button class="text-muzibu-text-gray hover:text-muzibu-coral transition-all hidden sm:block" @click="toggleLike()" :class="{ 'text-muzibu-coral': isLiked }">
+        <button class="text-muzibu-text-gray hover:text-muzibu-coral transition-all hidden sm:block" @click="toggleLike()" :class="{ 'text-muzibu-coral': isLiked }" :aria-label="isLiked ? 'Favorilerden çıkar' : 'Favorilere ekle'" :aria-pressed="isLiked">
             <i :class="isLiked ? 'fas fa-heart' : 'far fa-heart'"></i>
         </button>
     </div>
@@ -100,25 +57,25 @@
     {{-- Player Controls --}}
     <div class="flex flex-col gap-1 sm:gap-2">
         <div class="flex items-center justify-center gap-3 sm:gap-6">
-            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="shuffle ? 'text-muzibu-coral' : ''" @click="toggleShuffle()">
+            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="shuffle ? 'text-muzibu-coral' : ''" @click="toggleShuffle()" :aria-label="shuffle ? 'Karıştırmayı kapat' : 'Karıştırmayı aç'" :aria-pressed="shuffle">
                 <i class="fas fa-random"></i>
             </button>
-            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="previousTrack()">
+            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="previousTrack()" aria-label="Önceki şarkı">
                 <i class="fas fa-step-backward"></i>
             </button>
-            <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black transition-all shadow-lg hover:shadow-white/50" @click="togglePlayPause()">
+            <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black transition-all shadow-lg hover:shadow-white/50" @click="togglePlayPause()" :aria-label="isPlaying ? 'Duraklat' : 'Çal'">
                 <i :class="isPlaying ? 'fas fa-stop' : 'fas fa-play ml-0.5'"></i>
             </button>
-            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="nextTrack()">
+            <button class="text-muzibu-text-gray hover:text-white transition-all" @click="nextTrack()" aria-label="Sonraki şarkı">
                 <i class="fas fa-step-forward"></i>
             </button>
-            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="repeatMode !== 'off' ? 'text-muzibu-coral' : ''" @click="cycleRepeat()">
+            <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" :class="repeatMode !== 'off' ? 'text-muzibu-coral' : ''" @click="cycleRepeat()" :aria-label="repeatMode === 'off' ? 'Tekrarlamayı aç' : 'Tekrarlama modu: ' + repeatMode" :aria-pressed="repeatMode !== 'off'">
                 <i class="fas fa-redo"></i>
             </button>
         </div>
         <div class="flex items-center gap-1 sm:gap-2">
             <span class="text-[10px] sm:text-xs text-muzibu-text-gray w-8 sm:w-10 text-right" x-text="formatTime(currentTime)">0:00</span>
-            <div class="flex-1 h-1 sm:h-1.5 bg-muzibu-text-gray/30 rounded-full cursor-pointer group" @click="seekTo($event)">
+            <div class="flex-1 h-1 sm:h-1.5 bg-muzibu-text-gray/30 rounded-full cursor-pointer group" @click="seekTo($event)" role="progressbar" :aria-valuenow="Math.round(progressPercent)" aria-valuemin="0" aria-valuemax="100" aria-label="Şarkı ilerlemesi">
                 <div class="h-full bg-white rounded-full relative group-hover:bg-muzibu-coral transition-colors" :style="`width: ${progressPercent}%`">
                     <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 sm:w-3 h-2 sm:h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg"></div>
                 </div>
@@ -132,7 +89,7 @@
         <button
             class="text-muzibu-text-gray hover:text-white transition-all hidden md:block"
             @click="showKeyboardHelp = !showKeyboardHelp"
-            title="Klavye kısayolları"
+            aria-label="Klavye kısayollarını göster"
         >
             <i class="fas fa-keyboard"></i>
         </button>
@@ -141,17 +98,17 @@
             x-cloak
             class="text-muzibu-coral hover:text-white transition-all hidden sm:block"
             @click="showLyrics = !showLyrics"
-            title="Şarkı sözlerini göster"
+            aria-label="Şarkı sözlerini göster"
         >
             <i class="fas fa-microphone"></i>
         </button>
-        <button class="text-muzibu-text-gray hover:text-white transition-all" @click="showQueue = !showQueue">
+        <button class="text-muzibu-text-gray hover:text-white transition-all" @click="showQueue = !showQueue" :aria-label="showQueue ? 'Sırayı kapat' : 'Sırayı aç'" :aria-pressed="showQueue">
             <i class="fas fa-list text-sm sm:text-base"></i>
         </button>
-        <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" @click="toggleMute()">
+        <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" @click="toggleMute()" :aria-label="isMuted ? 'Sesi aç' : 'Sesi kapat'" :aria-pressed="isMuted">
             <i :class="isMuted ? 'fas fa-volume-mute' : (volume > 50 ? 'fas fa-volume-up' : 'fas fa-volume-down')"></i>
         </button>
-        <div class="w-20 h-1.5 bg-muzibu-text-gray/30 rounded-full cursor-pointer group hidden md:block" @click="setVolume($event)">
+        <div class="w-20 h-1.5 bg-muzibu-text-gray/30 rounded-full cursor-pointer group hidden md:block" @click="setVolume($event)" role="slider" :aria-valuenow="Math.round(volume)" aria-valuemin="0" aria-valuemax="100" aria-label="Ses seviyesi">
             <div class="h-full bg-white rounded-full group-hover:bg-muzibu-coral transition-colors" :style="`width: ${volume}%`"></div>
         </div>
     </div>

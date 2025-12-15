@@ -83,12 +83,16 @@ class QueueRefillController extends Controller
                 }
             }
 
+            // 🧪 DEBUG: Şarkı seçim açıklaması
+            $explanation = $this->getSelectionExplanation($type, $id, $offset, count($songs));
+
             return response()->json([
                 'success' => true,
                 'context' => $context,
                 'songs' => $songs,
                 'count' => count($songs),
                 'transition' => $transitionSuggestion, // Frontend will auto-update context
+                'explanation' => $explanation, // 🧪 Debug için açıklama
             ]);
 
         } catch (\Exception $e) {
@@ -105,7 +109,8 @@ class QueueRefillController extends Controller
     }
 
     /**
-     * Get songs by genre (INFINITE LOOP - başa sarar)
+     * Get songs by genre (INFINITE LOOP - başa sarar + shuffle)
+     * 🎵 Aynı tarz, farklı sıra - Her loop'ta shuffle edilir
      */
     private function getGenreSongs(int $genreId, int $offset, int $limit): array
     {
@@ -116,31 +121,60 @@ class QueueRefillController extends Controller
 
         // Get total count first
         $totalCount = $genre->songs()->where('is_active', 1)->count();
-        
+
         if ($totalCount === 0) {
             return [];
         }
 
         // ♾️ INFINITE LOOP: If offset exceeds total, wrap around (başa sar)
         $actualOffset = $offset % $totalCount;
+        $isWrappingAround = $offset >= $totalCount;
 
-        $songs = $genre->songs()
-            ->where('is_active', 1)
-            ->with(['album.artist'])
-            ->skip($actualOffset)
-            ->take($limit)
-            ->get();
-
-        // If we didn't get enough songs, wrap around and get from beginning
-        if ($songs->count() < $limit && $actualOffset > 0) {
-            $remaining = $limit - $songs->count();
-            $moreSongs = $genre->songs()
+        // 🎲 SHUFFLE: Başa sardığında veya ilk kez çalıyorsa shuffle et
+        if ($isWrappingAround || $offset === 0) {
+            // Tüm şarkıları al ve shuffle et
+            $allSongs = $genre->songs()
                 ->where('is_active', 1)
                 ->with(['album.artist'])
-                ->take($remaining)
+                ->get()
+                ->shuffle(); // Laravel Collection shuffle
+
+            // Offset'e göre al
+            $songs = $allSongs->skip($actualOffset)->take($limit);
+
+            // Wrap around için baştan al
+            if ($songs->count() < $limit && $actualOffset > 0) {
+                $remaining = $limit - $songs->count();
+                $moreSongs = $allSongs->take($remaining);
+                $songs = $songs->merge($moreSongs);
+            }
+
+            \Log::info('🎲 Genre songs shuffled', [
+                'genre_id' => $genreId,
+                'offset' => $offset,
+                'is_wrapping' => $isWrappingAround,
+                'returned' => $songs->count()
+            ]);
+        } else {
+            // Normal sıralı çalma (ilk pass)
+            $songs = $genre->songs()
+                ->where('is_active', 1)
+                ->with(['album.artist'])
+                ->skip($actualOffset)
+                ->take($limit)
                 ->get();
-            
-            $songs = $songs->merge($moreSongs);
+
+            // If we didn't get enough songs, wrap around and get from beginning
+            if ($songs->count() < $limit && $actualOffset > 0) {
+                $remaining = $limit - $songs->count();
+                $moreSongs = $genre->songs()
+                    ->where('is_active', 1)
+                    ->with(['album.artist'])
+                    ->take($remaining)
+                    ->get();
+
+                $songs = $songs->merge($moreSongs);
+            }
         }
 
         return $this->formatSongs($songs);
@@ -209,7 +243,7 @@ class QueueRefillController extends Controller
             // ✅ TRANSITION: Playlist → Genre (son 5 şarkının en çok genre'si)
             $lastSongs = $playlist->songs()
                 ->where('is_active', 1)
-                ->orderBy('pivot_id', 'desc')
+                ->orderBy('muzibu_playlist_song.position', 'desc')
                 ->take(5)
                 ->get();
 
@@ -579,7 +613,8 @@ class QueueRefillController extends Controller
                 'song_slug' => $song->slug,
                 'duration' => $song->duration,
                 'file_path' => $song->file_path,
-                'hls_path' => $song->hls_path,                'lyrics' => $song->lyrics,
+                'hls_path' => $song->hls_path,
+                'lyrics' => $song->lyrics,
                 'album_id' => $album?->album_id,
                 'album_title' => $album?->title,
                 'album_slug' => $album?->slug,
@@ -589,5 +624,82 @@ class QueueRefillController extends Controller
                 'artist_slug' => $artist?->slug,
             ];
         })->values()->toArray();
+    }
+
+    /**
+     * 🧪 DEBUG: Şarkı seçim mantığını açıkla
+     */
+    private function getSelectionExplanation(string $type, ?int $id, int $offset, int $count): array
+    {
+        $sourceName = 'Bilinmiyor';
+        $totalSongs = 0;
+        $algorithm = '';
+
+        switch ($type) {
+            case 'playlist':
+                $playlist = Playlist::find($id);
+                $sourceName = $playlist?->title ?? "Playlist #{$id}";
+                $totalSongs = $playlist?->songs()->where('is_active', 1)->count() ?? 0;
+                $algorithm = "Playlist sırasına göre ({$offset}. şarkıdan itibaren)";
+                break;
+
+            case 'album':
+                $album = Album::with('artist')->find($id);
+                $sourceName = $album?->title ?? "Albüm #{$id}";
+                $totalSongs = $album?->songs()->where('is_active', 1)->count() ?? 0;
+                $algorithm = "Albüm sırasına göre ({$offset}. şarkıdan itibaren)";
+                break;
+
+            case 'genre':
+                $genre = Genre::find($id);
+                $sourceName = $genre?->title ?? "Tür #{$id}";
+                $totalSongs = $genre?->songs()->where('is_active', 1)->count() ?? 0;
+                $isWrap = $offset >= $totalSongs && $totalSongs > 0;
+                $algorithm = $isWrap
+                    ? "♾️ Tür başa sardı (sonsuz döngü) + karıştırıldı"
+                    : "Tür şarkıları ({$offset}. şarkıdan itibaren)";
+                break;
+
+            case 'sector':
+                $sector = Sector::find($id);
+                $sourceName = $sector?->title ?? "Sektör #{$id}";
+                $algorithm = "♾️ Sektör playlistlerinden sonsuz döngü";
+                break;
+
+            case 'radio':
+                $radio = Radio::find($id);
+                $sourceName = $radio?->title ?? "Radyo #{$id}";
+                $algorithm = "♾️ Radyo karışık çalma (shuffle)";
+                break;
+
+            case 'popular':
+                $sourceName = 'Popüler Şarkılar';
+                $totalSongs = Song::where('is_active', 1)->count();
+                $algorithm = "Çalınma sayısına göre sıralı";
+                break;
+
+            case 'favorites':
+                $sourceName = 'Favorilerim';
+                $algorithm = "Favori ekleme sırasına göre";
+                break;
+
+            case 'recent':
+                $sourceName = 'Son Eklenenler';
+                $totalSongs = Song::where('is_active', 1)->count();
+                $algorithm = "Eklenme tarihine göre (yeniden eskiye)";
+                break;
+
+            default:
+                $algorithm = "Varsayılan sıralama";
+        }
+
+        return [
+            'kaynak' => $sourceName,
+            'kaynak_tipi' => $type,
+            'toplam_sarki' => $totalSongs,
+            'baslangic' => $offset + 1,
+            'alinan' => $count,
+            'algoritma' => $algorithm,
+        ];
     }
 }

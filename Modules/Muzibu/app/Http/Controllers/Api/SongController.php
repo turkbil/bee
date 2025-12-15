@@ -325,6 +325,16 @@ class SongController extends Controller
      */
     public function serveEncryptionKey(int $id)
     {
+        // 🔧 FIX: Handle OPTIONS preflight request for CORS
+        if (request()->isMethod('OPTIONS')) {
+            $response = new \Symfony\Component\HttpFoundation\Response('', 204);
+            $response->headers->set('Access-Control-Allow-Origin', '*');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Range, X-Requested-With');
+            $response->headers->set('Access-Control-Max-Age', '86400');
+            return $response;
+        }
+
         try {
             // 🔥 DISABLE SESSION FOR THIS REQUEST (before any session starts)
             config(['session.driver' => 'array']); // Temporary in-memory session (won't persist or set cookies)

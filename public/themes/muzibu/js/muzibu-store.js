@@ -217,6 +217,17 @@ document.addEventListener('alpine:init', () => {
                 if (data.success && data.songs && data.songs.length > 0) {
                     console.log(`✅ Queue refilled: ${data.songs.length} songs`, data.songs);
 
+                    // 🧪 DEBUG: Şarkı seçim açıklaması (backend'den gelen)
+                    if (data.explanation) {
+                        console.log('📋 Şarkı Seçim Açıklaması:', data.explanation);
+                        window.debugLog?.('info', `📋 ${data.explanation.algoritma}`, {
+                            kaynak: data.explanation.kaynak,
+                            toplam: `${data.explanation.toplam_sarki} şarkı`,
+                            alinan: `${data.explanation.baslangic}-${data.explanation.baslangic + data.explanation.alinan - 1}. sıra`,
+                            secim_mantigi: data.explanation.algoritma
+                        });
+                    }
+
                     // Update context offset for next refill (unless transition happened)
                     if (!data.transition) {
                         this.updatePlayContext({ offset: currentOffset + data.songs.length });
@@ -753,23 +764,21 @@ document.addEventListener('alpine:init', () => {
         },
 
         /**
-         * Show preview for a list item (on hover)
-         * @param {string} type - Item type (playlist, album, genre)
+         * 🚀 PREFETCH: Silently fetch and cache tracks on hover (no loading spinner)
+         * @param {string} type - Item type (playlist, album, genre, sector)
          * @param {number} id - Item ID
-         * @param {Object} info - Item info (title, cover)
          */
-        async showPreview(type, id, info) {
-            if (this.pageType !== 'home') return; // Only on list pages
-
-            this.previewMode = true;
-            this.previewInfo = info;
-
-            // Check cache first
+        async prefetch(type, id) {
             const cacheKey = `${type}_${id}`;
-            if (this.previewCache[cacheKey]) {
-                this.previewTracks = this.previewCache[cacheKey];
+
+            // Already cached or currently fetching? Skip
+            if (this.previewCache[cacheKey] || this._prefetchingIds?.has(cacheKey)) {
                 return;
             }
+
+            // Track what we're fetching to avoid duplicates
+            if (!this._prefetchingIds) this._prefetchingIds = new Set();
+            this._prefetchingIds.add(cacheKey);
 
             // Build API URL based on type
             let apiUrl;
@@ -783,11 +792,84 @@ document.addEventListener('alpine:init', () => {
                 case 'genre':
                     apiUrl = `/api/muzibu/genres/${id}/songs`;
                     break;
+                case 'sector':
+                    apiUrl = `/api/muzibu/sectors/${id}/songs`;
+                    break;
+                default:
+                    this._prefetchingIds.delete(cacheKey);
+                    return;
+            }
+
+            try {
+                const response = await fetch(apiUrl);
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Extract tracks based on response format
+                    let tracks = [];
+                    if (type === 'genre' || type === 'sector') {
+                        tracks = Array.isArray(data) ? data : (data.data || []);
+                    } else {
+                        tracks = data.songs || [];
+                    }
+
+                    // Transform and cache
+                    this.previewCache[cacheKey] = tracks.slice(0, 20).map(song => ({
+                        id: song.song_id,
+                        title: this.getLocalizedTitle(song.song_title || song.title),
+                        artist: this.getLocalizedTitle(song.artist_title || song.artist?.title || ''),
+                        duration: this.formatDuration(song.duration),
+                        cover: song.cover_url || null,
+                        is_favorite: song.is_favorite || false
+                    }));
+                }
+            } catch (e) {
+                // Silent fail - prefetch is optional
+            } finally {
+                this._prefetchingIds.delete(cacheKey);
+            }
+        },
+
+        /**
+         * Show preview for a list item (on click - instant from cache)
+         * @param {string} type - Item type (playlist, album, genre, sector)
+         * @param {number} id - Item ID
+         * @param {Object} info - Item info (title, cover)
+         */
+        async showPreview(type, id, info) {
+            if (this.pageType !== 'home') return; // Only on list pages
+
+            this.previewMode = true;
+            this.previewInfo = info;
+
+            // Check cache first (prefetch should have filled this)
+            const cacheKey = `${type}_${id}`;
+            if (this.previewCache[cacheKey]) {
+                this.previewTracks = this.previewCache[cacheKey];
+                return;
+            }
+
+            // Fallback: fetch if not cached (shouldn't happen with prefetch)
+            // Build API URL based on type
+            let apiUrl;
+            switch (type) {
+                case 'playlist':
+                    apiUrl = `/api/muzibu/playlists/${id}`;
+                    break;
+                case 'album':
+                    apiUrl = `/api/muzibu/albums/${id}`;
+                    break;
+                case 'genre':
+                    apiUrl = `/api/muzibu/genres/${id}/songs`;
+                    break;
+                case 'sector':
+                    apiUrl = `/api/muzibu/sectors/${id}/songs`;
+                    break;
                 default:
                     return;
             }
 
-            // Fetch tracks from API
+            // Fetch tracks from API (with loading since not prefetched)
             this.previewLoading = true;
             try {
                 const response = await fetch(apiUrl);
@@ -796,11 +878,9 @@ document.addEventListener('alpine:init', () => {
 
                     // Extract tracks based on response format
                     let tracks = [];
-                    if (type === 'genre') {
-                        // Genre returns array directly or paginated
+                    if (type === 'genre' || type === 'sector') {
                         tracks = Array.isArray(data) ? data : (data.data || []);
                     } else {
-                        // Playlist/Album returns object with songs
                         tracks = data.songs || [];
                     }
 
@@ -809,7 +889,9 @@ document.addEventListener('alpine:init', () => {
                         id: song.song_id,
                         title: this.getLocalizedTitle(song.song_title || song.title),
                         artist: this.getLocalizedTitle(song.artist_title || song.artist?.title || ''),
-                        duration: this.formatDuration(song.duration)
+                        duration: this.formatDuration(song.duration),
+                        cover: song.cover_url || null,
+                        is_favorite: song.is_favorite || false
                     }));
 
                     this.previewCache[cacheKey] = this.previewTracks;

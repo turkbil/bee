@@ -28,9 +28,9 @@
                 @endif
 
                 <div class="row g-2 align-items-stretch" style="max-height: 125px;">
-                    {{-- Thumbnail Preview - Sol taraf, sadece görsel varsa --}}
+                    {{-- Thumbnail Preview - Görsel varsa tam genişlik --}}
                     @if(!empty($existingFeaturedImage) || !empty($tempFeaturedImage))
-                        <div class="col-lg-4">
+                        <div class="col-12">
                             <div class="position-relative">
                                 @php
                                     // Session-based temp file öncelikli
@@ -93,43 +93,45 @@
                         </div>
                     @endif
 
-                    {{-- Upload Area - Sağ taraf, her zaman görünür --}}
-                    <div class="{{ (!empty($existingFeaturedImage) || !empty($tempFeaturedImage)) ? 'col-lg-8' : 'col-12' }}">
-                        <div x-data="manualUploadComponent(@this)"
-                             @dragover.prevent="isDragging = true"
-                             @dragleave.prevent="isDragging = false"
-                             @drop.prevent="handleDrop($event)"
-                             class="border rounded p-3 text-center border-dashed"
-                             :class="{ 'border-primary bg-light': isDragging, 'opacity-50': uploading }"
-                             style="cursor: pointer; display: flex; flex-direction: column; justify-content: center; height: 125px;"
-                             @click="!uploading && $refs.featuredInput.click()">
+                    {{-- Upload Area - Sadece görsel yoksa göster --}}
+                    @if(empty($existingFeaturedImage) && empty($tempFeaturedImage))
+                        <div class="col-12">
+                            <div x-data="manualUploadComponent(@this)"
+                                 @dragover.prevent="isDragging = true"
+                                 @dragleave.prevent="isDragging = false"
+                                 @drop.prevent="handleDrop($event)"
+                                 class="border rounded p-3 text-center border-dashed"
+                                 :class="{ 'border-primary bg-light': isDragging, 'opacity-50': uploading }"
+                                 style="cursor: pointer; display: flex; flex-direction: column; justify-content: center; height: 125px;"
+                                 @click="!uploading && $refs.featuredInput.click()">
 
-                            <div class="mb-2" x-show="!uploading">
-                                <i class="fas fa-image fa-2x text-muted"></i>
-                            </div>
-
-                            <div class="mb-2" x-show="uploading" x-cloak>
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Yükleniyor...</span>
+                                <div class="mb-2" x-show="!uploading">
+                                    <i class="fas fa-image fa-2x text-muted"></i>
                                 </div>
+
+                                <div class="mb-2" x-show="uploading" x-cloak>
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Yükleniyor...</span>
+                                    </div>
+                                </div>
+
+                                <p class="mb-1" x-show="!uploading">{{ __('mediamanagement::admin.drag_drop_file') }}</p>
+                                <p class="mb-1" x-show="uploading" x-cloak>Yükleniyor...</p>
+                                <p class="text-muted small mb-0" x-show="!uploading">{{ __('mediamanagement::admin.max_file_size', ['size' => '10MB']) }}</p>
+
+                                <input type="file"
+                                       x-ref="featuredInput"
+                                       @change="uploadFile($event.target.files[0])"
+                                       accept="{{ $acceptedFileTypes ?? 'image/jpeg,image/png,image/jpg,image/webp,image/gif' }}"
+                                       class="d-none"
+                                       :disabled="uploading">
                             </div>
 
-                            <p class="mb-1" x-show="!uploading">{{ __('mediamanagement::admin.drag_drop_file') }}</p>
-                            <p class="mb-1" x-show="uploading" x-cloak>Yükleniyor...</p>
-                            <p class="text-muted small mb-0" x-show="!uploading">{{ __('mediamanagement::admin.max_file_size', ['size' => '10MB']) }}</p>
-
-                            <input type="file"
-                                   x-ref="featuredInput"
-                                   @change="uploadFile($event.target.files[0])"
-                                   accept="{{ $acceptedFileTypes ?? 'image/jpeg,image/png,image/jpg,image/webp,image/gif' }}"
-                                   class="d-none"
-                                   :disabled="uploading">
+                            @error('featuredImageFile')
+                                <div class="alert alert-danger mt-2">{{ $message }}</div>
+                            @enderror
                         </div>
-
-                        @error('featuredImageFile')
-                            <div class="alert alert-danger mt-2">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    @endif
                 </div>
             </div>
         @endif

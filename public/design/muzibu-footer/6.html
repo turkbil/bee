@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Footer #6 - Compact</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        muzibu: {
+                            coral: '#ff7f50', 'coral-light': '#ff9770', 'coral-dark': '#ff6a3d',
+                            black: '#000000', dark: '#121212', gray: '#181818',
+                            'gray-light': '#282828', 'text-gray': '#b3b3b3',
+                        }
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>body { font-family: 'Inter', system-ui, sans-serif; }</style>
+</head>
+<body class="bg-black text-white min-h-screen">
+
+    <header class="bg-muzibu-dark border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark rounded-lg flex items-center justify-center">
+                        <i class="fas fa-music text-white text-sm"></i>
+                    </div>
+                    <span class="font-bold text-lg">muzibu</span>
+                </div>
+                <nav class="hidden md:flex items-center gap-6 text-sm">
+                    <a href="#" class="text-muzibu-text-gray hover:text-white transition-colors">Keşfet</a>
+                    <a href="#" class="text-muzibu-text-gray hover:text-white transition-colors">Albümler</a>
+                    <a href="#" class="text-muzibu-text-gray hover:text-white transition-colors">Sanatçılar</a>
+                </nav>
+            </div>
+            <button class="px-4 py-2 text-sm font-medium bg-muzibu-coral hover:bg-muzibu-coral-light text-white rounded-full transition-colors">Premium</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-light bg-clip-text text-transparent">
+                Footer Alternatif #6
+            </h1>
+            <p class="text-muzibu-text-gray text-lg">Compact Footer - Mobile-first ultra minimal tasarım</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-16">
+            <div class="bg-muzibu-gray rounded-2xl p-6 border border-white/5">
+                <i class="fas fa-compress text-3xl text-muzibu-coral mb-4"></i>
+                <h3 class="text-lg font-semibold mb-2">Ultra Compact</h3>
+                <p class="text-muzibu-text-gray text-sm">Minimum alan kaplar, maksimum bilgi</p>
+            </div>
+            <div class="bg-muzibu-gray rounded-2xl p-6 border border-white/5">
+                <i class="fas fa-mobile-screen text-3xl text-muzibu-coral mb-4"></i>
+                <h3 class="text-lg font-semibold mb-2">Mobile-First</h3>
+                <p class="text-muzibu-text-gray text-sm">Mobil cihazlar için optimize</p>
+            </div>
+            <div class="bg-muzibu-gray rounded-2xl p-6 border border-white/5">
+                <i class="fas fa-bolt text-3xl text-muzibu-coral mb-4"></i>
+                <h3 class="text-lg font-semibold mb-2">Hızlı Erişim</h3>
+                <p class="text-muzibu-text-gray text-sm">Önemli linklere anında ulaşım</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER ALTERNATIF #6 - COMPACT -->
+    <footer class="bg-muzibu-dark border-t border-white/10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+
+            <!-- Single Row Layout -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
+
+                <!-- Brand -->
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark rounded-xl flex items-center justify-center">
+                        <i class="fas fa-music text-white"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-xl block leading-none">muzibu</span>
+                        <span class="text-xs text-muzibu-text-gray">İşletmenize yasal müzik</span>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <nav class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-muzibu-text-gray">
+                    <a href="#" class="hover:text-muzibu-coral transition-colors">Hakkımızda</a>
+                    <a href="#" class="hover:text-muzibu-coral transition-colors">Fiyatlandırma</a>
+                    <a href="#" class="hover:text-muzibu-coral transition-colors">İletişim</a>
+                    <a href="#" class="hover:text-muzibu-coral transition-colors">Yardım</a>
+                    <a href="#" class="hover:text-muzibu-coral transition-colors">Blog</a>
+                </nav>
+
+                <!-- Social -->
+                <div class="flex items-center gap-2">
+                    <a href="#" class="w-9 h-9 bg-muzibu-gray hover:bg-muzibu-coral rounded-lg flex items-center justify-center transition-all transform hover:scale-110">
+                        <i class="fab fa-instagram text-sm"></i>
+                    </a>
+                    <a href="#" class="w-9 h-9 bg-muzibu-gray hover:bg-muzibu-coral rounded-lg flex items-center justify-center transition-all transform hover:scale-110">
+                        <i class="fab fa-facebook-f text-sm"></i>
+                    </a>
+                    <a href="#" class="w-9 h-9 bg-muzibu-gray hover:bg-muzibu-coral rounded-lg flex items-center justify-center transition-all transform hover:scale-110">
+                        <i class="fab fa-twitter text-sm"></i>
+                    </a>
+                    <a href="#" class="w-9 h-9 bg-muzibu-gray hover:bg-muzibu-coral rounded-lg flex items-center justify-center transition-all transform hover:scale-110">
+                        <i class="fab fa-youtube text-sm"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/10 text-xs text-muzibu-text-gray">
+                <p>&copy; 2024 Muzibu. Tüm hakları saklıdır.</p>
+                <div class="flex flex-wrap items-center gap-3">
+                    <a href="#" class="hover:text-muzibu-coral transition-colors">Kullanım Şartları</a>
+                    <span class="hidden sm:inline">•</span>
+                    <a href="#" class="hover:text-muzibu-coral transition-colors">Gizlilik</a>
+                    <span class="hidden sm:inline">•</span>
+                    <a href="#" class="hover:text-muzibu-coral transition-colors">Çerezler</a>
+                    <span class="hidden sm:inline">•</span>
+                    <span>🇹🇷 Türkiye</span>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Fixed Navigation Buttons -->
+    <div class="fixed bottom-6 right-6 flex items-center gap-3 z-50">
+        <a href="5.html" class="w-12 h-12 bg-muzibu-gray hover:bg-muzibu-coral rounded-full flex items-center justify-center shadow-lg transition-all group border border-white/10">
+            <i class="fas fa-chevron-left text-muzibu-text-gray group-hover:text-white transition-colors"></i>
+        </a>
+        <div class="px-4 py-2 bg-muzibu-gray rounded-full text-sm font-medium border border-white/10">
+            6 / 6
+        </div>
+        <a href="1.html" class="w-12 h-12 bg-muzibu-coral hover:bg-muzibu-coral-light rounded-full flex items-center justify-center shadow-lg transition-all">
+            <i class="fas fa-chevron-right text-white"></i>
+        </a>
+    </div>
+
+</body>
+</html>

@@ -1,17 +1,17 @@
 {{-- LEFT SIDEBAR - Modern & Clean --}}
 <aside
     id="leftSidebar"
-    class="muzibu-left-sidebar lg:flex lg:flex-col animate-slide-up"
+    class="muzibu-left-sidebar lg:flex lg:flex-col"
 >
     {{-- Library Section --}}
     <div class="mb-3">
         <h3 class="px-4 text-xs font-bold text-muzibu-text-gray uppercase tracking-wider mb-2">Kitaplığım</h3>
         <nav class="space-y-1">
-            <a href="/my-playlists" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/my-playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-list w-5 text-base"></i>
                 <span class="font-medium text-sm">Playlistlerim</span>
             </a>
-            <a href="/favorites" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/favorites" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-heart w-5 text-base"></i>
                 <span class="font-medium text-sm">Favorilerim</span>
             </a>
@@ -24,23 +24,23 @@
     <div class="mb-3">
         <h3 class="px-4 text-xs font-bold text-muzibu-text-gray uppercase tracking-wider mb-2">Keşfet</h3>
         <nav class="space-y-1">
-            <a href="/playlists" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/playlists" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-stream w-5 text-base"></i>
                 <span class="font-medium text-sm">Playlistler</span>
             </a>
-            <a href="/albums" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/albums" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-compact-disc w-5 text-base"></i>
                 <span class="font-medium text-sm">Albümler</span>
             </a>
-            <a href="/genres" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/genres" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-music w-5 text-base"></i>
                 <span class="font-medium text-sm">Türler</span>
             </a>
-            <a href="/sectors" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/sectors" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-compass w-5 text-base"></i>
                 <span class="font-medium text-sm">Sektörler</span>
             </a>
-            <a href="/radios" wire:navigate class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
+            <a href="/radios" class="flex items-center gap-3 px-4 py-2 text-muzibu-text-gray hover:text-white hover:bg-white/5 rounded-lg group transition-all duration-300">
                 <i class="fas fa-broadcast-tower w-5 text-base"></i>
                 <span class="font-medium text-sm">Radyolar</span>
             </a>

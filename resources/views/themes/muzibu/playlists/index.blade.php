@@ -6,21 +6,45 @@
 if (window.Alpine && window.Alpine.store('sidebar')) {
     window.Alpine.store('sidebar').reset();
 }
+
+// 🚀 Auto-prefetch visible items on page load (staggered to avoid server overload)
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const cards = document.querySelectorAll('[data-playlist-id]');
+        const visibleCount = Math.min(cards.length, 6);
+        cards.forEach((card, i) => {
+            if (i >= visibleCount) return;
+            const id = card.dataset.playlistId;
+            if (id && window.Alpine?.store('sidebar')?.prefetch) {
+                setTimeout(() => {
+                    window.Alpine.store('sidebar').prefetch('playlist', parseInt(id));
+                }, i * 150);
+            }
+        });
+    }, 300);
+});
 </script>
 
 <div class="px-6 py-8">
     {{-- Header --}}
-    <div class="mb-8 animate-slide-up">
+    <div class="mb-8">
         <h1 class="text-4xl font-bold text-white mb-2">Popüler Playlistler</h1>
         <p class="text-gray-400">Özenle hazırlanmış müzik koleksiyonları</p>
     </div>
 
     {{-- Playlists Grid --}}
     @if($playlists && $playlists->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4 animate-slide-up" style="animation-delay: 100ms">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($playlists as $playlist)
                 <a href="{{ route('muzibu.playlists.show', $playlist->getTranslation('slug', app()->getLocale())) }}"
-                   wire:navigate
+                   @mouseenter="$store.sidebar.prefetch('playlist', {{ $playlist->playlist_id }})"
+                   @click="if(window.innerWidth >= 1280) { $event.preventDefault(); $store.sidebar.showPreview('playlist', {{ $playlist->playlist_id }}, {
+                       type: 'Playlist',
+                       id: {{ $playlist->playlist_id }},
+                       title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
+                       cover: '{{ $playlist->coverMedia ? thumb($playlist->coverMedia, 300, 300) : '' }}',
+                       is_favorite: {{ auth()->check() && $playlist->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                   }); }"
                    class="playlist-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
                    data-playlist-id="{{ $playlist->playlist_id }}"
                    data-playlist-title="{{ $playlist->getTranslation('title', app()->getLocale()) }}"

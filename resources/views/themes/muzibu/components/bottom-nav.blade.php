@@ -1,10 +1,10 @@
 <nav class="muzibu-bottom-nav">
     <div class="muzibu-bottom-nav-items">
-        <a href="{{ route('muzibu.home') }}" wire:navigate class="muzibu-bottom-nav-item {{ request()->routeIs('muzibu.home') ? 'active' : '' }}">
+        <a href="{{ route('muzibu.home') }}" class="muzibu-bottom-nav-item {{ request()->routeIs('muzibu.home') ? 'active' : '' }}">
             <i class="fas fa-home"></i>
             <span>Ana Sayfa</span>
         </a>
-        <a href="/search" wire:navigate class="muzibu-bottom-nav-item {{ request()->is('search*') ? 'active' : '' }}">
+        <a href="/search" class="muzibu-bottom-nav-item {{ request()->is('search*') ? 'active' : '' }}">
             <i class="fas fa-search"></i>
             <span>Ara</span>
         </a>

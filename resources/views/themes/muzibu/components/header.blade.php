@@ -9,7 +9,7 @@
         </button>
 
         {{-- Logo with animation - Settings powered --}}
-        <a href="/" wire:navigate class="text-2xl font-bold group flex items-center">
+        <a href="/" class="text-2xl font-bold group flex items-center">
             @php
                 // LogoService kullan - Settings'den logo çek
                 $logoService = app(\App\Services\LogoService::class);
@@ -208,13 +208,13 @@
                     const slug = this.getSlug(item);
                     if (!slug) return;
                     const routes = {
-                        song: `/muzibu/song/${slug}`,
-                        album: `/muzibu/album/${slug}`,
-                        artist: `/muzibu/artist/${slug}`,
-                        playlist: `/muzibu/playlist/${slug}`,
-                        genre: `/muzibu/genre/${slug}`,
-                        sector: `/muzibu/sector/${slug}`,
-                        radio: `/muzibu/radio/${slug}`
+                        song: `/song/${slug}`,
+                        album: `/albums/${slug}`,
+                        artist: `/artists/${slug}`,
+                        playlist: `/playlists/${slug}`,
+                        genre: `/genres/${slug}`,
+                        sector: `/sectors/${slug}`,
+                        radio: `/radios/${slug}`
                     };
                     window.location.href = routes[item._type] || '#';
                 },
@@ -493,7 +493,7 @@
         {{-- Premium Button (non-premium only) - SPA Reactive --}}
         <a
             href="/subscription/plans"
-            wire:navigate
+           
             x-show="isLoggedIn && (!currentUser?.is_premium)"
             x-cloak
             class="hidden sm:flex items-center gap-2 px-4 py-2 border border-muzibu-coral/40 hover:border-muzibu-coral hover:bg-muzibu-coral/10 rounded-full text-muzibu-coral text-sm font-semibold transition-all duration-300"
@@ -572,13 +572,13 @@
                 </div>
 
                 {{-- Dashboard Link --}}
-                <a href="/dashboard" wire:navigate @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
+                <a href="/dashboard" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
                     <i class="fas fa-th-large w-5"></i>
                     <span>Kullanıcı Paneli</span>
                 </a>
 
                 {{-- Profile Link --}}
-                <a href="/profile" wire:navigate @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
+                <a href="/profile" @click="userMenuOpen = false" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/5 text-white text-sm transition-colors">
                     <i class="fas fa-user w-5"></i>
                     <span>Profil</span>
                 </a>
@@ -588,7 +588,7 @@
                 {{-- Premium'a Geç (ücretsiz üyeler için) --}}
                 <a
                     href="/subscription/plans"
-                    wire:navigate
+                   
                     x-show="!currentUser?.is_premium"
                     @click="userMenuOpen = false"
                     class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors"
@@ -600,7 +600,7 @@
                 {{-- Üyeliğini Uzat (premium/trial üyeler için) --}}
                 <a
                     href="/subscription/plans"
-                    wire:navigate
+                   
                     x-show="currentUser?.is_premium"
                     @click="userMenuOpen = false"
                     class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-yellow-500/10 text-yellow-400 text-sm transition-colors"
@@ -623,7 +623,7 @@
         <div x-show="!isLoggedIn" x-cloak class="flex items-center gap-3">
             <a
                 href="/login"
-                wire:navigate
+               
                 class="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-full text-white text-sm font-semibold transition-all duration-300"
             >
                 <i class="fas fa-sign-in-alt text-xs"></i>
@@ -631,7 +631,7 @@
             </a>
             <a
                 href="/register"
-                wire:navigate
+               
                 class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-light hover:from-muzibu-coral-light hover:to-muzibu-coral rounded-full text-white text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-muzibu-coral/30"
             >
                 <i class="fas fa-user-plus text-xs"></i>

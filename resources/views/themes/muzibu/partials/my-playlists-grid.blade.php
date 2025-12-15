@@ -1,15 +1,15 @@
 <div class="px-4 sm:px-6 py-6 sm:py-8">
     {{-- Header --}}
-    <div class="mb-8 sm:mb-10 animate-slide-up">
+    <div class="mb-8 sm:mb-10">
         <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-3">Playlistlerim</h1>
         <p class="text-sm sm:text-base text-gray-400">Oluşturduğun müzik koleksiyonları</p>
     </div>
 
     {{-- Playlists Grid - Modern Layout --}}
     @if($playlists && $playlists->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 animate-slide-up" style="animation-delay: 100ms">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
             @foreach($playlists as $playlist)
-                <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+                <a href="/playlists/{{ $playlist->getTranslation('slug', app()->getLocale()) }}"
                    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'playlist', {
                        id: {{ $playlist->id }},
                        title: '{{ addslashes($playlist->getTranslation('title', app()->getLocale())) }}',
@@ -97,7 +97,7 @@
                                 <i x-bind:class="favorited ? 'fas fa-heart text-red-500' : 'far fa-heart text-white'" class="text-sm"></i>
                             </button>
                             @else
-                            <a href="{{ route('login') }}" wire:navigate class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
+                            <a href="{{ route('login') }}" class="w-8 h-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-transform">
                                 <i class="far fa-heart text-white text-sm"></i>
                             </a>
                             @endauth

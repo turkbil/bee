@@ -1,5 +1,5 @@
 {{-- MAIN CONTENT --}}
-<main class="muzibu-main animate-fade-in relative overflow-hidden">
+<main class="muzibu-main relative overflow-hidden">
     <div class="overflow-y-auto h-full relative">
         {{-- V3: Turuncu → Kırmızı → Bordo - Yatay Animasyonlu + Dark Altta --}}
         <div class="absolute top-0 left-0 right-0 h-[250px] rounded-t-2xl pointer-events-none overflow-hidden">
@@ -21,9 +21,6 @@
                 class="spa-content-wrapper"
                 id="spaContent"
                 x-show="!$store.player.isLoading"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 transform translate-y-4"
-                x-transition:enter-end="opacity-100 transform translate-y-0"
             >
                 {{ $slot ?? '' }}
                 @yield('content')

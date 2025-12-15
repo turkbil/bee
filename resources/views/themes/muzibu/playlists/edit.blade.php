@@ -9,7 +9,7 @@
             <p class="text-gray-400">{{ $playlist->title }}</p>
         </div>
         <a href="{{ route('muzibu.my-playlists') }}"
-           wire:navigate
+          
            class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-full hover:bg-gray-600 transition-all">
             <i class="fas fa-arrow-left mr-2"></i>
             Geri Dön

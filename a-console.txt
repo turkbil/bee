@@ -1,20 +1,878 @@
 ?plugins=forms,typography,aspect-ratio:68 cdn.tailwindcss.com should not be used in production. To use Tailwind CSS in production, install it as a PostCSS plugin or use the Tailwind CLI: https://tailwindcss.com/docs/installation
 (anonymous) @ ?plugins=forms,typography,aspect-ratio:68
 (anonymous) @ ?plugins=forms,typography,aspect-ratio:68
-muzibu-router.js?v=1765488405:31 🚀 Muzibu SPA Router initialized
-player-core.js?v=1765760814:229 Muzibu initialized with Howler.js
-player-core.js?v=1765760814:232 Muzibu initialized {isLoggedIn: true, user: Proxy(Object)}
-keyboard.js?v=1765512980:46 🎹 Keyboard shortcuts initialized
-player-core.js?v=1765760814:3323 ✅ Queue Monitor started (checks every 10s)
-muzibu-store.js?v=1765759910:112 🎯 Play Context Set: {type: 'playlist', id: 7, name: 'Dinlendirici', offset: 17}
-muzibu-store.js?v=1765759910:147 🔄 Play Context Updated: {type: 'playlist', id: 7, name: 'Dinlendirici', offset: 17}
-player-core.js?v=1765760814:674 💾 Full state restored: {queue: 1, index: 0, song: 'FIRE', volume: 100, wasPlaying: false}
-player-core.js?v=1765760814:689 🎵 State restored - UI only, NO stream request {wasPlaying: false, savedTime: 150.727745}
-player-core.js?v=1765760814:3425 ✅ Background playback enabled (works when minimized)
-player-core.js?v=1765760814:3490 ✅ Auto-save enabled (state saved on every change)
-player-core.js?v=1765760814:3519 🔐 Session polling started (5s interval, initial check in 2s)
-player-core.js?v=1765760814:224 ⚠️ Already initialized, skipping...
-(index):6267 🔄 Livewire navigated - Re-initializing Alpine...
-player-core.js?v=1765760814:702 ✅ State restoration complete (UI only), auto-save re-enabled
-player-core.js?v=1765760814:3967 🔐 Page load device check: 1 devices, limit: 1 terminable: 0
-player-core.js?v=1765760814:365 Featured playlists loaded: 10
+VM19588 debug.js:271 🧪 Debug Feature Loaded
+VM19595 player-core.js:230 Muzibu initialized with Howler.js
+VM19595 player-core.js:233 Muzibu initialized Object
+VM19594 keyboard.js:46 🎹 Keyboard shortcuts initialized
+VM19595 player-core.js:3333 ✅ Queue Monitor started (checks every 10s)
+VM19568 muzibu-store.js:112 🎯 Play Context Set: Object
+VM19568 muzibu-store.js:147 🔄 Play Context Updated: Object
+VM19595 player-core.js:675 💾 Full state restored: Object
+VM19595 player-core.js:690 🎵 State restored - UI only, NO stream request Object
+VM19595 player-core.js:3435 ✅ Background playback enabled (works when minimized)
+VM19595 player-core.js:3500 ✅ Auto-save enabled (state saved on every change)
+VM19595 player-core.js:3529 🔐 Session polling started (5s interval, initial check in 2s)
+VM19595 player-core.js:225 ⚠️ Already initialized, skipping...
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: showDebugInfo is not defined
+
+Expression: "showDebugInfo && currentSong"
+
+ div.fixed.bottom-20.right-4.z-40.flex.items-center.gap-1
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+my-playlists:3860 🔄 Livewire navigated - Re-initializing Alpine...
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showDebugInfo is not defined
+    at [Alpine] showDebugInfo && currentSong (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] showDebugInfo && currentSong @ VM19704:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+VM19859:38 🧪 Debug Panel connected
+VM19595 player-core.js:703 ✅ State restoration complete (UI only), auto-save re-enabled
+VM19595 player-core.js:3977 🔐 Page load device check: 1 devices, limit: 1 terminable: 0
+VM19595 player-core.js:366 Featured playlists loaded: 10
+VM19595 player-core.js:389 🎵 Preloading last played song: ALONE
+VM19595 player-core.js:620 💾 Full state saved: Object
+VM19595 player-core.js:620 💾 Full state saved: Object
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:415 ✅ Last played song preloaded (PAUSED, ready to play)
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/323/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 323
+VM19595 player-core.js:2276 HLS loaded, duration: 174.941311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:620 💾 Full state saved: Object
+VM19595 player-core.js:3419 📱 Page hidden - Background playback active
+VM19595 player-core.js:3422 👀 Page visible - Welcome back!
+VM19595 player-core.js:620 💾 Full state saved: {queue: 1, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19680:6  DELETE https://muzibu.com.tr/api/muzibu/playlists/16 419
+eval @ VM19680:6
+[Alpine] confirm('Bu playlist\'i silmek istediğinize emin misiniz?') && (() => {
+                                        try {
+                                            const token = localStorage.getItem('auth_token');
+                                            fetch('/api/muzibu/playlists/16', {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'Authorization': 'Bearer ' + (token || ''),
+                                                    'Accept': 'application/json'
+                                                }
+                                            }).then(response => response.json())
+                                              .then(data => {
+                                                  if(data.success) {
+                                                      window.location.reload();
+                                                  } else {
+                                                      alert(data.message || 'Bir hata oluştu');
+                                                  }
+                                              });
+                                        } catch (e) {
+                                            alert('Storage erişim hatası');
+                                        }
+                                    })() @ VM19680:23
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+wrapHandler @ livewire.js?id=df3a17f2:3185
+VM19595 player-core.js:3346 🔍 Queue Check: 1 songs remaining (queueIndex: 0/1)
+VM19595 player-core.js:3367 ⚠️ Queue running low! Auto-refilling...
+checkAndRefillQueue @ VM19595 player-core.js:3367
+(anonymous) @ VM19595 player-core.js:3330
+VM19568 muzibu-store.js:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 36, limit: 15}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 1, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19568 muzibu-store.js:218 ✅ Queue refilled: 11 songs (11) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+VM19568 muzibu-store.js:222 📋 Şarkı Seçim Açıklaması: {kaynak: {…}, kaynak_tipi: 'playlist', toplam_sarki: 14, baslangic: 37, alinan: 11, …}
+VM19588 debug.js:76 ℹ️ [19:18:32] 📋 Playlist sırasına göre (36. şarkıdan itibaren) {kaynak: {…}, toplam: '14 şarkı', alinan: '37-47. sıra', secim_mantigi: 'Playlist sırasına göre (36. şarkıdan itibaren)'}
+VM19568 muzibu-store.js:112 🎯 Play Context Set: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 47}
+VM19568 muzibu-store.js:147 🔄 Play Context Updated: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 47}
+VM19595 player-core.js:3391 ✅ Auto-refilled: 11 songs added (Total queue: 12)
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 315
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 321
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 316
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:356 🚀 SPA Navigation: /my-playlists
+VM19595 player-core.js:2508 Page loaded: /my-playlists
+VM19595 player-core.js:356 🚀 SPA Navigation: /favorites
+VM19595 player-core.js:2508 Page loaded: /favorites
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:356 🚀 SPA Navigation: https://muzibu.com.tr/favorites?type=songs
+VM19595 player-core.js:2508 Page loaded: https://muzibu.com.tr/favorites?type=songs
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:356 🚀 SPA Navigation: /
+VM19595 player-core.js:2508 Page loaded: /
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:356 🚀 SPA Navigation: /search?q=kafe
+VM19595 player-core.js:2508 Page loaded: /search?q=kafe
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:356 🚀 SPA Navigation: https://muzibu.com.tr/muzibu/song/mixed-signals
+my-playlists:3860 🔄 Livewire navigated - Re-initializing Alpine...
+VM20552:4 🔄 Livewire navigated - Re-initializing Alpine...
+livewire.js?id=df3a17f2:1123 Alpine Expression Error: showDebugInfo is not defined
+
+Expression: "showDebugInfo && currentSong"
+
+ <div x-show=​"showDebugInfo && currentSong" class=​"fixed bottom-20 right-4 z-40 flex items-center gap-1" style=​"display:​ none;​">​…​</div>​
+handleError @ livewire.js?id=df3a17f2:1123
+(anonymous) @ livewire.js?id=df3a17f2:1196
+Promise.catch
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
+(anonymous) @ livewire.js?id=df3a17f2:7961
+(anonymous) @ livewire.js?id=df3a17f2:8029
+safe-storage.js?v=1764994925:8 ⚠️ safeStorage already loaded, skipping...
+muzibu-store.js?v=1765771424:8 ⚠️ muzibu-store.js already loaded, skipping...
+api.js?v=1765330634:1 Uncaught SyntaxError: Identifier 'MuzibuApi' has already been declared (at api.js?v=1765330634:1:1)
+session.js?v=1765386813:1 Uncaught SyntaxError: Identifier 'MuzibuSession' has already been declared (at session.js?v=1765386813:1:1)
+spa-router.js?v=1765771851:1 Uncaught SyntaxError: Identifier 'MuzibuSpaRouter' has already been declared (at spa-router.js?v=1765771851:1:1)
+debug.js?v=1765770537:1 Uncaught SyntaxError: Identifier 'DEBUG_COLORS' has already been declared (at debug.js?v=1765770537:1:1)
+livewire.js?id=df3a17f2:1127 Uncaught ReferenceError: showDebugInfo is not defined
+    at [Alpine] showDebugInfo && currentSong (eval at safeAsyncFunction (livewire.js?id=df3a17f2:1174:21), <anonymous>:3:32)
+    at livewire.js?id=df3a17f2:1196:23
+    at tryCatch (livewire.js?id=df3a17f2:1116:14)
+    at livewire.js?id=df3a17f2:3626:19
+    at reactiveEffect (livewire.js?id=df3a17f2:2432:18)
+    at Object.effect2 [as effect] (livewire.js?id=df3a17f2:2407:7)
+    at effect (livewire.js?id=df3a17f2:764:35)
+    at wrappedEffect (livewire.js?id=df3a17f2:780:29)
+    at Function.<anonymous> (livewire.js?id=df3a17f2:3626:5)
+    at flushHandlers (livewire.js?id=df3a17f2:1281:48)
+[Alpine] showDebugInfo && currentSong @ VM19704:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3626
+reactiveEffect @ livewire.js?id=df3a17f2:2432
+effect2 @ livewire.js?id=df3a17f2:2407
+effect @ livewire.js?id=df3a17f2:764
+wrappedEffect @ livewire.js?id=df3a17f2:780
+(anonymous) @ livewire.js?id=df3a17f2:3626
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+nowInitializeAlpineOnTheNewPage @ livewire.js?id=df3a17f2:8043
+(anonymous) @ livewire.js?id=df3a17f2:7961
+(anonymous) @ livewire.js?id=df3a17f2:8029
+VM19595 player-core.js:2508 Page loaded: https://muzibu.com.tr/muzibu/song/mixed-signals
+VM19859:38 🧪 Debug Panel connected
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 1, volume: 100, …}
+VM19595 player-core.js:1624 🔥 INSTANT QUEUE REFILL: Context mevcut, queue dolduruluyor... Proxy(Object) {type: 'playlist', id: 17, name: 'Odaklanma', offset: 47}
+VM19568 muzibu-store.js:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 1, limit: 15}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 1, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 1, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19595 player-core.js:1624 🔥 INSTANT QUEUE REFILL: Context mevcut, queue dolduruluyor... Proxy(Object) {type: 'playlist', id: 17, name: 'Odaklanma', offset: 47}
+VM19568 muzibu-store.js:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 1, limit: 15}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 1, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 1, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19568 muzibu-store.js:218 ✅ Queue refilled: 13 songs (13) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+VM19568 muzibu-store.js:222 📋 Şarkı Seçim Açıklaması: {kaynak: {…}, kaynak_tipi: 'playlist', toplam_sarki: 14, baslangic: 2, alinan: 13, …}
+VM19588 debug.js:76 ℹ️ [19:20:20] 📋 Playlist sırasına göre (1. şarkıdan itibaren) {kaynak: {…}, toplam: '14 şarkı', alinan: '2-14. sıra', secim_mantigi: 'Playlist sırasına göre (1. şarkıdan itibaren)'}
+VM19568 muzibu-store.js:112 🎯 Play Context Set: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 14}
+VM19568 muzibu-store.js:147 🔄 Play Context Updated: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 14}
+VM19595 player-core.js:1630 ✅ INSTANT QUEUE REFILL: 13 şarkı queue'ya eklendi! Total: 14
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/379/key
+VM19595 player-core.js:3346 🔍 Queue Check: 14 songs remaining (queueIndex: 0/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19568 muzibu-store.js:218 ✅ Queue refilled: 13 songs (13) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+VM19568 muzibu-store.js:222 📋 Şarkı Seçim Açıklaması: {kaynak: {…}, kaynak_tipi: 'playlist', toplam_sarki: 14, baslangic: 2, alinan: 13, …}
+VM19588 debug.js:76 ℹ️ [19:20:22] 📋 Playlist sırasına göre (1. şarkıdan itibaren) {kaynak: {…}, toplam: '14 şarkı', alinan: '2-14. sıra', secim_mantigi: 'Playlist sırasına göre (1. şarkıdan itibaren)'}
+VM19568 muzibu-store.js:112 🎯 Play Context Set: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 14}
+VM19568 muzibu-store.js:147 🔄 Play Context Updated: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 14}
+VM19595 player-core.js:1630 ✅ INSTANT QUEUE REFILL: 13 şarkı queue'ya eklendi! Total: 14
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19595 player-core.js:2190 ⚠️ HLS play aborted (expected during fallback)
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/379/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 379
+VM19595 player-core.js:2276 HLS loaded, duration: 159.74131100000002
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 1.00 (800ms)
+VM19595 player-core.js:3297 🔄 Preloading next song: ALMA
+VM19595 player-core.js:2375 Uncaught IndexSizeError: Failed to set the 'volume' property on 'HTMLMediaElement': The volume provided (-0.000125) is outside the range [0, 1].
+requestAnimationFrame
+(anonymous) @ VM19595 player-core.js:2386
+fadeAudioElement @ VM19595 player-core.js:2361
+(anonymous) @ VM19595 player-core.js:2174
+Promise.then
+(anonymous) @ VM19595 player-core.js:2161
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ level-controller.ts:291
+(anonymous) @ level-controller.ts:152
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ playlist-loader.ts:478
+onSuccess @ playlist-loader.ts:314
+(anonymous) @ xhr-loader.ts:231
+XMLHttpRequest.send
+(anonymous) @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+(anonymous) @ xhr-loader.ts:102
+(anonymous) @ xhr-loader.ts:76
+(anonymous) @ playlist-loader.ts:347
+(anonymous) @ playlist-loader.ts:154
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ hls.ts:389
+playHlsStream @ VM19595 player-core.js:2129
+loadAndPlaySong @ VM19595 player-core.js:1867
+await in loadAndPlaySong
+playSong @ VM19595 player-core.js:1641
+await in playSong
+[Alpine] playSong(379) @ VM20557:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+wrapHandler @ livewire.js?id=df3a17f2:3185
+VM19595 player-core.js:3312 ✅ Next song preloaded and cached: 322
+VM19595 player-core.js:356 🚀 SPA Navigation: /
+VM19595 player-core.js:2508 Page loaded: /
+VM19595 player-core.js:2040 ⏰ HLS timeout - MP3 fallback tetikleniyor...
+(anonymous) @ VM19595 player-core.js:2040
+setTimeout
+playHlsStream @ VM19595 player-core.js:2038
+loadAndPlaySong @ VM19595 player-core.js:1867
+await in loadAndPlaySong
+playSong @ VM19595 player-core.js:1641
+await in playSong
+[Alpine] playSong(379) @ VM20557:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+wrapHandler @ livewire.js?id=df3a17f2:3185
+VM19595 player-core.js:2331 🔄 MP3 fallback tetiklendi, sebep: timeout
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 14 songs remaining (queueIndex: 0/14)
+VM19595 player-core.js:426 🎵 togglePlayPause called {queue: 14, currentSong: Proxy(Object), isPlaying: false, howl: false, hls: false}
+VM19595 player-core.js:496 🎵 No audio source, loading current song: 379
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 323
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/379/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 379
+VM19595 player-core.js:2276 HLS loaded, duration: 159.74131100000002
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 1.00 (800ms)
+VM19595 player-core.js:3291 ✅ Next song already cached: 322
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 1, volume: 100, …}
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 338
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 3, volume: 12.5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 4, volume: 12.5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 5, volume: 11.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 6, volume: 10, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 7, volume: 7.5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 8, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 14 songs remaining (queueIndex: 0/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 9, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 14, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 14 songs remaining (queueIndex: 0/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 19, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 24, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 14 songs remaining (queueIndex: 0/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 29, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 34, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 14 songs remaining (queueIndex: 0/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 39, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'Mirror', time: 44, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 13, index: 0, song: 'Mirror', time: 45, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 0, song: 'Mirror', time: 45, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 11, index: 0, song: 'Mirror', time: 46, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 0, song: 'Mirror', time: 46, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 1, song: "Don't You Worry", time: 47, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 1, song: "Don't You Worry", time: 47, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 9, index: 1, song: 'Enchanted Forest', time: 48, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 9, index: 1, song: 'Enchanted Forest', time: 48, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 9, index: 1, song: 'Enchanted Forest', time: 48, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 8 songs remaining (queueIndex: 1/9)
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2026 HLS audio element not found
+playHlsStream @ VM19595 player-core.js:2026
+loadAndPlaySong @ VM19595 player-core.js:1867
+await in loadAndPlaySong
+playSongFromQueue @ VM19595 player-core.js:1772
+await in playSongFromQueue
+playFromQueue @ VM19595 player-core.js:2683
+[Alpine] playFromQueue(index) @ VM19764:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+wrapHandler @ livewire.js?id=df3a17f2:3185
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:620 💾 Full state saved: {queue: 8, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 7, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 360
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 362
+VM19595 player-core.js:620 💾 Full state saved: {queue: 6, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2026 HLS audio element not found
+playHlsStream @ VM19595 player-core.js:2026
+loadAndPlaySong @ VM19595 player-core.js:1867
+await in loadAndPlaySong
+playSongFromQueue @ VM19595 player-core.js:1772
+await in playSongFromQueue
+removeFromQueue @ VM19595 player-core.js:2655
+[Alpine] removeFromQueue(index) @ VM19782:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3216
+wrapHandler @ livewire.js?id=df3a17f2:3185
+(anonymous) @ livewire.js?id=df3a17f2:3247
+wrapHandler @ livewire.js?id=df3a17f2:3185
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 361
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 369
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 381
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 382
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 5, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 4, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 2 songs remaining (queueIndex: 1/3)
+VM19595 player-core.js:3367 ⚠️ Queue running low! Auto-refilling...
+checkAndRefillQueue @ VM19595 player-core.js:3367
+(anonymous) @ VM19595 player-core.js:3330
+VM19568 muzibu-store.js:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 14, limit: 15}
+VM19568 muzibu-store.js:218 ✅ Queue refilled: 11 songs (11) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+VM19568 muzibu-store.js:222 📋 Şarkı Seçim Açıklaması: {kaynak: {…}, kaynak_tipi: 'playlist', toplam_sarki: 14, baslangic: 15, alinan: 11, …}
+VM19588 debug.js:76 ℹ️ [19:21:33] 📋 Playlist sırasına göre (14. şarkıdan itibaren) {kaynak: {…}, toplam: '14 şarkı', alinan: '15-25. sıra', secim_mantigi: 'Playlist sırasına göre (14. şarkıdan itibaren)'}
+VM19568 muzibu-store.js:112 🎯 Play Context Set: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 25}
+VM19568 muzibu-store.js:147 🔄 Play Context Updated: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 25}
+VM19595 player-core.js:3391 ✅ Auto-refilled: 11 songs added (Total queue: 14)
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 319
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 399
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3346 🔍 Queue Check: 13 songs remaining (queueIndex: 1/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 13, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 11, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 1, song: 'Enchanted Forest', time: 49, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'A Bar Song', time: 49, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'A Bar Song', time: 49, volume: 6.25, …}
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/314/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 314
+VM19595 player-core.js:2276 HLS loaded, duration: 209.781311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:3291 ✅ Next song already cached: 321
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'A Bar Song', time: 49, volume: 6.25, …}
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/314/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 314
+VM19595 player-core.js:2276 HLS loaded, duration: 209.781311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:3291 ✅ Next song already cached: 321
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 320
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 320
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 9, index: 2, song: 'A Bar Song', time: 1, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 8, index: 2, song: 'A Bar Song', time: 1, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 8, index: 2, song: 'A Bar Song', time: 1, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 7, index: 2, song: 'A Bar Song', time: 2, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 6, index: 2, song: 'A Bar Song', time: 2, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 5, index: 2, song: 'A Bar Song', time: 3, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 4, index: 2, song: 'A Bar Song', time: 3, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 2, song: 'A Bar Song', time: 4, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 1 songs remaining (queueIndex: 2/3)
+VM19595 player-core.js:3367 ⚠️ Queue running low! Auto-refilling...
+checkAndRefillQueue @ VM19595 player-core.js:3367
+(anonymous) @ VM19595 player-core.js:3330
+VM19568 muzibu-store.js:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 25, limit: 15}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 2, song: 'A Bar Song', time: 6, volume: 6.25, …}
+VM19568 muzibu-store.js:218 ✅ Queue refilled: 11 songs (11) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+VM19568 muzibu-store.js:222 📋 Şarkı Seçim Açıklaması: {kaynak: {…}, kaynak_tipi: 'playlist', toplam_sarki: 14, baslangic: 26, alinan: 11, …}
+VM19588 debug.js:76 ℹ️ [19:21:52] 📋 Playlist sırasına göre (25. şarkıdan itibaren) {kaynak: {…}, toplam: '14 şarkı', alinan: '26-36. sıra', secim_mantigi: 'Playlist sırasına göre (25. şarkıdan itibaren)'}
+VM19568 muzibu-store.js:112 🎯 Play Context Set: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 36}
+VM19568 muzibu-store.js:147 🔄 Play Context Updated: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 36}
+VM19595 player-core.js:3391 ✅ Auto-refilled: 11 songs added (Total queue: 14)
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 7, volume: 6.25, …}
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 314
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 324
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 11, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 2/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 16, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 21, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 2/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 26, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 31, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 2/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 36, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 41, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 2/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 46, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 51, volume: 6.25, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 2/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 56, volume: 6.25, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'A Bar Song', time: 57, volume: 15, …}
+VM19595 player-core.js:1681 ⚡ Using cached stream URL: 319
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:620 💾 Full state saved: {queue: 13, index: 2, song: 'All Again', time: 59, volume: 15, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 13, index: 2, song: 'All Again', time: 59, volume: 15, …}
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/319/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 319
+VM19595 player-core.js:2276 HLS loaded, duration: 146.22131100000001
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.15 (800ms)
+VM19595 player-core.js:3291 ✅ Next song already cached: 324
+VM19595 player-core.js:620 💾 Full state saved: {queue: 13, index: 2, song: 'All Again', time: 0, volume: 15, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 11 songs remaining (queueIndex: 3/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 13, index: 2, song: 'All Again', time: 5, volume: 15, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 13, index: 2, song: 'All Again', time: 7, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 13, index: 2, song: 'All Again', time: 10, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 11 songs remaining (queueIndex: 3/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 13, index: 2, song: 'All Again', time: 15, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 2, song: 'All Again', time: 17, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 2, song: 'All Again', time: 20, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 10 songs remaining (queueIndex: 3/13)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 12, index: 2, song: 'All Again', time: 25, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 11, index: 2, song: 'All Again', time: 30, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 11, index: 2, song: 'All Again', time: 30, volume: 5, …}
+VM19595 player-core.js:1681 ⚡ Using cached stream URL: 320
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'All Night Long', time: 31, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'All Night Long', time: 31, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'All Night Long', time: 31, volume: 5, …}
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/320/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 320
+VM19595 player-core.js:2276 HLS loaded, duration: 120.501311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:3297 🔄 Preloading next song: After Hours
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'All Night Long', time: 31, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 9, index: 2, song: 'All Night Long', time: 0, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 8, index: 2, song: 'All Night Long', time: 1, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 7, index: 2, song: 'All Night Long', time: 2, volume: 5, …}
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 317
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3312 ✅ Next song preloaded and cached: 317
+VM19595 player-core.js:620 💾 Full state saved: {queue: 6, index: 2, song: 'All Night Long', time: 2, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 5, index: 2, song: 'All Night Long', time: 3, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 4, index: 2, song: 'All Night Long', time: 4, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 2 songs remaining (queueIndex: 3/5)
+VM19595 player-core.js:3367 ⚠️ Queue running low! Auto-refilling...
+checkAndRefillQueue @ VM19595 player-core.js:3367
+(anonymous) @ VM19595 player-core.js:3330
+VM19568 muzibu-store.js:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 36, limit: 15}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 4, index: 2, song: 'All Night Long', time: 4, volume: 5, …}
+VM19568 muzibu-store.js:218 ✅ Queue refilled: 11 songs (11) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+VM19568 muzibu-store.js:222 📋 Şarkı Seçim Açıklaması: {kaynak: {…}, kaynak_tipi: 'playlist', toplam_sarki: 14, baslangic: 37, alinan: 11, …}
+VM19588 debug.js:76 ℹ️ [19:23:22] 📋 Playlist sırasına göre (36. şarkıdan itibaren) {kaynak: {…}, toplam: '14 şarkı', alinan: '37-47. sıra', secim_mantigi: 'Playlist sırasına göre (36. şarkıdan itibaren)'}
+VM19568 muzibu-store.js:112 🎯 Play Context Set: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 47}
+VM19568 muzibu-store.js:147 🔄 Play Context Updated: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 47}
+VM19595 player-core.js:3391 ✅ Auto-refilled: 11 songs added (Total queue: 16)
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:620 💾 Full state saved: {queue: 15, index: 2, song: 'All Night Long', time: 5, volume: 5, …}
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 15, index: 2, song: 'All Night Long', time: 9, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 13 songs remaining (queueIndex: 3/16)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 15, index: 2, song: 'All Night Long', time: 14, volume: 5, …}
+VM19595 player-core.js:1681 ⚡ Using cached stream URL: 324
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'Amen', time: 15, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'Amen', time: 15, volume: 5, …}
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/324/key
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 318
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 324
+VM19595 player-core.js:2276 HLS loaded, duration: 157.421311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:3291 ✅ Next song already cached: 320
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'Amen', time: 2, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 8 songs remaining (queueIndex: 8/16)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'Amen', time: 7, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'Amen', time: 12, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 8 songs remaining (queueIndex: 8/16)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'Amen', time: 17, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'Amen', time: 22, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 8 songs remaining (queueIndex: 8/16)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 10, index: 2, song: 'Amen', time: 27, volume: 5, …}
+VM19595 player-core.js:1681 ⚡ Using cached stream URL: 314
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:620 💾 Full state saved: {queue: 4, index: 2, song: 'A Bar Song', time: 28, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 4, index: 2, song: 'A Bar Song', time: 28, volume: 5, …}
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 1 songs...
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 1 songs ready
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/314/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 314
+VM19595 player-core.js:2276 HLS loaded, duration: 209.781311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:3291 ✅ Next song already cached: 322
+VM19595 player-core.js:1681 ⚡ Using cached stream URL: 322
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 2, song: 'ALMA', time: 2, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 2, song: 'ALMA', time: 2, volume: 5, …}
+VM19595 player-core.js:3195 🔍 No songs to preload (queue too short)
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/322/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 322
+VM19595 player-core.js:2276 HLS loaded, duration: 123.541311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 2, song: 'ALMA', time: 0, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 1 songs remaining (queueIndex: 15/16)
+VM19595 player-core.js:3367 ⚠️ Queue running low! Auto-refilling...
+checkAndRefillQueue @ VM19595 player-core.js:3367
+(anonymous) @ VM19595 player-core.js:3330
+VM19568 muzibu-store.js:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 47, limit: 15}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 2, song: 'ALMA', time: 5, volume: 5, …}
+VM19568 muzibu-store.js:218 ✅ Queue refilled: 11 songs (11) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+VM19568 muzibu-store.js:222 📋 Şarkı Seçim Açıklaması: {kaynak: {…}, kaynak_tipi: 'playlist', toplam_sarki: 14, baslangic: 48, alinan: 11, …}
+VM19588 debug.js:76 ℹ️ [19:24:13] 📋 Playlist sırasına göre (47. şarkıdan itibaren) {kaynak: {…}, toplam: '14 şarkı', alinan: '48-58. sıra', secim_mantigi: 'Playlist sırasına göre (47. şarkıdan itibaren)'}
+VM19568 muzibu-store.js:112 🎯 Play Context Set: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 58}
+VM19568 muzibu-store.js:147 🔄 Play Context Updated: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 58}
+VM19595 player-core.js:3386 🧹 Queue cleaned: 10 old songs removed (kept last 5)
+VM19595 player-core.js:3391 ✅ Auto-refilled: 11 songs added (Total queue: 17)
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'ALMA', time: 6, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'ALMA', time: 6, volume: 5, …}
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'ALMA', time: 10, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 5/17)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'ALMA', time: 15, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'ALMA', time: 20, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 5/17)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'ALMA', time: 25, volume: 5, …}
+VM20247:3 Proxy(Object) {kaynak: {…}, toplam: '14 şarkı', alinan: '26-36. sıra', secim_mantigi: 'Playlist sırasına göre (25. şarkıdan itibaren)'}
+VM20247:3 Proxy(Object) {kaynak: {…}, toplam: '14 şarkı', alinan: '26-36. sıra', secim_mantigi: 'Playlist sırasına göre (25. şarkıdan itibaren)'}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'ALMA', time: 30, volume: 5, …}
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:1681 ⚡ Using cached stream URL: 320
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:620 💾 Full state saved: {queue: 15, index: 0, song: 'All Night Long', time: 33, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 15, index: 0, song: 'All Night Long', time: 33, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 15, index: 0, song: 'All Night Long', time: 33, volume: 5, …}
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 379
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/320/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 320
+VM19595 player-core.js:2276 HLS loaded, duration: 120.501311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:3291 ✅ Next song already cached: 323
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 366
+VM19595 player-core.js:3346 🔍 Queue Check: 15 songs remaining (queueIndex: 0/15)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 15, index: 0, song: 'All Night Long', time: 1, volume: 5, …}
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 363
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 337
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 345
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 15, index: 0, song: 'All Night Long', time: 6, volume: 5, …}
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:620 💾 Full state saved: {queue: 17, index: 0, song: 'A Great Day', time: 7, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 17, index: 0, song: 'A Great Day', time: 7, volume: 5, …}
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/316/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 316
+VM19595 player-core.js:2276 HLS loaded, duration: 186.341311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:3297 🔄 Preloading next song: You Are Not a Soldier
+VM19595 player-core.js:3312 ✅ Next song preloaded and cached: 321
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 335
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 335
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3346 🔍 Queue Check: 17 songs remaining (queueIndex: 0/17)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 17, index: 0, song: 'A Great Day', time: 3, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 17, index: 0, song: 'A Great Day', time: 8, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 17 songs remaining (queueIndex: 0/17)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 17, index: 0, song: 'A Great Day', time: 13, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 17, index: 0, song: 'A Great Day', time: 18, volume: 5, …}
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:1681 ⚡ Using cached stream URL: 314
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'A Bar Song', time: 18, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'A Bar Song', time: 18, volume: 5, …}
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/314/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 314
+VM19595 player-core.js:2276 HLS loaded, duration: 209.781311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:3291 ✅ Next song already cached: 322
+VM19595 player-core.js:3346 🔍 Queue Check: 14 songs remaining (queueIndex: 0/14)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 0, song: 'A Bar Song', time: 4, volume: 5, …}
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:620 💾 Full state saved: {queue: 20, index: 0, song: 'A Great Day', time: 6, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 20, index: 0, song: 'A Great Day', time: 6, volume: 5, …}
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/316/key
+VM19595 player-core.js:2138 ✅ Key loaded successfully for song: 316
+VM19595 player-core.js:2276 HLS loaded, duration: 186.341311
+VM19595 player-core.js:2171 ✅ HLS basariyla basladi
+VM19595 player-core.js:2360 🎚️ Fade: 0.00 → 0.00 (800ms)
+VM19595 player-core.js:3291 ✅ Next song already cached: 317
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 334
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:3252 ✅ Preloaded & cached: 334
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 20, index: 0, song: 'A Great Day', time: 3, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 21 songs remaining (queueIndex: 0/21)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 20, index: 0, song: 'A Great Day', time: 8, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 20, index: 0, song: 'A Great Day', time: 13, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 2, song: 'smile', time: 14, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 2, song: 'smile', time: 14, volume: 5, …}
+VM19595 player-core.js:1863 🔍 Autoplay mode: true
+VM19595 player-core.js:2030 🔍 HLS Autoplay: true
+VM19595 player-core.js:3195 🔍 No songs to preload (queue too short)
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/405/key
+VM19595 player-core.js:2144 ⚠️ Key load retry: {song: 405, retry: 0}
+(anonymous) @ VM19595 player-core.js:2144
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+(anonymous) @ base-stream-controller.ts:784
+(anonymous) @ base-stream-controller.ts:367
+(anonymous) @ base-stream-controller.ts:343
+(anonymous) @ stream-controller.ts:373
+(anonymous) @ stream-controller.ts:349
+(anonymous) @ stream-controller.ts:204
+(anonymous) @ task-loop.ts:106
+(anonymous) @ stream-controller.ts:691
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ playlist-loader.ts:676
+(anonymous) @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+(anonymous) @ xhr-loader.ts:231
+XMLHttpRequest.send
+(anonymous) @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+(anonymous) @ xhr-loader.ts:102
+(anonymous) @ xhr-loader.ts:76
+(anonymous) @ playlist-loader.ts:347
+(anonymous) @ playlist-loader.ts:154
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ hls.ts:389
+playHlsStream @ VM19595 player-core.js:2129
+loadAndPlaySong @ VM19595 player-core.js:1867
+await in loadAndPlaySong
+playSongFromQueue @ VM19595 player-core.js:1772
+await in playSongFromQueue
+playFromQueue @ VM19595 player-core.js:2683
+[Alpine] playFromQueue(index) @ VM19764:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+wrapHandler @ livewire.js?id=df3a17f2:3185
+VM19595 player-core.js:2134 🔑 Key loading started: https://muzibu.com.tr/api/muzibu/songs/405/key
+VM19595 player-core.js:2207 ⚠️ HLS error (fallback to MP3): keyLoadError
+(anonymous) @ VM19595 player-core.js:2207
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+(anonymous) @ base-stream-controller.ts:784
+(anonymous) @ base-stream-controller.ts:367
+(anonymous) @ base-stream-controller.ts:343
+(anonymous) @ stream-controller.ts:373
+(anonymous) @ stream-controller.ts:349
+(anonymous) @ stream-controller.ts:204
+(anonymous) @ task-loop.ts:106
+setTimeout
+(anonymous) @ task-loop.ts:119
+(anonymous) @ base-stream-controller.ts:1558
+(anonymous) @ stream-controller.ts:895
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch
+(anonymous) @ base-stream-controller.ts:784
+(anonymous) @ base-stream-controller.ts:367
+(anonymous) @ base-stream-controller.ts:343
+(anonymous) @ stream-controller.ts:373
+(anonymous) @ stream-controller.ts:349
+(anonymous) @ stream-controller.ts:204
+(anonymous) @ task-loop.ts:106
+(anonymous) @ stream-controller.ts:691
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ playlist-loader.ts:676
+(anonymous) @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+(anonymous) @ xhr-loader.ts:231
+XMLHttpRequest.send
+(anonymous) @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then
+(anonymous) @ xhr-loader.ts:102
+(anonymous) @ xhr-loader.ts:76
+(anonymous) @ playlist-loader.ts:347
+(anonymous) @ playlist-loader.ts:154
+(anonymous) @ index.js:203
+(anonymous) @ hls.ts:287
+(anonymous) @ hls.ts:298
+(anonymous) @ hls.ts:389
+playHlsStream @ VM19595 player-core.js:2129
+loadAndPlaySong @ VM19595 player-core.js:1867
+await in loadAndPlaySong
+playSongFromQueue @ VM19595 player-core.js:1772
+await in playSongFromQueue
+playFromQueue @ VM19595 player-core.js:2683
+[Alpine] playFromQueue(index) @ VM19764:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+wrapHandler @ livewire.js?id=df3a17f2:3185
+VM19595 player-core.js:2216 🔄 Fallback: Switching to MP3...
+VM19595 player-core.js:2217 🔍 currentFallbackUrl: https://muzibu.com.tr/api/muzibu/songs/405/serve?expires=1765817729&signature=f86c9ce57eba419176ffec19a7fc30b8fc2dee006aa711adc963f44e87d50d61&force_mp3=1
+VM19595 player-core.js:2218 🔍 currentFallbackUrl type: string
+VM19595 player-core.js:2237 🔍 About to call playWithHowler with: https://muzibu.com.tr/api/muzibu/songs/405/serve?expires=1765817729&signature=f86c9ce57eba419176ffec19a7fc30b8fc2dee006aa711adc963f44e87d50d61&force_mp3=1 autoplay: true
+VM19595 player-core.js:1927 🎵 playWithHowler called with URL: https://muzibu.com.tr/api/muzibu/songs/405/serve?expires=1765817729&signature=f86c9ce57eba419176ffec19a7fc30b8fc2dee006aa711adc963f44e87d50d61&force_mp3=1
+VM19595 player-core.js:1928 🔍 URL type: string
+VM19595 player-core.js:1929 🔍 URL length: 154
+VM19595 player-core.js:1930 🔍 Autoplay: true
+VM19595 player-core.js:1950 🎵 Creating Howl with src: ['https://muzibu.com.tr/api/muzibu/songs/405/serve?e…c30b8fc2dee006aa711adc963f44e87d50d61&force_mp3=1']
+VM19595 player-core.js:2190 ⚠️ HLS play aborted (expected during fallback)
+VM19595 player-core.js:1960 Howler loaded, duration: 157.1
+VM19595 player-core.js:3346 🔍 Queue Check: 1 songs remaining (queueIndex: 20/21)
+VM19595 player-core.js:3367 ⚠️ Queue running low! Auto-refilling...
+checkAndRefillQueue @ VM19595 player-core.js:3367
+(anonymous) @ VM19595 player-core.js:3330
+VM19568 muzibu-store.js:174 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 58, limit: 15}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 3, index: 2, song: 'smile', time: 0, volume: 5, …}
+VM19568 muzibu-store.js:218 ✅ Queue refilled: 11 songs (11) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+VM19568 muzibu-store.js:222 📋 Şarkı Seçim Açıklaması: {kaynak: {…}, kaynak_tipi: 'playlist', toplam_sarki: 14, baslangic: 59, alinan: 11, …}
+VM19588 debug.js:76 ℹ️ [19:25:33] 📋 Playlist sırasına göre (58. şarkıdan itibaren) {kaynak: {…}, toplam: '14 şarkı', alinan: '59-69. sıra', secim_mantigi: 'Playlist sırasına göre (58. şarkıdan itibaren)'}
+VM19568 muzibu-store.js:112 🎯 Play Context Set: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 69}
+VM19568 muzibu-store.js:147 🔄 Play Context Updated: {type: 'playlist', id: 17, name: 'Odaklanma', offset: 69}
+VM19595 player-core.js:3386 🧹 Queue cleaned: 15 old songs removed (kept last 5)
+VM19595 player-core.js:3391 ✅ Auto-refilled: 11 songs added (Total queue: 17)
+VM19595 player-core.js:3199 🚀 Aggressive Preload: Loading next 3 songs...
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'smile', time: 1, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'smile', time: 1, volume: 5, …}
+VM19595 player-core.js:3209 ✅ Aggressive Preload completed: 3 songs ready
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'smile', time: 5, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 5/17)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'smile', time: 10, volume: 5, …}
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'smile', time: 15, volume: 5, …}
+VM19595 player-core.js:3346 🔍 Queue Check: 12 songs remaining (queueIndex: 5/17)
+VM19595 player-core.js:620 💾 Full state saved: {queue: 14, index: 2, song: 'smile', time: 20, volume: 5, …}

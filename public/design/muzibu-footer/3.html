@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Footer #3 - Social Focused</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        muzibu: {
+                            coral: '#ff7f50',
+                            'coral-light': '#ff9770',
+                            'coral-dark': '#ff6a3d',
+                            black: '#000000',
+                            dark: '#121212',
+                            gray: '#181818',
+                            'gray-light': '#282828',
+                            'text-gray': '#b3b3b3',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen">
+
+    <!-- Fake Header - Muzibu Style -->
+    <header class="bg-muzibu-dark border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark rounded-lg flex items-center justify-center">
+                        <i class="fas fa-music text-white text-sm"></i>
+                    </div>
+                    <span class="font-bold text-lg">muzibu</span>
+                </div>
+                <nav class="hidden md:flex items-center gap-6 text-sm">
+                    <a href="#" class="text-muzibu-text-gray hover:text-white transition-colors">Keşfet</a>
+                    <a href="#" class="text-muzibu-text-gray hover:text-white transition-colors">Albümler</a>
+                    <a href="#" class="text-muzibu-text-gray hover:text-white transition-colors">Sanatçılar</a>
+                    <a href="#" class="text-muzibu-text-gray hover:text-white transition-colors">Playlistler</a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="px-4 py-2 text-sm font-medium text-muzibu-text-gray hover:text-white transition-colors">
+                    Giriş Yap
+                </button>
+                <button class="px-4 py-2 text-sm font-medium bg-muzibu-coral hover:bg-muzibu-coral-light text-white rounded-full transition-colors">
+                    Premium
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Placeholder -->
+    <main class="max-w-7xl mx-auto px-4 py-16">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-muzibu-coral to-muzibu-coral-light bg-clip-text text-transparent">
+                Footer Alternatif #3
+            </h1>
+            <p class="text-muzibu-text-gray text-lg">Social Focused Footer - Sosyal medya odaklı, community vurgulu</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-16">
+            <div class="bg-muzibu-gray rounded-2xl p-6 border border-white/5">
+                <i class="fas fa-users text-3xl text-muzibu-coral mb-4"></i>
+                <h3 class="text-lg font-semibold mb-2">Topluluk Odaklı</h3>
+                <p class="text-muzibu-text-gray text-sm">Sosyal medya ve topluluk etkileşimi ön planda</p>
+            </div>
+            <div class="bg-muzibu-gray rounded-2xl p-6 border border-white/5">
+                <i class="fas fa-heart text-3xl text-muzibu-coral mb-4"></i>
+                <h3 class="text-lg font-semibold mb-2">Etkileşim</h3>
+                <p class="text-muzibu-text-gray text-sm">Kullanıcılarla güçlü bağ kurma</p>
+            </div>
+            <div class="bg-muzibu-gray rounded-2xl p-6 border border-white/5">
+                <i class="fas fa-share-alt text-3xl text-muzibu-coral mb-4"></i>
+                <h3 class="text-lg font-semibold mb-2">Paylaşım</h3>
+                <p class="text-muzibu-text-gray text-sm">Kolay sosyal medya entegrasyonu</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER ALTERNATIF #3 - SOCIAL FOCUSED -->
+    <footer class="bg-muzibu-dark border-t border-white/10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-16">
+
+            <!-- Social CTA Section -->
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold mb-3">Muzibu Topluluğuna Katılın</h3>
+                <p class="text-muzibu-text-gray text-lg mb-8 max-w-2xl mx-auto">
+                    Binlerce müzik severin bir parçası olun. Yeni arkadaşlar edinin, playlistler paylaşın, müziğin tadını çıkarın.
+                </p>
+
+                <!-- Large Social Buttons -->
+                <div class="grid sm:grid-cols-2 md:grid-cols-5 gap-4 mb-8 max-w-4xl mx-auto">
+                    <a href="#" class="group bg-muzibu-gray hover:bg-gradient-to-br hover:from-pink-500 hover:to-purple-600 border border-white/10 hover:border-pink-500/50 rounded-2xl p-6 transition-all transform hover:scale-105">
+                        <i class="fab fa-instagram text-4xl mb-3 text-muzibu-text-gray group-hover:text-white transition-colors"></i>
+                        <h4 class="font-semibold text-sm text-muzibu-text-gray group-hover:text-white transition-colors">Instagram</h4>
+                        <p class="text-xs text-muzibu-text-gray/70 mt-1">@muzibu</p>
+                    </a>
+
+                    <a href="#" class="group bg-muzibu-gray hover:bg-gradient-to-br hover:from-blue-500 hover:to-blue-700 border border-white/10 hover:border-blue-500/50 rounded-2xl p-6 transition-all transform hover:scale-105">
+                        <i class="fab fa-facebook-f text-4xl mb-3 text-muzibu-text-gray group-hover:text-white transition-colors"></i>
+                        <h4 class="font-semibold text-sm text-muzibu-text-gray group-hover:text-white transition-colors">Facebook</h4>
+                        <p class="text-xs text-muzibu-text-gray/70 mt-1">50K+ takipçi</p>
+                    </a>
+
+                    <a href="#" class="group bg-muzibu-gray hover:bg-gradient-to-br hover:from-cyan-400 hover:to-blue-500 border border-white/10 hover:border-cyan-500/50 rounded-2xl p-6 transition-all transform hover:scale-105">
+                        <i class="fab fa-twitter text-4xl mb-3 text-muzibu-text-gray group-hover:text-white transition-colors"></i>
+                        <h4 class="font-semibold text-sm text-muzibu-text-gray group-hover:text-white transition-colors">Twitter</h4>
+                        <p class="text-xs text-muzibu-text-gray/70 mt-1">@muzibu_tr</p>
+                    </a>
+
+                    <a href="#" class="group bg-muzibu-gray hover:bg-gradient-to-br hover:from-red-500 hover:to-red-700 border border-white/10 hover:border-red-500/50 rounded-2xl p-6 transition-all transform hover:scale-105">
+                        <i class="fab fa-youtube text-4xl mb-3 text-muzibu-text-gray group-hover:text-white transition-colors"></i>
+                        <h4 class="font-semibold text-sm text-muzibu-text-gray group-hover:text-white transition-colors">YouTube</h4>
+                        <p class="text-xs text-muzibu-text-gray/70 mt-1">100K+ abone</p>
+                    </a>
+
+                    <a href="#" class="group bg-muzibu-gray hover:bg-gradient-to-br hover:from-blue-600 hover:to-blue-800 border border-white/10 hover:border-blue-600/50 rounded-2xl p-6 transition-all transform hover:scale-105">
+                        <i class="fab fa-linkedin-in text-4xl mb-3 text-muzibu-text-gray group-hover:text-white transition-colors"></i>
+                        <h4 class="font-semibold text-sm text-muzibu-text-gray group-hover:text-white transition-colors">LinkedIn</h4>
+                        <p class="text-xs text-muzibu-text-gray/70 mt-1">Kariyer</p>
+                    </a>
+                </div>
+
+                <!-- Social Stats -->
+                <div class="grid grid-cols-3 gap-6 max-w-md mx-auto">
+                    <div class="bg-muzibu-gray rounded-xl p-4 border border-white/5">
+                        <div class="text-2xl font-bold text-muzibu-coral mb-1">200K+</div>
+                        <div class="text-xs text-muzibu-text-gray">Toplam Takipçi</div>
+                    </div>
+                    <div class="bg-muzibu-gray rounded-xl p-4 border border-white/5">
+                        <div class="text-2xl font-bold text-muzibu-coral mb-1">50K+</div>
+                        <div class="text-xs text-muzibu-text-gray">Aktif Kullanıcı</div>
+                    </div>
+                    <div class="bg-muzibu-gray rounded-xl p-4 border border-white/5">
+                        <div class="text-2xl font-bold text-muzibu-coral mb-1">1M+</div>
+                        <div class="text-xs text-muzibu-text-gray">Aylık Dinleyici</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Links -->
+            <div class="border-t border-white/10 pt-8">
+                <div class="grid md:grid-cols-4 gap-8 mb-8">
+                    <div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark rounded-lg flex items-center justify-center">
+                                <i class="fas fa-music text-white text-sm"></i>
+                            </div>
+                            <span class="font-bold text-lg">muzibu</span>
+                        </div>
+                        <p class="text-muzibu-text-gray text-sm">İşletmenize yasal müzik.</p>
+                    </div>
+
+                    <div>
+                        <h5 class="font-semibold mb-3 text-sm">Şirket</h5>
+                        <ul class="space-y-2 text-sm text-muzibu-text-gray">
+                            <li><a href="#" class="hover:text-muzibu-coral transition-colors">Hakkımızda</a></li>
+                            <li><a href="#" class="hover:text-muzibu-coral transition-colors">İletişim</a></li>
+                            <li><a href="#" class="hover:text-muzibu-coral transition-colors">Kariyer</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h5 class="font-semibold mb-3 text-sm">Destek</h5>
+                        <ul class="space-y-2 text-sm text-muzibu-text-gray">
+                            <li><a href="#" class="hover:text-muzibu-coral transition-colors">Yardım</a></li>
+                            <li><a href="#" class="hover:text-muzibu-coral transition-colors">SSS</a></li>
+                            <li><a href="#" class="hover:text-muzibu-coral transition-colors">Canlı Destek</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h5 class="font-semibold mb-3 text-sm">Yasal</h5>
+                        <ul class="space-y-2 text-sm text-muzibu-text-gray">
+                            <li><a href="#" class="hover:text-muzibu-coral transition-colors">Kullanım Şartları</a></li>
+                            <li><a href="#" class="hover:text-muzibu-coral transition-colors">Gizlilik</a></li>
+                            <li><a href="#" class="hover:text-muzibu-coral transition-colors">Çerezler</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muzibu-text-gray">
+                    <p>&copy; 2024 Muzibu. Tüm hakları saklıdır.</p>
+                    <div class="flex items-center gap-3">
+                        <span>🇹🇷 Türkiye</span>
+                        <span>•</span>
+                        <span>Türkçe</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Fixed Navigation Buttons -->
+    <div class="fixed bottom-6 right-6 flex items-center gap-3 z-50">
+        <a href="2.html" class="w-12 h-12 bg-muzibu-gray hover:bg-muzibu-coral rounded-full flex items-center justify-center shadow-lg transition-all group border border-white/10">
+            <i class="fas fa-chevron-left text-muzibu-text-gray group-hover:text-white transition-colors"></i>
+        </a>
+        <div class="px-4 py-2 bg-muzibu-gray rounded-full text-sm font-medium border border-white/10">
+            3 / 6
+        </div>
+        <a href="4.html" class="w-12 h-12 bg-muzibu-coral hover:bg-muzibu-coral-light rounded-full flex items-center justify-center shadow-lg transition-all">
+            <i class="fas fa-chevron-right text-white"></i>
+        </a>
+    </div>
+
+</body>
+</html>

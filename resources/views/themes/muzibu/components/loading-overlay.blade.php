@@ -11,7 +11,7 @@
     x-cloak
 >
     {{-- Main Content Loading --}}
-    <div class="absolute lg:left-[232px] left-3 right-3 2xl:right-[372px] xl:right-[352px] lg:right-3 top-[68px] bottom-[77px] bg-black/60 backdrop-blur-sm rounded-lg flex items-center justify-center">
+    <div class="absolute lg:left-[232px] left-3 right-3 2xl:right-[372px] xl:right-[352px] lg:right-3 top-[68px] bottom-[77px] bg-transparent backdrop-blur-sm rounded-lg flex items-center justify-center">
         <div class="text-center">
             {{-- Spinner --}}
             <div class="relative w-20 h-20 mx-auto mb-4">

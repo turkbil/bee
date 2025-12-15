@@ -3047,23 +3047,29 @@ onplay: function() {
                 this.sessionPollInterval = null;
             }
 
-            // 🔐 FORM-BASED LOGOUT: CSRF token ile hidden form oluştur ve submit et
-            // Bu yöntem CSRF mismatch sorununu çözer
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/logout';
-            form.style.display = 'none';
+            try {
+                // 🔐 FETCH-BASED LOGOUT: API'ye POST yapıp sonra redirect et
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
 
-            // CSRF token
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = document.querySelector('meta[name="csrf-token"]')?.content || '';
-            form.appendChild(csrfInput);
+                const data = await response.json();
+                console.log('✅ Logout response:', data);
+            } catch (error) {
+                console.error('❌ Logout error:', error);
+            }
 
-            // Form'u body'e ekle ve submit et
-            document.body.appendChild(form);
-            form.submit();
+            // 🔄 Her durumda ana sayfaya yönlendir (cookie temizliği için)
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 100);
         },
 
         // 🧹 Clean queue: Remove null/undefined songs

@@ -6,21 +6,38 @@
 if (window.Alpine && window.Alpine.store('sidebar')) {
     window.Alpine.store('sidebar').reset();
 }
+
+// 🚀 Auto-prefetch visible items on page load (staggered to avoid server overload)
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const cards = document.querySelectorAll('[data-genre-id]');
+        const visibleCount = Math.min(cards.length, 6);
+        cards.forEach((card, i) => {
+            if (i >= visibleCount) return;
+            const id = card.dataset.genreId;
+            if (id && window.Alpine?.store('sidebar')?.prefetch) {
+                setTimeout(() => {
+                    window.Alpine.store('sidebar').prefetch('genre', parseInt(id));
+                }, i * 150);
+            }
+        });
+    }, 300);
+});
 </script>
 
 <div class="px-6 py-8">
     {{-- Header --}}
-    <div class="mb-8 animate-slide-up">
+    <div class="mb-8">
         <h1 class="text-4xl font-bold text-white mb-2">Türler</h1>
         <p class="text-gray-400">Müzik türlerini keşfet</p>
     </div>
 
     {{-- Genres Grid --}}
     @if($genres && $genres->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4 animate-slide-up" style="animation-delay: 100ms">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($genres as $genre)
                 <a href="{{ route('muzibu.genres.show', $genre->getTranslation('slug', app()->getLocale())) }}"
-                   wire:navigate
+                   @mouseenter="$store.sidebar.prefetch('genre', {{ $genre->genre_id }})"
                    class="genre-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
                    data-genre-id="{{ $genre->genre_id }}"
                    data-genre-title="{{ $genre->getTranslation('title', app()->getLocale()) }}"

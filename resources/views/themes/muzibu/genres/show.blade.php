@@ -3,7 +3,7 @@
 @section('content')
 <div class="px-4 sm:px-6 py-6 sm:py-8">
     {{-- Genre Header - Responsive --}}
-    <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8 animate-slide-up">
+    <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8">
         @if($genre->media_id && $genre->iconMedia)
             <img src="{{ thumb($genre->iconMedia, 300, 300, ['scale' => 1]) }}"
                  alt="{{ $genre->getTranslation('title', app()->getLocale()) }}"

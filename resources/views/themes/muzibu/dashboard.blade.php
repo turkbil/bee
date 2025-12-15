@@ -170,14 +170,14 @@
         <h2 class="text-xl font-bold text-white mb-6">Hızlı İşlemler</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="/" wire:navigate
+            <a href="/"
                     class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-home text-3xl text-muzibu-coral mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Anasayfa</h3>
                 <p class="text-muzibu-text-gray text-sm">Müzik keşfet</p>
             </a>
 
-            <a href="/profile" wire:navigate
+            <a href="/profile"
                     class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-user text-3xl text-muzibu-coral mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Profil</h3>
@@ -185,14 +185,14 @@
             </a>
 
             @if($isPremiumOrTrial)
-                <a href="/subscription/plans" wire:navigate
+                <a href="/subscription/plans"
                         class="block p-6 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 hover:border-yellow-500/50 rounded-lg transition-all duration-300 group">
                     <i class="fas fa-sync-alt text-3xl text-yellow-400 mb-3"></i>
                     <h3 class="text-white font-semibold mb-2">Üyeliğini Uzat</h3>
                     <p class="text-yellow-400 text-sm">Planını yenile</p>
                 </a>
             @else
-                <a href="/subscription/plans" wire:navigate
+                <a href="/subscription/plans"
                         class="block p-6 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 hover:border-yellow-500/50 rounded-lg transition-all duration-300 group">
                     <i class="fas fa-crown text-3xl text-yellow-400 mb-3"></i>
                     <h3 class="text-white font-semibold mb-2">Premium'a Geç</h3>
@@ -208,7 +208,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {{-- Profile Edit --}}
-            <a href="/profile" wire:navigate
+            <a href="/profile"
                     class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-muzibu-coral/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-user-pen text-2xl text-muzibu-coral mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Profil Bilgileri</h3>
@@ -216,7 +216,7 @@
             </a>
 
             {{-- Avatar --}}
-            <a href="/profile/avatar" wire:navigate
+            <a href="/profile/avatar"
                     class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-camera text-2xl text-purple-400 mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Avatar</h3>
@@ -224,7 +224,7 @@
             </a>
 
             {{-- Password --}}
-            <a href="/profile/password" wire:navigate
+            <a href="/profile/password"
                     class="block p-6 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-yellow-500/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-key text-2xl text-yellow-400 mb-3"></i>
                 <h3 class="text-white font-semibold mb-2">Şifre</h3>
@@ -232,7 +232,7 @@
             </a>
 
             {{-- Delete Account --}}
-            <a href="/profile/delete" wire:navigate
+            <a href="/profile/delete"
                     class="block p-6 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 rounded-lg transition-all duration-300 group">
                 <i class="fas fa-trash-alt text-2xl text-red-400 mb-3"></i>
                 <h3 class="text-red-400 font-semibold mb-2">Hesabı Sil</h3>

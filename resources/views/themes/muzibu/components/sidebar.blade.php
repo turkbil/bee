@@ -25,10 +25,10 @@
 
             @guest
             <div class="mt-6 px-3 space-y-3">
-                <a href="/register" wire:navigate class="block w-full px-4 py-3 rounded-full bg-gradient-to-r from-muzibu-coral to-green-600 hover:from-muzibu-coral-light hover:to-green-500 text-white font-bold transition-all shadow-lg text-center">
+                <a href="/register" class="block w-full px-4 py-3 rounded-full bg-gradient-to-r from-muzibu-coral to-green-600 hover:from-muzibu-coral-light hover:to-green-500 text-white font-bold transition-all shadow-lg text-center">
                     <i class="fas fa-rocket mr-2"></i>{{ tenant_trans('front.free_trial') }}
                 </a>
-                <a href="/login" wire:navigate class="block w-full px-4 py-3 rounded-full bg-transparent border border-gray-600 text-white font-semibold hover:border-white hover:scale-105 transition-all text-center">
+                <a href="/login" class="block w-full px-4 py-3 rounded-full bg-transparent border border-gray-600 text-white font-semibold hover:border-white hover:scale-105 transition-all text-center">
                     {{ tenant_trans('player.login') }}
                 </a>
 

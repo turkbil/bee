@@ -173,7 +173,7 @@
 
         <!-- Right Side - Auth Form -->
         <div class="flex-1 flex items-center justify-center p-6 lg:p-12">
-            <div class="w-full max-w-md animate-slide-up">
+            <div class="w-full max-w-md">
 
                 <!-- Mobile Logo -->
                 <div class="lg:hidden text-center mb-8">

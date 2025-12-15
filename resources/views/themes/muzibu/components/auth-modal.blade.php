@@ -16,7 +16,7 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="absolute inset-0 bg-black/90 backdrop-blur-md"
+            class="absolute inset-0 bg-transparent backdrop-blur-md"
         ></div>
 
         {{-- Modal Container --}}

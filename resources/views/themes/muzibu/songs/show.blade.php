@@ -3,7 +3,7 @@
 @section('content')
 <div class="px-4 sm:px-6 py-6 sm:py-8">
     {{-- Song Header - Hero Section --}}
-    <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8 animate-slide-up">
+    <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8">
         @if($song->getCoverUrl())
             <img src="{{ thumb_url($song->getCoverUrl(), 300, 300) }}"
                  alt="{{ $song->getTranslation('title', app()->getLocale()) }}"

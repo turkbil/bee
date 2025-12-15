@@ -1,15 +1,15 @@
 <div class="px-6 py-8">
     {{-- Header --}}
-    <div class="mb-8 animate-slide-up">
+    <div class="mb-8">
         <h1 class="text-4xl font-bold text-white mb-2">Müzik Türleri</h1>
         <p class="text-gray-400">Favori müzik türlerini keşfet</p>
     </div>
 
     {{-- Genres Grid --}}
     @if($genres && $genres->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4 animate-slide-up" style="animation-delay: 100ms">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($genres as $genre)
-                <a href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+                <a href="/genres/{{ $genre->getTranslation('slug', app()->getLocale()) }}"
                    x-on:contextmenu.prevent.stop="$store.contextMenu.openContextMenu($event, 'genre', {
                        id: {{ $genre->genre_id }},
                        title: '{{ addslashes($genre->getTranslation('title', app()->getLocale())) }}',

@@ -19,25 +19,25 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
     <div class="mb-8 border-b border-gray-800">
         <nav class="flex space-x-8" x-data="{ activeTab: '{{ $type }}' }">
             <a href="{{ route('muzibu.favorites', ['type' => 'all']) }}"
-               wire:navigate
+              
                class="pb-4 px-1 border-b-2 font-medium text-sm transition-colors"
                :class="activeTab === 'all' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
                 Tümü
             </a>
             <a href="{{ route('muzibu.favorites', ['type' => 'songs']) }}"
-               wire:navigate
+              
                class="pb-4 px-1 border-b-2 font-medium text-sm transition-colors"
                :class="activeTab === 'songs' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
                 Şarkılar
             </a>
             <a href="{{ route('muzibu.favorites', ['type' => 'albums']) }}"
-               wire:navigate
+              
                class="pb-4 px-1 border-b-2 font-medium text-sm transition-colors"
                :class="activeTab === 'albums' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
                 Albümler
             </a>
             <a href="{{ route('muzibu.favorites', ['type' => 'playlists']) }}"
-               wire:navigate
+              
                class="pb-4 px-1 border-b-2 font-medium text-sm transition-colors"
                :class="activeTab === 'playlists' ? 'border-muzibu-coral text-muzibu-coral' : 'border-transparent text-gray-400 hover:text-white hover:border-gray-600'">
                 Playlistler
@@ -58,7 +58,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                         {{-- Song Card --}}
                         <div class="group relative">
                             <a href="{{ $item->getUrl() }}"
-                               wire:navigate
+                              
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
@@ -95,7 +95,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                         {{-- Album Card --}}
                         <div class="group relative">
                             <a href="{{ route('muzibu.albums.show', $item->getTranslation('slug', app()->getLocale())) }}"
-                               wire:navigate
+                              
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
@@ -132,7 +132,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                         {{-- Playlist Card --}}
                         <div class="group relative">
                             <a href="{{ route('muzibu.playlists.show', $item->getTranslation('slug', app()->getLocale())) }}"
-                               wire:navigate
+                              
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
@@ -195,7 +195,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
             </h3>
             <p class="text-gray-400 mb-6">Beğendiğin içerikleri favorilere ekleyerek kolayca ulaşabilirsin</p>
             <a href="{{ route('muzibu.home') }}"
-               wire:navigate
+              
                class="inline-flex items-center px-6 py-3 bg-muzibu-coral text-white font-semibold rounded-full hover:bg-opacity-90 transition-all">
                 <i class="fas fa-home mr-2"></i>
                 Ana Sayfaya Dön

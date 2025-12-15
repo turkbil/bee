@@ -54,7 +54,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
 
     <div class="px-4 sm:px-6 py-8 sm:py-12">
         {{-- Playlist Header - Modern Hero Style --}}
-        <div class="flex flex-col sm:flex-row items-center sm:items-end gap-6 sm:gap-8 mb-8 animate-slide-up">
+        <div class="flex flex-col sm:flex-row items-center sm:items-end gap-6 sm:gap-8 mb-8">
             {{-- Cover with Shadow --}}
             <div class="relative flex-shrink-0 group">
                 @if($playlist->media_id && $playlist->coverMedia)
@@ -141,7 +141,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                 <span class="text-sm font-medium text-gray-400" x-text="count + ' favori'"></span>
             </button>
             @else
-            <a href="{{ route('login') }}" wire:navigate class="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
+            <a href="{{ route('login') }}" class="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
                 <i class="far fa-heart text-2xl"></i>
                 <span class="text-sm font-medium">{{ method_exists($playlist, 'favoritesCount') ? $playlist->favoritesCount() : 0 }} favori</span>
             </a>
@@ -234,7 +234,7 @@ if (window.Alpine && window.Alpine.store('sidebar')) {
                     {{-- Album - Desktop Only --}}
                     <div class="hidden md:block truncate" @click.stop>
                         @if($song->album)
-                            <a href="/albums/{{ $song->album->getTranslation('slug', app()->getLocale()) }}" wire:navigate
+                            <a href="/albums/{{ $song->album->getTranslation('slug', app()->getLocale()) }}"
                                
                                class="text-sm text-gray-400 hover:text-white hover:underline transition-colors">
                                 {{ $song->album->getTranslation('title', app()->getLocale()) }}

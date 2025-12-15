@@ -105,8 +105,8 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
 
-    {{-- ⚡ instant.page v5.2.0 - Ultra Fast Prefetch (hover + 50ms delay) --}}
-    <script src="//instant.page/5.2.0" type="module" data-intensity="hover" data-delay="50"></script>
+    {{-- ⚡ instant.page DISABLED - Conflicts with SPA Router (causes double navigation) --}}
+    {{-- <script src="//instant.page/5.2.0" type="module" data-intensity="hover" data-delay="50"></script> --}}
 
     @livewireStyles
 
@@ -138,6 +138,41 @@
                 position: fixed;
                 left: 0;
                 right: 0;
+            }
+        }
+
+        /* Keyboard Feedback Notification */
+        .keyboard-feedback {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .keyboard-feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 640px) {
+            .keyboard-feedback {
+                bottom: 80px;
+                right: 10px;
+                padding: 10px 16px;
+                font-size: 13px;
             }
         }
     </style>
@@ -191,6 +226,9 @@
     @include('themes.muzibu.components.rating-modal')
     @include('themes.muzibu.components.playlist-select-modal')
 
+    {{-- 🧪 DEBUG PANEL - Queue & Playback Debugger --}}
+    @include('themes.muzibu.components.debug-panel')
+
     {{-- 🎯 MODULAR JAVASCRIPT ARCHITECTURE --}}
 
     {{-- 1. Core Utilities (önce yükle - diğerleri bağımlı) --}}
@@ -206,6 +244,7 @@
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/api.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/session.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/spa-router.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/debug.js') }}"></script>
 
     {{-- 4. Player Core (en son - features'ı spread eder) --}}
     <script src="{{ versioned_asset('themes/muzibu/js/player/core/player-core.js') }}"></script>
@@ -217,8 +256,8 @@
     <script src="{{ versioned_asset('themes/muzibu/js/ui/muzibu-toast.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/ui/muzibu-theme.js') }}"></script>
 
-    {{-- 7. 🚀 SPA Router (Alpine Store'dan sonra yükle) --}}
-    <script src="{{ versioned_asset('themes/muzibu/js/router/muzibu-router.js') }}"></script>
+    {{-- 7. 🚀 SPA Router - MODULAR VERSION USED (loaded in line 211 as player feature) --}}
+    {{-- OLD STANDALONE ROUTER REMOVED - Duplicate initialization fixed --}}
 
     <script>
         // 🔇 Suppress storage access errors (browser privacy/extension related)

@@ -1,13 +1,7 @@
 {{-- KEYBOARD SHORTCUTS OVERLAY - Minimal & Professional --}}
-<div x-show="showKeyboardHelp" 
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0"
-     x-transition:enter-end="opacity-100"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100"
-     x-transition:leave-end="opacity-0"
+<div x-show="showKeyboardHelp"
      @click="showKeyboardHelp = false"
-     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+     class="fixed inset-0 bg-transparent z-40"
      x-cloak>
 </div>
 
@@ -51,7 +45,7 @@
 
             {{-- Seek Forward --}}
             <div class="flex items-center gap-2 py-2">
-                <kbd class="px-2 py-1 bg-white/10 text-white rounded text-xs font-mono min-w-[70px] text-center">→ / L</kbd>
+                <kbd class="px-2 py-1 bg-white/10 text-white rounded text-xs font-mono min-w-[70px] text-center">→</kbd>
                 <span class="text-sm text-muzibu-text-gray">5sn İleri</span>
             </div>
 

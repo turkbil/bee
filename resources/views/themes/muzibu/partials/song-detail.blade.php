@@ -1,7 +1,7 @@
 {{-- SPA Song Detail Partial - No Layout --}}
 <div class="px-4 sm:px-6 py-6 sm:py-8">
     {{-- Song Header --}}
-    <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8 animate-slide-up">
+    <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 mb-6 sm:mb-8">
         @if($song->getCoverUrl())
             <img src="{{ thumb_url($song->getCoverUrl(), 300, 300) }}"
                  alt="{{ $song->getTranslation('title', app()->getLocale()) }}"
@@ -20,7 +20,7 @@
 
             @if($song->album && $song->album->artist)
                 <a href="{{ $song->album->artist->getUrl() }}"
-                   wire:navigate
+                  
                    class="text-lg sm:text-xl text-white hover:text-muzibu-coral transition-colors font-semibold inline-block mb-2">
                     {{ $song->album->artist->getTranslation('title', app()->getLocale()) }}
                 </a>
@@ -29,7 +29,7 @@
             @if($song->album)
                 <p class="text-sm sm:text-base text-gray-400">
                     Albüm:
-                    <a href="{{ $song->album->getUrl() }}" wire:navigate class="text-gray-300 hover:text-white transition-colors">
+                    <a href="{{ $song->album->getUrl() }}" class="text-gray-300 hover:text-white transition-colors">
                         {{ $song->album->getTranslation('title', app()->getLocale()) }}
                     </a>
                 </p>

@@ -6,21 +6,46 @@
 if (window.Alpine && window.Alpine.store('sidebar')) {
     window.Alpine.store('sidebar').reset();
 }
+
+// 🚀 Auto-prefetch visible items on page load (staggered to avoid server overload)
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        const cards = document.querySelectorAll('[data-album-id]');
+        const visibleCount = Math.min(cards.length, 6); // İlk 6 kart
+        cards.forEach((card, i) => {
+            if (i >= visibleCount) return;
+            const id = card.dataset.albumId;
+            if (id && window.Alpine?.store('sidebar')?.prefetch) {
+                // Stagger: Her 150ms'de bir istek
+                setTimeout(() => {
+                    window.Alpine.store('sidebar').prefetch('album', parseInt(id));
+                }, i * 150);
+            }
+        });
+    }, 300);
+});
 </script>
 
 <div class="px-6 py-8">
     {{-- Header --}}
-    <div class="mb-8 animate-slide-up">
+    <div class="mb-8">
         <h1 class="text-4xl font-bold text-white mb-2">Albümler</h1>
         <p class="text-gray-400">En yeni ve popüler albümler</p>
     </div>
 
     {{-- Albums Grid --}}
     @if($albums && $albums->count() > 0)
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4 animate-slide-up" style="animation-delay: 100ms">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             @foreach($albums as $album)
                 <a href="{{ route('muzibu.albums.show', $album->getTranslation('slug', app()->getLocale())) }}"
-                   wire:navigate
+                   @mouseenter="$store.sidebar.prefetch('album', {{ $album->album_id }})"
+                   @click="if(window.innerWidth >= 1280) { $event.preventDefault(); $store.sidebar.showPreview('album', {{ $album->album_id }}, {
+                       type: 'Album',
+                       id: {{ $album->album_id }},
+                       title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
+                       cover: '{{ $album->coverMedia ? thumb($album->coverMedia, 300, 300) : '' }}',
+                       is_favorite: {{ auth()->check() && $album->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
+                   }); }"
                    class="album-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300"
                    data-album-id="{{ $album->album_id }}"
                    data-album-title="{{ $album->getTranslation('title', app()->getLocale()) }}"

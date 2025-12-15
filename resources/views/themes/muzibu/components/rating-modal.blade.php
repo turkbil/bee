@@ -2,7 +2,7 @@
 <div x-show="$store.contextMenu.ratingModal.open"
      x-cloak
      class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div x-on:click="$store.contextMenu.ratingModal.open = false" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div x-on:click="$store.contextMenu.ratingModal.open = false" class="absolute inset-0 bg-transparent backdrop-blur-sm"></div>
 
     <div class="relative bg-gray-800 rounded-lg shadow-2xl border border-white/20 max-w-md w-full p-6">
         {{-- Content Info Header --}}

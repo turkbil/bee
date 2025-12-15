@@ -8,25 +8,25 @@
     {{-- Modern Filter Tabs --}}
     <div class="mb-8">
         <nav class="flex gap-4 overflow-x-auto scrollbar-hide pb-2" x-data="{ activeTab: '{{ $type }}' }">
-            <a href="/favorites?type=all" wire:navigate
+            <a href="/favorites?type=all"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'all' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-heart mr-2"></i>
                 Tümü
             </a>
-            <a href="/favorites?type=songs" wire:navigate
+            <a href="/favorites?type=songs"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'songs' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-music mr-2"></i>
                 Şarkılar
             </a>
-            <a href="/favorites?type=albums" wire:navigate
+            <a href="/favorites?type=albums"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'albums' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-compact-disc mr-2"></i>
                 Albümler
             </a>
-            <a href="/favorites?type=playlists" wire:navigate
+            <a href="/favorites?type=playlists"
                class="flex-shrink-0 px-6 py-3 rounded-full font-semibold text-base transition-all duration-200"
                :class="activeTab === 'playlists' ? 'bg-muzibu-coral text-white shadow-lg shadow-muzibu-coral/30' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'">
                 <i class="fas fa-stream mr-2"></i>
@@ -48,7 +48,7 @@
                         {{-- Song Card --}}
                         <div class="group relative">
                             <a href="{{ $item->getUrl() }}"
-                               wire:navigate
+                              
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
@@ -85,7 +85,7 @@
                         {{-- Album Card --}}
                         <div class="group relative">
                             <a href="/albums/{{ $item->getTranslation('slug', app()->getLocale()) }}"
-                               wire:navigate
+                              
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
@@ -122,7 +122,7 @@
                         {{-- Playlist Card --}}
                         <div class="group relative">
                             <a href="/playlists/{{ $item->getTranslation('slug', app()->getLocale()) }}"
-                               wire:navigate
+                              
                                class="block p-3 rounded-lg transition-all duration-300 cursor-pointer bg-transparent hover:bg-white/10">
                                 <div class="relative mb-3">
                                     <div class="w-full aspect-square rounded-md overflow-hidden shadow-xl">
@@ -184,7 +184,7 @@
                 @endif
             </h3>
             <p class="text-gray-400 mb-6">Beğendiğin içerikleri favorilere ekleyerek kolayca ulaşabilirsin</p>
-            <a href="/" wire:navigate
+            <a href="/"
                class="inline-flex items-center px-8 py-4 bg-muzibu-coral text-white font-bold rounded-full hover:bg-opacity-90 hover:scale-105 transition-all duration-200 shadow-xl">
                 <i class="fas fa-home mr-2"></i>
                 Ana Sayfaya Dön

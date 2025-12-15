@@ -1,5 +1,5 @@
 @if($radios && $radios->count() > 0)
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-6 animate-slide-up" style="animation-delay: 100ms">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-6">
         @foreach($radios as $radio)
             <div class="radio-card group bg-muzibu-gray hover:bg-gray-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-muzibu-coral/20"
                  data-radio-id="{{ $radio->radio_id }}"
@@ -117,7 +117,7 @@
         </div>
         <h3 class="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 sm:mb-4">Henüz canlı radyo yok</h3>
         <p class="text-sm sm:text-base text-gray-400 mb-6 sm:mb-8">Yakında canlı radyo yayınları eklenecek</p>
-        <a href="/" wire:navigate
+        <a href="/"
            
            class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-muzibu-coral text-white font-semibold rounded-full hover:bg-opacity-90 transition-all text-sm sm:text-base">
             <i class="fas fa-home mr-2"></i>

@@ -21,7 +21,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-8">
             @foreach($playlists as $playlist)
                 <div class="group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-4 transition-all duration-300 cursor-pointer">
-                    <a href="{{ route('muzibu.playlists.show', $playlist->getTranslation('slug', app()->getLocale())) }}" wire:navigate>
+                    <a href="{{ route('muzibu.playlists.show', $playlist->getTranslation('slug', app()->getLocale())) }}">
                         <div class="relative mb-4">
                             @if($playlist->media_id && $playlist->coverMedia)
                                 <img src="{{ thumb($playlist->coverMedia, 300, 300, ['scale' => 1]) }}"
@@ -87,14 +87,14 @@
                         <div class="flex items-center space-x-2">
                             <!-- Edit Button -->
                             <a href="{{ route('muzibu.playlist.edit', $playlist->playlist_id) }}"
-                               wire:navigate
+                              
                                class="text-gray-400 hover:text-muzibu-coral transition-colors"
                                title="Düzenle">
                                 <i class="fas fa-edit"></i>
                             </a>
 
                             <!-- Delete Button -->
-                            <button @click="if(confirm('Bu playlist\'i silmek istediğinize emin misiniz?')) {
+                            <button @click="confirm('Bu playlist\'i silmek istediğinize emin misiniz?') && (() => {
                                         try {
                                             const token = localStorage.getItem('auth_token');
                                             fetch('/api/muzibu/playlists/{{ $playlist->playlist_id }}', {
@@ -114,7 +114,7 @@
                                         } catch (e) {
                                             alert('Storage erişim hatası');
                                         }
-                                    }"
+                                    })()"
                                     class="text-gray-400 hover:text-red-500 transition-colors"
                                     title="Sil">
                                 <i class="fas fa-trash-alt"></i>
@@ -158,7 +158,7 @@
                     İlk Playlist'ini Oluştur
                 </button>
 
-                <a href="{{ route('muzibu.home') }}" wire:navigate
+                <a href="{{ route('muzibu.home') }}"
                    class="inline-flex items-center px-6 py-3 bg-gray-700 text-white font-semibold rounded-full hover:bg-gray-600 transition-all">
                     <i class="fas fa-home mr-2"></i>
                     Ana Sayfaya Dön

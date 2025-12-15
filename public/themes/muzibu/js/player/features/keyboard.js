@@ -82,15 +82,14 @@ function muzibuKeyboard() {
 
                 // Seek forward (5 seconds)
                 case 'arrowright':
+                    this.seekForward(shift ? 10 : 5);
+                    this.showKeyboardFeedback(`⏩ ${shift ? 10 : 5} saniye ileri`);
+                    break;
+
+                // Toggle Loop (L key only)
                 case 'l':
-                    if (key === 'l' && !shift) {
-                        // L key = toggle loop
-                        this.toggleLoop();
-                        this.showKeyboardFeedback(this.isLooping ? '🔁 Tekrar AÇIK' : '➡️ Tekrar KAPALI');
-                    } else {
-                        this.seekForward(shift ? 10 : 5);
-                        this.showKeyboardFeedback(`⏩ ${shift ? 10 : 5} saniye ileri`);
-                    }
+                    this.toggleLoop();
+                    this.showKeyboardFeedback(this.isLooping ? '🔁 Tekrar AÇIK' : '➡️ Tekrar KAPALI');
                     break;
 
                 // Volume up
@@ -299,7 +298,7 @@ function muzibuKeyboard() {
             return [
                 { key: 'Space / K', action: 'Play/Pause', icon: '⏯️' },
                 { key: '← / J', action: 'Seek Backward (5s)', icon: '⏪' },
-                { key: '→ / L', action: 'Seek Forward (5s)', icon: '⏩' },
+                { key: '→', action: 'Seek Forward (5s)', icon: '⏩' },
                 { key: '↑', action: 'Volume Up', icon: '🔊' },
                 { key: '↓', action: 'Volume Down', icon: '🔉' },
                 { key: 'M', action: 'Mute/Unmute', icon: '🔇' },

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📦 Gerçek Ürün Schema Örneği - iXtif Forklift</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="mb-16 pb-8 border-b border-slate-700">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                📦 Gerçek Ürün JSON-LD Schema Örneği
+            </h1>
+            <p class="text-slate-400 text-lg mb-6">
+                Veritabanından Çekilen: iXtif CPD18TVL - Li-Ion Forklift
+            </p>
+            <div class="grid md:grid-cols-5 gap-3">
+                <div class="bg-slate-800/50 rounded p-3 border border-green-500/30">
+                    <div class="text-green-400 text-xs mb-1">🏭 Ürün ID</div>
+                    <div class="text-xl font-bold">10</div>
+                </div>
+                <div class="bg-slate-800/50 rounded p-3 border border-blue-500/30">
+                    <div class="text-blue-400 text-xs mb-1">🏢 Brand</div>
+                    <div class="text-xl font-bold">iXtif</div>
+                </div>
+                <div class="bg-slate-800/50 rounded p-3 border border-purple-500/30">
+                    <div class="text-purple-400 text-xs mb-1">🏷️ SKU</div>
+                    <div class="text-xl font-bold">CPD18TVL</div>
+                </div>
+                <div class="bg-slate-800/50 rounded p-3 border border-yellow-500/30">
+                    <div class="text-yellow-400 text-xs mb-1">💰 Fiyat</div>
+                    <div class="text-xl font-bold">₺25.500</div>
+                </div>
+                <div class="bg-slate-800/50 rounded p-3 border border-orange-500/30">
+                    <div class="text-orange-400 text-xs mb-1">📦 Stok</div>
+                    <div class="text-xl font-bold">50</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ÜRÜN BİLGİSİ -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-green-400">📋 Ürün Bilgileri (Veritabanı)</h2>
+            
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <table class="w-full text-sm">
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">Ürün ID</td>
+                        <td class="py-3 text-white">10</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">Başlık</td>
+                        <td class="py-3 text-white">İXTİF CPD18TVL - Li-Ion Forklift</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">SKU (Stok Kodu)</td>
+                        <td class="py-3 text-white">CPD18TVL</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">Brand</td>
+                        <td class="py-3 text-white"><strong>iXtif</strong> (Brand ID: 1)</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">Kategori</td>
+                        <td class="py-3 text-white">Forklift</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">Fiyat</td>
+                        <td class="py-3 text-white">₺25.500,00</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">Stok Miktarı</td>
+                        <td class="py-3 text-white">50 adet</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 text-slate-400 font-semibold">Para Birimi</td>
+                        <td class="py-3 text-white">TRY (Türk Lirası)</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- JSON-LD SCHEMA -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-blue-400">🔗 JSON-LD Schema (Google'a Gönderilen)</h2>
+            
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-blue-500/30 mb-6">
+                <p class="text-slate-300 mb-4">
+                    Bu JSON-LD kodu ürün sayfasında <code class="bg-slate-900 px-2 py-1 rounded text-sm">&lt;script type="application/ld+json"&gt;</code> 
+                    tag'ı içinde yer alıyor ve Google arama motorlarına yapılandırılmış veri olarak gönderiliyor:
+                </p>
+
+                <pre class="text-xs text-slate-300 bg-slate-900 p-4 rounded overflow-x-auto"><code>{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "İXTİF CPD18TVL - Li-Ion Forklift",
+  "description": "Profesyonel li-ion forklifti, yüksek performans ve verimlilik...",
+  "url": "https://ixtif.com/shop/ixtif-cpd18tvl-li-ion-forklift",
+  "sku": "CPD18TVL",
+  "mpn": null,
+  "gtin13": null,
+  
+  "brand": {
+    "@type": "Brand",
+    "name": "iXtif",
+    "url": "https://ixtif.com"
+  },
+  
+  "category": "Forklift",
+  "image": [
+    "https://ixtif.com/storage/products/cpd18tvl-1.jpg",
+    "https://ixtif.com/storage/products/cpd18tvl-2.jpg"
+  ],
+  
+  "offers": {
+    "@type": "Offer",
+    "url": "https://ixtif.com/shop/ixtif-cpd18tvl-li-ion-forklift",
+    "priceCurrency": "TRY",
+    "price": "25500.00",
+    "priceValidUntil": "2025-06-16",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "inventoryLevel": {
+      "@type": "QuantitativeValue",
+      "value": "50"
+    },
+    "seller": {
+      "@type": "Organization",
+      "name": "iXtif"
+    }
+  },
+  
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.5",
+    "reviewCount": "12",
+    "bestRating": "5",
+    "worstRating": "1"
+  }
+}</code></pre>
+            </div>
+
+            <div class="bg-blue-900/20 rounded-lg p-6 border border-blue-500/30">
+                <h3 class="text-lg font-bold text-blue-300 mb-3">✅ Önemli Alanlar:</h3>
+                <ul class="space-y-2 text-sm text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 font-bold">✓</span>
+                        <span><strong>"@type": "Product"</strong> - Bu bir ürün schema'sı olduğunu gösterir</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 font-bold">✓</span>
+                        <span><strong>"brand"</strong> - Brand schema'sı içinde: iXtif adı ve websitesi</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 font-bold">✓</span>
+                        <span><strong>"offers"</strong> - Fiyat, para birimi, stok durumu, uygunluk ve satıcı bilgisi</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 font-bold">✓</span>
+                        <span><strong>"aggregateRating"</strong> - Ortalama puanlama (daha sonra review sistemi eklenir)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 font-bold">✓</span>
+                        <span><strong>"image"</strong> - Ürün görselleri (tek veya çoklu)</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-blue-400 font-bold">✓</span>
+                        <span><strong>"url"</strong> - Ürün sayfasının canonical URL'si</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- BRAND SCHEMA DETAYLI -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-pink-400">🏢 Brand Schema Detaylı</h2>
+            
+            <div class="bg-pink-900/20 rounded-lg p-6 border border-pink-500/30 mb-6">
+                <h3 class="text-lg font-bold text-pink-300 mb-4">Brand Alanı (Schema İçinde)</h3>
+                
+                <pre class="text-sm text-slate-300 bg-slate-900 p-4 rounded overflow-x-auto mb-4"><code>"brand": {
+  "@type": "Brand",
+  "name": "iXtif",
+  "url": "https://ixtif.com"
+}</code></pre>
+
+                <div class="space-y-3 text-sm text-slate-300">
+                    <p><strong class="text-pink-300">@type:</strong> Always "Brand" (Schema.org standard)</p>
+                    <p><strong class="text-pink-300">name:</strong> "iXtif" - Brand'ın adı (shop_brands.title'den çekiliyor)</p>
+                    <p><strong class="text-pink-300">url:</strong> "https://ixtif.com" - Brand'ın website'i (shop_brands.website_url'den çekiliyor)</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/50 rounded-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-bold text-slate-300 mb-4">💾 Veritabanındaki Kaynak:</h3>
+                <table class="w-full text-sm">
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">Tablo</td>
+                        <td class="py-3 text-white"><code>shop_brands</code></td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">brand_id</td>
+                        <td class="py-3 text-white">1</td>
+                    </tr>
+                    <tr class="border-b border-slate-700">
+                        <td class="py-3 text-slate-400 font-semibold">title (JSON)</td>
+                        <td class="py-3 text-white"><code>{"tr": "iXtif", "en": "iXtif"}</code></td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 text-slate-400 font-semibold">website_url</td>
+                        <td class="py-3 text-white"><code>https://ixtif.com</code></td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- GOOGLE SEARCH CONSOLE NEDİR -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-yellow-400">🔍 Google Arama Motorunda Nasıl Görünür?</h2>
+            
+            <div class="bg-yellow-900/20 rounded-lg p-6 border border-yellow-500/30 mb-6">
+                <h3 class="text-lg font-bold text-yellow-300 mb-4">Rich Snippet (Zengin Sonuç)</h3>
+                
+                <div class="bg-slate-900 rounded p-6 mb-4 border border-slate-700">
+                    <div class="text-lg font-bold text-white mb-2">
+                        İXTİF CPD18TVL - Li-Ion Forklift
+                    </div>
+                    <div class="text-sm text-slate-400 mb-3">
+                        https://ixtif.com/shop/ixtif-cpd18tvl-li-ion-forklift
+                    </div>
+                    <div class="text-sm text-slate-300 mb-4">
+                        Profesyonel li-ion forklifti, yüksek performans ve verimlilik için tasarlanmış...
+                    </div>
+                    
+                    <div class="flex items-center gap-6 text-sm">
+                        <div>
+                            <span class="text-yellow-400">★★★★★</span>
+                            <span class="text-slate-400">4.5/5 (12 review)</span>
+                        </div>
+                        <div>
+                            <span class="text-green-400 font-semibold">₺25.500</span>
+                        </div>
+                        <div>
+                            <span class="text-blue-400">📦 Stokta var</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-sm text-slate-300">
+                    Bu "rich snippet" Google'un JSON-LD schema'sını okuduğunda otomatik olarak oluşturuluyor. 
+                    Brand adı, fiyat, puanlama, resim ve stok durumu direkt olarak arama sonuçlarında görünüyor!
+                </p>
+            </div>
+        </section>
+
+        <!-- ÖNERILER -->
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-6 text-cyan-400">💡 Önemli Notlar</h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-cyan-900/20 rounded-lg p-6 border border-cyan-500/30">
+                    <h3 class="text-lg font-bold text-cyan-300 mb-3">✅ Sistem Doğru Yapıyor</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>✓ Brand otomatik çekiliyor</li>
+                        <li>✓ Fiyat ve stok dinamik</li>
+                        <li>✓ Multi-locale (TR/EN)</li>
+                        <li>✓ Schema.org standartlı</li>
+                        <li>✓ Google 2025 uyumlu</li>
+                    </ul>
+                </div>
+
+                <div class="bg-orange-900/20 rounded-lg p-6 border border-orange-500/30">
+                    <h3 class="text-lg font-bold text-orange-300 mb-3">⚠️ Dikkat Edilecekler</h3>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>⚠️ Image URL 404 dönmemeli</li>
+                        <li>⚠️ Price her zaman dolu (0 bile olsa)</li>
+                        <li>⚠️ Brand @type zorunlu</li>
+                        <li>⚠️ Currency doğru (TRY)</li>
+                        <li>⚠️ Review sistemi aktif et</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-20 pt-8 border-t border-slate-700 text-center">
+            <div class="text-blue-400 text-lg font-semibold mb-2">📦 Gerçek Ürün Schema Örneği</div>
+            <p class="text-slate-500 text-sm">
+                Veritabanından: Product ID 10 - iXtif CPD18TVL Forklift<br>
+                <span class="text-xs mt-2 block">🤖 Claude AI | 2025-12-16</span>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

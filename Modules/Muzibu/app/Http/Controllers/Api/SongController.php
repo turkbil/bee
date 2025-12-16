@@ -438,4 +438,41 @@ class SongController extends Controller
             return response()->json(['playlist_ids' => []]);
         }
     }
+
+    /**
+     * Get song by ID (for queue restoration)
+     * Used by player to load song info after page refresh
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        try {
+            $song = Song::with(['artist', 'album', 'coverMedia', 'album.coverMedia'])
+                ->where('id', $id)
+                ->where('is_active', 1)
+                ->first();
+
+            if (!$song) {
+                return response()->json(['error' => 'Song not found'], 404);
+            }
+
+            // Return minimal song info for queue display
+            return response()->json([
+                'id' => $song->id,
+                'song_id' => $song->song_id,
+                'title' => $song->title,
+                'artist_title' => $song->artist?->title ?? null,
+                'album_title' => $song->album?->title ?? null,
+                'album_cover' => $song->album?->cover_url ?? $song->cover_url ?? null,
+                'duration' => $song->duration ?? '0:00',
+                'slug' => $song->slug ?? null,
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Get song by ID error:', ['id' => $id, 'message' => $e->getMessage()]);
+            return response()->json(['error' => 'Song not found'], 404);
+        }
+    }
 }

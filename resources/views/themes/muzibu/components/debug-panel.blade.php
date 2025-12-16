@@ -120,7 +120,7 @@
         x-show="debugEnabled"
         x-transition
         @click="togglePanel()"
-        class="fixed bottom-24 right-4 w-10 h-10 bg-purple-600/90 hover:bg-purple-500 text-white rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm transition-all"
+        class="fixed bottom-24 left-4 w-10 h-10 bg-purple-600/90 hover:bg-purple-500 text-white rounded-full flex items-center justify-center shadow-lg backdrop-blur-sm transition-all"
         :class="{ 'bg-purple-500': show }"
         title="Debug Panel"
     >

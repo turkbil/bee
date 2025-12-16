@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Merchant Center - Branding Wizard | iXtif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .step { display: none; }
+        .step.active { display: block; }
+        .color-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            border: 3px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .color-box:hover { transform: scale(1.05); }
+        .copy-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-slate-900 min-h-screen">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 py-6">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-indigo-900 rounded-xl flex items-center justify-center">
+                    <i class="fab fa-google text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-white">Google Merchant Center</h1>
+                    <p class="text-slate-400">Branding Ayarları Rehberi - iXtif</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="max-w-4xl mx-auto px-6 py-6">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm text-slate-400">Adım <span id="currentStep">1</span> / 4</span>
+            <span class="text-sm text-slate-400" id="stepName">Kare Logo</span>
+        </div>
+        <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-orange-500 to-orange-600 transition-all duration-500" style="width: 25%"></div>
+        </div>
+    </div>
+
+    <!-- Steps Container -->
+    <div class="max-w-4xl mx-auto px-6 pb-12">
+
+        <!-- Step 1: Kare Logo -->
+        <div class="step active" id="step1">
+            <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-square text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">1. Kare Logo</h2>
+                            <p class="text-blue-200 text-sm">1:1 Oran - Reklam Görünümü</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <!-- Gereksinimler -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-600">
+                        <h3 class="text-white font-semibold mb-4 flex items-center gap-2">
+                            <i class="fas fa-list-check text-blue-400"></i>
+                            Gereksinimler
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-ruler-combined text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="text-white font-medium">Boyut</p>
+                                    <p class="text-slate-400">Min: 500x500 px<br>Max: 2000x2000 px</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-percentage text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="text-white font-medium">Oran</p>
+                                    <p class="text-slate-400">1:1 (Kare)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-file-image text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="text-white font-medium">Format</p>
+                                    <p class="text-slate-400">PNG, SVG, WEBP</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-weight-hanging text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="text-white font-medium">Maks. Boyut</p>
+                                    <p class="text-slate-400">5 MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yapılacak -->
+                    <div class="bg-emerald-900/30 rounded-xl p-5 border border-emerald-700">
+                        <h3 class="text-emerald-400 font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            Yapılacak
+                        </h3>
+                        <ol class="space-y-3 text-slate-300 text-sm">
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                                <span>Sadece <strong class="text-white">X harfi</strong> içeren kare logo hazırla</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                                <span><strong class="text-white">1000x1000 px</strong> boyutunda PNG olarak kaydet</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</span>
+                                <span>Arka plan <strong class="text-white">şeffaf</strong> veya <strong class="text-white">beyaz</strong> olmalı</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">4</span>
+                                <span>Google Merchant'a yükle: <strong class="text-white">"Göz at"</strong> butonuna tıkla</span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- Örnek Görsel -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-600">
+                        <h3 class="text-white font-semibold mb-4 flex items-center gap-2">
+                            <i class="fas fa-image text-purple-400"></i>
+                            Örnek - Kare Logo
+                        </h3>
+                        <div class="flex items-center justify-center">
+                            <div class="w-40 h-40 bg-white rounded-xl flex items-center justify-center shadow-lg">
+                                <svg viewBox="0 0 100 100" class="w-28 h-28">
+                                    <defs>
+                                        <linearGradient id="xGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#E54B2A"/>
+                                            <stop offset="100%" style="stop-color:#1E1B4B"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <text x="50" y="75" text-anchor="middle" font-size="80" font-weight="bold" fill="url(#xGrad)" font-family="Arial Black">X</text>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-center text-slate-500 text-sm mt-3">iXtif - Kare Logo Örneği (1:1)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Dikdörtgen Logo -->
+        <div class="step" id="step2">
+            <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-rectangle-wide text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">2. Dikdörtgen Logo</h2>
+                            <p class="text-purple-200 text-sm">2:1 Oran - Geniş Görünüm</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <!-- Gereksinimler -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-600">
+                        <h3 class="text-white font-semibold mb-4 flex items-center gap-2">
+                            <i class="fas fa-list-check text-purple-400"></i>
+                            Gereksinimler
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-ruler-combined text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="text-white font-medium">Boyut</p>
+                                    <p class="text-slate-400">Min: 1000x500 px<br>Max: 2000x1000 px</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-percentage text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="text-white font-medium">Oran</p>
+                                    <p class="text-slate-400">2:1 (Dikdörtgen)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-file-image text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="text-white font-medium">Format</p>
+                                    <p class="text-slate-400">PNG, SVG, WEBP</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-weight-hanging text-orange-400 mt-1"></i>
+                                <div>
+                                    <p class="text-white font-medium">Maks. Boyut</p>
+                                    <p class="text-slate-400">5 MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yapılacak -->
+                    <div class="bg-emerald-900/30 rounded-xl p-5 border border-emerald-700">
+                        <h3 class="text-emerald-400 font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            Yapılacak
+                        </h3>
+                        <ol class="space-y-3 text-slate-300 text-sm">
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                                <span>Mevcut <strong class="text-white">iXtif</strong> logosunu kullan (tam yazı)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                                <span><strong class="text-white">2000x1000 px</strong> boyutunda PNG olarak kaydet</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</span>
+                                <span>Arka plan <strong class="text-white">şeffaf</strong> veya <strong class="text-white">beyaz</strong> olmalı</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">4</span>
+                                <span>Google Merchant'a yükle: <strong class="text-white">"Göz at"</strong> butonuna tıkla</span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- Mevcut Logo -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-600">
+                        <h3 class="text-white font-semibold mb-4 flex items-center gap-2">
+                            <i class="fas fa-image text-purple-400"></i>
+                            Mevcut Logo - Dikdörtgen
+                        </h3>
+                        <div class="flex items-center justify-center bg-white rounded-xl p-6">
+                            <img src="https://ixtif.com/design/assets/logos/ixtif-logo.png" alt="iXtif Logo" class="h-20">
+                        </div>
+                        <p class="text-center text-slate-500 text-sm mt-3">Bu logoyu 2000x1000 px olarak yeniden boyutlandır</p>
+                        <div class="mt-4 p-3 bg-amber-900/30 rounded-lg border border-amber-700">
+                            <p class="text-amber-400 text-sm flex items-center gap-2">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>İpucu: Canva veya Photoshop ile boyutlandırabilirsin</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Ana Renk -->
+        <div class="step" id="step3">
+            <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-indigo-800 to-indigo-900 px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-palette text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">3. Ana Renk</h2>
+                            <p class="text-indigo-200 text-sm">Marka Ana Rengi - Lacivert</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <!-- Renk Kartı -->
+                    <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-600">
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <!-- Renk Önizleme -->
+                            <div class="color-box" style="background-color: #1E1B4B; width: 120px; height: 120px;" onclick="copyColor('#1E1B4B')"></div>
+
+                            <!-- Renk Bilgileri -->
+                            <div class="flex-1 space-y-4">
+                                <div>
+                                    <p class="text-slate-400 text-sm mb-1">HEX Kod</p>
+                                    <div class="flex items-center gap-2">
+                                        <code class="text-2xl font-mono font-bold text-white bg-slate-700 px-4 py-2 rounded-lg">#1E1B4B</code>
+                                        <button onclick="copyColor('#1E1B4B')" class="copy-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
+                                            <i class="fas fa-copy"></i> Kopyala
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-4 gap-3">
+                                    <div class="bg-slate-700 rounded-lg p-3 text-center">
+                                        <p class="text-slate-400 text-xs">R</p>
+                                        <p class="text-white font-bold">30</p>
+                                    </div>
+                                    <div class="bg-slate-700 rounded-lg p-3 text-center">
+                                        <p class="text-slate-400 text-xs">G</p>
+                                        <p class="text-white font-bold">27</p>
+                                    </div>
+                                    <div class="bg-slate-700 rounded-lg p-3 text-center">
+                                        <p class="text-slate-400 text-xs">B</p>
+                                        <p class="text-white font-bold">75</p>
+                                    </div>
+                                    <div class="bg-slate-700 rounded-lg p-3 text-center">
+                                        <p class="text-slate-400 text-xs">A</p>
+                                        <p class="text-white font-bold">100</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yapılacak -->
+                    <div class="bg-emerald-900/30 rounded-xl p-5 border border-emerald-700">
+                        <h3 class="text-emerald-400 font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            Yapılacak
+                        </h3>
+                        <ol class="space-y-3 text-slate-300 text-sm">
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                                <span><strong class="text-white">Onaltılık kod</strong> alanına: <code class="bg-slate-700 px-2 py-1 rounded">#1E1B4B</code> yaz</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                                <span>Veya RGBA değerlerini gir: <strong class="text-white">R:30, G:27, B:75, A:100</strong></span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- Alternatif Tonlar -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-600">
+                        <h3 class="text-white font-semibold mb-4 flex items-center gap-2">
+                            <i class="fas fa-swatchbook text-indigo-400"></i>
+                            Alternatif Lacivert Tonları
+                        </h3>
+                        <div class="flex flex-wrap gap-3">
+                            <div class="text-center">
+                                <div class="color-box mx-auto" style="background-color: #1E1B4B; width: 60px; height: 60px;" onclick="copyColor('#1E1B4B')"></div>
+                                <p class="text-slate-400 text-xs mt-2">#1E1B4B</p>
+                                <p class="text-emerald-400 text-xs">Önerilen</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="color-box mx-auto" style="background-color: #1E1A5E; width: 60px; height: 60px;" onclick="copyColor('#1E1A5E')"></div>
+                                <p class="text-slate-400 text-xs mt-2">#1E1A5E</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="color-box mx-auto" style="background-color: #2D2A6E; width: 60px; height: 60px;" onclick="copyColor('#2D2A6E')"></div>
+                                <p class="text-slate-400 text-xs mt-2">#2D2A6E</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="color-box mx-auto" style="background-color: #312E81; width: 60px; height: 60px;" onclick="copyColor('#312E81')"></div>
+                                <p class="text-slate-400 text-xs mt-2">#312E81</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Vurgu Rengi -->
+        <div class="step" id="step4">
+            <div class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-highlighter text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-white">4. Vurgu Rengi</h2>
+                            <p class="text-orange-100 text-sm">Aksiyon Rengi - Turuncu</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-6">
+                    <!-- Renk Kartı -->
+                    <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-600">
+                        <div class="flex flex-col md:flex-row items-center gap-6">
+                            <!-- Renk Önizleme -->
+                            <div class="color-box" style="background-color: #E54B2A; width: 120px; height: 120px;" onclick="copyColor('#E54B2A')"></div>
+
+                            <!-- Renk Bilgileri -->
+                            <div class="flex-1 space-y-4">
+                                <div>
+                                    <p class="text-slate-400 text-sm mb-1">HEX Kod</p>
+                                    <div class="flex items-center gap-2">
+                                        <code class="text-2xl font-mono font-bold text-white bg-slate-700 px-4 py-2 rounded-lg">#E54B2A</code>
+                                        <button onclick="copyColor('#E54B2A')" class="copy-btn bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg transition">
+                                            <i class="fas fa-copy"></i> Kopyala
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-4 gap-3">
+                                    <div class="bg-slate-700 rounded-lg p-3 text-center">
+                                        <p class="text-slate-400 text-xs">R</p>
+                                        <p class="text-white font-bold">229</p>
+                                    </div>
+                                    <div class="bg-slate-700 rounded-lg p-3 text-center">
+                                        <p class="text-slate-400 text-xs">G</p>
+                                        <p class="text-white font-bold">75</p>
+                                    </div>
+                                    <div class="bg-slate-700 rounded-lg p-3 text-center">
+                                        <p class="text-slate-400 text-xs">B</p>
+                                        <p class="text-white font-bold">42</p>
+                                    </div>
+                                    <div class="bg-slate-700 rounded-lg p-3 text-center">
+                                        <p class="text-slate-400 text-xs">A</p>
+                                        <p class="text-white font-bold">100</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yapılacak -->
+                    <div class="bg-emerald-900/30 rounded-xl p-5 border border-emerald-700">
+                        <h3 class="text-emerald-400 font-semibold mb-3 flex items-center gap-2">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            Yapılacak
+                        </h3>
+                        <ol class="space-y-3 text-slate-300 text-sm">
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</span>
+                                <span><strong class="text-white">Onaltılık kod</strong> alanına: <code class="bg-slate-700 px-2 py-1 rounded">#E54B2A</code> yaz</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-6 h-6 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</span>
+                                <span>Veya RGBA değerlerini gir: <strong class="text-white">R:229, G:75, B:42, A:100</strong></span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- Alternatif Tonlar -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-slate-600">
+                        <h3 class="text-white font-semibold mb-4 flex items-center gap-2">
+                            <i class="fas fa-swatchbook text-orange-400"></i>
+                            Alternatif Turuncu Tonları
+                        </h3>
+                        <div class="flex flex-wrap gap-3">
+                            <div class="text-center">
+                                <div class="color-box mx-auto" style="background-color: #E54B2A; width: 60px; height: 60px;" onclick="copyColor('#E54B2A')"></div>
+                                <p class="text-slate-400 text-xs mt-2">#E54B2A</p>
+                                <p class="text-emerald-400 text-xs">Önerilen</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="color-box mx-auto" style="background-color: #E84A29; width: 60px; height: 60px;" onclick="copyColor('#E84A29')"></div>
+                                <p class="text-slate-400 text-xs mt-2">#E84A29</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="color-box mx-auto" style="background-color: #DC4B2B; width: 60px; height: 60px;" onclick="copyColor('#DC4B2B')"></div>
+                                <p class="text-slate-400 text-xs mt-2">#DC4B2B</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="color-box mx-auto" style="background-color: #EA580C; width: 60px; height: 60px;" onclick="copyColor('#EA580C')"></div>
+                                <p class="text-slate-400 text-xs mt-2">#EA580C</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tamamlandı -->
+                    <div class="bg-emerald-900/30 rounded-xl p-6 border border-emerald-700 text-center">
+                        <div class="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-check text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-emerald-400 font-bold text-xl mb-2">Tebrikler!</h3>
+                        <p class="text-slate-300">Tüm branding ayarlarını tamamladın.</p>
+                        <p class="text-slate-400 text-sm mt-2">Google Merchant Center'da "Kaydet" butonuna basmayı unutma!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between mt-8">
+            <button id="prevBtn" onclick="changeStep(-1)" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-medium transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <i class="fas fa-arrow-left"></i> Önceki
+            </button>
+            <button id="nextBtn" onclick="changeStep(1)" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl font-medium transition flex items-center gap-2">
+                Sonraki <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="mt-12 bg-slate-800/50 rounded-2xl border border-slate-700 p-6">
+            <h3 class="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                <i class="fas fa-bookmark text-yellow-400"></i>
+                Hızlı Referans - Tüm Değerler
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-900 rounded-xl p-4 border border-slate-600">
+                    <p class="text-slate-400 text-sm mb-2">Kare Logo</p>
+                    <p class="text-white font-medium">1000x1000 px</p>
+                    <p class="text-slate-500 text-xs">PNG, 1:1 oran</p>
+                </div>
+                <div class="bg-slate-900 rounded-xl p-4 border border-slate-600">
+                    <p class="text-slate-400 text-sm mb-2">Dikdörtgen Logo</p>
+                    <p class="text-white font-medium">2000x1000 px</p>
+                    <p class="text-slate-500 text-xs">PNG, 2:1 oran</p>
+                </div>
+                <div class="bg-slate-900 rounded-xl p-4 border border-slate-600">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-4 h-4 rounded" style="background-color: #1E1B4B"></div>
+                        <p class="text-slate-400 text-sm">Ana Renk</p>
+                    </div>
+                    <p class="text-white font-mono font-medium">#1E1B4B</p>
+                    <p class="text-slate-500 text-xs">RGB: 30, 27, 75</p>
+                </div>
+                <div class="bg-slate-900 rounded-xl p-4 border border-slate-600">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-4 h-4 rounded" style="background-color: #E54B2A"></div>
+                        <p class="text-slate-400 text-sm">Vurgu Rengi</p>
+                    </div>
+                    <p class="text-white font-mono font-medium">#E54B2A</p>
+                    <p class="text-slate-500 text-xs">RGB: 229, 75, 42</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastText">Kopyalandı!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-700 py-6 mt-8">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm">
+                <i class="fas fa-robot mr-1"></i> Claude AI tarafından hazırlandı |
+                <span class="text-slate-400">16 Aralık 2025</span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        const stepNames = ['Kare Logo', 'Dikdörtgen Logo', 'Ana Renk', 'Vurgu Rengi'];
+
+        function changeStep(direction) {
+            const newStep = currentStep + direction;
+            if (newStep < 1 || newStep > totalSteps) return;
+
+            document.getElementById('step' + currentStep).classList.remove('active');
+            currentStep = newStep;
+            document.getElementById('step' + currentStep).classList.add('active');
+
+            // Update UI
+            document.getElementById('currentStep').textContent = currentStep;
+            document.getElementById('stepName').textContent = stepNames[currentStep - 1];
+            document.getElementById('progressBar').style.width = (currentStep / totalSteps * 100) + '%';
+
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+            document.getElementById('nextBtn').innerHTML = currentStep === totalSteps
+                ? '<i class="fas fa-check"></i> Tamamlandı'
+                : 'Sonraki <i class="fas fa-arrow-right"></i>';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyColor(color) {
+            navigator.clipboard.writeText(color).then(() => {
+                showToast(color + ' kopyalandı!');
+            });
+        }
+
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = text;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

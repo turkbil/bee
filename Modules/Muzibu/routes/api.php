@@ -70,6 +70,9 @@ Route::prefix('muzibu')->group(function () {
         // Get which playlists contain a song (for playlist select modal)
         Route::get('/{id}/playlists', [SongController::class, 'getPlaylistsContainingSong'])->name('api.muzibu.songs.playlists')->middleware(['web', 'auth']);
 
+        // Get song by ID (for queue restoration after page refresh)
+        Route::get('/{id}', [SongController::class, 'show'])->name('api.muzibu.songs.show')->middleware('throttle.user:api');
+
         // Premium Limit System - SongStreamController (HLS conversion logic) - STRICT STREAM THROTTLE
         // 🔥 FIX: StartSession middleware eklendi - auth('web')->user() çalışsın diye
         Route::get('/{id}/stream', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'stream'])
@@ -115,6 +118,40 @@ Route::prefix('muzibu')->group(function () {
         ->name('api.muzibu.rate')
         ->middleware(['auth:sanctum', 'throttle.user:api'])
         ->where('type', 'songs|albums|playlists|genres|sectors|radios');
+
+    // 🤖 AI ASSISTANT ACTIONS - Playlist & Play Management
+    Route::prefix('ai')->middleware('throttle.user:api')->group(function () {
+        // 🎯 NEW: Playlist oluşturma (ACTION button için - Auth required)
+        Route::post('/playlist/create', [PlaylistController::class, 'createFromAI'])
+            ->middleware('auth:sanctum')
+            ->name('api.muzibu.ai.playlist.create');
+
+        // ❤️ Favorilere ekleme (ACTION button için - Auth required)
+        Route::post('/favorite/add', [\Modules\Muzibu\App\Http\Controllers\Front\FavoritesController::class, 'addToFavorites'])
+            ->middleware('auth:sanctum')
+            ->name('api.muzibu.ai.favorite.add');
+
+        // Playlist'e şarkı ekleme (toplu - Auth required)
+        Route::post('/playlist/{id}/add-songs', [PlaylistController::class, 'aiAddSongs'])
+            ->middleware('auth:sanctum')
+            ->name('api.muzibu.ai.playlist.add-songs');
+
+        // 🔒 Play actions (song, playlist, album, radio - Premium required)
+        Route::post('/play/{type}/{id}', [\Modules\Muzibu\App\Http\Controllers\Api\PlayController::class, 'play'])
+            ->middleware(['auth:sanctum', \Modules\Muzibu\app\Http\Middleware\CheckPremiumSubscription::class])
+            ->name('api.muzibu.ai.play')
+            ->where('type', 'song|playlist|album|radio');
+
+        // 🔒 Queue'ya ekle (toplu şarkı - Premium required)
+        Route::post('/queue/add', [\Modules\Muzibu\App\Http\Controllers\Api\PlayController::class, 'addToQueue'])
+            ->middleware(['auth:sanctum', \Modules\Muzibu\app\Http\Middleware\CheckPremiumSubscription::class])
+            ->name('api.muzibu.ai.queue.add');
+
+        // 🏢 OLD: AI için iş yeri playlist oluşturma (30-200 şarkı, Auth required)
+        Route::post('/business/playlist/create', [PlaylistController::class, 'aiCreate'])
+            ->middleware('auth:sanctum')
+            ->name('api.muzibu.ai.business.playlist.create');
+    });
 
     // Queue Refill - Context-based infinite queue system
     Route::post('/queue/refill', [QueueRefillController::class, 'refill'])

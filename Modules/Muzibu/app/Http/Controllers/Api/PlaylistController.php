@@ -448,4 +448,234 @@ class PlaylistController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * 🤖 AI: Playlist Oluştur (AI Assistant için optimize edilmiş)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function aiCreate(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string|max:1000',
+                'song_ids' => 'required|array|min:30|max:200', // İşyeri için tüm gün (30-200 şarkı = 2-12 saat)
+                'song_ids.*' => 'required|integer|exists:songs,id',
+                'mood' => 'nullable|string|max:50',
+                'is_public' => 'nullable|boolean',
+            ]);
+
+            $userId = auth('sanctum')->id() ?? auth('web')->id();
+
+            // Playlist oluştur
+            $playlist = Playlist::create([
+                'playlist_title' => ['tr' => $validated['name'], 'en' => $validated['name']],
+                'playlist_description' => ['tr' => $validated['description'] ?? '', 'en' => $validated['description'] ?? ''],
+                'playlist_type' => 'user',
+                'user_id' => $userId,
+                'is_active' => true,
+                'is_public' => $validated['is_public'] ?? false,
+                'is_system' => false,
+                'play_count' => 0,
+            ]);
+
+            // Şarkıları ekle
+            $playlist->songs()->attach($validated['song_ids']);
+
+            \Log::info('🤖 AI Playlist Created', [
+                'playlist_id' => $playlist->id,
+                'name' => $validated['name'],
+                'song_count' => count($validated['song_ids']),
+                'user_id' => $userId,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'playlist_id' => $playlist->id,
+                    'name' => $playlist->title,
+                    'slug' => $playlist->slug,
+                    'song_count' => count($validated['song_ids']),
+                    'play_url' => route('muzibu.playlist.show', $playlist->slug),
+                    'message' => "✅ '{$playlist->title}' playlist'i oluşturuldu!"
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('AI Playlist Create Error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Playlist oluşturulurken hata oluştu: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * 🤖 AI: Playlist'e Toplu Şarkı Ekle
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function aiAddSongs(Request $request, int $id): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'song_ids' => 'required|array|min:1',
+                'song_ids.*' => 'required|integer|exists:songs,id',
+            ]);
+
+            $playlist = Playlist::findOrFail($id);
+            $userId = auth('sanctum')->id() ?? auth('web')->id();
+
+            // Sadece playlist sahibi ekleyebilir
+            if ($playlist->user_id && $playlist->user_id !== $userId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bu playlist\'e ekleme yetkiniz yok',
+                ], 403);
+            }
+
+            // Mevcut şarkıları al
+            $existingSongIds = $playlist->songs()->pluck('id')->toArray();
+
+            // Yeni şarkıları filtrele (duplicate check)
+            $newSongIds = collect($validated['song_ids'])
+                ->diff($existingSongIds)
+                ->values()
+                ->toArray();
+
+            // Yeni şarkıları ekle
+            if (!empty($newSongIds)) {
+                $playlist->songs()->attach($newSongIds);
+            }
+
+            \Log::info('🤖 AI Songs Added to Playlist', [
+                'playlist_id' => $playlist->id,
+                'requested_count' => count($validated['song_ids']),
+                'added_count' => count($newSongIds),
+                'duplicate_count' => count($validated['song_ids']) - count($newSongIds),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'added_count' => count($newSongIds),
+                    'duplicate_count' => count($validated['song_ids']) - count($newSongIds),
+                    'total_songs' => $playlist->songs()->count(),
+                    'message' => count($newSongIds) > 0
+                        ? "✅ " . count($newSongIds) . " şarkı eklendi!"
+                        : "ℹ️ Tüm şarkılar zaten playlist'te"
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('AI Add Songs Error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Şarkılar eklenirken hata oluştu: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * 🎯 Create playlist from AI ACTION button
+     * Route: POST /api/muzibu/ai/playlist/create
+     * Middleware: auth:sanctum (must be authenticated)
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function createFromAI(Request $request): JsonResponse
+    {
+        try {
+            // 1. Validate
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'song_ids' => 'required|array|min:1',
+                'song_ids.*' => 'required|integer|exists:muzibu_songs,song_id',
+            ]);
+
+            $userId = auth()->id();
+
+            // 2. Create playlist for authenticated user
+            $playlist = Playlist::create([
+                'title' => ['tr' => $validated['title']],
+                'slug' => ['tr' => \Str::slug($validated['title'])],
+                'description' => ['tr' => 'AI tarafından oluşturulmuş playlist'],
+                'user_id' => $userId,
+                'is_active' => true,
+                'is_public' => false, // Default: Private
+                'is_system' => false,
+            ]);
+
+            // 3. Attach songs
+            $playlist->songs()->attach($validated['song_ids']);
+
+            // 4. Check if user is premium (from central database)
+            $isPremium = $this->checkUserPremium($userId);
+
+            // 5. Return response
+            \Log::info('🎯 Playlist created from AI ACTION button', [
+                'user_id' => $userId,
+                'playlist_id' => $playlist->playlist_id,
+                'title' => $validated['title'],
+                'song_count' => count($validated['song_ids']),
+                'is_premium' => $isPremium,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'playlist_id' => $playlist->playlist_id,
+                'playlist_url' => url("/playlist/" . ($playlist->slug['tr'] ?? $playlist->slug)),
+                'can_play' => $isPremium,
+                'message' => $isPremium
+                    ? 'Playlist kaydedildi ve dinlemeye hazır!'
+                    : 'Playlist kaydedildi! Premium ile dinleyebilirsiniz.',
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Create playlist from AI error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Playlist oluşturulurken hata oluştu: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Check if user has active premium subscription
+     * (from central database)
+     *
+     * @param int $userId
+     * @return bool
+     */
+    protected function checkUserPremium(int $userId): bool
+    {
+        try {
+            $subscription = \DB::connection('central')
+                ->table('subscriptions')
+                ->where('user_id', $userId)
+                ->where('status', 'active')
+                ->where('ends_at', '>', now())
+                ->first();
+
+            return $subscription !== null;
+        } catch (\Exception $e) {
+            \Log::error('Premium check error', ['error' => $e->getMessage()]);
+            return false;
+        }
+    }
 }

@@ -268,4 +268,3 @@ document.addEventListener('alpine:init', () => {
     });
 });
 
-console.log('%c🧪 Debug Feature Loaded', 'color: #8b5cf6; font-weight: bold; font-size: 14px;');

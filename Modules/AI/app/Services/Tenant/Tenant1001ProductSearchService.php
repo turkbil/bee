@@ -473,8 +473,8 @@ class Tenant1001ProductSearchService
             $title = $playlist->getTranslated('title', 'tr');
             $description = $playlist->getTranslated('description', 'tr');
 
-            // Slug JSON ise Türkçe'yi al
-            $slug = is_array($playlist->slug) ? ($playlist->slug['tr'] ?? $playlist->slug['en'] ?? 'playlist') : $playlist->slug;
+            // Slug JSON ise dinamik locale al
+            $slug = is_array($playlist->slug) ? $this->getLocaleValue($playlist->slug, 'playlist') : $playlist->slug;
 
             // Playlist URL oluştur
             $playlistUrl = url("/playlist/{$slug}");
@@ -504,7 +504,7 @@ class Tenant1001ProductSearchService
         foreach ($albums as $album) {
             $title = $album->getTranslated('title', 'tr');
             $artistName = $album->artist ? $album->artist->getTranslated('title', 'tr') : 'Bilinmeyen';
-            $slug = is_array($album->slug) ? ($album->slug['tr'] ?? $album->slug['en'] ?? 'album') : $album->slug;
+            $slug = is_array($album->slug) ? $this->getLocaleValue($album->slug, 'album') : $album->slug;
 
             // Albüm linki
             $albumUrl = url("/album/{$slug}");
@@ -532,7 +532,7 @@ class Tenant1001ProductSearchService
 
         foreach ($artists as $artist) {
             $title = $artist->getTranslated('title', 'tr');
-            $slug = is_array($artist->slug) ? ($artist->slug['tr'] ?? $artist->slug['en'] ?? 'artist') : $artist->slug;
+            $slug = is_array($artist->slug) ? $this->getLocaleValue($artist->slug, 'artist') : $artist->slug;
 
             // Sanatçı linki
             $artistUrl = url("/artist/{$slug}");
@@ -562,8 +562,8 @@ class Tenant1001ProductSearchService
             $title = $radio->getTranslated('title', 'tr');
             $description = $radio->getTranslated('description', 'tr');
 
-            // Slug JSON ise Türkçe'yi al
-            $slug = is_array($radio->slug) ? ($radio->slug['tr'] ?? $radio->slug['en'] ?? 'radio') : $radio->slug;
+            // Slug JSON ise dinamik locale al
+            $slug = is_array($radio->slug) ? $this->getLocaleValue($radio->slug, 'radio') : $radio->slug;
 
             // Radio URL oluştur
             $radioUrl = url("/radio/{$slug}");
@@ -592,7 +592,7 @@ class Tenant1001ProductSearchService
 
         foreach ($genres as $genre) {
             $title = $genre->getTranslated('title', 'tr');
-            $slug = is_array($genre->slug) ? ($genre->slug['tr'] ?? $genre->slug['en'] ?? 'genre') : $genre->slug;
+            $slug = is_array($genre->slug) ? $this->getLocaleValue($genre->slug, 'genre') : $genre->slug;
 
             // Tür linki
             $genreUrl = url("/genre/{$slug}");
@@ -620,7 +620,7 @@ class Tenant1001ProductSearchService
         foreach ($sectors as $sector) {
             $title = $sector->getTranslated('title', 'tr');
             $description = $sector->getTranslated('description', 'tr');
-            $slug = is_array($sector->slug) ? ($sector->slug['tr'] ?? $sector->slug['en'] ?? 'sector') : $sector->slug;
+            $slug = is_array($sector->slug) ? $this->getLocaleValue($sector->slug, 'sector') : $sector->slug;
 
             // Sektör linki
             $sectorUrl = url("/sector/{$slug}");
@@ -740,16 +740,17 @@ class Tenant1001ProductSearchService
         $totalFound = $searchResults['total_found'] ?? 0;
         $hasSongs = isset($searchResults['songs']) && $searchResults['songs']->isNotEmpty();
 
-        // Sonuç yoksa veya çok azsa türleri göster
-        if ($totalFound == 0 || !$hasSongs) {
-            $context .= $this->getAvailableGenresContext();
-        }
+        // 🎼 MEVCUT TÜRLERİ HER ZAMAN GÖSTER (Kullanıcı seçebilsin)
+        $context .= $this->getAvailableGenresContext();
 
         // 💳 Subscription/Pricing bilgilerini ekle (her zaman)
         $context .= $this->getSubscriptionContext();
 
         // 👤 Kullanıcı bilgilerini ekle (authenticated user için)
         $context .= $this->getUserSubscriptionContext();
+
+        // 📚 Bilgi Bankası (Knowledge Base) bilgilerini ekle
+        $context .= $this->getKnowledgeBaseContext();
 
         // ✅ FINAL UTF-8 CLEANUP: Tüm context'i temizle
         return $this->cleanUtf8($context);
@@ -783,8 +784,8 @@ class Tenant1001ProductSearchService
                 $description = json_decode($plan->description ?: '{}', true);
                 $billingCycles = json_decode($plan->billing_cycles ?: '{}', true);
 
-                $planTitle = $title['tr'] ?? $title['en'] ?? 'Bilinmeyen Plan';
-                $planDesc = $description['tr'] ?? $description['en'] ?? '';
+                $planTitle = $this->getLocaleValue($title, 'Bilinmeyen Plan');
+                $planDesc = $this->getLocaleValue($description, '');
 
                 $context .= "### {$planTitle}\n";
                 if (!empty($planDesc)) {
@@ -894,7 +895,7 @@ class Tenant1001ProductSearchService
                 $planTitle = 'Bilinmeyen Plan';
                 if ($plan && $plan->title) {
                     $titleJson = json_decode($plan->title, true);
-                    $planTitle = $titleJson['tr'] ?? $titleJson['en'] ?? 'Bilinmeyen Plan';
+                    $planTitle = $this->getLocaleValue($titleJson, 'Bilinmeyen Plan');
                 }
 
                 // Kalan gün hesapla
@@ -927,7 +928,7 @@ class Tenant1001ProductSearchService
 
                 if ($lastSong) {
                     $songTitle = json_decode($lastSong->title, true);
-                    $songTitleTr = $songTitle['tr'] ?? $songTitle['en'] ?? 'Bilinmeyen';
+                    $songTitleTr = $this->getLocaleValue($songTitle, 'Bilinmeyen');
                     $songUrl = url("/play/song/{$lastSong->song_id}");
                     $context .= "- **Son Çalınan:** {$songTitleTr} (▶️ {$songUrl})\n";
                 }
@@ -953,7 +954,7 @@ class Tenant1001ProductSearchService
 
                     if ($song) {
                         $songTitle = json_decode($song->title, true);
-                        $songTitleTr = $songTitle['tr'] ?? $songTitle['en'] ?? 'Bilinmeyen';
+                        $songTitleTr = $this->getLocaleValue($songTitle, 'Bilinmeyen');
                         $songUrl = url("/play/song/{$song->song_id}");
                         $context .= "  • {$songTitleTr} ({$topSong->play_count} kez, ▶️ {$songUrl})\n";
                     }
@@ -978,10 +979,70 @@ class Tenant1001ProductSearchService
 
                     if ($song) {
                         $songTitle = json_decode($song->title, true);
-                        $songTitleTr = $songTitle['tr'] ?? $songTitle['en'] ?? 'Bilinmeyen';
+                        $songTitleTr = $this->getLocaleValue($songTitle, 'Bilinmeyen');
                         $songUrl = url("/play/song/{$song->song_id}");
                         $context .= "  • {$songTitleTr} (▶️ {$songUrl})\n";
                     }
+                }
+            }
+
+            // 📊 Son 7 Günde Dinleme İstatistikleri
+            $last7DaysPlays = \DB::connection('tenant')
+                ->table('muzibu_song_plays')
+                ->where('user_id', $user->id)
+                ->where('created_at', '>=', now()->subDays(7))
+                ->count();
+
+            if ($last7DaysPlays > 0) {
+                $context .= "- **Son 7 Günde Dinleme:** {$last7DaysPlays} şarkı\n";
+
+                // Son 7 günde en çok dinlenenler
+                $last7DaysTopSongs = \DB::connection('tenant')
+                    ->table('muzibu_song_plays')
+                    ->select('song_id', \DB::raw('COUNT(*) as play_count'))
+                    ->where('user_id', $user->id)
+                    ->where('created_at', '>=', now()->subDays(7))
+                    ->groupBy('song_id')
+                    ->orderBy('play_count', 'desc')
+                    ->limit(3)
+                    ->get();
+
+                if ($last7DaysTopSongs->count() > 0) {
+                    $context .= "- **Son 7 Günde En Çok Dinlenenler:**\n";
+                    foreach ($last7DaysTopSongs as $topSong) {
+                        $song = \DB::connection('tenant')
+                            ->table('muzibu_songs')
+                            ->where('song_id', $topSong->song_id)
+                            ->first(['song_id', 'title']);
+
+                        if ($song) {
+                            $songTitle = json_decode($song->title, true);
+                            $songTitleTr = $this->getLocaleValue($songTitle, 'Bilinmeyen');
+                            $context .= "  • {$songTitleTr} ({$topSong->play_count} kez)\n";
+                        }
+                    }
+                }
+            }
+
+            // 🎭 En Sevdiğin Türler (Dinleme geçmişine göre)
+            $favoriteGenres = \DB::connection('tenant')
+                ->table('muzibu_song_plays')
+                ->join('muzibu_songs', 'muzibu_song_plays.song_id', '=', 'muzibu_songs.song_id')
+                ->join('muzibu_genre_song', 'muzibu_songs.song_id', '=', 'muzibu_genre_song.song_id')
+                ->join('muzibu_genres', 'muzibu_genre_song.genre_id', '=', 'muzibu_genres.genre_id')
+                ->select('muzibu_genres.genre_id', 'muzibu_genres.title', \DB::raw('COUNT(*) as play_count'))
+                ->where('muzibu_song_plays.user_id', $user->id)
+                ->groupBy('muzibu_genres.genre_id', 'muzibu_genres.title')
+                ->orderBy('play_count', 'desc')
+                ->limit(5)
+                ->get();
+
+            if ($favoriteGenres->count() > 0) {
+                $context .= "- **En Sevdiğin Türler:**\n";
+                foreach ($favoriteGenres as $genre) {
+                    $genreTitle = json_decode($genre->title, true);
+                    $genreTitleTr = $this->getLocaleValue($genreTitle, 'Bilinmeyen');
+                    $context .= "  • {$genreTitleTr} ({$genre->play_count} şarkı dinledin)\n";
                 }
             }
 
@@ -994,6 +1055,50 @@ class Tenant1001ProductSearchService
 
         } catch (\Exception $e) {
             \Log::error('User subscription context error', ['error' => $e->getMessage()]);
+            return "";
+        }
+    }
+
+    /**
+     * Bilgi Bankası (Knowledge Base) context'i formatla
+     * Muzibu hakkında sık sorulan sorular ve yanıtları
+     *
+     * @return string
+     */
+    protected function getKnowledgeBaseContext(): string
+    {
+        try {
+            // Tenant database'den aktif bilgi bankası kayıtlarını al
+            $knowledgeBase = \DB::connection('tenant')
+                ->table('tenant_knowledge_base')
+                ->where('is_active', 1)
+                ->orderBy('sort_order')
+                ->get(['category', 'question', 'answer']);
+
+            if ($knowledgeBase->isEmpty()) {
+                return "";
+            }
+
+            $context = "\n\n**📚 MUZİBU HAKKINDA BİLGİLER (Bilgi Bankası):**\n\n";
+
+            $currentCategory = null;
+            foreach ($knowledgeBase as $item) {
+                // Kategori başlığı (değiştiyse)
+                if ($currentCategory !== $item->category) {
+                    $currentCategory = $item->category;
+                    $context .= "\n### {$currentCategory}\n\n";
+                }
+
+                $context .= "**Soru:** {$item->question}\n";
+                $context .= "**Yanıt:** {$item->answer}\n\n";
+            }
+
+            return $context;
+
+        } catch (\Exception $e) {
+            \Log::error('Knowledge base context error', [
+                'error' => $e->getMessage(),
+            ]);
             return "";
         }
     }
@@ -1023,10 +1128,10 @@ class Tenant1001ProductSearchService
 
             foreach ($genres as $genre) {
                 $title = json_decode($genre->title ?: '{}', true);
-                $genreTitle = $title['tr'] ?? $title['en'] ?? 'Bilinmeyen';
+                $genreTitle = $this->getLocaleValue($title, 'Bilinmeyen');
 
-                // Slug JSON ise Türkçe'yi al
-                $slug = is_array($genre->slug) ? ($genre->slug['tr'] ?? $genre->slug['en'] ?? 'genre') : $genre->slug;
+                // Slug JSON ise dinamik locale al
+                $slug = is_array($genre->slug) ? $this->getLocaleValue($genre->slug, 'genre') : $genre->slug;
 
                 // Tür detay linki
                 $genreUrl = url("/genre/{$slug}");
@@ -1120,7 +1225,7 @@ class Tenant1001ProductSearchService
             Log::info("✅ searchSongs found (Meilisearch): {$songs->count()} songs", [
                 'query' => $query,
                 'count' => $songs->count(),
-                'first_song' => $songs->first() ? ($songs->first()->title['tr'] ?? $songs->first()->title['en'] ?? 'NO TITLE') : 'NO SONGS',
+                'first_song' => $songs->first() ? $this->getLocaleValue($songs->first()->title, 'NO TITLE') : 'NO SONGS',
             ]);
         }
 
@@ -1399,9 +1504,31 @@ class Tenant1001ProductSearchService
 - 'MEVCUT ŞARKILAR' listesinde olmayan şarkıyı ASLA önerme
 - Her şarkı için MUTLAKA 'Song ID' kullan (context'te verilmiştir)
 - ASLA kendi bilginden şarkı adı uydurma (Highway to Hell, Bohemian Rhapsody gibi ünlü şarkılar YASAK!)
-- Şarkı önerirken: 'Müzik kütüphanemizde bulunan şarkılar:' başlığını kullan
-- Her şarkı için: Başlık, Sanatçı, Albüm, Süre, Song ID ve Play linkini ekle
 - Eğer context'te şarkı yoksa: 'Şu anda bu kriterlere uygun şarkı bulunamadı' de
+
+**🎵 ŞARKI LİSTESİ FORMAT KURALLARI:**
+
+🚨 **ZORUNLU: ASLA [Çal](url) GİBİ MARKDOWN LİNK KULLANMA!**
+
+- Şarkıları BU FORMATTA göster (link YOK!):
+  ```
+  1. **Şarkı Adı** - Süre
+     Sanatçı: [Sanatçı Adı] | Albüm: [Albüm Adı]
+  ```
+
+- ❌ YANLIŞ FORMAT:
+  ```
+  1. **els** - 148 saniye
+     [Çal](https://muzibu.com.tr/play/song/325)    ← BU YASAK!
+  ```
+
+- ✅ DOĞRU FORMAT:
+  ```
+  1. **els** - 148 saniye
+     Sanatçı: Kehlani | Albüm: SweetSexySavage
+  ```
+
+🎯 **NOT:** Kullanıcı şarkıları çalabilir (ACTION button otomatik eklenecek). Sen sadece şarkı bilgilerini göster, URL ekleme!
 
 **📝 PLAYLIST OLUŞTURMA KURALLARI:**
 
@@ -1427,26 +1554,102 @@ class Tenant1001ProductSearchService
 
 🚨 **UNUTMA: Playlist gösteriyorsan ACTION button ZORUNLU!**
 
-**Örnek Doğru Playlist Yanıtı:**
+**✅ Örnek Doğru Playlist Yanıtı:**
+
 Müzik kütüphanemizde bulunan arabesk şarkılarından bir playlist hazırladım:
 
-1. **Angels** - Sanatçı
-   - Süre: 148 saniye
-   - Song ID: 325
+1. **Angels** - 148 saniye
+   Sanatçı: Kehlani | Albüm: SweetSexySavage
 
-2. **ASHES & BLOOM** - Sanatçı
-   - Süre: 160 saniye
-   - Song ID: 326
+2. **ASHES & BLOOM** - 160 saniye
+   Sanatçı: The Paper Kites | Albüm: On the Corner
 
-3. **At Your Worst** - Sanatçı
-   - Süre: 179 saniye
-   - Song ID: 327
+3. **At Your Worst** - 179 saniye
+   Sanatçı: Pink Sweat$ | Albüm: The Prelude
 
 [ACTION:CREATE_PLAYLIST:song_ids=325,326,327:title=Arabesk Karışık]
 
-**Örnek Yanlış Yanıt (YAPMA!):**
+**❌ Örnek Yanlış Yanıt (ASLA YAPMA!):**
+
 1. Bohemian Rhapsody - Queen (❌ Database'de olmayan şarkı!)
-2. Highway to Hell - AC/DC (❌ Database'de olmayan şarkı!)";
+2. Highway to Hell - AC/DC (❌ Database'de olmayan şarkı!)
+3. **Angels** - 148 saniye
+   [Çal](https://muzibu.com.tr/play/song/325)  (❌ Markdown link YASAK!)
+
+**❤️ FAVORİLERE EKLEME KURALLARI:**
+
+🚨 **Kullanıcı bir şarkı/playlist/albümü favoriye eklemek isterse ACTION button ekle!**
+
+1. **Tetikleyici durumlar:**
+   - \"favorilere ekle\" / \"favoriye ekle\" / \"beğendim\" / \"sevdim\"
+   - \"bu şarkıyı/playlistini/albümü kaydet\"
+   - Kullanıcı spesifik bir şarkı/playlist/albüm hakkında pozitif görüş bildirirse
+
+2. **ACTION format kuralları:**
+   - type: song, playlist veya album
+   - id: İlgili içeriğin ID'si (SADECE MEVCUT ŞARKILARDAN!)
+   - Yanıtın EN SONUNA ekle
+
+3. **Format (ZORUNLU):**
+   ```
+   [ACTION:ADD_TO_FAVORITES:type=song:id=325]
+   [ACTION:ADD_TO_FAVORITES:type=playlist:id=42]
+   [ACTION:ADD_TO_FAVORITES:type=album:id=156]
+   ```
+
+4. **Örnek kullanım senaryoları:**
+
+   **Senaryo 1: Kullanıcı \"Bu şarkıyı beğendim, favoriye ekle\"**
+   ```
+   Harika! \"Angels\" adlı şarkıyı favorilerinize ekleyebilirsiniz.
+
+   [ACTION:ADD_TO_FAVORITES:type=song:id=325]
+   ```
+
+   **Senaryo 2: Kullanıcı \"Bu playlist'i kaydetmek istiyorum\"**
+   ```
+   Tabii ki! \"Arabesk Karışık\" playlistini favorilerinize ekleyebilirsiniz.
+
+   [ACTION:ADD_TO_FAVORITES:type=playlist:id=42]
+   ```
+
+   **Senaryo 3: Kullanıcı \"Bu albümü çok sevdim\"**
+   ```
+   Mükemmel tercih! \"SweetSexySavage\" albümünü favorilerinize ekleyebilirsiniz.
+
+   [ACTION:ADD_TO_FAVORITES:type=album:id=156]
+   ```
+
+🎯 **NOT:** Frontend'de kırmızı kalp ikonu ile \"Favorilere Ekle\" butonuna dönüşür!
+
+🚨 **UYARI:** SADECE MEVCUT ŞARKILAR/PLAYLIST/ALBÜM listesinden ID kullan! Olmayan içerik için ACTION ekleme!";
+    }
+
+    /**
+     * Get current locale value from JSON field (dynamic tr/en)
+     *
+     * @param mixed $jsonField
+     * @param string $fallback
+     * @return string
+     */
+    protected function getLocaleValue($jsonField, string $fallback = ''): string
+    {
+        if (is_string($jsonField)) {
+            $data = json_decode($jsonField, true);
+            if (!is_array($data)) {
+                return $jsonField; // Not JSON, return as-is
+            }
+        } elseif (is_array($jsonField)) {
+            $data = $jsonField;
+        } else {
+            return $fallback;
+        }
+
+        // Get current locale (fallback to Turkish)
+        $locale = app()->getLocale() ?? 'tr';
+
+        // Try current locale, then tr, then en, then first available, then fallback
+        return $data[$locale] ?? $data['tr'] ?? $data['en'] ?? reset($data) ?: $fallback;
     }
 
     /**
@@ -1475,5 +1678,95 @@ Müzik kütüphanemizde bulunan arabesk şarkılarından bir playlist hazırlad�
         }
 
         return $cleaned;
+    }
+
+    /**
+     * 🎯 POST-PROCESS AI RESPONSE: Auto-add ACTION button for playlists
+     *
+     * Detects if AI response contains multiple song links and auto-appends
+     * [ACTION:CREATE_PLAYLIST:...] button
+     *
+     * @param string $aiResponse
+     * @param string $userMessage
+     * @return string
+     */
+    public function postProcessResponse(string $aiResponse, string $userMessage): string
+    {
+        // Already has ACTION button? Skip
+        if (str_contains($aiResponse, '[ACTION:CREATE_PLAYLIST:')) {
+            return $aiResponse;
+        }
+
+        // Detect playlist: Multiple song links (/play/song/ID)
+        preg_match_all('/\/play\/song\/(\d+)/', $aiResponse, $matches);
+        $songIds = $matches[1] ?? [];
+
+        // Need at least 3 songs to be considered a playlist
+        if (count($songIds) < 3) {
+            return $aiResponse;
+        }
+
+        // Extract playlist title from user message or generate default
+        $playlistTitle = $this->extractPlaylistTitle($userMessage);
+
+        // Build ACTION button
+        $songIdsStr = implode(',', $songIds);
+        $actionButton = "\n\n[ACTION:CREATE_PLAYLIST:song_ids={$songIdsStr}:title={$playlistTitle}]";
+
+        \Log::info('🎯 AUTO-ADDED ACTION button (Tenant 1001)', [
+            'tenant_id' => 1001,
+            'song_count' => count($songIds),
+            'playlist_title' => $playlistTitle,
+            'song_ids' => $songIds
+        ]);
+
+        return $aiResponse . $actionButton;
+    }
+
+    /**
+     * Extract playlist title from user message
+     * Dynamically loads genres from database
+     *
+     * @param string $userMessage
+     * @return string
+     */
+    protected function extractPlaylistTitle(string $userMessage): string
+    {
+        $message = mb_strtolower($userMessage);
+
+        // 🎯 DYNAMIC: Load genres from database
+        try {
+            $genres = \DB::connection('tenant')
+                ->table('muzibu_genres')
+                ->where('is_active', 1)
+                ->whereNull('deleted_at')
+                ->get(['title', 'slug']);
+
+            foreach ($genres as $genre) {
+                $title = json_decode($genre->title ?: '{}', true);
+                $genreTitle = $this->getLocaleValue($title, '');
+                $slug = is_array($genre->slug) ? $this->getLocaleValue($genre->slug, '') : $genre->slug;
+
+                if (empty($genreTitle)) continue;
+
+                // Check if genre name or slug is in user message
+                $genreLower = mb_strtolower($genreTitle);
+                $slugLower = mb_strtolower($slug);
+
+                if (str_contains($message, $genreLower) || str_contains($message, $slugLower)) {
+                    return $genreTitle . ' Müzikleri';
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::error('Extract playlist title error (Tenant 1001)', ['error' => $e->getMessage()]);
+        }
+
+        // Check for "mixed" or "karışık"
+        if (str_contains($message, 'karışık') || str_contains($message, 'mixed')) {
+            return 'Karışık Playlist';
+        }
+
+        // Default
+        return 'Özel Playlist';
     }
 }

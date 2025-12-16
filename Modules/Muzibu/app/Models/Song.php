@@ -23,17 +23,13 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
 
     /**
      * Dinamik connection resolver
-     * Central tenant ise mysql (default), değilse tenant connection
+     * Muzibu modülü SADECE tenant 1001 için, ZORLA tenant connection kullan!
      */
     public function getConnectionName()
     {
-        // Eğer tenant context'i varsa ve central değilse tenant connection kullan
-        if (function_exists('tenant') && tenant() && !tenant()->central) {
-            return 'tenant';
-        }
-
-        // Central tenant veya tenant yok ise default connection
-        return config('database.default');
+        // ✅ Muzibu modülü tenant-specific, ZORLA tenant connection!
+        // Tenant 1001 (muzibu) için ayrı database var
+        return 'tenant';
     }
 
     protected $fillable = [
@@ -607,7 +603,9 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function searchableAs(): string
     {
-        $tenantId = tenant() ? tenant()->id : 'central';
+        // ✅ Müzibu modülü SADECE tenant 1001'de kullanılır
+        // Tenant context yoksa fallback 1001 (Muzibu)
+        $tenantId = tenant() ? tenant()->id : 1001;
         return "tenant_{$tenantId}_songs";
     }
 

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant 1001 AI Asistan - Kapsamli Implementasyon Plani v5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .gradient-text { background: linear-gradient(135deg, #a855f7, #ec4899, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900/50 to-slate-900 min-h-screen text-white">
+
+<div class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- HEADER -->
+    <header class="text-center mb-12">
+        <div class="inline-flex items-center gap-4 mb-6">
+            <div class="w-20 h-20 bg-gradient-to-br from-purple-500 via-pink-500 to-violet-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-purple-500/30">
+                <i class="fas fa-headphones text-4xl text-white"></i>
+            </div>
+            <div class="text-left">
+                <h1 class="text-5xl font-black gradient-text">Tenant 1001 AI</h1>
+                <p class="text-slate-400 text-lg">Akilli Muzik Asistani</p>
+            </div>
+        </div>
+        <p class="text-xl text-slate-300 max-w-3xl mx-auto">
+            Tenant 1001 icin ozel tasarlanmis, sarki onerisi, playlist yonetimi, subscription kontrolu ve
+            <strong class="text-pink-400">tikla-cal</strong> action button sistemi ile donatilmis yapay zeka asistani
+        </p>
+
+        <!-- Meta Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-4xl mx-auto">
+            <div class="glass rounded-xl p-4 border border-purple-500/20">
+                <i class="fas fa-calendar text-purple-400 text-xl mb-2"></i>
+                <div class="text-sm text-slate-400">Tarih</div>
+                <div class="font-bold">16.12.2025</div>
+            </div>
+            <div class="glass rounded-xl p-4 border border-pink-500/20">
+                <i class="fas fa-server text-pink-400 text-xl mb-2"></i>
+                <div class="text-sm text-slate-400">Tenant</div>
+                <div class="font-bold">1001</div>
+            </div>
+            <div class="glass rounded-xl p-4 border border-blue-500/20">
+                <i class="fas fa-code-branch text-blue-400 text-xl mb-2"></i>
+                <div class="text-sm text-slate-400">Versiyon</div>
+                <div class="font-bold">v5.0</div>
+            </div>
+            <div class="glass rounded-xl p-4 border border-green-500/20">
+                <i class="fas fa-check-circle text-green-400 text-xl mb-2"></i>
+                <div class="text-sm text-slate-400">Durum</div>
+                <div class="font-bold">Planlandi</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 0: FACTORY PATTERN -->
+    <section class="mb-16">
+        <div class="bg-gradient-to-r from-emerald-600/20 to-green-600/20 border-2 border-emerald-500/50 rounded-2xl p-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-cogs text-emerald-400"></i>
+                TenantServiceFactory Pattern
+            </h2>
+
+            <div class="bg-slate-900/50 rounded-xl p-6 mb-6">
+                <h3 class="text-xl font-bold text-emerald-300 mb-4">Neden Factory Pattern?</h3>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                        <span><strong class="text-white">Yeni Controller GEREKMEZ!</strong> Mevcut <code class="text-emerald-400">assistantChat()</code> Factory ile tenant'a ozel service'i otomatik yukler.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                        <span><strong class="text-white">Yeni Route GEREKMEZ!</strong> Mevcut <code class="text-emerald-400">/api/ai/v1/assistant/chat</code> endpoint'i kullanilir.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fas fa-check-circle text-emerald-400 mt-1"></i>
+                        <span><strong class="text-white">Otomatik Kesfedilir!</strong> <code class="text-emerald-400">Tenant{ID}PromptService</code> dosyasi olusturulunca Factory otomatik tanir.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-emerald-500/30">
+                    <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-code text-emerald-400"></i>
+                        TenantServiceFactory Calisma Mantigi
+                    </h4>
+                    <div class="bg-slate-900/70 rounded-lg p-4 text-sm font-mono">
+                        <div class="text-slate-400">// Mevcut Factory kodu:</div>
+                        <div class="text-emerald-300 mt-2">TenantServiceFactory::getPromptService(1001)</div>
+                        <div class="text-slate-400 mt-1">// ↓ Auto-discovery ↓</div>
+                        <div class="text-blue-300 mt-1">Tenant1001PromptService::class</div>
+                        <div class="text-slate-400 mt-3">// Dosya yoksa:</div>
+                        <div class="text-orange-300">DefaultPromptService::class</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-blue-500/30">
+                    <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-file-code text-blue-400"></i>
+                        Olusturulacak Dosyalar
+                    </h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-plus text-green-400"></i>
+                            <code class="text-purple-400">Tenant1001PromptService.php</code>
+                        </li>
+                        <li class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-plus text-green-400"></i>
+                            <code class="text-pink-400">Tenant1001MusicSearchService.php</code>
+                        </li>
+                        <li class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-plus text-green-400"></i>
+                            <code class="text-blue-400">Tenant1001SubscriptionHelper.php</code>
+                        </li>
+                    </ul>
+                    <div class="mt-4 p-2 bg-emerald-500/10 rounded text-xs text-emerald-300">
+                        <i class="fas fa-folder mr-1"></i>
+                        Konum: Modules/AI/app/Services/Tenant/
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 1: SYSTEM ARCHITECTURE -->
+    <section class="mb-16">
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+            <i class="fas fa-sitemap text-purple-400"></i>
+            Sistem Mimarisi
+        </h2>
+
+        <div class="glass rounded-2xl p-6 border border-slate-700 mb-6">
+            <h3 class="text-xl font-bold text-purple-300 mb-4">Shop AI'dan Miras Alinan Yapi</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-layer-group text-blue-400"></i>
+                        Backend Katmanlari
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Factory Pattern:</strong> TenantServiceFactory otomatik service kesfeder</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Prompt Service:</strong> Tenant1001PromptService (TenantPromptServiceInterface)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Search Service:</strong> Tenant1001MusicSearchService (muzik odakli)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Conversation:</strong> AIConversation + AIMessage (feature_slug: 'tenant1001-assistant')</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-3 flex items-center gap-2">
+                        <i class="fas fa-desktop text-pink-400"></i>
+                        Frontend Katmanlari
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Alpine Store:</strong> Alpine.store('tenant1001AI') - muzik odakli</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Widget:</strong> Player entegreli floating widget</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Action Buttons:</strong> Tikla-cal, favoriye ekle, paylas</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <span><strong>Markdown:</strong> marked.js + custom Tailwind renderer</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Provider Chain -->
+        <div class="glass rounded-2xl p-6 border border-slate-700">
+            <h3 class="text-xl font-bold text-blue-300 mb-4">Multi-Provider Fallback Chain</h3>
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <div class="bg-green-500/20 border border-green-500/30 rounded-xl px-6 py-3 text-center">
+                    <div class="text-green-400 font-bold">GPT-5-mini</div>
+                    <div class="text-xs text-slate-400">Primary</div>
+                </div>
+                <i class="fas fa-arrow-right text-slate-500"></i>
+                <div class="bg-blue-500/20 border border-blue-500/30 rounded-xl px-6 py-3 text-center">
+                    <div class="text-blue-400 font-bold">GPT-4o-mini</div>
+                    <div class="text-xs text-slate-400">Fallback 1</div>
+                </div>
+                <i class="fas fa-arrow-right text-slate-500"></i>
+                <div class="bg-purple-500/20 border border-purple-500/30 rounded-xl px-6 py-3 text-center">
+                    <div class="text-purple-400 font-bold">Claude Haiku</div>
+                    <div class="text-xs text-slate-400">Fallback 2</div>
+                </div>
+                <i class="fas fa-arrow-right text-slate-500"></i>
+                <div class="bg-orange-500/20 border border-orange-500/30 rounded-xl px-6 py-3 text-center">
+                    <div class="text-orange-400 font-bold">DeepSeek</div>
+                    <div class="text-xs text-slate-400">Fallback 3</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: CORE FEATURES -->
+    <section class="mb-16">
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+            <i class="fas fa-star text-yellow-400"></i>
+            Temel Ozellikler
+        </h2>
+
+        <div class="space-y-6">
+            <!-- Feature 1: Music Recommendations -->
+            <div class="glass rounded-2xl overflow-hidden border border-purple-500/30">
+                <div class="bg-gradient-to-r from-purple-600/20 to-pink-600/20 px-6 py-4 border-b border-purple-500/20">
+                    <h3 class="text-2xl font-bold flex items-center gap-3">
+                        <span class="w-10 h-10 bg-purple-500 rounded-xl flex items-center justify-center text-lg font-black">1</span>
+                        Akilli Muzik Onerileri
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-300 mb-6">
+                        AI, tenant 1001 veritabanindaki sarki, album, artist, playlist, tur ve sektor verilerini kullanarak
+                        kullaniciya ozel oneriler sunar. Context-aware: hangi sayfada olduguna gore farkli oneriler.
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-slate-800/50 rounded-xl p-4">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-music text-purple-400"></i>
+                                <span class="font-bold">Sarki Onerileri</span>
+                            </div>
+                            <ul class="text-sm text-slate-400 space-y-1">
+                                <li>Benzer sarkilar (ayni tur)</li>
+                                <li>Ayni artist'in diger sarkilari</li>
+                                <li>Ayni albumden sarkilar</li>
+                                <li>Populer sarkilar</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-xl p-4">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-record-vinyl text-pink-400"></i>
+                                <span class="font-bold">Album & Artist</span>
+                            </div>
+                            <ul class="text-sm text-slate-400 space-y-1">
+                                <li>Artist'in tum albumleri</li>
+                                <li>Benzer artist'ler</li>
+                                <li>Yeni cikan albumler</li>
+                                <li>One cikan albumler</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-800/50 rounded-xl p-4">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-list text-blue-400"></i>
+                                <span class="font-bold">Playlist & Radyo</span>
+                            </div>
+                            <ul class="text-sm text-slate-400 space-y-1">
+                                <li>Tematik playlist'ler</li>
+                                <li>Sektore ozel playlist'ler</li>
+                                <li>Radyo istasyonlari</li>
+                                <li>Kullanici playlist onerileri</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 2: Action Button System -->
+            <div class="glass rounded-2xl overflow-hidden border border-blue-500/30">
+                <div class="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 px-6 py-4 border-b border-blue-500/20">
+                    <h3 class="text-2xl font-bold flex items-center gap-3">
+                        <span class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-lg font-black">2</span>
+                        Action Button System (Tikla-Cal)
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4 mb-6">
+                        <!-- Example -->
+                        <div class="bg-slate-800/50 rounded-xl p-4">
+                            <div class="flex items-start gap-3 mb-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-robot text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm text-slate-400 mb-1">AI Yaniti:</div>
+                                    <div class="text-white">"Size <strong class="text-purple-400">Tarkan - Kuzu Kuzu</strong> sarkisini oneririm!"</div>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-2 ml-13">
+                                <button class="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg text-sm font-bold flex items-center gap-2">
+                                    <i class="fas fa-play"></i> Hemen Cal
+                                </button>
+                                <button class="px-4 py-2 bg-pink-600 rounded-lg text-sm font-semibold flex items-center gap-2">
+                                    <i class="fas fa-heart"></i> Favorilere Ekle
+                                </button>
+                                <button class="px-4 py-2 bg-purple-600 rounded-lg text-sm font-semibold flex items-center gap-2">
+                                    <i class="fas fa-list"></i> Playlist'e Ekle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Types -->
+                    <div class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-xl p-4 border border-blue-500/20">
+                        <h4 class="font-bold text-blue-300 mb-3">Desteklenen Action Turleri</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                            <div class="flex items-center gap-2"><i class="fas fa-play text-green-400"></i><span>play_song</span></div>
+                            <div class="flex items-center gap-2"><i class="fas fa-play-circle text-green-400"></i><span>play_album</span></div>
+                            <div class="flex items-center gap-2"><i class="fas fa-list text-purple-400"></i><span>play_playlist</span></div>
+                            <div class="flex items-center gap-2"><i class="fas fa-broadcast-tower text-orange-400"></i><span>play_radio</span></div>
+                            <div class="flex items-center gap-2"><i class="fas fa-heart text-pink-400"></i><span>add_favorite</span></div>
+                            <div class="flex items-center gap-2"><i class="fas fa-plus text-blue-400"></i><span>add_to_playlist</span></div>
+                            <div class="flex items-center gap-2"><i class="fas fa-share text-cyan-400"></i><span>share</span></div>
+                            <div class="flex items-center gap-2"><i class="fas fa-external-link text-slate-400"></i><span>navigate</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 3: Subscription Management -->
+            <div class="glass rounded-2xl overflow-hidden border border-pink-500/30">
+                <div class="bg-gradient-to-r from-pink-600/20 to-rose-600/20 px-6 py-4 border-b border-pink-500/20">
+                    <h3 class="text-2xl font-bold flex items-center gap-3">
+                        <span class="w-10 h-10 bg-pink-500 rounded-xl flex items-center justify-center text-lg font-black">3</span>
+                        Subscription & Premium Yonetimi
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4 mb-6">
+                        <!-- Guest -->
+                        <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-slate-500">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user-slash text-slate-300"></i>
+                                </div>
+                                <div class="font-bold text-white">Guest</div>
+                            </div>
+                            <div class="text-sm text-slate-400">"Uye olun, {trial_days} gun ucretsiz deneyin!"</div>
+                        </div>
+
+                        <!-- Trial -->
+                        <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-blue-500">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-clock text-white"></i>
+                                </div>
+                                <div class="font-bold text-white">Trial</div>
+                            </div>
+                            <div class="text-sm text-slate-400">"{days_remaining} gun kaldi, Premium'a gecin!"</div>
+                        </div>
+
+                        <!-- Premium -->
+                        <div class="bg-slate-800/50 rounded-xl p-5 border-l-4 border-yellow-500">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-crown text-white"></i>
+                                </div>
+                                <div class="font-bold text-white">Premium</div>
+                            </div>
+                            <div class="text-sm text-slate-400">"{days_remaining} gun kaldi, {device_count}/{device_limit} cihaz"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: AI WORKFLOW SYSTEM (YENİ!) -->
+    <section class="mb-16">
+        <div class="bg-gradient-to-r from-cyan-600/20 to-blue-600/20 border-2 border-cyan-500/50 rounded-2xl p-8">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-project-diagram text-cyan-400"></i>
+                AI Workflow Sistemi (v5 Yenilik!)
+            </h2>
+
+            <!-- Success Alert -->
+            <div class="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-l-4 border-green-500 rounded-xl p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-check-circle text-green-400 text-xl mt-1"></i>
+                    <div>
+                        <div class="font-bold text-green-300">Harika Haber: Sistem Zaten Tenant-Aware!</div>
+                        <div class="text-sm text-slate-300 mt-1">Flows, Nodes, Directives, Knowledge Base - hepsi tenant_id ile ayristirilmis. Kod degisikligi gerekmez, sadece icerik eklenmeli.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workflow Modules -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <!-- Flows -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-blue-500/30">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-sitemap text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-blue-300">Flows (Akislar)</h4>
+                            <span class="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">HAZIR</span>
+                        </div>
+                    </div>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Tenant DB: tenant_conversation_flows</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Admin: /admin/ai/workflow/flows</li>
+                        <li><i class="fas fa-info-circle text-blue-400 mr-2"></i>Her tenant kendi flow'larini olusturur</li>
+                    </ul>
+                </div>
+
+                <!-- Nodes -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-purple-500/30">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cubes text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-purple-300">Nodes (Dugumler)</h4>
+                            <span class="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded">HAZIR</span>
+                        </div>
+                    </div>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Global: Central DB (ai_workflow_nodes)</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Admin: /admin/ai/workflow/nodes</li>
+                        <li><i class="fas fa-info-circle text-blue-400 mr-2"></i>is_global + tenant_whitelist filtreleme</li>
+                    </ul>
+                </div>
+
+                <!-- Directives -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-yellow-500/30">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-sliders-h text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-yellow-300">Directives (Direktifler)</h4>
+                            <span class="text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">ICERIK GEREK</span>
+                        </div>
+                    </div>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Central DB: ai_tenant_directives</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Admin: /admin/ai/workflow/directives</li>
+                        <li><i class="fas fa-copy text-yellow-400 mr-2"></i>copyFromTenant(2, 1001) kullanilabilir</li>
+                    </ul>
+                </div>
+
+                <!-- Knowledge Base -->
+                <div class="bg-slate-800/50 rounded-xl p-5 border border-cyan-500/30">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-book text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-cyan-300">Knowledge Base</h4>
+                            <span class="text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded">ICERIK GEREK</span>
+                        </div>
+                    </div>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Tenant DB: tenant_knowledge_base</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>Admin: /admin/ai/knowledge-base</li>
+                        <li><i class="fas fa-edit text-yellow-400 mr-2"></i>Muzik SSS icerigi eklenmeli</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Admin URLs -->
+            <div class="bg-slate-900/50 rounded-xl p-4">
+                <h4 class="font-bold text-white mb-3"><i class="fas fa-link text-cyan-400 mr-2"></i>Admin Panel URL'leri (muzibu.com.tr)</h4>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm">
+                    <a href="https://muzibu.com.tr/admin/ai/workflow/flows" target="_blank" class="px-3 py-2 bg-blue-500/10 border border-blue-500/30 rounded-lg text-blue-400 hover:bg-blue-500/20">
+                        <i class="fas fa-sitemap mr-1"></i>Flows
+                    </a>
+                    <a href="https://muzibu.com.tr/admin/ai/workflow/flows/manage" target="_blank" class="px-3 py-2 bg-purple-500/10 border border-purple-500/30 rounded-lg text-purple-400 hover:bg-purple-500/20">
+                        <i class="fas fa-edit mr-1"></i>Flow Editor
+                    </a>
+                    <a href="https://muzibu.com.tr/admin/ai/workflow/nodes" target="_blank" class="px-3 py-2 bg-pink-500/10 border border-pink-500/30 rounded-lg text-pink-400 hover:bg-pink-500/20">
+                        <i class="fas fa-cubes mr-1"></i>Nodes
+                    </a>
+                    <a href="https://muzibu.com.tr/admin/ai/workflow/directives" target="_blank" class="px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-400 hover:bg-yellow-500/20">
+                        <i class="fas fa-sliders-h mr-1"></i>Directives
+                    </a>
+                    <a href="https://muzibu.com.tr/admin/ai/knowledge-base" target="_blank" class="px-3 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg text-cyan-400 hover:bg-cyan-500/20">
+                        <i class="fas fa-book mr-1"></i>Knowledge Base
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: IMPLEMENTATION STEPS -->
+    <section class="mb-16">
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+            <i class="fas fa-code text-blue-400"></i>
+            Implementasyon Adimlari
+        </h2>
+
+        <div class="space-y-4">
+            <!-- Step 1 -->
+            <div class="glass rounded-xl p-6 border-l-4 border-purple-500">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-black">1</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-purple-300 mb-2">Tenant1001PromptService Olustur</h3>
+                        <p class="text-slate-400 text-sm mb-3">Modules/AI/app/Services/Tenant/Tenant1001PromptService.php</p>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <ul class="space-y-1 text-slate-300">
+                                <li><strong>buildPrompt():</strong> Muzik asistani system prompt</li>
+                                <li><strong>getSpecialRules():</strong> Muzik odakli kurallar</li>
+                                <li><strong>getSector():</strong> return 'music'</li>
+                            </ul>
+                            <ul class="space-y-1 text-slate-300">
+                                <li><strong>getNoProductMessage():</strong> "Icerik bulunamadi"</li>
+                                <li><strong>getContactInfo():</strong> Settings'ten iletisim</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="glass rounded-xl p-6 border-l-4 border-pink-500">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-black">2</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-pink-300 mb-2">Tenant1001MusicSearchService Olustur</h3>
+                        <p class="text-slate-400 text-sm mb-3">Modules/AI/app/Services/Tenant/Tenant1001MusicSearchService.php</p>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <ul class="space-y-1 text-slate-300">
+                                <li><strong>searchSongs(query)</strong></li>
+                                <li><strong>searchAlbums(query)</strong></li>
+                                <li><strong>searchPlaylists(query)</strong></li>
+                            </ul>
+                            <ul class="space-y-1 text-slate-300">
+                                <li><strong>searchByGenre(genre_id)</strong></li>
+                                <li><strong>searchBySector(sector_id)</strong></li>
+                                <li><strong>getPopularContent()</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="glass rounded-xl p-6 border-l-4 border-blue-500">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-black">3</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-300 mb-2">Tenant1001SubscriptionHelper Olustur</h3>
+                        <p class="text-slate-400 text-sm mb-3">Modules/AI/app/Services/Tenant/Tenant1001SubscriptionHelper.php</p>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <ul class="space-y-1 text-slate-300">
+                                <li><strong>getUserStatus($user)</strong></li>
+                                <li><strong>getPlansWithPrices()</strong></li>
+                            </ul>
+                            <ul class="space-y-1 text-slate-300">
+                                <li><strong>getDeviceInfo($user)</strong></li>
+                                <li><strong>getDaysRemaining()</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 - AI Workflow Content -->
+            <div class="glass rounded-xl p-6 border-l-4 border-yellow-500">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-black">4</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-yellow-300 mb-2">AI Workflow Icerigi Ekle</h3>
+                        <p class="text-slate-400 text-sm mb-3">Admin panelden yapilacak (kod yok)</p>
+                        <div class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-slate-800/50 rounded-lg p-3">
+                                <div class="font-bold text-yellow-300 mb-2"><i class="fas fa-sliders-h mr-2"></i>Directives</div>
+                                <ul class="space-y-1 text-slate-300">
+                                    <li>copyFromTenant(2, 1001) ile kopyala</li>
+                                    <li>ai_config: Muzik prompt'u</li>
+                                    <li>behavior: Oneri davranisi</li>
+                                    <li>pricing: Subscription bilgisi</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-800/50 rounded-lg p-3">
+                                <div class="font-bold text-cyan-300 mb-2"><i class="fas fa-book mr-2"></i>Knowledge Base</div>
+                                <ul class="space-y-1 text-slate-300">
+                                    <li>Abonelik SSS</li>
+                                    <li>Cihaz Limiti SSS</li>
+                                    <li>Playlist Olusturma</li>
+                                    <li>Odeme Sorulari</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="glass rounded-xl p-6 border-l-4 border-green-500">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-black">5</div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-green-300 mb-2">Test & Frontend (Opsiyonel)</h3>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><i class="fas fa-vial text-green-400 mr-2"></i><strong>Test:</strong> /api/ai/v1/assistant/chat tenant 1001'de</li>
+                            <li><i class="fas fa-code text-orange-400 mr-2"></i><strong>Frontend:</strong> tenant1001-ai-chat.js (opsiyonel)</li>
+                            <li><i class="fas fa-window-maximize text-cyan-400 mr-2"></i><strong>Widget:</strong> ai-chat-widget.blade.php (opsiyonel)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: PROGRESS TRACKING -->
+    <section class="mb-16">
+        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+            <i class="fas fa-tasks text-emerald-400"></i>
+            Ilerleme Takibi
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <!-- PromptService Tasks -->
+            <div class="glass rounded-xl p-6 border border-purple-500/20">
+                <h3 class="text-lg font-bold text-purple-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-robot"></i>
+                    Tenant1001PromptService.php
+                </h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">Interface implement et</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">buildPrompt()</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">getSpecialRules()</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">getSector(), getNoProductMessage(), getContactInfo()</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SubscriptionHelper Tasks -->
+            <div class="glass rounded-xl p-6 border border-blue-500/20">
+                <h3 class="text-lg font-bold text-blue-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-crown"></i>
+                    Tenant1001SubscriptionHelper.php
+                </h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">getUserStatus()</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">getPlansWithPrices()</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">getDeviceInfo(), getDaysRemaining()</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MusicSearchService Tasks -->
+            <div class="glass rounded-xl p-6 border border-pink-500/20">
+                <h3 class="text-lg font-bold text-pink-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-search"></i>
+                    Tenant1001MusicSearchService.php
+                </h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">searchSongs(), searchAlbums()</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">searchPlaylists(), searchByGenre()</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">searchBySector(), getPopularContent()</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Workflow Tasks -->
+            <div class="glass rounded-xl p-6 border border-yellow-500/20">
+                <h3 class="text-lg font-bold text-yellow-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-project-diagram"></i>
+                    AI Workflow Icerigi
+                </h3>
+                <div class="space-y-2 text-sm">
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">Directives kopyala (ixtif template)</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">Muzik directive'lerini ozellestir</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 rounded-lg bg-slate-800/30">
+                        <i class="fas fa-square text-slate-500"></i>
+                        <span class="text-slate-300">Knowledge Base SSS ekle</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: SUMMARY -->
+    <section class="mb-12">
+        <div class="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-purple-600/20 rounded-2xl p-8 border border-purple-500/30">
+            <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                <i class="fas fa-rocket text-yellow-400"></i>
+                Ozet
+            </h2>
+
+            <div class="grid md:grid-cols-4 gap-4 mb-8">
+                <div class="bg-slate-900/50 rounded-xl p-5 text-center">
+                    <div class="text-3xl font-black text-purple-400 mb-2">3</div>
+                    <div class="text-white font-bold">Backend Dosya</div>
+                    <div class="text-xs text-slate-400">PromptService, SearchService, Helper</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-xl p-5 text-center">
+                    <div class="text-3xl font-black text-emerald-400 mb-2">0</div>
+                    <div class="text-white font-bold">Controller/Route</div>
+                    <div class="text-xs text-slate-400">Factory auto-discovery</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-xl p-5 text-center">
+                    <div class="text-3xl font-black text-yellow-400 mb-2">2</div>
+                    <div class="text-white font-bold">Icerik Gorevi</div>
+                    <div class="text-xs text-slate-400">Directives + KB</div>
+                </div>
+                <div class="bg-slate-900/50 rounded-xl p-5 text-center">
+                    <div class="text-3xl font-black text-blue-400 mb-2">2</div>
+                    <div class="text-white font-bold">Opsiyonel</div>
+                    <div class="text-xs text-slate-400">Frontend + Widget</div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/50 rounded-xl p-6">
+                <h3 class="text-xl font-bold text-white mb-4">Dosya Isimlendirme (Tenant1001 Konvansiyonu)</h3>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <ul class="space-y-2 text-slate-300">
+                        <li><code class="text-purple-400">Tenant1001PromptService.php</code></li>
+                        <li><code class="text-pink-400">Tenant1001MusicSearchService.php</code></li>
+                        <li><code class="text-blue-400">Tenant1001SubscriptionHelper.php</code></li>
+                    </ul>
+                    <ul class="space-y-2 text-slate-300">
+                        <li><code class="text-orange-400">tenant1001-ai-chat.js</code> (opsiyonel)</li>
+                        <li><code class="text-green-400">Alpine.store('tenant1001AI')</code> (opsiyonel)</li>
+                        <li><code class="text-cyan-400">feature_slug: 'tenant1001-assistant'</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-center pt-8 border-t border-slate-700">
+        <div class="flex items-center justify-center gap-2 text-slate-400 text-sm mb-2">
+            <i class="fas fa-robot"></i>
+            <span>Plan hazirlayan:</span>
+            <strong class="text-purple-400">Claude Opus 4.5</strong>
+        </div>
+        <div class="text-slate-500 text-xs">
+            Tenant 1001 AI Muzik Asistani - Implementasyon Plani v5.0 (Factory Pattern + AI Workflow)
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>

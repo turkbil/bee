@@ -49,8 +49,25 @@ Route::prefix('ai/v1')
 
     // 🤖 MODULAR ASSISTANT (Tenant-aware, supports multiple module types)
     // Automatically routes to correct module based on tenant configuration
+    // ✅ GUEST ACCESS: Anyone can chat, but actions require authentication
     Route::post('/assistant/chat', [PublicAIController::class, 'assistantChat'])
         ->name('assistant.chat');
+
+    // 🎵 AI PLAYLIST ACTIONS (Tenant 1001 - Muzibu)
+    // ⚠️ AUTHENTICATION REQUIRED: Only logged-in users can create playlists
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('/assistant/playlist/create', [PublicAIController::class, 'createPlaylist'])
+            ->name('assistant.playlist.create');
+
+        Route::post('/assistant/playlist/add-songs', [PublicAIController::class, 'addSongsToPlaylist'])
+            ->name('assistant.playlist.add-songs');
+
+        Route::post('/assistant/queue/add', [PublicAIController::class, 'addToQueue'])
+            ->name('assistant.queue.add');
+
+        Route::post('/assistant/play/{type}/{id}', [PublicAIController::class, 'playContent'])
+            ->name('assistant.play');
+    });
 
     // 🎨 Product Placeholder Endpoint (Cached AI-generated conversations)
     Route::get('/product-placeholder/{productId}', [PublicAIController::class, 'getProductPlaceholder'])

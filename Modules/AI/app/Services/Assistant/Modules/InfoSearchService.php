@@ -3,7 +3,7 @@
 namespace Modules\AI\App\Services\Assistant\Modules;
 
 use Modules\AI\App\Contracts\ModuleSearchInterface;
-use Modules\AI\App\Models\AIKnowledgeBase;
+use Modules\AI\App\Models\KnowledgeBase;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -32,7 +32,7 @@ class InfoSearchService implements ModuleSearchInterface
             $tenantId = tenant('id');
 
             // Knowledge base'de ara
-            $results = AIKnowledgeBase::where('tenant_id', $tenantId)
+            $results = KnowledgeBase::where('tenant_id', $tenantId)
                 ->where('is_active', true)
                 ->where(function ($q) use ($query) {
                     $q->where('question', 'LIKE', "%{$query}%")

@@ -43,7 +43,6 @@ function muzibuKeyboard() {
                 this.handleKeyPress(e);
             });
 
-            console.log('🎹 Keyboard shortcuts initialized');
         },
 
         /**
@@ -88,8 +87,9 @@ function muzibuKeyboard() {
 
                 // Toggle Loop (L key only)
                 case 'l':
-                    this.toggleLoop();
-                    this.showKeyboardFeedback(this.isLooping ? '🔁 Tekrar AÇIK' : '➡️ Tekrar KAPALI');
+                    this.cycleRepeat();
+                    const repeatLabels = { 'off': 'KAPALI', 'all': 'TÜM ŞARKILAR', 'one': 'TEK ŞARKI' };
+                    this.showKeyboardFeedback(`🔁 Tekrar: ${repeatLabels[this.repeatMode] || 'KAPALI'}`);
                     break;
 
                 // Volume up
@@ -113,18 +113,18 @@ function muzibuKeyboard() {
                 // Toggle Shuffle
                 case 's':
                     this.toggleShuffle();
-                    this.showKeyboardFeedback(this.isShuffling ? '🔀 Karıştır AÇIK' : '➡️ Karıştır KAPALI');
+                    this.showKeyboardFeedback(this.shuffle ? '🔀 Karıştır AÇIK' : '➡️ Karıştır KAPALI');
                     break;
 
                 // Next song
                 case 'n':
-                    this.playNext();
+                    this.nextTrack();
                     this.showKeyboardFeedback('⏭️ Sonraki Şarkı');
                     break;
 
                 // Previous song
                 case 'p':
-                    this.playPrevious();
+                    this.previousTrack();
                     this.showKeyboardFeedback('⏮️ Önceki Şarkı');
                     break;
 
@@ -143,7 +143,7 @@ function muzibuKeyboard() {
                 // Toggle Favorites (if song is playing)
                 case 'f':
                     if (this.currentSong) {
-                        this.toggleFavorite(this.currentSong.id);
+                        this.toggleLike(this.currentSong.song_id);
                         this.showKeyboardFeedback('❤️ Favori');
                     }
                     break;
@@ -248,23 +248,9 @@ function muzibuKeyboard() {
         },
 
         /**
-         * Toggle loop
+         * Note: cycleRepeat() is defined in player-core.js
+         * Note: toggleShuffle() is defined in player-core.js
          */
-        toggleLoop() {
-            this.isLooping = !this.isLooping;
-            if (this.howl) {
-                this.howl.loop(this.isLooping);
-            }
-            safeStorage.setItem('player_loop', this.isLooping);
-        },
-
-        /**
-         * Toggle shuffle
-         */
-        toggleShuffle() {
-            this.isShuffling = !this.isShuffling;
-            safeStorage.setItem('player_shuffle', this.isShuffling);
-        },
 
         /**
          * Show visual feedback for keyboard action
@@ -289,6 +275,25 @@ function muzibuKeyboard() {
             this.keyboardFeedbackTimeout = setTimeout(() => {
                 feedback.classList.remove('show');
             }, 1000);
+        },
+
+        /**
+         * Cleanup keyboard resources (called on player destroy)
+         */
+        destroyKeyboard() {
+            // Clear any pending feedback timeout
+            if (this.keyboardFeedbackTimeout) {
+                clearTimeout(this.keyboardFeedbackTimeout);
+                this.keyboardFeedbackTimeout = null;
+            }
+
+            // Remove feedback element from DOM
+            const feedback = document.getElementById('keyboard-feedback');
+            if (feedback) {
+                feedback.remove();
+            }
+
+            console.log('🎹 Keyboard shortcuts cleaned up');
         },
 
         /**

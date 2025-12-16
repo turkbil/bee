@@ -57,7 +57,35 @@
             class="w-9 h-9 bg-white/5 hover:bg-muzibu-coral/20 rounded-lg flex items-center justify-center text-muzibu-text-gray hover:text-muzibu-coral transition-all duration-300 group"
             title="Cache Temizle"
             x-data="{
-                clearCache() {
+                async clearCache() {
+                    // ✅ 1. AI Conversation'ı veritabanından sil
+                    try {
+                        const aiSession = localStorage.getItem('tenant1001_ai_session');
+                        if (aiSession) {
+                            const session = JSON.parse(aiSession);
+                            const conversationId = session.conversationId;
+
+                            if (conversationId) {
+                                // DELETE conversation from DB
+                                await fetch(`/api/ai/v1/conversation/${conversationId}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                                    }
+                                });
+                                console.log('✅ AI conversation deleted from DB (ID:', conversationId, ')');
+                            }
+                        }
+
+                        // ✅ 2. localStorage'dan da temizle
+                        localStorage.removeItem('tenant1001_ai_session');
+                        console.log('✅ AI conversation cleared from localStorage');
+                    } catch (e) {
+                        console.warn('⚠️ AI conversation clear failed:', e);
+                    }
+
+                    // ✅ 3. Cache temizleme isteği
                     fetch('/admin/cache/clear', {
                         method: 'POST',
                         headers: {
@@ -67,11 +95,13 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Cache cleared:', data);
+                        console.log('✅ Cache cleared:', data);
+                        // Sayfa yenile (AI conversation da temizlenmiş olacak)
                         window.location.reload();
                     })
                     .catch(error => {
-                        console.error('Cache clear error:', error);
+                        console.error('❌ Cache clear error:', error);
+                        // Hata olsa bile sayfa yenile
                         window.location.reload();
                     });
                 }

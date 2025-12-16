@@ -49,14 +49,28 @@ class AdminTenantSelection
             }
             
             Session::put('admin_selected_tenant_id', $tenantId);
-            
+
             \Log::info('AdminTenantSelection: Tenant auto-detected', [
                 'tenant_id' => $tenantId,
                 'host' => $host,
                 'source' => 'domain_detection'
             ]);
         }
-        
+
+        // Initialize tenant context
+        $adminSelectedTenantId = Session::get('admin_selected_tenant_id');
+        if ($adminSelectedTenantId) {
+            $tenant = \App\Models\Tenant::find($adminSelectedTenantId);
+            if ($tenant) {
+                tenancy()->initialize($tenant);
+
+                \Log::info('AdminTenantSelection: Tenant initialized', [
+                    'tenant_id' => $tenant->id,
+                    'tenant_db' => $tenant->tenancy_db_name,
+                ]);
+            }
+        }
+
         return $next($request);
     }
 }

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 README Index - Favori & Gizleme Sistemi Taslağı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-300">
+
+    <!-- Header -->
+    <div class="sticky top-0 bg-slate-900/98 backdrop-blur border-b border-slate-800 px-6 py-4 z-10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl font-bold text-blue-400">📚 README</span>
+                    <span class="text-sm text-slate-500">ixtif.com</span>
+                </div>
+                <div class="flex gap-2 text-xs text-slate-500">
+                    <span class="px-3 py-1 bg-slate-800 rounded-lg">142 rapor</span>
+                    <span class="px-3 py-1 bg-slate-800 rounded-lg">289 versiyon</span>
+                </div>
+            </div>
+
+            <!-- Search & Filters -->
+            <div class="flex gap-3">
+                <input type="text"
+                       id="searchInput"
+                       placeholder="🔍 Rapor ara..."
+                       class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+
+                <div class="flex gap-2">
+                    <button onclick="filterReports('all')"
+                            class="filter-btn active px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition-colors">
+                        Hepsi
+                    </button>
+                    <button onclick="filterReports('favorites')"
+                            class="filter-btn px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm transition-colors">
+                        ⭐ Favoriler
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 py-6">
+
+        <!-- Active Reports -->
+        <div id="activeReports">
+            <!-- Örnek Rapor 1 -->
+            <div class="report-item bg-slate-900/50 hover:bg-slate-900/80 border-l-4 border-blue-500 rounded-lg p-4 mb-3 transition-all" data-id="blog-seo-optimization">
+                <div class="flex items-start gap-4">
+                    <!-- Sıra Numarası -->
+                    <div class="text-slate-600 font-mono text-lg font-bold min-w-[3rem]">#1</div>
+
+                    <!-- İçerik -->
+                    <div class="flex-1">
+                        <a href="/readme/2025/12/15/blog-seo-optimization/"
+                           target="_blank"
+                           class="text-slate-100 hover:text-blue-400 text-base font-medium block mb-2">
+                            Blog SEO Optimizasyonu - Meta Tags & Schema.org
+                        </a>
+
+                        <!-- Versiyonlar -->
+                        <div class="flex gap-2 flex-wrap mb-2">
+                            <a href="/readme/2025/12/15/blog-seo-optimization/v3/"
+                               class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md text-xs font-semibold">
+                                🆕 v3
+                            </a>
+                            <a href="/readme/2025/12/15/blog-seo-optimization/v2/"
+                               class="inline-flex items-center gap-1 px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-md text-xs">
+                                📄 v2
+                            </a>
+                            <a href="/readme/2025/12/15/blog-seo-optimization/v1/"
+                               class="inline-flex items-center gap-1 px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-md text-xs">
+                                📄 v1
+                            </a>
+                        </div>
+
+                        <!-- Tarih -->
+                        <div class="text-slate-500 text-xs">15 Ara 2025</div>
+                    </div>
+
+                    <!-- Aksiyon Butonları -->
+                    <div class="flex gap-2">
+                        <button onclick="toggleFavorite('blog-seo-optimization')"
+                                class="fav-btn w-10 h-10 flex items-center justify-center bg-slate-800 hover:bg-amber-600 text-slate-400 hover:text-white rounded-lg transition-all">
+                            ⭐
+                        </button>
+                        <button onclick="hideReport('blog-seo-optimization')"
+                                class="w-10 h-10 flex items-center justify-center bg-slate-800 hover:bg-red-600 text-slate-400 hover:text-white rounded-lg transition-all">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Örnek Rapor 2 (Favori) -->
+            <div class="report-item bg-slate-900/50 hover:bg-slate-900/80 border-l-4 border-purple-500 rounded-lg p-4 mb-3 transition-all" data-id="muzibu-ai-assistant-plan" data-favorite="true">
+                <div class="flex items-start gap-4">
+                    <!-- Sıra Numarası -->
+                    <div class="text-slate-600 font-mono text-lg font-bold min-w-[3rem]">#2</div>
+
+                    <!-- İçerik -->
+                    <div class="flex-1">
+                        <a href="/readme/2025/12/16/muzibu-ai-assistant-plan/"
+                           target="_blank"
+                           class="text-slate-100 hover:text-purple-400 text-base font-medium block mb-2">
+                            Muzibu AI Asistan - Müzik Arama & Öneri Sistemi
+                        </a>
+
+                        <!-- Versiyonlar -->
+                        <div class="flex gap-2 flex-wrap mb-2">
+                            <a href="/readme/2025/12/16/muzibu-ai-assistant-plan/v6/"
+                               class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md text-xs font-semibold">
+                                🆕 v6
+                            </a>
+                            <a href="/readme/2025/12/16/muzibu-ai-assistant-plan/v5/"
+                               class="inline-flex items-center gap-1 px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-md text-xs">
+                                📄 v5
+                            </a>
+                            <a href="/readme/2025/12/16/muzibu-ai-assistant-plan/v4/"
+                               class="inline-flex items-center gap-1 px-3 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-md text-xs">
+                                📄 v4
+                            </a>
+                        </div>
+
+                        <!-- Tarih -->
+                        <div class="text-slate-500 text-xs">16 Ara 2025</div>
+                    </div>
+
+                    <!-- Aksiyon Butonları (Favori aktif) -->
+                    <div class="flex gap-2">
+                        <button onclick="toggleFavorite('muzibu-ai-assistant-plan')"
+                                class="fav-btn w-10 h-10 flex items-center justify-center bg-amber-600 text-white rounded-lg transition-all">
+                            ⭐
+                        </button>
+                        <button onclick="hideReport('muzibu-ai-assistant-plan')"
+                                class="w-10 h-10 flex items-center justify-center bg-slate-800 hover:bg-red-600 text-slate-400 hover:text-white rounded-lg transition-all">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Örnek Rapor 3 -->
+            <div class="report-item bg-slate-900/50 hover:bg-slate-900/80 border-l-4 border-green-500 rounded-lg p-4 mb-3 transition-all" data-id="queue-refill-test">
+                <div class="flex items-start gap-4">
+                    <!-- Sıra Numarası -->
+                    <div class="text-slate-600 font-mono text-lg font-bold min-w-[3rem]">#3</div>
+
+                    <!-- İçerik -->
+                    <div class="flex-1">
+                        <a href="/readme/2025/12/16/queue-refill-test/"
+                           target="_blank"
+                           class="text-slate-100 hover:text-green-400 text-base font-medium block mb-2">
+                            Queue Refill Test Sonuçları - Random & SQL Optimizasyonu
+                        </a>
+
+                        <!-- Versiyonlar -->
+                        <div class="flex gap-2 flex-wrap mb-2">
+                            <a href="/readme/2025/12/16/queue-refill-test/v1/"
+                               class="inline-flex items-center gap-1 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md text-xs font-semibold">
+                                🆕 v1
+                            </a>
+                        </div>
+
+                        <!-- Tarih -->
+                        <div class="text-slate-500 text-xs">16 Ara 2025</div>
+                    </div>
+
+                    <!-- Aksiyon Butonları -->
+                    <div class="flex gap-2">
+                        <button onclick="toggleFavorite('queue-refill-test')"
+                                class="fav-btn w-10 h-10 flex items-center justify-center bg-slate-800 hover:bg-amber-600 text-slate-400 hover:text-white rounded-lg transition-all">
+                            ⭐
+                        </button>
+                        <button onclick="hideReport('queue-refill-test')"
+                                class="w-10 h-10 flex items-center justify-center bg-slate-800 hover:bg-red-600 text-slate-400 hover:text-white rounded-lg transition-all">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gizlenenler (Katlanabilir) -->
+        <div id="hiddenSection" class="mt-8 hidden">
+            <button onclick="toggleHidden()"
+                    class="w-full flex items-center justify-between bg-slate-900/30 hover:bg-slate-900/50 border border-slate-800 rounded-lg px-6 py-4 mb-4 transition-colors">
+                <span class="text-slate-400 font-medium">🗂️ Gizlenenler (<span id="hiddenCount">0</span>)</span>
+                <svg id="hiddenArrow" class="w-5 h-5 text-slate-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+
+            <div id="hiddenReports" class="hidden space-y-3">
+                <!-- Gizlenen raporlar buraya eklenecek (JavaScript ile) -->
+            </div>
+        </div>
+
+        <!-- Boş Durum -->
+        <div id="noResults" class="hidden text-center py-20 text-slate-600">
+            🔍 Sonuç bulunamadı
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 py-8 border-t border-slate-800">
+        <div class="text-center text-slate-600 text-sm">
+            🤖 Claude AI ile oluşturuldu • Favori ve gizleme tercihleri tarayıcınızda saklanır (localStorage)
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // LocalStorage Helpers
+        function getFavorites() {
+            return JSON.parse(localStorage.getItem('readme_favorites') || '[]');
+        }
+
+        function saveFavorites(favorites) {
+            localStorage.setItem('readme_favorites', JSON.stringify(favorites));
+        }
+
+        function getHidden() {
+            return JSON.parse(localStorage.getItem('readme_hidden') || '[]');
+        }
+
+        function saveHidden(hidden) {
+            localStorage.setItem('readme_hidden', JSON.stringify(hidden));
+        }
+
+        // Favori Ekle/Çıkar
+        function toggleFavorite(reportId) {
+            let favorites = getFavorites();
+            const index = favorites.indexOf(reportId);
+            const reportItem = document.querySelector(`[data-id="${reportId}"]`);
+            const favBtn = reportItem.querySelector('.fav-btn');
+
+            if (index > -1) {
+                // Favoriden çıkar
+                favorites.splice(index, 1);
+                favBtn.classList.remove('bg-amber-600', 'text-white');
+                favBtn.classList.add('bg-slate-800', 'text-slate-400');
+                reportItem.setAttribute('data-favorite', 'false');
+            } else {
+                // Favoriye ekle
+                favorites.push(reportId);
+                favBtn.classList.add('bg-amber-600', 'text-white');
+                favBtn.classList.remove('bg-slate-800', 'text-slate-400');
+                reportItem.setAttribute('data-favorite', 'true');
+            }
+
+            saveFavorites(favorites);
+            updateDisplay();
+        }
+
+        // Raporu Gizle
+        function hideReport(reportId) {
+            let hidden = getHidden();
+            if (!hidden.includes(reportId)) {
+                hidden.push(reportId);
+                saveHidden(hidden);
+                updateDisplay();
+            }
+        }
+
+        // Raporu Göster (Gizlenmişten çıkar)
+        function showReport(reportId) {
+            let hidden = getHidden();
+            const index = hidden.indexOf(reportId);
+            if (index > -1) {
+                hidden.splice(index, 1);
+                saveHidden(hidden);
+                updateDisplay();
+            }
+        }
+
+        // Gizlenenler Bölümünü Aç/Kapat
+        function toggleHidden() {
+            const hiddenReports = document.getElementById('hiddenReports');
+            const arrow = document.getElementById('hiddenArrow');
+
+            if (hiddenReports.classList.contains('hidden')) {
+                hiddenReports.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                hiddenReports.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Filtre Uygula
+        function filterReports(filter) {
+            const favorites = getFavorites();
+            const reportItems = document.querySelectorAll('#activeReports .report-item');
+
+            // Filtre butonlarını güncelle
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-600', 'text-white');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+            event.target.classList.add('active', 'bg-blue-600', 'text-white');
+            event.target.classList.remove('bg-slate-800', 'text-slate-300');
+
+            // Raporları filtrele
+            reportItems.forEach(item => {
+                if (filter === 'all') {
+                    item.style.display = '';
+                } else if (filter === 'favorites') {
+                    const reportId = item.getAttribute('data-id');
+                    item.style.display = favorites.includes(reportId) ? '' : 'none';
+                }
+            });
+
+            updateRowNumbers();
+        }
+
+        // Sıra Numaralarını Güncelle
+        function updateRowNumbers() {
+            const visibleReports = Array.from(document.querySelectorAll('#activeReports .report-item'))
+                .filter(item => item.style.display !== 'none');
+
+            visibleReports.forEach((item, index) => {
+                const numberEl = item.querySelector('.font-mono');
+                numberEl.textContent = `#${index + 1}`;
+            });
+        }
+
+        // Ekranı Güncelle
+        function updateDisplay() {
+            const hidden = getHidden();
+            const favorites = getFavorites();
+            const activeReports = document.getElementById('activeReports');
+            const hiddenReportsDiv = document.getElementById('hiddenReports');
+            const hiddenSection = document.getElementById('hiddenSection');
+            const hiddenCount = document.getElementById('hiddenCount');
+
+            // Aktif raporları filtrele
+            const allReports = activeReports.querySelectorAll('.report-item');
+            let hiddenReportsList = [];
+
+            allReports.forEach(item => {
+                const reportId = item.getAttribute('data-id');
+
+                if (hidden.includes(reportId)) {
+                    // Gizlenmişlere taşı
+                    hiddenReportsList.push(item.cloneNode(true));
+                    item.remove();
+                } else {
+                    // Favori durumunu güncelle
+                    const favBtn = item.querySelector('.fav-btn');
+                    if (favorites.includes(reportId)) {
+                        favBtn.classList.add('bg-amber-600', 'text-white');
+                        favBtn.classList.remove('bg-slate-800', 'text-slate-400');
+                        item.setAttribute('data-favorite', 'true');
+                    } else {
+                        favBtn.classList.remove('bg-amber-600', 'text-white');
+                        favBtn.classList.add('bg-slate-800', 'text-slate-400');
+                        item.setAttribute('data-favorite', 'false');
+                    }
+                }
+            });
+
+            // Gizlenenler bölümünü göster/gizle
+            if (hiddenReportsList.length > 0) {
+                hiddenSection.classList.remove('hidden');
+                hiddenCount.textContent = hiddenReportsList.length;
+
+                // Gizlenenleri ekle
+                hiddenReportsDiv.innerHTML = '';
+                hiddenReportsList.forEach(item => {
+                    // Gizleme butonunu "Göster" yap
+                    const hideBtn = item.querySelector('button:last-child');
+                    hideBtn.innerHTML = '↩';
+                    hideBtn.title = 'Göster';
+                    hideBtn.onclick = () => showReport(item.getAttribute('data-id'));
+
+                    // Border rengini değiştir
+                    item.classList.remove('border-blue-500', 'border-purple-500', 'border-green-500');
+                    item.classList.add('border-slate-700');
+
+                    hiddenReportsDiv.appendChild(item);
+                });
+            } else {
+                hiddenSection.classList.add('hidden');
+            }
+
+            updateRowNumbers();
+        }
+
+        // Arama Fonksiyonu
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const reportItems = document.querySelectorAll('#activeReports .report-item');
+            let visibleCount = 0;
+
+            reportItems.forEach(item => {
+                const title = item.querySelector('a').textContent.toLowerCase();
+                if (title.includes(query)) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+            updateRowNumbers();
+        });
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDisplay();
+        });
+    </script>
+
+    <style>
+        .filter-btn.active {
+            @apply bg-blue-600 text-white;
+        }
+    </style>
+</body>
+</html>

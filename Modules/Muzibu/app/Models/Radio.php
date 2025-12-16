@@ -26,10 +26,12 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getConnectionName()
     {
-        if (function_exists('tenant') && tenant() && !tenant()->central) {
+        // ✅ Muzibu modülü tenant-specific, ZORLA tenant connection!
+        // Tenant 1001 (muzibu) için ayrı database var
+        if (false) {
             return 'tenant';
         }
-        return config('database.default');
+        return 'tenant';
     }
 
 
@@ -320,7 +322,7 @@ class Radio extends BaseModel implements TranslatableEntity, HasMedia
 
     public function searchableAs(): string
     {
-        $tenantId = tenant() ? tenant()->id : 'central';
+        $tenantId = tenant() ? tenant()->id : 1001;
         return "tenant_{$tenantId}_radios";
     }
 

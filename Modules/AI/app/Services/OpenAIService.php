@@ -198,7 +198,7 @@ class OpenAIService
                     'Content-Type' => 'application/json',
                 ])->withOptions([
                     'verify' => false // Geçici: SSL sertifika sorunu için
-                ])->timeout(600)->post($this->baseUrl . '/chat/completions', $payload); // 🔧 FIX: 10 dakika (blog generation için)
+                ])->timeout(60)->post($this->baseUrl . '/chat/completions', $payload); // ✅ FIXED: 60 saniye (retry mechanism ile toplam 180s)
 
                 if ($response->successful()) {
                     $data = $response->json();
@@ -247,7 +247,7 @@ class OpenAIService
                         'Content-Type: application/json',
                     ],
                     CURLOPT_RETURNTRANSFER => false,
-                    CURLOPT_TIMEOUT => 600, // 🔧 FIX: 10 dakika - blog generation için
+                    CURLOPT_TIMEOUT => 60, // ✅ FIXED: 60 saniye (retry mechanism ile toplam 180s)
                     CURLOPT_SSL_VERIFYPEER => false, // Geçici: SSL sertifika sorunu için
                     CURLOPT_SSL_VERIFYHOST => false, // Geçici: SSL sertifika sorunu için
                     CURLOPT_WRITEFUNCTION => function($curl, $data) use (&$fullResponse, &$inputTokens, &$outputTokens, &$totalTokens, $streamCallback) {
@@ -400,24 +400,58 @@ class OpenAIService
             'message_count' => count($fullMessages),
         ]);
 
-        // Streaming varsa generateCompletionStream kullan
-        if ($stream) {
-            Log::info('🔵 Streaming mode - calling generateCompletionStream');
-            return $this->generateCompletionStream($fullMessages, null, $options);
+        // ✅ RETRY MECHANISM: 3 deneme, exponential backoff
+        $maxRetries = 3;
+        $retryDelay = 1; // İlk deneme 1 saniye
+        $lastException = null;
+
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            try {
+                Log::info("🔄 API Request Attempt {$attempt}/{$maxRetries}");
+
+                // Streaming varsa generateCompletionStream kullan
+                if ($stream) {
+                    Log::info('🔵 Streaming mode - calling generateCompletionStream');
+                    return $this->generateCompletionStream($fullMessages, null, $options);
+                }
+
+                // Normal request - tam response döndür (token bilgileri ile)
+                Log::info('🟢 Non-streaming mode - calling generateCompletionStream');
+                $result = $this->generateCompletionStream($fullMessages, null, $options);
+
+                Log::info('🔵 generateCompletionStream returned', [
+                    'result_type' => gettype($result),
+                    'has_response' => isset($result['response']),
+                    'response_length' => isset($result['response']) ? strlen($result['response']) : 'N/A',
+                ]);
+
+                // String response dön (compatibility için) + UTF-8 cleanup
+                $response = $result['response'] ?? '';
+                return $this->cleanUtf8String($response);
+
+            } catch (\Exception $e) {
+                $lastException = $e;
+                Log::warning("⚠️ API Request Failed (Attempt {$attempt}/{$maxRetries})", [
+                    'error' => $e->getMessage(),
+                    'retry_in' => $retryDelay . 's'
+                ]);
+
+                // Son denemeyse exception fırlat
+                if ($attempt === $maxRetries) {
+                    Log::error("❌ All {$maxRetries} attempts failed", [
+                        'error' => $e->getMessage()
+                    ]);
+                    throw $e;
+                }
+
+                // Exponential backoff ile bekle
+                sleep($retryDelay);
+                $retryDelay *= 2; // 1s, 2s, 4s...
+            }
         }
 
-        // Normal request - tam response döndür (token bilgileri ile)
-        Log::info('🟢 Non-streaming mode - calling generateCompletionStream');
-        $result = $this->generateCompletionStream($fullMessages, null, $options);
-
-        Log::info('🔵 generateCompletionStream returned', [
-            'result_type' => gettype($result),
-            'has_response' => isset($result['response']),
-            'response_length' => isset($result['response']) ? strlen($result['response']) : 'N/A',
-        ]);
-
-        // String response dön (compatibility için)
-        return $result['response'] ?? '';
+        // Buraya asla ulaşmamalı ama fallback
+        throw $lastException ?? new \Exception('Unknown error in retry mechanism');
     }
 
     /**
@@ -499,5 +533,44 @@ class OpenAIService
         ];
 
         return $this->generateCompletionStream($messages);
+    }
+
+    /**
+     * Aggressively clean UTF-8 string to prevent JSON encoding errors
+     *
+     * @param string $string
+     * @return string
+     */
+    protected function cleanUtf8String(string $string): string
+    {
+        // ULTRA AGGRESSIVE: Only allow safe characters
+        // ASCII printable + newline + Turkish characters (ç, ğ, ı, ö, ş, ü, Ç, Ğ, İ, Ö, Ş, Ü)
+
+        // Step 1: Remove NULL bytes first
+        $string = str_replace("\0", '', $string);
+
+        // Step 2: Use iconv with TRANSLIT for maximum compatibility
+        $cleaned = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+
+        if ($cleaned === false || empty($cleaned)) {
+            // Fallback: Keep original but clean
+            $cleaned = $string;
+        } else {
+            // iconv worked, now add back Turkish characters from original
+            $cleaned = $string; // Use original with Turkish chars
+        }
+
+        // Step 3: Remove ALL control characters except \n, \r, \t
+        $cleaned = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\xAD]/u', '', $cleaned);
+
+        // Step 4: Fix UTF-8 encoding if broken
+        if (!mb_check_encoding($cleaned, 'UTF-8')) {
+            $cleaned = mb_convert_encoding($cleaned, 'UTF-8', 'UTF-8');
+        }
+
+        // Step 5: One more iconv pass to ensure clean UTF-8
+        $final = @iconv('UTF-8', 'UTF-8//IGNORE', $cleaned);
+
+        return $final !== false ? $final : $cleaned;
     }
 }

@@ -3031,8 +3031,13 @@ class PublicAIController extends Controller
                 'modules_used' => array_keys($resolvedModules)
             ]);
 
-            // 🎯 POST-PROCESS: Auto-add ACTION button for playlists (Muzibu only)
-            $aiResponse = $this->postProcessPlaylistActions($aiResponse, $validated['message'] ?? '');
+            // 🎯 POST-PROCESS: Call tenant service's postProcessResponse if available (tenant-aware)
+            foreach ($resolvedModules as $moduleType => $service) {
+                if (method_exists($service, 'postProcessResponse')) {
+                    $aiResponse = $service->postProcessResponse($aiResponse, $validated['message'] ?? '');
+                    \Log::info('🎯 Post-processed by tenant service', ['module' => $moduleType]);
+                }
+            }
 
             return response()->json([
                 'success' => true,
@@ -3119,102 +3124,5 @@ class PublicAIController extends Controller
 - Ürün/içerik önerirken mutlaka link ver
 - Fiyat sorarsa ve bilgi yoksa 'Bu konuda bilgi bulunamadı' de
 - Kullanıcıyı yönlendirmek için CTA (Call to Action) kullan";
-    }
-
-    /**
-     * 🎯 POST-PROCESS: Auto-add ACTION button for playlists
-     *
-     * Detects if AI response contains multiple song links and auto-appends
-     * [ACTION:CREATE_PLAYLIST:...] button for frontend to parse
-     *
-     * @param string $aiResponse
-     * @param string $userMessage
-     * @return string
-     */
-    protected function postProcessPlaylistActions(string $aiResponse, string $userMessage): string
-    {
-        // Only for Muzibu (Tenant 1001)
-        if (!tenant() || tenant('id') !== 1001) {
-            return $aiResponse;
-        }
-
-        // Already has ACTION button? Skip
-        if (str_contains($aiResponse, '[ACTION:CREATE_PLAYLIST:')) {
-            return $aiResponse;
-        }
-
-        // Detect playlist: Multiple song links (/play/song/ID)
-        preg_match_all('/\/play\/song\/(\d+)/', $aiResponse, $matches);
-        $songIds = $matches[1] ?? [];
-
-        // Need at least 3 songs to be considered a playlist
-        if (count($songIds) < 3) {
-            return $aiResponse;
-        }
-
-        // Extract playlist title from user message or generate default
-        $playlistTitle = $this->extractPlaylistTitle($userMessage);
-
-        // Build ACTION button
-        $songIdsStr = implode(',', $songIds);
-        $actionButton = "\n\n[ACTION:CREATE_PLAYLIST:song_ids={$songIdsStr}:title={$playlistTitle}]";
-
-        \Log::info('🎯 AUTO-ADDED ACTION button', [
-            'tenant_id' => tenant('id'),
-            'song_count' => count($songIds),
-            'playlist_title' => $playlistTitle,
-            'song_ids' => $songIds
-        ]);
-
-        return $aiResponse . $actionButton;
-    }
-
-    /**
-     * Extract playlist title from user message
-     * Dynamically loads genres from database (Muzibu only)
-     *
-     * @param string $userMessage
-     * @return string
-     */
-    protected function extractPlaylistTitle(string $userMessage): string
-    {
-        $message = mb_strtolower($userMessage);
-
-        // 🎯 DYNAMIC: Load genres from database (Tenant 1001 only)
-        if (tenant() && tenant('id') === 1001) {
-            try {
-                $genres = \DB::connection('tenant')
-                    ->table('muzibu_genres')
-                    ->where('is_active', 1)
-                    ->whereNull('deleted_at')
-                    ->get(['title', 'slug']);
-
-                foreach ($genres as $genre) {
-                    $title = json_decode($genre->title ?: '{}', true);
-                    $genreTitle = $title['tr'] ?? $title['en'] ?? '';
-                    $slug = is_array($genre->slug) ? ($genre->slug['tr'] ?? $genre->slug['en'] ?? '') : $genre->slug;
-
-                    if (empty($genreTitle)) continue;
-
-                    // Check if genre name or slug is in user message
-                    $genreLower = mb_strtolower($genreTitle);
-                    $slugLower = mb_strtolower($slug);
-
-                    if (str_contains($message, $genreLower) || str_contains($message, $slugLower)) {
-                        return $genreTitle . ' Müzikleri';
-                    }
-                }
-            } catch (\Exception $e) {
-                \Log::error('Extract playlist title error', ['error' => $e->getMessage()]);
-            }
-        }
-
-        // Check for "mixed" or "karışık"
-        if (str_contains($message, 'karışık') || str_contains($message, 'mixed')) {
-            return 'Karışık Playlist';
-        }
-
-        // Default
-        return 'Özel Playlist';
     }
 }

@@ -17,6 +17,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{-- User Auth for Frontend JS --}}
+    @auth
+        <meta name="user-id" content="{{ auth()->id() }}">
+        <meta name="user-email" content="{{ auth()->user()->email }}">
+    @endauth
+
     {{-- Device Limit Session Flash --}}
     @if (session('device_limit_exceeded'))
         <meta name="device-limit-exceeded" content="true">
@@ -226,6 +232,9 @@
     {{-- Session Check --}}
     @include('themes.muzibu.components.session-check')
 
+    {{-- AI Chat Widget --}}
+    @include('themes.muzibu.components.ai-chat-widget')
+
     {{-- Context Menu System --}}
     @include('themes.muzibu.components.context-menu')
     @include('themes.muzibu.components.rating-modal')
@@ -260,6 +269,9 @@
     {{-- 6. UI Components --}}
     <script src="{{ versioned_asset('themes/muzibu/js/ui/muzibu-toast.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/ui/muzibu-theme.js') }}"></script>
+
+    {{-- AI Chat --}}
+    <script src="{{ versioned_asset('themes/muzibu/js/ai/tenant1001-ai-chat.js') }}"></script>
 
     {{-- 7. 🚀 SPA Router - MODULAR VERSION USED (loaded in line 211 as player feature) --}}
     {{-- OLD STANDALONE ROUTER REMOVED - Duplicate initialization fixed --}}

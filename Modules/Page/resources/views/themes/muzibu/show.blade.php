@@ -5,7 +5,7 @@
 @endphp
 @extends('themes.' . $themeName . '.layouts.app')
 
-@section('module_content')
+@section('content')
 @if(isset($is_homepage) && $is_homepage)
 <div class="min-h-screen">
     @php

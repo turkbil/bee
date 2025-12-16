@@ -111,11 +111,14 @@ $col3 = array_slice($reports, $chunk * 2);
                    placeholder="🔍 Ara..."
                    class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
 
-            <!-- Right: Stats -->
-            <div class="flex justify-end gap-2 text-xs text-slate-500">
-                <span><?= $totalReports ?> rapor</span>
-                <span>•</span>
-                <span><?= $totalVersions ?> v</span>
+            <!-- Right: Stats + Filter -->
+            <div class="flex justify-end gap-2 items-center">
+                <button onclick="filterReports('all')" class="filter-btn active text-xs text-slate-500 hover:text-slate-300 px-2 py-1 rounded">Hepsi</button>
+                <button onclick="filterReports('favorites')" class="filter-btn text-xs text-slate-500 hover:text-amber-400 px-2 py-1 rounded">⭐</button>
+                <span class="text-xs text-slate-600">•</span>
+                <span id="totalReports" class="text-xs text-slate-500"><?= $totalReports ?> rapor</span>
+                <span class="text-xs text-slate-600">•</span>
+                <span class="text-xs text-slate-500"><?= $totalVersions ?> v</span>
             </div>
         </div>
     </div>
@@ -129,8 +132,10 @@ $col3 = array_slice($reports, $chunk * 2);
                     <?php foreach ($col1 as $i => $report):
                         list($y, $m, $d) = explode('-', $report['date']);
                         $stripe = $i % 2 === 0 ? 'bg-slate-900/30' : 'bg-slate-900/60';
+                        $reportId = $report['topic'];
                     ?>
                         <tr class="report-row <?= $stripe ?> hover:bg-slate-800 border-b border-slate-900/50 transition-colors"
+                            data-id="<?= htmlspecialchars($reportId) ?>"
                             data-title="<?= htmlspecialchars(strtolower($report['title'])) ?>">
                             <td class="px-3 py-3">
                                 <a href="<?= htmlspecialchars($report['url']) ?>"
@@ -139,7 +144,8 @@ $col3 = array_slice($reports, $chunk * 2);
                                    class="text-slate-100 hover:text-blue-400 text-sm font-medium leading-relaxed block">
                                     <?= htmlspecialchars($report['title']) ?>
                                 </a>
-                                <div class="flex gap-1.5 flex-wrap mt-2">
+                                <div class="flex gap-1.5 flex-wrap mt-2 items-center">
+                                    <span class="report-number px-2 py-0.5 bg-slate-800 text-slate-500 rounded text-xs font-mono">#<?= $i + 1 ?></span>
                                     <?php foreach ($report['versions'] as $vi => $v): ?>
                                         <a href="<?= htmlspecialchars($v['url']) ?>"
                                            target="_blank"
@@ -152,8 +158,12 @@ $col3 = array_slice($reports, $chunk * 2);
                                     <?php endforeach; ?>
                                 </div>
                             </td>
-                            <td class="px-3 py-3 text-slate-400 text-xs whitespace-nowrap align-top">
-                                <?= $d ?> <?= $monthNames[$m] ?>
+                            <td class="px-2 py-3 align-top">
+                                <div class="flex gap-1 mb-1">
+                                    <button onclick="toggleFavorite('<?= htmlspecialchars($reportId) ?>')" class="fav-btn w-6 h-6 flex items-center justify-center text-slate-600 hover:text-amber-400 transition-colors" title="Favori">⭐</button>
+                                    <button onclick="hideReport('<?= htmlspecialchars($reportId) ?>')" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:text-red-400 transition-colors" title="Gizle">✕</button>
+                                </div>
+                                <div class="text-slate-500 text-xs whitespace-nowrap"><?= $d ?> <?= $monthNames[$m] ?></div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -165,11 +175,16 @@ $col3 = array_slice($reports, $chunk * 2);
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <tbody>
-                    <?php foreach ($col2 as $i => $report):
+                    <?php
+                    $col1Count = count($col1);
+                    foreach ($col2 as $i => $report):
                         list($y, $m, $d) = explode('-', $report['date']);
                         $stripe = $i % 2 === 0 ? 'bg-slate-900/30' : 'bg-slate-900/60';
+                        $reportId = $report['topic'];
+                        $rowNumber = $col1Count + $i + 1;
                     ?>
                         <tr class="report-row <?= $stripe ?> hover:bg-slate-800 border-b border-slate-900/50 transition-colors"
+                            data-id="<?= htmlspecialchars($reportId) ?>"
                             data-title="<?= htmlspecialchars(strtolower($report['title'])) ?>">
                             <td class="px-3 py-3">
                                 <a href="<?= htmlspecialchars($report['url']) ?>"
@@ -178,7 +193,8 @@ $col3 = array_slice($reports, $chunk * 2);
                                    class="text-slate-100 hover:text-blue-400 text-sm font-medium leading-relaxed block">
                                     <?= htmlspecialchars($report['title']) ?>
                                 </a>
-                                <div class="flex gap-1.5 flex-wrap mt-2">
+                                <div class="flex gap-1.5 flex-wrap mt-2 items-center">
+                                    <span class="report-number px-2 py-0.5 bg-slate-800 text-slate-500 rounded text-xs font-mono">#<?= $rowNumber ?></span>
                                     <?php foreach ($report['versions'] as $vi => $v): ?>
                                         <a href="<?= htmlspecialchars($v['url']) ?>"
                                            target="_blank"
@@ -191,8 +207,12 @@ $col3 = array_slice($reports, $chunk * 2);
                                     <?php endforeach; ?>
                                 </div>
                             </td>
-                            <td class="px-3 py-3 text-slate-400 text-xs whitespace-nowrap align-top">
-                                <?= $d ?> <?= $monthNames[$m] ?>
+                            <td class="px-2 py-3 align-top">
+                                <div class="flex gap-1 mb-1">
+                                    <button onclick="toggleFavorite('<?= htmlspecialchars($reportId) ?>')" class="fav-btn w-6 h-6 flex items-center justify-center text-slate-600 hover:text-amber-400 transition-colors" title="Favori">⭐</button>
+                                    <button onclick="hideReport('<?= htmlspecialchars($reportId) ?>')" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:text-red-400 transition-colors" title="Gizle">✕</button>
+                                </div>
+                                <div class="text-slate-500 text-xs whitespace-nowrap"><?= $d ?> <?= $monthNames[$m] ?></div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -204,11 +224,16 @@ $col3 = array_slice($reports, $chunk * 2);
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <tbody>
-                    <?php foreach ($col3 as $i => $report):
+                    <?php
+                    $col1Col2Count = count($col1) + count($col2);
+                    foreach ($col3 as $i => $report):
                         list($y, $m, $d) = explode('-', $report['date']);
                         $stripe = $i % 2 === 0 ? 'bg-slate-900/30' : 'bg-slate-900/60';
+                        $reportId = $report['topic'];
+                        $rowNumber = $col1Col2Count + $i + 1;
                     ?>
                         <tr class="report-row <?= $stripe ?> hover:bg-slate-800 border-b border-slate-900/50 transition-colors"
+                            data-id="<?= htmlspecialchars($reportId) ?>"
                             data-title="<?= htmlspecialchars(strtolower($report['title'])) ?>">
                             <td class="px-3 py-3">
                                 <a href="<?= htmlspecialchars($report['url']) ?>"
@@ -217,7 +242,8 @@ $col3 = array_slice($reports, $chunk * 2);
                                    class="text-slate-100 hover:text-blue-400 text-sm font-medium leading-relaxed block">
                                     <?= htmlspecialchars($report['title']) ?>
                                 </a>
-                                <div class="flex gap-1.5 flex-wrap mt-2">
+                                <div class="flex gap-1.5 flex-wrap mt-2 items-center">
+                                    <span class="report-number px-2 py-0.5 bg-slate-800 text-slate-500 rounded text-xs font-mono">#<?= $rowNumber ?></span>
                                     <?php foreach ($report['versions'] as $vi => $v): ?>
                                         <a href="<?= htmlspecialchars($v['url']) ?>"
                                            target="_blank"
@@ -230,11 +256,34 @@ $col3 = array_slice($reports, $chunk * 2);
                                     <?php endforeach; ?>
                                 </div>
                             </td>
-                            <td class="px-3 py-3 text-slate-400 text-xs whitespace-nowrap align-top">
-                                <?= $d ?> <?= $monthNames[$m] ?>
+                            <td class="px-2 py-3 align-top">
+                                <div class="flex gap-1 mb-1">
+                                    <button onclick="toggleFavorite('<?= htmlspecialchars($reportId) ?>')" class="fav-btn w-6 h-6 flex items-center justify-center text-slate-600 hover:text-amber-400 transition-colors" title="Favori">⭐</button>
+                                    <button onclick="hideReport('<?= htmlspecialchars($reportId) ?>')" class="w-6 h-6 flex items-center justify-center text-slate-600 hover:text-red-400 transition-colors" title="Gizle">✕</button>
+                                </div>
+                                <div class="text-slate-500 text-xs whitespace-nowrap"><?= $d ?> <?= $monthNames[$m] ?></div>
                             </td>
                         </tr>
                     <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Gizlenenler (Katlanabilir) -->
+    <div id="hiddenSection" class="hidden px-4 pb-4">
+        <button onclick="toggleHidden()"
+                class="w-full flex items-center justify-between bg-slate-900/30 hover:bg-slate-900/50 border border-slate-800 rounded-lg px-4 py-2 mb-3 transition-colors">
+            <span class="text-slate-500 text-sm">🗂️ Gizlenenler (<span id="hiddenCount">0</span>)</span>
+            <svg id="hiddenArrow" class="w-4 h-4 text-slate-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </button>
+
+        <div id="hiddenReports" class="hidden">
+            <table class="w-full text-sm">
+                <tbody id="hiddenTableBody">
+                    <!-- Gizlenen raporlar buraya -->
                 </tbody>
             </table>
         </div>
@@ -244,16 +293,182 @@ $col3 = array_slice($reports, $chunk * 2);
     <div id="noResults" class="hidden text-center py-20 text-slate-600">🔍 Sonuç bulunamadı</div>
 
     <script>
+        // LocalStorage Helpers
+        function getFavorites() {
+            return JSON.parse(localStorage.getItem('readme_favorites') || '[]');
+        }
+        function saveFavorites(favorites) {
+            localStorage.setItem('readme_favorites', JSON.stringify(favorites));
+        }
+        function getHidden() {
+            return JSON.parse(localStorage.getItem('readme_hidden') || '[]');
+        }
+        function saveHidden(hidden) {
+            localStorage.setItem('readme_hidden', JSON.stringify(hidden));
+        }
+
+        // Favori Ekle/Çıkar
+        function toggleFavorite(reportId) {
+            let favorites = getFavorites();
+            const index = favorites.indexOf(reportId);
+            const favBtns = document.querySelectorAll(`[data-id="${reportId}"] .fav-btn`);
+
+            if (index > -1) {
+                favorites.splice(index, 1);
+                favBtns.forEach(btn => {
+                    btn.classList.remove('text-amber-400');
+                    btn.classList.add('text-slate-600');
+                });
+            } else {
+                favorites.push(reportId);
+                favBtns.forEach(btn => {
+                    btn.classList.add('text-amber-400');
+                    btn.classList.remove('text-slate-600');
+                });
+            }
+
+            saveFavorites(favorites);
+            updateDisplay();
+        }
+
+        // Raporu Gizle
+        function hideReport(reportId) {
+            let hidden = getHidden();
+            if (!hidden.includes(reportId)) {
+                hidden.push(reportId);
+                saveHidden(hidden);
+                updateDisplay();
+            }
+        }
+
+        // Raporu Göster
+        function showReport(reportId) {
+            let hidden = getHidden();
+            const index = hidden.indexOf(reportId);
+            if (index > -1) {
+                hidden.splice(index, 1);
+                saveHidden(hidden);
+                updateDisplay();
+            }
+        }
+
+        // Gizlenenler Aç/Kapat
+        function toggleHidden() {
+            const hiddenReports = document.getElementById('hiddenReports');
+            const arrow = document.getElementById('hiddenArrow');
+
+            if (hiddenReports.classList.contains('hidden')) {
+                hiddenReports.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                hiddenReports.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Filtre
+        function filterReports(filter) {
+            const favorites = getFavorites();
+            const reportRows = document.querySelectorAll('.report-row');
+
+            // Filtre butonlarını güncelle
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-blue-400');
+                btn.classList.add('text-slate-500');
+            });
+            event.target.classList.add('active', 'text-blue-400');
+            event.target.classList.remove('text-slate-500');
+
+            // Raporları filtrele
+            reportRows.forEach(row => {
+                if (row.closest('#hiddenTableBody')) return;
+                const reportId = row.getAttribute('data-id');
+                if (filter === 'all') {
+                    row.style.display = '';
+                } else if (filter === 'favorites') {
+                    row.style.display = favorites.includes(reportId) ? '' : 'none';
+                }
+            });
+
+            updateRowNumbers();
+        }
+
+        // Sıra Numaralarını Güncelle
+        function updateRowNumbers() {
+            const visibleReports = Array.from(document.querySelectorAll('.report-row'))
+                .filter(row => row.style.display !== 'none' && !row.closest('#hiddenTableBody'));
+
+            visibleReports.forEach((row, index) => {
+                const numberEl = row.querySelector('.report-number');
+                if (numberEl) numberEl.textContent = `#${index + 1}`;
+            });
+
+            document.getElementById('totalReports').textContent = `${visibleReports.length} rapor`;
+        }
+
+        // Ekranı Güncelle
+        function updateDisplay() {
+            const hidden = getHidden();
+            const favorites = getFavorites();
+            const allRows = document.querySelectorAll('.report-row');
+            const hiddenTableBody = document.getElementById('hiddenTableBody');
+            const hiddenSection = document.getElementById('hiddenSection');
+
+            hiddenTableBody.innerHTML = '';
+
+            allRows.forEach(row => {
+                const reportId = row.getAttribute('data-id');
+
+                if (hidden.includes(reportId)) {
+                    // Gizlenmişe taşı
+                    const clone = row.cloneNode(true);
+                    const hideBtn = clone.querySelector('button:last-child');
+                    hideBtn.innerHTML = '↩';
+                    hideBtn.title = 'Göster';
+                    hideBtn.onclick = () => showReport(reportId);
+                    hiddenTableBody.appendChild(clone);
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = '';
+                }
+
+                // Favori durumu
+                const favBtns = document.querySelectorAll(`[data-id="${reportId}"] .fav-btn`);
+                favBtns.forEach(btn => {
+                    if (favorites.includes(reportId)) {
+                        btn.classList.add('text-amber-400');
+                        btn.classList.remove('text-slate-600');
+                    } else {
+                        btn.classList.remove('text-amber-400');
+                        btn.classList.add('text-slate-600');
+                    }
+                });
+            });
+
+            // Gizlenenler bölümünü göster/gizle
+            if (hidden.length > 0) {
+                hiddenSection.classList.remove('hidden');
+                document.getElementById('hiddenCount').textContent = hidden.length;
+            } else {
+                hiddenSection.classList.add('hidden');
+            }
+
+            updateRowNumbers();
+        }
+
+        // Arama
         const searchInput = document.getElementById('searchInput');
-        const reportRows = document.querySelectorAll('.report-row');
         const noResults = document.getElementById('noResults');
 
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
+            const reportRows = document.querySelectorAll('.report-row');
             let visibleCount = 0;
 
             reportRows.forEach(row => {
-                if (row.dataset.title.includes(query)) {
+                if (row.closest('#hiddenTableBody')) return;
+                const title = row.getAttribute('data-title');
+                if (title.includes(query)) {
                     row.style.display = '';
                     visibleCount++;
                 } else {
@@ -262,6 +477,7 @@ $col3 = array_slice($reports, $chunk * 2);
             });
 
             noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+            updateRowNumbers();
         });
 
         // Scroll pozisyonunu geri yükle
@@ -274,6 +490,17 @@ $col3 = array_slice($reports, $chunk * 2);
         window.addEventListener('beforeunload', () => {
             sessionStorage.scrollPos = window.scrollY;
         });
+
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDisplay();
+        });
     </script>
+
+    <style>
+        .filter-btn.active {
+            color: #60a5fa !important;
+        }
+    </style>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # 🏢 MULTI-TENANT SİSTEM MİMARİSİ
 
-## 🔵🔵🔵 SUBSCRIPTION SİSTEMİ - DENEME AŞAMASI 🔵🔵🔵
+## 🔵 SUBSCRIPTION SİSTEMİ - DENEME AŞAMASI
 
 ### 📋 ÖNEMLİ NOT:
 
@@ -20,7 +20,7 @@
 
 ---
 
-## 🔴🔴🔴 STORAGE & MEDYA KORUMA - MUTLAK YASAK! 🔴🔴🔴
+## 🔴 STORAGE & MEDYA KORUMA - MUTLAK YASAK!
 
 ### ⛔ ASLA, KESİNLİKLE, HİÇBİR ZAMAN YAPMA:
 
@@ -67,7 +67,7 @@
 
 ---
 
-## 🚨🚨🚨 KRİTİK PERFORMANS NOTLARI - ÖNCE BU BÖLÜMÜ OKU! 🚨🚨🚨
+## 🚨 KRİTİK PERFORMANS NOTLARI - ÖNCE BU BÖLÜMÜ OKU!
 
 ### ⚡ PERFORMANS OPTİMİZASYONLARI (2025-11-30)
 
@@ -210,23 +210,18 @@ https://ixtif.com/readme/2025/11/30/horizon-cpu-sorunu-analiz/
 
 ### 🚨 1. TENANT AWARE SİSTEM
 
-**⚠️⚠️⚠️ BU SİSTEM MULTI-TENANT! HER TENANT FARKLI SEKTÖR! ⚠️⚠️⚠️**
+**⚠️ BU SİSTEM MULTI-TENANT! HER TENANT FARKLI SEKTÖR!**
 
 **🔥 KRİTİK: Tenant'a özgü içeriği GLOBAL/UNIVERSAL kodlara ASLA ekleme!**
 
 #### 📊 Tenant Bilgisi:
-- **Tenant 1 (tuufi.com)**: Central sistem (Ana tenant, diğerlerini yönetir)
-- **Tenant 2 (ixtif.com)**: Endüstriyel ekipman (forklift, transpalet) - **VARSAYILAN**
-- **Tenant 1001 (muzibu.com.tr)**: Müzik platformu (song, album, artist, playlist)
-- **Tenant 3+**: Gelecekte eklenecek diğer sektörler
+**Detaylı bilgi için:** "🚨 ÖNCE BU BÖLÜMÜ OKU - SİSTEM TENANT AWARE!" bölümüne bak!
 
-**Detaylı tenant listesi:** `TENANT_LIST.md`
-
-**Kod yazarken SOR:**
-1. ❓ Bu tenant'a özgü bir özellik mi?
-2. ❓ Tüm tenant'lar için mi yoksa sadece biri için mi?
-3. ❓ Global kod yazıyorsam, tenant-aware mı?
-4. ❓ Hangi database'e yazılacak? (Central mi, Tenant mi?)
+**Hızlı hatırlatma:**
+- Tenant 2 (ixtif.com) → Endüstriyel ekipman (forklift, transpalet)
+- Tenant 1001 (muzibu.com.tr) → Müzik platformu (song, album, artist)
+- Her tenant farklı sektör → Global koda tenant-özel içerik EKLEME!
+- Detaylı liste: `TENANT_LIST.md`
 
 #### 🎨 TENANT-AWARE TAİLWİND CSS
 
@@ -392,60 +387,91 @@ fi
 
 #### 🎨 HTML Tasarım Standartları:
 
-**✅ ZORUNLU ÖZELLİKLER:**
-- **Tailwind CSS Only**: SADECE Tailwind CDN kullan, custom CSS YASAK!
-- **Modern & Minimal**: Gereksiz kutu içinde kutu YOK, nefes alan tasarım
-- **Şık & Profesyonel**: Temiz, okunabilir, göz yormayan
-- **Dark Mode**: Slate color palette (bg-slate-900, slate-800, slate-700)
-- **Türkçe**: Tüm içerik Türkçe
-- **Responsive**: Mobil uyumlu (grid md:grid-cols-X)
-- **Tek Sayfa**: Scroll ile akıcı okuma
+**Tasarım:** Tailwind CDN, dark mode (slate palette), modern minimal, responsive, Türkçe, tek sayfa
 
-#### ❌ HTML İÇERİK KURALLARI:
+**İçerik Kuralı:** SADECE mantık & strateji (KOD YOK! - PHP/JS/SQL yasak), Türkçe açıklama
 
-**ASLA KOD YAZMA!**
-- ❌ PHP kod blokları YASAK
-- ❌ JavaScript kod blokları YASAK
-- ❌ SQL sorguları YASAK
-- ❌ Teknik implementation detayları YASAK
+**Yapı:** Header (başlık + meta) → Yapılacaklar (adım adım, kartlar) → Footer (Claude AI)
 
-**SADECE MANTIK & STRATEJİ!**
-- ✅ Nasıl çalışacak? (mantık)
-- ✅ Hangi yaklaşım? (strateji)
-- ✅ Ne yapılacak? (plan)
-- ✅ Neden bu yöntem? (gerekçe)
-- ✅ Beklenen sonuç? (hedef)
-- ✅ Teknik terimler için Türkçe açıklama
+#### 🎓 İKİ SEVİYELİ İÇERİK ZORUNLU!
 
-#### 🎯 HTML Yapısı:
+**🚨 KRİTİK: Her HTML raporda hem teknik hem basit anlatım olmalı!**
 
-**TEK SEKME - SADECE YAPILACAKLAR!**
-- ✅ Yapılacaklar listesi (ana odak)
-- ✅ Adım adım plan
-- ✅ Öncelik sıralaması
-- ✅ Beklenen sonuçlar
+**Hedef Kitle:**
+- 👨‍💻 **Teknik Ekip:** Geliştiriciler, DevOps, sistem yöneticileri
+- 👤 **Amatör/Kullanıcı:** Proje sahipleri, yöneticiler, teknik bilgisi olmayan kullanıcılar
 
-**Yapılanlar ASLA kabak gibi önde olmasın!**
-- ✅ Eğer gerekirse: Sayfanın en altında küçük bir özet
-- ✅ Minimal, dikkat dağıtmayan
-- ✅ Kullanıcı isterse ekle, istemezse ekleme!
+**İçerik Yapısı (Zorunlu):**
 
-#### 📐 HTML Yapısı ve Tasarım:
+```html
+<!-- 1. BASIT ANLATIM (Herkes İçin) -->
+<div class="bg-green-900/20 border border-green-800 rounded-lg p-6">
+    <h3>📝 Basit Anlatım (Herkes İçin)</h3>
+    <p>
+        Ne yapıldı, neden yapıldı, ne değişti?
+        Günlük Türkçe, teknik terim YOK!
+    </p>
+    <ul>
+        <li>✅ Kullanıcı dostu açıklama</li>
+        <li>✅ Benzetmeler, örnekler</li>
+        <li>✅ "Neden önemli?" sorusunun cevabı</li>
+    </ul>
+</div>
 
-**Temel Yapı:**
-- Header: Başlık, açıklama, meta bilgiler (tarih, tenant)
-- Ana İçerik: Yapılacaklar listesi (adım adım, numaralı)
-- Kartlar: Border-left renkli (blue/green/purple), içinde adım numarası
-- Footer: Claude AI imzası
+<!-- 2. TEKNİK DETAYLAR (Geliştiriciler İçin) -->
+<div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6">
+    <h3>🔧 Teknik Detaylar (Geliştiriciler İçin)</h3>
+    <p>
+        Dosya path'leri, fonksiyon isimleri, algoritma,
+        veritabanı yapısı, mimari kararlar
+    </p>
+    <ul>
+        <li>📁 Dosya konumları</li>
+        <li>⚙️ Kullanılan teknolojiler</li>
+        <li>🔗 İlişkili sistemler</li>
+    </ul>
+</div>
+```
 
-**Tailwind Tasarım Kuralları:**
-- Dark theme: `bg-slate-900`, `bg-slate-800/50`
-- Renkler: blue-400 (ana), green-400 (başarı), red-600 (uyarı), purple-400 (bilgi)
-- Layout: `max-w-6xl mx-auto`, responsive grid
-- Typography: `text-4xl` (h1), `text-3xl` (h2), `text-xl` (h3)
-- Spacing: mb-4 (küçük), mb-8 (orta), mb-16 (büyük)
+**Örnek Karşılaştırma:**
 
-**UNUTMA:** Sadece Tailwind CDN kullan, custom CSS YASAK!
+❌ **YANLIŞ (Sadece Teknik):**
+```
+Payment Gateway'de webhook endpoint'ine yeni middleware eklendi.
+VerifyCsrfToken exception list'ine /api/payment/webhook path'i eklendi.
+```
+
+✅ **DOĞRU (İki Seviyeli):**
+
+**📝 Basit Anlatım:**
+"Ödeme sistemi artık daha güvenli çalışıyor. Dış firmalardan gelen bildirimler
+doğru şekilde işleniyor. Kullanıcılar ödeme yaptığında sistem anında
+haberdar oluyor ve siparişler otomatik onaylanıyor."
+
+**🔧 Teknik Detaylar:**
+- Middleware: `app/Http/Middleware/VerifyCsrfToken.php`
+- Webhook path: `/api/payment/webhook`
+- Exception eklendi: CSRF korumasından muaf
+- İlgili controller: `PaymentWebhookController.php`
+
+**Zorunlu Bölümler:**
+
+1. **📝 Basit Anlatım:**
+   - Günlük dil, sade Türkçe
+   - Teknik terim varsa parantez içinde açıkla
+   - Örnek: "Cache (önbellek - hızlı erişim için geçici depolama)"
+
+2. **🔧 Teknik Detaylar:**
+   - Dosya path'leri
+   - Fonksiyon/class isimleri
+   - Veritabanı tablo/field isimleri
+   - Kullanılan teknolojiler
+
+3. **💡 Neden Önemli? (Her iki seviyede de):**
+   - Basit: "Kullanıcı deneyimi nasıl iyileşti?"
+   - Teknik: "Performans/güvenlik kazancı nedir?"
+
+**UNUTMA:** Amatör kullanıcı HTML açtığında "ne yapıldığını" anlamalı!
 
 #### 📎 Kullanıcıya Link Verme:
 
@@ -507,88 +533,15 @@ ln -sf v3/index.html index.html
 
 ### 🎉 3B. GÖREV TAMAMLANDI RAPORU
 
-**🎯 KRİTİK: Kullanıcı görev tamamlandığını belirtirse → "Yapılanlar" HTML raporu oluştur!**
+**🎯 KRİTİK: Görev bittiğinde → "Yapılanlar" HTML raporu oluştur!**
 
-#### 📍 TETİKLEYİCİ KELİMELER (Görev Bitişi):
+**Tetikleyiciler:** bitti, oldu, tamam, aferin, bravo, güzel, teşekkürler, yeterli
 
-**🎉 Aşağıdaki kelimeler kullanıcı mesajında geçiyorsa → Görev Tamamlandı HTML'i oluştur:**
+**Dosya:** `public/readme/[YYYY]/[MM]/[DD]/task-completed-[konu]/index.html`
 
-- `bitti` / `bitirdi` / `bittiyse`
-- `oldu` / `olmuş` / `tamam oldu`
-- `tamam` / `tamamdır` / `ok`
-- `aferin` / `bravo` / `süper` / `harika`
-- `güzel` / `iyi olmuş` / `güzel olmuş`
-- `teşekkürler` / `sağol` (işlem sonrası)
-- `yeterli` / `yeter` / `başka bir şey yok`
+**Tasarım:** Yeşil tema, success badge, Yapılanlar + Sonuçlar (kod bloğu YOK!)
 
-**💡 Örnekler:**
-- "Tamam, bitti artık" → Görev Tamamlandı HTML oluştur ✅
-- "Oldu, aferin!" → Görev Tamamlandı HTML oluştur ✅
-- "Bravo, harika olmuş" → Görev Tamamlandı HTML oluştur ✅
-- "Teşekkürler, yeterli" → Görev Tamamlandı HTML oluştur ✅
-
-#### 📂 Dosya Konumu:
-
-```
-public/readme/[YYYY]/[MM]/[DD]/task-completed-[konu]/index.html
-```
-
-**Örnek:**
-```
-public/readme/2025/12/15/task-completed-blog-seo-optimization/index.html
-URL: https://ixtif.com/readme/2025/12/15/task-completed-blog-seo-optimization/
-```
-
-#### 🎨 Görev Tamamlandı HTML Yapısı:
-
-**Temel Mantık:**
-- Yeşil tema (başarı rengi: green-500, emerald-400)
-- Üstte success badge (✓ ikonu, animate-pulse)
-- Meta bilgiler: Tarih, tenant, süre (grid 3 kolon)
-- Yapılanlar: Checkmark'lı kartlar (border-left yeşil/mavi)
-- Sonuçlar: 2 kolon grid (Elde Edilenler + Beklenen Etkiler)
-- Opsiyonel: Test durumları, referans linkler
-- Footer: Kutlama mesajı
-
-#### 🎯 İçerik Kuralları:
-
-**✅ ZORUNLU BİLGİLER:**
-- Görev başlığı (kısa, net)
-- Yapılanlar listesi (her işlem ayrı blok)
-- Sonuçlar (elde edilen + beklenen)
-- Tarih, tenant, yaklaşık süre
-
-**✅ OPSİYONEL BİLGİLER:**
-- Test edilen durumlar (varsa)
-- Referans dökümanlar (plan/analiz linkleri)
-- Kod dosyaları (path olarak, kod bloğu YOK!)
-- Notlar (önemli detaylar)
-
-**❌ ASLA EKLEME:**
-- Kod blokları (PHP/JS/CSS)
-- SQL sorguları
-- Teknik implementasyon detayları
-- "Ne yapacağız" planı (sadece "Ne yaptık")
-
-**💡 Fark:**
-- **Plan/Analiz HTML** → "Ne yapılacak?" (Gelecek)
-- **Görev Tamamlandı HTML** → "Ne yapıldı?" (Geçmiş)
-
-#### 🔄 Workflow:
-
-```
-1. Kullanıcı: "Tamam, oldu!"
-2. Claude: Yapılanları derle
-3. Claude: Görev Tamamlandı HTML oluştur
-4. Claude: Chown + chmod + curl test
-5. Claude: ✅ Linki kullanıcıya ver
-
-Kullanıcıya:
-"🎉 Görev tamamlandı! Yapılanları raporladım:
-📊 https://ixtif.com/readme/2025/12/15/task-completed-blog-seo/"
-```
-
-**UNUTMA:** Görev bittiyse mutlaka tamamlanma raporu oluştur!
+**Fark:** Plan HTML → "Ne yapılacak?" | Tamamlandı HTML → "Ne yapıldı?"
 
 ---
 
@@ -754,180 +707,45 @@ git reset --hard [hash]
 
 ---
 
-### 🚨 6. DOSYA İZİNLERİ (PERMİSSİON) - KRİTİK!
+### 🚨 6. DOSYA İZİNLERİ (PERMİSSİON) - STANDART WORKFLOW
 
-**🔴 ANA KURAL: ROOT KULLANIMI YASAK!**
+**🔴 ANA KURAL: ROOT YASAK! → HER ZAMAN tuufi.com_ KULLAN!**
 
-**❌ ASLA ROOT KULLANMA!**
-- Root ile dosya oluşturma → YASAK!
-- Root ile klasör oluşturma → YASAK!
-- Root olarak komut çalıştırma → YASAK!
+#### 📋 STANDART WORKFLOW (Her Dosya İşleminde Uygula)
 
-**✅ HER ZAMAN tuufi.com_ KULLANICISI İLE ÇALIŞ!**
-
-#### 🎯 Doğru Kullanım:
-
-**Yöntem 1: Bash kullanırken (ÖNERİLEN):**
+**1. Klasör oluştur:**
 ```bash
-# ✅ DOĞRU: tuufi.com_ kullanıcısı ile işlem yap
 sudo -u tuufi.com_ mkdir -p /path/to/directory/
-sudo -u tuufi.com_ touch /path/to/file.php
-sudo -u tuufi.com_ bash -c 'echo "content" > /path/to/file.php'
 ```
 
-**Yöntem 2: Claude Write/Edit tool kullanırsan:**
+**2. Write/Edit tool kullandıysan (root:root oluşturur, düzelt!):**
 ```bash
-# ⚠️ Write/Edit tool root:root oluşturur, MUTLAKA düzelt!
-
-# 1. Owner değiştir (ZORUNLU!)
-sudo chown tuufi.com_:psaserv /path/to/file.php
-
-# 2. İzin ver (ZORUNLU!)
-sudo chmod 644 /path/to/file.php  # Dosyalar için
-sudo chmod 755 /path/to/directory/  # Klasörler için
-
-# 3. OPcache reset (PHP dosyaları için)
-curl -s -k https://ixtif.com/opcache-reset.php > /dev/null
-
-# 4. Test et (ZORUNLU!)
-curl -s -k -I https://ixtif.com/path/to/file | grep HTTP
-# Beklenen: HTTP/2 200
-# Eğer 403 Forbidden → Permission hatası!
-# Eğer 500 Error → Ownership/Permission hatası!
+sudo chown tuufi.com_:psaserv /path/to/file
+sudo chmod 644 /path/to/file  # Dosya
+sudo chmod 755 /path/to/dir/  # Klasör
+curl -s -k https://ixtif.com/opcache-reset.php > /dev/null  # PHP için
 ```
 
-#### ❌ NEDEN ROOT YASAK?
-
-**Problem 1: Ownership Hatası**
-- Root ile oluşturulan dosyalar → `root:root` owner
-- Nginx/PHP-FPM → Bu dosyaları okuyamaz!
-- Sonuç → **500 Internal Server Error** veya **403 Forbidden**
-
-**Problem 2: Permission Cascade**
-- Root ile klasör oluşturursan → İçindeki TÜM dosyalar root:root!
-- Tek bir root dosyası → Tüm klasörü bozar!
-
-**Problem 3: Güvenlik & Deployment**
-- Root dosyaları sadece root değiştirebilir
-- Deployment sırasında sorun çıkar
-- Git pull/push çalışmaz
-
-#### 📋 Toplu Klasör Düzeltme:
-
+**3. HTML rapor oluşturduysan (ZORUNLU TEST!):**
 ```bash
-# Yanlışlıkla root ile oluşturduysan düzelt:
-sudo chown -R tuufi.com_:psaserv /path/to/directory/
-sudo find /path/to/directory/ -type f -exec chmod 644 {} \;
-sudo find /path/to/directory/ -type d -exec chmod 755 {} \;
-```
+# İzinleri düzelt
+sudo chown tuufi.com_:psaserv /path/index.html
+sudo chmod 644 /path/index.html
 
-#### 🎯 Doğru İzinler:
-
-✅ **Owner:** `tuufi.com_:psaserv` (ZORUNLU! Root değil!)
-✅ **Dosya:** `644` (-rw-r--r--) → PHP, HTML, Blade dosyaları
-✅ **Klasör:** `755` (drwxr-xr-x) → Dizinler
-
-❌ **YANLIŞ (Site çöker!):**
-- `root:root` ownership → Nginx/PHP-FPM okuyamaz!
-- `600` permission → Sadece owner okur, grup/others okuyamaz!
-- `700` klasör → Nginx klasöre giremez!
-
-#### 💡 Pratik Örnekler:
-
-**HTML Rapor Oluşturma:**
-```bash
-# ✅ DOĞRU
-sudo -u tuufi.com_ mkdir -p public/readme/2025/11/18/blog-analiz/v1/
-
-# ❌ YANLIŞ
-mkdir -p public/readme/2025/11/18/blog-analiz/v1/  # Root kullanma!
-```
-
-**MD TODO Oluşturma:**
-```bash
-# ✅ DOĞRU
-sudo -u tuufi.com_ mkdir -p readme/claude-docs/todo/2025/11/18/
-sudo -u tuufi.com_ touch readme/claude-docs/todo/2025/11/18/todo-14-30-payment.md
-
-# ❌ YANLIŞ
-touch readme/claude-docs/todo/2025/11/18/todo-14-30-payment.md  # Root kullanma!
-```
-
-**⚠️ BASH mkdir KULLANIRKEN DİKKAT!**
-
-```bash
-# ❌ YANLIŞ: Bash mkdir kullanırsan → root:root klasör oluşturur!
-mkdir -p public/readme/2025/11/18/test/
-
-# ✅ DOĞRU: MUTLAKA sudo -u tuufi.com_ kullan!
-sudo -u tuufi.com_ mkdir -p public/readme/2025/11/18/test/
-
-# 🔧 Yanlışlıkla root ile oluşturduysan toplu düzelt:
-sudo chown -R tuufi.com_:psaserv public/readme/2025/
-sudo find public/readme/2025/ -type d -exec chmod 755 {} \;
-sudo find public/readme/2025/ -type f -exec chmod 644 {} \;
-```
-
-#### 🔴 HTML RAPOR OLUŞTURURKEN ZORUNLU TEST (KRİTİK!)
-
-**⚠️ ASLA 200 OK TEST ETMEDEN LİNK VERME!**
-
-```bash
-# HTML oluşturduktan sonra MUTLAKA test et:
-
-# 1. Klasör oluştur
-sudo -u tuufi.com_ mkdir -p public/readme/2025/12/12/konu/v1/
-
-# 2. HTML dosyası yaz (Write tool ile)
-# ... HTML içeriği ...
-
-# 3. İzinleri düzelt (ZORUNLU!)
-sudo chown tuufi.com_:psaserv public/readme/2025/12/12/konu/v1/index.html
-sudo chmod 644 public/readme/2025/12/12/konu/v1/index.html
-
-# 4. TEST ET (ZORUNLU!) - Trailing slash ile
-curl -s -k -I https://ixtif.com/readme/2025/12/12/konu/v1/ | head -n 1
+# Test et (trailing slash ile!)
+curl -s -k -I https://ixtif.com/path/v1/ | head -n 1
 # Beklenen: HTTP/2 200
 
-# 5. Eğer 403 Forbidden → Permission düzelt
-sudo chown -R tuufi.com_:psaserv public/readme/2025/12/12/
-sudo find public/readme/2025/12/12/ -type d -exec chmod 755 {} \;
-sudo find public/readme/2025/12/12/ -type f -exec chmod 644 {} \;
-
-# 6. Tekrar test et
-curl -s -k -I https://ixtif.com/readme/2025/12/12/konu/v1/ | head -n 1
-# Mutlaka HTTP/2 200 dönmeli!
+# 403 hatası → Toplu düzelt:
+sudo chown -R tuufi.com_:psaserv /path/
+sudo find /path/ -type f -exec chmod 644 {} \;
+sudo find /path/ -type d -exec chmod 755 {} \;
 ```
 
-**🚨 KRİTİK KURALLAR:**
-1. ❌ **200 OK almadan kullanıcıya link ASLA verme!**
-2. ✅ **Trailing slash kullan:** `/v1/` doğru, `/v1` yanlış
-3. ✅ **Her HTML sonrası curl test zorunlu**
-4. ✅ **403 hatası → permission düzelt, tekrar test et**
-5. ✅ **Test geçmeden "Rapor hazır" deme!**
-
-**⚠️ HATALI ÖRNEK (YAPMA!):**
-```
-❌ "Rapor hazır: https://ixtif.com/readme/2025/12/12/konu/"
-   (Test etmeden link vermiş, 403 hatası verecek!)
-```
-
-**✅ DOĞRU ÖRNEK:**
-```
-1. HTML oluştur
-2. Permission düzelt
-3. curl ile test et → 200 OK
-4. "✅ Rapor hazır: https://ixtif.com/readme/2025/12/12/konu/v1/"
-```
-
-**UNUTMA:**
-- ✅ Her zaman `sudo -u tuufi.com_` kullan!
-- ✅ Write/Edit tool kullandıysan → chown + chmod + test!
-- ✅ Bash mkdir kullandıysan → chown + chmod + test!
-- ✅ **HTML oluşturduysan → chown + chmod + curl test + 200 OK + link ver!**
-- ❌ ASLA root olarak dosya/klasör oluşturma!
-- ❌ Bash mkdir bile root:root oluşturur → sudo -u tuufi.com_ zorunlu!
-- ❌ **200 OK olmadan link verme!**
+**⚠️ KRİTİK:**
+- ❌ **200 OK almadan link verme!**
+- ❌ Root kullanırsan → Nginx okuyamaz → 500/403 hatası!
+- ✅ **Doğru izinler:** tuufi.com_:psaserv, 644 (dosya), 755 (klasör)
 
 ---
 
@@ -1103,28 +921,6 @@ Kullanıcı: "UYGUNDUR" veya "şunu değiştir..."
 
 ---
 
-## 🚨 ACİL DURUM ÇÖZÜMLER
-
-### BLADE @ DİRECTİVE ÇAKIŞMASI
-
-```blade
-# ❌ HATALI:
-"@context": "https://schema.org"
-
-# ✅ DOĞRU:
-"@@context": "https://schema.org"  # @@ ile escape
-```
-
-### ARRAY → STRING HATASI
-
-```blade
-# ❌ HATALI:
-{{ $item->category->title }}  # Array döner!
-
-# ✅ DOĞRU:
-@json($item->category->title)  # JSON'a çevirir
-```
-
 ---
 
 ## 💾 SİSTEM HAFIZASI
@@ -1166,20 +962,7 @@ setting('site_phone'); // "+90 212 123 45 67"
 
 ## 🏢 TENANT YÖNETİMİ
 
-### 🚨 TENANT SİSTEMİ
-
-**⚠️ BU BİR MULTI-TENANT SİSTEMDİR!**
-
-#### Sistem Yapısı:
-- **Tenant 1 (tuufi.com)**: Central sistem
-- **Tenant 2 (ixtif.com)**: Endüstriyel ekipman - **VARSAYILAN**
-- **Tenant 1001 (muzibu.com)**: Müzik platformu
-- **Tenant 3+**: Diğer sektörler
-
-#### Database Yapısı:
-- Her tenant **tamamen bağımsız database**
-- Central: `tuufi_db`
-- Tenant 2: `tenant_2_db`
+**Detaylı tenant bilgileri:** "🚨 SİSTEM TENANT AWARE" bölümüne bak!
 
 ### 🗄️ MİGRATION OLUŞTURMA
 

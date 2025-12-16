@@ -17,10 +17,11 @@ use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
 use Modules\ReviewSystem\App\Traits\HasReviews;
+use Laravel\Scout\Searchable;
 
 class Blog extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement, ClearsCache, HasFavorites, HasReviews;
+    use Sluggable, HasTranslations, HasSeo, HasUniversalSchemas, HasFactory, HasMediaManagement, ClearsCache, HasFavorites, HasReviews, Searchable;
 
     protected $primaryKey = 'blog_id';
 
@@ -761,5 +762,73 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
         }
 
         return $excerpt;
+    }
+
+    /**
+     * 🔍 MEILISEARCH: Index'e gönderilecek veriler
+     *
+     * Hangi alanların aranabilir olacağını belirler
+     * Multi-language desteği için tüm dillerdeki içeriği ekler
+     */
+    public function toSearchableArray(): array
+    {
+        $currentLocale = app()->getLocale();
+        $defaultLocale = get_tenant_default_locale();
+        $allLocales = \App\Services\TenantLanguageProvider::getActiveLanguageCodes();
+
+        // Temel veriler
+        $searchable = [
+            'id' => $this->blog_id,
+            'blog_id' => $this->blog_id,
+            'category_id' => $this->blog_category_id,
+            'is_active' => $this->is_active,
+            'is_featured' => $this->is_featured,
+            'published_at' => $this->published_at ? $this->published_at->timestamp : null,
+            'created_at' => $this->created_at->timestamp,
+        ];
+
+        // Tüm dillerdeki içeriği ekle
+        foreach ($allLocales as $locale) {
+            $searchable["title_{$locale}"] = $this->getTranslated('title', $locale) ?? '';
+            $searchable["body_{$locale}"] = strip_tags($this->getTranslated('body', $locale) ?? '');
+            $searchable["excerpt_{$locale}"] = $this->getTranslated('excerpt', $locale) ?? '';
+        }
+
+        // Aktif dil için ana alanlar (backward compatibility)
+        $searchable['title'] = $this->getTranslated('title', $currentLocale) ?? '';
+        $searchable['body'] = strip_tags($this->getTranslated('body', $currentLocale) ?? '');
+        $searchable['excerpt'] = $this->getTranslated('excerpt', $currentLocale) ?? '';
+
+        // Kategori adı
+        if ($this->category) {
+            foreach ($allLocales as $locale) {
+                $searchable["category_name_{$locale}"] = $this->category->getTranslated('name', $locale) ?? '';
+            }
+            $searchable['category_name'] = $this->category->getTranslated('name', $currentLocale) ?? '';
+        }
+
+        // Etiketler
+        if ($this->relationLoaded('tags') && $this->tags->isNotEmpty()) {
+            $searchable['tags'] = $this->tags->pluck('name')->filter()->unique()->values()->all();
+        }
+
+        return $searchable;
+    }
+
+    /**
+     * 🔍 MEILISEARCH: Sadece yayınlanmış blogları index'le
+     */
+    public function shouldBeSearchable(): bool
+    {
+        return $this->is_active && $this->isPublished();
+    }
+
+    /**
+     * 🔍 MEILISEARCH: Index adı (tenant-aware)
+     */
+    public function searchableAs(): string
+    {
+        $tenantId = tenant('id') ?? 'central';
+        return "blogs_tenant_{$tenantId}";
     }
 }

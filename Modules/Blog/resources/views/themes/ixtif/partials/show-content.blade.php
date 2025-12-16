@@ -141,13 +141,88 @@
         @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-6">
-            {{-- Sol Sidebar (Sadece TOC - Mobilde Gizli) --}}
+            {{-- Sol Sidebar (İletişim + TOC - Mobilde Gizli) --}}
             <aside class="hidden lg:block order-2 lg:order-1">
-                @if(!empty($toc))
-                    <div class="lg:sticky lg:top-24">
-                        <x-blog.toc :toc="$toc" title="İçindekiler" :count="$totalHeadings" />
+                <div class="lg:sticky lg:top-24 space-y-4">
+                    {{-- İLETİŞİM WIDGET --}}
+                    <div class="contact-widget-card relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-4">
+                        {{-- Hareketli Arka Plan --}}
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-blue-500/5 dark:from-blue-500/10 dark:via-purple-500/10 dark:to-blue-500/10 bg-[length:200%_100%] animate-gradient"></div>
+
+                        {{-- Başlık: Dönen İkon + Dönen Yazı --}}
+                        <div class="relative flex items-center gap-4 mb-4">
+                            <div class="rotating-icon w-12 h-12 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shopping-cart text-4xl gradient-icon icon-item active"></i>
+                                <i class="fas fa-tag text-4xl gradient-icon icon-item"></i>
+                                <i class="fas fa-headset text-4xl gradient-icon icon-item"></i>
+                                <i class="fas fa-info-circle text-4xl gradient-icon icon-item"></i>
+                            </div>
+                            <div class="rotating-text flex-1 h-24 flex items-center">
+                                <p class="font-black text-4xl gradient-text-pro text-item leading-tight active">Sipariş vermek mi istiyorsunuz?</p>
+                                <p class="font-black text-4xl gradient-text-pro text-item leading-tight">Fiyat teklifi almak ister misiniz?</p>
+                                <p class="font-black text-4xl gradient-text-pro text-item leading-tight">Teknik destek mi gerekiyor?</p>
+                                <p class="font-black text-4xl gradient-text-pro text-item leading-tight">Ürün bilgisi mi istiyorsunuz?</p>
+                            </div>
+                        </div>
+
+                        @php
+                            $contactPhone = setting('contact_phone_1', '0216 755 3 555');
+                            $contactWhatsapp = setting('contact_whatsapp_1', '0501 005 67 58');
+                        @endphp
+
+                        @php
+                            $contactEmail = setting('contact_email_1', 'info@ixtif.com');
+                        @endphp
+
+                        {{-- Butonlar 2x2 Grid --}}
+                        <div class="relative grid grid-cols-2 gap-3">
+                            {{-- Telefon --}}
+                            <a href="tel:{{ str_replace(' ', '', $contactPhone) }}"
+                               class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-3 transition-all group">
+                                <i class="fas fa-phone text-blue-600 dark:text-blue-400"></i>
+                                <div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Telefon</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ $contactPhone }}</div>
+                                </div>
+                            </a>
+
+                            {{-- WhatsApp --}}
+                            <a href="{{ whatsapp_link() }}" target="_blank"
+                               class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-3 transition-all group">
+                                <i class="fab fa-whatsapp text-green-600 dark:text-green-400 text-lg"></i>
+                                <div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">WhatsApp</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ $contactWhatsapp }}</div>
+                                </div>
+                            </a>
+
+                            {{-- E-posta --}}
+                            <a href="mailto:{{ $contactEmail }}"
+                               class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-3 transition-all group">
+                                <i class="fas fa-envelope text-red-600 dark:text-red-400"></i>
+                                <div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">E-posta</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $contactEmail }}</div>
+                                </div>
+                            </a>
+
+                            {{-- Sizi Arayalım --}}
+                            <a href="/sizi-arayalim"
+                               class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg p-3 transition-all group">
+                                <i class="fas fa-phone-volume text-orange-600 dark:text-orange-400"></i>
+                                <div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Geri Arama</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white">Sizi Arayalım</div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
-                @endif
+
+                    {{-- İçindekiler (TOC) --}}
+                    @if(!empty($toc))
+                        <x-blog.toc :toc="$toc" title="İçindekiler" :count="$totalHeadings" />
+                    @endif
+                </div>
             </aside>
 
             {{-- Ana İçerik --}}
@@ -672,16 +747,25 @@
 
                 {{-- İlgili Yazılar --}}
                 @if($relatedBlogs->isNotEmpty())
-                    <section id="diger-yazilar" class="mt-16 md:mt-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 md:p-8 shadow-xl border border-blue-100 dark:border-gray-600">
-                        <header class="mb-8">
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
-                                Bunları da Beğenebilirsin
-                            </h2>
-                            <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                    <section id="diger-yazilar" class="mt-16 md:mt-20">
+                        <header class="mb-8 flex items-center justify-between">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
+                                    Bunları da Beğenebilirsin
+                                </h2>
+                                <div class="h-1 w-16 bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-500 dark:to-blue-300 rounded-full"></div>
+                            </div>
+                            <a href="{{ $blogIndexUrl }}"
+                               class="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors group">
+                                <span>Tüm Yazılar</span>
+                                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                </svg>
+                            </a>
                         </header>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach($relatedBlogs as $relatedBlog)
-                                <article class="group bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+                                <article class="group bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-500 transition-all duration-300">
                                     @php $relatedImage = getFirstMediaWithFallback($relatedBlog); @endphp
                                     @if($relatedImage)
                                         <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block overflow-hidden">
@@ -693,29 +777,20 @@
                                                  class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                                         </a>
                                     @endif
-                                    <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block">
-                                        <div class="p-6">
-                                            <h3 class="font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                    <div class="p-5">
+                                        <a href="{{ $relatedBlog->getUrl($currentLocale) }}" class="block">
+                                            <h3 class="font-semibold text-lg text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
                                                 {{ $relatedBlog->getTranslated('title', $currentLocale) }}
                                             </h3>
-                                            @if($relatedBlog->getTranslated('excerpt', $currentLocale))
-                                                <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
-                                                    {{ $relatedBlog->getTranslated('excerpt', $currentLocale) }}
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </a>
+                                        </a>
+                                        @if($relatedBlog->getTranslated('excerpt', $currentLocale))
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
+                                                {{ $relatedBlog->getTranslated('excerpt', $currentLocale) }}
+                                            </p>
+                                        @endif
+                                    </div>
                                 </article>
                             @endforeach
-                        </div>
-                        <div class="mt-8 text-center">
-                            <a href="{{ $blogIndexUrl }}"
-                               class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                                Tüm Yazıları Gör
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
-                            </a>
                         </div>
                     </section>
                 @endif
@@ -792,14 +867,6 @@
                         @endif
                     </nav>
                 @endif
-
-                <footer class="mt-16 md:mt-20">
-                    <a href="{{ $blogIndexUrl }}"
-                       class="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-500 dark:to-blue-400 dark:hover:from-blue-600 dark:hover:to-blue-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Tüm yazılara dön</span>
-                    </a>
-                </footer>
             </article>
         </div>
 
@@ -829,6 +896,122 @@
         h5:hover .heading-anchor,
         h6:hover .heading-anchor {
             opacity: 1;
+        }
+
+        /* Rotating Text Animation - Havalı Efekt */
+        .rotating-text {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .rotating-text .text-item {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(4px);
+            transition: all 0.5s ease-out;
+        }
+
+        .rotating-text .text-item.active {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .rotating-text .text-item.exit {
+            opacity: 0;
+            transform: translateY(-30px);
+            filter: blur(4px);
+        }
+
+        /* Rotating Icon Animation */
+        .rotating-icon {
+            position: relative;
+        }
+
+        .rotating-icon .icon-item {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.5) rotate(-180deg);
+            transition: all 0.5s ease-out;
+        }
+
+        .rotating-icon .icon-item.active {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .rotating-icon .icon-item.exit {
+            opacity: 0;
+            transform: scale(0.5) rotate(180deg);
+        }
+
+        /* Gradient Text & Icon Animation - Pro Style */
+        .gradient-text-pro,
+        .gradient-icon {
+            background: linear-gradient(90deg, #1e40af, #4f46e5, #1e40af);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-pro 8s ease-in-out infinite;
+        }
+
+        .dark .gradient-text-pro,
+        .dark .gradient-icon {
+            background: linear-gradient(90deg, #60a5fa, #a78bfa, #60a5fa);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-pro 8s ease-in-out infinite;
+        }
+
+        @keyframes gradient-pro {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-10px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(10px); }
+        }
+
+        /* Hareketli Gradient Background */
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .animate-gradient {
+            animation: gradient 8s ease infinite;
+        }
+
+        /* Shimmer Efekti */
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .animate-shimmer {
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        /* Yavaş Bounce */
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 2s ease-in-out infinite;
         }
 
         html.dark .heading-anchor {
@@ -1008,6 +1191,46 @@ ${title}`;
                     }
                 });
             });
+        });
+
+        // Rotating Text + Icon Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const rotatingText = document.querySelector('.rotating-text');
+            const rotatingIcon = document.querySelector('.rotating-icon');
+            if (!rotatingText) return;
+
+            const textItems = rotatingText.querySelectorAll('.text-item');
+            const iconItems = rotatingIcon ? rotatingIcon.querySelectorAll('.icon-item') : [];
+            if (textItems.length === 0) return;
+
+            let currentIndex = 0;
+            textItems[0].classList.add('active');
+            if (iconItems[0]) iconItems[0].classList.add('active');
+
+            function rotate() {
+                const nextIndex = (currentIndex + 1) % textItems.length;
+
+                // Text çıkış/giriş
+                textItems[currentIndex].classList.remove('active');
+                textItems[currentIndex].classList.add('exit');
+                textItems[nextIndex].classList.add('active');
+
+                // Icon çıkış/giriş
+                if (iconItems.length > 0) {
+                    iconItems[currentIndex].classList.remove('active');
+                    iconItems[currentIndex].classList.add('exit');
+                    iconItems[nextIndex].classList.add('active');
+                }
+
+                // Temizle
+                setTimeout(() => {
+                    textItems[currentIndex].classList.remove('exit');
+                    if (iconItems[currentIndex]) iconItems[currentIndex].classList.remove('exit');
+                    currentIndex = nextIndex;
+                }, 500);
+            }
+
+            setInterval(rotate, 3000);
         });
     </script>
 @endpush

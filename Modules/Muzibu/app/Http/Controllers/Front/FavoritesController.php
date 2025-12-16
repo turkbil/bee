@@ -64,4 +64,82 @@ class FavoritesController extends Controller
         $html = view('themes.muzibu.partials.favorites-list', compact('favorites', 'type'))->render();
         return response()->json(['html' => $html, 'meta' => ['title' => 'Favorilerim - Muzibu', 'description' => 'Favori içerikleriniz']]);
     }
+
+    /**
+     * AI için favorilere ekleme
+     * ACTION:ADD_TO_FAVORITES sistemi için
+     */
+    public function addToFavorites(Request $request)
+    {
+        // 1. Auth check
+        if (!auth()->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lütfen giriş yapın',
+                'error_code' => 'AUTH_REQUIRED'
+            ], 401);
+        }
+
+        // 2. Validate
+        $validated = $request->validate([
+            'type' => 'required|in:song,playlist,album',
+            'id' => 'required|integer'
+        ]);
+
+        $userId = auth()->id();
+        $type = $validated['type'];
+        $itemId = $validated['id'];
+
+        // 3. Model class mapping
+        $modelMap = [
+            'song' => Song::class,
+            'playlist' => Playlist::class,
+            'album' => Album::class,
+        ];
+
+        $modelClass = $modelMap[$type];
+
+        // 4. Item var mı kontrol et
+        $item = $modelClass::find($itemId);
+        if (!$item) {
+            return response()->json([
+                'success' => false,
+                'message' => ucfirst($type) . ' bulunamadı',
+                'error_code' => 'ITEM_NOT_FOUND'
+            ], 404);
+        }
+
+        // 5. Zaten favoride mi kontrol et
+        $existing = Favorite::where('user_id', $userId)
+            ->where('favoritable_type', $modelClass)
+            ->where('favoritable_id', $itemId)
+            ->first();
+
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Zaten favorilerde!',
+                'error_code' => 'ALREADY_IN_FAVORITES'
+            ], 409);
+        }
+
+        // 6. Favoriye ekle
+        Favorite::create([
+            'user_id' => $userId,
+            'favoritable_type' => $modelClass,
+            'favoritable_id' => $itemId,
+        ]);
+
+        // 7. Başarılı yanıt
+        $typeTr = [
+            'song' => 'Şarkı',
+            'playlist' => 'Playlist',
+            'album' => 'Albüm',
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => $typeTr[$type] . ' favorilere eklendi! ❤️',
+        ]);
+    }
 }

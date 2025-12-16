@@ -164,7 +164,6 @@ document.addEventListener('alpine:init', () => {
             // Update Alpine store (reactive)
             this.playContext = context;
 
-            console.log('🎯 Play Context Set:', context);
         },
 
         /**
@@ -199,7 +198,6 @@ document.addEventListener('alpine:init', () => {
             const newContext = { ...currentContext, ...updates };
             this.setPlayContext(newContext);
 
-            console.log('🔄 Play Context Updated:', newContext);
         },
 
         /**

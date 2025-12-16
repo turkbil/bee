@@ -25,6 +25,9 @@ Disallow: /logout
 # Block utility pages
 Disallow: /opcache-reset.php
 
+# Block internal documentation
+Disallow: /readme/
+
 # Block URL parameters that create duplicates
 Disallow: /*?fbclid=
 Disallow: /*?utm_

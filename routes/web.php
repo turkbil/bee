@@ -65,6 +65,7 @@ Route::get('readme/{path?}', [\App\Http\Controllers\ReadmeController::class, 'sh
 // GOOGLE SHOPPING FEED - Needs tenant middleware
 Route::middleware(['web', 'tenant'])->group(function () {
     Route::get('productfeed', [\Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController::class, 'index']);
+    Route::get('googlemerchant', [\Modules\Shop\App\Http\Controllers\GoogleShoppingFeedController::class, 'index']); // Alias for backward compatibility
 });
 
 // Admin routes

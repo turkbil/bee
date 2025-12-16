@@ -1,4 +1,9 @@
 <?php
+/**
+ * Google Shopping Feed Endpoint
+ * Google Merchant Center için ürün feed'i oluşturur
+ * Her domain için otomatik tenant algılaması yapılır
+ */
 
 header('Content-Type: application/xml; charset=utf-8');
 
@@ -7,21 +12,45 @@ $app = require_once '../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
-// Get tenant from domain
-$domain = $_SERVER['HTTP_HOST'] ?? 'ixtif.com';
-$baseUrl = 'https://' . $domain;
-$tenantDomain = \Stancl\Tenancy\Database\Models\Domain::where('domain', $domain)->first();
-
-if ($tenantDomain && $tenantDomain->tenant) {
-    tenancy()->initialize($tenantDomain->tenant);
+// Domain'i HTTP_HOST'tan al ve domains tablosundan kontrol et
+$requestDomain = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? null;
+if (!$requestDomain) {
+    header('Content-Type: text/plain; charset=utf-8');
+    die('Hata: Domain bilgisi alınamadı');
 }
 
-// Get settings
-$companyName = setting('company_name') ?? setting('site_name') ?? 'Company';
+// Domains tablosundan tenant'ı bul
+$tenantDomain = \Stancl\Tenancy\Database\Models\Domain::where('domain', $requestDomain)->first();
+if (!$tenantDomain || !$tenantDomain->tenant) {
+    header('Content-Type: text/plain; charset=utf-8');
+    die('Hata: Domain "' . htmlspecialchars($requestDomain) . '" bulunamadı');
+}
+
+// Tenant'ı aktifleştir
+tenancy()->initialize($tenantDomain->tenant);
+
+// Doğru domain'i domains tablosundan al (verified)
+$domain = $tenantDomain->domain;
+$baseUrl = 'https://' . $domain;
+
+// Tenant'ın varsayılan para birimini kontrol et (TRY olarak gösterilecek mi?)
+$defaultCurrency = 'USD'; // Varsayılan
+$shopSettings = DB::connection('central')->table('shop_settings')->where('key', 'currency_primary')->first();
+if ($shopSettings) {
+    $currencyData = json_decode($shopSettings->value, true);
+    $defaultCurrency = $currencyData['code'] ?? 'USD';
+}
+
+// Tenant ayarlarından şirket bilgilerini al
+$companyName = setting('company_name') ?? setting('site_name') ?? 'Şirket';
 $siteUrl = $baseUrl;
 $description = setting('site_description') ?? $companyName . ' - Google Shopping Feed';
 
-// Build XML
+// LogoService'den tema logosunu al (header/footer'dan)
+$logoService = app(\App\Services\LogoService::class);
+$fallbackLogo = $logoService->getSchemaLogoUrl();
+
+// XML feed yapısını başlat
 $xml = '<?xml version="1.0" encoding="UTF-8"?>';
 $xml .= '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">';
 $xml .= '<channel>';
@@ -29,101 +58,181 @@ $xml .= '<title>' . htmlspecialchars($companyName, ENT_XML1 | ENT_QUOTES, 'UTF-8
 $xml .= '<link>' . htmlspecialchars($siteUrl, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</link>';
 $xml .= '<description>' . htmlspecialchars($description, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</description>';
 
-// Get products from DB with brand JOIN
+// Veritabanından ürünleri al (aktif ve fiyatlandırılmış)
+// NOT: Sadece var olan sütunları kullan, migration'da olmayan sütunlar ekleme!
 try {
-    $products = DB::table('shop_products as p')
-        ->leftJoin('shop_brands as b', 'p.brand_id', '=', 'b.brand_id')
+    // Döviz kurlarını al (para birimi dönüştürmesi gerekirse)
+    $exchangeRates = [];
+    if ($defaultCurrency !== 'USD') {
+        $currencies = DB::table('shop_currencies')->get(['code', 'exchange_rate']);
+        foreach ($currencies as $curr) {
+            $exchangeRates[$curr->code] = (float)$curr->exchange_rate;
+        }
+    }
+
+    $products = DB::table('shop_products as sp')
+        ->leftJoin('shop_brands as sb', 'sp.brand_id', '=', 'sb.brand_id')
         ->select(
-            'p.product_id',
-            'p.title',
-            'p.slug',
-            'p.short_description',
-            'p.body',
-            'p.base_price',
-            'p.currency',
-            'p.condition',
-            'p.price_on_request',
-            'b.title as brand_title'
+            'sp.product_id',
+            'sp.title',
+            'sp.slug',
+            'sp.short_description',
+            'sp.base_price',
+            'sp.currency',
+            'sp.condition',
+            'sp.parent_product_id',
+            'sb.title as brand_title'
         )
-        ->where('p.is_active', 1)
-        ->whereNull('p.deleted_at')
-        ->limit(500)
+        ->whereNull('sp.deleted_at')  // Soft-deleted ürünleri hariç tut
+        // Tüm ürünleri al (fiyatlı ve fiyatsız)
         ->get();
 
     foreach ($products as $product) {
-        // Parse JSON title
+        // JSON formatında depolanan ürün başlığını Türkçe/İngilizce olarak çöz
         $titleData = json_decode($product->title, true);
-        $title = is_array($titleData) ? ($titleData['tr'] ?? $titleData['en'] ?? 'Product') : $product->title;
+        $title = is_array($titleData) ? ($titleData['tr'] ?? $titleData['en'] ?? 'Ürün') : $product->title;
 
-        // Parse JSON slug
+        // Fiyat boşsa başlığa (Fiyat Talep Et) ekle
+        $hasPriceOnRequest = !$product->base_price || $product->base_price <= 0;
+        if ($hasPriceOnRequest) {
+            $title .= ' (Fiyat Talep Et)';
+        }
+
+        // JSON formatında depolanan URL slug'ını çöz
         $slugData = json_decode($product->slug, true);
         $slug = is_array($slugData) ? ($slugData['tr'] ?? $slugData['en'] ?? $product->product_id) : $product->slug;
 
-        // Parse brand title
+        // Marka başlığını JSON'dan çöz
         $brandData = json_decode($product->brand_title ?? '{}', true);
-        $brand = is_array($brandData) ? ($brandData['tr'] ?? $brandData['en'] ?? $companyName) : $companyName;
+        $brand = is_array($brandData) ? ($brandData['tr'] ?? $brandData['en'] ?? $companyName) : ($product->brand_title ?? $companyName);
 
-        // Parse description - use body first, then short_description
-        $bodyData = json_decode($product->body ?? '{}', true);
-        $bodyText = '';
-        if (is_array($bodyData) && isset($bodyData['tr'])) {
-            // Strip HTML tags and get text
-            $bodyText = strip_tags($bodyData['tr']);
-            // Remove extra whitespace
-            $bodyText = preg_replace('/\s+/', ' ', $bodyText);
-            $bodyText = trim($bodyText);
+        // Kısa açıklamayı JSON'dan çöz
+        $descData = json_decode($product->short_description ?? '{}', true);
+        $desc = '';
+        if (is_array($descData)) {
+            $desc = $descData['tr'] ?? $descData['en'] ?? '';
+        } else {
+            $desc = $product->short_description ?? '';
         }
 
-        // Fallback to short_description
-        if (empty($bodyText)) {
-            $descData = json_decode($product->short_description ?? '{}', true);
-            $bodyText = is_array($descData) ? ($descData['tr'] ?? $descData['en'] ?? '') : '';
-            $bodyText = strip_tags($bodyText);
+        // HTML etiketlerini kaldır ve boşlukları temizle
+        $desc = strip_tags($desc);
+        $desc = preg_replace('/\s+/', ' ', $desc);
+        $desc = trim($desc);
+
+        // Google'ın limit'i (5000 karakter) kadar sınırla
+        $desc = mb_substr($desc, 0, 5000);
+
+        // Açıklama yoksa başlığı kullan
+        if (empty($desc)) {
+            $desc = strip_tags($title);
         }
 
-        // Fallback to title
-        if (empty($bodyText)) {
-            $bodyText = strip_tags($title);
-        }
-
-        // Limit to 5000 characters (Google limit)
-        $desc = mb_substr($bodyText, 0, 5000);
-
-        // Product URL
+        // Ürün URL'sini oluştur
         $productUrl = $baseUrl . '/shop/' . $slug;
 
-        // Price handling
-        if ($product->price_on_request || !$product->base_price || $product->base_price <= 0) {
-            // Price on request - skip price field (Google allows this for some categories)
-            $hasPrice = false;
-            $price = 0;
+        // Fiyat ve para birimini formatla
+        $price = (float)$product->base_price;
+        $currency = $product->currency ?? 'TRY';
+
+        // Fiyat boşsa 1 TRY koy (Fiyat Talep Et ürünler için)
+        if (!$price || $price <= 0) {
+            $price = 1;
             $currency = 'TRY';
         } else {
-            $hasPrice = true;
-            $price = number_format($product->base_price, 2, '.', '');
-            $currency = $product->currency ?? 'TRY';
+            // Tenant'ın varsayılan para birimine dönüştür (gerekirse)
+            if ($defaultCurrency !== 'USD' && $currency !== $defaultCurrency && isset($exchangeRates[$currency])) {
+                $price = $price * $exchangeRates[$currency];
+                $currency = $defaultCurrency;
+            }
         }
 
-        // Build item XML
+        $price = number_format($price, 2, '.', '');
+
+        // Ürün görselleri (hero + gallery) var mı kontrol et ve ekle
+        // Medya koleksiyonları: 'hero' (ana görsel) + 'gallery' (galeri görselleri - max 20)
+        $imageUrls = [];
+        try {
+            $productModel = \Modules\Shop\App\Models\ShopProduct::find($product->product_id);
+
+            // 1. Kendi medyasını kontrol et (hero + gallery)
+            if ($productModel && $productModel->hasMedia('hero')) {
+                $heroUrl = $productModel->getFirstMediaUrl('hero');
+                if ($heroUrl) {
+                    $imageUrls[] = $heroUrl;
+                }
+            }
+
+            if ($productModel && $productModel->hasMedia('gallery')) {
+                $galleryMedia = $productModel->getMedia('gallery');
+                foreach ($galleryMedia as $media) {
+                    $galleryUrl = $media->getFullUrl();
+                    if ($galleryUrl && count($imageUrls) < 10) {
+                        $imageUrls[] = $galleryUrl;
+                    }
+                }
+            }
+
+            // 2. Eğer kendi medyası yoksa ve VARIANT ise: Ana ürünün medyasını kullan
+            if (empty($imageUrls) && $product->parent_product_id) {
+                $parentProduct = \Modules\Shop\App\Models\ShopProduct::find($product->parent_product_id);
+
+                if ($parentProduct && $parentProduct->hasMedia('hero')) {
+                    $heroUrl = $parentProduct->getFirstMediaUrl('hero');
+                    if ($heroUrl) {
+                        $imageUrls[] = $heroUrl;
+                    }
+                }
+
+                if ($parentProduct && $parentProduct->hasMedia('gallery')) {
+                    $galleryMedia = $parentProduct->getMedia('gallery');
+                    foreach ($galleryMedia as $media) {
+                        $galleryUrl = $media->getFullUrl();
+                        if ($galleryUrl && count($imageUrls) < 10) {
+                            $imageUrls[] = $galleryUrl;
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // Medya alınmazsa boş array
+            $imageUrls = [];
+        }
+
+        // 3. Fallback logo: Görsel hala yoksa tema logosunu kullan
+        if (empty($imageUrls) && $fallbackLogo) {
+            $imageUrls[] = $fallbackLogo;
+        }
+
+        // Google Shopping XML item'ını oluştur
         $xml .= '<item>';
         $xml .= '<g:id>' . htmlspecialchars($product->product_id, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:id>';
-        $xml .= '<g:title>' . htmlspecialchars($title, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:title>';
+        $xml .= '<g:title>' . htmlspecialchars(substr($title, 0, 500), ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:title>';
         $xml .= '<g:description>' . htmlspecialchars($desc, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:description>';
         $xml .= '<g:link>' . htmlspecialchars($productUrl, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:link>';
 
-        // Only add price if product has price
-        if ($hasPrice) {
-            $xml .= '<g:price>' . $price . ' ' . $currency . '</g:price>';
+        // Görselleri ekle (ilk = primary, geriye kalanlar = additional)
+        // 🔄 WebP'leri PNG'ye dönüştür (Thumbmaker ile)
+        foreach ($imageUrls as $imageUrl) {
+            // Google desteklenen formatlar: JPG, JPEG, PNG, GIF, BMP, TIF (WebP DEĞIL!)
+            // WebP dosyalarını Thumbmaker aracılığıyla PNG'ye dönüştür
+            if (preg_match('/\.webp$/i', $imageUrl)) {
+                // WebP URL'i PNG'ye dönüştür: /thumbmaker?src=...&w=500&f=png
+                // Doğru domain kullan (ixtif.com, tuufi.com değil!)
+                $imageUrl = $baseUrl . '/thumbmaker?src=' . urlencode($imageUrl) . '&w=500&f=png';
+            }
+            $xml .= '<g:image_link>' . htmlspecialchars($imageUrl, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:image_link>';
         }
 
+        $xml .= '<g:price>' . $price . ' ' . $currency . '</g:price>';
         $xml .= '<g:availability>in stock</g:availability>';
-        $xml .= '<g:condition>' . ($product->condition ?? 'new') . '</g:condition>';
+        $xml .= '<g:condition>' . htmlspecialchars($product->condition ?? 'new', ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:condition>';
         $xml .= '<g:brand>' . htmlspecialchars($brand, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</g:brand>';
         $xml .= '</item>';
     }
 } catch (Exception $e) {
-    // Error handling
-    $xml .= '<!-- Error: ' . htmlspecialchars($e->getMessage(), ENT_XML1) . ' -->';
+    // Hata oluşursa XML'e yorum olarak ekle (Google tarafında sorun bildirimi yapılabilir)
+    $xml .= '<!-- Hata: ' . htmlspecialchars($e->getMessage(), ENT_XML1) . ' -->';
 }
 
 $xml .= '</channel>';

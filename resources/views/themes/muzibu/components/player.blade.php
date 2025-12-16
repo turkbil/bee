@@ -5,7 +5,7 @@
     <div
         x-show="showDebugInfo && currentSong"
         x-cloak
-        class="fixed bottom-20 right-4 z-40 flex items-center gap-1"
+        class="fixed bottom-20 left-4 z-40 flex items-center gap-1"
     >
         <span
             class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide"
@@ -113,8 +113,51 @@
         <button class="text-muzibu-text-gray hover:text-white transition-all hidden sm:block" @click="toggleMute()" :aria-label="isMuted ? 'Sesi aç' : 'Sesi kapat'" :aria-pressed="isMuted">
             <i :class="isMuted ? 'fas fa-volume-mute' : (volume > 50 ? 'fas fa-volume-up' : 'fas fa-volume-down')"></i>
         </button>
-        <div class="w-20 h-1.5 bg-muzibu-text-gray/30 rounded-full cursor-pointer group hidden md:block" @click="setVolume($event)" role="slider" :aria-valuenow="Math.round(volume)" aria-valuemin="0" aria-valuemax="100" aria-label="Ses seviyesi">
-            <div class="h-full bg-white rounded-full group-hover:bg-muzibu-coral transition-colors" :style="`width: ${volume}%`"></div>
+        <!-- Volume Slider with Tooltip & Drag (smooth control) -->
+        <div class="relative hidden md:flex items-center gap-1" x-data="{
+            showVolumeTooltip: false,
+            tooltipX: 0,
+            isDragging: false
+        }">
+            <div
+                class="w-20 py-4 cursor-pointer group"
+                @mousedown="isDragging = true; setVolume($event); showVolumeTooltip = true"
+                @mouseenter="showVolumeTooltip = true"
+                @mousemove="tooltipX = $event.offsetX; if (isDragging) setVolume($event)"
+                @mouseleave="showVolumeTooltip = false; isDragging = false"
+                @mouseup="isDragging = false"
+                role="slider"
+                :aria-valuenow="Math.round(volume)"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-label="Ses seviyesi"
+            >
+                <!-- Bar (player bar ile aynı stil) -->
+                <div class="h-1.5 bg-muzibu-text-gray/30 rounded-full relative">
+                    <div class="h-full bg-white rounded-full relative group-hover:bg-muzibu-coral transition-colors" :style="`width: ${volume}%`">
+                        <!-- Handle (player bar'daki gibi white circle) -->
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 shadow-lg transition-opacity"></div>
+                    </div>
+                </div>
+
+                <!-- Tooltip (mouse tracking, transparent) -->
+                <div
+                    x-show="showVolumeTooltip"
+                    x-transition
+                    :style="`left: ${tooltipX}px`"
+                    class="absolute -top-9 transform -translate-x-1/2 bg-black/60 text-white px-1.5 py-0.5 rounded text-xs font-medium pointer-events-none z-30"
+                >
+                    <span x-text="volume >= 95 ? 'MAX' : Math.round(volume)"></span>
+                </div>
+            </div>
+            <!-- MAX button (quick 100%) -->
+            <button
+                @click="volume = 100; isMuted = false"
+                class="w-1.5 h-1.5 rounded-full transition-all"
+                :class="volume >= 95 ? 'bg-muzibu-coral' : 'bg-muzibu-text-gray/50 hover:bg-muzibu-text-gray'"
+                aria-label="Ses 100%"
+                title="100%"
+            ></button>
         </div>
     </div>
 </div>

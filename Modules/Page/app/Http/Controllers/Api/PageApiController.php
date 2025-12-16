@@ -93,12 +93,39 @@ class PageApiController extends Controller
     }
 
     /**
+     * Belirli bir sayfayı ID ile getir (popup için)
+     */
+    public function getById(Request $request, int $id): JsonResponse
+    {
+        $locale = $request->get('locale', app()->getLocale());
+
+        $page = Page::where('page_id', $id)->first();
+
+        if (!$page) {
+            return response()->json([
+                'success' => false,
+                'message' => "Page not found for ID: {$id}",
+                'data' => null
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $page->page_id,
+                'title' => $page->getTranslated('title', $locale),
+                'body' => $page->getTranslated('body', $locale),
+            ]
+        ]);
+    }
+
+    /**
      * Belirli bir sayfayı slug ile getir
      */
     public function show(Request $request, string $slug): JsonResponse
     {
         $locale = $request->get('locale', app()->getLocale());
-        
+
         $page = Page::where('is_active', true)
             ->whereJsonContains("slug->{$locale}", $slug)
             ->first();

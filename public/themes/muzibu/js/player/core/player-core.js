@@ -291,7 +291,6 @@ function muzibuApp() {
                     if (terminableDevices.length > 0) {
                         this.showDeviceSelectionModal = true;
                     } else {
-                        console.log('🔐 No terminable devices (only current device exists) - skipping modal');
                         // Device limit exceeded ama çıkış yapılacak başka cihaz yok
                         // Bu durumda LIFO zaten en eski session'ı silmiş olmalı
                         this.deviceLimitExceeded = false; // Flag'i temizle
@@ -404,7 +403,6 @@ function muzibuApp() {
                     }
 
                     this.isPlaying = false; // Ensure paused
-                    console.log('✅ Last played song preloaded (PAUSED, ready to play)');
                 }
 
             } catch (error) {
@@ -420,7 +418,6 @@ function muzibuApp() {
             if (!this.isPlaying) {
                 // Guest kullanıcı → Direkt /register
                 if (!this.isLoggedIn) {
-                    console.log('🚫 Guest user - redirecting to /register (togglePlay)');
                     this.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
                     setTimeout(() => {
                         window.location.href = '/register';
@@ -431,7 +428,6 @@ function muzibuApp() {
                 // Premium/Trial olmayan üye → Direkt /subscription/plans
                 const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
                 if (!isPremiumOrTrial) {
-                    console.log('💎 Non-premium user - redirecting to /subscription/plans (togglePlay)');
                     this.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
                     setTimeout(() => {
                         window.location.href = '/subscription/plans';
@@ -494,7 +490,6 @@ function muzibuApp() {
                 this.isLoading = true;
 
                 // 🎵 AUTO-START: Queue boşsa Genre'den başla (infinite loop garantisi)
-                console.log('🎵 Auto-starting music from Genre (infinite loop)...');
 
                 // ✅ Alpine store check (Livewire navigate sonrası store undefined olabilir)
                 const muzibuStore = Alpine.store('muzibu');
@@ -607,14 +602,6 @@ function muzibuApp() {
                 // ✅ localStorage access check (cross-origin/iframe hatası önleme)
                 try {
                     safeStorage.setItem('muzibu_full_state', JSON.stringify(state));
-                    console.log('💾 Full state saved:', {
-                        queue: state.queue.length,
-                        index: state.queueIndex,
-                        song: state.currentSong?.song_title?.tr || state.currentSong?.song_title,
-                        time: Math.floor(state.currentTime),
-                        volume: state.volume,
-                        playing: state.isPlaying
-                    });
                 } catch (storageError) {
                     // localStorage access denied (cross-origin, iframe, private mode)
                     console.warn('⚠️ localStorage access denied:', storageError.message);
@@ -680,7 +667,6 @@ function muzibuApp() {
                     // 🛡️ Re-enable auto-save
                     setTimeout(() => {
                         this._isRestoringState = false;
-                        console.log('✅ State restoration complete (UI only), auto-save re-enabled');
                     }, 500);
 
                     if (wasPlaying) {
@@ -900,14 +886,6 @@ function muzibuApp() {
 
             // 🔥 FIX: Save current audio volume BEFORE creating next player
             // (createNextHlsPlayer might reuse the same audio element!)
-            console.log('🔍 Audio element check:', {
-                hasActiveHls: hasActiveHls,
-                audio: audio,
-                audioId: audio?.id,
-                audioVolume: audio?.volume,
-                audioPaused: audio?.paused,
-                activeHlsAudioId: this.activeHlsAudioId
-            });
             const currentAudioVolume = hasActiveHls ? audio.volume : null;
 
             // Get next song URL and type - USE CACHE FIRST!
@@ -1117,7 +1095,6 @@ function muzibuApp() {
 
                         const timeRemaining = self.duration - nextAudio.currentTime;
                         if (self.crossfadeEnabled && timeRemaining <= (self.crossfadeDuration / 1000) && timeRemaining > 0) {
-                            console.log('🎵 HLS crossfade timeupdate trigger, remaining:', timeRemaining.toFixed(2));
                             self.startCrossfade();
                         }
                     };
@@ -1434,7 +1411,6 @@ function muzibuApp() {
                 // 🚫 FRONTEND PREMIUM CHECK: Şarkı çalmaya çalışmadan önce kontrol et
                 // Guest kullanıcı → Direkt /register
                 if (!this.isLoggedIn) {
-                    console.log('🚫 Guest user - redirecting to /register (no API call)');
                     this.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
                     setTimeout(() => {
                         window.location.href = '/register';
@@ -1445,7 +1421,6 @@ function muzibuApp() {
                 // Premium/Trial olmayan üye → Direkt /subscription/plans
                 const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
                 if (!isPremiumOrTrial) {
-                    console.log('💎 Non-premium user - redirecting to /subscription/plans (no API call)');
                     this.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
                     setTimeout(() => {
                         window.location.href = '/subscription/plans';
@@ -1566,7 +1541,6 @@ function muzibuApp() {
                             offset: 0,
                             source: 'auto_detect'
                         });
-                        console.log(`✅ AUTO-CONTEXT: Album ${streamData.song.album_id} (${streamData.song.album_name})`);
                     } else if (streamData.song.genre_id) {
                         muzibuStore.setPlayContext({
                             type: 'genre',
@@ -1575,7 +1549,6 @@ function muzibuApp() {
                             offset: 0,
                             source: 'auto_detect'
                         });
-                        console.log(`✅ AUTO-CONTEXT: Genre ${streamData.song.genre_id} (${streamData.song.genre_name})`);
                     } else {
                         console.warn('⚠️ AUTO-CONTEXT: Song has no album_id or genre_id, cannot set context');
                     }
@@ -1958,7 +1931,6 @@ onplay: function() {
             } else {
                 // Preload mode: loaded but paused
                 this.isPlaying = false;
-                console.log('Howler loaded (PAUSED, ready to play)');
             }
         },
 
@@ -2093,7 +2065,6 @@ onplay: function() {
                 this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
                     // 🛡️ Check if HLS was aborted (error occurred before manifest parsed)
                     if (hlsAborted) {
-                        console.log('⚠️ HLS aborted, skipping play()');
                         return;
                     }
 
@@ -2103,7 +2074,6 @@ onplay: function() {
                         audio.play().then(() => {
                             // 🛡️ Double-check: HLS might have been aborted during play promise
                             if (hlsAborted) {
-                                console.log('⚠️ HLS aborted during play(), stopping');
                                 audio.pause();
                                 return;
                             }
@@ -2128,7 +2098,6 @@ onplay: function() {
                         }).catch(e => {
                             // 🛡️ AbortError is expected when fallback kicks in - don't show error toast
                             if (e.name === 'AbortError') {
-                                console.log('⚠️ HLS play aborted (expected during fallback)');
                             } else {
                                 console.error('HLS play error:', e);
                                 self.showToast('Çalma hatası', 'error');
@@ -2139,7 +2108,6 @@ onplay: function() {
                         markHlsSuccess(); // Preload da basarili sayilir
                         self.duration = audio.duration || 0;
                         self.isPlaying = false;
-                        console.log('HLS loaded (PAUSED, ready to play)');
                     }
                 });
 
@@ -2190,7 +2158,6 @@ onplay: function() {
                     const timeRemaining = self.duration - audio.currentTime;
                     // Son 1.5 saniyede crossfade başlat
                     if (self.crossfadeEnabled && timeRemaining <= (self.crossfadeDuration / 1000) && timeRemaining > 0) {
-                        console.log('🎵 HLS timeupdate crossfade trigger, remaining:', timeRemaining.toFixed(2));
                         self.startCrossfade();
                     }
                 };
@@ -2223,7 +2190,6 @@ onplay: function() {
 
                     const timeRemaining = self.duration - audio.currentTime;
                     if (self.crossfadeEnabled && timeRemaining <= (self.crossfadeDuration / 1000) && timeRemaining > 0) {
-                        console.log('🎵 Safari HLS crossfade trigger, remaining:', timeRemaining.toFixed(2));
                         self.startCrossfade();
                     }
                 };
@@ -2291,7 +2257,6 @@ onplay: function() {
 
         // Fade audio element volume using requestAnimationFrame
         fadeAudioElement(audio, fromVolume, toVolume, duration) {
-            console.log(`🎚️ Fade: ${fromVolume.toFixed(2)} → ${toVolume.toFixed(2)} (${duration}ms)`);
             return new Promise(resolve => {
                 // 🔥 FIX: Store animation frame PER audio element (not global)
                 // This allows multiple audio elements to fade simultaneously during crossfade
@@ -2681,11 +2646,6 @@ onplay: function() {
                     // 🎵 Başarı mesajı göster
                     this.showToast('Hoş geldin, ' + data.user.name + '! 🎉', 'success');
 
-                    console.log('👤 User logged in:', {
-                        name: data.user.name,
-                        email: data.user.email,
-                        is_premium: data.user.is_premium || false
-                    });
 
                     // 🔄 SESSION FIX: Sayfa yenileme ile session cookie'lerin düzgün set edilmesini garantile
                     // SPA mode session yönetimi sorunlu - Laravel session regenerate sonrası
@@ -3109,7 +3069,6 @@ onplay: function() {
 
             // Boş liste kontrolü
             if (songsToPreload.length === 0) {
-                console.log('🔍 No songs to preload (queue too short)');
                 return;
             }
 
@@ -3252,7 +3211,6 @@ onplay: function() {
 
                 // Sadece queue varsa log yaz (boş queue spam yapmasın)
                 if (this.queue.length > 0) {
-                    console.log(`🔍 Queue Check: ${queueLength} songs remaining (queueIndex: ${this.queueIndex}/${this.queue.length})`);
                 }
 
                 // Eğer 3 veya daha az şarkı kaldıysa refill et
@@ -3292,12 +3250,10 @@ onplay: function() {
                             const removedCount = cleanupStartIndex;
                             this.queue = this.queue.slice(cleanupStartIndex);
                             this.queueIndex = this.queueIndex - cleanupStartIndex;
-                            console.log(`🧹 Queue cleaned: ${removedCount} old songs removed (kept last ${keepPreviousSongs})`);
                         }
 
                         // Queue'ya yeni şarkıları ekle
                         this.queue = [...this.queue, ...newSongs];
-                        console.log(`✅ Auto-refilled: ${newSongs.length} songs added (Total queue: ${this.queue.length})`);
 
                         // İlk şarkıyı preload et
                         this.preloadFirstInQueue();
@@ -3483,7 +3439,6 @@ onplay: function() {
                     } else if (data.reason === 'not_authenticated') {
                         // 🔥 Sayfa renderda auth vardı ama API'de yok
                         // Bu NORMAL durum olabilir: İlk sayfa yüklemesi sırasında session henüz sync olmamış
-                        console.log('🔐 Not authenticated - waiting for session sync (not forcing logout)');
 
                         // Sadece flag güncelle, agresif logout YAPMA
                         // Session sync sorunu genelde kendiliğinden düzelir
@@ -3578,7 +3533,6 @@ onplay: function() {
             .then(() => {
             })
             .catch((err) => {
-                console.log('🔐 Logout API error (ignored):', err.message);
             })
             .finally(() => {
                 // 🚀 HARD REDIRECT - Livewire/SPA INTERCEPT EDEMEZ!
@@ -3937,7 +3891,6 @@ onplay: function() {
             try {
                 // Tüm diğer cihazlar için terminate isteği gönder
                 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
-                console.log('🔐 Terminating devices:', otherDevices.map(d => d.session_id));
 
                 const promises = otherDevices.map(device => {
                     return fetch('/api/auth/terminate-device', {
@@ -3952,7 +3905,6 @@ onplay: function() {
                         body: JSON.stringify({ session_id: device.session_id })
                     }).then(async res => {
                         const data = await res.json();
-                        console.log(`🔐 Terminate ${device.session_id.substring(0,8)}... Status: ${res.status}`, data);
                         return data;
                     }).catch(err => {
                         console.error(`🔐 Terminate ${device.session_id.substring(0,8)}... ERROR:`, err);

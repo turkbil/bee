@@ -5,7 +5,6 @@
 
 // 🛡️ Guard against duplicate loading in SPA navigation
 if (typeof window._muzibuStoreInitialized !== 'undefined') {
-    console.log('⚠️ muzibu-store.js already loaded, skipping...');
 } else {
     window._muzibuStoreInitialized = true;
 
@@ -110,7 +109,6 @@ document.addEventListener('alpine:init', () => {
             // localStorage'a kaydet
             _safeStorage.setItem('muzibu_recently_played', JSON.stringify(this.recentlyPlayed));
 
-            console.log('🎯 Recently played updated:', this.recentlyPlayed.length, 'songs');
         },
 
         /**
@@ -139,7 +137,6 @@ document.addEventListener('alpine:init', () => {
         clearRecentlyPlayed() {
             this.recentlyPlayed = [];
             _safeStorage.removeItem('muzibu_recently_played');
-            console.log('🗑️ Recently played cleared');
         },
 
         /**
@@ -206,7 +203,6 @@ document.addEventListener('alpine:init', () => {
         clearPlayContext() {
             _safeStorage.removeItem('muzibu_play_context');
             this.playContext = null;
-            console.log('🗑️ Play Context Cleared');
         },
 
         /**
@@ -227,12 +223,6 @@ document.addEventListener('alpine:init', () => {
             const excludeSongIds = this.getRecentlyPlayed();
 
             try {
-                console.log('🔄 Refilling queue...', {
-                    context,
-                    currentOffset,
-                    limit,
-                    excludeCount: excludeSongIds.length
-                });
 
                 const response = await fetch('/api/muzibu/queue/refill', {
                     method: 'POST',
@@ -260,8 +250,6 @@ document.addEventListener('alpine:init', () => {
 
                 // 🔄 CONTEXT TRANSITION: Backend suggested transition to Genre (infinite loop)
                 if (data.transition) {
-                    console.log('🔄 Context Transition:', data.transition);
-                    console.log(`📢 ${data.transition.reason}`);
 
                     // Update play context to Genre (infinite music guaranteed)
                     this.updatePlayContext({
@@ -277,11 +265,9 @@ document.addEventListener('alpine:init', () => {
                 }
 
                 if (data.success && data.songs && data.songs.length > 0) {
-                    console.log(`✅ Queue refilled: ${data.songs.length} songs`, data.songs);
 
                     // 🧪 DEBUG: Şarkı seçim açıklaması (backend'den gelen)
                     if (data.explanation) {
-                        console.log('📋 Şarkı Seçim Açıklaması:', data.explanation);
                         window.debugLog?.('info', `📋 ${data.explanation.algoritma}`, {
                             kaynak: data.explanation.kaynak,
                             toplam: `${data.explanation.toplam_sarki} şarkı`,
@@ -377,7 +363,6 @@ document.addEventListener('alpine:init', () => {
 
         openContextMenu(event, type, data) {
             if (this._debug) {
-                console.log('🎯 Context Menu Opened:', { type, data, event });
             }
 
             const menuWidth = 250;
@@ -513,7 +498,6 @@ document.addEventListener('alpine:init', () => {
         executeAction(action) {
             const { type, data } = this;
 
-            console.log(`🎯 Context Menu Action: ${action} | Type: ${type}`, data);
 
             switch(action) {
                 case 'play':
@@ -810,7 +794,6 @@ document.addEventListener('alpine:init', () => {
             this.tracks = tracks || [];
             this.entityInfo = info;
             this.previewMode = false; // Exit preview mode on detail page
-            console.log('🎯 Sidebar content set:', type, tracks?.length || 0, 'tracks');
         },
 
         /**

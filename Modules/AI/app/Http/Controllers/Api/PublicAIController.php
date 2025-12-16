@@ -2789,6 +2789,38 @@ class PublicAIController extends Controller
      */
     public function assistantChat(Request $request): JsonResponse
     {
+        // ✅ ZORLA TENANT INITIALIZE (X-Tenant header veya type field'ından)
+        if (!tenant() || (tenant() && !tenant()->id)) {
+            $xTenant = $request->header('X-Tenant');
+            $typeField = $request->input('type'); // 'tenant1001' gibi
+
+            if ($xTenant) {
+                $tenantId = (int) $xTenant;
+            } elseif ($typeField && str_starts_with($typeField, 'tenant')) {
+                $tenantId = (int) str_replace('tenant', '', $typeField);
+            } else {
+                $tenantId = null;
+            }
+
+            if ($tenantId) {
+                $tenant = \App\Models\Tenant::find($tenantId);
+                if ($tenant) {
+                    tenancy()->initialize($tenant);
+
+                    // ✅ ZORLA database name set et!
+                    $dbName = $tenant->tenancy_db_name ?? "tenant_{$tenant->id}";
+                    config(['database.connections.tenant.database' => $dbName]);
+                    \DB::purge('tenant');
+                    \DB::reconnect('tenant');
+
+                    \Log::info("🔧 FORCED tenant initialization", [
+                        'tenant_id' => $tenantId,
+                        'database' => $dbName,
+                    ]);
+                }
+            }
+        }
+
         \Log::info('🤖 assistantChat STARTED (MODULAR SYSTEM)', [
             'message' => $request->input('message'),
             'session_id' => $request->input('session_id'),
@@ -2797,22 +2829,27 @@ class PublicAIController extends Controller
         ]);
 
         try {
-            // Validation
+            // Check if only requesting quick actions
+            $getQuickActions = $request->input('get_quick_actions', false);
+
+            // Validation (allow empty message if only getting quick actions)
             $validated = $request->validate([
-                'message' => 'required|string|min:1|max:1000',
+                'message' => $getQuickActions ? 'nullable|string|max:1000' : 'required|string|min:1|max:1000',
                 'session_id' => 'nullable|string|max:64',
                 'context' => 'nullable|array',
+                'get_quick_actions' => 'nullable|boolean',
             ]);
 
             $sessionId = $validated['session_id'] ?? $this->generateSessionId($request);
             $tenantId = tenant('id');
 
             // Find or create conversation
+            // Note: user_id references tenant database users (no FK constraint since cross-database)
             $conversation = \Modules\AI\App\Models\AIConversation::firstOrCreate([
                 'session_id' => $sessionId,
                 'tenant_id' => $tenantId,
             ], [
-                'user_id' => auth()->id(),
+                'user_id' => auth()->id(), // Tenant database user ID
                 'feature_slug' => 'assistant',
                 'status' => 'active',
                 'ip_address' => $request->ip(),
@@ -2836,7 +2873,8 @@ class PublicAIController extends Controller
             }
 
             // 🎯 MODULAR SYSTEM: Resolve services for this tenant
-            $resolvedModules = $this->assistantResolver->resolve();
+            $resolved = $this->assistantResolver->resolve();
+            $resolvedModules = $resolved['services'] ?? [];
 
             \Log::info('🎯 Resolved modules', [
                 'tenant_id' => $tenantId,
@@ -2848,9 +2886,46 @@ class PublicAIController extends Controller
             $allQuickActions = [];
             $allPromptRules = [];
 
+            // ⚡ QUICK ACTIONS ONLY: Return immediately if no message
+            if ($getQuickActions && empty($validated['message'])) {
+                foreach ($resolvedModules as $moduleType => $service) {
+                    $quickActions = $service->getQuickActions();
+                    foreach ($quickActions as $action) {
+                        $action['module'] = $moduleType;
+                        $allQuickActions[] = $action;
+                    }
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'message' => 'Quick actions loaded',
+                        'session_id' => $sessionId,
+                        'conversation_id' => $conversation->id,
+                        'quick_actions' => array_slice($allQuickActions, 0, 4),
+                        'metadata' => [
+                            'system' => 'modular_assistant',
+                            'modules' => array_keys($resolvedModules),
+                        ]
+                    ]
+                ]);
+            }
+
+            // ✅ DEBUG: Search sonuçlarını takip et
+            $debugSearchResults = [];
+
             foreach ($resolvedModules as $moduleType => $service) {
                 // Search using user message
                 $searchResults = $service->search($validated['message']);
+
+                // ✅ DEBUG: Search sonuçlarını kaydet
+                $debugSearchResults[$moduleType] = [
+                    'total' => $searchResults['total'] ?? 0,
+                    'items_count' => count($searchResults['items'] ?? []),
+                    'has_raw_results' => isset($searchResults['raw_results']),
+                    'success' => $searchResults['success'] ?? false,
+                    'results_keys' => array_keys($searchResults),
+                ];
 
                 \Log::info("🔍 Module search: {$moduleType}", [
                     'results_count' => $searchResults['total'] ?? 0
@@ -2858,6 +2933,11 @@ class PublicAIController extends Controller
 
                 // Build AI context
                 $context = $service->buildContextForAI($searchResults);
+
+                // ✅ DEBUG: Context build sonucu
+                $debugSearchResults[$moduleType]['context_built'] = !empty($context);
+                $debugSearchResults[$moduleType]['context_length'] = strlen($context);
+
                 if (!empty($context)) {
                     $moduleContexts[$moduleType] = $context;
                 }
@@ -2879,6 +2959,14 @@ class PublicAIController extends Controller
             // Build combined context
             $combinedContext = implode("\n\n", $moduleContexts);
             $combinedPromptRules = implode("\n\n", $allPromptRules);
+
+            // ✅ DEBUG: Context boş mu kontrol et
+            \Log::info('🔍 Context Debug', [
+                'moduleContexts_count' => count($moduleContexts),
+                'moduleContexts_keys' => array_keys($moduleContexts),
+                'combinedContext_length' => strlen($combinedContext),
+                'combinedContext_preview' => substr($combinedContext, 0, 500),
+            ]);
 
             // Build system prompt
             $systemPrompt = $this->buildModularSystemPrompt($combinedContext, $combinedPromptRules);
@@ -2916,12 +3004,10 @@ class PublicAIController extends Controller
                 'model' => $provider->default_model ?? 'gpt-4o-mini',
             ]);
 
-            $response = $aiService->generateCompletion($aiMessages, [
+            $aiResponse = $aiService->ask($aiMessages, false, [
                 'max_tokens' => 1000,
                 'temperature' => 0.7,
             ]);
-
-            $aiResponse = $response['content'] ?? '';
 
             if (empty($aiResponse)) {
                 throw new \Exception('Empty AI response');
@@ -2945,10 +3031,13 @@ class PublicAIController extends Controller
                 'modules_used' => array_keys($resolvedModules)
             ]);
 
+            // 🎯 POST-PROCESS: Auto-add ACTION button for playlists (Muzibu only)
+            $aiResponse = $this->postProcessPlaylistActions($aiResponse, $validated['message'] ?? '');
+
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'message' => $aiResponse,
+                    'message' => $aiResponse, // Already cleaned in OpenAIService
                     'session_id' => $sessionId,
                     'conversation_id' => $conversation->id,
                     'quick_actions' => $allQuickActions,
@@ -2957,6 +3046,19 @@ class PublicAIController extends Controller
                         'modules' => array_keys($resolvedModules),
                         'provider' => $provider->name,
                     ],
+                    // ✅ DEBUG DISABLED: UTF-8 sorununu önlemek için geçici olarak kapatıldı
+                    /* 'debug_context' => [
+                        'context_length' => strlen($combinedContext),
+                        'context_is_empty' => empty($combinedContext),
+                        'context_preview' => substr($combinedContext, 0, 500),
+                        'tenant_id' => tenant('id'),
+                        'tenant_exists' => tenant() !== null,
+                        'tenant_central' => tenant() ? (tenant()->central ?? 'N/A') : 'NULL',
+                        'resolved_modules' => array_keys($resolvedModules),
+                        'moduleContexts_count' => count($moduleContexts),
+                        'search_results' => $debugSearchResults,
+                        'song_connection' => (new \Modules\Muzibu\App\Models\Song())->getConnectionName(),
+                    ], */
                 ],
             ]);
 
@@ -3017,5 +3119,102 @@ class PublicAIController extends Controller
 - Ürün/içerik önerirken mutlaka link ver
 - Fiyat sorarsa ve bilgi yoksa 'Bu konuda bilgi bulunamadı' de
 - Kullanıcıyı yönlendirmek için CTA (Call to Action) kullan";
+    }
+
+    /**
+     * 🎯 POST-PROCESS: Auto-add ACTION button for playlists
+     *
+     * Detects if AI response contains multiple song links and auto-appends
+     * [ACTION:CREATE_PLAYLIST:...] button for frontend to parse
+     *
+     * @param string $aiResponse
+     * @param string $userMessage
+     * @return string
+     */
+    protected function postProcessPlaylistActions(string $aiResponse, string $userMessage): string
+    {
+        // Only for Muzibu (Tenant 1001)
+        if (!tenant() || tenant('id') !== 1001) {
+            return $aiResponse;
+        }
+
+        // Already has ACTION button? Skip
+        if (str_contains($aiResponse, '[ACTION:CREATE_PLAYLIST:')) {
+            return $aiResponse;
+        }
+
+        // Detect playlist: Multiple song links (/play/song/ID)
+        preg_match_all('/\/play\/song\/(\d+)/', $aiResponse, $matches);
+        $songIds = $matches[1] ?? [];
+
+        // Need at least 3 songs to be considered a playlist
+        if (count($songIds) < 3) {
+            return $aiResponse;
+        }
+
+        // Extract playlist title from user message or generate default
+        $playlistTitle = $this->extractPlaylistTitle($userMessage);
+
+        // Build ACTION button
+        $songIdsStr = implode(',', $songIds);
+        $actionButton = "\n\n[ACTION:CREATE_PLAYLIST:song_ids={$songIdsStr}:title={$playlistTitle}]";
+
+        \Log::info('🎯 AUTO-ADDED ACTION button', [
+            'tenant_id' => tenant('id'),
+            'song_count' => count($songIds),
+            'playlist_title' => $playlistTitle,
+            'song_ids' => $songIds
+        ]);
+
+        return $aiResponse . $actionButton;
+    }
+
+    /**
+     * Extract playlist title from user message
+     * Dynamically loads genres from database (Muzibu only)
+     *
+     * @param string $userMessage
+     * @return string
+     */
+    protected function extractPlaylistTitle(string $userMessage): string
+    {
+        $message = mb_strtolower($userMessage);
+
+        // 🎯 DYNAMIC: Load genres from database (Tenant 1001 only)
+        if (tenant() && tenant('id') === 1001) {
+            try {
+                $genres = \DB::connection('tenant')
+                    ->table('muzibu_genres')
+                    ->where('is_active', 1)
+                    ->whereNull('deleted_at')
+                    ->get(['title', 'slug']);
+
+                foreach ($genres as $genre) {
+                    $title = json_decode($genre->title ?: '{}', true);
+                    $genreTitle = $title['tr'] ?? $title['en'] ?? '';
+                    $slug = is_array($genre->slug) ? ($genre->slug['tr'] ?? $genre->slug['en'] ?? '') : $genre->slug;
+
+                    if (empty($genreTitle)) continue;
+
+                    // Check if genre name or slug is in user message
+                    $genreLower = mb_strtolower($genreTitle);
+                    $slugLower = mb_strtolower($slug);
+
+                    if (str_contains($message, $genreLower) || str_contains($message, $slugLower)) {
+                        return $genreTitle . ' Müzikleri';
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::error('Extract playlist title error', ['error' => $e->getMessage()]);
+            }
+        }
+
+        // Check for "mixed" or "karışık"
+        if (str_contains($message, 'karışık') || str_contains($message, 'mixed')) {
+            return 'Karışık Playlist';
+        }
+
+        // Default
+        return 'Özel Playlist';
     }
 }

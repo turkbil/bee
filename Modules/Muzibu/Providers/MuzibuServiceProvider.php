@@ -49,6 +49,26 @@ class MuzibuServiceProvider extends ServiceProvider
 
         // View Composers - Sidebar için featured playlists
         $this->registerViewComposers();
+
+        // ✅ MODEL OBSERVERS: UTF-8 Temizleme (30 bin şarkı için production-ready!)
+        $this->registerModelObservers();
+    }
+
+    /**
+     * Model Observer'larını kaydet
+     * Yeni eklenen her Song/Album/Artist/Playlist/Radio/Genre/Sector otomatik UTF-8 temizlenir
+     */
+    protected function registerModelObservers(): void
+    {
+        $observer = \Modules\Muzibu\App\Observers\MuzikDataObserver::class;
+
+        \Modules\Muzibu\App\Models\Song::observe($observer);
+        \Modules\Muzibu\App\Models\Album::observe($observer);
+        \Modules\Muzibu\App\Models\Artist::observe($observer);
+        \Modules\Muzibu\App\Models\Playlist::observe($observer);
+        \Modules\Muzibu\App\Models\Radio::observe($observer);
+        \Modules\Muzibu\App\Models\Genre::observe($observer);
+        \Modules\Muzibu\App\Models\Sector::observe($observer);
     }
 
     /**

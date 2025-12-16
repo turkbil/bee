@@ -2,76 +2,9 @@
 (anonymous) @ ?plugins=forms,typography,aspect-ratio:68
 (anonymous) @ ?plugins=forms,typography,aspect-ratio:68
 (index):7190 🔄 Livewire navigated - Re-initializing Alpine...
-VM32870:38 🧪 Debug Panel connected
-player-core.js?v=1765918873:683 ✅ State restoration complete (UI only), auto-save re-enabled
-player-core.js?v=1765918873:610 💾 Full state saved: {queue: 1, index: 0, song: 'ALONE', time: 22, volume: 16.25, …}
-player-core.js?v=1765918873:610 💾 Full state saved: {queue: 1, index: 0, song: 'ALONE', time: 22, volume: 16.25, …}
-player-core.js?v=1765918873:407 ✅ Last played song preloaded (PAUSED, ready to play)
-player-core.js?v=1765918873:2133 HLS play error: NotAllowedError: play() failed because the user didn't interact with the document first. https://goo.gl/xX8pDD
-(anonymous) @ player-core.js?v=1765918873:2133
-Promise.catch
-(anonymous) @ player-core.js?v=1765918873:2128
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-r.filterAndSortMediaOptions @ level-controller.ts:291
-r.onManifestLoaded @ level-controller.ts:152
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.handleTrackOrLevelPlaylist @ playlist-loader.ts:478
-onSuccess @ playlist-loader.ts:314
-e.readystatechange @ xhr-loader.ts:231
-XMLHttpRequest.send
-e.openAndSendXhr @ xhr-loader.ts:158
-(anonymous) @ xhr-loader.ts:104
-Promise.then
-e.loadInternal @ xhr-loader.ts:102
-e.load @ xhr-loader.ts:76
-e.load @ playlist-loader.ts:347
-e.onManifestLoading @ playlist-loader.ts:154
-o.emit @ index.js:203
-e.emit @ hls.ts:287
-e.trigger @ hls.ts:298
-e.loadSource @ hls.ts:389
-playHlsStream @ player-core.js?v=1765918873:2073
-preloadLastPlayedSong @ player-core.js?v=1765918873:400
-await in preloadLastPlayedSong
-init @ player-core.js?v=1765918873:238
-(anonymous) @ livewire.js?id=df3a17f2:1160
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3571
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-player-core.js?v=1765918873:3255 🔍 Queue Check: 1 songs remaining (queueIndex: 0/1)
-player-core.js?v=1765918873:3276 ⚠️ Queue running low! Auto-refilling...
-checkAndRefillQueue @ player-core.js?v=1765918873:3276
-(anonymous) @ player-core.js?v=1765918873:3241
-setInterval
-startQueueMonitor @ player-core.js?v=1765918873:3240
-init @ player-core.js?v=1765918873:250
-(anonymous) @ livewire.js?id=df3a17f2:1160
-tryCatch @ livewire.js?id=df3a17f2:1116
-evaluate @ livewire.js?id=df3a17f2:1140
-(anonymous) @ livewire.js?id=df3a17f2:3571
-flushHandlers @ livewire.js?id=df3a17f2:1281
-stopDeferring @ livewire.js?id=df3a17f2:1286
-deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
-initTree @ livewire.js?id=df3a17f2:1479
-(anonymous) @ livewire.js?id=df3a17f2:1428
-start @ livewire.js?id=df3a17f2:1427
-start2 @ livewire.js?id=df3a17f2:8851
-(anonymous) @ livewire.js?id=df3a17f2:10215
-muzibu-store.js?v=1765919386:230 🔄 Refilling queue... {context: Proxy(Object), currentOffset: 132, limit: 15, excludeCount: 7}
-player-core.js?v=1765918873:2086 ⚠️ Key load retry: {song: 323, retry: 0}
-(anonymous) @ player-core.js?v=1765918873:2086
+VM33536:38 🧪 Debug Panel connected
+player-core.js?v=1765919997:2058 ⚠️ Key load retry: {song: 323, retry: 0}
+(anonymous) @ player-core.js?v=1765919997:2058
 o.emit @ index.js:203
 e.emit @ hls.ts:287
 e.trigger @ hls.ts:298
@@ -105,10 +38,10 @@ o.emit @ index.js:203
 e.emit @ hls.ts:287
 e.trigger @ hls.ts:298
 e.loadSource @ hls.ts:389
-playHlsStream @ player-core.js?v=1765918873:2073
-preloadLastPlayedSong @ player-core.js?v=1765918873:400
+playHlsStream @ player-core.js?v=1765919997:2045
+preloadLastPlayedSong @ player-core.js?v=1765919997:399
 await in preloadLastPlayedSong
-init @ player-core.js?v=1765918873:238
+init @ player-core.js?v=1765919997:238
 (anonymous) @ livewire.js?id=df3a17f2:1160
 tryCatch @ livewire.js?id=df3a17f2:1116
 evaluate @ livewire.js?id=df3a17f2:1140
@@ -121,8 +54,8 @@ initTree @ livewire.js?id=df3a17f2:1479
 start @ livewire.js?id=df3a17f2:1427
 start2 @ livewire.js?id=df3a17f2:8851
 (anonymous) @ livewire.js?id=df3a17f2:10215
-player-core.js?v=1765918873:2148 ⚠️ HLS error (fallback to MP3): keyLoadError
-(anonymous) @ player-core.js?v=1765918873:2148
+player-core.js?v=1765919997:2116 ⚠️ HLS error (fallback to MP3): keyLoadError
+(anonymous) @ player-core.js?v=1765919997:2116
 o.emit @ index.js:203
 e.emit @ hls.ts:287
 e.trigger @ hls.ts:298
@@ -173,10 +106,10 @@ o.emit @ index.js:203
 e.emit @ hls.ts:287
 e.trigger @ hls.ts:298
 e.loadSource @ hls.ts:389
-playHlsStream @ player-core.js?v=1765918873:2073
-preloadLastPlayedSong @ player-core.js?v=1765918873:400
+playHlsStream @ player-core.js?v=1765919997:2045
+preloadLastPlayedSong @ player-core.js?v=1765919997:399
 await in preloadLastPlayedSong
-init @ player-core.js?v=1765918873:238
+init @ player-core.js?v=1765919997:238
 (anonymous) @ livewire.js?id=df3a17f2:1160
 tryCatch @ livewire.js?id=df3a17f2:1116
 evaluate @ livewire.js?id=df3a17f2:1140
@@ -189,9 +122,22 @@ initTree @ livewire.js?id=df3a17f2:1479
 start @ livewire.js?id=df3a17f2:1427
 start2 @ livewire.js?id=df3a17f2:8851
 (anonymous) @ livewire.js?id=df3a17f2:10215
-muzibu-store.js?v=1765919386:280 ✅ Queue refilled: 11 songs (11) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
-muzibu-store.js?v=1765919386:284 📋 Şarkı Seçim Açıklaması: {kaynak: {…}, kaynak_tipi: 'album', toplam_sarki: 11, baslangic: 133, alinan: 11, …}
-debug.js?v=1765919160:76 ℹ️ [00:12:09] 📋 🎲 Rastgele seçim (son 300 şarkı hariç) {kaynak: {…}, toplam: '11 şarkı', alinan: '133-143. sıra', secim_mantigi: '🎲 Rastgele seçim (son 300 şarkı hariç)'}
-player-core.js?v=1765918873:3300 ✅ Auto-refilled: 11 songs added (Total queue: 12)
-player-core.js?v=1765918873:610 💾 Full state saved: {queue: 12, index: 0, song: 'ALONE', time: 22, volume: 16.25, …}
-player-core.js?v=1765918873:3255 🔍 Queue Check: 12 songs remaining (queueIndex: 0/12)
+player-core.js?v=1765919997:3234 ⚠️ Queue running low! Auto-refilling...
+checkAndRefillQueue @ player-core.js?v=1765919997:3234
+(anonymous) @ player-core.js?v=1765919997:3200
+setInterval
+startQueueMonitor @ player-core.js?v=1765919997:3199
+init @ player-core.js?v=1765919997:250
+(anonymous) @ livewire.js?id=df3a17f2:1160
+tryCatch @ livewire.js?id=df3a17f2:1116
+evaluate @ livewire.js?id=df3a17f2:1140
+(anonymous) @ livewire.js?id=df3a17f2:3571
+flushHandlers @ livewire.js?id=df3a17f2:1281
+stopDeferring @ livewire.js?id=df3a17f2:1286
+deferHandlingDirectives @ livewire.js?id=df3a17f2:1289
+initTree @ livewire.js?id=df3a17f2:1479
+(anonymous) @ livewire.js?id=df3a17f2:1428
+start @ livewire.js?id=df3a17f2:1427
+start2 @ livewire.js?id=df3a17f2:8851
+(anonymous) @ livewire.js?id=df3a17f2:10215
+debug.js?v=1765919160:76 ℹ️ [00:22:10] 📋 🎲 Rastgele seçim (son 300 şarkı hariç) {kaynak: {…}, toplam: '11 şarkı', alinan: '144-154. sıra', secim_mantigi: '🎲 Rastgele seçim (son 300 şarkı hariç)'}

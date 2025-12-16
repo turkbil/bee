@@ -335,7 +335,66 @@ class Blog extends BaseModel implements TranslatableEntity, HasMedia
             $schema['timeRequired'] = 'PT' . $readingTime . 'M'; // ISO 8601 format
         }
 
+        // ⭐ Aggregated Rating - HasReviews trait'inden alınır (Shop pattern)
+        // Google guideline: Blog yazıları için kullanıcı rating'leri
+        if (method_exists($this, 'averageRating') && method_exists($this, 'ratingsCount')) {
+            $avgRating = $this->averageRating();
+            $ratingCount = $this->ratingsCount();
+
+            // Rating varsa ekle (HasReviews trait varsayılan 5 yıldız üretiyor)
+            if ($avgRating > 0 && $ratingCount > 0) {
+                $schema['aggregateRating'] = [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => (string) number_format($avgRating, 1),
+                    'reviewCount' => $ratingCount,
+                    'bestRating' => '5',
+                    'worstRating' => '1',
+                ];
+            }
+        }
+
         return $schema;
+    }
+
+    /**
+     * Tüm schema'ları al (BlogPosting + Universal schemas)
+     * Shop pattern ile uyumlu
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. BlogPosting Schema (Ana içerik)
+        $blogSchema = $this->getSchemaMarkup();
+        if ($blogSchema) {
+            $schemas['blogposting'] = $blogSchema;
+        }
+
+        // 2. Breadcrumb Schema (HasUniversalSchemas trait'inden)
+        if (method_exists($this, 'getBreadcrumbSchema')) {
+            $breadcrumbSchema = $this->getBreadcrumbSchema();
+            if ($breadcrumbSchema) {
+                $schemas['breadcrumb'] = $breadcrumbSchema;
+            }
+        }
+
+        // 3. FAQ Schema (HasUniversalSchemas trait'inden)
+        if (method_exists($this, 'getFaqSchema')) {
+            $faqSchema = $this->getFaqSchema();
+            if ($faqSchema) {
+                $schemas['faq'] = $faqSchema;
+            }
+        }
+
+        // 4. HowTo Schema (HasUniversalSchemas trait'inden)
+        if (method_exists($this, 'getHowToSchema')) {
+            $howtoSchema = $this->getHowToSchema();
+            if ($howtoSchema) {
+                $schemas['howto'] = $howtoSchema;
+            }
+        }
+
+        return $schemas;
     }
 
     /**

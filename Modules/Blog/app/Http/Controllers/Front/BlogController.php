@@ -393,7 +393,7 @@ class BlogController extends Controller
 
         // SADECE aktif dilde slug ara - locale-aware
         $item = Blog::query()
-            ->with(['category', 'media'])
+            ->with(['category', 'media', 'seoSetting'])
             ->where('is_active', true)
             ->published()
             ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"" . $currentLocale . "\"')) = ?", [$slug])
@@ -410,7 +410,7 @@ class BlogController extends Controller
                 }
 
                 $item = Blog::query()
-                    ->with(['category', 'media'])
+                    ->with(['category', 'media', 'seoSetting'])
                     ->where('is_active', true)
                     ->published()
                     ->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(slug, '$.\"" . $locale . "\"')) = ?", [$slug])
@@ -459,8 +459,52 @@ class BlogController extends Controller
             return redirect()->to($redirectUrl);
         }
 
-        // SEO meta tags için model'i global olarak paylaş
+        // SEO servisi inject et (Shop pattern)
+        if (!$seoService) {
+            $seoService = app(SeoMetaTagService::class);
+        }
+
+        // ⚠️ ÖNEMLİ: SeoMetaTagService'in model'i algılayabilmesi için ÖNCE share et
         view()->share('currentModel', $item);
+
+        // Blog modülü özel: Çoklu schema desteği (BlogPosting + Breadcrumb + FAQ + HowTo + Rating)
+        $metaTags = null;
+        if ($seoService && method_exists($item, 'getAllSchemas')) {
+            // Blog için özel schema'ları al
+            $blogSchemas = $item->getAllSchemas();
+
+            // SEO servisinden mevcut meta tags'i al
+            $currentMetaTags = $seoService->generateMetaTags();
+            $currentSchemas = $currentMetaTags['schemas'] ?? [];
+
+            // ⚠️ DUPLICATE PREVENTION: Blog modülü kendi BlogPosting/Breadcrumb schema'sını üretiyor
+            // SeoMetaTagService'in ürettiği 'main' (BlogPosting) ve 'breadcrumb' schema'larını kaldır
+            // Çünkü Blog::getAllSchemas() daha detaylı ve AggregateRating içeren schema üretiyor
+            unset($currentSchemas['main']);      // Generic BlogPosting schema - kaldır
+            unset($currentSchemas['breadcrumb']); // Generic Breadcrumb - kaldır
+
+            // Blog schema'larını ekle (BlogPosting, Breadcrumb, FAQ, HowTo)
+            foreach ($blogSchemas as $key => $schema) {
+                if ($schema) {
+                    // Blog modülü schema'ları `blog_` prefix'i ile ekle
+                    $currentSchemas['blog_' . $key] = $schema;
+                }
+            }
+
+            // Meta tags'i güncelle - og:type'ı article olarak zorla
+            $metaTags = array_merge($currentMetaTags, [
+                'og_type' => 'article', // ← KRİTİK: Google sağ panel için zorunlu!
+                'schemas' => $currentSchemas
+            ]);
+            view()->share('metaTags', $metaTags);
+
+            Log::info('BlogController - Blog schemas added', [
+                'total_schemas' => count($currentSchemas),
+                'blog_schemas' => array_keys($blogSchemas),
+                'all_schema_keys' => array_keys($currentSchemas),
+                'og_type' => 'article'
+            ]);
+        }
 
         try {
             // Modül adıyla tema yolunu al

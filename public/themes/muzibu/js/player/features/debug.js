@@ -71,13 +71,16 @@ window.debugLog = function(type, message, details = {}) {
         window.debugLogs = window.debugLogs.slice(0, window.debugMaxLogs);
     }
 
-    // Console output with styling
-    const emoji = getTypeEmoji(type);
-    console.log(
-        `%c${emoji} [${timestamp}] ${message}`,
-        `color: ${color}; font-weight: bold;`,
-        details
-    );
+    // Console output with styling (only if debug panel is active)
+    const playerStore = window.Alpine?.store?.('muzibuPlayer');
+    if (playerStore?.showDebugInfo) {
+        const emoji = getTypeEmoji(type);
+        console.log(
+            `%c${emoji} [${timestamp}] ${message}`,
+            `color: ${color}; font-weight: bold;`,
+            details
+        );
+    }
 
     // Update Alpine store if available
     if (window.Alpine?.store('debug')) {
@@ -231,7 +234,6 @@ window.clearDebugLogs = function() {
     if (window.Alpine?.store('debug')) {
         window.Alpine.store('debug').logs = [];
     }
-    console.log('%c🧹 Debug logs temizlendi', 'color: #10b981; font-weight: bold;');
 };
 
 // 🎯 Debug Feature Export (spread by player-core.js)

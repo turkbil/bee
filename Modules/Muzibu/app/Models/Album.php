@@ -13,10 +13,11 @@ use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
+use Modules\ReviewSystem\App\Traits\HasReviews;
 
 class Album extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, Searchable;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable;
 
     protected $table = 'muzibu_albums';
     protected $primaryKey = 'album_id';
@@ -251,7 +252,47 @@ class Album extends BaseModel implements TranslatableEntity, HasMedia
             $schema['numTracks'] = $songsCount;
         }
 
+        // ⭐ Aggregated Rating - HasReviews trait'inden alınır
+        if (method_exists($this, 'averageRating') && method_exists($this, 'ratingsCount')) {
+            $avgRating = $this->averageRating();
+            $ratingCount = $this->ratingsCount();
+
+            if ($avgRating > 0 && $ratingCount > 0) {
+                $schema['aggregateRating'] = [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => (string) number_format($avgRating, 1),
+                    'reviewCount' => $ratingCount,
+                    'bestRating' => '5',
+                    'worstRating' => '1',
+                ];
+            }
+        }
+
         return $schema;
+    }
+
+    /**
+     * Tüm schema'ları al (MusicAlbum + Breadcrumb)
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. MusicAlbum Schema
+        $albumSchema = $this->getSchemaMarkup();
+        if ($albumSchema) {
+            $schemas['musicalbum'] = $albumSchema;
+        }
+
+        // 2. Breadcrumb Schema
+        if (method_exists($this, 'getBreadcrumbSchema')) {
+            $breadcrumbSchema = $this->getBreadcrumbSchema();
+            if ($breadcrumbSchema) {
+                $schemas['breadcrumb'] = $breadcrumbSchema;
+            }
+        }
+
+        return $schemas;
     }
 
     /**

@@ -165,7 +165,7 @@ class PortfolioController extends Controller
             return redirect()->to($redirectUrl);
         }
 
-        // SEO meta tags için model'i global olarak paylaş
+        // SEO meta tags için model'i global olarak paylaş (HasSeo trait otomatik çalışır)
         view()->share('currentModel', $item);
 
         try {

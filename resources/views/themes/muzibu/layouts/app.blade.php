@@ -391,7 +391,7 @@
     <script>
         // Livewire navigation sonrası Alpine'i re-initialize et
         document.addEventListener('livewire:navigated', () => {
-            console.log('🔄 Livewire navigated - Re-initializing Alpine...');
+            // Re-initializing Alpine (silent)
 
             // Alpine.js re-init için kısa bir gecikme
             setTimeout(() => {

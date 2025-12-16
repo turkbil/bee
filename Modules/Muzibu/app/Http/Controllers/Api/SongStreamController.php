@@ -373,4 +373,67 @@ class SongStreamController extends Controller
             'subscription_ends_at' => $subscription->current_period_end ? $subscription->current_period_end->toIso8601String() : null,
         ];
     }
+
+    /**
+     * 🔑 Serve HLS Encryption Key
+     *
+     * This endpoint is called by HLS.js when playing encrypted HLS streams.
+     * The playlist.m3u8 file contains: #EXT-X-KEY:METHOD=AES-128,URI="/api/muzibu/songs/{id}/key"
+     *
+     * @param int $songId
+     * @return \Illuminate\Http\Response
+     */
+    public function serveKey(int $songId)
+    {
+        try {
+            // 🚀 Get song from cache
+            $song = $this->cacheService->getSong($songId);
+
+            if (!$song || !$song->is_active) {
+                return response()->json(['error' => 'Song not found or inactive'], 404);
+            }
+
+            // 🔑 Build path to encryption key file
+            // Format: storage/tenant{id}/app/public/muzibu/hls/{song_id}/enc.key
+            $tenantId = tenant('id');
+            $keyPath = storage_path("app/public/muzibu/hls/{$songId}/enc.key");
+
+            // ⚠️ Check if key file exists
+            if (!file_exists($keyPath)) {
+                Log::warning('HLS key file not found', [
+                    'song_id' => $songId,
+                    'path' => $keyPath
+                ]);
+                return response()->json(['error' => 'Encryption key not found'], 404);
+            }
+
+            // 📦 Read binary key file
+            $keyContent = file_get_contents($keyPath);
+
+            if ($keyContent === false) {
+                Log::error('Failed to read HLS key file', [
+                    'song_id' => $songId,
+                    'path' => $keyPath
+                ]);
+                return response()->json(['error' => 'Failed to read encryption key'], 500);
+            }
+
+            // ✅ Return binary key with proper headers
+            return response($keyContent, 200)
+                ->header('Content-Type', 'application/octet-stream')
+                ->header('Content-Length', strlen($keyContent))
+                ->header('Cache-Control', 'public, max-age=31536000') // Cache for 1 year (immutable key)
+                ->header('Access-Control-Allow-Origin', '*') // CORS for HLS.js
+                ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type');
+
+        } catch (\Exception $e) {
+            Log::error('HLS key serving error', [
+                'song_id' => $songId,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Internal server error'], 500);
+        }
+    }
 }

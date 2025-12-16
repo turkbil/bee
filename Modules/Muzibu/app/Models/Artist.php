@@ -12,10 +12,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
+use Modules\ReviewSystem\App\Traits\HasReviews;
 
 class Artist extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, Searchable;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasReviews, Searchable;
 
     protected $table = 'muzibu_artists';
     protected $primaryKey = 'artist_id';
@@ -175,7 +176,7 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackSchemaMarkup(): ?array
     {
-        return [
+        $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'MusicGroup',
             'name' => $this->getSeoFallbackTitle(),
@@ -183,6 +184,48 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
             'url' => $this->getSeoFallbackCanonicalUrl(),
             'image' => $this->getSeoFallbackImage(),
         ];
+
+        // ⭐ Aggregated Rating - HasReviews trait'inden alınır
+        if (method_exists($this, 'averageRating') && method_exists($this, 'ratingsCount')) {
+            $avgRating = $this->averageRating();
+            $ratingCount = $this->ratingsCount();
+
+            if ($avgRating > 0 && $ratingCount > 0) {
+                $schema['aggregateRating'] = [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => (string) number_format($avgRating, 1),
+                    'reviewCount' => $ratingCount,
+                    'bestRating' => '5',
+                    'worstRating' => '1',
+                ];
+            }
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Tüm schema'ları al (MusicGroup + Breadcrumb)
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. MusicGroup Schema
+        $artistSchema = $this->getSchemaMarkup();
+        if ($artistSchema) {
+            $schemas['musicgroup'] = $artistSchema;
+        }
+
+        // 2. Breadcrumb Schema
+        if (method_exists($this, 'getBreadcrumbSchema')) {
+            $breadcrumbSchema = $this->getBreadcrumbSchema();
+            if ($breadcrumbSchema) {
+                $schemas['breadcrumb'] = $breadcrumbSchema;
+            }
+        }
+
+        return $schemas;
     }
 
     /**

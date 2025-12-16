@@ -57,10 +57,10 @@ class ThrottleByUserType
         // Guest (not logged in)
         if (!$user) {
             return match($limitType) {
-                'stream' => [30, 1],   // 30 requests per minute
-                'auth' => [10, 1],     // 10 requests per minute
-                'api' => [60, 1],      // 60 requests per minute
-                default => [60, 1],
+                'stream' => [60, 1],   // 60 requests per minute (increased from 30)
+                'auth' => [20, 1],     // 20 requests per minute (increased from 10)
+                'api' => [120, 1],     // 120 requests per minute (increased from 60)
+                default => [120, 1],
             };
         }
 
@@ -76,10 +76,10 @@ class ThrottleByUserType
 
         // Normal Member (logged in but not premium)
         return match($limitType) {
-            'stream' => [120, 1],      // 120 requests per minute
-            'auth' => [20, 1],         // 20 requests per minute
-            'api' => [180, 1],         // 180 requests per minute
-            default => [180, 1],
+            'stream' => [200, 1],      // 200 requests per minute (increased from 120)
+            'auth' => [40, 1],         // 40 requests per minute (increased from 20)
+            'api' => [300, 1],         // 300 requests per minute (increased from 180)
+            default => [300, 1],
         };
     }
 

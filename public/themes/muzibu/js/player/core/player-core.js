@@ -231,11 +231,13 @@ function muzibuApp() {
 
             // User already loaded from Laravel backend (no need for API check)
 
-            // Load featured playlists on init
-            this.loadFeaturedPlaylists();
-
-            // 🎯 PRELOAD: Load last played song in PAUSE mode (instant playback)
+            // 🎯 PRELOAD: Load last played song in PAUSE mode (instant playback) - PRIORITY 1
             this.preloadLastPlayedSong();
+
+            // ⏱️ DELAYED: Load featured playlists after 300ms (avoid rate limiting)
+            setTimeout(() => {
+                this.loadFeaturedPlaylists();
+            }, 300);
 
             // Initialize keyboard shortcuts
             this.initKeyboard();
@@ -300,8 +302,11 @@ function muzibuApp() {
 
             // 🔐 DEVICE LIMIT: Her sayfa yüklemesinde kontrol et (login olmuş kullanıcılar için)
             // Meta tag yoksa bile, API'den cihaz sayısı ve limiti al, limit aşılmışsa modal göster
+            // ⏱️ DELAYED: 600ms sonra kontrol et (avoid rate limiting)
             if (this.isLoggedIn && !deviceLimitMeta) {
-                this.checkDeviceLimitOnPageLoad();
+                setTimeout(() => {
+                    this.checkDeviceLimitOnPageLoad();
+                }, 600);
             }
 
             // SPA Navigation: Handle browser back/forward
@@ -1664,6 +1669,12 @@ function muzibuApp() {
 
                         // Other errors - try next track (but only if not device limited AND not session terminated)
                         if (!this.deviceLimitExceeded && !this._sessionTerminatedHandling) {
+                            console.error('Song stream failed:', {
+                                status: response.status,
+                                statusText: response.statusText,
+                                error: errorData,
+                                songId: song.song_id
+                            });
                             this.showToast(`Şarkı yüklenemedi, sonrakine geçiliyor...`, 'warning');
                             if (this.queueIndex < this.queue.length - 1) {
                                 await this.nextTrack();
@@ -2052,14 +2063,11 @@ onplay: function() {
                 this.hls.on(Hls.Events.KEY_LOADED, function(event, data) {
                 });
 
-                // 🔑 Non-fatal error handling with retry info
+                // 🔑 Non-fatal error handling (silent - retry is expected)
                 this.hls.on(Hls.Events.ERROR, function(event, data) {
-                    if (!data.fatal && data.details === 'keyLoadError') {
-                        console.warn('⚠️ Key load retry:', {
-                            song: self.currentSong?.song_id,
-                            retry: data.frag?.loader?.stats?.retry || 0
-                        });
-                    }
+                    // Key load errors are expected for deleted songs
+                    // HLS.js will retry and eventually trigger fatal error
+                    // No need to log retries
                 });
 
                 this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
@@ -2096,9 +2104,14 @@ onplay: function() {
                                 }
                             }));
                         }).catch(e => {
-                            // 🛡️ AbortError is expected when fallback kicks in - don't show error toast
+                            // 🛡️ Expected errors - don't show toast
                             if (e.name === 'AbortError') {
+                                // Fallback tetiklendi, normal
+                            } else if (e.name === 'NotAllowedError') {
+                                // Autoplay policy - preload mode'da normal
+                                // Kullanıcı play basınca çalacak
                             } else {
+                                // Beklenmeyen hata
                                 console.error('HLS play error:', e);
                                 self.showToast('Çalma hatası', 'error');
                             }
@@ -2113,7 +2126,11 @@ onplay: function() {
 
                 this.hls.on(Hls.Events.ERROR, function(event, data) {
                     if (data.fatal) {
-                        console.warn('⚠️ HLS error (fallback to MP3):', data.details);
+                        // 🛡️ Silently handle keyLoadError (deleted songs)
+                        // Only log unexpected errors
+                        if (data.details !== 'keyLoadError') {
+                            console.warn('⚠️ HLS error (fallback to MP3):', data.details);
+                        }
 
                         // 🛡️ Set abort flag FIRST to prevent MANIFEST_PARSED from calling play()
                         hlsAborted = true;
@@ -2122,7 +2139,7 @@ onplay: function() {
                         // HLS yüklenemezse MP3'e fallback (SIGNED URL)
                         // Sadece NETWORK_ERROR degil, TUM fatal error'larda fallback yap
                         if (self.currentSong && self.currentFallbackUrl) {
-                            console.info('🔄 Fallback: Switching to MP3...');
+                            // Fallback is expected behavior, no need to log
 
                             // 🛑 Stop HLS audio element first (prevent AbortError)
                             if (audio) {
@@ -2143,6 +2160,11 @@ onplay: function() {
                             // MP3 ile çal (signed URL) - autoplay parametresini aktar!
                             self.playWithHowler(self.currentFallbackUrl, targetVolume, autoplay);
                         } else {
+                            console.error('HLS failed and no fallback URL available:', {
+                                songId: self.currentSong?.song_id,
+                                hlsError: data.details,
+                                hasFallbackUrl: !!self.currentFallbackUrl
+                            });
                             self.showToast('Şarkı yüklenemedi', 'error');
                             self.isPlaying = false;
                         }
@@ -3231,7 +3253,7 @@ onplay: function() {
                     // Context varsa flag'i resetle (yeni session için)
                     this._noContextWarningShown = false;
 
-                    console.warn('⚠️ Queue running low! Auto-refilling...');
+                    // Auto-refilling queue (silent operation)
 
                     // Mevcut offset'i hesapla (kaç şarkı çalındı)
                     const currentOffset = context.offset || 0;

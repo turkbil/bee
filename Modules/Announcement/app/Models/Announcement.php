@@ -10,10 +10,11 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
+use Modules\ReviewSystem\App\Traits\HasReviews;
 
 class Announcement extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, HasReviews;
 
     protected $primaryKey = 'announcement_id';
 
@@ -142,18 +143,66 @@ class Announcement extends BaseModel implements TranslatableEntity, HasMedia
      */
     public function getSeoFallbackSchemaMarkup(): ?array
     {
-        return [
+        $schema = [
             '@context' => 'https://schema.org',
-            '@type' => 'WebPage',
-            'name' => $this->getSeoFallbackTitle(),
+            '@type' => 'Article',
+            'headline' => $this->getSeoFallbackTitle(),
             'description' => $this->getSeoFallbackDescription(),
             'url' => $this->getSeoFallbackCanonicalUrl(),
-            'isPartOf' => [
-                '@type' => 'WebSite',
-                'name' => config('app.name'),
-                'url' => url('/')
-            ]
         ];
+
+        // Add image if available
+        $image = $this->getSeoFallbackImage();
+        if ($image) {
+            $schema['image'] = $image;
+        }
+
+        // Add datePublished if available
+        if ($this->created_at) {
+            $schema['datePublished'] = $this->created_at->toIso8601String();
+        }
+
+        // ⭐ Aggregated Rating - HasReviews trait'inden alınır
+        if (method_exists($this, 'averageRating') && method_exists($this, 'ratingsCount')) {
+            $avgRating = $this->averageRating();
+            $ratingCount = $this->ratingsCount();
+
+            if ($avgRating > 0 && $ratingCount > 0) {
+                $schema['aggregateRating'] = [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => (string) number_format($avgRating, 1),
+                    'reviewCount' => $ratingCount,
+                    'bestRating' => '5',
+                    'worstRating' => '1',
+                ];
+            }
+        }
+
+        return $schema;
+    }
+
+    /**
+     * Tüm schema'ları al (Article + Breadcrumb)
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. Article Schema (Ana içerik)
+        $announcementSchema = $this->getSchemaMarkup();
+        if ($announcementSchema) {
+            $schemas['article'] = $announcementSchema;
+        }
+
+        // 2. Breadcrumb Schema (varsa)
+        if (method_exists($this, 'getBreadcrumbSchema')) {
+            $breadcrumbSchema = $this->getBreadcrumbSchema();
+            if ($breadcrumbSchema) {
+                $schemas['breadcrumb'] = $breadcrumbSchema;
+            }
+        }
+
+        return $schemas;
     }
 
     /**

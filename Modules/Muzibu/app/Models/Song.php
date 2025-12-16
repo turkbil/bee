@@ -13,10 +13,11 @@ use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\MediaManagement\App\Traits\HasMediaManagement;
 use Modules\Favorite\App\Traits\HasFavorites;
+use Modules\ReviewSystem\App\Traits\HasReviews;
 
 class Song extends BaseModel implements TranslatableEntity, HasMedia
 {
-    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, Searchable;
+    use Sluggable, HasTranslations, HasSeo, HasFactory, HasMediaManagement, SoftDeletes, HasFavorites, HasReviews, Searchable;
 
     protected $table = 'muzibu_songs';
     protected $primaryKey = 'song_id';
@@ -294,19 +295,26 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
 
     public function getSeoFallbackImage(): ?string
     {
-        // Song cover
-        if ($this->media) {
-            return $this->media->getUrl();
+        // Song cover (Spatie media collection)
+        $heroUrl = $this->getFirstMediaUrl('hero');
+        if ($heroUrl) {
+            return $heroUrl;
         }
 
         // Album cover fallback
-        if ($this->album && $this->album->media) {
-            return $this->album->media->getUrl();
+        if ($this->album) {
+            $albumHeroUrl = $this->album->getFirstMediaUrl('hero');
+            if ($albumHeroUrl) {
+                return $albumHeroUrl;
+            }
         }
 
         // Artist photo fallback
-        if ($this->album && $this->album->artist && $this->album->artist->media) {
-            return $this->album->artist->media->getUrl();
+        if ($this->album && $this->album->artist) {
+            $artistPhotoUrl = $this->album->artist->getFirstMediaUrl('photo');
+            if ($artistPhotoUrl) {
+                return $artistPhotoUrl;
+            }
         }
 
         return null;
@@ -318,6 +326,7 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
             '@context' => 'https://schema.org',
             '@type' => 'MusicRecording',
             'name' => $this->getSeoFallbackTitle(),
+            'description' => $this->getSeoFallbackDescription(),
             'url' => $this->getSeoFallbackCanonicalUrl(),
             'image' => $this->getSeoFallbackImage(),
             'duration' => 'PT' . $this->duration . 'S', // ISO 8601 duration format
@@ -346,7 +355,49 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
             $schema['genre'] = $this->genre->getTranslated('title', app()->getLocale());
         }
 
+        // ⭐ Aggregated Rating - HasReviews trait'inden alınır
+        // Google guideline: Müzik platformları için kullanıcı rating'leri
+        if (method_exists($this, 'averageRating') && method_exists($this, 'ratingsCount')) {
+            $avgRating = $this->averageRating();
+            $ratingCount = $this->ratingsCount();
+
+            // Rating varsa ekle (HasReviews trait varsayılan 5 yıldız üretiyor)
+            if ($avgRating > 0 && $ratingCount > 0) {
+                $schema['aggregateRating'] = [
+                    '@type' => 'AggregateRating',
+                    'ratingValue' => (string) number_format($avgRating, 1),
+                    'reviewCount' => $ratingCount,
+                    'bestRating' => '5',
+                    'worstRating' => '1',
+                ];
+            }
+        }
+
         return $schema;
+    }
+
+    /**
+     * Tüm schema'ları al (MusicRecording + Breadcrumb + FAQ)
+     */
+    public function getAllSchemas(): array
+    {
+        $schemas = [];
+
+        // 1. MusicRecording Schema (Ana içerik)
+        $songSchema = $this->getSchemaMarkup();
+        if ($songSchema) {
+            $schemas['musicrecording'] = $songSchema;
+        }
+
+        // 2. Breadcrumb Schema (varsa)
+        if (method_exists($this, 'getBreadcrumbSchema')) {
+            $breadcrumbSchema = $this->getBreadcrumbSchema();
+            if ($breadcrumbSchema) {
+                $schemas['breadcrumb'] = $breadcrumbSchema;
+            }
+        }
+
+        return $schemas;
     }
 
     /**

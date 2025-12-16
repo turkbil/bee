@@ -5,6 +5,7 @@ namespace Modules\Muzibu\app\Http\Controllers\Front;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Muzibu\App\Models\Song;
+use App\Services\SeoMetaTagService;
 
 class SongController extends Controller
 {
@@ -29,6 +30,9 @@ class SongController extends Controller
             ->orderBy('song_id')
             ->limit(10)
             ->get();
+
+        // ⭐ SEO için model'i share et (HasSeo trait otomatik çalışır)
+        view()->share('currentModel', $song);
 
         return view('themes.muzibu.songs.show', compact('song', 'relatedSongs'));
     }

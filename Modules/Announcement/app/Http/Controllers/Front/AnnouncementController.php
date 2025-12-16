@@ -165,10 +165,10 @@ class AnnouncementController extends Controller
             return redirect()->to($redirectUrl);
         }
 
-        // SEO meta tags için model'i global olarak paylaş
+        // SEO meta tags için model'i global olarak paylaş (HasSeo trait otomatik çalışır)
         view()->share('currentModel', $item);
 
-        try {
+        try{
             // Modül adıyla tema yolunu al
             $viewPath = $this->themeService->getThemeViewPath('show', 'announcement');
             return view($viewPath, ['item' => $item]);

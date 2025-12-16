@@ -18,7 +18,10 @@ document.addEventListener('alpine:init', () => {
         // Init
         init() {
             this.loadSession();
-            this.fetchQuickActions();
+            // ⏱️ DELAYED: Fetch quick actions after 900ms (avoid rate limiting on page load)
+            setTimeout(() => {
+                this.fetchQuickActions();
+            }, 900);
         },
 
         // Toggle chat window

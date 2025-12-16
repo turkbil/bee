@@ -284,19 +284,19 @@ class PageController extends Controller
             return redirect()->to($redirectUrl);
         }
 
+        // 🚨 HOMEPAGE KORUMA: Ana sayfa SADECE / adresinde açılmalı!
         // Eğer bu sayfa veritabanında ana sayfa olarak işaretlenmişse ($item->is_homepage == true)
         // VE bu 'show' metodu, ana sayfa route'u (`homepage()` metodu) tarafından çağrılmadıysa
         // (yani $is_homepage_context == false ise, bu doğrudan slug ile erişim demektir),
-        // REDIRECT YERINE CANONICAL URL KULLAN (Google SEO için)
+        // REDIRECT ET! (Homepage ASLA /page/anasayfa gibi URL'de açılmamalı)
         if ($item->is_homepage && !$is_homepage_context) {
-            // Canonical URL'i homepage olarak belirt
-            $canonicalUrl = route('home');
-            Log::info('🔗 Setting canonical URL for homepage slug access', [
-                'slug' => $slug,
-                'canonical_url' => $canonicalUrl
+            $homeUrl = route('home');
+            Log::info('🔄 Homepage slug redirect to root URL', [
+                'from_slug' => $slug,
+                'to_url' => $homeUrl
             ]);
-            // Canonical URL'i view'a paylaş
-            view()->share('customCanonicalUrl', $canonicalUrl);
+            // Homepage SADECE / adresinde açılmalı
+            return redirect()->to($homeUrl, 301);
         }
 
         // SEO meta tags için model'i global olarak paylaş

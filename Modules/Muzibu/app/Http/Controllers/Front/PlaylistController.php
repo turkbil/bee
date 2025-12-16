@@ -5,6 +5,7 @@ namespace Modules\Muzibu\app\Http\Controllers\Front;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Muzibu\App\Models\Playlist;
+use App\Services\SeoMetaTagService;
 
 class PlaylistController extends Controller
 {
@@ -47,6 +48,9 @@ class PlaylistController extends Controller
             ->where('muzibu_songs.is_active', 1)
             ->orderBy('muzibu_playlist_song.position')
             ->get();
+
+        // ⭐ SEO için model'i share et (HasSeo trait otomatik çalışır)
+        view()->share('currentModel', $playlist);
 
         return view('themes.muzibu.playlists.show', compact('playlist', 'songs'));
     }

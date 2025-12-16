@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Muzibu\App\Models\Album;
 use Modules\Muzibu\App\Models\Song;
+use App\Services\SeoMetaTagService;
 
 class AlbumController extends Controller
 {
@@ -38,6 +39,9 @@ class AlbumController extends Controller
             ->where('is_active', 1)
             ->orderBy('song_id')
             ->get();
+
+        // ⭐ SEO için model'i share et (HasSeo trait otomatik çalışır)
+        view()->share('currentModel', $album);
 
         return response()
             ->view('themes.muzibu.albums.show', compact('album', 'songs'))

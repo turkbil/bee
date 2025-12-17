@@ -26,6 +26,11 @@ Route::middleware(['admin', 'tenant'])
                         Route::get('/manage/{id?}', [\Modules\Muzibu\App\Http\Controllers\Admin\SongController::class, 'manage'])
                             ->middleware('module.permission:muzibu,create')
                             ->name('manage');
+
+                        // Bulk HLS Convert
+                        Route::get('/bulk-convert', \Modules\Muzibu\App\Http\Livewire\Admin\SongBulkConvertComponent::class)
+                            ->middleware('module.permission:muzibu,create')
+                            ->name('bulk-convert');
                     });
 
                 // Artists - Livewire

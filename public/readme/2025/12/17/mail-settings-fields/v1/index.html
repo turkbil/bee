@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mail Settings - FormBuilder Field Listesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        code {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        code:hover {
+            background: rgb(51, 65, 85) !important;
+            transform: scale(1.02);
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgb(34, 197, 94);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 9999;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white min-h-screen p-8">
+
+    <!-- Header -->
+    <div class="max-w-6xl mx-auto mb-8">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-envelope text-3xl text-white"></i>
+            </div>
+            <div>
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Mail Settings</h1>
+                <p class="text-slate-400 text-lg">Settings Management → FormBuilder Field Listesi</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+            <h2 class="text-xl font-bold mb-3 flex items-center gap-2">
+                <i class="fas fa-info-circle text-blue-400"></i>
+                Kullanım Talimatı
+            </h2>
+            <ul class="space-y-2 text-slate-300">
+                <li>✓ Her field kartını FormBuilder'da tek tek oluştur</li>
+                <li>✓ <strong>Group Name:</strong> <code class="bg-slate-900 px-2 py-1 rounded">mail_settings</code></li>
+                <li>✓ <strong>Group Label:</strong> <code class="bg-slate-900 px-2 py-1 rounded">Mail Ayarları</code></li>
+                <li>✓ <strong>Total:</strong> 7 Field</li>
+                <li>✓ Her tenant kendi mail ayarlarını yapabilir</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Fields -->
+    <div class="max-w-6xl mx-auto space-y-6">
+
+        <!-- Field 1: mail_driver -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#1</span>
+                    Mail Driver
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">select</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">mail_driver</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">Mail Servisi</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">Mail gönderimi için kullanılacak servis. AWS SES önerilir.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">Mail servisi seçin...</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">required</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">log</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">Yes</code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                    <p class="text-slate-400 text-sm mb-3 font-bold">Select Options:</p>
+                    <div class="space-y-2 font-mono text-sm">
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">log</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">Logla (Geliştirme)</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">ses</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">Amazon SES</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">smtp</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">SMTP Server</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">mailgun</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">Mailgun</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">postmark</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">Postmark</code></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 2: mail_from_address -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-green-600 to-green-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#2</span>
+                    Mail From Address
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">email</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">mail_from_address</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">Gönderen Mail Adresi</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">Mail gönderimlerinde görünecek gönderen adresi. AWS SES'te doğrulanmış olmalı.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">bilgi@domain.com</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">required|email</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">noreply@example.com</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">Yes</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 3: mail_from_name -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-purple-600 to-purple-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#3</span>
+                    Mail From Name
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">text</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">mail_from_name</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">Gönderen İsmi</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">Mail gönderimlerinde görünecek gönderen ismi. Genellikle site adı kullanılır.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">Site Adı</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">required|max:255</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">Example Site</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">Yes</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 4: aws_access_key_id -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-orange-600 to-orange-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#4</span>
+                    AWS Access Key ID
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">text</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">aws_access_key_id</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">AWS Access Key ID</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">AWS IAM kullanıcısının Access Key ID'si. Sadece SES servisi seçiliyse gerekli.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">AKIA...</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">nullable|required_if:mail_driver,ses</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">(empty)</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">Conditional (if SES)</code>
+                    </div>
+                </div>
+
+                <div class="bg-amber-900/30 border border-amber-700 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-exclamation-triangle text-amber-400 text-xl"></i>
+                    <p class="text-amber-300 text-sm">Bu field sadece mail_driver = ses seçiliyse zorunludur.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 5: aws_secret_access_key -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-red-600 to-red-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#5</span>
+                    AWS Secret Access Key
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">password</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">aws_secret_access_key</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">AWS Secret Access Key</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">AWS IAM kullanıcısının Secret Access Key'i. Şifreli olarak saklanır. Sadece SES servisi seçiliyse gerekli.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">wJalr...</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">nullable|required_if:mail_driver,ses</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">(empty)</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">Yes ✓</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">Conditional (if SES)</code>
+                    </div>
+                </div>
+
+                <div class="bg-red-900/30 border border-red-700 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-lock text-red-400 text-xl"></i>
+                    <div>
+                        <p class="text-red-300 text-sm font-bold mb-1">GÜVENLİK NOTU:</p>
+                        <p class="text-red-200 text-sm">Bu alan mutlaka şifrelenmiş (encrypted) olarak saklanmalıdır!</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-900/30 border border-amber-700 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-exclamation-triangle text-amber-400 text-xl"></i>
+                    <p class="text-amber-300 text-sm">Bu field sadece mail_driver = ses seçiliyse zorunludur.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 6: aws_default_region -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-cyan-600 to-cyan-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#6</span>
+                    AWS Default Region
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">select</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">aws_default_region</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">AWS Region</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">AWS SES hizmetinin kullanılacağı bölge. Türkiye için Frankfurt (eu-central-1) önerilir.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">AWS bölgesi seçin...</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">nullable|required_if:mail_driver,ses</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">eu-central-1</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">Conditional (if SES)</code>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                    <p class="text-slate-400 text-sm mb-3 font-bold">Select Options:</p>
+                    <div class="space-y-2 font-mono text-sm">
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">eu-central-1</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">Frankfurt (EU Central 1) 🇩🇪 - ÖNERİLEN</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">eu-west-1</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">İrlanda (EU West 1) 🇮🇪</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">us-east-1</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">N. Virginia (US East 1) 🇺🇸</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">us-west-2</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">Oregon (US West 2) 🇺🇸</code></span>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-800 px-4 py-2 rounded">
+                            <span class="text-slate-300">Value: <code class="text-blue-400">ap-southeast-1</code></span>
+                            <span class="text-slate-400">Label: <code class="text-white">Singapur (AP Southeast 1) 🇸🇬</code></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-amber-900/30 border border-amber-700 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-exclamation-triangle text-amber-400 text-xl"></i>
+                    <p class="text-amber-300 text-sm">Bu field sadece mail_driver = ses seçiliyse zorunludur.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Field 7: aws_ses_configuration_set -->
+        <div class="bg-slate-800/80 border border-slate-700 rounded-2xl overflow-hidden shadow-xl">
+            <div class="bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-4">
+                <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                    <span class="bg-white/20 px-3 py-1 rounded-lg">#7</span>
+                    AWS SES Configuration Set
+                </h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Type</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-blue-400 font-mono block">text</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Input Name (Key)</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-green-400 font-mono block">aws_ses_configuration_set</code>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Label (Başlık)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-white block">AWS SES Configuration Set</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Info Text (Açıklama)</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-300 block">AWS SES'te tanımlı configuration set adı (opsiyonel). Mail istatistikleri ve izleme için kullanılır.</code>
+                </div>
+
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Placeholder</p>
+                    <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 block">default</code>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Validation</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-orange-400 font-mono block">nullable|max:255</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Default Value</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-yellow-400 font-mono block">(empty)</code>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Encrypted</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-red-400 font-mono block">No</code>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm mb-1">Required</p>
+                        <code class="bg-slate-900 px-4 py-2 rounded-lg text-slate-400 font-mono block">No (Optional)</code>
+                    </div>
+                </div>
+
+                <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-4 flex items-start gap-3">
+                    <i class="fas fa-info-circle text-blue-400 text-xl"></i>
+                    <div>
+                        <p class="text-blue-300 text-sm font-bold mb-1">OPSİYONEL ALAN</p>
+                        <p class="text-blue-200 text-sm">Bu alan zorunlu değildir. AWS SES'te mail istatistikleri tutmak istiyorsanız kullanabilirsiniz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Summary -->
+    <div class="max-w-6xl mx-auto mt-8 mb-8">
+        <div class="bg-gradient-to-r from-emerald-900/50 to-green-900/50 border border-emerald-700 rounded-2xl p-6">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                <i class="fas fa-check-circle text-emerald-400 text-3xl"></i>
+                Özet
+            </h2>
+            <div class="grid grid-cols-2 gap-4 text-slate-200">
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Toplam Field Sayısı</p>
+                    <p class="text-3xl font-bold text-emerald-400">7</p>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Zorunlu Field</p>
+                    <p class="text-3xl font-bold text-orange-400">3 + 3 (SES)</p>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Encrypted Field</p>
+                    <p class="text-3xl font-bold text-red-400">1 (Secret Key)</p>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-sm mb-1">Opsiyonel Field</p>
+                    <p class="text-3xl font-bold text-slate-400">1 (Config Set)</p>
+                </div>
+            </div>
+
+            <div class="mt-6 space-y-2 text-slate-300">
+                <p class="flex items-center gap-2"><i class="fas fa-arrow-right text-emerald-400"></i> Her tenant kendi mail ayarlarını yapabilir</p>
+                <p class="flex items-center gap-2"><i class="fas fa-arrow-right text-emerald-400"></i> AWS SES credentials şifreli saklanır</p>
+                <p class="flex items-center gap-2"><i class="fas fa-arrow-right text-emerald-400"></i> Mail driver değiştirildiğinde sadece ilgili field'lar zorunlu olur</p>
+                <p class="flex items-center gap-2"><i class="fas fa-arrow-right text-emerald-400"></i> Default değerler otomatik doldurulur</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="max-w-6xl mx-auto text-center text-slate-500 py-8">
+        <p class="flex items-center justify-center gap-2">
+            <i class="fas fa-robot"></i>
+            Generated with Claude Code
+        </p>
+        <p class="text-sm mt-2">2025-12-17 | Mail Settings Configuration</p>
+    </div>
+
+    <script>
+        // Clipboard Copy Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeElements = document.querySelectorAll('code');
+
+            codeElements.forEach(code => {
+                code.addEventListener('click', function() {
+                    const text = this.textContent.trim();
+
+                    // Copy to clipboard
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast('✓ Kopyalandı: ' + (text.length > 30 ? text.substring(0, 30) + '...' : text));
+                    }).catch(err => {
+                        console.error('Kopyalama hatası:', err);
+                    });
+                });
+            });
+        });
+
+        function showToast(message) {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = '<i class="fas fa-check-circle mr-2"></i>' + message;
+            document.body.appendChild(toast);
+
+            // Remove after 2 seconds
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+    </script>
+
+</body>
+</html>

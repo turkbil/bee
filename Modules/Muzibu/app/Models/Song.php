@@ -468,10 +468,10 @@ class Song extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/muzibu/song/{$slug}");
+            return url("/songs/{$slug}");
         }
 
-        return url("/{$locale}/muzibu/song/{$slug}");
+        return url("/{$locale}/songs/{$slug}");
     }
 
     /**

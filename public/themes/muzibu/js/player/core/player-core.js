@@ -3308,8 +3308,7 @@ onplay: function() {
                     if (!context) {
                         // Sadece ilk kez uyar (spam yapmasın)
                         if (!this._noContextWarningShown && this.queue.length > 0) {
-                            console.warn('⚠️ No play context - cannot auto-refill queue');
-                            console.info('💡 Play a song from homepage, search, or genre to enable infinite loop');
+                            // Console logs removed - no context is normal on initial load
                             this._noContextWarningShown = true;
                         }
                         return;
@@ -3415,8 +3414,6 @@ onplay: function() {
                 return;
             }
 
-            console.log('⏱️ Subscription countdown started. Expires at:', expiresAt);
-
             // Her saniye kontrol et
             const countdownInterval = setInterval(() => {
                 const now = new Date();
@@ -3449,11 +3446,7 @@ onplay: function() {
                     }, 2000);
                 }
 
-                // Her 5 dakikada bir log (debug için)
-                if (timeLeft > 0 && Math.floor(timeLeft / 1000) % 300 === 0) {
-                    const minutesLeft = Math.floor(timeLeft / 60000);
-                    console.log(`⏱️ Subscription expires in ${minutesLeft} minutes`);
-                }
+                // Subscription time check (silent)
             }, 1000); // Her saniye kontrol
         },
 

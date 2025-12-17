@@ -278,6 +278,14 @@ class CheckoutPage extends Component
 
             $this->agree_all = false;
             $this->loadCart();
+
+            // 🛒 SEPET BOŞ MU KONTROL ET
+            if (!$this->cart || $this->items->isEmpty()) {
+                \Log::warning('⚠️ Checkout: Sepet boş, cart sayfasına yönlendiriliyor');
+                session()->flash('warning', 'Sepetiniz boş. Lütfen ürün ekleyiniz.');
+                return redirect()->route('cart.index');
+            }
+
             $this->loadOrCreateCustomer();
             $this->loadBillingProfiles(); // Fatura profillerini yükle
             $this->loadAddresses(); // Adresleri yükle
@@ -1558,7 +1566,13 @@ class CheckoutPage extends Component
      */
     public function proceedToPayment()
     {
-        \Log::info('💳 proceedToPayment START');
+        \Log::info('💳 [CHECKOUT] proceedToPayment START', [
+            'billing_profile_id' => $this->billing_profile_id,
+            'selectedPaymentMethodId' => $this->selectedPaymentMethodId,
+            'selectedGateway' => $this->selectedGateway,
+            'agree_all' => $this->agree_all,
+            'requiresShipping' => $this->requiresShipping,
+        ]);
 
         // Önce validation yap
         $rules = [
@@ -1618,14 +1632,18 @@ class CheckoutPage extends Component
                 'selectedPaymentMethodId.required' => 'Ödeme yöntemi seçmelisiniz',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('❌ Validation FAILED', ['errors' => $e->errors()]);
+            \Log::error('❌ [CHECKOUT] Validation FAILED', ['errors' => $e->errors()]);
             throw $e;
         }
 
+        \Log::info('✅ [CHECKOUT] Validation passed');
+
         DB::beginTransaction();
+        \Log::info('🔵 [CHECKOUT] Transaction started');
 
         try {
             // Müşteri oluştur/güncelle
+            \Log::info('🔵 [CHECKOUT] Creating/updating customer...');
             $customer = $this->createOrUpdateCustomer();
 
             // Guest için adres oluştur
@@ -1633,6 +1651,10 @@ class CheckoutPage extends Component
                 $shippingAddress = Address::create([
                     'user_id' => $customer->id,
                     'address_type' => 'shipping',
+                    'first_name' => $this->contact_first_name,
+                    'last_name' => $this->contact_last_name,
+                    'phone' => $this->contact_phone,
+                    'email' => $this->contact_email,
                     'address_line_1' => $this->shipping_address_line_1,
                     'address_line_2' => $this->shipping_address_line_2,
                     'city' => $this->shipping_city,
@@ -1648,6 +1670,10 @@ class CheckoutPage extends Component
                     $billingAddress = Address::create([
                         'user_id' => $customer->id,
                         'address_type' => 'billing',
+                        'first_name' => $this->contact_first_name,
+                        'last_name' => $this->contact_last_name,
+                        'phone' => $this->contact_phone,
+                        'email' => $this->contact_email,
                         'address_line_1' => $this->shipping_address_line_1,
                         'address_line_2' => $this->shipping_address_line_2,
                         'city' => $this->shipping_city,
@@ -1684,6 +1710,7 @@ class CheckoutPage extends Component
             }
 
             // Sipariş oluştur
+            \Log::info('🔵 [CHECKOUT] Creating order...');
             $order = Order::create([
                 'user_id' => $customer->id,
                 'order_number' => Order::generateOrderNumber(),
@@ -1717,10 +1744,18 @@ class CheckoutPage extends Component
                 'user_agent' => request()->userAgent(),
             ]);
 
+            \Log::info('✅ [CHECKOUT] Order created', [
+                'order_id' => $order->order_id,
+                'order_number' => $order->order_number,
+                'total_amount' => $order->total_amount,
+            ]);
+
             // Sipariş kalemleri
+            \Log::info('🔵 [CHECKOUT] Creating order items...');
             foreach ($this->items as $item) {
                 OrderItem::createFromCartItem($item, $order->order_id);
             }
+            \Log::info('✅ [CHECKOUT] Order items created', ['count' => count($this->items)]);
 
             // 🆕 Subscription oluştur (eğer sepette subscription varsa)
             $this->createSubscriptionsFromOrder($order);
@@ -1728,6 +1763,11 @@ class CheckoutPage extends Component
             // Payment kaydı - Gateway'i PaymentMethod'dan al
             $paymentMethod = PaymentMethod::find($this->selectedPaymentMethodId);
             $gateway = $paymentMethod?->gateway ?? 'paytr';
+
+            \Log::info('🔵 [CHECKOUT] Creating payment record...', [
+                'gateway' => $gateway,
+                'amount' => $this->grandTotal,
+            ]);
 
             $payment = Payment::create([
                 'payment_method_id' => $this->selectedPaymentMethodId,
@@ -1744,8 +1784,15 @@ class CheckoutPage extends Component
                 'installment_fee' => $this->installmentFee,
             ]);
 
+            \Log::info('✅ [CHECKOUT] Payment record created', [
+                'payment_id' => $payment->payment_id,
+                'gateway' => $gateway,
+            ]);
+
             // ✅ Commit - Order ve Payment oluşturuldu
+            \Log::info('🔵 [CHECKOUT] Committing transaction...');
             DB::commit();
+            \Log::info('✅ [CHECKOUT] Transaction committed');
 
             // Session'a bilgileri kaydet (payment sayfası için)
             session([
@@ -1779,6 +1826,11 @@ class CheckoutPage extends Component
                 ]);
             }
 
+            \Log::info('✅ [CHECKOUT] proceedToPayment COMPLETED', [
+                'success' => true,
+                'redirectUrl' => $paymentUrl,
+            ]);
+
             return [
                 'success' => true,
                 'redirectUrl' => $paymentUrl
@@ -1786,7 +1838,12 @@ class CheckoutPage extends Component
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('❌ proceedToPayment ERROR', ['message' => $e->getMessage()]);
+            \Log::error('❌ [CHECKOUT] proceedToPayment ERROR', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             session()->flash('error', 'Sipariş oluşturulurken hata: ' . $e->getMessage());
             return ['success' => false, 'error' => $e->getMessage()];
         }
@@ -1909,8 +1966,8 @@ class CheckoutPage extends Component
 
             // Subscription oluştur (status: pending_payment - ödeme başarılı olunca active/trial olacak)
             $subscription = \Modules\Subscription\App\Models\Subscription::create([
-                'customer_id' => $order->user_id,
-                'plan_id' => $plan->subscription_plan_id,
+                'user_id' => $order->user_id,
+                'subscription_plan_id' => $plan->subscription_plan_id,
                 'cycle_key' => $cycleKey,
                 'cycle_metadata' => [
                     'label' => $cycle['label'],

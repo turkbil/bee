@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Limit Uygulama Planı - Detaylı Kod Planı | Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
+        .gradient-text { background: linear-gradient(135deg, #22c55e 0%, #10b981 50%, #06b6d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        pre { background: #1e293b; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.75rem; line-height: 1.4; }
+        code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+        .code-block { max-height: 400px; overflow-y: auto; }
+        .file-path { background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%); }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Navigation -->
+        <nav class="glass rounded-xl p-4 mb-6 border border-slate-700">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <a href="/readme/2025/12/17/concurrent-playback-analysis/" class="text-slate-400 hover:text-white transition">
+                        <i class="fas fa-arrow-left"></i> Analiz Raporuna Dön
+                    </a>
+                </div>
+                <div class="flex gap-3">
+                    <a href="/readme/2025/12/17/player-limit-only/"
+                       class="px-4 py-2 bg-slate-700/50 text-slate-300 rounded-lg hover:bg-slate-600/50 transition">
+                        Seçenek B Özeti
+                    </a>
+                    <span class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/50">
+                        <i class="fas fa-code"></i> Uygulama Planı
+                    </span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="glass rounded-2xl p-6 md:p-8 mb-8 border border-green-500/30">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                            <i class="fas fa-code text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm rounded-full border border-green-500/30">
+                            DETAYLI UYGULAMA PLANI
+                        </span>
+                    </div>
+                    <h1 class="text-2xl md:text-4xl font-bold gradient-text mb-2">
+                        Player Limit Sistemi - Kod Planı
+                    </h1>
+                    <p class="text-slate-400">Tüm dosyalar, kodlar ve değişiklikler adım adım</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-slate-500">Tahmini Süre</div>
+                    <div class="text-2xl font-bold text-green-400">~2 Saat</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Table of Contents -->
+        <section class="glass rounded-2xl p-6 mb-8 border border-slate-700">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-list-ol text-cyan-400"></i> İçindekiler
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+                <a href="#faz1" class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-700/50 transition">
+                    <span class="text-cyan-400 font-bold">FAZ 1:</span> Database & Migration
+                </a>
+                <a href="#faz2" class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-700/50 transition">
+                    <span class="text-purple-400 font-bold">FAZ 2:</span> Backend Service
+                </a>
+                <a href="#faz3" class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-700/50 transition">
+                    <span class="text-yellow-400 font-bold">FAZ 3:</span> API Controller
+                </a>
+                <a href="#faz4" class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-700/50 transition">
+                    <span class="text-green-400 font-bold">FAZ 4:</span> Frontend JS
+                </a>
+                <a href="#faz5" class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-700/50 transition">
+                    <span class="text-orange-400 font-bold">FAZ 5:</span> Player Entegrasyon
+                </a>
+                <a href="#faz6" class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-700/50 transition">
+                    <span class="text-red-400 font-bold">FAZ 6:</span> Eski Sistem Kaldır
+                </a>
+                <a href="#faz7" class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-700/50 transition">
+                    <span class="text-pink-400 font-bold">FAZ 7:</span> Admin Panel
+                </a>
+                <a href="#faz8" class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-700/50 transition">
+                    <span class="text-indigo-400 font-bold">FAZ 8:</span> Test Senaryoları
+                </a>
+            </div>
+        </section>
+
+        <!-- FAZ 1: Database -->
+        <section id="faz1" class="glass rounded-2xl p-6 md:p-8 mb-8 border border-cyan-500/30">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold">1</span>
+                Database & Migration
+                <span class="ml-auto text-sm text-slate-400">~15 dakika</span>
+            </h2>
+
+            <!-- Migration 1: active_playback_sessions -->
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    <span class="font-mono">database/migrations/tenant/2025_12_17_000001_create_active_playback_sessions_table.php</span>
+                    <span class="ml-auto bg-green-500 text-xs px-2 py-0.5 rounded">YENİ</span>
+                </div>
+                <div class="code-block">
+                    <pre><code class="text-green-300">&lt;?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('active_playback_sessions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->uuid('playback_id')->unique();
+            $table->string('session_id', 255)->nullable();
+            $table->unsignedBigInteger('current_song_id')->nullable();
+            $table->string('device_name', 100)->nullable();
+            $table->enum('device_type', ['desktop', 'mobile', 'tablet'])->default('desktop');
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->timestamp('last_ping')->useCurrent();
+            $table->timestamps();
+
+            // Indexes
+            $table->index(['user_id', 'last_ping']);
+            $table->index('last_ping');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('active_playback_sessions');
+    }
+};</code></pre>
+                </div>
+            </div>
+
+            <!-- Migration 2: Add concurrent_streams_limit -->
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    <span class="font-mono">database/migrations/tenant/2025_12_17_000002_add_concurrent_streams_limit_to_subscription_plans.php</span>
+                    <span class="ml-auto bg-green-500 text-xs px-2 py-0.5 rounded">YENİ</span>
+                </div>
+                <div class="code-block">
+                    <pre><code class="text-green-300">&lt;?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('subscription_plans', function (Blueprint $table) {
+            $table->unsignedInteger('concurrent_streams_limit')
+                  ->default(1)
+                  ->after('device_limit')
+                  ->comment('Eşzamanlı aktif playback limiti');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('subscription_plans', function (Blueprint $table) {
+            $table->dropColumn('concurrent_streams_limit');
+        });
+    }
+};</code></pre>
+                </div>
+            </div>
+
+            <!-- Komutlar -->
+            <div class="bg-slate-800/50 rounded-xl p-4">
+                <h4 class="text-slate-300 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-terminal"></i> Migration Komutları
+                </h4>
+                <pre><code class="text-yellow-300"># Tenant migration çalıştır
+php artisan tenants:migrate --path=database/migrations/tenant/2025_12_17_000001_create_active_playback_sessions_table.php
+
+php artisan tenants:migrate --path=database/migrations/tenant/2025_12_17_000002_add_concurrent_streams_limit_to_subscription_plans.php
+
+# Veya hepsini birden
+php artisan tenants:migrate</code></pre>
+            </div>
+        </section>
+
+        <!-- FAZ 2: Backend Service -->
+        <section id="faz2" class="glass rounded-2xl p-6 md:p-8 mb-8 border border-purple-500/30">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold">2</span>
+                Backend Service - PlaybackSessionService
+                <span class="ml-auto text-sm text-slate-400">~20 dakika</span>
+            </h2>
+
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    <span class="font-mono">Modules/Muzibu/app/Services/PlaybackSessionService.php</span>
+                    <span class="ml-auto bg-green-500 text-xs px-2 py-0.5 rounded">YENİ</span>
+                </div>
+                <div class="code-block" style="max-height: 600px;">
+                    <pre><code class="text-green-300">&lt;?php
+
+namespace Modules\Muzibu\App\Services;
+
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Jenssegers\Agent\Agent;
+
+/**
+ * PlaybackSessionService - Concurrent Playback Limit Sistemi
+ *
+ * Spotify modeli: Sınırsız giriş, sınırlı playback
+ * Device limit yerine aktif stream limiti uygular
+ */
+class PlaybackSessionService
+{
+    protected string $table = 'active_playback_sessions';
+    protected int $pingTimeout = 30; // seconds - 3 ping kaçırırsa expired
+
+    /**
+     * Servis çalışmalı mı?
+     */
+    public function shouldRun(): bool
+    {
+        return tenant() !== null;
+    }
+
+    /**
+     * Yeni playback session başlat
+     * Play butonuna basıldığında çağrılır
+     */
+    public function registerPlaybackSession(
+        User $user,
+        string $playbackId,
+        ?int $songId = null
+    ): array {
+        if (!$this->shouldRun()) {
+            return ['success' => true, 'playback_id' => $playbackId];
+        }
+
+        // 1. Expired session'ları temizle
+        $this->cleanupExpiredSessions();
+
+        // 2. Aktif playback sayısını kontrol et
+        $activeCount = $this->getActivePlaybackCount($user);
+        $limit = $this->getConcurrentStreamLimit($user);
+
+        // 3. Bu playback_id zaten kayıtlı mı? (refresh/reconnect durumu)
+        $existingSession = DB::table($this->table)
+            ->where('playback_id', $playbackId)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($existingSession) {
+            // Mevcut session'ı güncelle
+            DB::table($this->table)
+                ->where('playback_id', $playbackId)
+                ->update([
+                    'current_song_id' => $songId,
+                    'last_ping' => now(),
+                    'updated_at' => now(),
+                ]);
+
+            return [
+                'success' => true,
+                'playback_id' => $playbackId,
+                'resumed' => true,
+            ];
+        }
+
+        // 4. Limit kontrolü (yeni session için)
+        if ($activeCount >= $limit) {
+            return [
+                'success' => false,
+                'error' => 'max_streams_exceeded',
+                'message' => "Bu abonelik zaten {$activeCount} yerde çalıyor. Limit: {$limit}",
+                'active_count' => $activeCount,
+                'limit' => $limit,
+                'active_sessions' => $this->getActiveSessions($user),
+            ];
+        }
+
+        // 5. Yeni playback session kaydet
+        $agent = new Agent();
+
+        DB::table($this->table)->insert([
+            'user_id' => $user->id,
+            'playback_id' => $playbackId,
+            'session_id' => session()->getId(),
+            'current_song_id' => $songId,
+            'device_name' => $agent->platform() . ' - ' . $agent->browser(),
+            'device_type' => $this->getDeviceType($agent),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'last_ping' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        \Log::info('🎵 Playback session started', [
+            'user_id' => $user->id,
+            'playback_id' => $playbackId,
+            'song_id' => $songId,
+        ]);
+
+        return [
+            'success' => true,
+            'playback_id' => $playbackId,
+            'active_count' => $activeCount + 1,
+            'limit' => $limit,
+        ];
+    }
+
+    /**
+     * Playback heartbeat (10 saniyede bir)
+     */
+    public function pingPlaybackSession(
+        User $user,
+        string $playbackId,
+        ?int $songId = null
+    ): array {
+        if (!$this->shouldRun()) {
+            return ['success' => true];
+        }
+
+        $updated = DB::table($this->table)
+            ->where('playback_id', $playbackId)
+            ->where('user_id', $user->id)
+            ->update([
+                'last_ping' => now(),
+                'current_song_id' => $songId,
+                'updated_at' => now(),
+            ]);
+
+        if ($updated === 0) {
+            // Session bulunamadı - muhtemelen timeout oldu veya silinmiş
+            return [
+                'success' => false,
+                'error' => 'session_not_found',
+                'message' => 'Playback session bulunamadı. Başka bir yerden durdurulmuş olabilir.',
+            ];
+        }
+
+        return ['success' => true];
+    }
+
+    /**
+     * Playback session sonlandır (pause/stop)
+     */
+    public function stopPlaybackSession(User $user, string $playbackId): bool
+    {
+        if (!$this->shouldRun()) {
+            return true;
+        }
+
+        $deleted = DB::table($this->table)
+            ->where('playback_id', $playbackId)
+            ->where('user_id', $user->id)
+            ->delete();
+
+        if ($deleted > 0) {
+            \Log::info('🎵 Playback session stopped', [
+                'user_id' => $user->id,
+                'playback_id' => $playbackId,
+            ]);
+        }
+
+        return $deleted > 0;
+    }
+
+    /**
+     * Belirli bir session'ı zorla durdur (admin veya kullanıcı isteği)
+     */
+    public function forceStopSession(User $user, string $playbackId): bool
+    {
+        return $this->stopPlaybackSession($user, $playbackId);
+    }
+
+    /**
+     * Tüm playback session'ları durdur
+     */
+    public function stopAllSessions(User $user): int
+    {
+        if (!$this->shouldRun()) {
+            return 0;
+        }
+
+        return DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->delete();
+    }
+
+    /**
+     * Concurrent stream limit al
+     */
+    public function getConcurrentStreamLimit(User $user): int
+    {
+        // 1. User override (admin tarafından ayarlanabilir)
+        if ($user->concurrent_streams_limit !== null && $user->concurrent_streams_limit > 0) {
+            return $user->concurrent_streams_limit;
+        }
+
+        // 2. Subscription Plan
+        $subscription = $user->subscriptions()
+            ->whereIn('status', ['active', 'trial'])
+            ->where(function($q) {
+                $q->whereNull('current_period_end')
+                  ->orWhere('current_period_end', '>', now());
+            })
+            ->with('plan')
+            ->first();
+
+        if ($subscription && $subscription->plan) {
+            // Önce concurrent_streams_limit, yoksa device_limit'e fallback
+            if ($subscription->plan->concurrent_streams_limit) {
+                return (int) $subscription->plan->concurrent_streams_limit;
+            }
+            if ($subscription->plan->device_limit) {
+                return (int) $subscription->plan->device_limit;
+            }
+        }
+
+        // 3. Tenant setting fallback
+        if (function_exists('setting') && setting('concurrent_streams_limit')) {
+            return (int) setting('concurrent_streams_limit');
+        }
+
+        // 4. Default
+        return 1;
+    }
+
+    /**
+     * Aktif playback sayısı
+     */
+    public function getActivePlaybackCount(User $user): int
+    {
+        if (!$this->shouldRun()) {
+            return 0;
+        }
+
+        return DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->where('last_ping', '>', now()->subSeconds($this->pingTimeout))
+            ->count();
+    }
+
+    /**
+     * Kullanıcının aktif playback session'larını getir
+     */
+    public function getActiveSessions(User $user): array
+    {
+        if (!$this->shouldRun()) {
+            return [];
+        }
+
+        return DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->where('last_ping', '>', now()->subSeconds($this->pingTimeout))
+            ->orderBy('last_ping', 'desc')
+            ->get()
+            ->map(function($session) {
+                return [
+                    'playback_id' => $session->playback_id,
+                    'device_name' => $session->device_name,
+                    'device_type' => $session->device_type,
+                    'current_song_id' => $session->current_song_id,
+                    'last_ping' => $session->last_ping,
+                    'started_at' => $session->created_at,
+                    'ip_address' => $session->ip_address,
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
+     * Expired session'ları temizle (30 saniye ping almayan)
+     */
+    public function cleanupExpiredSessions(): int
+    {
+        return DB::table($this->table)
+            ->where('last_ping', '<', now()->subSeconds($this->pingTimeout))
+            ->delete();
+    }
+
+    /**
+     * Device type belirle
+     */
+    protected function getDeviceType(Agent $agent): string
+    {
+        if ($agent->isMobile()) return 'mobile';
+        if ($agent->isTablet()) return 'tablet';
+        return 'desktop';
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAZ 3: API Controller -->
+        <section id="faz3" class="glass rounded-2xl p-6 md:p-8 mb-8 border border-yellow-500/30">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center text-yellow-400 font-bold">3</span>
+                API Controller - PlaybackController
+                <span class="ml-auto text-sm text-slate-400">~10 dakika</span>
+            </h2>
+
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    <span class="font-mono">Modules/Muzibu/app/Http/Controllers/Api/PlaybackController.php</span>
+                    <span class="ml-auto bg-green-500 text-xs px-2 py-0.5 rounded">YENİ</span>
+                </div>
+                <div class="code-block" style="max-height: 500px;">
+                    <pre><code class="text-green-300">&lt;?php
+
+namespace Modules\Muzibu\App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Modules\Muzibu\App\Services\PlaybackSessionService;
+
+class PlaybackController extends Controller
+{
+    public function __construct(
+        private PlaybackSessionService $playbackService
+    ) {}
+
+    /**
+     * POST /api/playback/start
+     * Play butonuna basıldığında çağrılır
+     */
+    public function start(Request $request): JsonResponse
+    {
+        $request->validate([
+            'playback_id' => 'required|uuid',
+            'song_id' => 'nullable|integer',
+        ]);
+
+        $user = auth('web')->user() ?? auth('sanctum')->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'error' => 'unauthenticated',
+            ], 401);
+        }
+
+        $result = $this->playbackService->registerPlaybackSession(
+            $user,
+            $request->playback_id,
+            $request->song_id
+        );
+
+        if (!$result['success']) {
+            return response()->json($result, 403);
+        }
+
+        return response()->json($result);
+    }
+
+    /**
+     * POST /api/playback/ping
+     * Her 10 saniyede bir heartbeat
+     */
+    public function ping(Request $request): JsonResponse
+    {
+        $request->validate([
+            'playback_id' => 'required|uuid',
+            'song_id' => 'nullable|integer',
+        ]);
+
+        $user = auth('web')->user() ?? auth('sanctum')->user();
+
+        if (!$user) {
+            return response()->json(['success' => false], 401);
+        }
+
+        $result = $this->playbackService->pingPlaybackSession(
+            $user,
+            $request->playback_id,
+            $request->song_id
+        );
+
+        return response()->json($result);
+    }
+
+    /**
+     * POST /api/playback/stop
+     * Pause/Stop butonuna basıldığında
+     */
+    public function stop(Request $request): JsonResponse
+    {
+        $request->validate([
+            'playback_id' => 'required|uuid',
+        ]);
+
+        $user = auth('web')->user() ?? auth('sanctum')->user();
+
+        if (!$user) {
+            return response()->json(['success' => false], 401);
+        }
+
+        $this->playbackService->stopPlaybackSession($user, $request->playback_id);
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * GET /api/playback/active
+     * Aktif playback session'ları listele
+     */
+    public function active(): JsonResponse
+    {
+        $user = auth('web')->user() ?? auth('sanctum')->user();
+
+        if (!$user) {
+            return response()->json(['success' => false], 401);
+        }
+
+        $sessions = $this->playbackService->getActiveSessions($user);
+        $limit = $this->playbackService->getConcurrentStreamLimit($user);
+
+        return response()->json([
+            'success' => true,
+            'active_count' => count($sessions),
+            'limit' => $limit,
+            'sessions' => $sessions,
+        ]);
+    }
+
+    /**
+     * DELETE /api/playback/{playbackId}
+     * Belirli bir session'ı zorla durdur
+     */
+    public function forceStop(Request $request, string $playbackId): JsonResponse
+    {
+        $user = auth('web')->user() ?? auth('sanctum')->user();
+
+        if (!$user) {
+            return response()->json(['success' => false], 401);
+        }
+
+        $this->playbackService->forceStopSession($user, $playbackId);
+
+        return response()->json(['success' => true]);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Routes -->
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    <span class="font-mono">Modules/Muzibu/routes/api.php</span>
+                    <span class="ml-auto bg-yellow-500 text-xs px-2 py-0.5 rounded">GÜNCELLE</span>
+                </div>
+                <div class="code-block">
+                    <pre><code class="text-yellow-300">// Playback Session Routes (Concurrent Limit)
+Route::prefix('playback')->middleware('auth:sanctum')->group(function () {
+    Route::post('/start', [PlaybackController::class, 'start']);
+    Route::post('/ping', [PlaybackController::class, 'ping']);
+    Route::post('/stop', [PlaybackController::class, 'stop']);
+    Route::get('/active', [PlaybackController::class, 'active']);
+    Route::delete('/{playbackId}', [PlaybackController::class, 'forceStop']);
+});</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAZ 4: Frontend JS -->
+        <section id="faz4" class="glass rounded-2xl p-6 md:p-8 mb-8 border border-green-500/30">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 font-bold">4</span>
+                Frontend JavaScript - PlaybackSession Module
+                <span class="ml-auto text-sm text-slate-400">~15 dakika</span>
+            </h2>
+
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fab fa-js"></i>
+                    <span class="font-mono">public/themes/muzibu/js/player/features/playback-session.js</span>
+                    <span class="ml-auto bg-green-500 text-xs px-2 py-0.5 rounded">YENİ</span>
+                </div>
+                <div class="code-block" style="max-height: 600px;">
+                    <pre><code class="text-green-300">/**
+ * Muzibu Playback Session Manager
+ * Concurrent playback limit için heartbeat sistemi
+ *
+ * Spotify Modeli: Sınırsız giriş, sınırlı playback
+ */
+
+const MuzibuPlaybackSession = {
+    // State
+    playbackId: null,
+    heartbeatInterval: null,
+    isRegistered: false,
+
+    // Config
+    HEARTBEAT_INTERVAL: 10000, // 10 saniye
+    API_BASE: '/api/playback',
+
+    /**
+     * Playback ID oluştur veya mevcut olanı al
+     * sessionStorage kullanılır (tab-specific)
+     */
+    getOrCreatePlaybackId() {
+        if (this.playbackId) {
+            return this.playbackId;
+        }
+
+        let id = sessionStorage.getItem('mzb_playback_id');
+        if (!id) {
+            id = crypto.randomUUID();
+            sessionStorage.setItem('mzb_playback_id', id);
+        }
+
+        this.playbackId = id;
+        return id;
+    },
+
+    /**
+     * Playback session başlat
+     * Play butonundan ÖNCE çağrılmalı
+     *
+     * @returns {Promise<{success: boolean, error?: string}>}
+     */
+    async startSession(songId = null) {
+        const playbackId = this.getOrCreatePlaybackId();
+
+        try {
+            const response = await fetch(`${this.API_BASE}/start`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Referer': window.location.origin + '/',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    playback_id: playbackId,
+                    song_id: songId,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                console.warn('🎵 Playback limit exceeded:', data);
+                return {
+                    success: false,
+                    error: data.error || 'unknown',
+                    message: data.message,
+                    activeSessions: data.active_sessions || [],
+                    limit: data.limit,
+                };
+            }
+
+            // Başarılı - heartbeat başlat
+            this.isRegistered = true;
+            this.startHeartbeat(songId);
+
+            console.log('🎵 Playback session started:', playbackId);
+
+            return { success: true, playbackId };
+
+        } catch (error) {
+            console.error('🎵 Playback session start error:', error);
+            // Network hatası - yine de çalmaya izin ver (graceful degradation)
+            return { success: true, playbackId, offline: true };
+        }
+    },
+
+    /**
+     * Playback session durdur
+     * Pause/Stop butonunda çağrılmalı
+     */
+    async stopSession() {
+        if (!this.playbackId || !this.isRegistered) {
+            return;
+        }
+
+        // Heartbeat'i hemen durdur
+        this.stopHeartbeat();
+
+        try {
+            await fetch(`${this.API_BASE}/stop`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    playback_id: this.playbackId,
+                }),
+            });
+
+            console.log('🎵 Playback session stopped');
+        } catch (error) {
+            console.error('🎵 Playback session stop error:', error);
+        }
+
+        this.isRegistered = false;
+    },
+
+    /**
+     * Heartbeat başlat (10 saniyede bir ping)
+     */
+    startHeartbeat(currentSongId = null) {
+        this.stopHeartbeat(); // Önceki varsa temizle
+
+        this.heartbeatInterval = setInterval(async () => {
+            if (!this.isRegistered) {
+                this.stopHeartbeat();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${this.API_BASE}/ping`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({
+                        playback_id: this.playbackId,
+                        song_id: this.currentSongId || currentSongId,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    // Session artık geçerli değil
+                    console.warn('🎵 Playback session expired:', data);
+                    this.handleSessionExpired(data);
+                }
+
+            } catch (error) {
+                console.error('🎵 Heartbeat error:', error);
+                // Network hatası - devam et, belki geçicidir
+            }
+
+        }, this.HEARTBEAT_INTERVAL);
+
+        console.log('🎵 Heartbeat started (10s interval)');
+    },
+
+    /**
+     * Heartbeat durdur
+     */
+    stopHeartbeat() {
+        if (this.heartbeatInterval) {
+            clearInterval(this.heartbeatInterval);
+            this.heartbeatInterval = null;
+            console.log('🎵 Heartbeat stopped');
+        }
+    },
+
+    /**
+     * Session expired olduğunda
+     */
+    handleSessionExpired(data) {
+        this.isRegistered = false;
+        this.stopHeartbeat();
+
+        // Player'ı durdur
+        if (window.dispatchEvent) {
+            window.dispatchEvent(new CustomEvent('playback:session-expired', {
+                detail: data,
+            }));
+        }
+    },
+
+    /**
+     * Şu anki şarkı ID'sini güncelle
+     */
+    updateCurrentSong(songId) {
+        this.currentSongId = songId;
+    },
+
+    /**
+     * Session durumunu kontrol et
+     */
+    isActive() {
+        return this.isRegistered && this.heartbeatInterval !== null;
+    },
+
+    /**
+     * Aktif session'ları getir
+     */
+    async getActiveSessions() {
+        try {
+            const response = await fetch(`${this.API_BASE}/active`, {
+                credentials: 'same-origin',
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('🎵 Get active sessions error:', error);
+            return { sessions: [], limit: 1 };
+        }
+    },
+};
+
+// Global erişim için
+window.MuzibuPlaybackSession = MuzibuPlaybackSession;
+
+// Page unload'da session'ı durdur
+window.addEventListener('beforeunload', () => {
+    if (MuzibuPlaybackSession.isActive()) {
+        // Sync XHR ile durdur (beforeunload'da async çalışmaz)
+        navigator.sendBeacon(
+            '/api/playback/stop',
+            JSON.stringify({ playback_id: MuzibuPlaybackSession.playbackId })
+        );
+    }
+});</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAZ 5: Player Entegrasyon -->
+        <section id="faz5" class="glass rounded-2xl p-6 md:p-8 mb-8 border border-orange-500/30">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400 font-bold">5</span>
+                Player-Core.js Entegrasyonu
+                <span class="ml-auto text-sm text-slate-400">~15 dakika</span>
+            </h2>
+
+            <div class="bg-orange-900/20 border border-orange-800/50 rounded-xl p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-exclamation-triangle text-orange-400 mt-1"></i>
+                    <div class="text-sm text-slate-300">
+                        <strong>Kritik:</strong> player-core.js'te play fonksiyonlarına hook eklenecek.
+                        Her play() çağrısından ÖNCE session başlatılacak, her pause()'dan SONRA session durdurulacak.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fab fa-js"></i>
+                    <span class="font-mono">public/themes/muzibu/js/player/core/player-core.js</span>
+                    <span class="ml-auto bg-yellow-500 text-xs px-2 py-0.5 rounded">GÜNCELLE</span>
+                </div>
+                <div class="code-block">
+                    <pre><code class="text-yellow-300">// ============================================
+// DEĞİŞİKLİK 1: loadAndPlaySong fonksiyonuna hook ekle
+// ============================================
+
+async loadAndPlaySong(url, streamType = null, previewDuration = null, autoplay = true) {
+    // 🎵 PLAYBACK SESSION: Çalmadan önce session başlat
+    if (autoplay && this.isLoggedIn) {
+        const sessionResult = await MuzibuPlaybackSession.startSession(this.currentSong?.id);
+
+        if (!sessionResult.success) {
+            // Limit aşıldı - modal göster, çalma
+            this.showPlaybackLimitModal(sessionResult);
+            return;
+        }
+    }
+
+    // ... mevcut kod devam eder ...
+}
+
+// ============================================
+// DEĞİŞİKLİK 2: togglePlayPause fonksiyonuna hook ekle
+// ============================================
+
+async togglePlayPause() {
+    if (this.isPlaying) {
+        // PAUSE - Session'ı durdur
+        await MuzibuPlaybackSession.stopSession();
+
+        // ... mevcut pause kodu ...
+    } else {
+        // PLAY - Session başlat
+        if (this.isLoggedIn) {
+            const sessionResult = await MuzibuPlaybackSession.startSession(this.currentSong?.id);
+
+            if (!sessionResult.success) {
+                this.showPlaybackLimitModal(sessionResult);
+                return;
+            }
+        }
+
+        // ... mevcut play kodu ...
+    }
+}
+
+// ============================================
+// DEĞİŞİKLİK 3: stopCurrentPlayback fonksiyonuna hook ekle
+// ============================================
+
+stopCurrentPlayback() {
+    // 🎵 PLAYBACK SESSION: Durdurulduğunda session'ı kapat
+    MuzibuPlaybackSession.stopSession();
+
+    // ... mevcut kod devam eder ...
+}
+
+// ============================================
+// DEĞİŞİKLİK 4: Yeni fonksiyon - Limit Modal
+// ============================================
+
+showPlaybackLimitModal(result) {
+    const sessions = result.activeSessions || [];
+    const limit = result.limit || 1;
+
+    // Modal HTML oluştur
+    const modalHtml = `
+        &lt;div id="playback-limit-modal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm"&gt;
+            &lt;div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-md mx-4 shadow-2xl"&gt;
+                &lt;div class="text-center"&gt;
+                    &lt;div class="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-500/20 flex items-center justify-center"&gt;
+                        &lt;svg class="w-8 h-8 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;
+                            &lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/&gt;
+                        &lt;/svg&gt;
+                    &lt;/div&gt;
+                    &lt;h3 class="text-xl font-bold text-white mb-2"&gt;Eşzamanlı Çalma Limiti&lt;/h3&gt;
+                    &lt;p class="text-slate-300 mb-4"&gt;
+                        Bu abonelik zaten &lt;strong&gt;${sessions.length}&lt;/strong&gt; yerde çalıyor.
+                        &lt;br&gt;Limit: &lt;strong&gt;${limit}&lt;/strong&gt; eşzamanlı stream.
+                    &lt;/p&gt;
+
+                    ${sessions.length > 0 ? `
+                    &lt;div class="text-left mb-4"&gt;
+                        &lt;div class="text-sm text-slate-400 mb-2"&gt;Aktif Cihazlar:&lt;/div&gt;
+                        ${sessions.map(s => `
+                            &lt;div class="flex items-center justify-between bg-slate-800 rounded-lg p-3 mb-2"&gt;
+                                &lt;div&gt;
+                                    &lt;div class="text-white text-sm"&gt;${s.device_name}&lt;/div&gt;
+                                    &lt;div class="text-slate-500 text-xs"&gt;${s.ip_address}&lt;/div&gt;
+                                &lt;/div&gt;
+                                &lt;button onclick="window.forceStopPlayback('${s.playback_id}')"
+                                        class="px-3 py-1 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30"&gt;
+                                    Durdur
+                                &lt;/button&gt;
+                            &lt;/div&gt;
+                        `).join('')}
+                    &lt;/div&gt;
+                    ` : ''}
+
+                    &lt;button onclick="document.getElementById('playback-limit-modal').remove()"
+                            class="w-full px-6 py-3 bg-slate-700 text-white font-semibold rounded-xl hover:bg-slate-600"&gt;
+                        Tamam
+                    &lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    `;
+
+    // Eski modal varsa kaldır
+    const existing = document.getElementById('playback-limit-modal');
+    if (existing) existing.remove();
+
+    // Modal'ı ekle
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+},
+
+// ============================================
+// DEĞİŞİKLİK 5: Global force stop fonksiyonu
+// ============================================
+
+// player-core.js init() içine ekle:
+window.forceStopPlayback = async (playbackId) => {
+    try {
+        await fetch(`/api/playback/${playbackId}`, {
+            method: 'DELETE',
+            credentials: 'same-origin',
+        });
+
+        // Modal'ı kapat ve tekrar dene
+        document.getElementById('playback-limit-modal')?.remove();
+        this.showToast('Diğer cihaz durduruldu. Tekrar deneyin.', 'success');
+
+    } catch (error) {
+        console.error('Force stop error:', error);
+    }
+};
+
+// ============================================
+// DEĞİŞİKLİK 6: Session expired event listener
+// ============================================
+
+// player-core.js init() içine ekle:
+window.addEventListener('playback:session-expired', (e) => {
+    this.stopCurrentPlayback();
+    this.isPlaying = false;
+    this.showToast('Oturum başka bir yerden başlatıldı. Bu cihaz durduruldu.', 'warning');
+});</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAZ 6: Eski Sistem Kaldır -->
+        <section id="faz6" class="glass rounded-2xl p-6 md:p-8 mb-8 border border-red-500/30">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400 font-bold">6</span>
+                Eski Sistem Kaldır (Device Limit)
+                <span class="ml-auto text-sm text-slate-400">~15 dakika</span>
+            </h2>
+
+            <div class="bg-yellow-900/20 border border-yellow-800/50 rounded-xl p-4 mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-info-circle text-yellow-400 mt-1"></i>
+                    <div class="text-sm text-slate-300">
+                        <strong>Önemli:</strong> Eski kodu silmiyoruz, devre dışı bırakıyoruz.
+                        1 hafta sorunsuz çalışırsa tamamen kaldırılabilir.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Değişiklik 1: AuthController -->
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    <span class="font-mono">app/Http/Controllers/Api/Auth/AuthController.php</span>
+                    <span class="ml-auto bg-red-500 text-xs px-2 py-0.5 rounded">GÜNCELLE</span>
+                </div>
+                <div class="code-block">
+                    <pre><code class="text-red-300">// login() fonksiyonunda bu satırı KALDIR veya YORUMA AL:
+
+// ❌ KALDIR:
+// $deviceService->registerSession($user);
+// $deviceService->handlePostLoginDeviceLimit($user);
+
+// ✅ YENİ: Hiçbir device limit işlemi yok
+// Playback limit player tarafında kontrol edilecek</code></pre>
+                </div>
+            </div>
+
+            <!-- Değişiklik 2: session.js -->
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fab fa-js"></i>
+                    <span class="font-mono">public/themes/muzibu/js/player/features/session.js</span>
+                    <span class="ml-auto bg-red-500 text-xs px-2 py-0.5 rounded">GÜNCELLE</span>
+                </div>
+                <div class="code-block">
+                    <pre><code class="text-red-300">// Session polling'i DEVRE DIŞI bırak
+
+const MuzibuSession = {
+    // ...
+
+    startSessionPolling() {
+        // ❌ ESKİ: Session polling başlatıyordu
+        // ✅ YENİ: Artık çalışmıyor - Playback session kullanılıyor
+        console.log('🔐 Session polling DEVRE DIŞI - Playback session kullanılıyor');
+        return;
+
+        // Eski kod yoruma alındı...
+    },
+
+    // Diğer fonksiyonlar da benzer şekilde return; ile bypass edilebilir
+};</code></pre>
+                </div>
+            </div>
+
+            <!-- Değişiklik 3: Settings -->
+            <div class="mb-6">
+                <div class="bg-slate-800/50 rounded-xl p-4">
+                    <h4 class="text-slate-300 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-cog"></i> Admin Settings Değişikliği
+                    </h4>
+                    <div class="text-sm text-slate-400">
+                        Admin Panel → Settings → Auth bölümünde:
+                        <ul class="list-disc list-inside mt-2 space-y-1">
+                            <li><code class="text-red-400">auth_device</code> = <span class="text-red-400">false</span> (devre dışı)</li>
+                            <li><code class="text-green-400">concurrent_streams_enabled</code> = <span class="text-green-400">true</span> (yeni setting)</li>
+                            <li><code class="text-green-400">concurrent_streams_limit</code> = <span class="text-cyan-400">1</span> (default limit)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kaldırılacaklar Listesi -->
+            <div class="bg-red-900/20 border border-red-800/50 rounded-xl p-4">
+                <h4 class="text-red-400 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-trash-alt"></i> 1 Hafta Sonra Silinecekler
+                </h4>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <div class="text-slate-400 mb-2">Dosyalar:</div>
+                        <ul class="space-y-1 text-slate-300">
+                            <li class="line-through opacity-70">Modules/Muzibu/app/Services/DeviceService.php</li>
+                            <li class="line-through opacity-70">Modules/Muzibu/app/Http/Controllers/Api/DeviceController.php</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 mb-2">Database:</div>
+                        <ul class="space-y-1 text-slate-300">
+                            <li class="line-through opacity-70">user_active_sessions tablosu (DROP)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAZ 7: Admin Panel -->
+        <section id="faz7" class="glass rounded-2xl p-6 md:p-8 mb-8 border border-pink-500/30">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center text-pink-400 font-bold">7</span>
+                Admin Panel Değişiklikleri
+                <span class="ml-auto text-sm text-slate-400">~10 dakika</span>
+            </h2>
+
+            <!-- SubscriptionPlan Model -->
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    <span class="font-mono">Modules/Subscription/app/Models/SubscriptionPlan.php</span>
+                    <span class="ml-auto bg-yellow-500 text-xs px-2 py-0.5 rounded">GÜNCELLE</span>
+                </div>
+                <div class="code-block">
+                    <pre><code class="text-yellow-300">protected $fillable = [
+    // ... mevcut alanlar ...
+    'device_limit',
+    'concurrent_streams_limit', // ✅ YENİ EKLE
+    // ...
+];</code></pre>
+                </div>
+            </div>
+
+            <!-- Admin Blade -->
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    <span class="font-mono">Modules/Subscription/resources/views/admin/livewire/subscription-plan-manage-component.blade.php</span>
+                    <span class="ml-auto bg-yellow-500 text-xs px-2 py-0.5 rounded">GÜNCELLE</span>
+                </div>
+                <div class="code-block">
+                    <pre><code class="text-yellow-300">&lt;!-- device_limit field'ının yanına ekle --&gt;
+
+&lt;!-- Eşzamanlı Stream Limiti --&gt;
+&lt;div class="col-md-6"&gt;
+    &lt;label class="form-label"&gt;
+        Eşzamanlı Stream Limiti
+        &lt;i class="fas fa-info-circle text-muted"
+           data-bs-toggle="tooltip"
+           title="Aynı anda kaç yerde müzik çalınabilir"&gt;&lt;/i&gt;
+    &lt;/label&gt;
+    &lt;input type="number"
+           class="form-control"
+           wire:model="concurrent_streams_limit"
+           min="1"
+           max="10"
+           placeholder="1"&gt;
+    &lt;small class="text-muted"&gt;
+        Spotify modeli: Sınırsız giriş, sınırlı playback
+    &lt;/small&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- Livewire Component -->
+            <div class="mb-6">
+                <div class="file-path text-white text-sm px-4 py-2 rounded-t-lg flex items-center gap-2">
+                    <i class="fas fa-file-code"></i>
+                    <span class="font-mono">Modules/Subscription/app/Http/Livewire/Admin/SubscriptionPlanManageComponent.php</span>
+                    <span class="ml-auto bg-yellow-500 text-xs px-2 py-0.5 rounded">GÜNCELLE</span>
+                </div>
+                <div class="code-block">
+                    <pre><code class="text-yellow-300">// Properties
+public $concurrent_streams_limit = 1;
+
+// Rules
+protected $rules = [
+    // ... mevcut kurallar ...
+    'concurrent_streams_limit' => 'nullable|integer|min:1|max:10',
+];
+
+// mount() içinde
+$this->concurrent_streams_limit = $plan->concurrent_streams_limit ?? 1;
+
+// save() içinde
+$plan->concurrent_streams_limit = $this->concurrent_streams_limit ?? 1;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAZ 8: Test Senaryoları -->
+        <section id="faz8" class="glass rounded-2xl p-6 md:p-8 mb-8 border border-indigo-500/30">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <span class="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold">8</span>
+                Test Senaryoları
+                <span class="ml-auto text-sm text-slate-400">~20 dakika</span>
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Test 1 -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h4 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-green-500/20 flex items-center justify-center text-xs">1</span>
+                        Normal Çalma
+                    </h4>
+                    <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
+                        <li>Giriş yap</li>
+                        <li>Herhangi bir şarkı çal</li>
+                        <li>Console'da <code class="text-cyan-400">"Playback session started"</code> gör</li>
+                        <li>10 saniye bekle, <code class="text-cyan-400">"Heartbeat"</code> mesajları gör</li>
+                        <li>Pause yap, <code class="text-cyan-400">"Playback session stopped"</code> gör</li>
+                    </ol>
+                    <div class="mt-3 text-green-400 text-sm">✓ Beklenen: Tüm loglar görünmeli</div>
+                </div>
+
+                <!-- Test 2 -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h4 class="text-yellow-400 font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-yellow-500/20 flex items-center justify-center text-xs">2</span>
+                        Limit Testi (2 Tab)
+                    </h4>
+                    <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
+                        <li>Tab 1: Şarkı çal (çalıyor olmalı)</li>
+                        <li>Tab 2: Yeni sekmede aç</li>
+                        <li>Tab 2: Başka şarkı çalmayı dene</li>
+                        <li>Limit hatası modal'ı gör</li>
+                        <li>Tab 1'deki cihazı "Durdur" butonuyla durdur</li>
+                        <li>Tab 2'de tekrar dene (çalmalı)</li>
+                    </ol>
+                    <div class="mt-3 text-yellow-400 text-sm">✓ Beklenen: 2. tab'da limit hatası</div>
+                </div>
+
+                <!-- Test 3 -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h4 class="text-orange-400 font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-orange-500/20 flex items-center justify-center text-xs">3</span>
+                        Timeout Testi
+                    </h4>
+                    <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
+                        <li>Tab 1: Şarkı çal</li>
+                        <li>Network'ü kes (DevTools → Offline)</li>
+                        <li>30+ saniye bekle</li>
+                        <li>Network'ü aç</li>
+                        <li>Tab 2: Şarkı çalmayı dene</li>
+                    </ol>
+                    <div class="mt-3 text-orange-400 text-sm">✓ Beklenen: Tab 2 çalabilmeli (Tab 1 timeout oldu)</div>
+                </div>
+
+                <!-- Test 4 -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <h4 class="text-pink-400 font-semibold mb-3 flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-pink-500/20 flex items-center justify-center text-xs">4</span>
+                        Sınırsız Gözatma Testi
+                    </h4>
+                    <ol class="space-y-2 text-sm text-slate-300 list-decimal list-inside">
+                        <li>Giriş yap</li>
+                        <li>5 farklı sekmede siteyi aç</li>
+                        <li>Her sekmede farklı sayfaya git</li>
+                        <li>Playlist'lere bak, favorilere ekle</li>
+                        <li>Hiçbir yerde limit hatası alınmamalı</li>
+                    </ol>
+                    <div class="mt-3 text-pink-400 text-sm">✓ Beklenen: Sınırsız gözatma (sadece play'de limit)</div>
+                </div>
+            </div>
+
+            <!-- Komutlar -->
+            <div class="bg-slate-800/50 rounded-xl p-4 mt-6">
+                <h4 class="text-slate-300 font-semibold mb-3 flex items-center gap-2">
+                    <i class="fas fa-terminal"></i> Debug Komutları
+                </h4>
+                <pre><code class="text-cyan-300"># Aktif session'ları gör
+php artisan tinker
+>>> DB::table('active_playback_sessions')->get()
+
+# Tüm session'ları temizle (test için)
+>>> DB::table('active_playback_sessions')->truncate()
+
+# Belirli kullanıcının session'ları
+>>> DB::table('active_playback_sessions')->where('user_id', 1)->get()</code></pre>
+            </div>
+        </section>
+
+        <!-- Özet Checklist -->
+        <section class="glass rounded-2xl p-6 md:p-8 mb-8 border border-green-500/30">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <i class="fas fa-clipboard-check text-green-400"></i>
+                </div>
+                Uygulama Checklist
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-cyan-400 font-semibold mb-3">Yeni Dosyalar</h4>
+                    <div class="space-y-2 text-sm">
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            Migration: active_playback_sessions
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            Migration: concurrent_streams_limit
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            PlaybackSessionService.php
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            PlaybackController.php
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            playback-session.js
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-yellow-400 font-semibold mb-3">Güncellenecek Dosyalar</h4>
+                    <div class="space-y-2 text-sm">
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            api.php (routes)
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            player-core.js (hooks)
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            SubscriptionPlan model (fillable)
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            Admin blade (form field)
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            Livewire component (property)
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-red-400 font-semibold mb-3">Devre Dışı Bırakılacak</h4>
+                    <div class="space-y-2 text-sm">
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            AuthController: registerSession() çağrısı
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            session.js: startSessionPolling()
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            Settings: auth_device = false
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-green-400 font-semibold mb-3">Test</h4>
+                    <div class="space-y-2 text-sm">
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            Normal çalma testi
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            2 tab limit testi
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            Timeout testi
+                        </label>
+                        <label class="flex items-center gap-2 text-slate-300">
+                            <input type="checkbox" class="rounded">
+                            Sınırsız gözatma testi
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="glass rounded-2xl p-6 border border-slate-700 text-center">
+            <div class="flex flex-wrap items-center justify-center gap-4 text-slate-400">
+                <i class="fas fa-robot"></i>
+                <span>Claude AI tarafından hazırlandı</span>
+                <span class="mx-2">|</span>
+                <span>Tenant 1001 - Muzibu</span>
+                <span class="mx-2">|</span>
+                <span>17 Aralık 2025</span>
+            </div>
+            <div class="mt-4 flex justify-center gap-4">
+                <a href="/readme/2025/12/17/concurrent-playback-analysis/"
+                   class="px-4 py-2 bg-slate-700/50 text-slate-300 rounded-lg hover:bg-slate-600/50 transition text-sm">
+                    <i class="fas fa-arrow-left"></i> Analiz Raporu
+                </a>
+                <a href="/readme/2025/12/17/player-limit-only/"
+                   class="px-4 py-2 bg-slate-700/50 text-slate-300 rounded-lg hover:bg-slate-600/50 transition text-sm">
+                    Seçenek B Özeti
+                </a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

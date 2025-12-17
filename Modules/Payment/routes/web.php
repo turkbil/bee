@@ -16,6 +16,11 @@ use Modules\Payment\App\Http\Controllers\BankTransferPageController;
 // NOT: Bu route'lar için VerifyCsrfToken middleware'de exception eklenmeli!
 Route::prefix('payment/callback')->name('payment.callback.')->group(function () {
     Route::post('paytr', [PayTRCallbackController::class, 'handle'])->name('paytr');
+
+    // GET isteğini sessizce reddet (güvenlik - stack trace gösterme)
+    Route::get('paytr', function () {
+        return response('Not Found', 404);
+    });
 });
 
 // Payment Page & Bank Transfer Routes - 'web' middleware tenant context için ZORUNLU!

@@ -39,6 +39,8 @@
     deleteTargetType: null,
     deleteTargetTitle: '',
     editBillingProfileMode: false,
+    isEditing: false,
+    processing: false,
 
     // Type Switch Warning
     showTypeSwitchWarning: false,
@@ -1514,19 +1516,46 @@
                     {{-- Ödeme Butonu --}}
                     <div class="p-5">
                         <button
-                            x-data="{ processing: false }"
                             @click="
-                                if (!agreeAll || processing) return;
+                                console.log('🔵 [CHECKOUT] Button clicked');
+                                console.log('🔵 [CHECKOUT] agreeAll:', agreeAll);
+                                console.log('🔵 [CHECKOUT] processing:', processing);
+                                console.log('🔵 [CHECKOUT] selectedGateway:', selectedGateway);
+
+                                if (!agreeAll) {
+                                    console.warn('⚠️ [CHECKOUT] agreeAll is false, button disabled');
+                                    return;
+                                }
+                                if (processing) {
+                                    console.warn('⚠️ [CHECKOUT] Already processing, skipping');
+                                    return;
+                                }
+
+                                console.log('✅ [CHECKOUT] Validation passed, starting payment...');
                                 processing = true;
+
+                                console.log('🔵 [CHECKOUT] Calling syncToLivewire()...');
                                 syncToLivewire();
+                                console.log('✅ [CHECKOUT] syncToLivewire() completed');
+
+                                console.log('🔵 [CHECKOUT] Calling $wire.proceedToPayment()...');
                                 $wire.proceedToPayment().then(response => {
+                                    console.log('✅ [CHECKOUT] proceedToPayment response:', response);
+
+                                    if (response && response.error) {
+                                        console.error('❌ [CHECKOUT] BACKEND ERROR:', response.error);
+                                        console.error('❌ [CHECKOUT] Full response:', JSON.stringify(response, null, 2));
+                                    }
+
                                     if (response && response.redirectUrl) {
+                                        console.log('✅ [CHECKOUT] Redirecting to:', response.redirectUrl);
                                         window.location.href = response.redirectUrl;
                                     } else {
+                                        console.error('❌ [CHECKOUT] No redirectUrl in response');
                                         processing = false;
                                     }
                                 }).catch(error => {
-                                    console.error('Payment error:', error);
+                                    console.error('❌ [CHECKOUT] Payment error:', error);
                                     processing = false;
                                 });
                             "
@@ -1776,6 +1805,12 @@
             const emptyMsg = document.getElementById('empty-cart-message');
             if (emptyMsg && $wire.items && $wire.items.length > 0) emptyMsg.style.display = 'none';
         });
+    }
+
+    // 🚫 Disable Muzibu SPA Router for checkout page
+    if (window.MuzibuSpaRouter) {
+        window.MuzibuSpaRouter.enabled = false;
+        console.log('✅ Checkout: SPA Router disabled');
     }
 </script>
 @endscript

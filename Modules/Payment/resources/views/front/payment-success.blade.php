@@ -28,112 +28,145 @@
 @section('title', $siteTitle . ' - Sipariş Tamamlandı')
 
 @section('content')
-<div class="bg-gray-100 dark:bg-gray-900 min-h-[60vh] px-4 py-12">
-    <div class="max-w-2xl mx-auto">
-        {{-- Success Card --}}
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 text-center mb-6">
-            {{-- Success Icon --}}
-            <div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fa-solid fa-check text-3xl text-emerald-600 dark:text-emerald-400"></i>
+<div class="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4">
+    <div class="max-w-3xl mx-auto">
+
+        {{-- Success Header --}}
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full mb-6 shadow-xl">
+                <i class="fa-solid fa-check text-4xl text-white"></i>
             </div>
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-3">Ödeme Başarılı!</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400">Siparişiniz başarıyla alındı. Teşekkür ederiz!</p>
+        </div>
 
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Siparişiniz Alındı!</h1>
-            <p class="text-gray-600 dark:text-gray-400 mb-6">Ödemeniz başarıyla tamamlandı. Teşekkür ederiz!</p>
+        {{-- Order Info Card --}}
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden mb-6">
 
-            {{-- Sipariş Bilgileri --}}
-            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 mb-6 text-left">
-                @if($order)
-                    <div class="flex items-center justify-between mb-3 pb-3 border-b border-gray-200 dark:border-gray-600">
-                        <span class="text-sm text-gray-500 dark:text-gray-400">Sipariş No</span>
-                        <span class="font-mono font-bold text-gray-900 dark:text-white">{{ $order->order_number }}</span>
-                    </div>
-                @endif
-
-                <div class="flex items-center justify-between mb-3 pb-3 border-b border-gray-200 dark:border-gray-600">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Tarih</span>
-                    <span class="text-gray-900 dark:text-white">{{ $payment->created_at->format('d.m.Y H:i') }}</span>
-                </div>
-
+            {{-- Order Header --}}
+            <div class="bg-gradient-to-r from-emerald-500 to-green-600 px-6 py-4 text-white">
                 <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Toplam</span>
-                    <span class="text-xl font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($payment->amount, 2, ',', '.') }} ₺</span>
-                </div>
-            </div>
-
-            {{-- Teslimat Adresi --}}
-            @if($addrLine || $addrCity)
-            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-6 text-left">
-                <div class="flex items-start gap-3">
-                    <i class="fa-solid fa-location-dot text-blue-500 dark:text-blue-400 mt-1"></i>
                     <div>
-                        <p class="font-semibold text-gray-900 dark:text-white mb-1">Teslimat Adresi</p>
-                        @if($addrLine)
-                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ $addrLine }}</p>
-                        @endif
-                        @if($addrCity)
-                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ $addrCity }}</p>
-                        @endif
-                        @if($order->customer_name)
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">{{ $order->customer_name }}</p>
-                        @endif
+                        <p class="text-sm opacity-90 mb-1">Sipariş Numarası</p>
+                        <p class="text-2xl font-bold font-mono">{{ $order->order_number ?? 'N/A' }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm opacity-90 mb-1">Tarih</p>
+                        <p class="font-semibold">{{ $payment->created_at->format('d.m.Y H:i') }}</p>
                     </div>
                 </div>
             </div>
-            @endif
 
-            {{-- Ürünler --}}
+            {{-- Order Items --}}
             @if($order && $order->items->count() > 0)
-            <div class="border border-gray-200 dark:border-gray-600 rounded-xl mb-6 overflow-hidden">
-                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
-                    <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Sipariş İçeriği</p>
-                </div>
-                <div class="divide-y divide-gray-100 dark:divide-gray-700">
+            <div class="p-6">
+                <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">Sipariş İçeriği</h3>
+
+                <div class="space-y-4">
                     @foreach($order->items as $item)
-                        <div class="flex items-center justify-between px-4 py-3">
-                            <div>
-                                <p class="font-medium text-gray-900 dark:text-white">{{ $item->product_name }}</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Adet: {{ $item->quantity }}</p>
+                        @php
+                            $isSubscription = $item->orderable_type === 'Modules\Subscription\App\Models\SubscriptionPlan';
+                            $metadata = is_array($item->metadata) ? $item->metadata : json_decode($item->metadata, true);
+                            $cycleLabel = $metadata['cycle_label']['tr'] ?? $metadata['cycle_label']['en'] ?? null;
+                            $durationDays = $metadata['duration_days'] ?? null;
+                        @endphp
+
+                        <div class="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                            {{-- Icon --}}
+                            @if($isSubscription)
+                                <div class="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i class="fa-solid fa-crown text-2xl text-white"></i>
+                                </div>
+                            @else
+                                <div class="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                                    <i class="fa-solid fa-box text-2xl text-white"></i>
+                                </div>
+                            @endif
+
+                            {{-- Content --}}
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ $item->product_name }}</h4>
+                                <div class="flex flex-wrap gap-3 text-sm">
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white dark:bg-gray-600 rounded-full text-gray-700 dark:text-gray-200">
+                                        <i class="fa-solid fa-hashtag text-xs"></i>
+                                        {{ $item->quantity }} Adet
+                                    </span>
+                                    @if($isSubscription && $cycleLabel)
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-700 dark:text-blue-300">
+                                            <i class="fa-solid fa-calendar-days"></i>
+                                            {{ $cycleLabel }}
+                                        </span>
+                                    @endif
+                                    @if($isSubscription && $durationDays)
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 dark:bg-green-900/30 rounded-full text-green-700 dark:text-green-300">
+                                            <i class="fa-solid fa-clock"></i>
+                                            {{ $durationDays }} gün
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
-                            <p class="font-semibold text-gray-900 dark:text-white">{{ number_format($item->total, 2, ',', '.') }} ₺</p>
+
+                            {{-- Price --}}
+                            <div class="flex-shrink-0 text-right">
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($item->total, 2, ',', '.') }}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">TRY</p>
+                            </div>
                         </div>
                     @endforeach
                 </div>
             </div>
             @endif
 
-            {{-- Butonlar --}}
-            <div class="space-y-3">
-                <a href="{{ $homeUrl }}"
-                   class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl transition-colors">
-                    <i class="fa-solid fa-home mr-2"></i> Siteye Dön
-                </a>
-
-                @if($contactWhatsapp)
-                    @php
-                        $waNumber = preg_replace('/[^0-9]/', '', $contactWhatsapp);
-                        if (str_starts_with($waNumber, '0')) {
-                            $waNumber = '90' . substr($waNumber, 1);
-                        } elseif (!str_starts_with($waNumber, '90')) {
-                            $waNumber = '90' . $waNumber;
-                        }
-                    @endphp
-                    <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Merhaba, ' . ($order->order_number ?? 'sipariş') . ' numaralı siparişim hakkında bilgi almak istiyorum.') }}"
-                       target="_blank"
-                       class="block w-full bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium py-3 rounded-xl transition-colors">
-                        <i class="fa-brands fa-whatsapp text-green-600 dark:text-green-400 mr-2"></i>
-                        WhatsApp ile İletişim
-                    </a>
-                @endif
+            {{-- Total --}}
+            <div class="bg-gray-50 dark:bg-gray-900/50 px-6 py-5 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <span class="text-lg font-semibold text-gray-700 dark:text-gray-300">Toplam Tutar</span>
+                    <span class="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($payment->amount, 2, ',', '.') }} ₺</span>
+                </div>
             </div>
         </div>
 
-        {{-- Bilgi Notu --}}
-        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-center">
-            <p class="text-sm text-blue-800 dark:text-blue-300">
-                <i class="fa-solid fa-envelope mr-2"></i>
-                Sipariş detayları e-posta adresinize gönderilmiştir.
-            </p>
+        {{-- Delivery Address (if exists) --}}
+        @if($addrLine || $addrCity)
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6 mb-6">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-location-dot text-xl text-blue-600 dark:text-blue-400"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Teslimat Adresi</h3>
+                    @if($order->customer_name)
+                        <p class="font-semibold text-gray-700 dark:text-gray-300">{{ $order->customer_name }}</p>
+                    @endif
+                    @if($addrLine)
+                        <p class="text-gray-600 dark:text-gray-400">{{ $addrLine }}</p>
+                    @endif
+                    @if($addrCity)
+                        <p class="text-gray-600 dark:text-gray-400">{{ $addrCity }}</p>
+                    @endif
+                </div>
+            </div>
         </div>
+        @endif
+
+        {{-- Action Buttons --}}
+        @if($contactWhatsapp)
+            @php
+                $waNumber = preg_replace('/[^0-9]/', '', $contactWhatsapp);
+                if (str_starts_with($waNumber, '0')) {
+                    $waNumber = '90' . substr($waNumber, 1);
+                } elseif (!str_starts_with($waNumber, '90')) {
+                    $waNumber = '90' . $waNumber;
+                }
+            @endphp
+            <a href="https://wa.me/{{ $waNumber }}?text={{ urlencode('Merhaba, ' . ($order->order_number ?? 'sipariş') . ' numaralı siparişim hakkında bilgi almak istiyorum.') }}"
+               target="_blank"
+               class="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl">
+                <i class="fa-brands fa-whatsapp text-xl"></i>
+                <span>WhatsApp Desteği</span>
+            </a>
+        @endif
+
     </div>
 </div>
 

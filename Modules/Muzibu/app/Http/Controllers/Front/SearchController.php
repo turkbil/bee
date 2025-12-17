@@ -27,6 +27,25 @@ class SearchController extends Controller
                 return response()->json(['error' => 'Tenant context required'], 400);
             }
 
+            // 🌍 Get active languages dynamically (tenant-aware)
+            try {
+                $activeLangs = \DB::connection('tenant')
+                    ->table('tenant_languages')
+                    ->where('is_active', 1)
+                    ->pluck('code')
+                    ->toArray();
+            } catch (\Exception $e) {
+                $activeLangs = [];
+            }
+
+            // Fallback: Use default tenant locale if no active languages found
+            if (empty($activeLangs)) {
+                $activeLangs = [get_tenant_default_locale() ?? 'tr'];
+            }
+
+            // Current user's locale (frontend will use this)
+            $currentLocale = app()->getLocale();
+
             $results = [];
             $totalResults = 0;
 
@@ -37,17 +56,44 @@ class SearchController extends Controller
                     ->take(20)
                     ->get();
 
-                $results['songs'] = $scoutResults->map(function ($song) {
-                    return [
+                $results['songs'] = $scoutResults->map(function ($song) use ($activeLangs, $currentLocale) {
+                    $songData = [
                         'song_id' => $song->song_id,
-                        'title' => $song->title,
-                        'slug' => $song->slug,
                         'duration' => $song->duration,
                         'file_path' => $song->file_path,
                         'hls_path' => $song->hls_path,
-                        'album' => ['title' => $song->album?->title],
-                        'artist' => ['title' => $song->album?->artist?->title],
                     ];
+
+                    // Add title for each active language
+                    foreach ($activeLangs as $lang) {
+                        $songData["title_{$lang}"] = $song->getTranslated('title', $lang);
+                        $songData["slug_{$lang}"] = $song->getTranslated('slug', $lang);
+                    }
+
+                    // Add current locale's title as default (for backward compatibility)
+                    $songData['title'] = $song->getTranslated('title', $currentLocale);
+                    $songData['slug'] = $song->getTranslated('slug', $currentLocale);
+
+                    // Album & Artist translations
+                    if ($song->album) {
+                        $albumData = [];
+                        foreach ($activeLangs as $lang) {
+                            $albumData["title_{$lang}"] = $song->album->getTranslated('title', $lang);
+                        }
+                        $albumData['title'] = $song->album->getTranslated('title', $currentLocale);
+                        $songData['album'] = $albumData;
+
+                        if ($song->album->artist) {
+                            $artistData = [];
+                            foreach ($activeLangs as $lang) {
+                                $artistData["title_{$lang}"] = $song->album->artist->getTranslated('title', $lang);
+                            }
+                            $artistData['title'] = $song->album->artist->getTranslated('title', $currentLocale);
+                            $songData['artist'] = $artistData;
+                        }
+                    }
+
+                    return $songData;
                 });
 
                 $totalResults += $scoutResults->count();
@@ -60,13 +106,26 @@ class SearchController extends Controller
                     ->take(10)
                     ->get();
 
-                $results['albums'] = $scoutResults->map(function ($album) {
-                    return [
-                        'album_id' => $album->album_id,
-                        'title' => $album->title,
-                        'slug' => $album->slug,
-                        'artist' => ['title' => $album->artist?->title],
-                    ];
+                $results['albums'] = $scoutResults->map(function ($album) use ($activeLangs, $currentLocale) {
+                    $albumData = ['album_id' => $album->album_id];
+
+                    foreach ($activeLangs as $lang) {
+                        $albumData["title_{$lang}"] = $album->getTranslated('title', $lang);
+                        $albumData["slug_{$lang}"] = $album->getTranslated('slug', $lang);
+                    }
+                    $albumData['title'] = $album->getTranslated('title', $currentLocale);
+                    $albumData['slug'] = $album->getTranslated('slug', $currentLocale);
+
+                    if ($album->artist) {
+                        $artistData = [];
+                        foreach ($activeLangs as $lang) {
+                            $artistData["title_{$lang}"] = $album->artist->getTranslated('title', $lang);
+                        }
+                        $artistData['title'] = $album->artist->getTranslated('title', $currentLocale);
+                        $albumData['artist'] = $artistData;
+                    }
+
+                    return $albumData;
                 });
 
                 $totalResults += $scoutResults->count();
@@ -79,13 +138,20 @@ class SearchController extends Controller
                     ->take(10)
                     ->get();
 
-                $results['playlists'] = $scoutResults->map(function ($playlist) {
-                    return [
+                $results['playlists'] = $scoutResults->map(function ($playlist) use ($activeLangs, $currentLocale) {
+                    $playlistData = [
                         'playlist_id' => $playlist->playlist_id,
-                        'title' => $playlist->title,
-                        'slug' => $playlist->slug,
                         'is_system' => $playlist->is_system,
                     ];
+
+                    foreach ($activeLangs as $lang) {
+                        $playlistData["title_{$lang}"] = $playlist->getTranslated('title', $lang);
+                        $playlistData["slug_{$lang}"] = $playlist->getTranslated('slug', $lang);
+                    }
+                    $playlistData['title'] = $playlist->getTranslated('title', $currentLocale);
+                    $playlistData['slug'] = $playlist->getTranslated('slug', $currentLocale);
+
+                    return $playlistData;
                 });
 
                 $totalResults += $scoutResults->count();
@@ -98,12 +164,17 @@ class SearchController extends Controller
                     ->take(10)
                     ->get();
 
-                $results['artists'] = $scoutResults->map(function ($artist) {
-                    return [
-                        'artist_id' => $artist->artist_id,
-                        'title' => $artist->title,
-                        'slug' => $artist->slug,
-                    ];
+                $results['artists'] = $scoutResults->map(function ($artist) use ($activeLangs, $currentLocale) {
+                    $artistData = ['artist_id' => $artist->artist_id];
+
+                    foreach ($activeLangs as $lang) {
+                        $artistData["title_{$lang}"] = $artist->getTranslated('title', $lang);
+                        $artistData["slug_{$lang}"] = $artist->getTranslated('slug', $lang);
+                    }
+                    $artistData['title'] = $artist->getTranslated('title', $currentLocale);
+                    $artistData['slug'] = $artist->getTranslated('slug', $currentLocale);
+
+                    return $artistData;
                 });
 
                 $totalResults += $scoutResults->count();
@@ -116,12 +187,17 @@ class SearchController extends Controller
                     ->take(10)
                     ->get();
 
-                $results['genres'] = $scoutResults->map(function ($genre) {
-                    return [
-                        'genre_id' => $genre->genre_id,
-                        'title' => $genre->title,
-                        'slug' => $genre->slug,
-                    ];
+                $results['genres'] = $scoutResults->map(function ($genre) use ($activeLangs, $currentLocale) {
+                    $genreData = ['genre_id' => $genre->genre_id];
+
+                    foreach ($activeLangs as $lang) {
+                        $genreData["title_{$lang}"] = $genre->getTranslated('title', $lang);
+                        $genreData["slug_{$lang}"] = $genre->getTranslated('slug', $lang);
+                    }
+                    $genreData['title'] = $genre->getTranslated('title', $currentLocale);
+                    $genreData['slug'] = $genre->getTranslated('slug', $currentLocale);
+
+                    return $genreData;
                 });
 
                 $totalResults += $scoutResults->count();
@@ -134,12 +210,17 @@ class SearchController extends Controller
                     ->take(10)
                     ->get();
 
-                $results['sectors'] = $scoutResults->map(function ($sector) {
-                    return [
-                        'sector_id' => $sector->sector_id,
-                        'title' => $sector->title,
-                        'slug' => $sector->slug,
-                    ];
+                $results['sectors'] = $scoutResults->map(function ($sector) use ($activeLangs, $currentLocale) {
+                    $sectorData = ['sector_id' => $sector->sector_id];
+
+                    foreach ($activeLangs as $lang) {
+                        $sectorData["title_{$lang}"] = $sector->getTranslated('title', $lang);
+                        $sectorData["slug_{$lang}"] = $sector->getTranslated('slug', $lang);
+                    }
+                    $sectorData['title'] = $sector->getTranslated('title', $currentLocale);
+                    $sectorData['slug'] = $sector->getTranslated('slug', $currentLocale);
+
+                    return $sectorData;
                 });
 
                 $totalResults += $scoutResults->count();
@@ -152,12 +233,17 @@ class SearchController extends Controller
                     ->take(10)
                     ->get();
 
-                $results['radios'] = $scoutResults->map(function ($radio) {
-                    return [
-                        'radio_id' => $radio->radio_id,
-                        'title' => $radio->title,
-                        'slug' => $radio->slug,
-                    ];
+                $results['radios'] = $scoutResults->map(function ($radio) use ($activeLangs, $currentLocale) {
+                    $radioData = ['radio_id' => $radio->radio_id];
+
+                    foreach ($activeLangs as $lang) {
+                        $radioData["title_{$lang}"] = $radio->getTranslated('title', $lang);
+                        $radioData["slug_{$lang}"] = $radio->getTranslated('slug', $lang);
+                    }
+                    $radioData['title'] = $radio->getTranslated('title', $currentLocale);
+                    $radioData['slug'] = $radio->getTranslated('slug', $currentLocale);
+
+                    return $radioData;
                 });
 
                 $totalResults += $scoutResults->count();

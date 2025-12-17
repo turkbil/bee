@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Muzibu\app\Http\Controllers\Api\PlaylistController;
 use Modules\Muzibu\app\Http\Controllers\Api\AlbumController;
+use Modules\Muzibu\app\Http\Controllers\Api\ArtistController;
 use Modules\Muzibu\app\Http\Controllers\Api\SongController;
 use Modules\Muzibu\app\Http\Controllers\Api\GenreController;
 use Modules\Muzibu\app\Http\Controllers\Api\SectorController;
@@ -60,6 +61,14 @@ Route::prefix('muzibu')->group(function () {
         Route::get('/{id}', [AlbumController::class, 'show'])->name('api.muzibu.albums.show');
     });
 
+    // Artists - General API throttle
+    Route::prefix('artists')->middleware('throttle.user:api')->group(function () {
+        Route::get('/', [ArtistController::class, 'index'])->name('api.muzibu.artists.index');
+        Route::get('/{id}', [ArtistController::class, 'show'])->name('api.muzibu.artists.show');
+        Route::get('/{id}/albums', [ArtistController::class, 'albums'])->name('api.muzibu.artists.albums');
+        Route::get('/{id}/songs', [ArtistController::class, 'songs'])->name('api.muzibu.artists.songs');
+    });
+
     // Songs - Stream endpoints with strict throttle
     Route::prefix('songs')->group(function () {
         Route::get('/recent', [SongController::class, 'recent'])->name('api.muzibu.songs.recent')->middleware(['auth:sanctum', 'throttle.user:api']);
@@ -83,9 +92,9 @@ Route::prefix('muzibu')->group(function () {
             ->middleware(['signed.url', 'throttle.user:stream']); // 🔐 Signed URL + rate limiting
 
         // 🔑 HLS Encryption Key Endpoint (for playlist.m3u8 #EXT-X-KEY URI)
-        Route::get('/{id}/key', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'serveKey'])
+        Route::match(['get', 'options'], '/{id}/key', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'serveKey'])
             ->name('api.muzibu.songs.key')
-            ->middleware(['web', 'throttle.user:stream']); // Public access, rate limited
+            ->middleware('throttle.user:stream'); // Public access, rate limited, no session needed
 
         Route::get('/{id}/conversion-status', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'checkConversionStatus'])
             ->name('api.muzibu.songs.conversion-status')

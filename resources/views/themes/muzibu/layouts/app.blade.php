@@ -243,6 +243,13 @@
     {{-- 🧪 DEBUG PANEL - Queue & Playback Debugger --}}
     @include('themes.muzibu.components.debug-panel')
 
+    {{-- 🍪 COOKIE CONSENT - Design 2 (Compact Modern) --}}
+    @include('themes.muzibu.components.cookie-consent')
+
+    {{-- ⚡ CRITICAL: Livewire MUST load BEFORE Muzibu scripts (Alpine.js dependency) --}}
+    @livewireScripts
+
+    @once
     {{-- 🎯 MODULAR JAVASCRIPT ARCHITECTURE --}}
 
     {{-- 1. Core Utilities (önce yükle - diğerleri bağımlı) --}}
@@ -276,6 +283,7 @@
 
     {{-- 7. 🚀 SPA Router - MODULAR VERSION USED (loaded in line 211 as player feature) --}}
     {{-- OLD STANDALONE ROUTER REMOVED - Duplicate initialization fixed --}}
+    @endonce
 
     <script>
         // 🔇 Suppress storage access errors (browser privacy/extension related)
@@ -386,41 +394,33 @@
         }
     </script>
 
-    @livewireScripts
-
     {{-- 🎯 Livewire Navigation Hook - Alpine Re-Init --}}
     <script>
-        // Livewire navigation sonrası Alpine'i re-initialize et
+        // Livewire SPA navigation sonrası yeni content'teki Alpine component'leri init et
         document.addEventListener('livewire:navigated', () => {
-            // Re-initializing Alpine (silent)
-
-            // Alpine.js re-init için kısa bir gecikme
+            // Kısa gecikme ile Alpine'in hazır olmasını bekle
             setTimeout(() => {
-                if (window.Alpine) {
-                    try {
-                        // Yöntem 1: SPA content wrapper'daki tüm element'leri init et
-                        const spaContent = document.querySelector('.spa-content-wrapper');
-                        if (spaContent) {
-                            window.Alpine.initTree(spaContent);
-                        }
+                if (!window.Alpine) return;
 
-                        // Yöntem 2: Tüm yeni x-data element'leri manuel init et
-                        document.querySelectorAll('[x-data]').forEach(el => {
-                            if (!el.__x) {
-                                window.Alpine.initTree(el);
+                // Sadece initialize edilmemiş x-data element'lerini bul ve init et
+                document.querySelectorAll('[x-data]').forEach(el => {
+                    // Eğer element Alpine tarafından initialize edilmemişse
+                    if (!el.__x) {
+                        try {
+                            // Manuel initialize (try-catch ile $nextTick hatasını önle)
+                            window.Alpine.initTree(el);
+                        } catch (e) {
+                            // Hata sessizce yut ($nextTick duplicate hatası)
+                            if (!e.message?.includes('redefine')) {
+                                console.warn('Alpine init warning:', e.message);
                             }
-                        });
-
-                        // Yöntem 3: Context menu event'lerini manuel ekle (fallback) - ARTIK GEREKSİZ
-                        // Native event listener yaklaşımı kullanıyoruz (init.js)
-                    } catch (e) {
-                        console.error('❌ Alpine re-init error:', e);
+                        }
                     }
-                }
-            }, 100);
+                });
+            }, 50);
         });
 
-        // İlk yüklemede context menu store'u kontrol et (sessiz)
+        // Context menu store kontrolü
         document.addEventListener('alpine:initialized', () => {
             if (!window.Alpine.store('contextMenu')) {
                 console.error('❌ Context Menu Store not found!');
@@ -428,8 +428,10 @@
         });
     </script>
 
+    @once
     {{-- 🎯 Context Menu Init - SPA Safe --}}
     <script src="{{ versioned_asset('themes/muzibu/js/context-menu/init.js') }}"></script>
+    @endonce
 
     @yield('scripts')
 </body>

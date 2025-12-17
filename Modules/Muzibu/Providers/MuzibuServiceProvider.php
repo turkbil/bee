@@ -28,8 +28,10 @@ class MuzibuServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
-        // Routes loaded directly like Cart module
-        $this->loadRoutesFrom(module_path('Muzibu', 'routes/web.php'));
+        // Web routes - loaded in routes/web.php with domain filter
+        // $this->loadWebRoutes(); // Disabled - handled in main routes/web.php
+
+        // Admin routes - global
         $this->loadRoutesFrom(module_path('Muzibu', 'routes/admin.php'));
 
         // API routes - tenant domain'leri için dinamik yükleme
@@ -123,6 +125,25 @@ class MuzibuServiceProvider extends ServiceProvider
             'themes.muzibu.layouts.app',
             \Modules\Muzibu\App\View\Composers\SidebarComposer::class
         );
+    }
+
+    /**
+     * Load web routes dynamically for all Muzibu tenant domains
+     */
+    protected function loadWebRoutes(): void
+    {
+        // Tenant 1001 domain'lerini al (dinamik)
+        $domains = \Illuminate\Support\Facades\DB::table('domains')
+            ->where('tenant_id', 1001)
+            ->pluck('domain')
+            ->toArray();
+
+        foreach ($domains as $index => $domain) {
+            \Illuminate\Support\Facades\Route::middleware(['web', \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class])
+                ->domain($domain)
+                ->name($index === 0 ? '' : "d{$index}.")
+                ->group(module_path('Muzibu', 'routes/web.php'));
+        }
     }
 
     /**

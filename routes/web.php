@@ -23,7 +23,8 @@ Route::middleware([InitializeTenancy::class, 'tenant', 'locale.site'])
     ->name('muzibu.search');
 
 // 🔀 MUZIBU OLD URL REDIRECTS - Backward compatibility
-Route::redirect('/muzibu/song/{slug}', '/song/{slug}', 301);
+Route::redirect('/muzibu/song/{slug}', '/songs/{slug}', 301);
+Route::redirect('/song/{slug}', '/songs/{slug}', 301);
 Route::redirect('/muzibu/album/{slug}', '/albums/{slug}', 301);
 Route::redirect('/muzibu/artist/{slug}', '/artists/{slug}', 301);
 Route::redirect('/muzibu/playlist/{slug}', '/playlists/{slug}', 301);
@@ -79,34 +80,17 @@ Route::post('/verify-construction-password', [App\Http\Controllers\ConstructionA
     ->name('construction.verify');
 
 // 🎵 MUZIBU ROUTES - Domain-specific routes (Tenant 1001)
-// domains tablosundan dinamik çekiliyor
+// Load module routes with domain filter
 $muzibuDomains = \Illuminate\Support\Facades\DB::table('domains')
     ->where('tenant_id', 1001)
     ->pluck('domain')
     ->toArray();
 
 foreach ($muzibuDomains as $index => $domain) {
-    Route::middleware([InitializeTenancy::class])
+    Route::middleware([\Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class])
         ->domain($domain)
-        ->group(function () use ($domain, $index) {
-            // İlk domain (ana domain) için prefix yok, diğerleri için index ekle
-            $prefix = $index === 0 ? '' : "d{$index}.";
-            Route::get('/', [\Modules\Muzibu\app\Http\Controllers\Front\HomeController::class, 'index'])->name($prefix . 'muzibu.home');
-            Route::get('/favorites', [\Modules\Muzibu\app\Http\Controllers\Front\FavoritesController::class, 'index'])->name($prefix . 'muzibu.favorites');
-            Route::get('/my-playlists', [\Modules\Muzibu\app\Http\Controllers\Front\MyPlaylistsController::class, 'index'])->name($prefix . 'muzibu.my-playlists');
-            Route::get('/playlists', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'index'])->name($prefix . 'muzibu.playlists.index');
-            Route::get('/playlists/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\PlaylistController::class, 'show'])->name($prefix . 'muzibu.playlists.show');
-            Route::get('/albums', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'index'])->name($prefix . 'muzibu.albums.index');
-            Route::get('/albums/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\AlbumController::class, 'show'])->name($prefix . 'muzibu.albums.show');
-            Route::get('/genres', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'index'])->name($prefix . 'muzibu.genres.index');
-            Route::get('/genres/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\GenreController::class, 'show'])->name($prefix . 'muzibu.genres.show');
-            Route::get('/sectors', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'index'])->name($prefix . 'muzibu.sectors.index');
-            Route::get('/sectors/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\SectorController::class, 'show'])->name($prefix . 'muzibu.sectors.show');
-            Route::get('/radios', [\Modules\Muzibu\app\Http\Controllers\Front\RadioController::class, 'index'])->name($prefix . 'muzibu.radios.index');
-
-            // Song detail page
-            Route::get('/song/{slug}', [\Modules\Muzibu\app\Http\Controllers\Front\SongController::class, 'show'])->name($prefix . 'muzibu.songs.show');
-        });
+        ->name($index === 0 ? '' : "d{$index}.")
+        ->group(module_path('Muzibu', 'routes/web.php'));
 }
 
 // 🎵 MUZIBU STREAMING ROUTES - EN ÖNCE TANIMLANMALI (high priority)

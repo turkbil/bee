@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seçenek B: Sadece Player Limit (Device Limit Kaldırılır) | Muzibu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
+        .gradient-text { background: linear-gradient(135deg, #22c55e 0%, #10b981 50%, #06b6d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .spotify-green { color: #1DB954; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .selected-option { border-color: #22c55e !important; box-shadow: 0 0 30px rgba(34, 197, 94, 0.3); }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Navigation -->
+        <nav class="glass rounded-xl p-4 mb-6 border border-slate-700">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-slate-400">Seçenek Karşılaştırması:</span>
+                </div>
+                <div class="flex gap-3">
+                    <a href="/readme/2025/12/17/concurrent-playback-analysis/"
+                       class="px-4 py-2 bg-slate-700/50 text-slate-300 rounded-lg hover:bg-slate-600/50 transition flex items-center gap-2">
+                        <i class="fas fa-layer-group"></i>
+                        Seçenek A: Hibrit Sistem
+                    </a>
+                    <span class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/50 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Seçenek B: Sadece Player Limit
+                        <span class="text-xs bg-green-500 text-white px-2 py-0.5 rounded">ŞU AN</span>
+                    </span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="glass rounded-2xl p-6 md:p-8 mb-8 border border-green-500/30 selected-option">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                            <i class="fas fa-play text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 bg-green-500/20 text-green-400 text-sm rounded-full border border-green-500/30">
+                            SEÇİLEN YAKLAŞIM
+                        </span>
+                    </div>
+                    <h1 class="text-2xl md:text-4xl font-bold gradient-text mb-2">
+                        Seçenek B: Sadece Player Limit
+                    </h1>
+                    <p class="text-slate-400">Device Limit Kaldırılır → Concurrent Playback Tek Başına</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-center px-4 py-2 bg-green-500/20 rounded-xl border border-green-500/30">
+                        <div class="text-2xl font-bold text-green-400">Basit</div>
+                        <div class="text-xs text-slate-400">Tek Sistem</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Neden Bu Seçenek? -->
+        <section class="glass rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                    <i class="fas fa-lightbulb text-emerald-400"></i>
+                </div>
+                Neden Bu Seçenek?
+            </h2>
+
+            <!-- Basit Anlatım -->
+            <div class="bg-green-900/20 border border-green-800 rounded-xl p-6 mb-6">
+                <h3 class="text-lg font-semibold text-green-400 mb-3 flex items-center gap-2">
+                    <i class="fas fa-user"></i> Basit Anlatım (Herkes İçin)
+                </h3>
+                <div class="space-y-3 text-slate-300">
+                    <p><strong>Düşünce:</strong> Eğer "aynı anda kaç yerde müzik çaldığını" kontrol edeceksek, "kaç cihazdan giriş yaptığını" kontrol etmeye gerek yok.</p>
+                    <p><strong>Spotify Modeli:</strong> Spotify'da istediğin kadar cihazdan giriş yapabilirsin. Ama sadece 1 yerde müzik çalabilirsin. Basit ve kullanıcı dostu.</p>
+                    <p><strong>Sonuç:</strong> Device Limit sistemini tamamen kaldırıp, sadece Player Limit kullanmak daha temiz ve anlaşılır bir çözüm.</p>
+                </div>
+            </div>
+
+            <!-- Teknik Özet -->
+            <div class="bg-blue-900/20 border border-blue-800 rounded-xl p-6">
+                <h3 class="text-lg font-semibold text-blue-400 mb-3 flex items-center gap-2">
+                    <i class="fas fa-cog"></i> Teknik Özet (Geliştiriciler İçin)
+                </h3>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <div class="text-slate-400 mb-1">Kaldırılacaklar</div>
+                        <div class="text-red-400 line-through">DeviceService.php</div>
+                        <div class="text-red-400 line-through">user_active_sessions tablosu</div>
+                        <div class="text-red-400 line-through">session.js polling</div>
+                        <div class="text-red-400 line-through">LIFO mekanizması</div>
+                    </div>
+                    <div>
+                        <div class="text-slate-400 mb-1">Eklenecekler</div>
+                        <div class="text-green-400">PlaybackSessionService.php</div>
+                        <div class="text-green-400">active_playback_sessions tablosu</div>
+                        <div class="text-green-400">playback-heartbeat.js</div>
+                        <div class="text-green-400">Heartbeat mekanizması</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Karşılaştırma: İki Seçenek -->
+        <section class="glass rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <i class="fas fa-balance-scale text-purple-400"></i>
+                </div>
+                Seçenek Karşılaştırması
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Seçenek A -->
+                <a href="/readme/2025/12/17/concurrent-playback-analysis/"
+                   class="block bg-slate-800/50 border border-slate-600 rounded-xl p-5 hover:border-slate-500 transition card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                            <i class="fas fa-layer-group text-orange-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-white">Seçenek A: Hibrit Sistem</h3>
+                            <div class="text-xs text-slate-400">Device Limit + Player Limit</div>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Mevcut sistem korunur</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>İki katmanlı güvenlik</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-times text-red-400"></i>
+                            <span>Karmaşık (2 sistem)</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-times text-red-400"></i>
+                            <span>Bakım yükü fazla</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-700 text-center">
+                        <span class="text-orange-400 text-sm flex items-center justify-center gap-2">
+                            Detayları gör <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- Seçenek B -->
+                <div class="bg-green-900/20 border-2 border-green-500/50 rounded-xl p-5 selected-option">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                            <i class="fas fa-play text-green-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-white">Seçenek B: Sadece Player Limit</h3>
+                            <div class="text-xs text-green-400">Device Limit Kaldırılır</div>
+                        </div>
+                        <span class="ml-auto px-2 py-1 bg-green-500 text-white text-xs rounded">ÖNERİLEN</span>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Tek sistem, basit</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Spotify modeli (kanıtlanmış)</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Daha az kod, daha az bakım</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-slate-300">
+                            <i class="fas fa-check text-green-400"></i>
+                            <span>Kullanıcı dostu UX</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-green-800/50 text-center">
+                        <span class="text-green-400 text-sm font-semibold">Şu an görüntüleniyor</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kaldırılacaklar vs Eklenecekler -->
+        <section class="glass rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                    <i class="fas fa-exchange-alt text-cyan-400"></i>
+                </div>
+                Değişiklik Planı
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Kaldırılacaklar -->
+                <div class="bg-red-900/20 border border-red-800/50 rounded-xl p-5">
+                    <h3 class="text-red-400 font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-trash-alt"></i> Kaldırılacaklar (Device Limit)
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-slate-300 font-medium mb-2">Backend Dosyaları</h4>
+                            <div class="space-y-1 text-sm font-mono">
+                                <div class="flex items-center gap-2 text-red-300 line-through opacity-70">
+                                    <i class="fas fa-file-code text-red-400"></i>
+                                    Modules/Muzibu/app/Services/DeviceService.php
+                                </div>
+                                <div class="flex items-center gap-2 text-red-300 line-through opacity-70">
+                                    <i class="fas fa-file-code text-red-400"></i>
+                                    Modules/Muzibu/app/Http/Controllers/Api/DeviceController.php
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-slate-300 font-medium mb-2">Frontend Dosyaları</h4>
+                            <div class="space-y-1 text-sm font-mono">
+                                <div class="flex items-center gap-2 text-red-300 line-through opacity-70">
+                                    <i class="fab fa-js text-red-400"></i>
+                                    themes/muzibu/js/player/features/session.js
+                                </div>
+                                <div class="text-slate-500 text-xs ml-6">→ Session polling kaldırılır</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-slate-300 font-medium mb-2">Database</h4>
+                            <div class="space-y-1 text-sm font-mono">
+                                <div class="flex items-center gap-2 text-red-300 line-through opacity-70">
+                                    <i class="fas fa-database text-red-400"></i>
+                                    user_active_sessions tablosu
+                                </div>
+                                <div class="text-slate-500 text-xs ml-6">→ DROP TABLE veya devre dışı bırak</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-slate-300 font-medium mb-2">Settings</h4>
+                            <div class="space-y-1 text-sm font-mono">
+                                <div class="flex items-center gap-2 text-red-300 line-through opacity-70">
+                                    <i class="fas fa-cog text-red-400"></i>
+                                    auth_device (setting key)
+                                </div>
+                                <div class="flex items-center gap-2 text-red-300 line-through opacity-70">
+                                    <i class="fas fa-cog text-red-400"></i>
+                                    auth_device_limit (setting key)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eklenecekler -->
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5">
+                    <h3 class="text-green-400 font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-plus-circle"></i> Eklenecekler (Player Limit)
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-slate-300 font-medium mb-2">Backend Dosyaları</h4>
+                            <div class="space-y-1 text-sm font-mono">
+                                <div class="flex items-center gap-2 text-green-300">
+                                    <i class="fas fa-file-code text-green-400"></i>
+                                    Modules/Muzibu/app/Services/PlaybackSessionService.php
+                                </div>
+                                <div class="flex items-center gap-2 text-green-300">
+                                    <i class="fas fa-file-code text-green-400"></i>
+                                    Modules/Muzibu/app/Http/Controllers/Api/PlaybackController.php
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-slate-300 font-medium mb-2">Frontend Dosyaları</h4>
+                            <div class="space-y-1 text-sm font-mono">
+                                <div class="flex items-center gap-2 text-green-300">
+                                    <i class="fab fa-js text-green-400"></i>
+                                    themes/muzibu/js/player/features/playback-session.js
+                                </div>
+                                <div class="text-slate-500 text-xs ml-6">→ Heartbeat sistemi (10s ping)</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-slate-300 font-medium mb-2">Database</h4>
+                            <div class="space-y-1 text-sm font-mono">
+                                <div class="flex items-center gap-2 text-green-300">
+                                    <i class="fas fa-database text-green-400"></i>
+                                    active_playback_sessions tablosu
+                                </div>
+                                <div class="flex items-center gap-2 text-green-300">
+                                    <i class="fas fa-plus text-green-400"></i>
+                                    subscription_plans.concurrent_streams_limit
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-slate-300 font-medium mb-2">API Endpoints</h4>
+                            <div class="space-y-1 text-sm font-mono">
+                                <div class="flex items-center gap-2 text-green-300">
+                                    <i class="fas fa-plug text-green-400"></i>
+                                    POST /api/playback/start
+                                </div>
+                                <div class="flex items-center gap-2 text-green-300">
+                                    <i class="fas fa-plug text-green-400"></i>
+                                    POST /api/playback/ping
+                                </div>
+                                <div class="flex items-center gap-2 text-green-300">
+                                    <i class="fas fa-plug text-green-400"></i>
+                                    POST /api/playback/stop
+                                </div>
+                                <div class="flex items-center gap-2 text-green-300">
+                                    <i class="fas fa-plug text-green-400"></i>
+                                    GET /api/playback/active
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Yeni Sistem Akışı -->
+        <section class="glass rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <i class="fas fa-project-diagram text-purple-400"></i>
+                </div>
+                Yeni Sistem Akışı
+            </h2>
+
+            <!-- Login Akışı -->
+            <div class="bg-slate-800/50 rounded-xl p-5 mb-6">
+                <h3 class="text-cyan-400 font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> Login Akışı (Değişen)
+                </h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <div class="text-red-400 text-sm mb-2 line-through">Eski (Device Limit)</div>
+                        <div class="flex flex-wrap items-center gap-2 text-xs opacity-70">
+                            <span class="px-2 py-1 bg-slate-700 rounded">Login</span>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <span class="px-2 py-1 bg-slate-700 rounded">registerSession()</span>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <span class="px-2 py-1 bg-slate-700 rounded">LIFO Check</span>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <span class="px-2 py-1 bg-red-700 rounded">Eski Session Sil</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-green-400 text-sm mb-2">Yeni (Player Limit)</div>
+                        <div class="flex flex-wrap items-center gap-2 text-xs">
+                            <span class="px-2 py-1 bg-green-700 rounded">Login</span>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <span class="px-2 py-1 bg-green-700 rounded">Session Start</span>
+                            <i class="fas fa-arrow-right text-slate-500"></i>
+                            <span class="px-2 py-1 bg-green-700 rounded text-green-200">Hiçbir Limit Yok</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Play Akışı -->
+            <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5 mb-6">
+                <h3 class="text-green-400 font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-play-circle"></i> Play Butonu Akışı (Yeni)
+                </h3>
+                <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+                    <div class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg border border-blue-500/30">
+                        <i class="fas fa-play"></i> Play Tıkla
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <div class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg border border-purple-500/30">
+                        POST /api/playback/start
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <div class="px-4 py-2 bg-yellow-500/20 text-yellow-400 rounded-lg border border-yellow-500/30">
+                        Aktif Stream Sayısı?
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <div class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg border border-green-500/30">
+                        <i class="fas fa-check"></i> OK → Çal
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-3 text-sm mt-4">
+                    <div class="px-4 py-2 bg-yellow-500/20 text-yellow-400 rounded-lg border border-yellow-500/30">
+                        Limit Aşıldı?
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-500"></i>
+                    <div class="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg border border-red-500/30">
+                        <i class="fas fa-times"></i> HATA Modal Göster
+                    </div>
+                </div>
+            </div>
+
+            <!-- Heartbeat Akışı -->
+            <div class="bg-yellow-900/20 border border-yellow-800/50 rounded-xl p-5">
+                <h3 class="text-yellow-400 font-semibold mb-4 flex items-center gap-2">
+                    <i class="fas fa-heartbeat"></i> Heartbeat Akışı (Yeni)
+                </h3>
+                <div class="grid md:grid-cols-4 gap-4 text-center text-sm">
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="text-2xl mb-2"><i class="fas fa-play text-green-400"></i></div>
+                        <div class="text-slate-300">Müzik Başlar</div>
+                        <div class="text-xs text-slate-500 mt-1">playback_id oluştur</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="text-2xl mb-2"><i class="fas fa-sync text-yellow-400"></i></div>
+                        <div class="text-slate-300">Her 10 Saniye</div>
+                        <div class="text-xs text-slate-500 mt-1">POST /api/playback/ping</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="text-2xl mb-2"><i class="fas fa-pause text-orange-400"></i></div>
+                        <div class="text-slate-300">Pause/Stop</div>
+                        <div class="text-xs text-slate-500 mt-1">POST /api/playback/stop</div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-4">
+                        <div class="text-2xl mb-2"><i class="fas fa-clock text-red-400"></i></div>
+                        <div class="text-slate-300">30s Timeout</div>
+                        <div class="text-xs text-slate-500 mt-1">Auto cleanup</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Avantajlar -->
+        <section class="glass rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <i class="fas fa-check-double text-green-400"></i>
+                </div>
+                Seçenek B Avantajları
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5 text-center">
+                    <div class="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-broom text-green-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-2">Daha Temiz Kod</h3>
+                    <p class="text-slate-400 text-sm">
+                        Tek sistem = daha az kod, daha az bug, daha kolay bakım
+                    </p>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5 text-center">
+                    <div class="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-smile text-green-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-2">Daha İyi UX</h3>
+                    <p class="text-slate-400 text-sm">
+                        Sınırsız giriş, sadece playback sınırlı = Spotify modeli
+                    </p>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5 text-center">
+                    <div class="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tachometer-alt text-green-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-2">Daha Az Server Load</h3>
+                    <p class="text-slate-400 text-sm">
+                        Session polling (5dk) kaldırılır, sadece aktif player'lar ping atar
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5">
+                    <h4 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-users"></i> Kullanıcı Deneyimi
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            İstediğin kadar cihazdan giriş yap
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            İstediğin kadar sekmede gözat
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            Telefonda playlist düzenle, PC'de çal
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            Sadece play butonunda limit kontrolü
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5">
+                    <h4 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-code"></i> Geliştirici Deneyimi
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            Tek sistem, tek servis, tek kontrol noktası
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            LIFO karmaşıklığı yok
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            Login token yönetimi yok
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check text-green-400"></i>
+                            Session sync problemleri yok
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Migration Planı -->
+        <section class="glass rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                    <i class="fas fa-tasks text-orange-400"></i>
+                </div>
+                Migration Planı
+            </h2>
+
+            <div class="space-y-4">
+                <!-- Faz 1 -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">1</span>
+                        <h3 class="text-white font-semibold">Yeni Sistemi Kur (45dk)</h3>
+                    </div>
+                    <div class="ml-11 space-y-2 text-sm text-slate-300">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>active_playback_sessions tablosu migration</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>subscription_plans.concurrent_streams_limit kolonu</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>PlaybackSessionService.php oluştur</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>PlaybackController.php oluştur</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>API routes ekle</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 2 -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-400 flex items-center justify-center font-bold">2</span>
+                        <h3 class="text-white font-semibold">Frontend Entegrasyonu (30dk)</h3>
+                    </div>
+                    <div class="ml-11 space-y-2 text-sm text-slate-300">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>playback-session.js oluştur (heartbeat)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>player-core.js → Play/Pause hook ekle</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>Limit aşıldı modal tasarla</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 3 -->
+                <div class="bg-slate-800/50 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center font-bold">3</span>
+                        <h3 class="text-white font-semibold">Test (20dk)</h3>
+                    </div>
+                    <div class="ml-11 space-y-2 text-sm text-slate-300">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>Tek tab'da normal çalma</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>2. tab'da play → Limit hatası</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>Heartbeat timeout (30s)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>Pause sonrası yeni stream</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 4 -->
+                <div class="bg-red-900/20 border border-red-800/50 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="w-8 h-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center font-bold">4</span>
+                        <h3 class="text-white font-semibold">Eski Sistemi Kaldır (15dk)</h3>
+                    </div>
+                    <div class="ml-11 space-y-2 text-sm text-slate-300">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>session.js → Session polling kaldır</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>DeviceService.php → Devre dışı bırak (sil değil)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>AuthController.php → registerSession() çağrısını kaldır</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="rounded">
+                            <span>Settings: auth_device = false yap</span>
+                        </div>
+                    </div>
+                    <div class="ml-11 mt-3 p-3 bg-yellow-900/30 border border-yellow-800/50 rounded-lg text-sm">
+                        <i class="fas fa-info-circle text-yellow-400"></i>
+                        <span class="text-yellow-300">Not: Tabloyu hemen silme, 1 hafta bekle, sorun yoksa DROP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-6 pt-6 border-t border-slate-700">
+                <span class="text-slate-400">Toplam Tahmini Süre:</span>
+                <span class="text-2xl font-bold text-white ml-2">~2 Saat</span>
+                <div class="text-sm text-slate-500 mt-1">(Hibrit sistemden 30dk daha kısa)</div>
+            </div>
+        </section>
+
+        <!-- Risk Değerlendirmesi -->
+        <section class="glass rounded-2xl p-6 md:p-8 mb-8 border border-slate-700">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+                </div>
+                Risk Değerlendirmesi
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-green-900/20 border border-green-800/50 rounded-xl p-5">
+                    <h4 class="text-green-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-shield-alt"></i> Düşük Riskler
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <strong>Geri Dönüş Kolay:</strong> Eski kodu silmiyoruz, devre dışı bırakıyoruz
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <strong>Tenant İzole:</strong> Sadece Muzibu (1001) etkilenir
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-400 mt-1"></i>
+                            <div>
+                                <strong>Kullanıcı Kaybı Yok:</strong> Giriş kısıtlaması kalktığı için UX iyileşir
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-900/20 border border-yellow-800/50 rounded-xl p-5">
+                    <h4 class="text-yellow-400 font-semibold mb-3 flex items-center gap-2">
+                        <i class="fas fa-eye"></i> Dikkat Edilecekler
+                    </h4>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-warning text-yellow-400 mt-1"></i>
+                            <div>
+                                <strong>Heartbeat Testleri:</strong> Offline/reconnect senaryoları
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-warning text-yellow-400 mt-1"></i>
+                            <div>
+                                <strong>Race Condition:</strong> Aynı anda 2 tab play basarsa
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-warning text-yellow-400 mt-1"></i>
+                            <div>
+                                <strong>HLS/Howler:</strong> Stream tipi fark etmeksizin çalışmalı
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonuç -->
+        <section class="glass rounded-2xl p-6 md:p-8 mb-8 border border-green-500/30 selected-option">
+            <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <i class="fas fa-check-double text-green-400"></i>
+                </div>
+                Sonuç
+            </h2>
+
+            <div class="bg-green-900/30 rounded-xl p-6 text-center">
+                <div class="text-3xl font-bold text-white mb-3">
+                    Seçenek B: <span class="text-green-400">Sadece Player Limit</span>
+                </div>
+                <p class="text-slate-300 max-w-2xl mx-auto mb-6">
+                    Device Limit sistemini kaldırıp sadece Concurrent Playback kullanmak, daha temiz, daha basit ve daha kullanıcı dostu bir çözüm. Spotify'ın yıllardır başarıyla kullandığı model.
+                </p>
+                <div class="grid md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                    <div class="bg-green-500/20 rounded-lg p-3">
+                        <div class="text-2xl font-bold text-green-400">~2 saat</div>
+                        <div class="text-sm text-slate-400">Uygulama süresi</div>
+                    </div>
+                    <div class="bg-green-500/20 rounded-lg p-3">
+                        <div class="text-2xl font-bold text-green-400">Düşük</div>
+                        <div class="text-sm text-slate-400">Risk seviyesi</div>
+                    </div>
+                    <div class="bg-green-500/20 rounded-lg p-3">
+                        <div class="text-2xl font-bold text-green-400">Yüksek</div>
+                        <div class="text-sm text-slate-400">UX iyileştirme</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Bottom -->
+        <nav class="glass rounded-xl p-4 mb-6 border border-slate-700">
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="/readme/2025/12/17/concurrent-playback-analysis/"
+                   class="px-6 py-3 bg-slate-700/50 text-slate-300 rounded-lg hover:bg-slate-600/50 transition flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i>
+                    Seçenek A: Hibrit Sistem
+                </a>
+                <span class="text-slate-500">veya</span>
+                <a href="/readme/2025/12/17/player-limit-implementation-plan/"
+                   class="px-6 py-3 bg-green-500/20 text-green-400 rounded-lg border border-green-500/50 hover:bg-green-500/30 transition flex items-center gap-2">
+                    <i class="fas fa-code"></i>
+                    Detaylı Uygulama Planı
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Footer -->
+        <footer class="glass rounded-2xl p-6 border border-slate-700 text-center">
+            <div class="flex items-center justify-center gap-2 text-slate-400">
+                <i class="fas fa-robot"></i>
+                <span>Claude AI tarafından hazırlandı</span>
+                <span class="mx-2">|</span>
+                <span>Tenant 1001 - Muzibu</span>
+                <span class="mx-2">|</span>
+                <span>17 Aralık 2025</span>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

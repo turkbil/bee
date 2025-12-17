@@ -52,6 +52,13 @@ return [
     'button' => 'Toplu Yükle',
 ],
 
+// Bulk HLS Convert
+'bulk_convert' => [
+    'pretitle' => 'Toplu HLS Dönüşümü',
+    'title' => 'HLS Olmayan Şarkıları Dönüştür',
+    'no_songs_selected' => 'Lütfen dönüştürülecek şarkıları seçin',
+],
+
 // Menu
 'menu' => 'Menü',
 'content_menu' => 'İçerik Menüsü',

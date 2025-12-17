@@ -109,13 +109,10 @@ class SongRepository
         // HLS status filter
         if (!empty($filters['filterHls'])) {
             if ($filters['filterHls'] === 'completed') {
-                $query->where('hls_converted', true);
+                $query->whereNotNull('hls_path');
             } elseif ($filters['filterHls'] === 'pending') {
                 $query->whereNotNull('file_path')
-                    ->where(function($q) {
-                        $q->whereNull('hls_converted')
-                          ->orWhere('hls_converted', false);
-                    });
+                    ->whereNull('hls_path');
             }
         }
 

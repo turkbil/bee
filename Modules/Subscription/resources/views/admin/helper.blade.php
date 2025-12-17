@@ -26,6 +26,10 @@
                             <i class="icon-menu fas fa-list-alt"></i>{{ __('subscription::admin.plans') }}
                         </a>
 
+                        <a class="dropdown-item" href="{{ route('admin.subscription.stats') }}">
+                            <i class="icon-menu fas fa-chart-bar"></i>İstatistikler
+                        </a>
+
                         <a class="dropdown-item" href="{{ route('admin.subscription.index') }}">
                             <i class="icon-menu fas fa-users"></i>{{ __('subscription::admin.subscriptions') }}
                         </a>

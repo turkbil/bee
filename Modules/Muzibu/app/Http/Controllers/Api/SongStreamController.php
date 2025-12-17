@@ -385,6 +385,16 @@ class SongStreamController extends Controller
      */
     public function serveKey(int $songId)
     {
+        // ✅ Handle OPTIONS preflight request
+        if (request()->method() === 'OPTIONS') {
+            return response('', 200, [
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Content-Type, Range',
+                'Access-Control-Max-Age' => '86400',
+            ]);
+        }
+
         try {
             // 🚀 Get song from cache
             $song = $this->cacheService->getSong($songId);
@@ -396,7 +406,7 @@ class SongStreamController extends Controller
             // 🔑 Build path to encryption key file
             // Format: storage/tenant{id}/app/public/muzibu/hls/{song_id}/enc.key
             $tenantId = tenant('id');
-            $keyPath = storage_path("app/public/muzibu/hls/{$songId}/enc.key");
+            $keyPath = storage_path("../tenant{$tenantId}/app/public/muzibu/hls/{$songId}/enc.key");
 
             // ⚠️ Check if key file exists
             if (!file_exists($keyPath)) {
@@ -418,14 +428,15 @@ class SongStreamController extends Controller
                 return response()->json(['error' => 'Failed to read encryption key'], 500);
             }
 
-            // ✅ Return binary key with proper headers
-            return response($keyContent, 200)
-                ->header('Content-Type', 'application/octet-stream')
-                ->header('Content-Length', strlen($keyContent))
-                ->header('Cache-Control', 'public, max-age=31536000') // Cache for 1 year (immutable key)
-                ->header('Access-Control-Allow-Origin', '*') // CORS for HLS.js
-                ->header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-                ->header('Access-Control-Allow-Headers', 'Content-Type');
+            // ✅ Return binary key with proper headers (array syntax for reliability)
+            return response($keyContent, 200, [
+                'Content-Type' => 'application/octet-stream',
+                'Content-Length' => strlen($keyContent),
+                'Cache-Control' => 'public, max-age=31536000',
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Content-Type, Range',
+            ]);
 
         } catch (\Exception $e) {
             Log::error('HLS key serving error', [

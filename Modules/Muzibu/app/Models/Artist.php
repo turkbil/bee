@@ -286,10 +286,10 @@ class Artist extends BaseModel implements TranslatableEntity, HasMedia
         $defaultLocale = get_tenant_default_locale();
 
         if ($locale === $defaultLocale) {
-            return url("/muzibu/artist/{$slug}");
+            return url("/artists/{$slug}");
         }
 
-        return url("/{$locale}/muzibu/artist/{$slug}");
+        return url("/{$locale}/artists/{$slug}");
     }
 
     /**

@@ -199,40 +199,81 @@ class Order extends BaseModel
                 // Cycle süresi
                 $durationDays = $cycleMetadata['duration_days'] ?? 30;
 
-                // Subscription oluştur
-                $subscription = \Modules\Subscription\App\Models\Subscription::create([
-                    'user_id' => $this->user_id,
-                    'subscription_plan_id' => $plan->subscription_plan_id,
-                    'subscription_number' => \Modules\Subscription\App\Models\Subscription::generateSubscriptionNumber(),
-                    'status' => 'active',
-                    'cycle_key' => $cycleKey,
-                    'cycle_metadata' => $cycleMetadata,
-                    'price_per_cycle' => $item->unit_price,
-                    'currency' => $this->currency ?? 'TRY',
-                    'has_trial' => false,
-                    'trial_days' => 0,
-                    'started_at' => now(),
-                    'current_period_start' => now(),
-                    'current_period_end' => now()->addDays($durationDays),
-                    'next_billing_date' => now()->addDays($durationDays),
-                    'auto_renew' => true,
-                    'billing_cycles_completed' => 1,
-                    'total_paid' => $item->total_price,
-                    'metadata' => [
-                        'order_id' => $this->order_id,
-                        'order_number' => $this->order_number,
-                        'activated_at' => now()->toDateTimeString(),
-                    ],
-                ]);
+                // Mevcut aktif subscription var mı kontrol et
+                $existingSubscription = \Modules\Subscription\App\Models\Subscription::where('user_id', $this->user_id)
+                    ->where('subscription_plan_id', $plan->subscription_plan_id)
+                    ->whereIn('status', ['active', 'trial'])
+                    ->first();
 
-                \Log::info('✅ Subscription aktifleştirildi', [
-                    'subscription_id' => $subscription->subscription_id,
-                    'user_id' => $this->user_id,
-                    'plan_id' => $plan->subscription_plan_id,
-                    'order_number' => $this->order_number,
-                    'duration_days' => $durationDays,
-                    'ends_at' => $subscription->current_period_end->toDateTimeString(),
-                ]);
+                if ($existingSubscription) {
+                    // EXTEND: Mevcut subscription'ı uzat
+                    $currentEnd = \Carbon\Carbon::parse($existingSubscription->current_period_end);
+                    $now = now();
+
+                    // Eğer subscription süresi dolmuşsa, bugünden başlat; yoksa mevcut bitiş tarihine ekle
+                    $newPeriodEnd = $currentEnd->greaterThan($now)
+                        ? $currentEnd->addDays($durationDays)
+                        : $now->addDays($durationDays);
+
+                    $existingSubscription->update([
+                        'current_period_end' => $newPeriodEnd,
+                        'next_billing_date' => $newPeriodEnd,
+                        'billing_cycles_completed' => $existingSubscription->billing_cycles_completed + 1,
+                        'total_paid' => $existingSubscription->total_paid + $item->total_price,
+                        'status' => 'active', // Trial'dan active'e geçiş için
+                        'metadata' => array_merge($existingSubscription->metadata ?? [], [
+                            'last_extended_order' => $this->order_number,
+                            'last_extended_at' => now()->toDateTimeString(),
+                        ]),
+                    ]);
+
+                    \Log::info('✅ Subscription uzatıldı', [
+                        'subscription_id' => $existingSubscription->subscription_id,
+                        'user_id' => $this->user_id,
+                        'plan_id' => $plan->subscription_plan_id,
+                        'order_number' => $this->order_number,
+                        'added_days' => $durationDays,
+                        'old_end' => $currentEnd->toDateTimeString(),
+                        'new_end' => $newPeriodEnd->toDateTimeString(),
+                        'billing_cycles' => $existingSubscription->billing_cycles_completed,
+                    ]);
+
+                } else {
+                    // CREATE: Yeni subscription oluştur
+                    $subscription = \Modules\Subscription\App\Models\Subscription::create([
+                        'user_id' => $this->user_id,
+                        'subscription_plan_id' => $plan->subscription_plan_id,
+                        'subscription_number' => \Modules\Subscription\App\Models\Subscription::generateSubscriptionNumber(),
+                        'status' => 'active',
+                        'cycle_key' => $cycleKey,
+                        'cycle_metadata' => $cycleMetadata,
+                        'price_per_cycle' => $item->unit_price,
+                        'currency' => $this->currency ?? 'TRY',
+                        'has_trial' => false,
+                        'trial_days' => 0,
+                        'started_at' => now(),
+                        'current_period_start' => now(),
+                        'current_period_end' => now()->addDays($durationDays),
+                        'next_billing_date' => now()->addDays($durationDays),
+                        'auto_renew' => true,
+                        'billing_cycles_completed' => 1,
+                        'total_paid' => $item->total_price,
+                        'metadata' => [
+                            'order_id' => $this->order_id,
+                            'order_number' => $this->order_number,
+                            'activated_at' => now()->toDateTimeString(),
+                        ],
+                    ]);
+
+                    \Log::info('✅ Yeni subscription oluşturuldu', [
+                        'subscription_id' => $subscription->subscription_id,
+                        'user_id' => $this->user_id,
+                        'plan_id' => $plan->subscription_plan_id,
+                        'order_number' => $this->order_number,
+                        'duration_days' => $durationDays,
+                        'ends_at' => $subscription->current_period_end->toDateTimeString(),
+                    ]);
+                }
 
             } catch (\Exception $e) {
                 \Log::error('❌ Subscription aktivasyon hatası', [

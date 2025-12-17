@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Subscription\App\Http\Livewire\Admin\SubscriptionPlanComponent;
 use Modules\Subscription\App\Http\Livewire\Admin\SubscriptionPlanManageComponent;
 use Modules\Subscription\App\Http\Livewire\Admin\SubscriptionComponent;
+use Modules\Subscription\App\Http\Livewire\Admin\SubscriptionStatsComponent;
 use Modules\Subscription\App\Http\Livewire\Admin\SubscriptionManageComponent;
 
 Route::middleware(['admin', 'tenant'])
@@ -19,6 +20,7 @@ Route::middleware(['admin', 'tenant'])
 
                 // Subscriptions
                 Route::get('/', SubscriptionComponent::class)->name('index');
+                Route::get('/stats', SubscriptionStatsComponent::class)->name('stats');
                 Route::get('/manage/{id?}', SubscriptionManageComponent::class)->name('manage');
             });
     });

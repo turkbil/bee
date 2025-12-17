@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "aws/aws-sdk-php": "^3.368",
         "barryvdh/laravel-dompdf": "^3.1",
         "cuneytyuksel/turkey-cities": "^1.1",
         "cviebrock/eloquent-sluggable": "^12.0",

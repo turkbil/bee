@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use Throwable;
 use App\Exceptions\TenantOfflineException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -97,6 +98,25 @@ class Handler extends ExceptionHandler
             if ($e->getStatusCode() === 403) {
                 return response()->view('errors.403', [], 403);
             }
+        });
+
+        // MethodNotAllowedHttpException - Güvenlik için stack trace gösterme
+        $this->renderable(function (MethodNotAllowedHttpException $e, $request) {
+            // API/Callback URL'leri için log (güvenlik takibi)
+            \Log::warning('Method Not Allowed Attempt', [
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            // Callback ve API endpoint'leri için JSON response (güvenli)
+            if ($request->is('payment/callback/*') || $request->is('api/*')) {
+                return response()->json(['error' => 'Not Found'], 404);
+            }
+
+            // Normal sayfa için boş 404 response (stack trace ifşa etme)
+            return response('Not Found', 404);
         });
     }
 }

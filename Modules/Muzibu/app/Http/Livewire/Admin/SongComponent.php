@@ -240,32 +240,41 @@ class SongComponent extends Component
         }
 
         try {
+            // ✅ Tüm seçili şarkıları al (reconversion desteği - mevcut HLS dosyaları üzerine yazılacak)
             $songs = Song::whereIn('song_id', $this->selectedItems)
                 ->whereNotNull('file_path')
-                ->where(function($q) {
-                    $q->whereNull('hls_converted')
-                      ->orWhere('hls_converted', false);
-                })
                 ->get();
 
             if ($songs->isEmpty()) {
                 $this->dispatch('toast', [
                     'title' => __('admin.info'),
-                    'message' => __('muzibu::admin.no_songs_need_conversion'),
+                    'message' => 'Seçili şarkılarda dosya bulunamadı.',
                     'type' => 'info',
                 ]);
                 return;
             }
 
+            // Check how many are already converted (reconversion bilgisi)
+            $alreadyConverted = $songs->where('hls_converted', true)->count();
+            $newConversions = $songs->where('hls_converted', '!=', true)->count();
+
             $count = 0;
             foreach ($songs as $song) {
+                // ✅ HLS Job kuyruğa ekle (reconversion: mevcut dosyalar üzerine yazılır)
                 \Modules\Muzibu\App\Jobs\ConvertToHLSJob::dispatch($song);
                 $count++;
             }
 
+            // Detaylı bilgilendirme mesajı
+            $message = "{$count} şarkı HLS dönüşümü için kuyruğa eklendi.";
+            if ($alreadyConverted > 0) {
+                $message .= " ({$alreadyConverted} şarkı yeniden dönüştürülecek, {$newConversions} yeni dönüşüm)";
+            }
+            $message .= " İşlemler arka planda devam edecek.";
+
             $this->dispatch('toast', [
                 'title' => __('admin.success'),
-                'message' => __('muzibu::admin.hls_conversion_queued', ['count' => $count]),
+                'message' => $message,
                 'type' => 'success',
             ]);
 
@@ -273,9 +282,12 @@ class SongComponent extends Component
             $this->selectedItems = [];
             $this->selectAll = false;
 
-            Log::info('Bulk HLS conversion started', [
+            Log::info('✅ Bulk HLS conversion queued', [
                 'count' => $count,
-                'song_ids' => $songs->pluck('song_id')->toArray()
+                'already_converted' => $alreadyConverted,
+                'new_conversions' => $newConversions,
+                'song_ids' => $songs->pluck('song_id')->toArray(),
+                'reconversion_allowed' => true
             ]);
 
         } catch (\Exception $e) {

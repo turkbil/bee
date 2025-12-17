@@ -15,7 +15,15 @@ class PaymentSuccessController extends Controller
      */
     public function show(Request $request)
     {
+        // 🔒 AUTHENTICATION CHECK: Kullanıcı giriş yapmış olmalı
+        if (!auth()->check()) {
+            Log::warning('⚠️ Payment success: Unauthenticated access attempt');
+            return redirect()->route('login')
+                ->with('error', 'Bu sayfayı görüntülemek için giriş yapmalısınız.');
+        }
+
         Log::info('💳 PaymentSuccessController::show', [
+            'user_id' => auth()->id(),
             'query' => $request->query(),
             'session' => [
                 'last_order_number' => session('last_order_number'),
@@ -41,6 +49,17 @@ class PaymentSuccessController extends Controller
             Log::warning('⚠️ Payment success: Order not found', ['order_number' => $orderNumber]);
             return redirect()->to('/')
                 ->with('error', 'Sipariş bulunamadı.');
+        }
+
+        // 🔒 OWNERSHIP CHECK: Sipariş bu kullanıcıya ait mi?
+        if ($order->user_id !== auth()->id()) {
+            Log::warning('⚠️ Payment success: Order ownership mismatch', [
+                'order_user_id' => $order->user_id,
+                'auth_user_id' => auth()->id(),
+                'order_number' => $orderNumber
+            ]);
+            return redirect()->to('/')
+                ->with('error', 'Bu siparişi görüntüleme yetkiniz yok.');
         }
 
         // Ödeme kaydını al (en son ödeme)

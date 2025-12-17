@@ -238,7 +238,7 @@
                     const slug = this.getSlug(item);
                     if (!slug) return;
                     const routes = {
-                        song: `/song/${slug}`,
+                        song: `/songs/${slug}`,
                         album: `/albums/${slug}`,
                         artist: `/artists/${slug}`,
                         playlist: `/playlists/${slug}`,
@@ -246,7 +246,14 @@
                         sector: `/sectors/${slug}`,
                         radio: `/radios/${slug}`
                     };
-                    window.location.href = routes[item._type] || '#';
+                    // Use SPA navigation
+                    const targetUrl = routes[item._type];
+                    if (targetUrl && window.muzibuApp) {
+                        window.muzibuApp().navigateTo(targetUrl);
+                    } else {
+                        window.location.href = targetUrl || '/';
+                    }
+                    this.closeDropdown();
                 },
                 playSong(song, event) {
                     event.preventDefault();
@@ -520,6 +527,9 @@
     </div>
 
     <div class="flex items-center gap-5">
+        {{-- 🧪 DEBUG: Auth Status --}}
+        <div class="hidden" x-data x-init="console.log('🔐 Auth Debug:', { isLoggedIn, currentUser })"></div>
+
         {{-- Premium Button (non-premium only) - SPA Reactive --}}
         <a
             href="/subscription/plans"

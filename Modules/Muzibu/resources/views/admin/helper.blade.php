@@ -25,8 +25,8 @@
             </button>
             <div class="dropdown-menu dropdown-menu-arrow">
                 @hasmoduleaccess('muzibu', 'view')
-                <a class="dropdown-item" href="{{ route('admin.muzibu.artist.index') }}">
-                    <i class="fas fa-user-music me-2 text-purple"></i>Sanatçılar
+                <a class="dropdown-item" href="{{ route('admin.muzibu.song.index') }}">
+                    <i class="fas fa-music me-2 text-primary"></i>Şarkılar
                 </a>
                 @endhasmoduleaccess
                 @hasmoduleaccess('muzibu', 'view')
@@ -35,13 +35,13 @@
                 </a>
                 @endhasmoduleaccess
                 @hasmoduleaccess('muzibu', 'view')
-                <a class="dropdown-item" href="{{ route('admin.muzibu.song.index') }}">
-                    <i class="fas fa-music me-2 text-primary"></i>Şarkılar
+                <a class="dropdown-item" href="{{ route('admin.muzibu.genre.index') }}">
+                    <i class="fas fa-guitar me-2 text-warning"></i>Türler
                 </a>
                 @endhasmoduleaccess
                 @hasmoduleaccess('muzibu', 'view')
-                <a class="dropdown-item" href="{{ route('admin.muzibu.genre.index') }}">
-                    <i class="fas fa-guitar me-2 text-warning"></i>Türler
+                <a class="dropdown-item" href="{{ route('admin.muzibu.artist.index') }}">
+                    <i class="fas fa-user-music me-2 text-purple"></i>Sanatçılar
                 </a>
                 @endhasmoduleaccess
             </div>
@@ -80,6 +80,14 @@
         </a>
         @endhasmoduleaccess
 
+        {{-- Toplu HLS Dönüştür --}}
+        @hasmoduleaccess('muzibu', 'create')
+        <a href="{{ route('admin.muzibu.song.bulk-convert') }}" class="btn btn-ghost-primary">
+            <i class="fas fa-cog me-1"></i>
+            HLS Dönüştür
+        </a>
+        @endhasmoduleaccess
+
         {{-- Hızlı Ekle --}}
         @hasmoduleaccess('muzibu', 'create')
         <div class="dropdown">
@@ -94,6 +102,9 @@
                 <a class="dropdown-item" href="{{ route('admin.muzibu.album.manage') }}">
                     <i class="fas fa-compact-disc me-2"></i>Yeni Albüm
                 </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.genre.manage') }}">
+                    <i class="fas fa-guitar me-2"></i>Yeni Tür
+                </a>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.artist.manage') }}">
                     <i class="fas fa-user-music me-2"></i>Yeni Sanatçı
                 </a>
@@ -103,6 +114,9 @@
                 </a>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.radio.manage') }}">
                     <i class="fas fa-broadcast-tower me-2"></i>Yeni Radyo
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.sector.manage') }}">
+                    <i class="fas fa-layer-group me-2"></i>Yeni Sektör
                 </a>
             </div>
         </div>
@@ -122,17 +136,21 @@
                     <i class="fas fa-music me-1"></i> İçerik
                 </h6>
                 @hasmoduleaccess('muzibu', 'view')
-                <a class="dropdown-item" href="{{ route('admin.muzibu.artist.index') }}">
-                    <i class="fas fa-user-music me-2 text-purple"></i>Sanatçılar
+                <a class="dropdown-item" href="{{ route('admin.muzibu.song.index') }}">
+                    <i class="fas fa-music me-2 text-primary"></i>Şarkılar
                 </a>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.album.index') }}">
                     <i class="fas fa-compact-disc me-2 text-info"></i>Albümler
                 </a>
-                <a class="dropdown-item" href="{{ route('admin.muzibu.song.index') }}">
-                    <i class="fas fa-music me-2 text-primary"></i>Şarkılar
-                </a>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.genre.index') }}">
                     <i class="fas fa-guitar me-2 text-warning"></i>Türler
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.artist.index') }}">
+                    <i class="fas fa-user-music me-2 text-purple"></i>Sanatçılar
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.song.bulk-convert') }}">
+                    <i class="fas fa-cog me-2 text-orange"></i>Toplu HLS Dönüştür
                 </a>
                 @endhasmoduleaccess
 
@@ -179,8 +197,20 @@
                 <a class="dropdown-item" href="{{ route('admin.muzibu.album.manage') }}">
                     <i class="fas fa-compact-disc me-2"></i>Yeni Albüm
                 </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.genre.manage') }}">
+                    <i class="fas fa-guitar me-2"></i>Yeni Tür
+                </a>
                 <a class="dropdown-item" href="{{ route('admin.muzibu.artist.manage') }}">
                     <i class="fas fa-user-music me-2"></i>Yeni Sanatçı
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.playlist.manage') }}">
+                    <i class="fas fa-list-music me-2"></i>Yeni Playlist
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.radio.manage') }}">
+                    <i class="fas fa-broadcast-tower me-2"></i>Yeni Radyo
+                </a>
+                <a class="dropdown-item" href="{{ route('admin.muzibu.sector.manage') }}">
+                    <i class="fas fa-layer-group me-2"></i>Yeni Sektör
                 </a>
                 @endhasmoduleaccess
             </div>

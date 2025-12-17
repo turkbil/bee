@@ -23,8 +23,12 @@ const _safeStorage = window._safeStorage;
 document.addEventListener('alpine:init', () => {
     // Modern Toast Store - Minimal & Professional
     Alpine.store('toast', {
+        toasts: [], // Active toasts array
+        toastHeight: 68, // Toast height + gap (60px toast + 8px gap)
+
         show(message, type = 'info') {
             const toast = document.createElement('div');
+            const toastId = Date.now() + Math.random(); // Unique ID
 
             // Icon mapping
             const icons = {
@@ -42,9 +46,18 @@ document.addEventListener('alpine:init', () => {
                 info: 'text-blue-400'
             };
 
-            toast.className = 'fixed bottom-24 right-6 z-[9999] transition-all duration-300 ease-out transform translate-x-0';
+            // 🔼 Push existing toasts upward
+            this.toasts.forEach((existingToast, index) => {
+                const newBottom = (index + 1) * this.toastHeight + 96; // 96px = bottom-24 (6rem)
+                existingToast.element.style.bottom = `${newBottom}px`;
+            });
+
+            // Create new toast at bottom
+            toast.className = 'fixed right-6 z-[9999] transition-all duration-300 ease-out';
+            toast.style.bottom = '96px'; // bottom-24 = 6rem = 96px
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(400px)';
+            toast.dataset.toastId = toastId;
 
             toast.innerHTML = `
                 <div class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border border-white/10"
@@ -58,20 +71,46 @@ document.addEventListener('alpine:init', () => {
 
             document.body.appendChild(toast);
 
+            // Add to active toasts array
+            this.toasts.unshift({ id: toastId, element: toast });
+
             // Slide in
             setTimeout(() => {
                 toast.style.opacity = '1';
                 toast.style.transform = 'translateX(0)';
             }, 10);
 
-            // Slide out
+            // Auto-dismiss after 3 seconds
             setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(400px)';
+                this.dismiss(toastId);
             }, 3000);
+        },
 
-            // Remove
-            setTimeout(() => toast.remove(), 3500);
+        dismiss(toastId) {
+            const toastIndex = this.toasts.findIndex(t => t.id === toastId);
+            if (toastIndex === -1) return;
+
+            const toast = this.toasts[toastIndex];
+
+            // Slide out
+            toast.element.style.opacity = '0';
+            toast.element.style.transform = 'translateX(400px)';
+
+            // Remove from array
+            this.toasts.splice(toastIndex, 1);
+
+            // 🔽 Move remaining toasts down to fill the gap
+            this.toasts.forEach((remainingToast, index) => {
+                const newBottom = index * this.toastHeight + 96;
+                remainingToast.element.style.bottom = `${newBottom}px`;
+            });
+
+            // Remove element from DOM
+            setTimeout(() => {
+                if (toast.element.parentNode) {
+                    toast.element.remove();
+                }
+            }, 300);
         }
     });
 

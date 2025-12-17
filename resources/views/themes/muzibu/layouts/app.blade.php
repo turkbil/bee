@@ -259,6 +259,7 @@
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/session.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/spa-router.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/debug.js') }}"></script>
+    <script src="{{ versioned_asset('themes/muzibu/js/player/features/play-helpers.js') }}"></script>
 
     {{-- 4. Player Core (en son - features'ı spread eder) --}}
     <script src="{{ asset('themes/muzibu/js/player/core/player-core.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/core/player-core.js')) }}"></script>

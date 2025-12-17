@@ -115,6 +115,7 @@ function muzibuApp() {
 
         // Player states
         isPlaying: false,
+        isToggling: false, // 🚫 Debounce flag for togglePlayPause
         shuffle: false,
         repeatMode: 'off',
         currentTime: 0,
@@ -251,6 +252,9 @@ function muzibuApp() {
             // 🎯 QUEUE CHECKER: Monitor queue and auto-refill (PHASE 4)
             this.startQueueMonitor();
 
+            // ⏱️ SUBSCRIPTION COUNTDOWN: Premium/Trial bitiş süresini takip et
+            this.startSubscriptionCountdown();
+
             // 💾 FULL STATE RESTORATION: Tarayıcı kapansa bile kaldığı yerden devam et
             this.loadQueueState();
 
@@ -368,6 +372,11 @@ function muzibuApp() {
 
         // 🎯 PRELOAD: Load last played song in PAUSE mode for instant playback
         async preloadLastPlayedSong() {
+            // 🚫 Skip if not premium (prevent 402 spam)
+            if (!this.isLoggedIn || (!this.currentUser?.is_premium && !this.currentUser?.is_trial)) {
+                return;
+            }
+
             try {
                 const response = await fetch('/api/muzibu/songs/last-played');
 
@@ -392,6 +401,12 @@ function muzibuApp() {
                 // Load song stream URL (🔐 401 kontrolü ile)
                 const streamResponse = await this.authenticatedFetch(`/api/muzibu/songs/${song.song_id}/stream`);
                 if (!streamResponse) return; // 401 aldıysa logout olacak
+
+                // 🚫 CRITICAL: Sadece başarılı response'ları kullan (402, 403, 500 hariç)
+                if (!streamResponse.ok) {
+                    return;
+                }
+
                 const streamData = await streamResponse.json();
 
                 // Load audio in PAUSE mode
@@ -418,79 +433,118 @@ function muzibuApp() {
         // 🎯 Favorites functions (toggleFavorite, isFavorite, isLiked) moved to features/favorites.js
 
         async togglePlayPause() {
-
-            // 🚫 FRONTEND PREMIUM CHECK: Play yapmadan önce kontrol et
-            if (!this.isPlaying) {
-                // Guest kullanıcı → Direkt /register
-                if (!this.isLoggedIn) {
-                    this.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
-                    setTimeout(() => {
-                        window.location.href = '/register';
-                    }, 800);
-                    return;
-                }
-
-                // Premium/Trial olmayan üye → Direkt /subscription/plans
-                const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
-                if (!isPremiumOrTrial) {
-                    this.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
-                    setTimeout(() => {
-                        window.location.href = '/subscription/plans';
-                    }, 800);
-                    return;
-                }
-            }
-
-            // Eğer queue boşsa, rastgele şarkılar yükle
-            if (this.queue.length === 0 || !this.currentSong) {
-                await this.playRandomSongs();
+            // 🚫 Debounce: İşlem devam ederken tekrar çağrılmasını engelle
+            if (this.isToggling) {
                 return;
             }
+            this.isToggling = true;
 
-            const targetVolume = this.isMuted ? 0 : this.volume / 100;
+            try {
+                // 🚫 FRONTEND PREMIUM CHECK: Play yapmadan önce kontrol et
+                if (!this.isPlaying) {
+                    // Guest kullanıcı → Direkt /register
+                    if (!this.isLoggedIn) {
+                        this.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
+                        setTimeout(() => {
+                            window.location.href = '/register';
+                        }, 800);
+                        return;
+                    }
 
-            if (this.isPlaying) {
-                // Fade out then pause
-                if (this.howl) {
-                    const currentVolume = this.howl.volume();
-                    this.howl.fade(currentVolume, 0, this.fadeOutDuration);
-                    this.howl.once('fade', () => {
-                        this.howl.pause();
-                        this.isPlaying = false;
-                        window.dispatchEvent(new CustomEvent('player:pause'));
-                    });
-                } else if (this.hls) {
-                    const audio = this.getActiveHlsAudio();
-                    if (audio) {
-                        await this.fadeAudioElement(audio, audio.volume, 0, this.fadeOutDuration);
-                        audio.pause();
-                        this.isPlaying = false;
-                        window.dispatchEvent(new CustomEvent('player:pause'));
+                    // Premium/Trial olmayan üye → Direkt /subscription/plans
+                    const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
+                    if (!isPremiumOrTrial) {
+                        this.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
+                        setTimeout(() => {
+                            window.location.href = '/subscription/plans';
+                        }, 800);
+                        return;
                     }
                 }
-            } else {
-                // Fade in then play
-                if (this.howl) {
-                    this.howl.volume(0);
-                    this.howl.play();
-                    this.howl.fade(0, targetVolume, this.fadeOutDuration);
-                    this.isPlaying = true;
-                } else if (this.hls) {
-                    const audio = this.getActiveHlsAudio();
-                    if (audio) {
-                        audio.volume = 0;
-                        await audio.play();
-                        this.fadeAudioElement(audio, 0, targetVolume, this.fadeOutDuration);
+
+                // Eğer queue boşsa, rastgele şarkılar yükle
+                if (this.queue.length === 0 || !this.currentSong) {
+                    await this.playRandomSongs();
+                    return;
+                }
+
+                const targetVolume = this.isMuted ? 0 : this.volume / 100;
+
+                if (this.isPlaying) {
+                    // Fade out then pause
+                    if (this.howl) {
+                        const currentVolume = this.howl.volume();
+                        this.howl.fade(currentVolume, 0, this.fadeOutDuration);
+                        this.howl.once('fade', () => {
+                            this.howl.pause();
+                            this.isPlaying = false;
+                            window.dispatchEvent(new CustomEvent('player:pause'));
+                        });
+                    } else if (this.hls) {
+                        const audio = this.getActiveHlsAudio();
+                        if (audio) {
+                            await this.fadeAudioElement(audio, audio.volume, 0, this.fadeOutDuration);
+                            audio.pause();
+                            this.isPlaying = false;
+                            window.dispatchEvent(new CustomEvent('player:pause'));
+                        }
+                    }
+                } else {
+                    // Fade in then play
+                    if (this.howl) {
+                        this.howl.volume(0);
+                        this.howl.play();
+                        this.howl.fade(0, targetVolume, this.fadeOutDuration);
                         this.isPlaying = true;
+                    } else if (this.hls) {
+                        const audio = this.getActiveHlsAudio();
+                        if (audio) {
+                            audio.volume = 0;
+                            try {
+                                await audio.play();
+                            } catch (playError) {
+                                // Silently catch play() interruptions (race condition)
+                                if (playError.name !== 'AbortError') {
+                                    console.warn('Play failed:', playError);
+                                }
+                            }
+                            this.fadeAudioElement(audio, 0, targetVolume, this.fadeOutDuration);
+                            this.isPlaying = true;
+                        }
+                    } else if (this.currentSong) {
+                        // 🎵 No audio source loaded yet - load and play current song
+                        await this.playSongFromQueue(this.queueIndex);
                     }
-                } else if (this.currentSong) {
-                    // 🎵 No audio source loaded yet - load and play current song
-                    await this.playSongFromQueue(this.queueIndex);
                 }
+            } catch (error) {
+                console.error('togglePlayPause error:', error);
+            } finally {
+                // ✅ Reset debounce flag after 300ms
+                setTimeout(() => {
+                    this.isToggling = false;
+                }, 300);
             }
         },
 
         async playRandomSongs() {
+            // 🚫 CRITICAL: Premium kontrolü (auto-play engelle)
+            if (!this.isLoggedIn) {
+                this.showToast('Şarkı dinlemek için kayıt olmalısınız', 'warning');
+                setTimeout(() => {
+                    window.location.href = '/register';
+                }, 800);
+                return;
+            }
+
+            const isPremiumOrTrial = this.currentUser?.is_premium || this.currentUser?.is_trial;
+            if (!isPremiumOrTrial) {
+                this.showToast('Şarkı dinlemek için premium üyelik gereklidir', 'warning');
+                setTimeout(() => {
+                    window.location.href = '/subscription/plans';
+                }, 800);
+                return;
+            }
+
             try {
                 this.isLoading = true;
 
@@ -1918,7 +1972,6 @@ onplay: function() {
                     console.error('Howler load error:', error);
                     console.error('🔍 Howler ID:', id);
                     console.error('🔍 Howler._src:', self.howl?._src);
-                    console.error('🔍 Howler.src():', self.howl?.src());
                     console.error('❌ MP3 playback failed, cannot fallback (already in fallback mode)');
                     self.showToast('Şarkı yüklenemedi', 'error');
                     self.isPlaying = false;
@@ -1964,7 +2017,7 @@ onplay: function() {
             const hlsTimeoutMs = 6000;
             const hlsTimeoutId = setTimeout(() => {
                 if (!hlsPlayStarted && !hlsAborted && autoplay) {
-                    console.warn('⏰ HLS timeout - MP3 fallback tetikleniyor...');
+                    // Fallback triggered (silent operation)
                     hlsAborted = true;
                     self.triggerMp3Fallback(audio, targetVolume, 'timeout');
                 }
@@ -2293,12 +2346,14 @@ onplay: function() {
                     const elapsed = currentTime - startTime;
                     const progress = Math.min(elapsed / duration, 1);
 
-                    audio.volume = fromVolume + (volumeDiff * progress);
+                    // 🔒 CLAMP: Ensure volume stays within valid range [0, 1]
+                    audio.volume = Math.max(0, Math.min(1, fromVolume + (volumeDiff * progress)));
 
                     if (progress < 1) {
                         audio._fadeAnimation = requestAnimationFrame(animate);
                     } else {
-                        audio.volume = toVolume;
+                        // 🔒 CLAMP: Ensure final volume is valid
+                        audio.volume = Math.max(0, Math.min(1, toVolume));
                         audio._fadeAnimation = null;
                         resolve();
                     }
@@ -3071,6 +3126,11 @@ onplay: function() {
          * 🚀 AGGRESSIVE PRELOAD: İlk 3 şarkıyı preload et (0ms transition)
          */
         async preloadNextThreeSongs() {
+            // 🚫 Skip if not premium (prevent 402 spam)
+            if (!this.isLoggedIn || (!this.currentUser?.is_premium && !this.currentUser?.is_trial)) {
+                return;
+            }
+
             // Queue kontrolü
             if (!this.queue || this.queue.length <= 1) return;
 
@@ -3190,6 +3250,11 @@ onplay: function() {
             try {
                 const response = await this.authenticatedFetch(`/api/muzibu/songs/${nextSong.song_id}/stream`);
                 if (!response) return; // 401 aldıysa çık
+
+                // 🚫 CRITICAL: Sadece başarılı response'ları cache'le (402, 403, 500 hariç)
+                if (!response.ok) {
+                    return;
+                }
 
                 const data = await response.json();
 
@@ -3319,6 +3384,77 @@ onplay: function() {
             } catch (error) {
                 console.error('❌ Background playback error:', error);
             }
+        },
+
+        /**
+         * ⏱️ SUBSCRIPTION COUNTDOWN: Premium/Trial bitiş süresini takip et
+         * Süre bitince: Şarkıyı durdur + Cache temizle + Abonelik sayfasına yönlendir
+         */
+        startSubscriptionCountdown() {
+            // Sadece login olan kullanıcılar için
+            if (!this.isLoggedIn || !this.currentUser) {
+                return;
+            }
+
+            // Trial veya subscription bitiş tarihini al (hangisi daha yakınsa)
+            const trialEnd = this.currentUser.trial_ends_at ? new Date(this.currentUser.trial_ends_at) : null;
+            const subscriptionEnd = this.currentUser.subscription_ends_at ? new Date(this.currentUser.subscription_ends_at) : null;
+
+            let expiresAt = null;
+            if (trialEnd && subscriptionEnd) {
+                // İkisi de varsa, hangisi daha yakınsa onu kullan
+                expiresAt = trialEnd < subscriptionEnd ? trialEnd : subscriptionEnd;
+            } else if (trialEnd) {
+                expiresAt = trialEnd;
+            } else if (subscriptionEnd) {
+                expiresAt = subscriptionEnd;
+            }
+
+            // Bitiş tarihi yoksa countdown başlatma
+            if (!expiresAt) {
+                return;
+            }
+
+            console.log('⏱️ Subscription countdown started. Expires at:', expiresAt);
+
+            // Her saniye kontrol et
+            const countdownInterval = setInterval(() => {
+                const now = new Date();
+                const timeLeft = expiresAt - now;
+
+                // Süre doldu
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    console.warn('⏰ Subscription expired! Stopping playback and redirecting...');
+
+                    // 1. Şarkıyı durdur
+                    if (this.isPlaying) {
+                        if (this.howl) {
+                            this.howl.pause();
+                        } else if (this.hls) {
+                            const audio = this.getActiveHlsAudio();
+                            if (audio) audio.pause();
+                        }
+                        this.isPlaying = false;
+                        window.dispatchEvent(new CustomEvent('player:pause'));
+                    }
+
+                    // 2. Toast göster
+                    this.showToast('Premium üyeliğiniz sona erdi. Abonelik sayfasına yönlendiriliyorsunuz...', 'warning');
+
+                    // 3. 2 saniye bekle, sonra cache temizle ve redirect
+                    setTimeout(() => {
+                        // Hard reload (cache temizle)
+                        window.location.href = '/subscription/plans';
+                    }, 2000);
+                }
+
+                // Her 5 dakikada bir log (debug için)
+                if (timeLeft > 0 && Math.floor(timeLeft / 1000) % 300 === 0) {
+                    const minutesLeft = Math.floor(timeLeft / 60000);
+                    console.log(`⏱️ Subscription expires in ${minutesLeft} minutes`);
+                }
+            }, 1000); // Her saniye kontrol
         },
 
         /**

@@ -55,11 +55,22 @@ class LoginRequest extends FormRequest
         $user = User::where('email', $this->email)->first();
         if ($user && !$user->is_active) {
             Auth::logout();
-            
+
             RateLimiter::hit($this->throttleKey());
-            
+
             throw ValidationException::withMessages([
                 'email' => 'Bu hesap pasif durumda. Lütfen yönetici ile iletişime geçin.',
+            ]);
+        }
+
+        // Email doğrulaması zorunlu ise ve doğrulanmamışsa giriş yapmasına izin verme
+        if ($user && setting('auth_registration_email_verify') && !$user->hasVerifiedEmail()) {
+            Auth::logout();
+
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'E-posta adresinizi doğrulamanız gerekmektedir. Lütfen e-posta kutunuzu kontrol edin.',
             ]);
         }
 

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Modules\Mail\Http\Livewire\Admin;
+namespace Modules\Mail\App\Http\Livewire\Admin;
 
 use Livewire\Component;
 use Livewire\Attributes\Url;
 use Illuminate\Support\Facades\Mail;
-use Modules\Mail\Services\MailTemplateService;
-use Modules\Mail\Models\MailTemplate;
+use Modules\Mail\App\Services\MailTemplateService;
+use Modules\Mail\App\Models\MailTemplate;
 
 class MailComponent extends Component
 {

@@ -95,6 +95,7 @@ class MuzibuCacheService
 
         return Cache::remember($cacheKey, self::TTL_POPULAR, function () use ($limit) {
             return Song::where('is_active', 1)
+                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
                 ->with(['album.artist'])
                 ->orderBy('play_count', 'desc')
                 ->limit($limit)

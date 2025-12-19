@@ -116,6 +116,9 @@
 
     @livewireStyles
 
+    {{-- PWA Manifest --}}
+    <link rel="manifest" href="{{ route('manifest') }}">
+
     {{-- Custom Styles --}}
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-layout.css') }}">
     <link rel="stylesheet" href="{{ versioned_asset('themes/muzibu/css/muzibu-custom.css') }}">
@@ -432,6 +435,9 @@
     {{-- 🎯 Context Menu Init - SPA Safe --}}
     <script src="{{ versioned_asset('themes/muzibu/js/context-menu/init.js') }}"></script>
     @endonce
+
+    {{-- PWA Service Worker Registration --}}
+    <x-pwa-registration />
 
     @yield('scripts')
 </body>

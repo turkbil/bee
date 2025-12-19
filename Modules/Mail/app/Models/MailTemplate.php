@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\Mail\Models;
+namespace Modules\Mail\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

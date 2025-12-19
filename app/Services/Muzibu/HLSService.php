@@ -68,7 +68,7 @@ class HLSService
 
             // 4. FFmpeg komutu oluştur
             $playlistPath = $storagePath . '/playlist.m3u8';
-            $segmentPattern = $storagePath . '/chunk_%03d.ts';
+            $segmentPattern = $storagePath . '/segment-%03d.ts'; // 🔧 FIX: chunk → segment (consistent naming)
 
             $ffmpegCommand = $this->buildFFmpegCommand(
                 $sourcePath,
@@ -99,7 +99,7 @@ class HLSService
 
             Log::info('✅ HLS Conversion başarılı', [
                 'hls_path' => $hlsFolder . '/playlist.m3u8',
-                'chunks' => count(glob($storagePath . '/chunk_*.ts')),
+                'chunks' => count(glob($storagePath . '/segment-*.ts')), // 🔧 FIX: chunk → segment
                 'encrypted' => $encrypt
             ]);
 
@@ -129,7 +129,7 @@ class HLSService
      *
      * @param string $inputFile Kaynak MP3
      * @param string $outputPlaylist Çıktı .m3u8
-     * @param string $segmentPattern Chunk pattern (chunk_%03d.ts)
+     * @param string $segmentPattern Chunk pattern (segment-%03d.ts)
      * @param string|null $keyInfoFile Encryption keyinfo dosyası
      * @return string FFmpeg komutu
      */

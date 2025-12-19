@@ -120,16 +120,20 @@ trait HasUniversalSchemas
             return null;
         }
 
+        // ✅ Google Schema.org Best Practice: description ÖNCE, step SONRA
         $howtoSchema = [
             '@context' => 'https://schema.org',
             '@type' => 'HowTo',
             'name' => $name,
-            'step' => [],
         ];
 
+        // Description varsa, step'ten ÖNCE ekle
         if ($description) {
             $howtoSchema['description'] = $description;
         }
+
+        // Step array'i en son ekle (Google'ın istediği sıralama)
+        $howtoSchema['step'] = [];
 
         foreach ($steps as $step) {
             $howtoSchema['step'][] = [

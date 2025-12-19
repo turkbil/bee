@@ -387,10 +387,12 @@ class SongStreamController extends Controller
     {
         // ✅ Handle OPTIONS preflight request
         if (request()->method() === 'OPTIONS') {
+            $origin = request()->header('Origin', 'https://muzibu.com.tr');
             return response('', 200, [
-                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Origin' => $origin,
                 'Access-Control-Allow-Methods' => 'GET, OPTIONS',
-                'Access-Control-Allow-Headers' => 'Content-Type, Range',
+                'Access-Control-Allow-Headers' => 'Content-Type, Range, Cookie',
+                'Access-Control-Allow-Credentials' => 'true',
                 'Access-Control-Max-Age' => '86400',
             ]);
         }
@@ -429,13 +431,15 @@ class SongStreamController extends Controller
             }
 
             // ✅ Return binary key with proper headers (array syntax for reliability)
+            $origin = request()->header('Origin', 'https://muzibu.com.tr');
             return response($keyContent, 200, [
                 'Content-Type' => 'application/octet-stream',
                 'Content-Length' => strlen($keyContent),
                 'Cache-Control' => 'public, max-age=31536000',
-                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Origin' => $origin,
                 'Access-Control-Allow-Methods' => 'GET, OPTIONS',
-                'Access-Control-Allow-Headers' => 'Content-Type, Range',
+                'Access-Control-Allow-Headers' => 'Content-Type, Range, Cookie',
+                'Access-Control-Allow-Credentials' => 'true',
             ]);
 
         } catch (\Exception $e) {
@@ -443,6 +447,81 @@ class SongStreamController extends Controller
                 'song_id' => $songId,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Internal server error'], 500);
+        }
+    }
+
+    /**
+     * 🎵 Serve HLS files (playlist.m3u8 and segments) with CORS
+     *
+     * This endpoint serves HLS files through Laravel so CORS headers are applied.
+     * Nginx serves static files directly without CORS, so we need this workaround.
+     *
+     * @param int $songId
+     * @param string $filename (playlist.m3u8 or segment-XXX.ts)
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function serveHls(int $songId, string $filename)
+    {
+        // ✅ Handle OPTIONS preflight
+        $origin = request()->header('Origin', '*');
+
+        if (request()->method() === 'OPTIONS') {
+            return response('', 204, [
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Content-Type, Range',
+                'Access-Control-Max-Age' => '86400',
+            ]);
+        }
+
+        try {
+            // Security: Only allow specific file types
+            if (!preg_match('/^(playlist\.m3u8|segment-\d+\.ts)$/', $filename)) {
+                return response()->json(['error' => 'Invalid file'], 400);
+            }
+
+            // storage_path() already includes tenant prefix in tenant context
+            $filePath = storage_path("app/public/muzibu/hls/{$songId}/{$filename}");
+
+            if (!file_exists($filePath)) {
+                return response()->json(['error' => 'File not found'], 404);
+            }
+
+            // Determine content type
+            $contentType = str_ends_with($filename, '.m3u8')
+                ? 'application/vnd.apple.mpegurl'
+                : 'video/mp2t';
+
+            // For playlist.m3u8, rewrite key URLs to use API endpoint
+            if ($filename === 'playlist.m3u8') {
+                $content = file_get_contents($filePath);
+                // Key URL is already correct (/api/muzibu/songs/{id}/key)
+
+                return response($content, 200, [
+                    'Content-Type' => $contentType,
+                    'Access-Control-Allow-Origin' => '*',
+                    'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+                    'Access-Control-Allow-Headers' => 'Content-Type, Range',
+                    'Cache-Control' => 'no-cache', // Playlist should not be cached
+                ]);
+            }
+
+            // For segment files, use BinaryFileResponse for efficient streaming
+            return response()->file($filePath, [
+                'Content-Type' => $contentType,
+                'Access-Control-Allow-Origin' => '*',
+                'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+                'Access-Control-Allow-Headers' => 'Content-Type, Range',
+                'Cache-Control' => 'public, max-age=31536000, immutable',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('HLS file serving error', [
+                'song_id' => $songId,
+                'filename' => $filename,
+                'error' => $e->getMessage()
             ]);
             return response()->json(['error' => 'Internal server error'], 500);
         }

@@ -173,7 +173,7 @@ return array(
     'Modules\\MediaManagement\\' => array($baseDir . '/Modules/MediaManagement/app'),
     'Modules\\Mail\\Database\\Seeders\\' => array($baseDir . '/Modules/Mail/database/seeders'),
     'Modules\\Mail\\Database\\Factories\\' => array($baseDir . '/Modules/Mail/database/factories'),
-    'Modules\\Mail\\' => array($baseDir . '/Modules/Mail/app'),
+    'Modules\\Mail\\App\\' => array($baseDir . '/Modules/Mail/app'),
     'Modules\\LanguageManagement\\Database\\Seeders\\' => array($baseDir . '/Modules/LanguageManagement/database/seeders'),
     'Modules\\LanguageManagement\\Database\\Factories\\' => array($baseDir . '/Modules/LanguageManagement/database/factories'),
     'Modules\\LanguageManagement\\App\\' => array($baseDir . '/Modules/LanguageManagement/app'),

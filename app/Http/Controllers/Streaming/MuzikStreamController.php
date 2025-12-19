@@ -16,7 +16,7 @@ use Modules\Muzibu\App\Jobs\ProcessBulkSongHLSJob;
  * HLS streaming endpoints:
  * - /stream/key/{songHash} → Encryption key
  * - /stream/play/{songHash}/playlist.m3u8 → HLS playlist
- * - /stream/play/{songHash}/chunk_xxx.ts → HLS chunks
+ * - /stream/play/{songHash}/segment-xxx.ts → HLS segments
  */
 class MuzikStreamController extends Controller
 {
@@ -84,10 +84,10 @@ class MuzikStreamController extends Controller
     }
 
     /**
-     * HLS playlist veya chunk serve et
+     * HLS playlist veya segment serve et
      *
      * @param string $songHash
-     * @param string $filename playlist.m3u8 veya chunk_001.ts
+     * @param string $filename playlist.m3u8 veya segment-001.ts
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
     public function streamFile(string $songHash, string $filename, Request $request)
@@ -183,8 +183,8 @@ class MuzikStreamController extends Controller
                 return $this->streamPlaylist($filePath);
             }
 
-            // Chunk dosyası stream et (.ts)
-            return $this->streamChunk($filePath, $mimeType);
+            // Segment dosyası stream et (.ts)
+            return $this->streamSegment($filePath, $mimeType);
 
         } catch (\Exception $e) {
             Log::error('❌ Streaming error', [
@@ -215,13 +215,13 @@ class MuzikStreamController extends Controller
     }
 
     /**
-     * Chunk dosyasını stream et (.ts)
+     * Segment dosyasını stream et (.ts)
      *
      * @param string $filePath
      * @param string $mimeType
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
-    protected function streamChunk(string $filePath, string $mimeType)
+    protected function streamSegment(string $filePath, string $mimeType)
     {
         $fileSize = filesize($filePath);
 

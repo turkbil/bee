@@ -25,7 +25,9 @@ class NoSessionForHlsKey
         $response = $next($request);
 
         // Force cache headers AFTER middleware pipeline
-        if ($request->is('api/muzibu/songs/*/key') || $request->is('*/api/muzibu/songs/*/key')) {
+        // 🔧 FIX: Support both old (/api/) and new (/hls-key/) paths
+        if ($request->is('hls-key/muzibu/songs/*') || $request->is('*/hls-key/muzibu/songs/*') ||
+            $request->is('api/muzibu/songs/*/key') || $request->is('*/api/muzibu/songs/*/key')) {
             $response->headers->set('Cache-Control', 'public, max-age=86400, immutable');
             $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
             $response->headers->remove('Pragma');

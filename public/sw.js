@@ -23,8 +23,6 @@ const ASSETS_TO_CACHE = [
  * Install Event - Cache critical assets
  */
 self.addEventListener('install', (event) => {
-    console.log('[PWA] Service Worker installing...');
-
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
@@ -41,8 +39,6 @@ self.addEventListener('install', (event) => {
  * Activate Event - Clean old caches
  */
 self.addEventListener('activate', (event) => {
-    console.log('[PWA] Service Worker activating...');
-
     event.waitUntil(
         caches.keys()
             .then((cacheNames) => {
@@ -147,5 +143,3 @@ self.addEventListener('message', (event) => {
         );
     }
 });
-
-console.log('[PWA] Service Worker loaded');

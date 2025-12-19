@@ -153,8 +153,7 @@
             <!-- MAX button (quick 100%) -->
             <button
                 @click="volume = 100; isMuted = false"
-                class="w-1.5 h-1.5 rounded-full transition-all"
-                :class="volume >= 95 ? 'bg-muzibu-coral' : 'bg-muzibu-text-gray/50 hover:bg-muzibu-text-gray'"
+                class="w-1.5 h-1.5 rounded-full transition-all bg-muzibu-text-gray/50 hover:bg-white"
                 aria-label="Ses 100%"
                 title="100%"
             ></button>

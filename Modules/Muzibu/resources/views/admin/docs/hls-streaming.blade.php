@@ -163,8 +163,8 @@ $song->hls_converted = false;</code></pre>
 <pre class="mb-0 text-cyan"><code>storage/tenant{{ tenant('id') }}/app/public/muzibu/hls/ABC123/
 ├── playlist.m3u8      ← Ana playlist
 ├── enc.key            ← AES-128 şifreleme anahtarı
-├── segment_000.ts     ← Şifreli parça 1
-├── segment_001.ts     ← Şifreli parça 2
+├── segment-000.ts     ← Şifreli parça 1
+├── segment-001.ts     ← Şifreli parça 2
 └── ...</code></pre>
                             </div>
                         </div>
@@ -210,7 +210,7 @@ $song->hls_converted = false;</code></pre>
                                 </tr>
                                 <tr>
                                     <td>Chunk</td>
-                                    <td><code>/stream/play/{hash}/segment_000.ts</code></td>
+                                    <td><code>/stream/play/{hash}/segment-000.ts</code></td>
                                 </tr>
                             </tbody>
                         </table>

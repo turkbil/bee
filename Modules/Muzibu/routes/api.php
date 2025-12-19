@@ -91,10 +91,9 @@ Route::prefix('muzibu')->group(function () {
             ->name('api.muzibu.songs.serve')
             ->middleware(['signed.url', 'throttle.user:stream']); // 🔐 Signed URL + rate limiting
 
-        // 🔑 HLS Encryption Key Endpoint (for playlist.m3u8 #EXT-X-KEY URI)
-        Route::match(['get', 'options'], '/{id}/key', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'serveKey'])
-            ->name('api.muzibu.songs.key')
-            ->middleware('throttle.user:stream'); // Public access, rate limited, no session needed
+        // 🔑 HLS Key + Files routes are defined in MuzibuServiceProvider
+        // WITHOUT session middleware (HLS.js parallel requests cause session race conditions)
+        // See: MuzibuServiceProvider::loadApiRoutes()
 
         Route::get('/{id}/conversion-status', [\Modules\Muzibu\App\Http\Controllers\Api\SongStreamController::class, 'checkConversionStatus'])
             ->name('api.muzibu.songs.conversion-status')

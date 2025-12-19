@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Modules\Mail\Services;
+namespace Modules\Mail\App\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Modules\Mail\Models\MailTemplate;
+use Modules\Mail\App\Models\MailTemplate;
 
 class MailTemplateService
 {

@@ -55,15 +55,19 @@ class SignedUrlService
         $expires = $expiration->timestamp;
 
         // Build HLS playlist URL (use current tenant domain)
-        // 🔧 Use tenant's primary domain instead of request domain
+        // 🔧 Use tenant's primary domain (or first domain) instead of request domain
         $tenant = tenancy()->tenant;
-        $tenantDomain = $tenant ? $tenant->domains()->where('is_primary', 1)->first()?->domain : null;
+        $tenantDomain = $tenant
+            ? ($tenant->domains()->where('is_primary', 1)->first()?->domain
+               ?? $tenant->domains()->first()?->domain)
+            : null;
         $domain = $tenantDomain ? 'https://' . $tenantDomain : request()->getSchemeAndHttpHost();
 
-        // 🎵 HLS uses storage URL, not serve endpoint
-        // HLS playlist: /storage/tenant{id}/muzibu/hls/{songId}/playlist.m3u8
-        $tenantId = $tenant?->id ?? 'unknown';
-        $hlsUrl = $domain . "/storage/tenant{$tenantId}/muzibu/hls/{$songId}/playlist.m3u8";
+        // 🎵 HLS through /hls/ endpoint (NOT /api/ - avoids Laravel CORS middleware)
+        // Laravel CORS adds `Access-Control-Allow-Credentials: true` to /api/* paths
+        // which conflicts with `Access-Control-Allow-Origin: *` - browsers reject this
+        // By using /hls/ path, controller handles CORS directly without middleware conflict
+        $hlsUrl = $domain . "/hls/muzibu/songs/{$songId}/playlist.m3u8";
 
         return $hlsUrl; // HLS doesn't need signed URL (AES-128 encrypted)
     }

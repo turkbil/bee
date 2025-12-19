@@ -36,11 +36,11 @@ class HomeController extends Controller
                 ->limit(12)
                 ->get();
 
-            // Only show songs that have files uploaded
+            // Only show songs that have HLS ready
             $popularSongs = Song::where('is_active', 1)
                 ->whereNotNull('file_path') // CRITICAL: Skip songs without files
+                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
                 ->with(['album.artist', 'album.coverMedia', 'coverMedia']) // Load cover media for songs and albums
-                ->orderByRaw('CASE WHEN hls_path IS NOT NULL THEN 0 ELSE 1 END') // HLS songs first
                 ->orderBy('play_count', 'desc')
                 ->limit(20) // Limit to 20 popular songs
                 ->get();

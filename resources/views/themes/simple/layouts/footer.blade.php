@@ -309,6 +309,9 @@
     {{-- Theme Main Scripts --}}
     <script defer src="{{ asset('assets/js/themes/simple/main.js') }}?v=1.0.1"></script>
 
+    {{-- PWA Service Worker Registration --}}
+    <x-pwa-registration />
+
     {{-- Dynamic Script Stack --}}
     @stack('scripts')
 

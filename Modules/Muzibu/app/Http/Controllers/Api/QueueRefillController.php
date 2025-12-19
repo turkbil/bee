@@ -136,6 +136,7 @@ class QueueRefillController extends Controller
         // 🎲 SQL SEVİYESİNDE RANDOM: inRandomOrder() kullan (her query farklı sonuç)
         $songs = $genre->songs()
             ->where('is_active', 1)
+            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
             ->when(!empty($excludeSongIds), function($query) use ($excludeSongIds) {
                 // 🎯 Exclude: Son çalınan şarkıları hariç tut
                 $query->whereNotIn('song_id', $excludeSongIds);
@@ -156,6 +157,7 @@ class QueueRefillController extends Controller
 
             $songs = $genre->songs()
                 ->where('is_active', 1)
+                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
                 ->with(['album.artist'])
                 ->inRandomOrder()
                 ->limit($limit)
@@ -194,6 +196,7 @@ class QueueRefillController extends Controller
         // 🎲 SQL SEVİYESİNDE RANDOM
         $songs = $album->songs()
             ->where('is_active', 1)
+            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
             ->when(!empty($excludeSongIds), function($query) use ($excludeSongIds) {
                 $query->whereNotIn('muzibu_songs.song_id', $excludeSongIds);
             })
@@ -206,6 +209,7 @@ class QueueRefillController extends Controller
         if ($songs->count() < $limit && !empty($excludeSongIds)) {
             $songs = $album->songs()
                 ->where('is_active', 1)
+                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
                 ->with(['album.artist'])
                 ->inRandomOrder()
                 ->limit($limit)
@@ -269,6 +273,7 @@ class QueueRefillController extends Controller
         // SQL random ile şarkıları çek
         $songs = Song::whereIn('song_id', $songIds)
             ->where('is_active', 1)
+            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
             ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
             ->with(['album.artist'])
             ->inRandomOrder()
@@ -279,6 +284,7 @@ class QueueRefillController extends Controller
         if ($songs->count() < $limit && !empty($excludeSongIds)) {
             $songs = Song::whereIn('song_id', $songIds)
                 ->where('is_active', 1)
+                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
                 ->with(['album.artist'])
                 ->inRandomOrder()
                 ->limit($limit)
@@ -366,6 +372,7 @@ class QueueRefillController extends Controller
         // SQL random ile şarkıları çek
         $songs = Song::whereIn('song_id', $songIds)
             ->where('is_active', 1)
+            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
             ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
             ->with(['album.artist'])
             ->inRandomOrder()
@@ -376,6 +383,7 @@ class QueueRefillController extends Controller
         if ($songs->count() < $limit && !empty($excludeSongIds)) {
             $songs = Song::whereIn('song_id', $songIds)
                 ->where('is_active', 1)
+                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
                 ->with(['album.artist'])
                 ->inRandomOrder()
                 ->limit($limit)
@@ -430,6 +438,7 @@ class QueueRefillController extends Controller
         // SQL random ile şarkıları çek
         $songs = Song::whereIn('song_id', $songIds)
             ->where('is_active', 1)
+            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
             ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
             ->with(['album.artist'])
             ->inRandomOrder()
@@ -440,6 +449,7 @@ class QueueRefillController extends Controller
         if ($songs->count() < $limit && !empty($excludeSongIds)) {
             $songs = Song::whereIn('song_id', $songIds)
                 ->where('is_active', 1)
+                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
                 ->with(['album.artist'])
                 ->inRandomOrder()
                 ->limit($limit)
@@ -467,8 +477,9 @@ class QueueRefillController extends Controller
      */
     private function getPopularSongs(int $offset, int $limit, array $excludeSongIds = []): array
     {
-        // 🎲 Top 100 song ID'lerini al (play_count sıralı)
+        // 🎲 Top 100 song ID'lerini al (play_count sıralı) - sadece HLS olanlar
         $popularSongIds = Song::where('is_active', 1)
+            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
             ->orderBy('play_count', 'desc')
             ->take(100)
             ->pluck('song_id');
@@ -527,8 +538,9 @@ class QueueRefillController extends Controller
      */
     private function getRecentSongs(int $offset, int $limit, ?string $subType = null, array $excludeSongIds = []): array
     {
-        // 🎲 Son 200 song ID'lerini al (created_at sıralı)
+        // 🎲 Son 200 song ID'lerini al (created_at sıralı) - sadece HLS olanlar
         $recentSongIds = Song::where('is_active', 1)
+            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
             ->orderBy('created_at', 'desc')
             ->take(200)
             ->pluck('song_id');
@@ -602,6 +614,7 @@ class QueueRefillController extends Controller
         // 🎲 SQL SEVİYESİNDE RANDOM
         $songs = Song::whereIn('song_id', $favoriteSongIds)
             ->where('is_active', 1)
+            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
             ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
             ->with(['album.artist'])
             ->inRandomOrder()
@@ -612,6 +625,7 @@ class QueueRefillController extends Controller
         if ($songs->count() < $limit && !empty($excludeSongIds)) {
             $songs = Song::whereIn('song_id', $favoriteSongIds)
                 ->where('is_active', 1)
+                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
                 ->with(['album.artist'])
                 ->inRandomOrder()
                 ->limit($limit)
@@ -667,6 +681,7 @@ class QueueRefillController extends Controller
         // 🎲 SQL SEVİYESİNDE RANDOM
         $songs = Song::whereIn('album_id', $albumIds)
             ->where('is_active', 1)
+            ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
             ->when(!empty($excludeSongIds), fn($q) => $q->whereNotIn('song_id', $excludeSongIds))
             ->with(['album.artist'])
             ->inRandomOrder()
@@ -677,6 +692,7 @@ class QueueRefillController extends Controller
         if ($songs->count() < $limit && !empty($excludeSongIds)) {
             $songs = Song::whereIn('album_id', $albumIds)
                 ->where('is_active', 1)
+                ->whereNotNull('hls_path') // 🔥 CRITICAL: Only HLS-ready songs
                 ->with(['album.artist'])
                 ->inRandomOrder()
                 ->limit($limit)

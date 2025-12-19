@@ -12,8 +12,8 @@ const MuzibuSpaRouter = {
     // 🚀 PREFETCH SYSTEM
     prefetchCache: new Map(), // URL → {html, timestamp}
     prefetchQueue: new Set(), // URLs being prefetched
-    cacheTimeout: 5 * 60 * 1000, // 5 minutes
-    maxCacheSize: 25, // 🎯 MAX 25 pages - Daha az LRU eviction
+    cacheTimeout: 30 * 60 * 1000, // 30 minutes (5 dakika → 30 dakika artırıldı)
+    maxCacheSize: 50, // 🎯 MAX 50 pages (25 → 50 artırıldı)
     observer: null, // Intersection Observer for viewport prefetch
 
     // 🛡️ SINGLETON: Prevent multiple initializations
@@ -85,13 +85,13 @@ const MuzibuSpaRouter = {
             this.navigateTo(href);
         });
 
-        // 🔥 VIEWPORT PREFETCH: Intersection Observer
-        this.initViewportPrefetch();
+        // 🔥 VIEWPORT PREFETCH: DISABLED (gereksiz network trafiği)
+        // this.initViewportPrefetch();
 
-        // ⚡ HOVER PREFETCH: Mouse enter
+        // ⚡ HOVER PREFETCH: Mouse enter (sadece bu kalsın)
         this.initHoverPrefetch();
 
-        console.log('🚀 SPA Router initialized (with Viewport + Hover Prefetch)');
+        console.log('🚀 SPA Router initialized (Hover Prefetch only)');
     },
 
     /**
@@ -145,9 +145,15 @@ const MuzibuSpaRouter = {
         }
 
         document.querySelectorAll('a[href]').forEach(link => {
+            // 🛡️ Skip if already observed (prevent duplicate observations)
+            if (link.dataset.spaObserved === 'true') {
+                return;
+            }
+
             const href = link.getAttribute('href');
             if (href && this.shouldPrefetch(href)) {
                 this.observer.observe(link);
+                link.dataset.spaObserved = 'true'; // Mark as observed
             }
         });
     },
@@ -257,10 +263,8 @@ const MuzibuSpaRouter = {
      * Navigate to URL using SPA
      */
     async navigateTo(url) {
-        // ⚡ INSTANT FEEDBACK: Set loading state immediately (UX improvement)
-        console.log('🔄 navigateTo() called, setting isLoading = true');
-        this.isLoading = true;
-        console.log('🔍 Current isLoading state:', this.isLoading);
+        // ⚡ SMART LOADING: Only show overlay if loading takes > 200ms
+        console.log('🔄 navigateTo() called');
 
         history.pushState({ url: url }, '', url);
         await this.loadPage(url, true);
@@ -289,14 +293,16 @@ const MuzibuSpaRouter = {
      */
     async loadPage(url, addToHistory = true) {
         const loadStartTime = Date.now();
-        const minLoadingTime = 150; // 🎯 UX Psychology: Minimum 150ms for user feedback
+        const minLoadingTime = 0; // ⚡ PERFORMANCE: No minimum delay (instant loading!)
         const maxLoadingTime = 10000; // ⏱️ 10 second timeout
+        const loadingThreshold = 0; // 🔄 INSTANT: Show loading immediately (user feedback)
+
+        // 🔄 INSTANT LOADING OVERLAY: Show immediately for user feedback
+        let loadingTimeout = setTimeout(() => {
+            this.isLoading = true;
+        }, loadingThreshold);
 
         try {
-            // Note: isLoading already set in navigateTo() for instant feedback
-            if (!this.isLoading) {
-                this.isLoading = true;
-            }
 
             let html;
             let fetchPromise;
@@ -307,6 +313,9 @@ const MuzibuSpaRouter = {
                 const age = Date.now() - cached.timestamp;
                 if (age < this.cacheTimeout) {
                     console.log('⚡ Using cached page (instant!):', url);
+                    // ⚡ INSTANT: Cancel loading timeout immediately (no overlay needed!)
+                    clearTimeout(loadingTimeout);
+                    this.isLoading = false; // Cache hit - loading gösterme!
                     html = cached.html;
                     fetchPromise = Promise.resolve(html);
                 } else {
@@ -341,14 +350,8 @@ const MuzibuSpaRouter = {
                     // Remove ALL script tags from cloned content
                     clonedContent.querySelectorAll('script').forEach(script => script.remove());
 
-                    // 🎯 MINIMUM LOADING TIME: Ensure user sees feedback (UX psychology)
-                    const elapsedTime = Date.now() - loadStartTime;
-                    const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
-
-                    if (remainingTime > 0) {
-                        console.log(`⏱️ Minimum loading time: waiting ${remainingTime}ms for better UX`);
-                        await new Promise(resolve => setTimeout(resolve, remainingTime));
-                    }
+                    // ⚡ PERFORMANCE: No artificial delay - instant loading!
+                    // (minLoadingTime = 0, so no waiting)
 
                     // Safely replace content using modern DOM API (prevents script execution)
                     currentMain.replaceChildren(...clonedContent.childNodes);
@@ -363,8 +366,8 @@ const MuzibuSpaRouter = {
                     this.currentPath = url;
                     console.log('✅ Page loaded:', url);
 
-                    // 🔥 RE-OBSERVE NEW LINKS for viewport prefetch
-                    setTimeout(() => this.observeLinks(), 100);
+                    // 🔥 RE-OBSERVE NEW LINKS: DISABLED (viewport prefetch kapatıldı)
+                    // setTimeout(() => this.observeLinks(), 100);
                 }
             } else {
                 // Main content not found = farklı layout (auth pages gibi)
@@ -376,9 +379,15 @@ const MuzibuSpaRouter = {
             }
 
             console.log('✅ loadPage complete, setting isLoading = false');
+
+            // ⚡ Cancel loading timeout if still pending
+            clearTimeout(loadingTimeout);
             this.isLoading = false;
+
             console.log('🔍 Final isLoading state:', this.isLoading);
         } catch (error) {
+            // ⚡ Cancel loading timeout on error
+            clearTimeout(loadingTimeout);
             console.error('❌ Failed to load page:', error);
 
             // User-friendly error messages

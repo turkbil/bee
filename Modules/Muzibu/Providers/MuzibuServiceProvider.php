@@ -158,19 +158,35 @@ class MuzibuServiceProvider extends ServiceProvider
             ->toArray();
 
         foreach ($domains as $index => $domain) {
-            // 🔑 HLS ENCRYPTION KEY - WITHOUT AUTH (HLS.js can't send cookies via XHR)
+            // 🔑 HLS ENCRYPTION KEY - WITHOUT SESSION & WITHOUT CORS MIDDLEWARE
+            // ⚠️ Route path is /hls-key/... (NOT /api/...) to bypass Laravel's CORS middleware
+            // Problem: Laravel CORS has `supports_credentials => true` + `allowed_origins => ['*']`
+            // Browser rejects this combination: "Access-Control-Allow-Origin: *" with credentials is invalid
+            // Solution: By using /hls-key/ path, controller handles CORS directly without middleware interference
             // Security: Key alone is useless - you need the HLS file to know which key to use
-            // The HLS file itself is served from storage with AES-128 encryption
             // Rate limiting: 60 requests per minute per IP (for normal playback)
-            // 🔧 FIX: Handle both GET and OPTIONS for CORS preflight
             \Illuminate\Support\Facades\Route::middleware([
                 \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
                 'throttle:60,1', // 60 req/min - normal playback için yeterli
                 \App\Http\Middleware\FixResponseCacheHeaders::class,
             ])
                 ->domain($domain)
-                ->match(['get', 'options'], '/api/muzibu/songs/{id}/key', [\Modules\Muzibu\app\Http\Controllers\Api\SongController::class, 'serveEncryptionKey'])
-                ->name(($index === 0 ? '' : "d{$index}.") . 'api.muzibu.songs.encryption-key');
+                ->match(['get', 'options'], '/hls-key/muzibu/songs/{id}', [\Modules\Muzibu\app\Http\Controllers\Api\SongController::class, 'serveEncryptionKey'])
+                ->name(($index === 0 ? '' : "d{$index}.") . 'muzibu.songs.encryption-key');
+
+            // 🎵 HLS FILES (playlist + segments) - WITHOUT SESSION & WITHOUT CORS MIDDLEWARE
+            // ⚠️ Route path is /hls/... (NOT /api/...) to bypass Laravel's CORS middleware
+            // Laravel CORS config has `supports_credentials => true` which adds `Access-Control-Allow-Credentials: true`
+            // This conflicts with `Access-Control-Allow-Origin: *` - browsers reject this combination
+            // By using /hls/ path, our controller handles CORS directly without Laravel middleware interference
+            \Illuminate\Support\Facades\Route::middleware([
+                \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
+                'throttle:120,1', // 120 req/min - segments için daha yüksek limit
+            ])
+                ->domain($domain)
+                ->match(['get', 'options'], '/hls/muzibu/songs/{id}/{filename}', [\Modules\Muzibu\app\Http\Controllers\Api\SongStreamController::class, 'serveHls'])
+                ->where('filename', 'playlist\.m3u8|segment-\d+\.ts')
+                ->name(($index === 0 ? '' : "d{$index}.") . 'muzibu.songs.hls-files');
 
             // Main API routes (with session)
             \Illuminate\Support\Facades\Route::middleware(['api', \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class])

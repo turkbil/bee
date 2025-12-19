@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Mail\Providers;
+namespace Modules\Mail\App\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 

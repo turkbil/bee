@@ -66,10 +66,8 @@ function muzibuKeyboard() {
                 // Play/Pause
                 case ' ':
                 case 'k':
-                    const wasPlaying = this.isPlaying;
                     this.togglePlayPause();
-                    // Show feedback based on state BEFORE toggle (will be opposite after)
-                    this.showKeyboardFeedback(!wasPlaying ? '▶️ Çalıyor' : '⏸️ Durduruldu');
+                    // Toast kaldırıldı - Zaten player bar'da görünüyor
                     break;
 
                 // Seek backward (5 seconds)

@@ -56,3 +56,21 @@ Route::get('/playlist/{id}/edit', [MyPlaylistsController::class, 'edit'])->name(
 
 // 🔍 Search Results Page (Livewire) - Moved to main routes/web.php (priority route)
 // Route moved to avoid catch-all conflicts - same pattern as Cart module
+
+// 🎵 HLS Storage Files - CORS enabled (tenant-aware)
+Route::get('/storage/tenant{tenantId}/muzibu/{path}', function ($tenantId, $path) {
+    $filePath = storage_path("tenant{$tenantId}/app/public/muzibu/{$path}");
+    
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    
+    return response()->file($filePath, [
+        'Content-Type' => mime_content_type($filePath),
+        'Access-Control-Allow-Origin' => request()->header('Origin'),
+        'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+        'Access-Control-Allow-Headers' => 'Content-Type, Range, Cookie',
+        'Access-Control-Allow-Credentials' => 'true',
+        'Cache-Control' => 'public, max-age=2592000',
+    ]);
+})->where('path', '.*');

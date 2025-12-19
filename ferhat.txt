@@ -1,3 +1,212 @@
- 1.Aydınlatma metninde belirtilen hususlar doğrultusunda, kişisel verilerimin ürün/hizmet ve stratejik pazarlama faaliyetleri ile ticari elektronik ileti gönderimi kapsamında işlenmesine açık rıza verdiğimi kabul ve beyan ederim.
- 2.Aydınlatma metninde belirtilen hususlar doğrultusunda, kişisel verilerimin ürün/hizmet ve stratejik pazarlama faaliyetleri ile ticari elektronik ileti gönderimi kapsamında işlenmesine açık rıza göstermediğimi beyan ederim.
- 3.İletişim Formu Aydınlatma Metni’ni okudum, kabul ediyorum.
+🎵 HLS loadSource URL: https://www.muzibu.com.tr/hls/muzibu/songs/323/playlist.m3u8?v=1766143852754
+player-core.js?v=1766142965:2067 🔧 xhrSetup called for: https://www.muzibu.com.tr/hls/muzibu/songs/323/playlist.m3u8?v=1766143852754
+player-core.js?v=1766142965:2074 🔧 responseType forced to: arraybuffer
+player-core.js?v=1766142965:2076 🔧 withCredentials set to: false
+player-core.js?v=1766142965:2100 🎵 HLS loadSource URL: https://www.muzibu.com.tr/hls/muzibu/songs/323/playlist.m3u8?v=1766143854980
+player-core.js?v=1766142965:2067 🔧 xhrSetup called for: https://www.muzibu.com.tr/hls/muzibu/songs/323/playlist.m3u8?v=1766143854980
+player-core.js?v=1766142965:2074 🔧 responseType forced to: arraybuffer
+player-core.js?v=1766142965:2076 🔧 withCredentials set to: false
+player-core.js?v=1766142965:2106 🔑 KEY_LOADING: https://www.muzibu.com.tr/hls-key/muzibu/songs/323
+player-core.js?v=1766142965:2067 🔧 xhrSetup called for: https://www.muzibu.com.tr/hls-key/muzibu/songs/323
+player-core.js?v=1766142965:2074 🔧 responseType forced to: arraybuffer
+player-core.js?v=1766142965:2076 🔧 withCredentials set to: false
+player-core.js?v=1766142965:2067 🔧 xhrSetup called for: https://www.muzibu.com.tr/hls/muzibu/songs/323/segment-000.ts
+player-core.js?v=1766142965:2074 🔧 responseType forced to: arraybuffer
+player-core.js?v=1766142965:2076 🔧 withCredentials set to: false
+player-core.js?v=1766142965:2106 🔑 KEY_LOADING: https://www.muzibu.com.tr/hls-key/muzibu/songs/323
+player-core.js?v=1766142965:2067 🔧 xhrSetup called for: https://www.muzibu.com.tr/hls/muzibu/songs/323/segment-001.ts
+player-core.js?v=1766142965:2074 🔧 responseType forced to: arraybuffer
+player-core.js?v=1766142965:2076 🔧 withCredentials set to: false
+player-core.js?v=1766142965:2190 🔴 HLS FATAL ERROR: {song_id: 323, song: 'ALONE', artist: 'Unknown', hls_path: 'Unknown', errorType: 'networkError', …}artist: "Unknown"errorDetails: "keyLoadError"errorFatal: trueerrorReason: undefinederrorType: "networkError"hls_path: "Unknown"response: undefinedsong: "ALONE"song_id: 323url: undefined[[Prototype]]: Object
+(anonymous) @ player-core.js?v=1766142965:2190
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch (async)
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+setTimeout (async)
+e.tickImmediate @ task-loop.ts:119
+r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
+r.onError @ stream-controller.ts:895
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch (async)
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send (async)
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then (async)
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766142965:2101
+loadAndPlaySong @ player-core.js?v=1766142965:1837
+await in loadAndPlaySong (async)
+playSong @ player-core.js?v=1766142965:1613
+await in playSong (async)
+[Alpine] playSong($event.detail.songId) @ VM7547:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+dispatch2 @ livewire.js?id=df3a17f2:1386
+[Alpine] 
+                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler Şarkılar',
+                                offset: 2
+                            });
+                            $dispatch('play-song', { songId: 323 })
+                          @ VM7856:11
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+Show 4 more frames
+player-core.js?v=1766142965:2204 🔍 FALLBACK DEBUG: {hasCurrentSong: true, hasFallbackUrl: true, fallbackUrl: 'https://www.muzibu.com.tr/api/muzibu/songs/346/ser…xpires=1766144876&signature=595a2cf598a15edea6...'}fallbackUrl: "https://www.muzibu.com.tr/api/muzibu/songs/346/serve?expires=1766144876&signature=595a2cf598a15edea6..."hasCurrentSong: truehasFallbackUrl: true[[Prototype]]: Object
+player-core.js?v=1766142965:2231 ⚠️ HLS fallback to MP3: keyLoadError
+(anonymous) @ player-core.js?v=1766142965:2231
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch (async)
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+setTimeout (async)
+e.tickImmediate @ task-loop.ts:119
+r.onFragmentOrKeyLoadError @ base-stream-controller.ts:1558
+r.onError @ stream-controller.ts:895
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+r.handleFragLoadError @ base-stream-controller.ts:838
+(anonymous) @ base-stream-controller.ts:784
+Promise.catch (async)
+r._doFragLoad @ base-stream-controller.ts:784
+r._loadFragForPlayback @ base-stream-controller.ts:367
+r.loadFragment @ base-stream-controller.ts:343
+r.loadFragment @ stream-controller.ts:373
+r.doTickIdle @ stream-controller.ts:349
+r.doTick @ stream-controller.ts:204
+e.tick @ task-loop.ts:106
+r.onLevelLoaded @ stream-controller.ts:691
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.handlePlaylistLoaded @ playlist-loader.ts:676
+e.handleTrackOrLevelPlaylist @ playlist-loader.ts:498
+onSuccess @ playlist-loader.ts:314
+e.readystatechange @ xhr-loader.ts:231
+XMLHttpRequest.send (async)
+e.openAndSendXhr @ xhr-loader.ts:158
+(anonymous) @ xhr-loader.ts:104
+Promise.then (async)
+e.loadInternal @ xhr-loader.ts:102
+e.load @ xhr-loader.ts:76
+e.load @ playlist-loader.ts:347
+e.onManifestLoading @ playlist-loader.ts:154
+o.emit @ index.js:203
+e.emit @ hls.ts:287
+e.trigger @ hls.ts:298
+e.loadSource @ hls.ts:389
+playHlsStream @ player-core.js?v=1766142965:2101
+loadAndPlaySong @ player-core.js?v=1766142965:1837
+await in loadAndPlaySong (async)
+playSong @ player-core.js?v=1766142965:1613
+await in playSong (async)
+[Alpine] playSong($event.detail.songId) @ VM7547:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+dispatch2 @ livewire.js?id=df3a17f2:1386
+[Alpine] 
+                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler Şarkılar',
+                                offset: 2
+                            });
+                            $dispatch('play-song', { songId: 323 })
+                          @ VM7856:11
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+Show 4 more frames
+player-core.js?v=1766142965:2001 ⚠️ HLS TIMEOUT: {song: 'ALONE', timeout: '15000ms', reason: 'HLS yüklenemedi (timeout)'}
+(anonymous) @ player-core.js?v=1766142965:2001
+setTimeout (async)
+playHlsStream @ player-core.js?v=1766142965:1998
+loadAndPlaySong @ player-core.js?v=1766142965:1837
+await in loadAndPlaySong (async)
+playSong @ player-core.js?v=1766142965:1613
+await in playSong (async)
+[Alpine] playSong($event.detail.songId) @ VM7547:3
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+dispatch2 @ livewire.js?id=df3a17f2:1386
+[Alpine] 
+                            // 🎯 HOMEPAGE: Set 'popular' context for homepage popular songs
+                            $store.player.setPlayContext({
+                                type: 'popular',
+                                id: null,
+                                name: 'Popüler Şarkılar',
+                                offset: 2
+                            });
+                            $dispatch('play-song', { songId: 323 })
+                          @ VM7856:11
+(anonymous) @ livewire.js?id=df3a17f2:1196
+tryCatch @ livewire.js?id=df3a17f2:1116
+(anonymous) @ livewire.js?id=df3a17f2:3881
+handler4 @ livewire.js?id=df3a17f2:3183
+(anonymous) @ livewire.js?id=df3a17f2:3247
+(anonymous) @ livewire.js?id=df3a17f2:3185
+livewire.js?id=df3a17f2:740 [Violation] 'setInterval' handler took 76ms
+livewire.js?id=df3a17f2:740 [Violation] 'setInterval' handler took 66ms

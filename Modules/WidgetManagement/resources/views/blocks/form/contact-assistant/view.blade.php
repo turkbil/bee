@@ -21,7 +21,7 @@
 </style>
 
 <!-- Split Screen Container -->
-<div class="flex flex-col lg:flex-row" x-data="{
+<div class="flex flex-col md:flex-row" x-data="{
     formData: { name: '', email: '', phone: '', subject: '', message: '' },
     isSubmitting: false,
     showSuccess: false,
@@ -38,7 +38,7 @@
 }">
 
     <!-- Left Side: Info & Contact Details & Form (Full Width on Mobile) -->
-    <div class="w-full lg:w-1/2 lg:min-h-screen relative bg-gray-50 dark:bg-gray-900 p-8 lg:p-16 animate-slide-in-left overflow-y-auto">
+    <div class="w-full md:w-1/2 md:min-h-screen relative bg-gray-50 dark:bg-gray-900 p-8 md:p-16 animate-slide-in-left overflow-y-auto">
 
         <!-- Background Decoration -->
         <div class="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none">
@@ -52,7 +52,7 @@
             <div class="mb-8">
                 <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full border border-gray-200 dark:border-gray-700 mb-6">
                     <div class="w-2 h-2 bg-green-500 dark:bg-green-400 rounded-full animate-pulse"></div>
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">7/24 Aktif Destek</span>
+                    <span class="text-sm font-medium text-gray-700 dark:text-white">7/24 Aktif Destek</span>
                 </div>
 
                 <h1 class="text-5xl lg:text-6xl font-black mb-6 leading-tight text-gray-900 dark:text-white">
@@ -272,7 +272,7 @@
     </div>
 
     <!-- Right Side: AI Chat Assistant -->
-    <div class="w-full lg:w-1/2 min-h-screen relative bg-white dark:bg-gray-900 p-8 lg:p-16 animate-slide-in-right">
+    <div class="w-full md:w-1/2 min-h-screen relative bg-white dark:bg-gray-900 p-8 md:p-16 animate-slide-in-right">
 
         <!-- Background Decoration -->
         <div class="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none">
@@ -280,7 +280,7 @@
         </div>
 
         <!-- Sticky Container -->
-        <div class="lg:sticky lg:top-24 relative z-10 w-full max-w-4xl mx-auto">
+        <div class="md:sticky md:top-24 relative z-10 w-full max-w-4xl mx-auto">
             <x-ai.inline-widget
                 title="iXtif Destek Asistanı"
                 page-slug="iletisim"

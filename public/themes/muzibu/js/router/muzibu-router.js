@@ -71,6 +71,11 @@ window.muzibuRouter = {
             const cached = this.getFromCache(url);
             if (cached) {
                 console.log('💾 Using cached data for:', url);
+                // Cache hit - loading HEMEN kapat!
+                this.isLoading = false;
+                if (window.Alpine && window.Alpine.store('player')) {
+                    window.Alpine.store('player').isLoading = false;
+                }
                 this.renderPage(cached, url, pushState);
                 return;
             }

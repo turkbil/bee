@@ -46,6 +46,9 @@
     {{-- Core System Scripts --}}
     <script defer src="{{ asset('js/core-system.js') }}?v=1.0.0"></script>
 
+    {{-- PWA Service Worker Registration --}}
+    <x-pwa-registration />
+
     @stack('scripts')
 </body>
 </html>

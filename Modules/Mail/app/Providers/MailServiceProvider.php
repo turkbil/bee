@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Mail\Providers;
+namespace Modules\Mail\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -33,7 +33,7 @@ class MailServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(module_path('Mail', 'routes/admin.php'));
 
         // Livewire components
-        Livewire::component('mail::admin.mail-component', \Modules\Mail\Http\Livewire\Admin\MailComponent::class);
+        Livewire::component('mail::admin.mail-component', \Modules\Mail\App\Http\Livewire\Admin\MailComponent::class);
     }
 
     /**

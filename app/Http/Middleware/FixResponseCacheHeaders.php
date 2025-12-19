@@ -23,7 +23,9 @@ class FixResponseCacheHeaders
         $this->sanitizeJsonResponse($response);
 
         // 🔑 HLS Encryption Key - FORCE CACHE HEADERS (highest priority!)
-        if ($request->is('api/muzibu/songs/*/key') || $request->is('*/api/muzibu/songs/*/key')) {
+        // 🔧 FIX: Support both old (/api/) and new (/hls-key/) paths
+        if ($request->is('hls-key/muzibu/songs/*') || $request->is('*/hls-key/muzibu/songs/*') ||
+            $request->is('api/muzibu/songs/*/key') || $request->is('*/api/muzibu/songs/*/key')) {
             // Force cache-friendly headers AFTER all other middleware
             $response->headers->set('Cache-Control', 'public, max-age=86400, immutable', true);
             $response->headers->set('Expires', gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT', true);

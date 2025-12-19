@@ -65,7 +65,7 @@ class AISettingsHelper
     {
         $contact = [
             'phone' => setting('contact_phone_1', null),
-            'whatsapp' => setting('contact_whatsapp_1', null),
+            'whatsapp' => setting('contact_whatsapp_1'),
             'email' => setting('contact_email_1', null),
             'telegram' => setting('ai_social_telegram', null), // AI'ya özel (bildirim için)
             'address' => setting('contact_address_line_1', null),

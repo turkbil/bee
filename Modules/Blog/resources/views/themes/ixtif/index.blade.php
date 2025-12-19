@@ -990,7 +990,7 @@
                                                 <i :class="favorited ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400'" class="text-[10px] sm:text-sm transition-all duration-200"></i>
                                             </div>
                                             @else
-                                            <span onclick="event.preventDefault(); event.stopPropagation(); window.location.href='{{ route('login') }}'"
+                                            <span onclick="event.preventDefault(); event.stopPropagation(); savePendingFavorite('{{ addslashes(get_class($item)) }}', {{ $item->blog_id }}, '{{ url($blogUrl) }}')"
                                                class="group/fav w-6 h-6 sm:w-8 sm:h-8 bg-white/90 dark:bg-gray-800/80 backdrop-blur-md rounded-md sm:rounded-lg flex items-center justify-center border border-gray-200 dark:border-gray-600 shadow-lg hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-300 dark:hover:border-red-500/50 hover:scale-110 transition-all duration-200 cursor-pointer"
                                                title="Favorilere eklemek için giriş yapın">
                                                 <i class="fa-regular fa-heart text-gray-400 group-hover/fav:text-red-400 text-[10px] sm:text-sm transition-all duration-200"></i>

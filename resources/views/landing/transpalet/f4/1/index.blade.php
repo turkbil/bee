@@ -226,9 +226,9 @@
 
 @section('content')
 @php
-    // Contact Settings (Header ile aynı) - Fallback values
+    // Contact Settings (Header ile aynı)
     $contactPhone = setting('contact_phone_1', '0216 755 35 55');
-    $contactWhatsapp = setting('contact_whatsapp_1', '905309555885');
+    $contactWhatsapp = setting('contact_whatsapp_1');
 @endphp
 
     <!-- Hero Section - Above the fold optimization -->

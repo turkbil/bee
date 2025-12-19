@@ -244,7 +244,7 @@
 
             // İletişim bilgileri
             $contactPhone = setting('contact_phone_1', '0216 755 3 555');
-            $contactWhatsapp = setting('contact_whatsapp_1', '0501 005 67 58');
+            $contactWhatsapp = setting('contact_whatsapp_1');
             $contactEmail = setting('contact_email_1', 'info@ixtif.com');
         @endphp
 

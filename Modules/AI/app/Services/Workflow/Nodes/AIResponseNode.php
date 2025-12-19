@@ -560,7 +560,7 @@ UNIVERSAL;
             $tenantService = TenantServiceFactory::getPromptService();
             $contactInfo = $tenantService->getContactInfo();
             $contactPhone = $contactInfo['phone'] ?? setting('contact_phone_1', '');
-            $contactWhatsApp = $contactInfo['whatsapp'] ?? setting('contact_whatsapp_1', '');
+            $contactWhatsApp = $contactInfo['whatsapp'] ?? setting('contact_whatsapp_1');
 
             // No product message - önce directive, yoksa tenant service, yoksa default
             $noProductMessage = $this->getDirectiveValue('chatbot_no_product_response', 'string', null);

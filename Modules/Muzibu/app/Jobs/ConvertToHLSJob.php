@@ -79,32 +79,10 @@ class ConvertToHLSJob implements ShouldQueue
             $playlistPath = $tenantStoragePath . '/playlist.m3u8';
             $segmentPattern = $tenantStoragePath . '/segment-%03d.ts';
 
-            // 🔐 AES-128 Encryption setup
-            $encryptionKey = bin2hex(random_bytes(16)); // 128-bit key
-            $encryptionIV = bin2hex(random_bytes(16));  // 128-bit IV
-
-            // Save encryption key to database
-            \DB::connection('tenant')->table('muzibu_songs')
-                ->where('song_id', $song->song_id)
-                ->update([
-                    'encryption_key' => $encryptionKey,
-                    'encryption_iv' => $encryptionIV,
-                    'updated_at' => now()
-                ]);
-
-            // Create key file for FFmpeg
-            $keyFilePath = $tenantStoragePath . '/enc.key';
-            file_put_contents($keyFilePath, hex2bin($encryptionKey));
-
-            // Create key info file for FFmpeg
-            // Format: key_url\nkey_file_path\niv
-            // 🔧 FIX: Use RELATIVE path for key URL (no domain/protocol)
-            // Why: Avoids cross-origin issues between www/non-www subdomains
-            // Example: User visits www.muzibu.com.tr but playlist has muzibu.com.tr → CORS!
-            // Solution: Relative path /hls-key/... works on any subdomain (same-origin)
-            $keyUrl = "/hls-key/muzibu/songs/{$song->song_id}";
-            $keyInfoPath = $tenantStoragePath . '/enc.keyinfo';
-            file_put_contents($keyInfoPath, "{$keyUrl}\n{$keyFilePath}\n{$encryptionIV}");
+            // 🔓 UNENCRYPTED HLS - No encryption (for better browser compatibility)
+            // Reason: HLS.js had internal exceptions with encrypted key loading
+            // Security: URL protection via rate limiting and nginx access control
+            // Note: encryption_key and encryption_iv fields in DB remain unused
 
             // 🎵 Get original bitrate from file (preserve quality)
             $bitrate = $song->getBitrate(); // Auto-extracts if not set, fallback to 256kbps
@@ -122,7 +100,7 @@ class ConvertToHLSJob implements ShouldQueue
                 'lowpass=f=14000'                           // Low-pass 14kHz
             ]);
 
-            // FFmpeg command for HLS conversion with AES-128 encryption + Ultimate Edition filters
+            // FFmpeg command for UNENCRYPTED HLS conversion + Ultimate Edition filters
             // Options:
             // -map 0:a = only audio stream (skip album art/video)
             // -c:a aac = AAC encoding (required for filters)
@@ -132,15 +110,14 @@ class ConvertToHLSJob implements ShouldQueue
             // -hls_time 10 = 10 second segments
             // -hls_list_size 0 = include all segments in playlist
             // -hls_segment_filename = segment file naming pattern (CRITICAL!)
-            // -hls_key_info_file = encryption key info
             // -f hls = output format HLS
+            // Note: -hls_key_info_file REMOVED (no encryption)
             $command = sprintf(
-                'ffmpeg -i %s -map 0:a -c:a aac -b:a %dk -af %s -start_number 0 -hls_time 10 -hls_list_size 0 -hls_segment_filename %s -hls_key_info_file %s -f hls %s 2>&1',
+                'ffmpeg -i %s -map 0:a -c:a aac -b:a %dk -af %s -start_number 0 -hls_time 10 -hls_list_size 0 -hls_segment_filename %s -f hls %s 2>&1',
                 escapeshellarg($inputPath),
                 $bitrate,
                 escapeshellarg($audioFilters),
                 escapeshellarg($segmentPattern),
-                escapeshellarg($keyInfoPath),
                 escapeshellarg($playlistPath)
             );
 

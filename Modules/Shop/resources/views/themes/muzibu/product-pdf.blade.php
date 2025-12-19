@@ -576,7 +576,7 @@
         </div>
         <div class="feature-item">
             <div class="feature-title">📱 WhatsApp</div>
-            <div class="feature-desc">0501 005 67 58</div>
+            <div class="feature-desc">{{ setting('contact_whatsapp_1') }}</div>
         </div>
         <div class="feature-item">
             <div class="feature-title">✉️ E-posta</div>

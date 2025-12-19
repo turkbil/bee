@@ -1013,14 +1013,10 @@ function muzibuApp() {
             return new Promise((resolve, reject) => {
                 if (Hls.isSupported()) {
                     this.hlsNext = new Hls({
-                        enableWorker: true,
+                        enableWorker: false, // 🔧 FIX: Disable worker to avoid internal exceptions
                         lowLatencyMode: false,
                         xhrSetup: function(xhr, url) {
-                            console.log('🔧 xhrSetup (crossfade) called for:', url);
-                            console.log('🔧 Original responseType:', xhr.responseType);
                             xhr.withCredentials = false; // 🔑 CRITICAL: Disable credentials for CORS
-                            console.log('🔧 withCredentials set to:', xhr.withCredentials);
-                            // Note: Do NOT override responseType - let HLS.js manage it
                         }
                     });
 
@@ -1466,8 +1462,6 @@ function muzibuApp() {
                 // Stop current playback FIRST before loading new song
                 await this.stopCurrentPlayback();
 
-                this.isLoading = true;
-
                 // 🚀 OPTIMIZED: Get stream URL directly (includes song info)
                 const streamResponse = await fetch(`/api/muzibu/songs/${id}/stream`);
 
@@ -1481,7 +1475,6 @@ function muzibuApp() {
                         setTimeout(() => {
                             window.location.href = errorData.redirect;
                         }, 1000);
-                        this.isLoading = false;
                         return;
                     }
 
@@ -1491,7 +1484,6 @@ function muzibuApp() {
                         setTimeout(() => {
                             window.location.href = errorData.redirect;
                         }, 1000);
-                        this.isLoading = false;
                         return;
                     }
 
@@ -1501,7 +1493,6 @@ function muzibuApp() {
                         this.activeDevices = []; // Modal açılınca fetchActiveDevices çağrılacak
                         this.showDeviceSelectionModal = true;
                         this.fetchActiveDevices(); // Cihaz listesini getir
-                        this.isLoading = false;
                         return;
                     }
 
@@ -1512,7 +1503,6 @@ function muzibuApp() {
                     } else {
                         this.showToast(errorData.message || 'Bir hata oluştu', 'error');
                     }
-                    this.isLoading = false;
                     return;
                 }
 
@@ -1615,8 +1605,6 @@ function muzibuApp() {
             } catch (error) {
                 console.error('Failed to play song:', error);
                 this.showToast('Şarkı yüklenemedi', 'error');
-            } finally {
-                this.isLoading = false;
             }
         },
 
@@ -2018,7 +2006,7 @@ onplay: function() {
                 const hlsInstanceId = Date.now();
 
                 this.hls = new Hls({
-                    enableWorker: true,
+                    enableWorker: false, // 🔧 FIX: Disable worker to avoid internal exceptions
                     lowLatencyMode: false,
                     // 🔑 KEY LOADING POLICY - Prevent keyLoadError with aggressive retries
                     keyLoadPolicy: {
@@ -2060,11 +2048,7 @@ onplay: function() {
                     // Wildcard + credentials is invalid per CORS spec
                     // Fix: Set withCredentials=false for all HLS requests
                     xhrSetup: function(xhr, url) {
-                        console.log('🔧 xhrSetup called for:', url);
-                        console.log('🔧 Original responseType:', xhr.responseType);
-                        xhr.withCredentials = false; // 🔑 CRITICAL: Disable credentials for key/segment requests
-                        console.log('🔧 withCredentials set to:', xhr.withCredentials);
-                        // Note: Do NOT override responseType - let HLS.js manage it
+                        xhr.withCredentials = false; // 🔑 CRITICAL: Disable credentials for CORS
                     }
                 });
 
@@ -2088,24 +2072,15 @@ onplay: function() {
                     ? normalizedUrl + '&v=' + Date.now()
                     : normalizedUrl + '?v=' + Date.now();
 
-                console.log('🎵 HLS loadSource URL:', cacheBustedUrl);
                 this.hls.loadSource(cacheBustedUrl);
                 this.hls.attachMedia(audio);
 
-                // 🔑 Track key loading for debugging
-                this.hls.on(Hls.Events.KEY_LOADING, function(event, data) {
-                    console.log('🔑 KEY_LOADING:', data.frag?.decryptdata?.uri || 'unknown URI');
-                });
-
-                this.hls.on(Hls.Events.KEY_LOADED, function(event, data) {
-                    console.log('✅ KEY_LOADED successfully');
-                });
-
-                // 🔑 Non-fatal error handling (silent - retry is expected)
+                // 🔑 Error handling (only log fatal errors)
                 this.hls.on(Hls.Events.ERROR, function(event, data) {
-                    // Key load errors are expected for deleted songs
-                    // HLS.js will retry and eventually trigger fatal error
-                    // No need to log retries
+                    // Only log fatal errors for debugging
+                    if (data.fatal) {
+                        console.error('HLS Fatal Error:', data.type, data.details);
+                    }
                 });
 
                 this.hls.on(Hls.Events.MANIFEST_PARSED, function() {

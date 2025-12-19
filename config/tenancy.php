@@ -31,6 +31,7 @@ return [
         Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper::class,
         \App\Tenancy\QueueTenancyBootstrapper::class,
         \App\Tenancy\SessionTenancyBootstrapper::class,
+        \App\Tenancy\MailConfigBootstrapper::class, // ✅ Mail config'i Settings'ten yükle
     ],
     
     'database' => [

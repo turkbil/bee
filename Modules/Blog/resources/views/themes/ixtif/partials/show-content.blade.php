@@ -167,7 +167,7 @@
 
                         @php
                             $contactPhone = setting('contact_phone_1', '0216 755 3 555');
-                            $contactWhatsapp = setting('contact_whatsapp_1', '0501 005 67 58');
+                            $contactWhatsapp = setting('contact_whatsapp_1');
                         @endphp
 
                         @php
@@ -260,7 +260,7 @@
                                 </div>
                             @else
                                 <div class="flex items-center gap-1.5 md:gap-2 text-gray-400 dark:text-gray-500 cursor-pointer"
-                                     @click="window.location.href = '{{ route('login') }}'">
+                                     @click="savePendingFavorite('{{ addslashes(get_class($item)) }}', {{ $item->id }}, '{{ $shareUrl }}')">
                                     <i class="far fa-heart text-sm md:text-lg"></i>
                                     <span class="text-xs md:text-sm font-medium">{{ $item->favoritesCount() ?? 0 }}</span>
                                 </div>

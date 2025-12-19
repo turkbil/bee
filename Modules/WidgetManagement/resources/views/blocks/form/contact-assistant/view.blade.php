@@ -98,7 +98,7 @@
                             <a href="{{ whatsapp_link() }}"
                                target="_blank"
                                class="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 text-lg font-semibold">
-                                {{ setting('contact_whatsapp_1', '0501 005 67 58') }}
+                                {{ setting('contact_whatsapp_1') }}
                             </a>
                         </div>
                         <i class="fa-solid fa-arrow-right text-green-500 dark:text-green-400 group-hover:translate-x-2 transition-transform"></i>

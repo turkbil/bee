@@ -2,6 +2,42 @@
 
 declare(strict_types=1);
 
+/**
+ * 🚨 KRİTİK: AI SYSTEM PROMPT MİMARİSİ - ÖNEMLİ NOTLAR
+ *
+ * Bu controller modüler AI asistan sistemini yönetir. System prompt'lar ŞU SIRALAMAYLA oluşturulur:
+ *
+ * 1️⃣ **TENANT-SPECIFIC PROMPT (EN ÖNEMLİ!)**
+ *    - Tenant 2/3 (ixtif.com): Tenant2PromptService → FULL ultra detaylı kurallar
+ *    - Tenant 1001 (muzibu.com): MusicSearchService → Generic müzik kuralları
+ *    ⚠️ Bu prompt'lar ÖNCELİKLİDİR! Override etme!
+ *
+ * 2️⃣ **MODÜL CONTEXT**
+ *    - ShopSearchService, MusicSearchService, InfoSearchService vb.
+ *    - Her modül kendi context'ini (ürünler, içerikler) sağlar
+ *
+ * 3️⃣ **GENEL KURALLAR (MİNİMAL!)**
+ *    - Dil talimatları (Türkçe/İngilizce)
+ *    - Markdown format
+ *    - Temel yönlendirmeler
+ *
+ * 🔥 **ASLA YAPMA:**
+ * - Tenant-specific prompt'un üzerine generic "yardımcı, nazik" gibi ifadeler ekleme!
+ * - ShopSearchService'de Tenant2ProductSearchService kullanma (Tenant2PromptService kullan!)
+ * - buildModularSystemPrompt()'ta tenant kurallarını override etme!
+ *
+ * ✅ **DOĞRU YAPILANMA:**
+ * - ShopSearchService::getPromptRules() → Tenant2PromptService::getPromptAsString()
+ * - buildModularSystemPrompt() → Sadece $rules + context + minimal genel kurallar
+ *
+ * 📊 **SORUN GİDERME:**
+ * - AI ekstra cümle ekliyorsa: buildModularSystemPrompt kontrol et!
+ * - Tenant kuralları çalışmıyorsa: ShopSearchService::getPromptRules() kontrol et!
+ * - Log: 'DEBUG: Prompt Rules' ile $combinedPromptRules içeriğini kontrol et
+ *
+ * 🗓️ **SON GÜNCELLEME:** 2025-12-20 - Tenant2PromptService entegrasyonu düzeltildi
+ */
+
 namespace Modules\AI\App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
@@ -2969,6 +3005,10 @@ class PublicAIController extends Controller
             ]);
 
             // Build system prompt
+            \Log::info('🔍 DEBUG: Prompt Rules', [
+                'combinedPromptRules_length' => strlen($combinedPromptRules),
+                'combinedPromptRules_preview' => substr($combinedPromptRules, 0, 500),
+            ]);
             $systemPrompt = $this->buildModularSystemPrompt($combinedContext, $combinedPromptRules);
 
             // Prepare messages for AI
@@ -3005,8 +3045,8 @@ class PublicAIController extends Controller
             ]);
 
             $aiResponse = $aiService->ask($aiMessages, false, [
-                'max_tokens' => 1000,
-                'temperature' => 0.7,
+                'max_tokens' => 500,  // Uzun sorular için yeterli alan
+                'temperature' => 0.5,  // Dengeli (prompt'a uygun davransın)
             ]);
 
             if (empty($aiResponse)) {
@@ -3097,8 +3137,8 @@ class PublicAIController extends Controller
      */
     private function buildModularSystemPrompt(string $context, string $rules): string
     {
-        $tenantName = setting('site_name') ?? 'Site';
         $locale = app()->getLocale();
+        $tenantId = tenant('id');
 
         $langInstructions = match($locale) {
             'tr' => 'Türkçe yanıt ver.',
@@ -3107,22 +3147,30 @@ class PublicAIController extends Controller
             default => 'Respond in the same language as the user message.',
         };
 
-        return "Sen {$tenantName} asistanısın. Yardımcı, nazik ve profesyonel ol.
+        // 🔒 RUNTIME VALIDATION: Rules içeriğini kontrol et
+        try {
+            // Rules PromptBuilder'dan gelmeli ve validate edilmeli
+            if (!\App\Services\AI\PromptBuilder::validate($rules, $tenantId)) {
+                \Log::warning("⚠️ buildModularSystemPrompt: Prompt validation WARNING for tenant {$tenantId}");
+                // Warning only, devam et (çünkü rules zaten ShopSearchService'den geliyor)
+            } else {
+                \Log::info("✅ buildModularSystemPrompt: Prompt validated for tenant {$tenantId}");
+            }
+        } catch (\Exception $e) {
+            \Log::error("❌ buildModularSystemPrompt: Validation failed - " . $e->getMessage());
+        }
+
+        // 🔥 KRİTİK FİX: Tenant-specific rules (Tenant2PromptService) ÖNCELİKLİDİR!
+        // Generic prompt ekleme, çünkü Tenant2PromptService ultra detaylı kurallar içeriyor
+        return "{$rules}
 
 ## BAĞLAM BİLGİLERİ
 {$context}
 
-## MODÜL KURALLARI
-{$rules}
-
 ## GENEL KURALLAR
 - {$langInstructions}
-- Markdown formatı kullan (başlıklar için ##, listeler için -, kalın için **)
-- Kısa ve öz yanıtlar ver (max 3-4 paragraf)
+- Markdown formatı kullan
 - Sadece context'teki bilgileri kullan
-- Emin olmadığın bilgiyi ASLA uydurma
-- Ürün/içerik önerirken mutlaka link ver
-- Fiyat sorarsa ve bilgi yoksa 'Bu konuda bilgi bulunamadı' de
-- Kullanıcıyı yönlendirmek için CTA (Call to Action) kullan";
+- Emin olmadığın bilgiyi ASLA uydurma";
     }
 }

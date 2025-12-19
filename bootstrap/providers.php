@@ -12,7 +12,7 @@ return [
     App\Providers\RedisClusterServiceProvider::class,
     App\Providers\RouteServiceProvider::class,
     App\Providers\SettingsServiceProvider::class,
-    App\Providers\MailConfigServiceProvider::class,
+    // App\Providers\MailConfigServiceProvider::class, // ❌ REMOVED: Use MailConfigBootstrapper instead
     App\Providers\TelescopeServiceProvider::class,
     App\Providers\TenancyProvider::class,
     App\Providers\TenancyServiceProvider::class,

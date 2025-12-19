@@ -89,7 +89,7 @@
             <!-- Contact Icons - Settings'den çekilir -->
             @php
                 $contactPhone = setting('contact_phone_1', '0216 755 35 55');
-                $contactWhatsapp = setting('contact_whatsapp_1', '905309555885');
+                $contactWhatsapp = setting('contact_whatsapp_1');
             @endphp
 
             <div class="flex items-center gap-3">

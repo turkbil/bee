@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Response Cache - Settings Fields</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            border: '#334155'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .field-card { transition: all 0.2s; }
+        .field-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 p-4 sm:p-8">
+    <div class="max-w-4xl mx-auto">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-800 rounded-xl p-6 sm:p-8 mb-8">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">⚙️</div>
+                <div class="flex-1">
+                    <h1 class="text-3xl sm:text-4xl font-bold mb-3 text-green-400">Response Cache Settings</h1>
+                    <p class="text-slate-300 text-lg mb-4">Eklenecek Ayar Field'leri</p>
+                    <div class="flex flex-wrap gap-3 text-sm">
+                        <span class="bg-green-900/50 text-green-300 px-3 py-1 rounded-full">1 Field</span>
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 rounded-full">Form Builder Uyumlu</span>
+                        <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full">📅 20 Aralık 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖNEMLİ NOT -->
+        <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold mb-3 text-blue-400 flex items-center gap-2">
+                <span>📝</span> Settings Sayfasına Eklenecek
+            </h2>
+            <p class="text-slate-300 leading-relaxed mb-3">
+                Bu field'leri Settings modülünün <strong class="text-blue-400">Performance</strong>
+                kategorisine ekleyebilirsin. Basit bir checkbox ile tenant cache'i açıp kapatabilir.
+            </p>
+            <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                <p class="text-slate-400 text-sm">
+                    <strong class="text-slate-300">Kategori Önerisi:</strong> Performance, System, Advanced Settings<br>
+                    <strong class="text-slate-300">Konum:</strong> Admin → Settings → Performance
+                </p>
+            </div>
+        </div>
+
+        <!-- FIELD 1: Response Cache Aktif -->
+        <div class="mb-6">
+            <div class="bg-green-900/20 border border-green-800 rounded-lg overflow-hidden field-card">
+                <div class="bg-green-900/30 px-5 py-3 border-b border-green-800 flex items-center justify-between">
+                    <h3 class="font-bold text-green-400 flex items-center gap-2">
+                        <span class="bg-green-900/50 text-green-300 font-bold text-lg rounded-full w-8 h-8 flex items-center justify-center">1</span>
+                        <span>Response Cache Aktif</span>
+                    </h3>
+                    <span class="bg-green-900/50 text-green-300 text-xs px-3 py-1 rounded-full font-mono">checkbox</span>
+                </div>
+                <div class="p-5">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <!-- Input Type -->
+                        <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                            <p class="text-slate-500 text-xs mb-1 uppercase tracking-wide">Input Type</p>
+                            <p class="text-green-400 font-mono text-lg">checkbox</p>
+                        </div>
+
+                        <!-- Input Key -->
+                        <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                            <p class="text-slate-500 text-xs mb-1 uppercase tracking-wide">Input Key</p>
+                            <p class="text-orange-400 font-mono text-lg">response_cache_enabled</p>
+                        </div>
+                    </div>
+
+                    <!-- Label -->
+                    <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700 mb-4">
+                        <p class="text-slate-500 text-xs mb-2 uppercase tracking-wide">Label</p>
+                        <p class="text-slate-200 text-lg">Response Cache Aktif</p>
+                        <p class="text-slate-400 text-sm mt-1">(TR locale için)</p>
+                    </div>
+
+                    <!-- Placeholder -->
+                    <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700 mb-4">
+                        <p class="text-slate-500 text-xs mb-2 uppercase tracking-wide">Placeholder</p>
+                        <p class="text-slate-400 text-sm italic">-</p>
+                        <p class="text-slate-500 text-xs mt-1">(Checkbox için placeholder gerekmez)</p>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+                        <p class="text-slate-500 text-xs mb-2 uppercase tracking-wide">Info (Yardım Metni)</p>
+                        <p class="text-slate-300 leading-relaxed">
+                            Sayfaları önbellekte saklar ve daha hızlı yüklenmesini sağlar.
+                            Premium tenant'lar için önerilir. Cache süresini sistem otomatik yönetir (1 saat).
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- KOPYALANACAK KOD -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-slate-200 flex items-center gap-2">
+                <span>📋</span> Kopyala-Yapıştır (Form Builder Formatı)
+            </h2>
+
+            <div class="bg-slate-900/50 border border-slate-700 rounded-lg overflow-hidden">
+                <div class="bg-slate-800 px-4 py-2 border-b border-slate-700 flex items-center justify-between">
+                    <span class="text-slate-400 text-sm">Form Builder JSON</span>
+                    <button onclick="copyToClipboard()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded">
+                        Kopyala
+                    </button>
+                </div>
+                <pre id="codeBlock" class="p-4 text-xs text-green-300 overflow-x-auto"><code>{
+    "input_type": "checkbox",
+    "label": "Response Cache Aktif",
+    "input_key": "response_cache_enabled",
+    "placeholder": "",
+    "info": "Sayfaları önbellekte saklar ve daha hızlı yüklenmesini sağlar. Premium tenant'lar için önerilir. Cache süresini sistem otomatik yönetir (1 saat)."
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- ARRAY FORMATI -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-slate-200 flex items-center gap-2">
+                <span>🔧</span> PHP Array Formatı
+            </h2>
+
+            <div class="bg-slate-900/50 border border-slate-700 rounded-lg overflow-hidden">
+                <div class="bg-slate-800 px-4 py-2 border-b border-slate-700">
+                    <span class="text-slate-400 text-sm">PHP Array (Settings Modülü İçin)</span>
+                </div>
+                <pre class="p-4 text-xs text-blue-300 overflow-x-auto"><code>[
+    'input_type' => 'checkbox',
+    'label' => 'Response Cache Aktif',
+    'input_key' => 'response_cache_enabled',
+    'placeholder' => '',
+    'info' => 'Sayfaları önbellekte saklar ve daha hızlı yüklenmesini sağlar. Premium tenant\'lar için önerilir. Cache süresini sistem otomatik yönetir (1 saat).',
+]</code></pre>
+            </div>
+        </div>
+
+        <!-- BLADE COMPONENT ÖRNEĞİ -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-slate-200 flex items-center gap-2">
+                <span>🎨</span> Blade Component Örneği
+            </h2>
+
+            <div class="bg-slate-900/50 border border-slate-700 rounded-lg overflow-hidden">
+                <div class="bg-slate-800 px-4 py-2 border-b border-slate-700">
+                    <span class="text-slate-400 text-sm">Blade Template (Manuel Ekleme İçin)</span>
+                </div>
+                <pre class="p-4 text-xs text-purple-300 overflow-x-auto"><code>&lt;div class="form-group mb-4"&gt;
+    &lt;div class="form-check"&gt;
+        &lt;input type="checkbox"
+               class="form-check-input"
+               id="response_cache_enabled"
+               name="response_cache_enabled"
+               value="1"
+               {{ setting('response_cache_enabled', true) ? 'checked' : '' }}&gt;
+
+        &lt;label class="form-check-label" for="response_cache_enabled"&gt;
+            Response Cache Aktif
+        &lt;/label&gt;
+    &lt;/div&gt;
+
+    &lt;small class="form-text text-muted"&gt;
+        Sayfaları önbellekte saklar ve daha hızlı yüklenmesini sağlar.
+        Premium tenant'lar için önerilir. Cache süresini sistem otomatik yönetir (1 saat).
+    &lt;/small&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- CONTROLLER KAYDETME -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-slate-200 flex items-center gap-2">
+                <span>💾</span> Controller'da Kaydetme
+            </h2>
+
+            <div class="bg-slate-900/50 border border-slate-700 rounded-lg overflow-hidden">
+                <div class="bg-slate-800 px-4 py-2 border-b border-slate-700">
+                    <span class="text-slate-400 text-sm">Settings Controller (Store Method)</span>
+                </div>
+                <pre class="p-4 text-xs text-yellow-300 overflow-x-auto"><code>// Checkbox için özel işlem gerekir
+// Eğer checkbox işaretli değilse, request'te gelmez
+
+$validated = $request->validate([
+    'response_cache_enabled' => 'nullable|boolean',
+]);
+
+// Checkbox değerini düzelt (işaretli değilse false olarak kaydet)
+$cacheEnabled = $request->has('response_cache_enabled') ? true : false;
+
+setting(['response_cache_enabled' => $cacheEnabled]);
+
+// VEYA settings helper kullan
+setting([
+    'response_cache_enabled' => $request->boolean('response_cache_enabled', false),
+]);</code></pre>
+            </div>
+        </div>
+
+        <!-- KULLANIM ÖRNEĞİ -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-slate-200 flex items-center gap-2">
+                <span>✅</span> Kullanım Örneği (TenantCacheProfile)
+            </h2>
+
+            <div class="bg-slate-900/50 border border-slate-700 rounded-lg overflow-hidden">
+                <div class="bg-slate-800 px-4 py-2 border-b border-slate-700">
+                    <span class="text-slate-400 text-sm">app/Services/TenantCacheProfile.php</span>
+                </div>
+                <pre class="p-4 text-xs text-green-300 overflow-x-auto"><code>public function enabled(Request $request): bool
+{
+    // Global config kontrolü
+    if (!config('responsecache.enabled', true)) {
+        return false;
+    }
+
+    // ✨ Tenant bazlı kontrol (Settings'den)
+    return setting('response_cache_enabled', true);
+}</code></pre>
+            </div>
+
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4 mt-4">
+                <p class="text-blue-400 font-semibold mb-2">💡 Nasıl Çalışır?</p>
+                <ul class="text-slate-400 text-sm space-y-1">
+                    <li>• Admin → Settings → Checkbox işaretle/kaldır</li>
+                    <li>• <code class="bg-slate-900 px-2 py-0.5 rounded text-orange-300">setting('response_cache_enabled')</code> true/false döner</li>
+                    <li>• TenantCacheProfile her istekte kontrol eder</li>
+                    <li>• Cache aktifse kullanır, değilse normal render</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- OPSİYONEL: İLERİ SEVİYE AYARLAR -->
+        <div class="mb-8">
+            <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-6">
+                <h2 class="text-xl font-bold mb-3 text-yellow-400 flex items-center gap-2">
+                    <span>⚡</span> Opsiyonel: İleri Seviye Ayarlar
+                </h2>
+                <p class="text-slate-300 leading-relaxed mb-4">
+                    İleriye dönük olarak cache süresini de tenant bazlı ayarlamak istersen,
+                    ek bir field ekleyebilirsin:
+                </p>
+
+                <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                    <pre class="text-xs text-slate-300 overflow-x-auto"><code>{
+    "input_type": "number",
+    "label": "Cache Süresi (Saniye)",
+    "input_key": "response_cache_lifetime",
+    "placeholder": "3600",
+    "info": "Sayfaların önbellekte ne kadar süre saklanacağı (saniye). Varsayılan: 3600 (1 saat). Premium tenant'lar için önerilir: 7200 (2 saat)"
+}</code></pre>
+                </div>
+
+                <p class="text-slate-400 text-sm mt-3">
+                    ⚠️ <strong>Not:</strong> Şimdilik sadece açma/kapama yeterli.
+                    İleriye dönük iyileştirme olarak ekleyebilirsin.
+                </p>
+            </div>
+        </div>
+
+        <!-- ÖZET -->
+        <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-800 rounded-xl p-6">
+            <h2 class="text-2xl font-bold mb-4 text-green-400 flex items-center gap-2">
+                <span>📌</span> Özet
+            </h2>
+            <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 text-xl">✓</span>
+                    <p class="text-slate-300">
+                        <strong>1 field</strong> eklemen yeterli: <code class="bg-slate-900 px-2 py-0.5 rounded text-orange-300">response_cache_enabled</code>
+                    </p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 text-xl">✓</span>
+                    <p class="text-slate-300">
+                        <strong>Checkbox</strong> tipi - Kolay kullanım
+                    </p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 text-xl">✓</span>
+                    <p class="text-slate-300">
+                        <strong>Default:</strong> true (Cache aktif) - Performans için
+                    </p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-green-400 text-xl">✓</span>
+                    <p class="text-slate-300">
+                        <strong>TenantCacheProfile</strong> otomatik okuyup uygular
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-slate-500 text-sm pt-8 mt-8 border-t border-slate-800">
+            <p>🤖 Claude AI tarafından oluşturuldu • 20 Aralık 2025</p>
+            <p class="mt-2">
+                <a href="https://claude.com/claude-code" target="_blank" class="text-blue-400 hover:text-blue-300">
+                    Generated with Claude Code
+                </a>
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const codeBlock = document.getElementById('codeBlock');
+            const text = codeBlock.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Kopyalandı! ✓');
+            });
+        }
+    </script>
+</body>
+</html>

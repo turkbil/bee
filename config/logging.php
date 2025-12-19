@@ -106,6 +106,16 @@ return [
             'permission' => 0666,
         ],
 
+        // 🔐 SESSION TERMINATIONS - Concurrent session kapanma logları
+        'session-terminations' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/session-terminations.log'),
+            'level' => 'info',
+            'days' => 90, // GDPR uyumu için 90 gün
+            'replace_placeholders' => true,
+            'permission' => 0666,
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),

@@ -538,7 +538,7 @@
                         </div>
                         <div>
                             <div class="text-sm text-blue-100 dark:text-blue-200 mb-1">WhatsApp</div>
-                            <div class="text-xl font-bold text-white">0501 005 67 58</div>
+                            <div class="text-xl font-bold text-white">{{ setting('contact_whatsapp_1') }}</div>
                         </div>
                     </a>
 

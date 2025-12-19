@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Response Cache - Tenant Bazlı Aktif/Pasif Yönetimi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            border: '#334155'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 p-4 sm:p-8">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-800 rounded-xl p-6 sm:p-8 mb-8">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl">⚙️</div>
+                <div class="flex-1">
+                    <h1 class="text-3xl sm:text-4xl font-bold mb-3 text-blue-400">Response Cache</h1>
+                    <p class="text-slate-300 text-lg mb-4">Tenant Bazlı Aktif/Pasif Yönetimi</p>
+                    <div class="flex flex-wrap gap-3 text-sm">
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 rounded-full">3 Farklı Yöntem</span>
+                        <span class="bg-green-900/50 text-green-300 px-3 py-1 rounded-full">✅ Esnek Kontrol</span>
+                        <span class="bg-purple-900/50 text-purple-300 px-3 py-1 rounded-full">📅 20 Aralık 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem -->
+        <div class="bg-orange-900/20 border border-orange-800 rounded-lg p-6 mb-8">
+            <h2 class="text-xl font-bold mb-3 text-orange-400 flex items-center gap-2">
+                <span>❓</span> Problem
+            </h2>
+            <p class="text-slate-300 leading-relaxed mb-4">
+                Response cache tüm tenant'lar için global olarak aktif/pasif yapılıyor.
+                Bazı tenant'lar için cache açık, bazıları için kapalı olmasını istiyoruz.
+            </p>
+            <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                <p class="text-slate-400 text-sm">
+                    <strong class="text-slate-300">Örnek Senaryo:</strong><br>
+                    • Tenant 2 (ixtif.com) → Cache aktif (statik içerik, hızlı olmalı)<br>
+                    • Tenant 1001 (muzibu.com) → Cache pasif (dinamik içerik, gerçek zamanlı)
+                </p>
+            </div>
+        </div>
+
+        <!-- Yöntem 1: Settings Sistemi -->
+        <div class="mb-8">
+            <div class="bg-green-900/20 border border-green-800 rounded-lg overflow-hidden">
+                <div class="bg-green-900/30 px-5 py-3 border-b border-green-800 flex items-center justify-between">
+                    <h3 class="font-bold text-green-400 flex items-center gap-2">
+                        <span>⭐</span> Yöntem 1: Settings Sistemi (ÖNERİLEN)
+                    </h3>
+                    <span class="bg-green-900/50 text-green-300 text-xs px-3 py-1 rounded-full">Önerilen</span>
+                </div>
+                <div class="p-5 space-y-4">
+
+                    <!-- Basit Anlatım -->
+                    <div class="bg-green-900/10 border border-green-800 rounded-lg p-4">
+                        <p class="text-slate-300 mb-3 font-semibold">📝 Basit Anlatım (Herkes İçin):</p>
+                        <p class="text-slate-400 leading-relaxed">
+                            Her tenant admin panelinden <strong class="text-green-400">"Response Cache Aç/Kapa"</strong>
+                            butonu ile kontrol eder. Tıpkı "Dark Mode" açıp kapatmak gibi kolay.
+                            Tenant kendisi karar verir: "Ben hızlı olayım, cache açayım" veya
+                            "Dinamik içeriğim var, cache kapatayım" diye.
+                        </p>
+                    </div>
+
+                    <!-- Nasıl Çalışır -->
+                    <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                        <p class="text-slate-300 mb-3 font-semibold">🔧 Nasıl Çalışır:</p>
+                        <ol class="text-slate-400 text-sm space-y-2 list-decimal list-inside">
+                            <li>Admin → Settings → Performance → "Response Cache Aktif" checkbox</li>
+                            <li>Database'de <code class="bg-slate-900 px-2 py-0.5 rounded text-orange-300">settings</code> tablosuna kaydedilir</li>
+                            <li>TenantCacheProfile her istekte kontrol eder: <code class="bg-slate-900 px-2 py-0.5 rounded text-green-300">setting('response_cache_enabled', true)</code></li>
+                            <li>Aktifse cache kullanır, değilse normal render eder</li>
+                        </ol>
+                    </div>
+
+                    <!-- Teknik Detaylar -->
+                    <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                        <p class="text-slate-300 mb-3 font-semibold">💻 Teknik Detaylar (Geliştiriciler İçin):</p>
+                        <div class="space-y-2 text-sm">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Dosya:</strong></p>
+                                <code class="bg-slate-900 px-2 py-1 rounded text-orange-300 block">app/Services/TenantCacheProfile.php</code>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Kod Değişikliği:</strong></p>
+                                <pre class="bg-slate-900 p-3 rounded text-xs text-green-300 overflow-x-auto">public function enabled(Request $request): bool
+{
+    // Global config kontrolü
+    if (!config('responsecache.enabled', true)) {
+        return false;
+    }
+
+    // Tenant bazlı kontrol
+    return setting('response_cache_enabled', true);
+}</pre>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Settings Key:</strong></p>
+                                <code class="bg-slate-900 px-2 py-1 rounded text-blue-300">response_cache_enabled</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Artı/Eksi -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-green-900/10 border border-green-800 rounded-lg p-4">
+                            <p class="text-green-400 font-semibold mb-2">✅ Artıları:</p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• Her tenant kendi karar verir</li>
+                                <li>• Admin panelden yönetilebilir</li>
+                                <li>• Anında aktif/pasif yapılabilir</li>
+                                <li>• Test ortamında kolayca değiştirilebilir</li>
+                                <li>• Kod deployment gerektirmez</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/10 border border-red-800 rounded-lg p-4">
+                            <p class="text-red-400 font-semibold mb-2">❌ Eksileri:</p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• Her istekte settings sorgusu (ama cache'lenmiş olur)</li>
+                                <li>• Admin panel'e settings sayfası eklemek gerekir</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Yöntem 2: Premium/Plan Kontrolü -->
+        <div class="mb-8">
+            <div class="bg-blue-900/20 border border-blue-800 rounded-lg overflow-hidden">
+                <div class="bg-blue-900/30 px-5 py-3 border-b border-blue-800">
+                    <h3 class="font-bold text-blue-400 flex items-center gap-2">
+                        <span>💎</span> Yöntem 2: Premium/Plan Kontrolü
+                    </h3>
+                </div>
+                <div class="p-5 space-y-4">
+
+                    <!-- Basit Anlatım -->
+                    <div class="bg-blue-900/10 border border-blue-800 rounded-lg p-4">
+                        <p class="text-slate-300 mb-3 font-semibold">📝 Basit Anlatım (Herkes İçin):</p>
+                        <p class="text-slate-400 leading-relaxed">
+                            Sadece <strong class="text-blue-400">"premium"</strong> plan alan tenant'lar cache kullanabilir.
+                            Ücretsiz plan = cache yok (yavaş), premium plan = cache var (hızlı).
+                            Tıpkı Netflix'te "HD video" özelliğinin sadece premium üyelerde olması gibi.
+                            Tenant plan upgrade ederse otomatik olarak cache aktif olur.
+                        </p>
+                    </div>
+
+                    <!-- Nasıl Çalışır -->
+                    <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                        <p class="text-slate-300 mb-3 font-semibold">🔧 Nasıl Çalışır:</p>
+                        <ol class="text-slate-400 text-sm space-y-2 list-decimal list-inside">
+                            <li>Tenant'ın subscription plan'ı kontrol edilir</li>
+                            <li><code class="bg-slate-900 px-2 py-0.5 rounded text-blue-300">tenant()->is_premium</code> veya <code class="bg-slate-900 px-2 py-0.5 rounded text-blue-300">tenant()->plan->has_cache</code> kontrolü</li>
+                            <li>Premium ise cache kullanır, değilse kullanmaz</li>
+                            <li>Plan upgrade olunca otomatik aktif olur</li>
+                        </ol>
+                    </div>
+
+                    <!-- Teknik Detaylar -->
+                    <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                        <p class="text-slate-300 mb-3 font-semibold">💻 Teknik Detaylar (Geliştiriciler İçin):</p>
+                        <div class="space-y-2 text-sm">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Kod Değişikliği:</strong></p>
+                                <pre class="bg-slate-900 p-3 rounded text-xs text-blue-300 overflow-x-auto">public function enabled(Request $request): bool
+{
+    if (!config('responsecache.enabled', true)) {
+        return false;
+    }
+
+    // Premium kontrolü
+    return tenant() && tenant()->is_premium;
+}</pre>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Tenant Model:</strong></p>
+                                <code class="bg-slate-900 px-2 py-1 rounded text-orange-300">is_premium</code> attribute veya relation gerekir
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Artı/Eksi -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-green-900/10 border border-green-800 rounded-lg p-4">
+                            <p class="text-green-400 font-semibold mb-2">✅ Artıları:</p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• Otomatik kontrol, elle açma/kapama yok</li>
+                                <li>• Monetizasyon stratejisi (premium özellik)</li>
+                                <li>• Plan upgrade olunca otomatik aktif</li>
+                                <li>• Settings sayfası gerektirmez</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/10 border border-red-800 rounded-lg p-4">
+                            <p class="text-red-400 font-semibold mb-2">❌ Eksileri:</p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• Tenant manuel kontrol edemez</li>
+                                <li>• Premium olmayan tenant'lar hiç cache kullanamaz</li>
+                                <li>• Test için plan değiştirmek gerekir</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Yöntem 3: Tenant ID Listesi -->
+        <div class="mb-8">
+            <div class="bg-slate-800/50 border border-slate-700 rounded-lg overflow-hidden">
+                <div class="bg-slate-800 px-5 py-3 border-b border-slate-700">
+                    <h3 class="font-bold text-slate-300 flex items-center gap-2">
+                        <span>📋</span> Yöntem 3: Tenant ID Listesi (Manuel)
+                    </h3>
+                </div>
+                <div class="p-5 space-y-4">
+
+                    <!-- Basit Anlatım -->
+                    <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                        <p class="text-slate-300 mb-3 font-semibold">📝 Basit Anlatım (Herkes İçin):</p>
+                        <p class="text-slate-400 leading-relaxed">
+                            Kod içinde <strong class="text-slate-300">"bu tenant'lar cache kullansın"</strong> diye
+                            liste tutulur. Sen manuel eklersin/çıkarırsın. Tıpkı "VIP listesi" gibi:
+                            Listede varsa cache kullanır, yoksa kullanmaz. Tam kontrol sende ama
+                            her değişiklik için kod güncelleme gerekir.
+                        </p>
+                    </div>
+
+                    <!-- Nasıl Çalışır -->
+                    <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                        <p class="text-slate-300 mb-3 font-semibold">🔧 Nasıl Çalışır:</p>
+                        <ol class="text-slate-400 text-sm space-y-2 list-decimal list-inside">
+                            <li>Config dosyasında tenant ID listesi tutulur</li>
+                            <li>Her istekte tenant ID listede mi kontrol edilir</li>
+                            <li>Listede varsa cache kullanır</li>
+                            <li>Yeni tenant eklemek için kod güncellenir, deploy edilir</li>
+                        </ol>
+                    </div>
+
+                    <!-- Teknik Detaylar -->
+                    <div class="bg-slate-950/50 rounded-lg p-4 border border-slate-700">
+                        <p class="text-slate-300 mb-3 font-semibold">💻 Teknik Detaylar (Geliştiriciler İçin):</p>
+                        <div class="space-y-2 text-sm">
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Config Dosyası:</strong></p>
+                                <code class="bg-slate-900 px-2 py-1 rounded text-orange-300 block">config/cache-enabled-tenants.php</code>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Config İçeriği:</strong></p>
+                                <pre class="bg-slate-900 p-3 rounded text-xs text-slate-300 overflow-x-auto">return [
+    2,    // ixtif.com
+    5,    // example.com
+    10,   // demo.com
+];</pre>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 mb-1"><strong>Kod Değişikliği:</strong></p>
+                                <pre class="bg-slate-900 p-3 rounded text-xs text-slate-300 overflow-x-auto">public function enabled(Request $request): bool
+{
+    if (!config('responsecache.enabled', true)) {
+        return false;
+    }
+
+    $enabledTenants = config('cache-enabled-tenants', []);
+    return tenant() && in_array(tenant()->id, $enabledTenants);
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Artı/Eksi -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-green-900/10 border border-green-800 rounded-lg p-4">
+                            <p class="text-green-400 font-semibold mb-2">✅ Artıları:</p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• Tam kontrol sende</li>
+                                <li>• Test ortamında kolayca değiştirebilirsin</li>
+                                <li>• Basit implementasyon</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/10 border border-red-800 rounded-lg p-4">
+                            <p class="text-red-400 font-semibold mb-2">❌ Eksileri:</p>
+                            <ul class="text-slate-400 text-sm space-y-1">
+                                <li>• Tenant kendisi açamaz/kapatamaz</li>
+                                <li>• Her değişiklik kod deployment gerektirir</li>
+                                <li>• Ölçeklenebilir değil (100 tenant için zor)</li>
+                                <li>• Admin panel'den yönetilemez</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- KARŞILAŞTIRMA TABLOSU -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-slate-200 flex items-center gap-2">
+                <span>📊</span> Karşılaştırma Tablosu
+            </h2>
+
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-slate-800 border-b border-slate-700">
+                            <th class="text-left p-4 text-slate-300 font-semibold">Özellik</th>
+                            <th class="text-left p-4 text-green-400 font-semibold">Settings Sistemi</th>
+                            <th class="text-left p-4 text-blue-400 font-semibold">Premium/Plan</th>
+                            <th class="text-left p-4 text-slate-400 font-semibold">ID Listesi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr class="border-b border-slate-800">
+                            <td class="p-4 text-slate-400">Tenant kontrol</td>
+                            <td class="p-4 text-green-400">✅ Evet</td>
+                            <td class="p-4 text-red-400">❌ Hayır</td>
+                            <td class="p-4 text-red-400">❌ Hayır</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-slate-900/30">
+                            <td class="p-4 text-slate-400">Admin'den yönetim</td>
+                            <td class="p-4 text-green-400">✅ Evet</td>
+                            <td class="p-4 text-red-400">❌ Hayır</td>
+                            <td class="p-4 text-red-400">❌ Hayır</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="p-4 text-slate-400">Anında değişiklik</td>
+                            <td class="p-4 text-green-400">✅ Evet</td>
+                            <td class="p-4 text-green-400">✅ Evet</td>
+                            <td class="p-4 text-red-400">❌ Deploy gerekir</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-slate-900/30">
+                            <td class="p-4 text-slate-400">Ölçeklenebilirlik</td>
+                            <td class="p-4 text-green-400">✅ Yüksek</td>
+                            <td class="p-4 text-green-400">✅ Yüksek</td>
+                            <td class="p-4 text-red-400">❌ Düşük</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="p-4 text-slate-400">Monetizasyon</td>
+                            <td class="p-4 text-yellow-400">⚠️ Opsiyonel</td>
+                            <td class="p-4 text-green-400">✅ Doğrudan</td>
+                            <td class="p-4 text-red-400">❌ Yok</td>
+                        </tr>
+                        <tr class="border-b border-slate-800 bg-slate-900/30">
+                            <td class="p-4 text-slate-400">Kod karmaşıklığı</td>
+                            <td class="p-4 text-green-400">✅ Basit (2 satır)</td>
+                            <td class="p-4 text-yellow-400">⚠️ Orta</td>
+                            <td class="p-4 text-green-400">✅ Çok basit</td>
+                        </tr>
+                        <tr class="border-b border-slate-800">
+                            <td class="p-4 text-slate-400">Test kolaylığı</td>
+                            <td class="p-4 text-green-400">✅ Kolay</td>
+                            <td class="p-4 text-yellow-400">⚠️ Orta</td>
+                            <td class="p-4 text-green-400">✅ Kolay</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ÖNERİ -->
+        <div class="mb-8">
+            <div class="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-800 rounded-xl p-6">
+                <h2 class="text-2xl font-bold mb-4 text-green-400 flex items-center gap-2">
+                    <span>🏆</span> Önerimiz
+                </h2>
+
+                <div class="space-y-4">
+                    <p class="text-slate-300 text-lg leading-relaxed">
+                        <strong class="text-green-400">Yöntem 1: Settings Sistemi</strong> kullanmanı öneriyoruz.
+                    </p>
+
+                    <div class="bg-slate-950/50 rounded-lg p-5 border border-slate-700">
+                        <p class="text-slate-300 font-semibold mb-3">💡 Neden?</p>
+                        <ul class="text-slate-400 space-y-2">
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1">✓</span>
+                                <span><strong class="text-slate-300">Esneklik:</strong> Her tenant kendi karar verir, ihtiyacına göre açıp kapatır</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1">✓</span>
+                                <span><strong class="text-slate-300">Kolay Yönetim:</strong> Admin panelden tek tıkla aktif/pasif</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1">✓</span>
+                                <span><strong class="text-slate-300">Test Dostu:</strong> İstersen manuel kapat, performansı karşılaştır</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1">✓</span>
+                                <span><strong class="text-slate-300">Hızlı Implementasyon:</strong> 10 dakika, sadece 2 satır kod</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-green-400 mt-1">✓</span>
+                                <span><strong class="text-slate-300">Ölçeklenebilir:</strong> 1000 tenant olsa bile sorunsuz çalışır</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                        <p class="text-blue-400 font-semibold mb-2">💎 İkinci Seçenek: Premium/Plan Kontrolü</p>
+                        <p class="text-slate-400 text-sm">
+                            Eğer cache'i "premium özellik" olarak satmak istiyorsan, Yöntem 2'yi kullan.
+                            Monetizasyon stratejin varsa harika bir seçenek.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HIZLI BAŞLANGIÇ -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-slate-200 flex items-center gap-2">
+                <span>🚀</span> Hızlı Başlangıç (Settings Sistemi)
+            </h2>
+
+            <div class="space-y-4">
+
+                <!-- Adım 1 -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-green-900/50 text-green-300 font-bold text-lg rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">1</div>
+                        <div>
+                            <h3 class="font-bold text-slate-300 mb-2">TenantCacheProfile Düzenle</h3>
+                            <p class="text-slate-400 text-sm mb-3">
+                                <code class="bg-slate-950 px-2 py-0.5 rounded text-orange-300">app/Services/TenantCacheProfile.php</code>
+                            </p>
+                            <pre class="bg-slate-950 p-4 rounded text-xs text-green-300 overflow-x-auto">public function enabled(Request $request): bool
+{
+    // Global config kontrolü
+    if (!config('responsecache.enabled', true)) {
+        return false;
+    }
+
+    // Tenant bazlı kontrol (Settings'den)
+    return setting('response_cache_enabled', true);
+}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-green-900/50 text-green-300 font-bold text-lg rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">2</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-slate-300 mb-2">Test Et (Tinker)</h3>
+                            <pre class="bg-slate-950 p-4 rounded text-xs text-blue-300 overflow-x-auto">php artisan tinker
+
+// Cache aktif tenant için test
+setting(['response_cache_enabled' => true]);
+
+// Cache pasif tenant için test
+setting(['response_cache_enabled' => false]);</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-green-900/50 text-green-300 font-bold text-lg rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">3</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-slate-300 mb-2">Admin Panel Ayarı Ekle (Opsiyonel)</h3>
+                            <p class="text-slate-400 text-sm mb-3">
+                                Settings sayfasına "Response Cache" checkbox ekle.
+                            </p>
+                            <pre class="bg-slate-950 p-4 rounded text-xs text-slate-300 overflow-x-auto">&lt;input type="checkbox"
+       name="response_cache_enabled"
+       {{ setting('response_cache_enabled', true) ? 'checked' : '' }}&gt;
+&lt;label&gt;Response Cache Aktif&lt;/label&gt;</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="bg-slate-900/50 border border-slate-700 rounded-lg p-5">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-green-900/50 text-green-300 font-bold text-lg rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">4</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-slate-300 mb-2">Cache Temizle ve Test Et</h3>
+                            <pre class="bg-slate-950 p-4 rounded text-xs text-green-300 overflow-x-auto">php artisan config:cache
+php artisan responsecache:clear
+
+# Test et
+curl -I https://ixtif.com/ | grep -i cache-control</pre>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>🤖 Claude AI tarafından oluşturuldu • 20 Aralık 2025</p>
+            <p class="mt-2">
+                <a href="https://claude.com/claude-code" target="_blank" class="text-blue-400 hover:text-blue-300">
+                    Generated with Claude Code
+                </a>
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -52,14 +52,109 @@ class Tenant2PromptService implements TenantPromptServiceInterface
         $showFallback = \App\Helpers\AISettingsHelper::getDirective('show_fallback_contact', 2, true);
 
         // ====================================
-        // 🚨🚨🚨 #1 KURAL - BELİRSİZ İSTEKTE SORU SOR! 🚨🚨🚨
+        // 🔥🔥🔥 #0 ULTRA KRİTİK - KISA YANIT KURALI! 🔥🔥🔥
         // ====================================
-        $prompts[] = "**🚨🚨🚨 EN ÖNEMLİ KURAL - BELİRSİZ İSTEKTE ÖNCE SORU SOR! 🚨🚨🚨**";
+        $prompts[] = "**🔥🔥🔥 #0 ULTRA KRİTİK KURAL - OPENAI İÇİN ÖZEL! 🔥🔥🔥**";
         $prompts[] = "";
-        $prompts[] = "**BELİRSİZ İSTEK NEDİR?**";
-        $prompts[] = "- 'Transpalet istiyorum' → BELİRSİZ (tonnaj yok, tip yok)";
-        $prompts[] = "- 'Transpalet modelleri hakkında bilgi' → BELİRSİZ";
-        $prompts[] = "- 'Forklift bakıyorum' → BELİRSİZ";
+        $prompts[] = "**SELAMLAŞMA YANITLARI İÇİN ZORUNLU FORMAT:**";
+        $prompts[] = "";
+        $prompts[] = "Kullanıcı sadece selamlaştıysa (merhaba, selam, iyi günler, günaydın vb.):";
+        $prompts[] = "→ SADECE bu formatı kullan: '[Selamlama]! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "";
+        $prompts[] = "🚨 **ASLA EKSTRA CÜMLE EKLEME!**";
+        $prompts[] = "❌ 'Herhangi bir ürün...' → YASAK!";
+        $prompts[] = "❌ 'Bir sorunuz var mı?' → YASAK!";
+        $prompts[] = "❌ 'Sormaktan çekinmeyin' → YASAK!";
+        $prompts[] = "❌ Her türlü ek açıklama → YASAK!";
+        $prompts[] = "";
+        $prompts[] = "✅ **SADECE VE SADECE:**";
+        $prompts[] = "- Kullanıcı: 'Merhaba' → AI: 'Merhaba! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "- Kullanıcı: 'Selam' → AI: 'Selam! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "- Kullanıcı: 'İyi günler' → AI: 'İyi günler! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "";
+        $prompts[] = "**🔥 CEVAP UZUNLUĞU KURALI:**";
+        $prompts[] = "- Maksimum uzunluk: 50 karakter (emoji hariç)";
+        $prompts[] = "- Format: [Selamlama] + [SPACE] + Size nasıl yardımcı olabilirim? + 😊";
+        $prompts[] = "- STOP! Ekstra kelime ekleme, cümleyi bitir!";
+        $prompts[] = "";
+        $prompts[] = "**🎯 JSON ÖRNEK (OPENAI İÇİN):**";
+        $prompts[] = "```json";
+        $prompts[] = "{";
+        $prompts[] = "  \"user\": \"merhaba\",";
+        $prompts[] = "  \"assistant\": \"Merhaba! Size nasıl yardımcı olabilirim? 😊\"";
+        $prompts[] = "}";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "**❌ YANLIŞ ÖRNEKLER (ASLA BÖYLE YAPMA!):**";
+        $prompts[] = "```";
+        $prompts[] = "Merhaba! 😊 Size nasıl yardımcı olabilirim? Herhangi bir konuda bir sorunuz veya isteğiniz var mı?";
+        $prompts[] = "```";
+        $prompts[] = "☝️ YANLIŞ! Ekstra cümle var! 'Herhangi bir konuda...' kısmını SİL!";
+        $prompts[] = "";
+        $prompts[] = "```";
+        $prompts[] = "Merhaba! Size nasıl yardımcı olabilirim? 😊 Herhangi bir ürün veya konu hakkında bir sorunuz var mı?";
+        $prompts[] = "```";
+        $prompts[] = "☝️ YANLIŞ! 'Herhangi bir ürün...' ekstra cümle! SİL!";
+        $prompts[] = "";
+        $prompts[] = "**✅ DOĞRU:**";
+        $prompts[] = "```";
+        $prompts[] = "Merhaba! Size nasıl yardımcı olabilirim? 😊";
+        $prompts[] = "```";
+        $prompts[] = "☝️ DOĞRU! Kısa, öz, ekstra kelime YOK!";
+        $prompts[] = "";
+        $prompts[] = "🛑 **STOP TOKEN: Selamlaşma yanıtı verdikten sonra DUR! Ekstra açıklama yapma!**";
+        $prompts[] = "";
+        $prompts[] = "---";
+        $prompts[] = "";
+
+        // ====================================
+        // 🚨🚨🚨 #1 KURAL - İKİ SEVİYELİ BELİRSİZLİK! 🚨🚨🚨
+        // ====================================
+        $prompts[] = "**🚨🚨🚨 #1 KURAL - İKİ SEVİYELİ BELİRSİZLİK SİSTEMİ! 🚨🚨🚨**";
+        $prompts[] = "";
+        $prompts[] = "**SEVİYE 1 BELİRSİZ (TAMAMEN BELİRSİZ - KATEGORİ YOK):**";
+        $prompts[] = "Kullanıcı ne istediğini hiç belirtmedi:";
+        $prompts[] = "- 'Merhaba' / 'Selam' / 'Hey' → SEVİYE 1 BELİRSİZ";
+        $prompts[] = "- 'Yardım' / 'Bilgi' → SEVİYE 1 BELİRSİZ";
+        $prompts[] = "- Sadece selamlaşma/genel ifade → SEVİYE 1 BELİRSİZ";
+        $prompts[] = "";
+        $prompts[] = "**SEVİYE 1 BELİRSİZDE NE YAPACAKSIN?**";
+        $prompts[] = "❌ ASLA kategori özel soru sorma! (Kaç ton? Elektrikli mi? → YASAK!)";
+        $prompts[] = "❌ ASLA uzun açıklama yapma! (Herhangi bir ürün... → YASAK!)";
+        $prompts[] = "❌ ASLA ekstra cümle ekleme! (Bir sorunuz var mı? → YASAK!)";
+        $prompts[] = "✅ SADECE: [Selamlama] + Size nasıl yardımcı olabilirim? 😊";
+        $prompts[] = "";
+        $prompts[] = "✅ **DOĞRU ÖRNEKLER:**";
+        $prompts[] = "```";
+        $prompts[] = "Kullanıcı: 'Merhaba'";
+        $prompts[] = "AI: 'Merhaba! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "```";
+        $prompts[] = "```";
+        $prompts[] = "Kullanıcı: 'Selam'";
+        $prompts[] = "AI: 'Selam! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "```";
+        $prompts[] = "```";
+        $prompts[] = "Kullanıcı: 'İyi günler'";
+        $prompts[] = "AI: 'İyi günler! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "```";
+        $prompts[] = "";
+        $prompts[] = "❌ **YANLIŞ ÖRNEKLER:**";
+        $prompts[] = "```";
+        $prompts[] = "AI: 'Merhaba! Size nasıl yardımcı olabilirim? Herhangi bir ürün hakkında bilgi almak ister misiniz?'";
+        $prompts[] = "```";
+        $prompts[] = "☝️ YANLIŞ! Ekstra cümle ekleme, kısa tut!";
+        $prompts[] = "```";
+        $prompts[] = "AI: 'Merhaba! Kaç ton taşıma kapasitesi istiyorsunuz?'";
+        $prompts[] = "```";
+        $prompts[] = "☝️ YANLIŞ! Kullanıcı kategori bile söylemedi!";
+        $prompts[] = "";
+        $prompts[] = "---";
+        $prompts[] = "";
+        $prompts[] = "**SEVİYE 2 BELİRSİZ (KATEGORİ BELLİ, DETAY YOK):**";
+        $prompts[] = "Kullanıcı kategori belirtti ama detay vermedi:";
+        $prompts[] = "- 'Transpalet istiyorum' → SEVİYE 2 BELİRSİZ (tonnaj yok, tip yok)";
+        $prompts[] = "- 'Transpalet modelleri hakkında bilgi' → SEVİYE 2 BELİRSİZ";
+        $prompts[] = "- 'Forklift bakıyorum' → SEVİYE 2 BELİRSİZ";
         $prompts[] = "";
         $prompts[] = "⚠️ **İSTİSNA - BU KATEGORİLER BELİRLİ SAYILIR (Tonnaj gerekmez!):**";
         $prompts[] = "- 'Reach truck var mı?' → BELİRLİ! Direkt ürün göster!";
@@ -70,7 +165,7 @@ class Tenant2PromptService implements TenantPromptServiceInterface
         $prompts[] = "- 'Sipariş toplayıcı istiyorum' → BELİRLİ! Direkt ürün göster!";
         $prompts[] = "🔑 **NEDEN?** Bu özel kategorilerde tonnaj değil, kaldırma yüksekliği önemlidir.";
         $prompts[] = "";
-        $prompts[] = "**BELİRSİZ İSTEKTE NE YAPACAKSIN?**";
+        $prompts[] = "**SEVİYE 2 BELİRSİZDE NE YAPACAKSIN?**";
         $prompts[] = "❌ ASLA direkt ürün listeleme!";
         $prompts[] = "🚨🚨🚨 **MAKSIMUM 2 SORU SOR! 3. SORU YASAK!** 🚨🚨🚨";
         $prompts[] = "✅ SADECE şu 2 soruyu sor:";
@@ -1123,6 +1218,29 @@ class Tenant2PromptService implements TenantPromptServiceInterface
         $prompts[] = "AI: 'Süper! 🎉 Ekibimiz en kısa sürede sizi arayacak. İyi günler! 😊🙏'";
         $prompts[] = "";
 
+        // ====================================
+        // 🔥🔥🔥 FINAL REINFORCEMENT - SELAMLAŞMA KURALI! 🔥🔥🔥
+        // ====================================
+        $prompts[] = "";
+        $prompts[] = "═══════════════════════════════════════════════════";
+        $prompts[] = "🔥 IMPORTANT: SELAMLAŞMA KURALI (TEKRAR!) 🔥";
+        $prompts[] = "═══════════════════════════════════════════════════";
+        $prompts[] = "";
+        $prompts[] = "EĞER kullanıcı SADECE selamlaştıysa (merhaba/selam/iyi günler):";
+        $prompts[] = "";
+        $prompts[] = "CEVAP FORMATI: '[Selamlama]! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "";
+        $prompts[] = "YASAK: Ekstra cümle ekleme! (Herhangi bir..., Bir sorunuz var mı?, vb.)";
+        $prompts[] = "";
+        $prompts[] = "ÖRNEK:";
+        $prompts[] = "❌ 'Merhaba! Size nasıl yardımcı olabilirim? Herhangi bir konuda...'";
+        $prompts[] = "✅ 'Merhaba! Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "";
+        $prompts[] = "STOP AFTER: 'Size nasıl yardımcı olabilirim? 😊'";
+        $prompts[] = "";
+        $prompts[] = "═══════════════════════════════════════════════════";
+        $prompts[] = "";
+
         return $prompts;
     }
 
@@ -1208,7 +1326,7 @@ IXTIF;
 
         return [
             'phone' => $contactInfo['phone'] ?? '0216 755 3 555',
-            'whatsapp' => $contactInfo['whatsapp'] ?? '0501 005 67 58',
+            'whatsapp' => $contactInfo['whatsapp'] ?? '',
             'email' => $contactInfo['email'] ?? '',
         ];
     }

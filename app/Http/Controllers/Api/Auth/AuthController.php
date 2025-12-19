@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
@@ -192,8 +193,33 @@ class AuthController extends Controller
                 // Session sync KALDIRILDI - LIFO düzgün çalışsın diye
                 // Her cihaz kendi session'ını tutuyor, farklı session = farklı cihaz
                 if (!$deviceService->sessionExists($user)) {
-                    // Session DB'de yok veya ID eşleşmiyor = Başka cihazdan login (LIFO tarafından silindi)
-                    \Log::info('🔐 checkSession: Session not found (LIFO kicked)', ['user_id' => $user->id]);
+                    // Cache'den silinme nedenini oku
+                    $cookieToken = $request->cookie('mzb_login_token');
+                    $deletedReason = null;
+
+                    if ($cookieToken) {
+                        $cacheKey = "session_deleted_reason:{$user->id}:{$cookieToken}";
+                        $deletedReason = Cache::get($cacheKey);
+
+                        // Cache'den okuduktan sonra sil (tek kullanımlık)
+                        if ($deletedReason) {
+                            Cache::forget($cacheKey);
+                        }
+                    }
+
+                    // Reason'a göre mesaj belirle
+                    $message = match($deletedReason) {
+                        'lifo' => 'Başka bir cihazdan giriş yapıldı.',
+                        '60min_cleanup' => 'Oturumunuz 60 dakika inaktif kaldığı için otomatik olarak kapatıldı.',
+                        'manual_logout' => 'Oturumunuz kapatıldı.',
+                        'admin_terminated' => 'Oturumunuz yönetici tarafından sonlandırıldı.',
+                        default => 'Oturumunuz sonlandırıldı. Lütfen tekrar giriş yapın.',
+                    };
+
+                    \Log::info('🔐 checkSession: Session not found', [
+                        'user_id' => $user->id,
+                        'deleted_reason' => $deletedReason ?? 'unknown'
+                    ]);
 
                     Auth::logout();
 
@@ -207,7 +233,7 @@ class AuthController extends Controller
                     return response()->json([
                         'valid' => false,
                         'reason' => 'session_terminated',
-                        'message' => 'Başka bir cihazdan giriş yapıldı.',
+                        'message' => $message,
                     ])
                     ->withCookie(cookie()->forget($sessionCookie))
                     ->withCookie(cookie()->forget('XSRF-TOKEN'));

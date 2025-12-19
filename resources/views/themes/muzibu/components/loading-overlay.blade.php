@@ -1,4 +1,4 @@
-{{-- 🔄 SPA Loading Overlay - Logo Yanında Otomatik Hizalanmış --}}
+{{-- 🔄 SPA Loading Overlay - İçerik Alanı Ortasında --}}
 <div
     x-show="isLoading"
     x-transition:enter="transition ease-out duration-200"
@@ -9,7 +9,6 @@
     x-transition:leave-end="opacity-0 scale-90"
     class="fixed z-[60] bg-black/90 backdrop-blur-md border-2 border-muzibu-coral/40 rounded-xl shadow-2xl shadow-muzibu-coral/20"
     x-cloak
-    style="width: 200px;"
     id="loading-overlay"
 >
     {{-- Loading Content --}}
@@ -26,40 +25,44 @@
 </div>
 
 <script>
-// 🎯 Loading Overlay - Logo ile otomatik hizalama
+// 🎯 Loading Overlay - İçerik alanı ortasında konumlandır
 (function() {
-    function alignLoadingWithLogo() {
+    function centerLoadingInContent() {
         var overlay = document.getElementById('loading-overlay');
         if (!overlay) return;
 
-        var logo = document.querySelector('header a[href="/"]') || document.querySelector('header a');
-        if (logo) {
-            var rect = logo.getBoundingClientRect();
-            overlay.style.left = (rect.right + 12) + 'px';
-            overlay.style.top = (rect.top + (rect.height / 2) - 20) + 'px';
+        // Main content alanını bul
+        var mainContent = document.querySelector('main') || document.querySelector('.muzibu-main-content');
+
+        if (mainContent) {
+            var rect = mainContent.getBoundingClientRect();
+            // Overlay'i main content alanının tam ortasında konumlandır
+            overlay.style.left = (rect.left + rect.width / 2 - overlay.offsetWidth / 2) + 'px';
+            overlay.style.top = (rect.top + rect.height / 2 - overlay.offsetHeight / 2) + 'px';
         } else {
-            overlay.style.left = '80px';
-            overlay.style.top = '16px';
+            // Fallback: Ekranın ortasında
+            overlay.style.left = '50%';
+            overlay.style.top = '50%';
+            overlay.style.transform = 'translate(-50%, -50%)';
         }
     }
 
-    // İlk yüklemede hizala
+    // İlk yüklemede konumlandır
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', alignLoadingWithLogo);
+        document.addEventListener('DOMContentLoaded', centerLoadingInContent);
     } else {
-        alignLoadingWithLogo();
+        centerLoadingInContent();
     }
 
-    // Scroll/resize olduğunda güncelle
-    window.addEventListener('scroll', alignLoadingWithLogo, { passive: true });
-    window.addEventListener('resize', alignLoadingWithLogo, { passive: true });
+    // Resize olduğunda güncelle
+    window.addEventListener('resize', centerLoadingInContent, { passive: true });
 
     // Alpine store değiştiğinde güncelle
     document.addEventListener('alpine:initialized', function() {
         if (window.Alpine && Alpine.store('player')) {
             Alpine.effect(function() {
                 if (Alpine.store('player').isLoading) {
-                    setTimeout(alignLoadingWithLogo, 10);
+                    setTimeout(centerLoadingInContent, 10);
                 }
             });
         }

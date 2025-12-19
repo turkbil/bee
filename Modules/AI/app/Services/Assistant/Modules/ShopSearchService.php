@@ -231,16 +231,24 @@ class ShopSearchService implements ModuleSearchInterface
     {
         $tenantId = tenant('id');
 
-        // Tenant 2/3 için özel kurallar
-        if (in_array($tenantId, [2, 3])) {
-            $searchService = app(Tenant2ProductSearchService::class);
-            $customPrompts = $searchService->getCustomPrompts();
+        // 🔒 RUNTIME VALIDATION: PromptBuilder kullan (merkezi kontrol)
+        try {
+            $prompt = \App\Services\AI\PromptBuilder::buildSystemPrompt($tenantId, '');
 
-            return implode("\n\n", $customPrompts);
-        }
+            // 🔍 VALIDATION: Prompt geçerli mi kontrol et
+            if (!\App\Services\AI\PromptBuilder::validate($prompt, $tenantId)) {
+                \Log::error("🚨 ShopSearchService: Prompt validation FAILED for tenant {$tenantId}");
+                throw new \Exception("Prompt validation failed");
+            }
 
-        // Generic shop rules
-        return "
+            \Log::info("✅ ShopSearchService: Using validated PromptBuilder for tenant {$tenantId}");
+            return $prompt;
+
+        } catch (\Exception $e) {
+            \Log::error("❌ ShopSearchService: PromptBuilder failed - " . $e->getMessage());
+
+            // Fallback: Generic shop rules
+            return "
 ## SHOP ASSISTANT KURALLARI
 
 1. **Ürün Gösterimi:**
@@ -257,6 +265,7 @@ class ShopSearchService implements ModuleSearchInterface
    - Ürün özelliklerini vurgula
    - Karşılaştırma yap
 ";
+        }
     }
 
     /**

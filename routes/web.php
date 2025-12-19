@@ -768,3 +768,4 @@ Route::get("/test-auth-debug", function () {
         "has_session_cookie" => request()->hasCookie(config("session.cookie")),
     ]);
 })->middleware("web");
+

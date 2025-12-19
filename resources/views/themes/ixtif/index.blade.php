@@ -11,11 +11,11 @@
     {{-- Theme Flash Fix: Minimal inline script - Prevents flash before Alpine.js loads --}}
     <script>if(localStorage.getItem('darkMode')==='dark')document.documentElement.classList.add('dark')</script>
 
-    {{-- Tailwind CSS CDN --}}
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- Tenant Tailwind CSS (Pre-compiled) --}}
+    <link rel="stylesheet" href="{{ tenant_css() }}" media="all">
 
-    {{-- Alpine.js CDN --}}
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {{-- Alpine.js (Local) --}}
+    <script defer src="{{ asset('libs/alpine/alpine.min.js') }}"></script>
 
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
@@ -83,9 +83,9 @@
         }
     </style>
 
-    {{-- GLightbox CSS --}}
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css"></noscript>
+    {{-- GLightbox CSS (Local) --}}
+    <link rel="preload" href="{{ asset('libs/glightbox/css/glightbox.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ asset('libs/glightbox/css/glightbox.min.css') }}"></noscript>
 
     {{-- Preload first 8 product images for faster loading --}}
     @if(isset($homepageProducts) && count($homepageProducts) > 0)
@@ -490,8 +490,8 @@
         }
     </script>
 
-    {{-- GLightbox JS --}}
-    <script defer src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js"></script>
+    {{-- GLightbox JS (Local) --}}
+    <script defer src="{{ asset('libs/glightbox/js/glightbox.min.js') }}"></script>
 
     {{-- instant.page v5.2.0 - Intelligent Preloading --}}
     <script src="{{ asset('js/instantpage.js') }}" type="module"></script>

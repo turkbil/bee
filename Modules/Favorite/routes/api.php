@@ -9,6 +9,20 @@ Route::middleware(['tenant'])
     ->name('favorites.')
     ->group(function () {
 
+        // Save pending favorite (guest için)
+        Route::post('/save-pending', function(\Illuminate\Http\Request $request) {
+            // Session'a kaydet (guest kullanıcı için)
+            session([
+                'pending_favorite' => [
+                    'model_class' => $request->input('model_class'),
+                    'model_id' => $request->input('model_id'),
+                    'return_url' => $request->input('return_url')
+                ]
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Pending favorite saved']);
+        })->name('save-pending');
+
         // Toggle favorite (ekle/çıkar)
         Route::post('/toggle', function(\Illuminate\Http\Request $request) {
             // Auth kontrolü - web session veya sanctum token

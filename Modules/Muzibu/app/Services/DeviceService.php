@@ -4,6 +4,8 @@ namespace Modules\Muzibu\App\Services;
 
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Jenssegers\Agent\Agent;
 
 /**
@@ -103,6 +105,21 @@ class DeviceService
 
         $sessionId = session()->getId();
         if ($sessionId) {
+            // Önce session bilgisini al (cache'e reason kaydetmek için)
+            $session = DB::table($this->table)
+                ->where('session_id', $sessionId)
+                ->first();
+
+            if ($session && $session->login_token) {
+                // Cache'e silinme nedenini kaydet (5 dakika TTL)
+                Cache::put(
+                    "session_deleted_reason:{$user->id}:{$session->login_token}",
+                    'manual_logout',
+                    300
+                );
+            }
+
+            // Şimdi sil
             DB::table($this->table)
                 ->where('session_id', $sessionId)
                 ->delete();
@@ -386,6 +403,24 @@ class DeviceService
         $currentSessionId = session()->getId();
 
         // Sadece 60 dakikadan eski session'ları temizle (stale cleanup)
+        // Önce session'ları al (cache'e reason kaydetmek için)
+        $staleSessions = DB::table($this->table)
+            ->where('user_id', $user->id)
+            ->where('last_activity', '<', now()->subMinutes(60))
+            ->get();
+
+        foreach ($staleSessions as $staleSession) {
+            // Cache'e silinme nedenini kaydet (5 dakika TTL)
+            if ($staleSession->login_token) {
+                Cache::put(
+                    "session_deleted_reason:{$user->id}:{$staleSession->login_token}",
+                    '60min_cleanup',
+                    300
+                );
+            }
+        }
+
+        // Şimdi sil
         DB::table($this->table)
             ->where('user_id', $user->id)
             ->where('last_activity', '<', now()->subMinutes(60))
@@ -479,20 +514,31 @@ class DeviceService
         if ($count > $limit) {
             $toRemove = $count - $limit;
 
+            // Yeni session bilgisini al (kick eden)
+            $newSession = $sessions->firstWhere('session_id', $currentSessionId);
+
             // En eski session'ları sil (mevcut hariç)
             $oldSessions = $sessions
                 ->filter(fn($s) => $s->session_id !== $currentSessionId)
                 ->take($toRemove);
 
             foreach ($oldSessions as $old) {
+                // 🔐 DETAYLI LOG - Session Termination
+                $this->logSessionTermination($user, $newSession, $old, 'lifo');
+
+                // Cache'e silinme nedenini kaydet (5 dakika TTL)
+                if ($old->login_token) {
+                    Cache::put(
+                        "session_deleted_reason:{$user->id}:{$old->login_token}",
+                        'lifo',
+                        300
+                    );
+                }
+
+                // Session'ı sil
                 DB::table($this->table)
                     ->where('id', $old->id)
                     ->delete();
-
-                \Log::info('🔐 LIFO: Old session removed', [
-                    'user_id' => $user->id,
-                    'session_id' => substr($old->session_id, 0, 20) . '...',
-                ]);
             }
         }
     }
@@ -506,6 +552,21 @@ class DeviceService
             return false;
         }
 
+        // Önce session bilgisini al (cache'e reason kaydetmek için)
+        $session = DB::table($this->table)
+            ->where('session_id', $sessionId)
+            ->first();
+
+        if ($session && $session->login_token) {
+            // Cache'e silinme nedenini kaydet (5 dakika TTL)
+            Cache::put(
+                "session_deleted_reason:{$session->user_id}:{$session->login_token}",
+                'admin_terminated',
+                300
+            );
+        }
+
+        // Şimdi sil
         $deleted = DB::table($this->table)
             ->where('session_id', $sessionId)
             ->delete() > 0;
@@ -578,5 +639,40 @@ class DeviceService
         // registerSession içinde enforceDeviceLimit zaten çağrılıyor
         // Bu metod gerekirse ekstra işlemler için kullanılabilir
         // Şu an için no-op
+    }
+
+    /**
+     * Session termination'ı logla
+     *
+     * @param User $user
+     * @param object|null $newSession (kick eden session)
+     * @param object $oldSession (kick edilen session)
+     * @param string $reason (lifo, manual, timeout, logout, admin)
+     */
+    private function logSessionTermination($user, $newSession, $oldSession, $reason)
+    {
+        $logData = [
+            'reason' => $reason,
+            'user_email' => $user->email,
+            'kicked_session' => [
+                'email' => $user->email,
+                'ip' => $oldSession->ip_address ?? 'N/A',
+                'device' => $oldSession->device ?? 'N/A',
+                'browser' => $oldSession->browser ?? 'N/A',
+                'platform' => $oldSession->platform ?? 'N/A',
+                'session_opened_at' => $oldSession->created_at ?? 'N/A',
+            ],
+            'new_session' => $newSession ? [
+                'email' => $user->email,
+                'ip' => $newSession->ip_address ?? 'N/A',
+                'device' => $newSession->device ?? 'N/A',
+                'browser' => $newSession->browser ?? 'N/A',
+                'platform' => $newSession->platform ?? 'N/A',
+                'session_opened_at' => $newSession->created_at ?? 'N/A',
+            ] : null,
+            'terminated_at' => now()->toDateTimeString(),
+        ];
+
+        Log::channel('session-terminations')->info('Session Terminated', $logData);
     }
 }

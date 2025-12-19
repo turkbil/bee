@@ -1029,7 +1029,7 @@
                         </div>
                         <h3 class="text-xl lg:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap mb-2">WhatsApp</h3>
                         <p class="text-xs lg:text-sm text-gray-600 dark:text-gray-400 mb-2">Anında mesajlaşın</p>
-                        <p class="text-sm lg:text-base text-blue-600 dark:text-blue-400 font-semibold">0501 005 67 58</p>
+                        <p class="text-sm lg:text-base text-blue-600 dark:text-blue-400 font-semibold">{{ setting('contact_whatsapp_1') }}</p>
                     </div>
                 </a>
             </div>

@@ -208,10 +208,34 @@
         @include('themes.muzibu.components.sidebar-left')
         @include('themes.muzibu.components.main-content')
 
-        {{-- Right Sidebar - XL+ screens, all pages --}}
-        <aside class="muzibu-right-sidebar overflow-y-auto rounded-2xl hidden xl:block">
-            @include('themes.muzibu.components.sidebar-right')
-        </aside>
+        {{-- Right Sidebar - XL+ screens, music pages only --}}
+        @php
+            // Sağ blok gösterilecek route'lar (music pages + my-playlists)
+            $showRightSidebar = in_array(Route::currentRouteName(), [
+                'muzibu.home',
+                'muzibu.songs.show',
+                'muzibu.albums.index',
+                'muzibu.albums.show',
+                'muzibu.artists.index',
+                'muzibu.artists.show',
+                'muzibu.playlists.index',
+                'muzibu.playlists.show',
+                'muzibu.genres.index',
+                'muzibu.genres.show',
+                'muzibu.sectors.index',
+                'muzibu.sectors.show',
+                'muzibu.radios.index',
+                'muzibu.search',
+                'muzibu.favorites',
+                'muzibu.my-playlists',
+            ]);
+        @endphp
+
+        @if($showRightSidebar)
+            <aside class="muzibu-right-sidebar overflow-y-auto rounded-2xl hidden xl:block">
+                @include('themes.muzibu.components.sidebar-right')
+            </aside>
+        @endif
 
         @include('themes.muzibu.components.player')
         @include('themes.muzibu.components.queue-overlay')

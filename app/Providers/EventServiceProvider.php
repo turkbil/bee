@@ -27,6 +27,11 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\SetRememberMeCookieDuration::class,
         ],
 
+        // Process pending favorite after login
+        \Illuminate\Auth\Events\Authenticated::class => [
+            \App\Listeners\ProcessPendingFavorite::class,
+        ],
+
         // Module management events
         ModuleEnabled::class => [
             LoadModuleRoutes::class,

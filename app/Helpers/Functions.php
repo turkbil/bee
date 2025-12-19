@@ -550,7 +550,7 @@ if (!function_exists('whatsapp_link')) {
     {
         // Numara verilmemişse settings'ten al
         if (empty($phoneNumber)) {
-            $phoneNumber = setting('contact_whatsapp_1', '905010056758');
+            $phoneNumber = setting('contact_whatsapp_1');
         }
 
         // Sadece rakamları al (boşluk, tire, parantez vb. temizle)

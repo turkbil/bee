@@ -191,7 +191,7 @@ class Tenant2BlogProductInjector
         $siteName = setting('site_name') ?: 'iXtif';
         $siteSlogan = setting('site_slogan') ?: 'Türkiye\'nin İstif Pazarı';
         $phone = setting('site_phone') ?: '0216 755 3 555';
-        $whatsapp = setting('site_whatsapp') ?: '0501 005 67 58';
+        $whatsapp = setting('contact_whatsapp_1') ?: '';
 
         // WhatsApp numarasını uluslararası formata çevir
         $whatsappClean = preg_replace('/[^0-9]/', '', $whatsapp);

@@ -173,7 +173,9 @@ document.addEventListener('alpine:init', () => {
                     @if($playlist->coverMedia)
                         <img src="{{ thumb($playlist->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($playlist->title, 'Playlist') }}" loading="{{ $index < 5 ? 'eager' : 'lazy' }}" class="w-full h-full object-cover">
                     @else
-                        <div class="w-full h-full flex items-center justify-center text-4xl text-white/90">🎵</div>
+                        <div class="w-full h-full flex items-center justify-center text-white/90">
+                            <span class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">🎵</span>
+                        </div>
                     @endif
                 </div>
                 {{-- Play button --}}
@@ -181,14 +183,23 @@ document.addEventListener('alpine:init', () => {
                         @click.stop="playPlaylist({{ $playlist->playlist_id }})">
                     <i class="fas fa-play text-black ml-0.5"></i>
                 </button>
-                {{-- 3-Dot Menu Button - HOVER'DA GÖRÜNÜR --}}
-                <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop>
+                {{-- Favorite + Menu Buttons - HOVER'DA GÖRÜNÜR --}}
+                <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" @click.stop>
+                    {{-- Favorite Button --}}
+                    <button @click.stop="$store.favorites.toggle('playlist', {{ $playlist->playlist_id }})"
+                            class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                            x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'text-muzibu-coral' : ''">
+                        <i class="text-sm"
+                           x-bind:class="$store.favorites.isFavorite('playlist', {{ $playlist->playlist_id }}) ? 'fas fa-heart' : 'far fa-heart hover:text-muzibu-coral'"></i>
+                    </button>
+
+                    {{-- 3-Dot Menu Button --}}
                     <button @click="$store.contextMenu.openContextMenu($event, 'playlist', {
                         id: {{ $playlist->playlist_id }},
                         title: '{{ addslashes(getLocaleTitle($playlist->title, 'Playlist')) }}',
                         is_favorite: {{ \Modules\Favorite\App\Models\Favorite::check(auth()->id(), 'playlist', $playlist->playlist_id) ? 'true' : 'false' }},
                         is_mine: {{ auth()->check() && $playlist->user_id == auth()->id() ? 'true' : 'false' }}
-                    })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                    })" class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
                         <i class="fas fa-ellipsis-v text-sm"></i>
                     </button>
                 </div>
@@ -273,7 +284,9 @@ document.addEventListener('alpine:init', () => {
                     @if($album->coverMedia)
                         <img src="{{ thumb($album->coverMedia, 200, 200, ['scale' => 1]) }}" alt="{{ getLocaleTitle($album->title, 'Album') }}" loading="{{ $index < 5 ? 'eager' : 'lazy' }}" class="w-full h-full object-cover">
                     @else
-                        <div class="w-full h-full flex items-center justify-center text-4xl text-white/90">💿</div>
+                        <div class="w-full h-full flex items-center justify-center text-white/90">
+                            <span class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">💿</span>
+                        </div>
                     @endif
                 </div>
                 {{-- Play button --}}
@@ -281,14 +294,23 @@ document.addEventListener('alpine:init', () => {
                         @click.stop="playAlbum({{ $album->album_id }})">
                     <i class="fas fa-play text-black ml-0.5"></i>
                 </button>
-                {{-- 3-Dot Menu Button - HOVER'DA GÖRÜNÜR --}}
-                <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop>
+                {{-- Favorite + Menu Buttons - HOVER'DA GÖRÜNÜR --}}
+                <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" @click.stop>
+                    {{-- Favorite Button --}}
+                    <button @click.stop="$store.favorites.toggle('album', {{ $album->album_id }})"
+                            class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                            x-bind:class="$store.favorites.isFavorite('album', {{ $album->album_id }}) ? 'text-muzibu-coral' : ''">
+                        <i class="text-sm"
+                           x-bind:class="$store.favorites.isFavorite('album', {{ $album->album_id }}) ? 'fas fa-heart' : 'far fa-heart hover:text-muzibu-coral'"></i>
+                    </button>
+
+                    {{-- 3-Dot Menu Button --}}
                     <button @click="$store.contextMenu.openContextMenu($event, 'album', {
                         id: {{ $album->album_id }},
                         title: '{{ addslashes(getLocaleTitle($album->title, 'Album')) }}',
                         artist: '{{ $album->artist ? addslashes(is_array($album->artist->title) ? ($album->artist->title['tr'] ?? $album->artist->title['en'] ?? 'Artist') : $album->artist->title) : 'Sanatçı' }}',
                         is_favorite: {{ \Modules\Favorite\App\Models\Favorite::check(auth()->id(), 'album', $album->album_id) ? 'true' : 'false' }}
-                    })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+                    })" class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
                         <i class="fas fa-ellipsis-v text-sm"></i>
                     </button>
                 </div>

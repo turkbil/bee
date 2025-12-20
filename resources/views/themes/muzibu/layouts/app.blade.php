@@ -32,75 +32,8 @@
 
     <title>@yield('title', 'Muzibu - İşletmenize Yasal ve Telifsiz Müzik')</title>
 
-    {{-- Tailwind CSS CDN (dev mode) --}}
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
-    <script>
-        // Suppress CDN production warning
-        if (typeof tailwind !== 'undefined' && tailwind.config) {
-            tailwind.config.corePlugins = { preflight: true };
-        }
-
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        muzibu: {
-                            coral: '#ff7f50',
-                            'coral-light': '#ff9770',
-                            'coral-dark': '#ff6a3d',
-                            black: '#000000',
-                            dark: '#121212',
-                            gray: '#181818',
-                            'gray-light': '#282828',
-                            'text-gray': '#b3b3b3',
-                        },
-                        // Legacy Spotify color aliases (backward compatibility)
-                        spotify: {
-                            green: '#ff7f50', // Maps to muzibu-coral
-                            coral: '#ff7f50',
-                            'coral-light': '#ff9770',
-                            black: '#000000',
-                            dark: '#121212',
-                            gray: '#181818',
-                            'gray-light': '#282828',
-                            'text-gray': '#b3b3b3',
-                        }
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                        'slide-up': 'slideUp 0.3s ease-out',
-                        'fade-in': 'fadeIn 0.4s ease-out',
-                        'scale-in': 'scaleIn 0.2s ease-out',
-                        'gradient': 'gradient 3s ease infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(10px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        scaleIn: {
-                            '0%': { transform: 'scale(0.95)', opacity: '0' },
-                            '100%': { transform: 'scale(1)', opacity: '1' },
-                        },
-                        gradient: {
-                            '0%, 100%': { backgroundPosition: '0% 50%' },
-                            '50%': { backgroundPosition: '100% 50%' },
-                        }
-                    }
-                }
-            }
-        };
-    </script>
+    {{-- Tailwind CSS - Tenant Aware (tenant-1001.css) --}}
+    <link rel="stylesheet" href="{{ tenant_css() }}">
 
     {{-- FontAwesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -199,38 +132,43 @@
     <audio id="hlsAudio" x-ref="hlsAudio" class="hidden"></audio>
     <audio id="hlsAudioNext" class="hidden"></audio>
 
-    {{-- Main App Grid - Right sidebar on XL+ screens (all pages) --}}
+    @php
+        // Sağ blok gösterilecek route'lar (music pages + my-playlists)
+        $showRightSidebar = in_array(Route::currentRouteName(), [
+            'muzibu.home',
+            'muzibu.songs.show',
+            'muzibu.albums.index',
+            'muzibu.albums.show',
+            'muzibu.artists.index',
+            'muzibu.artists.show',
+            'muzibu.playlists.index',
+            'muzibu.playlists.show',
+            'muzibu.genres.index',
+            'muzibu.genres.show',
+            'muzibu.sectors.index',
+            'muzibu.sectors.show',
+            'muzibu.radios.index',
+            'muzibu.search',
+            'muzibu.favorites',
+            'muzibu.my-playlists',
+        ]);
+
+        // Grid column classes - sağ blok varsa 3 kolon, yoksa 2 kolon
+        $gridCols = $showRightSidebar
+            ? 'xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px]'
+            : 'xl:grid-cols-[220px_1fr] 2xl:grid-cols-[220px_1fr]';
+    @endphp
+
+    {{-- Main App Grid - Dynamic columns based on right sidebar visibility --}}
     <div
         id="main-app-grid"
-        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] xl:grid-cols-[220px_1fr_320px] 2xl:grid-cols-[220px_1fr_360px] h-[100dvh] gap-0 lg:gap-3 px-0 pb-0 lg:px-3 lg:pb-3"
+        class="grid grid-rows-[56px_1fr_auto] grid-cols-1 lg:grid-cols-[220px_1fr] {{ $gridCols }} h-[100dvh] gap-0 lg:gap-3 px-0 pb-0 lg:px-3 lg:pb-3"
     >
         @include('themes.muzibu.components.header')
         @include('themes.muzibu.components.sidebar-left')
         @include('themes.muzibu.components.main-content')
 
         {{-- Right Sidebar - XL+ screens, music pages only --}}
-        @php
-            // Sağ blok gösterilecek route'lar (music pages + my-playlists)
-            $showRightSidebar = in_array(Route::currentRouteName(), [
-                'muzibu.home',
-                'muzibu.songs.show',
-                'muzibu.albums.index',
-                'muzibu.albums.show',
-                'muzibu.artists.index',
-                'muzibu.artists.show',
-                'muzibu.playlists.index',
-                'muzibu.playlists.show',
-                'muzibu.genres.index',
-                'muzibu.genres.show',
-                'muzibu.sectors.index',
-                'muzibu.sectors.show',
-                'muzibu.radios.index',
-                'muzibu.search',
-                'muzibu.favorites',
-                'muzibu.my-playlists',
-            ]);
-        @endphp
-
         @if($showRightSidebar)
             <aside class="muzibu-right-sidebar overflow-y-auto rounded-2xl hidden xl:block">
                 @include('themes.muzibu.components.sidebar-right')
@@ -291,7 +229,7 @@
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/keyboard.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/api.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/session.js') }}"></script>
-    <script src="{{ versioned_asset('themes/muzibu/js/player/features/spa-router.js') }}"></script>
+    <script src="{{ asset('themes/muzibu/js/player/features/spa-router.js') }}?v={{ filemtime(public_path('themes/muzibu/js/player/features/spa-router.js')) }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/debug.js') }}"></script>
     <script src="{{ versioned_asset('themes/muzibu/js/player/features/play-helpers.js') }}"></script>
 

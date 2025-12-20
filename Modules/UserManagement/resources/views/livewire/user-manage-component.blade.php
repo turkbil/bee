@@ -72,7 +72,37 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
+                        <!-- Email Doğrulama -->
+                        @if($userId)
+                        <div class="mb-3">
+                            <div class="card {{ $inputs['email_verified_at'] ? 'border-success' : 'border-danger' }}" style="background-color: {{ $inputs['email_verified_at'] ? 'rgba(32, 107, 196, 0.05)' : 'rgba(214, 57, 57, 0.05)' }};">
+                                <div class="card-body p-3">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-envelope-circle-check {{ $inputs['email_verified_at'] ? 'text-success' : 'text-danger' }} me-3" style="font-size: 24px;"></i>
+                                            <div>
+                                                <div class="fw-medium">Email Doğrulama</div>
+                                                <div class="small {{ $inputs['email_verified_at'] ? 'text-success' : 'text-danger' }}">
+                                                    {{ $inputs['email_verified_at'] ? 'Email adresi doğrulanmış ✓' : 'Email adresi doğrulanmamış' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pretty p-default p-curve p-toggle p-smooth">
+                                            <input type="checkbox" wire:model.live="inputs.email_verified_at" value="1" {{ $inputs['email_verified_at'] ? 'checked' : '' }} />
+                                            <div class="state p-success p-on">
+                                                <label></label>
+                                            </div>
+                                            <div class="state p-danger p-off">
+                                                <label></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
                         <!-- Şifre -->
                         <div class="form-floating mb-3">
                             <input type="password" wire:model.defer="inputs.password" class="form-control @error('inputs.password') is-invalid @enderror" placeholder="••••••••">

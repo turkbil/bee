@@ -12,28 +12,12 @@
 <!-- Playlists Grid -->
 <section class="px-8 pb-12">
     @if($playlists->count() > 0)
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             @foreach($playlists as $playlist)
-                <div class="group cursor-pointer" @click="playPlaylist({{ $playlist->playlist_id }})">
-                    <div class="relative bg-spotify-gray rounded-lg p-4 hover:bg-spotify-gray/80 transition-all mb-4">
-                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=200&h=200&fit=crop"
-                             class="w-full aspect-square object-cover rounded-md mb-4 shadow-lg">
-
-                        <!-- Play Button Overlay -->
-                        <div class="absolute bottom-6 right-6 w-12 h-12 bg-spotify-green rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all shadow-2xl">
-                            <i class="fas fa-play text-black ml-0.5"></i>
-                        </div>
-
-                        <h3 class="text-white font-bold text-base mb-2 truncate">
-                            {{ $playlist->title['tr'] ?? $playlist->title['en'] ?? 'Playlist' }}
-                        </h3>
-                        <p class="text-sm text-gray-400">{{ $playlist->song_count }} şarkı</p>
-                    </div>
-                </div>
+                <x-muzibu.playlist-card :playlist="$playlist" :preview="true" />
             @endforeach
         </div>
 
-        <!-- Pagination -->
         @if($playlists->hasPages())
             <div class="mt-8 flex justify-center">
                 {{ $playlists->links() }}

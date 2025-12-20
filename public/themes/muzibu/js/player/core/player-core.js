@@ -134,12 +134,12 @@ function muzibuApp() {
         draggedIndex: null,
         dropTargetIndex: null,
         playTracked: false, // 🎵 Track if current song play has been recorded
-        playTrackedAt: 60, // 🎵 Track play after 60 seconds
+        playTrackedAt: 30, // 🎵 Track play after 30 seconds (hit +1, play log)
         sessionPollInterval: null, // 🔐 Device limit polling interval
         showDeviceLimitModal: false, // 🔐 Show device limit exceeded modal
 
         // Crossfade settings (using Howler.js + HLS.js)
-        crossfadeEnabled: false, // 🔥 DISABLED: Using gapless playback instead (instant transitions)
+        crossfadeEnabled: true, // ✅ ENABLED: Smooth 7-second crossfade transitions
         crossfadeDuration: 7000, // 7 seconds for automatic song transitions - smooth crossfade
         fadeOutDuration: 0, // 🚀 INSTANT: No fade, immediate volume changes
         isCrossfading: false,
@@ -192,7 +192,7 @@ function muzibuApp() {
             if (this.activeHlsAudioId === 'hlsAudioNext') {
                 return document.getElementById('hlsAudioNext');
             }
-            return this.$refs.hlsAudio;
+            return document.getElementById('hlsAudio');
         },
 
         /**
@@ -941,6 +941,42 @@ function muzibuApp() {
                     this.createNextHowlerPlayer(data.stream_url, targetVolume);
                 }
 
+                // 🔥 FIX: Update UI immediately for smooth progress bar transition
+                // Instead of waiting 7 seconds, show new song info RIGHT NOW
+                // This prevents progress bar jumping and provides better UX
+                this.queueIndex = nextIndex;
+                this.currentSong = this.queue[nextIndex];
+                this.currentTime = 0;
+                this.progressPercent = 0;
+                this.playTracked = false;
+
+                // 🔥 CRITICAL: Stop old progress tracking and start tracking NEXT player
+                // Old interval tracks old song, but we're showing new song info now!
+                if (this.progressInterval) {
+                    clearInterval(this.progressInterval);
+                    this.progressInterval = null;
+                }
+
+                // Get duration and start tracking NEXT player
+                if (nextIsHls) {
+                    const nextAudio = document.getElementById(this.nextHlsAudioId);
+                    if (nextAudio && nextAudio.duration) {
+                        this.duration = nextAudio.duration;
+                    }
+                    // Track next HLS audio during crossfade
+                    this.startProgressTrackingWithElement(nextAudio);
+                } else if (this.howlNext) {
+                    this.duration = this.howlNext.duration() || 0;
+                    // Track next Howler during crossfade
+                    const self = this;
+                    this.progressInterval = setInterval(() => {
+                        if (this.howlNext && this.howlNext.playing() && this.duration > 0) {
+                            this.currentTime = this.howlNext.seek();
+                            this.progressPercent = (this.currentTime / this.duration) * 100;
+                        }
+                    }, 100);
+                }
+
                 // Fade out current player (Howler or HLS)
                 if (hasActiveHowler) {
                     this.howl.fade(targetVolume, 0, this.crossfadeDuration);
@@ -956,8 +992,22 @@ function muzibuApp() {
                 }, this.crossfadeDuration);
 
             } catch (error) {
-                console.error('Crossfade error:', error);
+                console.error('❌ Crossfade error:', error);
+
+                // 🔥 CRITICAL FIX: Restore previous song volume (prevent silence!)
+                // If next song failed to load, current song volume is already at 0
+                // We need to fade it BACK UP to prevent dead silence
+
+                if (hasActiveHowler && this.howl) {
+                    // Fade Howler back to original volume (instant or quick fade)
+                    this.howl.fade(0, targetVolume, 1000); // 1 second fade-back
+                } else if (hasActiveHls && audio) {
+                    // Fade HLS audio back to original volume
+                    this.fadeAudioElement(audio, 0, targetVolume, 1000); // 1 second fade-back
+                }
+
                 this.isCrossfading = false;
+                this.showToast('Sonraki şarkı yüklenemedi, mevcut şarkı devam ediyor', 'warning');
             }
         },
 
@@ -1965,7 +2015,7 @@ onplay: function() {
         // Play using HLS.js (for HLS streams)
         async playHlsStream(url, targetVolume, autoplay = true) {
             const self = this;
-            const audio = this.$refs.hlsAudio;
+            const audio = document.getElementById('hlsAudio');
 
             if (!audio) {
                 console.error('HLS audio element not found');
@@ -2361,7 +2411,8 @@ onplay: function() {
                     currentTime = this.howl.seek();
                     isCurrentlyPlaying = this.howl.playing();
                 } else if (type === 'hls') {
-                    const audio = this.$refs.hlsAudio;
+                    // 🔥 FIX: Use getActiveHlsAudio() instead of $refs (supports crossfade with dual audio elements)
+                    const audio = this.getActiveHlsAudio();
                     if (audio) {
                         currentTime = audio.currentTime;
                         isCurrentlyPlaying = !audio.paused;
@@ -2383,7 +2434,7 @@ onplay: function() {
                         }));
                     }
 
-                    // 🎵 Track play after 60 seconds (analytics)
+                    // 🎵 Track play after 30 seconds (analytics: hit +1, play log with IP)
                     if (!self.playTracked && currentTime >= self.playTrackedAt && self.currentSong && self.isLoggedIn) {
                         self.playTracked = true;
                         self.trackSongPlay(self.currentSong.id);
@@ -2492,7 +2543,8 @@ onplay: function() {
             this.showToast('Paylaşım linki kopyalandı', 'success');
         },
 
-        // 🎵 Track song play (analytics) - Called after 60 seconds of playback
+        // 🎵 Track song play (analytics) - Called after 30 seconds of playback
+        // Increments songs.play_count (+1) and logs to muzibu_song_plays (with IP address)
         async trackSongPlay(songId) {
             if (!this.isLoggedIn || !songId) return;
 

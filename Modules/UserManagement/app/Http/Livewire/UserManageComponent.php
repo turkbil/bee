@@ -81,10 +81,11 @@ class UserManageComponent extends Component
        if ($id) {
            $this->userId = $id;
            $user = User::with(['roles'])->findOrFail($id);
-           
+
            $this->inputs['name'] = $user->name;
            $this->inputs['email'] = $user->email;
            $this->inputs['is_active'] = $user->is_active;
+           $this->inputs['email_verified_at'] = $user->email_verified_at ? true : false;
            $this->inputs['role_id'] = $user->roles->first() ? $user->roles->first()->name : null;
            $this->previousRole = $this->inputs['role_id']; // Önceki rolü sakla
            
@@ -213,11 +214,11 @@ class UserManageComponent extends Component
     {
         // Log role change
         Log::debug('Role changed from: ' . $this->previousRole . ' to: ' . $value);
-        
+
         // Rol değişikliği yapıldığında tüm yetkileri sıfırla
         $this->clearAllModulePermissions();
         $this->inputs['permissions'] = [];
-        
+
         // Normal kullanıcı (Üye) rolü seçildiğinde role_id'yi null olarak ayarla
         if ($value === 'user') {
             $this->inputs['role_id'] = null;
@@ -228,9 +229,69 @@ class UserManageComponent extends Component
             $this->prepareEditorPermissions();
             $this->calculateModulePermissionCounts();
         }
-        
+
         $this->previousRole = $value; // Yeni rolü sakla
         $this->dispatch('roleChanged', $value);
+    }
+
+    public function updatedInputsEmailVerifiedAt($value)
+    {
+        if (!$this->userId) {
+            return;
+        }
+
+        try {
+            $user = User::findOrFail($this->userId);
+
+            // Root kullanıcıların email doğrulaması değiştirilemez
+            if ($user->hasRole('root') && !auth()->user()->hasRole('root')) {
+                $this->dispatch('toast', [
+                    'title' => 'Hata!',
+                    'message' => 'Root kullanıcıların email doğrulaması değiştirilemez.',
+                    'type' => 'error',
+                ]);
+                // Eski değere geri dön
+                $this->inputs['email_verified_at'] = $user->email_verified_at ? true : false;
+                return;
+            }
+
+            // Email doğrulama durumunu güncelle
+            if ($value) {
+                $user->email_verified_at = now();
+                $action = 'Email doğrulaması yapıldı';
+                $message = 'Email adresi doğrulandı.';
+            } else {
+                $user->email_verified_at = null;
+                $action = 'Email doğrulaması kaldırıldı';
+                $message = 'Email doğrulaması kaldırıldı.';
+            }
+
+            $user->save();
+
+            log_activity($user, $action, [
+                'email_verified_at' => $user->email_verified_at,
+                'verified_by' => auth()->user()->name
+            ]);
+
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => $message,
+                'type' => 'success',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error updating email verification', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            $this->dispatch('toast', [
+                'title' => 'Hata!',
+                'message' => 'Email doğrulama güncellenirken hata oluştu.',
+                'type' => 'error',
+            ]);
+        }
     }
 
     /**

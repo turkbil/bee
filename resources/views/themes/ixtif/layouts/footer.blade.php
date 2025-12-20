@@ -747,19 +747,19 @@
 })();
 </script>
 
-{{-- Theme Main Scripts (Load AFTER override) --}}
+{{-- Favorites - Global Alpine.js Component (BEFORE Alpine.js) --}}
+<script src="{{ asset('js/favorites.js') }}?v={{ now()->timestamp }}"></script>
+
+{{-- Alpine.js (app.js contains Alpine) - MUST LOAD FIRST --}}
+<script src="{{ mix('js/app.js') }}" defer></script>
+
+{{-- Theme Main Scripts (Load AFTER Alpine.js for component definitions) --}}
 @php
     $themeService = app(\App\Services\ThemeService::class);
     $activeTheme = $themeService->getActiveTheme();
     $themeName = $activeTheme ? $activeTheme->name : 'simple';
 @endphp
-<script defer src="{{ asset('assets/js/themes/' . $themeName . '/main.js') }}?v=1.0.1"></script>
-
-{{-- Favorites - Global Alpine.js Component (BEFORE Alpine.js) --}}
-<script src="{{ asset('js/favorites.js') }}?v={{ now()->timestamp }}"></script>
-
-{{-- Alpine.js (app.js contains Alpine) --}}
-<script src="{{ mix('js/app.js') }}" defer></script>
+<script defer src="{{ asset('assets/js/themes/' . $themeName . '/main.js') }}?v=1.0.2"></script>
 
 {{-- Web Share API Helper --}}
 <script defer src="{{ asset('js/web-share.js') }}"></script>

@@ -19,7 +19,7 @@
             <!-- Ortadaki Loading -->
             <div class="col position-relative">
                 <div wire:loading
-                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, toggleActive"
+                    wire:target="render, search, perPage, sortBy, gotoPage, previousPage, nextPage, delete, roleFilter, statusFilter, viewType, toggleActive, toggleEmailVerification"
                     class="position-absolute top-50 start-50 translate-middle text-center"
                     style="width: 100%; max-width: 250px; z-index: 10;">
                     <div class="small text-muted mb-2">{{ __('usermanagement::admin.updating') }}</div>
@@ -81,9 +81,33 @@
                 <div class="card">
                     <div class="card-body p-4 text-center">
                         <!-- Avatar -->
-                        <span class="avatar avatar-xl mb-3 avatar-rounded bg-primary-lt">
-                            {{ mb_strtoupper(mb_substr($user->name, 0, 2, 'UTF-8'), 'UTF-8') }}
-                        </span>
+                        <div class="position-relative d-inline-block mb-3">
+                            <span class="avatar avatar-xl avatar-rounded bg-primary-lt">
+                                {{ mb_strtoupper(mb_substr($user->name, 0, 2, 'UTF-8'), 'UTF-8') }}
+                            </span>
+                            <!-- Email Doğrulama Badge -->
+                            @if($user->email_verified_at)
+                                <span class="badge bg-success position-absolute rounded-circle p-1"
+                                      style="bottom: 0; right: 0; width: 24px; height: 24px;"
+                                      data-bs-toggle="tooltip"
+                                      title="Email doğrulanmış">
+                                    <i class="fas fa-check text-white" style="font-size: 12px;"></i>
+                                </span>
+                            @else
+                                <button wire:click="toggleEmailVerification({{ $user->id }})"
+                                        class="badge bg-danger position-absolute rounded-circle p-1 border-0"
+                                        style="bottom: 0; right: 0; width: 24px; height: 24px; cursor: pointer;"
+                                        data-bs-toggle="tooltip"
+                                        title="Email doğrulanmamış - Tıklayarak doğrulayın"
+                                        wire:loading.attr="disabled"
+                                        wire:target="toggleEmailVerification({{ $user->id }})">
+                                    <div wire:loading.remove wire:target="toggleEmailVerification({{ $user->id }})">
+                                        <i class="fas fa-exclamation text-white" style="font-size: 12px;"></i>
+                                    </div>
+                                    <div wire:loading wire:target="toggleEmailVerification({{ $user->id }})" class="spinner-border spinner-border-sm text-white" style="width: 12px; height: 12px;"></div>
+                                </button>
+                            @endif
+                        </div>
                         <!-- Kullanıcı Bilgileri -->
                         <h3 class="card-title m-0 mb-1">{{ $user->name }}</h3>
                         <div class="text-muted">{{ $user->email }}</div>
@@ -167,6 +191,13 @@
                                 {{ __('usermanagement::admin.role') }}
                             </button>
                         </th>
+                        <th class="text-center" style="width: 140px">
+                            <button
+                                class="table-sort {{ $sortField === 'email_verified_at' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
+                                wire:click="sortBy('email_verified_at')">
+                                <i class="fas fa-envelope-circle-check me-1"></i>Email
+                            </button>
+                        </th>
                         <th class="text-center" style="width: 80px">
                             <button
                                 class="table-sort {{ $sortField === 'is_active' ? ($sortDirection === 'asc' ? 'asc' : 'desc') : '' }}"
@@ -188,6 +219,24 @@
                                 @foreach($user->roles as $role)
                                 <span class="badge bg-blue-lt">{{ $role->name }}</span>
                                 @endforeach
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($user->email_verified_at)
+                                <span class="badge bg-success-lt text-success">
+                                    <i class="fas fa-check-circle me-1"></i>Doğrulanmış
+                                </span>
+                            @else
+                                <button wire:click="toggleEmailVerification({{ $user->id }})"
+                                        class="badge bg-danger-lt text-danger border-0"
+                                        style="cursor: pointer;"
+                                        wire:loading.attr="disabled"
+                                        wire:target="toggleEmailVerification({{ $user->id }})">
+                                    <div wire:loading.remove wire:target="toggleEmailVerification({{ $user->id }})">
+                                        <i class="fas fa-exclamation-circle me-1"></i>Doğrulanmamış
+                                    </div>
+                                    <div wire:loading wire:target="toggleEmailVerification({{ $user->id }})" class="spinner-border spinner-border-sm"></div>
+                                </button>
                             @endif
                         </td>
                         <td class="text-center">
@@ -243,7 +292,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             <div class="empty">
                                 <p class="empty-title">{{ __('usermanagement::admin.no_records') }}</p>
                                 <p class="empty-subtitle text-muted">

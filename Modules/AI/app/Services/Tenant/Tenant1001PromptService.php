@@ -472,4 +472,18 @@ class Tenant1001PromptService implements TenantPromptServiceInterface
     {
         return 'music';
     }
+
+    /**
+     * Prompt'u string olarak döndürür (PromptBuilder için)
+     *
+     * PromptBuilder sistemi için gerekli metod.
+     * buildPrompt() array döndürür, getPromptAsString() string döndürür.
+     *
+     * @return string
+     */
+    public function getPromptAsString(): string
+    {
+        $prompts = $this->buildPrompt();
+        return implode("\n\n", $prompts);
+    }
 }

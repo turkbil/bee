@@ -112,6 +112,12 @@ class TenancyServiceProvider extends ServiceProvider
 
                     // Log manager'ı yeniden yükle
                     app()->forgetInstance('log');
+
+                    // 🔐 Session lifetime: Tenant setting'den al
+                    $sessionLifetime = (int) setting('auth_session_lifetime', 120);
+                    if ($sessionLifetime > 0) {
+                        config(['session.lifetime' => $sessionLifetime]);
+                    }
                 },
             ],
 

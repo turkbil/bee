@@ -54,31 +54,7 @@
             <h2 class="text-2xl font-bold text-white mb-4">Albümler</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 @foreach($albums as $album)
-                    <a href="{{ route('muzibu.albums.show', $album->getTranslation('slug', app()->getLocale())) }}"
-                       class="album-card group bg-muzibu-gray hover:bg-gray-700 rounded-lg p-3 transition-all duration-300">
-                        <div class="relative mb-3">
-                            @if($album->media_id && $album->coverMedia)
-                                <img src="{{ thumb($album->coverMedia, 200, 200, ['scale' => 1]) }}"
-                                     alt="{{ $album->getTranslation('title', app()->getLocale()) }}"
-                                     class="w-full aspect-square object-cover rounded-lg shadow-lg"
-                                     loading="lazy">
-                            @else
-                                <div class="w-full aspect-square bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-3xl shadow-lg">
-                                    💿
-                                </div>
-                            @endif
-
-                            {{-- Play Button --}}
-                            <button @click.stop.prevent="playAlbum({{ $album->album_id }})"
-                                    class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-muzibu-coral text-white rounded-full w-10 h-10 flex items-center justify-center shadow-xl hover:scale-110 hover:bg-green-500">
-                                <i class="fas fa-play ml-0.5 text-sm"></i>
-                            </button>
-                        </div>
-
-                        <h3 class="font-semibold text-white text-sm truncate">
-                            {{ $album->getTranslation('title', app()->getLocale()) }}
-                        </h3>
-                    </a>
+                    <x-muzibu.album-card :album="$album" />
                 @endforeach
             </div>
         </div>
@@ -90,43 +66,7 @@
             <h2 class="text-2xl font-bold text-white mb-4">Popüler Şarkılar</h2>
             <div class="space-y-1">
                 @foreach($songs->take(20) as $index => $song)
-                    <div class="group flex items-center gap-2 sm:gap-4 px-2 sm:px-4 py-2 sm:py-3 rounded-lg hover:bg-white/5 transition-all cursor-pointer"
-                         @click="playSong({{ $song->song_id }})">
-                        <span class="text-gray-400 w-6 sm:w-8 text-center text-xs sm:text-sm flex-shrink-0">{{ $index + 1 }}</span>
-
-                        {{-- Song Cover (Mobile hidden, Desktop visible) --}}
-                        <div class="hidden sm:block w-10 h-10 flex-shrink-0">
-                            @if($song->album && $song->album->media_id && $song->album->coverMedia)
-                                <img src="{{ thumb($song->album->coverMedia, 100, 100, ['scale' => 1]) }}"
-                                     alt="{{ $song->getTranslation('title', app()->getLocale()) }}"
-                                     class="w-full h-full object-cover rounded"
-                                     loading="lazy">
-                            @else
-                                <div class="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 rounded flex items-center justify-center text-lg">
-                                    🎵
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="flex-1 min-w-0">
-                            <h3 class="text-white font-medium text-sm sm:text-base truncate">
-                                {{ $song->getTranslation('title', app()->getLocale()) }}
-                            </h3>
-                            @if($song->album)
-                                <p class="text-xs sm:text-sm text-gray-400 truncate">
-                                    {{ $song->album->getTranslation('title', app()->getLocale()) }}
-                                </p>
-                            @endif
-                        </div>
-
-                        <span class="text-xs sm:text-sm text-gray-400 hidden sm:block flex-shrink-0">
-                            {{ gmdate('i:s', $song->duration ?? 0) }}
-                        </span>
-
-                        <div @click.stop class="flex-shrink-0">
-                            <x-muzibu.song-actions-menu :song="$song" />
-                        </div>
-                    </div>
+                    <x-muzibu.song-row :song="$song" :index="$index" :show-album="true" />
                 @endforeach
             </div>
         </div>

@@ -18,6 +18,9 @@ class HomeController extends Controller
                 ->whereHas('songs', function($q) {
                     $q->where('is_active', 1);
                 })
+                ->withCount(['songs' => function($q) {
+                    $q->where('is_active', 1);
+                }])
                 ->with(['songs' => function($q) {
                     $q->where('is_active', 1);
                 }, 'coverMedia'])
@@ -29,6 +32,9 @@ class HomeController extends Controller
                 ->whereHas('songs', function($q) {
                     $q->where('is_active', 1);
                 })
+                ->withCount(['songs' => function($q) {
+                    $q->where('is_active', 1);
+                }])
                 ->with(['artist', 'songs' => function($q) {
                     $q->where('is_active', 1);
                 }, 'coverMedia'])
@@ -62,6 +68,9 @@ class HomeController extends Controller
                     ->whereHas('songs', function($q) {
                         $q->where('is_active', 1);
                     })
+                    ->withCount(['songs' => function($q) {
+                        $q->where('is_active', 1);
+                    }])
                     ->with(['songs' => function($q) {
                         $q->where('is_active', 1);
                     }, 'coverMedia'])

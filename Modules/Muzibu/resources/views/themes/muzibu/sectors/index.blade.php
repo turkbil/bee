@@ -11,11 +11,7 @@
 <section class="px-8 pb-12">
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         @foreach($sectors as $sector)
-            <a href="/sectors/{{ $sector->sector_id }}" class="bg-spotify-gray rounded-lg p-6 hover:bg-spotify-gray/80 transition-all group">
-                <div class="text-4xl mb-4"><i class="fas fa-building text-spotify-green"></i></div>
-                <h3 class="text-white font-bold text-lg mb-2">{{ $sector->title['tr'] ?? $sector->title['en'] ?? 'Sector' }}</h3>
-                <p class="text-gray-400 text-sm">{{ $sector->playlist_count }} playlist</p>
-            </a>
+            <x-muzibu.sector-card :sector="$sector" :preview="true" />
         @endforeach
     </div>
 </section>

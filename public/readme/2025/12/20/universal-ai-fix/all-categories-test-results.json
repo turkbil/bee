@@ -1,0 +1,749 @@
+{
+    "total": 150,
+    "passed": 150,
+    "failed": 0,
+    "categories": [
+        {
+            "name": "TRANSPALET",
+            "queries": [
+                {
+                    "query": "transpalet var mı",
+                    "note": "Standart",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet varmı",
+                    "note": "Bitişik yazım",
+                    "passed": true
+                },
+                {
+                    "query": "palet arabası var mı",
+                    "note": "Alternatif isim",
+                    "passed": true
+                },
+                {
+                    "query": "pallet truck arıyorum",
+                    "note": "İngilizce",
+                    "passed": true
+                },
+                {
+                    "query": "palet jack lazım",
+                    "note": "Jargon",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet istiyorum",
+                    "note": "İstiyorum kalıbı",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet satıyor musunuz",
+                    "note": "Satıyor musunuz",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet mevcut mu",
+                    "note": "Mevcut mu",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet bulabilir miyim",
+                    "note": "Bulabilir miyim",
+                    "passed": true
+                },
+                {
+                    "query": "elektrikli transpalet",
+                    "note": "Elektrikli tip",
+                    "passed": true
+                },
+                {
+                    "query": "manuel transpalet",
+                    "note": "Manuel tip",
+                    "passed": true
+                },
+                {
+                    "query": "akülü transpalet var mı",
+                    "note": "Akülü",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet neler var",
+                    "note": "Neler var",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet göster",
+                    "note": "Göster",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet modellerini göster",
+                    "note": "Modelleri göster",
+                    "passed": true
+                },
+                {
+                    "query": "transpaletiniz var mı",
+                    "note": "İyelik eki",
+                    "passed": true
+                },
+                {
+                    "query": "bi transpalet lazım",
+                    "note": "Slang: bi",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet yok mu",
+                    "note": "Olumsuz",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet🤔",
+                    "note": "Emoji",
+                    "passed": true
+                },
+                {
+                    "query": "2 ton transpalet varmı",
+                    "note": "Kapasite + bitişik",
+                    "passed": true
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "FORKLIFT",
+            "queries": [
+                {
+                    "query": "forklift var mı",
+                    "note": "Standart",
+                    "passed": true
+                },
+                {
+                    "query": "forklift varmı",
+                    "note": "Bitişik",
+                    "passed": true
+                },
+                {
+                    "query": "flt var mı",
+                    "note": "Kısaltma: flt",
+                    "passed": true
+                },
+                {
+                    "query": "forklift istiyorum",
+                    "note": "İstiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "forklift arıyorum",
+                    "note": "Arıyorum",
+                    "passed": true
+                },
+                {
+                    "query": "forklift satıyor musunuz",
+                    "note": "Satıyor musunuz",
+                    "passed": true
+                },
+                {
+                    "query": "forklift mevcut mu",
+                    "note": "Mevcut mu",
+                    "passed": true
+                },
+                {
+                    "query": "forkliftte var mı",
+                    "note": "Yazım hatası: forkliftte",
+                    "passed": true
+                },
+                {
+                    "query": "elektrikli forklift",
+                    "note": "Elektrikli",
+                    "passed": true
+                },
+                {
+                    "query": "dizel forklift",
+                    "note": "Dizel",
+                    "passed": true
+                },
+                {
+                    "query": "akülü forklift var mı",
+                    "note": "Akülü",
+                    "passed": true
+                },
+                {
+                    "query": "forklift neler var",
+                    "note": "Neler var",
+                    "passed": true
+                },
+                {
+                    "query": "forklift göster",
+                    "note": "Göster",
+                    "passed": true
+                },
+                {
+                    "query": "forklift modelleri",
+                    "note": "Modelleri",
+                    "passed": true
+                },
+                {
+                    "query": "forkliftiniz var mı",
+                    "note": "İyelik",
+                    "passed": true
+                },
+                {
+                    "query": "bi forklift lazım",
+                    "note": "Slang",
+                    "passed": true
+                },
+                {
+                    "query": "forklift yok mu",
+                    "note": "Olumsuz",
+                    "passed": true
+                },
+                {
+                    "query": "ucuz forklift var mı",
+                    "note": "Ucuz",
+                    "passed": true
+                },
+                {
+                    "query": "3 ton forklift",
+                    "note": "Kapasite",
+                    "passed": true
+                },
+                {
+                    "query": "forklift almak istiyorum",
+                    "note": "Almak istiyorum",
+                    "passed": true
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "İSTİF MAKİNESİ",
+            "queries": [
+                {
+                    "query": "istif makinesi var mı",
+                    "note": "Standart",
+                    "passed": true
+                },
+                {
+                    "query": "istif makinesi varmı",
+                    "note": "Bitişik",
+                    "passed": true
+                },
+                {
+                    "query": "istif var mı",
+                    "note": "Kısa: istif",
+                    "passed": true
+                },
+                {
+                    "query": "stacker var mı",
+                    "note": "İngilizce",
+                    "passed": true
+                },
+                {
+                    "query": "istif arıyorum",
+                    "note": "Arıyorum",
+                    "passed": true
+                },
+                {
+                    "query": "istif makinesi istiyorum",
+                    "note": "İstiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "istif makinası var mı",
+                    "note": "Yazım hatası: makinası",
+                    "passed": true
+                },
+                {
+                    "query": "elektrikli istif",
+                    "note": "Elektrikli",
+                    "passed": true
+                },
+                {
+                    "query": "manuel istif",
+                    "note": "Manuel",
+                    "passed": true
+                },
+                {
+                    "query": "istif neler var",
+                    "note": "Neler var",
+                    "passed": true
+                },
+                {
+                    "query": "istif göster",
+                    "note": "Göster",
+                    "passed": true
+                },
+                {
+                    "query": "istif makinesi satıyor musunuz",
+                    "note": "Satıyor musunuz",
+                    "passed": true
+                },
+                {
+                    "query": "istif mevcut mu",
+                    "note": "Mevcut mu",
+                    "passed": true
+                },
+                {
+                    "query": "bi istif lazım",
+                    "note": "Slang",
+                    "passed": true
+                },
+                {
+                    "query": "yüksek istif makinesi",
+                    "note": "Yüksek",
+                    "passed": true
+                },
+                {
+                    "query": "3 metre istif",
+                    "note": "Yükseklik",
+                    "passed": true
+                },
+                {
+                    "query": "istif makinesi hangileri var",
+                    "note": "Hangileri var",
+                    "passed": true
+                },
+                {
+                    "query": "istifleriniz var mı",
+                    "note": "Çoğul + iyelik",
+                    "passed": true
+                },
+                {
+                    "query": "istif yok mu",
+                    "note": "Olumsuz",
+                    "passed": true
+                },
+                {
+                    "query": "istif makinesi almak istiyorum",
+                    "note": "Almak istiyorum",
+                    "passed": true
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "REACH TRUCK",
+            "queries": [
+                {
+                    "query": "reach truck var mı",
+                    "note": "Standart",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck varmı",
+                    "note": "Bitişik",
+                    "passed": true
+                },
+                {
+                    "query": "riç truck var mı",
+                    "note": "Türkçe okunuş: riç",
+                    "passed": true
+                },
+                {
+                    "query": "dar koridor forklift",
+                    "note": "Alternatif: dar koridor",
+                    "passed": true
+                },
+                {
+                    "query": "reach arıyorum",
+                    "note": "Kısa: reach",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck istiyorum",
+                    "note": "İstiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck satıyor musunuz",
+                    "note": "Satıyor musunuz",
+                    "passed": true
+                },
+                {
+                    "query": "reach mevcut mu",
+                    "note": "Mevcut mu",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck modelleri",
+                    "note": "Modelleri",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck göster",
+                    "note": "Göster",
+                    "passed": true
+                },
+                {
+                    "query": "elektrikli reach truck",
+                    "note": "Elektrikli",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck neler var",
+                    "note": "Neler var",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck hangileri var",
+                    "note": "Hangileri var",
+                    "passed": true
+                },
+                {
+                    "query": "dar koridorda çalışan forklift",
+                    "note": "Açıklayıcı",
+                    "passed": true
+                },
+                {
+                    "query": "bi reach truck lazım",
+                    "note": "Slang",
+                    "passed": true
+                },
+                {
+                    "query": "reach trucklarınız var mı",
+                    "note": "Çoğul + iyelik",
+                    "passed": true
+                },
+                {
+                    "query": "reach yok mu",
+                    "note": "Olumsuz",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck almak istiyorum",
+                    "note": "Almak istiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck bulabilir miyim",
+                    "note": "Bulabilir miyim",
+                    "passed": true
+                },
+                {
+                    "query": "reach truck🤔",
+                    "note": "Emoji",
+                    "passed": true
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "ORDER PICKER",
+            "queries": [
+                {
+                    "query": "order picker var mı",
+                    "note": "Standart",
+                    "passed": true
+                },
+                {
+                    "query": "order picker varmı",
+                    "note": "Bitişik",
+                    "passed": true
+                },
+                {
+                    "query": "sipariş toplama aracı var mı",
+                    "note": "Türkçe karşılık",
+                    "passed": true
+                },
+                {
+                    "query": "sipariş toplayıcı var mı",
+                    "note": "Kısa Türkçe",
+                    "passed": true
+                },
+                {
+                    "query": "order picker arıyorum",
+                    "note": "Arıyorum",
+                    "passed": true
+                },
+                {
+                    "query": "order picker istiyorum",
+                    "note": "İstiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "order picker satıyor musunuz",
+                    "note": "Satıyor musunuz",
+                    "passed": true
+                },
+                {
+                    "query": "order picker mevcut mu",
+                    "note": "Mevcut mu",
+                    "passed": true
+                },
+                {
+                    "query": "order picker göster",
+                    "note": "Göster",
+                    "passed": true
+                },
+                {
+                    "query": "order picker neler var",
+                    "note": "Neler var",
+                    "passed": true
+                },
+                {
+                    "query": "order picker hangileri var",
+                    "note": "Hangileri var",
+                    "passed": true
+                },
+                {
+                    "query": "elektrikli order picker",
+                    "note": "Elektrikli",
+                    "passed": true
+                },
+                {
+                    "query": "yüksek kaldırma order picker",
+                    "note": "Yüksek kaldırma",
+                    "passed": true
+                },
+                {
+                    "query": "bi order picker lazım",
+                    "note": "Slang",
+                    "passed": true
+                },
+                {
+                    "query": "order pickerınız var mı",
+                    "note": "İyelik",
+                    "passed": true
+                },
+                {
+                    "query": "order picker yok mu",
+                    "note": "Olumsuz",
+                    "passed": true
+                },
+                {
+                    "query": "sipariş toplayıcı istiyorum",
+                    "note": "Türkçe + istiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "order picker almak istiyorum",
+                    "note": "Almak istiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "order picker bulabilir miyim",
+                    "note": "Bulabilir miyim",
+                    "passed": true
+                },
+                {
+                    "query": "order picker modelleri",
+                    "note": "Modelleri",
+                    "passed": true
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "OTONOM SİSTEMLER",
+            "queries": [
+                {
+                    "query": "otonom sistem var mı",
+                    "note": "Standart",
+                    "passed": true
+                },
+                {
+                    "query": "otonom sistem varmı",
+                    "note": "Bitişik",
+                    "passed": true
+                },
+                {
+                    "query": "otonom forklift var mı",
+                    "note": "Otonom forklift",
+                    "passed": true
+                },
+                {
+                    "query": "autonomous system var mı",
+                    "note": "İngilizce",
+                    "passed": true
+                },
+                {
+                    "query": "otomatik forklift",
+                    "note": "Alternatif: otomatik",
+                    "passed": true
+                },
+                {
+                    "query": "sürücüsüz forklift var mı",
+                    "note": "Sürücüsüz",
+                    "passed": true
+                },
+                {
+                    "query": "otonom arıyorum",
+                    "note": "Arıyorum",
+                    "passed": true
+                },
+                {
+                    "query": "otonom sistem istiyorum",
+                    "note": "İstiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "otonom sistem satıyor musunuz",
+                    "note": "Satıyor musunuz",
+                    "passed": true
+                },
+                {
+                    "query": "otonom mevcut mu",
+                    "note": "Mevcut mu",
+                    "passed": true
+                },
+                {
+                    "query": "otonom sistem göster",
+                    "note": "Göster",
+                    "passed": true
+                },
+                {
+                    "query": "otonom neler var",
+                    "note": "Neler var",
+                    "passed": true
+                },
+                {
+                    "query": "akıllı forklift var mı",
+                    "note": "Akıllı forklift",
+                    "passed": true
+                },
+                {
+                    "query": "robotik forklift",
+                    "note": "Robotik",
+                    "passed": true
+                },
+                {
+                    "query": "bi otonom sistem lazım",
+                    "note": "Slang",
+                    "passed": true
+                },
+                {
+                    "query": "otonom sistemleriniz var mı",
+                    "note": "Çoğul + iyelik",
+                    "passed": true
+                },
+                {
+                    "query": "otonom yok mu",
+                    "note": "Olumsuz",
+                    "passed": true
+                },
+                {
+                    "query": "otonom sistem almak istiyorum",
+                    "note": "Almak istiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "otonom hangileri var",
+                    "note": "Hangileri var",
+                    "passed": true
+                },
+                {
+                    "query": "otonom sistem🤔",
+                    "note": "Emoji",
+                    "passed": true
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "YEDEK PARÇA",
+            "queries": [
+                {
+                    "query": "yedek parça var mı",
+                    "note": "Standart",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça varmı",
+                    "note": "Bitişik",
+                    "passed": true
+                },
+                {
+                    "query": "spare parts var mı",
+                    "note": "İngilizce",
+                    "passed": true
+                },
+                {
+                    "query": "parça var mı",
+                    "note": "Kısa: parça",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça arıyorum",
+                    "note": "Arıyorum",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça istiyorum",
+                    "note": "İstiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça satıyor musunuz",
+                    "note": "Satıyor musunuz",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça mevcut mu",
+                    "note": "Mevcut mu",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça göster",
+                    "note": "Göster",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça neler var",
+                    "note": "Neler var",
+                    "passed": true
+                },
+                {
+                    "query": "forklift yedek parçası var mı",
+                    "note": "Forklift parçası",
+                    "passed": true
+                },
+                {
+                    "query": "transpalet parçası var mı",
+                    "note": "Transpalet parçası",
+                    "passed": true
+                },
+                {
+                    "query": "tekerlek var mı",
+                    "note": "Spesifik parça: tekerlek",
+                    "passed": true
+                },
+                {
+                    "query": "hidrolik pompa var mı",
+                    "note": "Spesifik: hidrolik pompa",
+                    "passed": true
+                },
+                {
+                    "query": "bi yedek parça lazım",
+                    "note": "Slang",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parçalarınız var mı",
+                    "note": "Çoğul + iyelik",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça yok mu",
+                    "note": "Olumsuz",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça almak istiyorum",
+                    "note": "Almak istiyorum",
+                    "passed": true
+                },
+                {
+                    "query": "yedek parça hangileri var",
+                    "note": "Hangileri var",
+                    "passed": true
+                },
+                {
+                    "query": "orijinal yedek parça var mı",
+                    "note": "Orijinal",
+                    "passed": true
+                }
+            ],
+            "passed": true
+        }
+    ]
+}

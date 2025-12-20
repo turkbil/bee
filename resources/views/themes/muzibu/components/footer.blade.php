@@ -83,10 +83,8 @@
             <div>
                 <h3 class="text-lg font-bold text-white mb-4">Kurumsal</h3>
                 <ul class="space-y-2">
-                    <li><a href="/about" class="text-gray-400 hover:text-muzibu-coral transition-colors">Hakkımızda</a></li>
-                    <li><a href="/blog" class="text-gray-400 hover:text-muzibu-coral transition-colors">Blog</a></li>
-                    <li><a href="/contact" class="text-gray-400 hover:text-muzibu-coral transition-colors">İletişim</a></li>
-                    <li><a href="/legal" class="text-gray-400 hover:text-muzibu-coral transition-colors">Yasal Metinler</a></li>
+                    <li><a href="/iletisim" class="text-gray-400 hover:text-muzibu-coral transition-colors">İletişim</a></li>
+                    <li><a href="/kullanim-kosullari-ve-uyelik-sozlesmesi" class="text-gray-400 hover:text-muzibu-coral transition-colors">Kullanım Koşulları</a></li>
                 </ul>
             </div>
         </div>

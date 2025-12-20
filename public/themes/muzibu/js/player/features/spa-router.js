@@ -35,7 +35,7 @@ const MuzibuSpaRouter = {
         // Handle browser back/forward
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.url) {
-                this.loadPage(e.state.url, false);
+                MuzibuSpaRouter.loadPage.call(this, e.state.url, false);
             }
         });
 
@@ -82,7 +82,8 @@ const MuzibuSpaRouter = {
             // Internal link - use SPA navigation
             console.log('🚀 SPA Navigation:', href);
             e.preventDefault();
-            this.navigateTo(href);
+            // 🔧 FIX: Call loadPage directly (spread operator loses 'this' context)
+            MuzibuSpaRouter.navigateTo.call(this, href);
         });
 
         // 🔥 VIEWPORT PREFETCH: DISABLED (gereksiz network trafiği)
@@ -200,6 +201,17 @@ const MuzibuSpaRouter = {
      * 🚀 PREFETCH: Fetch and cache page
      */
     async prefetch(url, source = 'unknown') {
+        // 🛡️ VALIDATE URL: Ignore invalid/special URLs
+        if (!url ||
+            url.startsWith('javascript:') ||
+            url.startsWith('#') ||
+            url.startsWith('mailto:') ||
+            url.startsWith('tel:') ||
+            url === '#' ||
+            url.trim() === '') {
+            return; // Silently ignore
+        }
+
         // Check cache first
         const cached = this.prefetchCache.get(url);
         if (cached) {
@@ -267,7 +279,8 @@ const MuzibuSpaRouter = {
         console.log('🔄 navigateTo() called');
 
         history.pushState({ url: url }, '', url);
-        await this.loadPage(url, true);
+        // 🔧 FIX: Use MuzibuSpaRouter.loadPage with correct context
+        await MuzibuSpaRouter.loadPage.call(this, url, true);
     },
 
     /**
@@ -292,6 +305,7 @@ const MuzibuSpaRouter = {
      * Load page content via AJAX (uses cache if available)
      */
     async loadPage(url, addToHistory = true) {
+        console.log('🔵 loadPage() START:', url);
         const loadStartTime = Date.now();
         const minLoadingTime = 0; // ⚡ PERFORMANCE: No minimum delay (instant loading!)
         const maxLoadingTime = 10000; // ⏱️ 10 second timeout
@@ -303,6 +317,7 @@ const MuzibuSpaRouter = {
         }, loadingThreshold);
 
         try {
+            console.log('🔵 loadPage() TRY block entered');
 
             let html;
             let fetchPromise;
@@ -336,11 +351,15 @@ const MuzibuSpaRouter = {
             html = await Promise.race([fetchPromise, timeoutPromise]);
 
             // Parse HTML and extract main content
+            console.log('🔵 loadPage() Parsing HTML...');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const newContent = doc.querySelector('main');
 
+            console.log('🔵 loadPage() Main element found:', !!newContent);
+
             if (newContent) {
+                console.log('🔵 loadPage() Entering main content update...');
                 const currentMain = document.querySelector('main');
                 if (currentMain) {
                     // 🛡️ SECURITY: Clone content and remove all script tags to prevent duplicate execution
@@ -361,6 +380,58 @@ const MuzibuSpaRouter = {
                     const newTitle = doc.querySelector('title');
                     if (newTitle) {
                         document.title = newTitle.textContent;
+                    }
+
+                    // 🎯 UPDATE RIGHT SIDEBAR: Handle sidebar visibility for music vs non-music pages
+                    const newAside = doc.querySelector('aside.muzibu-right-sidebar');
+                    const currentAside = document.querySelector('aside.muzibu-right-sidebar');
+                    const mainGrid = document.querySelector('#main-app-grid');
+
+                    console.log('🔍 SPA: Sidebar check - New:', !!newAside, 'Current:', !!currentAside);
+
+                    if (newAside) {
+                        // New page HAS sidebar
+                        const clonedAside = newAside.cloneNode(true);
+                        clonedAside.querySelectorAll('script').forEach(script => script.remove());
+
+                        if (currentAside) {
+                            // Replace existing sidebar
+                            console.log('✅ SPA: Replacing existing sidebar');
+                            currentAside.replaceWith(clonedAside);
+                        } else {
+                            // Insert new sidebar (before player)
+                            console.log('➕ SPA: Adding new sidebar');
+                            const player = document.querySelector('.muzibu-player');
+                            if (player && mainGrid) {
+                                mainGrid.insertBefore(clonedAside, player);
+                            } else {
+                                console.error('❌ SPA: Player not found, cannot insert sidebar');
+                            }
+                        }
+                    } else {
+                        // New page has NO sidebar - remove it
+                        if (currentAside) {
+                            console.log('🗑️ SPA: Removing sidebar');
+                            currentAside.remove();
+                        } else {
+                            console.log('ℹ️ SPA: No sidebar to remove');
+                        }
+                    }
+
+                    // 🎯 UPDATE GRID LAYOUT: Sync grid classes from new page
+                    const newGrid = doc.querySelector('#main-app-grid');
+                    if (newGrid && mainGrid) {
+                        // Extract grid-cols classes from new page
+                        const newClasses = newGrid.className;
+                        const currentClasses = mainGrid.className;
+
+                        console.log('🔍 SPA: Grid classes - Old:', currentClasses);
+                        console.log('🔍 SPA: Grid classes - New:', newClasses);
+
+                        // Copy all classes from new grid
+                        mainGrid.className = newClasses;
+
+                        console.log('✅ SPA: Grid classes updated');
                     }
 
                     this.currentPath = url;

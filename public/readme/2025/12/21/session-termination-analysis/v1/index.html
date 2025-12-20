@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oturum Kapatma Nedenleri - Sistem Analizi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            border: '#334155',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-6xl">
+
+        <!-- Header -->
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                Oturum Kapatma Nedenleri
+            </h1>
+            <p class="text-xl text-slate-400">Muzibu Session Management - Sistem Analizi</p>
+            <div class="mt-4 flex items-center justify-center gap-4 text-sm text-slate-500">
+                <span>21 Aralik 2025</span>
+                <span>•</span>
+                <span>Muzibu.com.tr</span>
+                <span>•</span>
+                <span>v1.0</span>
+            </div>
+        </header>
+
+        <!-- Basit Anlatim -->
+        <section class="mb-12">
+            <div class="bg-green-900/20 border-2 border-green-700 rounded-xl p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="text-3xl">📝</span>
+                    <span>Basit Anlatim (Herkes Icin)</span>
+                </h2>
+
+                <div class="space-y-6 text-lg leading-relaxed">
+                    <div class="bg-slate-800/50 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-green-400 mb-4">Oturum Ne Zaman Kapanir?</h3>
+                        <p class="text-slate-300 mb-4">
+                            Kullanicinin oturumu <strong>sadece 3 durumda</strong> kapanir. Bunlarin disinda sistem kullaniciyi atmaz.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <!-- LIFO -->
+                            <div class="bg-slate-900/50 p-5 rounded-lg border-l-4 border-orange-500">
+                                <div class="text-3xl mb-3">📱</div>
+                                <h4 class="font-bold text-orange-400 mb-2">Baska Cihaz Girisi</h4>
+                                <p class="text-sm text-slate-400">
+                                    Kullanici yeni bir cihazdan giris yaparsa ve cihaz limiti asildiysa, en eski oturum kapanir.
+                                </p>
+                            </div>
+
+                            <!-- Manuel Logout -->
+                            <div class="bg-slate-900/50 p-5 rounded-lg border-l-4 border-blue-500">
+                                <div class="text-3xl mb-3">👋</div>
+                                <h4 class="font-bold text-blue-400 mb-2">Manuel Cikis</h4>
+                                <p class="text-sm text-slate-400">
+                                    Kullanici kendisi "Cikis Yap" butonuna tiklarsa oturumu kapanir.
+                                </p>
+                            </div>
+
+                            <!-- Session Expired -->
+                            <div class="bg-slate-900/50 p-5 rounded-lg border-l-4 border-purple-500">
+                                <div class="text-3xl mb-3">⏰</div>
+                                <h4 class="font-bold text-purple-400 mb-2">Oturum Suresi Doldu</h4>
+                                <p class="text-sm text-slate-400">
+                                    Kullanici uzun sure (ayarlanan dakika) hic islem yapmazsa Laravel session suresi dolar.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/50 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-4">Oturum Ne Zaman Kapanmaz?</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">✅</span>
+                                <span class="text-slate-300">Muzik dinlerken (arka planda calsa bile) - Session polling aktif tutar</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">✅</span>
+                                <span class="text-slate-300">Sayfalarda gezinirken - Her istek session'i yeniler</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">✅</span>
+                                <span class="text-slate-300">Tarayici acik kaldigi surece - Polling devam eder</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-green-400 mt-1">✅</span>
+                                <span class="text-slate-300">Inaktivite temizligi - KALDIRILDI, artik islem yapilmiyor</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teknik Detaylar -->
+        <section class="mb-12">
+            <div class="bg-blue-900/20 border-2 border-blue-700 rounded-xl p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="text-3xl">🔧</span>
+                    <span>Teknik Detaylar (Gelistiriciler Icin)</span>
+                </h2>
+
+                <!-- Aktif Nedenler -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-green-400 mb-4">✅ Aktif Oturum Kapatma Nedenleri</h3>
+
+                    <div class="space-y-6">
+                        <!-- LIFO -->
+                        <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-orange-500">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-mono">lifo</span>
+                                <h4 class="font-bold text-white text-lg">LIFO (Last In First Out)</h4>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-slate-300 mb-2">Ne Zaman Tetiklenir?</h5>
+                                    <p class="text-slate-400 text-sm mb-4">
+                                        Kullanici yeni cihazdan giris yaptiginda ve cihaz limiti asildiginda eski oturumlar silinir.
+                                    </p>
+
+                                    <h5 class="font-semibold text-slate-300 mb-2">Dosya & Satir</h5>
+                                    <code class="text-xs bg-slate-900 px-2 py-1 rounded block">
+                                        Modules/Muzibu/app/Services/DeviceService.php:503-544
+                                    </code>
+                                </div>
+
+                                <div>
+                                    <h5 class="font-semibold text-slate-300 mb-2">Akis</h5>
+                                    <div class="text-sm text-slate-400 space-y-1">
+                                        <div>1. Kullanici login olur</div>
+                                        <div>2. registerSession() cagirilir</div>
+                                        <div>3. enforceDeviceLimit() kontrol eder</div>
+                                        <div>4. Limit asildiysa en eski session silinir</div>
+                                        <div>5. Cache'e "lifo" reason yazilir (5dk TTL)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-slate-900/50 rounded">
+                                <h5 class="font-semibold text-orange-400 mb-2">Kullaniciya Gosterilen Mesaj</h5>
+                                <p class="text-slate-300 italic">"Baska bir cihazdan giris yapildi."</p>
+                            </div>
+                        </div>
+
+                        <!-- Manuel Logout -->
+                        <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-blue-500">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-mono">manual_logout</span>
+                                <h4 class="font-bold text-white text-lg">Manuel Cikis</h4>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-slate-300 mb-2">Ne Zaman Tetiklenir?</h5>
+                                    <p class="text-slate-400 text-sm mb-4">
+                                        Kullanici "Cikis Yap" butonuna tikladiginda.
+                                    </p>
+
+                                    <h5 class="font-semibold text-slate-300 mb-2">Dosya & Satir</h5>
+                                    <code class="text-xs bg-slate-900 px-2 py-1 rounded block mb-2">
+                                        Modules/Muzibu/app/Services/DeviceService.php:99-127
+                                    </code>
+                                    <code class="text-xs bg-slate-900 px-2 py-1 rounded block">
+                                        app/Http/Controllers/Auth/AuthenticatedSessionController.php:211-273
+                                    </code>
+                                </div>
+
+                                <div>
+                                    <h5 class="font-semibold text-slate-300 mb-2">Akis</h5>
+                                    <div class="text-sm text-slate-400 space-y-1">
+                                        <div>1. Kullanici logout butonuna tiklar</div>
+                                        <div>2. POST /logout istegi gonderilir</div>
+                                        <div>3. unregisterSession() cagirilir</div>
+                                        <div>4. Cache'e "manual_logout" yazilir</div>
+                                        <div>5. Session silinir, anasayfaya yonlendirilir</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-slate-900/50 rounded">
+                                <h5 class="font-semibold text-blue-400 mb-2">Yonlendirme</h5>
+                                <p class="text-slate-300">Anasayfaya (/) yonlendirilir - login sayfasina degil</p>
+                            </div>
+                        </div>
+
+                        <!-- Session Expired -->
+                        <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-purple-500">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-mono">session_expired</span>
+                                <h4 class="font-bold text-white text-lg">Session Suresi Doldu (Laravel Native)</h4>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-slate-300 mb-2">Ne Zaman Tetiklenir?</h5>
+                                    <p class="text-slate-400 text-sm mb-4">
+                                        Kullanici belirlenen sure boyunca hicbir islem yapmazsa Laravel'in kendi session mekanizmasi devreye girer.
+                                    </p>
+
+                                    <h5 class="font-semibold text-slate-300 mb-2">Yapilandirma</h5>
+                                    <code class="text-xs bg-slate-900 px-2 py-1 rounded block mb-2">
+                                        config/session.php → lifetime
+                                    </code>
+                                    <code class="text-xs bg-slate-900 px-2 py-1 rounded block">
+                                        Setting: auth_session_lifetime (Admin Panel)
+                                    </code>
+                                </div>
+
+                                <div>
+                                    <h5 class="font-semibold text-slate-300 mb-2">Sure Nasil Hesaplanir?</h5>
+                                    <div class="text-sm text-slate-400 space-y-1">
+                                        <div>• Her request'te session suresi sifirlanir</div>
+                                        <div>• Aktif kullanim = session hic dolmaz</div>
+                                        <div>• Inaktif sure asildiysa = session expired</div>
+                                        <div>• Polling varsa (muzik caliyor) = aktif sayilir</div>
+                                    </div>
+
+                                    <h5 class="font-semibold text-slate-300 mt-4 mb-2">Mevcut Ayar</h5>
+                                    <div class="bg-slate-900/50 p-2 rounded">
+                                        <span class="text-purple-400 font-mono">auth_session_lifetime = 120 dakika</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-slate-900/50 rounded">
+                                <h5 class="font-semibold text-purple-400 mb-2">Kullaniciya Gosterilen Mesaj</h5>
+                                <p class="text-slate-300 italic">"Oturum suresi doldu. Lutfen tekrar giris yapin."</p>
+                            </div>
+                        </div>
+
+                        <!-- Admin Terminated -->
+                        <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-red-500">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm font-mono">admin_terminated</span>
+                                <h4 class="font-bold text-white text-lg">Yonetici Tarafindan Sonlandirma</h4>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-slate-300 mb-2">Ne Zaman Tetiklenir?</h5>
+                                    <p class="text-slate-400 text-sm mb-4">
+                                        Admin panelden veya API uzerinden bir yonetici kullanicinin oturumunu sonlandirdiginda.
+                                    </p>
+
+                                    <h5 class="font-semibold text-slate-300 mb-2">Dosya & Satir</h5>
+                                    <code class="text-xs bg-slate-900 px-2 py-1 rounded block">
+                                        Modules/Muzibu/app/Services/DeviceService.php:549-582
+                                    </code>
+                                </div>
+
+                                <div>
+                                    <h5 class="font-semibold text-slate-300 mb-2">Akis</h5>
+                                    <div class="text-sm text-slate-400 space-y-1">
+                                        <div>1. Admin terminateSession() cagirir</div>
+                                        <div>2. Cache'e "admin_terminated" yazilir</div>
+                                        <div>3. Session DB'den silinir</div>
+                                        <div>4. Kullanici sonraki polling'de logout edilir</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-slate-900/50 rounded">
+                                <h5 class="font-semibold text-red-400 mb-2">Kullaniciya Gosterilen Mesaj</h5>
+                                <p class="text-slate-300 italic">"Oturumunuz yonetici tarafindan sonlandirildi."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kaldirilan Nedenler -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-red-400 mb-4">❌ Kaldirilan / Pasif Nedenler</h3>
+
+                    <div class="bg-slate-800/50 rounded-lg p-6 border-l-4 border-slate-500 opacity-75">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-slate-500/20 text-slate-400 px-3 py-1 rounded-full text-sm font-mono line-through">inactivity_cleanup</span>
+                            <h4 class="font-bold text-slate-400 text-lg line-through">Inaktivite Temizligi</h4>
+                            <span class="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs">KALDIRILDI</span>
+                        </div>
+
+                        <p class="text-slate-500 mb-4">
+                            Eskiden belirli sure (4 saat) islem yapilmayan session'lar otomatik siliniyordu.
+                            Bu ozellik <strong>21 Aralik 2025</strong> tarihinde kaldirildi.
+                        </p>
+
+                        <div class="p-3 bg-slate-900/50 rounded">
+                            <h5 class="font-semibold text-slate-400 mb-2">Neden Kaldirildi?</h5>
+                            <p class="text-slate-500 text-sm">
+                                Kullanici deneyimini iyilestirmek icin. Artik oturum sadece LIFO, manuel cikis veya session expired durumlarinda kapanir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Session Polling -->
+        <section class="mb-12">
+            <div class="bg-purple-900/20 border-2 border-purple-700 rounded-xl p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="text-3xl">🔄</span>
+                    <span>Session Polling Sistemi</span>
+                </h2>
+
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-purple-400 mb-3">Nasil Calisiyor?</h4>
+                            <div class="text-sm text-slate-400 space-y-2">
+                                <div class="flex items-start gap-2">
+                                    <span class="text-purple-400">•</span>
+                                    <span>Frontend her 5 saniyede <code class="bg-slate-900 px-1 rounded">/api/auth/check-session</code> cagirir</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-purple-400">•</span>
+                                    <span>Backend session'in DB'de olup olmadigini kontrol eder</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-purple-400">•</span>
+                                    <span>Session yoksa cache'den reason okunur ve mesaj gosterilir</span>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="text-purple-400">•</span>
+                                    <span>Her basarili polling, Laravel session'i yeniler</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-semibold text-purple-400 mb-3">Dosyalar</h4>
+                            <div class="space-y-2">
+                                <code class="text-xs bg-slate-900 px-2 py-1 rounded block">
+                                    public/themes/muzibu/js/player/features/session.js
+                                </code>
+                                <code class="text-xs bg-slate-900 px-2 py-1 rounded block">
+                                    app/Http/Controllers/Api/Auth/AuthController.php:checkSession()
+                                </code>
+                            </div>
+
+                            <h4 class="font-semibold text-purple-400 mt-4 mb-3">Polling Araligi</h4>
+                            <div class="bg-slate-900/50 p-3 rounded">
+                                <span class="text-purple-400 font-mono">5 saniye</span>
+                                <span class="text-slate-500 text-sm ml-2">(Test modu)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Device Limit -->
+        <section class="mb-12">
+            <div class="bg-orange-900/20 border-2 border-orange-700 rounded-xl p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="text-3xl">📱</span>
+                    <span>Cihaz Limiti Hiyerarsisi</span>
+                </h2>
+
+                <div class="bg-slate-800/50 rounded-lg p-6">
+                    <p class="text-slate-300 mb-4">
+                        Bir kullanicinin ayni anda kac cihazda oturum acabildigi 3 katmanli hiyerarsi ile belirlenir:
+                    </p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 p-4 bg-slate-900/50 rounded-lg">
+                            <div class="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center text-orange-400 font-bold">1</div>
+                            <div>
+                                <h4 class="font-semibold text-orange-400">Kullanici Ozel Limiti</h4>
+                                <p class="text-sm text-slate-400">users.device_limit → Kullaniciya ozel ayar (en yuksek oncelik)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 bg-slate-900/50 rounded-lg">
+                            <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 font-bold">2</div>
+                            <div>
+                                <h4 class="font-semibold text-blue-400">Abonelik Plani</h4>
+                                <p class="text-sm text-slate-400">subscription_plans.device_limit → Plan bazli limit</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 bg-slate-900/50 rounded-lg">
+                            <div class="w-10 h-10 bg-purple-500/20 rounded-full flex items-center justify-center text-purple-400 font-bold">3</div>
+                            <div>
+                                <h4 class="font-semibold text-purple-400">Tenant Varsayilan</h4>
+                                <p class="text-sm text-slate-400">setting('auth_device_limit') → Tum kullanicilar icin varsayilan (1)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-slate-900/50 rounded-lg">
+                        <h4 class="font-semibold text-slate-300 mb-2">Dosya</h4>
+                        <code class="text-xs bg-slate-950 px-2 py-1 rounded">
+                            Modules/Muzibu/app/Services/DeviceService.php:getDeviceLimit()
+                        </code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ozet Tablo -->
+        <section class="mb-12">
+            <div class="bg-slate-800/50 rounded-xl p-8">
+                <h2 class="text-2xl font-bold mb-6 text-center">📊 Ozet Tablo</h2>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700">
+                                <th class="text-left py-3 px-4 text-slate-400">Neden</th>
+                                <th class="text-left py-3 px-4 text-slate-400">Durum</th>
+                                <th class="text-left py-3 px-4 text-slate-400">Tetikleyen</th>
+                                <th class="text-left py-3 px-4 text-slate-400">Yonlendirme</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4"><code class="text-orange-400">lifo</code></td>
+                                <td class="py-3 px-4"><span class="text-green-400">✅ Aktif</span></td>
+                                <td class="py-3 px-4 text-slate-300">Baska cihazdan giris</td>
+                                <td class="py-3 px-4 text-slate-400">/login?session_terminated=1</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4"><code class="text-blue-400">manual_logout</code></td>
+                                <td class="py-3 px-4"><span class="text-green-400">✅ Aktif</span></td>
+                                <td class="py-3 px-4 text-slate-300">Kullanici cikis yapti</td>
+                                <td class="py-3 px-4 text-slate-400">/ (anasayfa)</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4"><code class="text-purple-400">session_expired</code></td>
+                                <td class="py-3 px-4"><span class="text-green-400">✅ Aktif</span></td>
+                                <td class="py-3 px-4 text-slate-300">Laravel session suresi doldu</td>
+                                <td class="py-3 px-4 text-slate-400">/login?session_expired=1</td>
+                            </tr>
+                            <tr class="border-b border-slate-800">
+                                <td class="py-3 px-4"><code class="text-red-400">admin_terminated</code></td>
+                                <td class="py-3 px-4"><span class="text-green-400">✅ Aktif</span></td>
+                                <td class="py-3 px-4 text-slate-300">Yonetici sonlandirdi</td>
+                                <td class="py-3 px-4 text-slate-400">/login?session_terminated=1</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4"><code class="text-slate-500 line-through">inactivity_cleanup</code></td>
+                                <td class="py-3 px-4"><span class="text-red-400">❌ Pasif</span></td>
+                                <td class="py-3 px-4 text-slate-500 line-through">Uzun sure inaktivite</td>
+                                <td class="py-3 px-4 text-slate-500">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm pt-8 border-t border-slate-800">
+            <p>🤖 Generated with Claude Code</p>
+            <p class="mt-2">21 Aralik 2025 | Muzibu.com.tr | Session Management v1.0</p>
+        </footer>
+
+    </div>
+</body>
+</html>

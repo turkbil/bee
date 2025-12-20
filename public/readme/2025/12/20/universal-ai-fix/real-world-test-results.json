@@ -1,0 +1,834 @@
+{
+    "total": 101,
+    "passed": 101,
+    "failed": 0,
+    "scenarios": [
+        {
+            "name": "Yanlış Yazım & Karakter Hatası",
+            "messages": [
+                {
+                    "user": "transpalet varmı",
+                    "note": "Bitişik yazım",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "elektirikli modeller",
+                    "note": "Yazım hatası: elektirikli",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "akulu mu",
+                    "note": "Türkçe karakter yok: akülü",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "kac ton",
+                    "note": "Türkçe karakter yok: kaç",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "fiyati ne",
+                    "note": "Türkçe karakter yok: fiyatı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Günlük Konuşma Dili (Slang)",
+            "messages": [
+                {
+                    "user": "bi transpalet lazım",
+                    "note": "bi = bir (slang)",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "kaça patlar",
+                    "note": "Slang: kaça patlar = ne kadar",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "bi bakalım ne varmış",
+                    "note": "Günlük dil",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Alakasız mesaj işlendi"
+                },
+                {
+                    "user": "en uygunu hangisi",
+                    "note": "Uygun = ucuz",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "tamam o olsun",
+                    "note": "Karar verme",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Sektör Jargonu & Teknik Terimler",
+            "messages": [
+                {
+                    "user": "palet kaldırma aracı lazım",
+                    "note": "Jargon: transpalet",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "kaldırma kapasitesi",
+                    "note": "Teknik terim",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "hidrolik pompası nasıl",
+                    "note": "Teknik detay",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "fork uzunluğu ayarlanabiliyor mu",
+                    "note": "Fork = çatal (jargon)",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "poli tekerlek mi kauçuk mu",
+                    "note": "Malzeme jargonu",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Kısaltmalar & Abbreviated",
+            "messages": [
+                {
+                    "user": "flt var mı",
+                    "note": "flt = forklift kısaltması",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "2t model",
+                    "note": "2t = 2 ton",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "elektro model göster",
+                    "note": "elektro = elektrikli",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "tel no",
+                    "note": "tel no = telefon numarası",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Alakasız mesaj işlendi"
+                },
+                {
+                    "user": "kdv dahil mi",
+                    "note": "KDV kısaltması",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Emoji & Modern İletişim",
+            "messages": [
+                {
+                    "user": "transpalet var mı 🤔",
+                    "note": "Emoji kullanımı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "fiyat?? 💰",
+                    "note": "Çoklu soru işareti + emoji",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "uygun mu???",
+                    "note": "Abartılı noktalama",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "tmmm 👍",
+                    "note": "tmm = tamam + emoji",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "bi de forklift göster",
+                    "note": "Günlük dil + kategori değişimi",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Bölgesel Lehçe Farklılıkları",
+            "messages": [
+                {
+                    "user": "transpalet mı",
+                    "note": "Doğu: mı (var mı yerine)",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "ne fiyattır",
+                    "note": "Doğu: ne fiyattır (ne kadar yerine)",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "nerden alacaz",
+                    "note": "alacaz = alacağız (günlük)",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Alakasız mesaj işlendi"
+                },
+                {
+                    "user": "bi bakalım bize yarar mı",
+                    "note": "Ege: yarar mı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "olur bize",
+                    "note": "Karadeniz: olur bize",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Farklı Soru Kalıpları",
+            "messages": [
+                {
+                    "user": "transpalet satıyor musunuz",
+                    "note": "Satıyor musunuz kalıbı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "transpalet bulabilir miyim",
+                    "note": "Bulabilir miyim kalıbı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "transpalet mevcut mu",
+                    "note": "Mevcut mu kalıbı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "transpalet stokta var mı",
+                    "note": "Stokta var mı kalıbı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "transpaletiniz var mı",
+                    "note": "İyelik eki: -iniz",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Türkçe-İngilizce Karışımı",
+            "messages": [
+                {
+                    "user": "pallet jack var mı",
+                    "note": "İngilizce: pallet jack = transpalet",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "electric model",
+                    "note": "Tam İngilizce",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "capacity kaç ton",
+                    "note": "Karışık: capacity + Türkçe",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "price nedir",
+                    "note": "Price + Türkçe ek",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "warranty süresi",
+                    "note": "Warranty + Türkçe",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Çok Kısa & Belirsiz Sorular",
+            "messages": [
+                {
+                    "user": "transpalet",
+                    "note": "Tek kelime",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "2 ton",
+                    "note": "Sadece kapasite",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "elektrikli",
+                    "note": "Sadece tip",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "fiyat",
+                    "note": "Tek kelime soru",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "ne kadar",
+                    "note": "İki kelime",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Uzun & Karmaşık Cümleler",
+            "messages": [
+                {
+                    "user": "merhaba ben depo için elektrikli transpalet arıyorum 2 ton kapasiteli olması lazım sizde var mı acaba",
+                    "note": "Uzun cümle (var mı var)",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "peki fiyatları nasıl kaça patlar ortalama bi fikir verebilir misiniz",
+                    "note": "Uzun soru",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "anladım tamam o zaman ben bi düşüneyim de ailemle konuşayım da sonra size dönüş yapayım olur mu",
+                    "note": "Çok uzun, çok kelime",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Alakasız mesaj işlendi"
+                },
+                {
+                    "user": "aaa bi de aklıma geldi akülü olanların şarj süresi ne kadar sürer",
+                    "note": "Aaa ile başlayan uzun soru",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "son bi soru daha garanti var mı bunlarda yoksa sıkıntı olur mu",
+                    "note": "Çok şey bir arada",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Yazım Hatası + Rakamlar",
+            "messages": [
+                {
+                    "user": "1.5tonluk transpalet varmı",
+                    "note": "Bitişik + rakam + hata",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "2ton modeli kacpara",
+                    "note": "Bitişik yazım: kaç para",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "3tonlukta varmı",
+                    "note": "Ton + ta eki + varmı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "1,5ton mu yoksa 2ton mu daha ıyı",
+                    "note": "Virgüllü + yazım hatası: ıyı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "fiyatları 10bin tl uzerındemi",
+                    "note": "Rakam + bitişik",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Tekrar & Vurgu Kullanımı",
+            "messages": [
+                {
+                    "user": "transpalet transpalet arıyorum",
+                    "note": "Kelime tekrarı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "çok çok acil lazım",
+                    "note": "Çok tekrarı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "hemen hemen şimdi",
+                    "note": "Hemen tekrarı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "lütfen lütfen fiyat verin",
+                    "note": "Lütfen tekrarı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "var mı yok mu söyleyin",
+                    "note": "Var mı yok mu (deyim)",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Olumsuz & Ret Cümleleri",
+            "messages": [
+                {
+                    "user": "transpalet yok mu",
+                    "note": "Yok mu (olumsuz var mı)",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "daha ucuzu yok mu",
+                    "note": "Daha ucuzu yok mu",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "başka modeli yok mu bunun",
+                    "note": "Başka yok mu",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "indirim yapmıyor musunuz",
+                    "note": "Olumsuz soru",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Alakasız mesaj işlendi"
+                },
+                {
+                    "user": "o zaman istemiyorum",
+                    "note": "Ret cümlesi",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Karşılaştırma & Tercih",
+            "messages": [
+                {
+                    "user": "transpalet mi forklift mi daha iyi",
+                    "note": "Hangisi daha iyi (transpalet var)",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "elektrikli mi manuel mi",
+                    "note": "Tercih sorusu",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "sizce hangisi",
+                    "note": "Öneri sorusu",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "forklift de göster karşılaştırayım",
+                    "note": "Kategori değişimi + karşılaştırma",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "aradaki fark ne",
+                    "note": "Fark sorusu",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Aciliyet & Zaman",
+            "messages": [
+                {
+                    "user": "bugün teslim olur mu transpalet",
+                    "note": "Acil + var mı alternatifi",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "yarın lazım bana",
+                    "note": "Aciliyet",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "hemen şimdi almak istiyorum",
+                    "note": "Hemen + istiyorum",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "ne zaman gelir",
+                    "note": "Zaman sorusu",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "kaç gün sürer",
+                    "note": "Süre sorusu",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Bağlaçlarla Uzun Sorgular",
+            "messages": [
+                {
+                    "user": "transpalet var mı ama elektrikli olacak ve 2 ton olacak",
+                    "note": "var mı + ama + ve",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "fiyatı ne kadar veya taksitle alabilir miyim",
+                    "note": "ve\/veya bağlacı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "hem ucuz hem de kaliteli olsun",
+                    "note": "hem...hem de",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "ya bu model ya da başka model",
+                    "note": "ya...ya da",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "ne kadar olursa olsun alacağım",
+                    "note": "Kararlılık",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Soru Eki Varyasyonları",
+            "messages": [
+                {
+                    "user": "transpalet varmıdır",
+                    "note": "varmıdır (eski Türkçe)",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "transpalet var mıdır acaba",
+                    "note": "var mıdır acaba",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "transpaletleriniz var mı",
+                    "note": "Çoğul + iyelik",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "transpalet satışınız var mı",
+                    "note": "Satışınız + var mı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "transpalet bulunur mu",
+                    "note": "Bulunur mu (resmi)",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Yabancı Etkili Türkçe",
+            "messages": [
+                {
+                    "user": "palet jack varmı yahu",
+                    "note": "İngilizce + Türkçe ek + yahu",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "ne kadar der parayı",
+                    "note": "Günlük konuşma",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "kaça gelir be abi",
+                    "note": "Slang: be abi",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "sen ne dersin kardeşim",
+                    "note": "Samimi hitap",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "halledelim mi bu işi",
+                    "note": "Günlük: halledelim",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Belirsizlik İfadeleri",
+            "messages": [
+                {
+                    "user": "transpalet falan var mı",
+                    "note": "falan (belirsizlik)",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "bi tane lazım işte",
+                    "note": "işte (vurgu)",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "ne bileyim 2 ton falan",
+                    "note": "ne bileyim (belirsizlik)",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (5 mesaj)"
+                },
+                {
+                    "user": "herhalde ucuzdur",
+                    "note": "herhalde (tahmin)",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (7 mesaj)"
+                },
+                {
+                    "user": "galiba o olur",
+                    "note": "galiba (belirsizlik)",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Gerçek Dünya Karma Kaos",
+            "messages": [
+                {
+                    "user": "mrb transpalet varmı🤔",
+                    "note": "Kısaltma + bitişik + emoji",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "2tonluk kacpara???💰",
+                    "note": "Bitişik + emoji + çoklu ?",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (3 mesaj)"
+                },
+                {
+                    "user": "tmm bi dk düşüncem 👍",
+                    "note": "Kısaltmalar + düşüncem hatası",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Alakasız mesaj işlendi"
+                },
+                {
+                    "user": "forkliftde varmııı",
+                    "note": "Bitişik + uzatılmış soru",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal rule aktif (ürün göstermeli)"
+                },
+                {
+                    "user": "hangisinii konuşmuştuk yaaa",
+                    "note": "Hafıza + uzatılmış kelime",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (9 mesaj)"
+                },
+                {
+                    "user": "onun fiyat ne kdı",
+                    "note": "kdı = kadardı (kısaltma + hata)",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Hafıza çalışıyor (10 mesaj)"
+                }
+            ],
+            "passed": true
+        }
+    ]
+}

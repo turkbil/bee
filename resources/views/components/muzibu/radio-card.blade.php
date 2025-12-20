@@ -2,6 +2,7 @@
 
 {{-- Muzibu Radio Card Component --}}
 {{-- Usage: <x-muzibu.radio-card :radio="$radio" /> --}}
+{{-- Note: Radios play directly, no preview mode --}}
 
 <div class="radio-card group bg-muzibu-gray hover:bg-gray-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 transition-all duration-300 cursor-pointer hover:shadow-2xl hover:shadow-muzibu-coral/20"
      data-radio-id="{{ $radio->radio_id }}"
@@ -51,7 +52,7 @@
             </div>
         @else
             <div class="w-full aspect-square bg-gradient-to-br from-red-500 via-pink-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
-                <i class="fas fa-radio text-white text-5xl sm:text-6xl md:text-7xl opacity-90"></i>
+                <i class="fas fa-radio text-white text-5xl sm:text-6xl opacity-90"></i>
             </div>
         @endif
 
@@ -80,7 +81,7 @@
         {{-- Favorite + Menu Buttons (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
         <div class="absolute top-2 right-2 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" @click.stop.prevent>
             {{-- Favorite Button --}}
-            <button @click.stop="$store.favorites.toggle('radio', {{ $radio->radio_id }})"
+            <button @click.stop.prevent="$store.favorites.toggle('radio', {{ $radio->radio_id }})"
                     class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
                     x-bind:class="$store.favorites.isFavorite('radio', {{ $radio->radio_id }}) ? 'text-muzibu-coral' : ''">
                 <i class="text-sm"
@@ -88,7 +89,7 @@
             </button>
 
             {{-- 3-Dot Menu Button --}}
-            <button @click="$store.contextMenu.openContextMenu($event, 'radio', {
+            <button @click.stop.prevent="$store.contextMenu.openContextMenu($event, 'radio', {
                     id: {{ $radio->radio_id }},
                     title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
                     is_favorite: {{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}

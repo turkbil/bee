@@ -3,26 +3,23 @@
 @section('title', 'Sifremi Unuttum - Muzibu')
 
 @section('content')
-    <!-- Header -->
-    <div class="mb-8">
-        <div class="w-16 h-16 bg-mz-500/10 rounded-2xl flex items-center justify-center mb-6">
-            <i class="fas fa-key text-mz-400 text-2xl"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-white mb-2">Sifremi Unuttum</h2>
-        <p class="text-dark-200">E-posta adresinizi girin, size sifre sifirlama baglantisi gonderelim.</p>
+    <!-- Logo -->
+    <div class="text-center mb-10">
+        <a href="/" class="inline-flex items-center gap-3 mb-4">
+            <div class="w-14 h-14 bg-gradient-to-br from-mz-500 to-mz-600 rounded-2xl flex items-center justify-center shadow-xl shadow-mz-500/20">
+                <i class="fas fa-music text-white text-2xl"></i>
+            </div>
+        </a>
+        <h1 class="text-3xl font-bold text-white">Sifremi Unuttum</h1>
+        <p class="text-dark-200 mt-2">E-posta adresinizi girin, size sifre sifirlama baglantisi gonderelim.</p>
     </div>
 
-    <!-- Session Status (Success Message) -->
+    <!-- Success Message -->
     @if (session('status'))
         <div class="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-            <div class="flex items-start gap-3">
-                <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-check text-emerald-400"></i>
-                </div>
-                <div>
-                    <p class="text-emerald-400 font-medium text-sm">E-posta Gonderildi!</p>
-                    <p class="text-dark-200 text-sm mt-1">{{ session('status') }}</p>
-                </div>
+            <div class="flex items-center gap-3 text-emerald-400 text-sm">
+                <i class="fas fa-check-circle"></i>
+                <span>{{ session('status') }}</span>
             </div>
         </div>
     @endif
@@ -33,24 +30,15 @@
 
         <!-- Email -->
         <div>
-            <label for="email" class="block text-sm font-medium text-dark-100 mb-2">
-                E-posta Adresi
-            </label>
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fas fa-envelope text-dark-300"></i>
-                </div>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    required
-                    autofocus
-                    class="w-full pl-12 pr-4 py-3.5 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('email') border-red-500/50 @enderror"
-                    placeholder="ornek@email.com"
-                >
-            </div>
+            <input
+                type="email"
+                name="email"
+                value="{{ old('email') }}"
+                required
+                autofocus
+                class="w-full px-5 py-4 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('email') border-red-500/50 @enderror"
+                placeholder="E-posta adresiniz"
+            >
             @error('email')
                 <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
                     <i class="fas fa-exclamation-circle"></i>
@@ -59,41 +47,36 @@
             @enderror
         </div>
 
-        <!-- Submit Button -->
+        <!-- Submit -->
         <button
             type="submit"
             :disabled="loading"
-            class="w-full py-4 bg-gradient-to-r from-mz-500 to-mz-600 hover:from-mz-400 hover:to-mz-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-mz-500/20 hover:shadow-mz-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            class="w-full py-4 bg-gradient-to-r from-mz-500 to-mz-600 hover:from-mz-400 hover:to-mz-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-mz-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-            <template x-if="!loading">
-                <span class="flex items-center gap-2">
-                    <i class="fas fa-paper-plane"></i>
-                    Sifirlama Baglantisi Gonder
-                </span>
-            </template>
-            <template x-if="loading">
-                <span class="flex items-center gap-2">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    Gonderiliyor...
-                </span>
-            </template>
+            <span x-show="!loading" class="flex items-center justify-center gap-2">
+                <i class="fas fa-paper-plane"></i>
+                Sifirlama Baglantisi Gonder
+            </span>
+            <span x-show="loading" class="flex items-center justify-center gap-2">
+                <i class="fas fa-spinner fa-spin"></i>
+                Gonderiliyor...
+            </span>
         </button>
 
         <!-- Info -->
-        <div class="pt-4 border-t border-dark-600">
-            <div class="flex items-start gap-3 text-sm text-dark-300">
-                <i class="fas fa-info-circle text-dark-400 mt-0.5"></i>
-                <p>Sifirlama baglantisi e-posta adresinize gonderilecektir. Baglanti 60 dakika icerisinde gecerliliğini yitirecektir.</p>
+        <div class="p-4 bg-dark-700/30 rounded-xl">
+            <div class="flex items-start gap-3 text-sm text-dark-200">
+                <i class="fas fa-info-circle text-dark-300 mt-0.5"></i>
+                <p>Sifirlama baglantisi 60 dakika gecerlidir.</p>
             </div>
         </div>
     </form>
-@endsection
 
-@section('footer-links')
-    <p class="text-dark-300">
-        Sifrenizi hatirladin mi?
-        <a href="{{ route('login') }}" class="text-mz-400 hover:text-mz-300 font-medium transition-colors">
-            Giris Yapin
+    <!-- Back to Login -->
+    <div class="mt-8 text-center">
+        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-mz-400 hover:text-mz-300 transition-colors">
+            <i class="fas fa-arrow-left"></i>
+            Giris sayfasina don
         </a>
-    </p>
+    </div>
 @endsection

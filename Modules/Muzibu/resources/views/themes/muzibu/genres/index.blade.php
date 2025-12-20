@@ -11,14 +11,7 @@
 <section class="px-8 pb-12">
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         @foreach($genres as $genre)
-            @php $colors = ['bg-blue-600', 'bg-purple-600', 'bg-pink-600', 'bg-orange-600', 'bg-green-600', 'bg-red-600']; $color = $colors[array_rand($colors)]; @endphp
-            <a href="/genres/{{ $genre->genre_id }}" class="relative h-32 rounded-lg {{ $color }} overflow-hidden group hover:scale-105 transition-all shadow-lg">
-                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all"></div>
-                <div class="relative z-10 p-4 h-full flex flex-col justify-between">
-                    <h3 class="text-white font-bold text-xl">{{ $genre->title['tr'] ?? $genre->title['en'] ?? 'Genre' }}</h3>
-                    <p class="text-white/80 text-sm">{{ $genre->song_count }} şarkı</p>
-                </div>
-            </a>
+            <x-muzibu.genre-card :genre="$genre" :preview="true" />
         @endforeach
     </div>
 </section>

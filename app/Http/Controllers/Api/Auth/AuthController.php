@@ -208,9 +208,9 @@ class AuthController extends Controller
                     }
 
                     // Reason'a göre mesaj belirle
+                    // Oturum sadece 3 sebepten kapanır: LIFO, manuel logout, session expired
                     $message = match($deletedReason) {
                         'lifo' => 'Başka bir cihazdan giriş yapıldı.',
-                        '60min_cleanup' => 'Oturumunuz 60 dakika inaktif kaldığı için otomatik olarak kapatıldı.',
                         'manual_logout' => 'Oturumunuz kapatıldı.',
                         'admin_terminated' => 'Oturumunuz yönetici tarafından sonlandırıldı.',
                         default => 'Oturumunuz sonlandırıldı. Lütfen tekrar giriş yapın.',

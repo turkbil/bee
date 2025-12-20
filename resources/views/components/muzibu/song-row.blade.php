@@ -67,7 +67,7 @@
     {{-- Actions (Hover for unfavorited, Always visible for favorited) --}}
     <div class="flex items-center gap-2 flex-shrink-0 transition-opacity"
          x-bind:class="$store.player.currentSong?.id === {{ $song->id }} ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'"
-         @click.stop>
+         @click.stop.prevent>
 
         {{-- Favorite Button --}}
         @php
@@ -75,7 +75,7 @@
         @endphp
 
         <button class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110 {{ $isFavorited ? '!opacity-100' : '' }}"
-                x-on:click.stop="$store.favorites.toggle('song', {{ $song->id }})"
+                x-on:click.stop.prevent="$store.favorites.toggle('song', {{ $song->id }})"
                 x-bind:class="$store.favorites.isFavorite('song', {{ $song->id }}) ? 'text-muzibu-coral' : ''">
             <i class="text-sm sm:text-base"
                x-bind:class="$store.favorites.isFavorite('song', {{ $song->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>

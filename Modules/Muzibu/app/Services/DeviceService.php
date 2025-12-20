@@ -402,29 +402,11 @@ class DeviceService
 
         $currentSessionId = session()->getId();
 
-        // Sadece 60 dakikadan eski session'ları temizle (stale cleanup)
-        // Önce session'ları al (cache'e reason kaydetmek için)
-        $staleSessions = DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->where('last_activity', '<', now()->subMinutes(60))
-            ->get();
-
-        foreach ($staleSessions as $staleSession) {
-            // Cache'e silinme nedenini kaydet (5 dakika TTL)
-            if ($staleSession->login_token) {
-                Cache::put(
-                    "session_deleted_reason:{$user->id}:{$staleSession->login_token}",
-                    '60min_cleanup',
-                    300
-                );
-            }
-        }
-
-        // Şimdi sil
-        DB::table($this->table)
-            ->where('user_id', $user->id)
-            ->where('last_activity', '<', now()->subMinutes(60))
-            ->delete();
+        // NOT: Inactivity cleanup KALDIRILDI
+        // Oturum sadece şu durumlarda kapanır:
+        // 1. LIFO (başka cihazdan giriş)
+        // 2. Manuel logout
+        // 3. Session expired (Laravel native)
 
         return DB::table($this->table)
             ->where('user_id', $user->id)

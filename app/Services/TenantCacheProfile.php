@@ -11,7 +11,13 @@ class TenantCacheProfile implements CacheProfile
 {
     public function enabled(Request $request): bool
     {
-        return config('responsecache.enabled', true);
+        // Global config kontrolü
+        if (!config('responsecache.enabled', true)) {
+            return false;
+        }
+
+        // Tenant bazlı kontrol (Settings'den)
+        return setting('response_cache_enabled', true);
     }
 
     public function shouldCacheRequest(Request $request): bool

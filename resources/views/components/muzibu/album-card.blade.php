@@ -1,10 +1,22 @@
-@props(['album'])
+@props(['album', 'preview' => false])
 
 {{-- Muzibu Album Card Component --}}
 {{-- Usage: <x-muzibu.album-card :album="$album" /> --}}
 {{-- Features: Infinite queue data attributes, playing badge, context menu --}}
 
-<a href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}"
+<a @if($preview)
+       href="javascript:void(0)"
+       @click="$store.sidebar.showPreview('album', {{ $album->id }}, {
+           type: 'Album',
+           id: {{ $album->id }},
+           title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
+           artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',
+           cover: '{{ $album->coverMedia ? thumb($album->coverMedia, 300, 300, ['scale' => 1]) : '' }}',
+           is_favorite: {{ auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
+       })"
+   @else
+       href="/albums/{{ $album->getTranslation('slug', app()->getLocale()) }}"
+   @endif
    {{-- Infinite Queue Data Attributes --}}
    data-album-id="{{ $album->id }}"
    data-genre-id="{{ $album->genre_id ?? '' }}"
@@ -55,7 +67,7 @@
                  loading="lazy">
         @else
             <div class="w-full aspect-square bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                <span class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">💿</span>
+                <span class="text-5xl sm:text-6xl">💿</span>
             </div>
         @endif
 
@@ -75,7 +87,7 @@
         {{-- Favorite + Menu Buttons (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
         <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>
             {{-- Favorite Button --}}
-            <button x-on:click.stop="$store.favorites.toggle('album', {{ $album->id }})"
+            <button x-on:click.stop.prevent="$store.favorites.toggle('album', {{ $album->id }})"
                     class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
                     x-bind:class="$store.favorites.isFavorite('album', {{ $album->id }}) ? 'text-muzibu-coral' : ''">
                 <i class="text-sm"
@@ -83,7 +95,7 @@
             </button>
 
             {{-- 3-Dot Menu Button --}}
-            <button x-on:click="$store.contextMenu.openContextMenu($event, 'album', {
+            <button x-on:click.stop.prevent="$store.contextMenu.openContextMenu($event, 'album', {
                 id: {{ $album->id }},
                 title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
                 artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',

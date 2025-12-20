@@ -1,0 +1,385 @@
+{
+    "total": 53,
+    "passed": 53,
+    "failed": 0,
+    "scenarios": [
+        {
+            "name": "Temel 'var mı' Testi",
+            "messages": [
+                {
+                    "user": "transpalet var mı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "2 ton olanlar",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 3 messages"
+                },
+                {
+                    "user": "merhaba",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "elektrikli mi",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 7 messages"
+                },
+                {
+                    "user": "fiyatları ne kadar",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 9 messages"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Forklift 'İstiyorum' Testi",
+            "messages": [
+                {
+                    "user": "forklift istiyorum",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "3 ton kapasiteli",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 3 messages"
+                },
+                {
+                    "user": "çalışma saatleriniz",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "akülü modeller var mı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 7 messages"
+                },
+                {
+                    "user": "kaç yıl garantili",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 9 messages"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "İstif Makinesi 'Arıyorum'",
+            "messages": [
+                {
+                    "user": "istif makinesi arıyorum",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "yükseklik ne kadar",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 3 messages"
+                },
+                {
+                    "user": "adresiniz neresi",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "en ucuz model hangisi",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 7 messages"
+                },
+                {
+                    "user": "kiralama yapıyor musunuz",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 9 messages"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Kategori Değiştirme Testi",
+            "messages": [
+                {
+                    "user": "transpalet var mı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "1.5 ton olanlar",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 3 messages"
+                },
+                {
+                    "user": "forklift de var mı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "2 ton modeller",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 7 messages"
+                },
+                {
+                    "user": "saat kaçta açıksınız",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "akülü mü dizel mi",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 10 messages"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Çok Alakasız Konularla Test",
+            "messages": [
+                {
+                    "user": "elektrikli transpalet",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "telefon numaranız",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "2 ton modeller",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 5 messages"
+                },
+                {
+                    "user": "firma olarak ne yapıyorsunuz",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "hangi markaları satıyorsunuz",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 9 messages"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "'Göster' Tetikleyici Testi",
+            "messages": [
+                {
+                    "user": "reach truck modellerini göster",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "dar koridor için uygun olan",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 3 messages"
+                },
+                {
+                    "user": "merhaba",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "kaç metre yükseliyor",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 7 messages"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "'Hangileri var' Testi",
+            "messages": [
+                {
+                    "user": "order picker hangileri var",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "yüksek kaldırma kapasiteli",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 3 messages"
+                },
+                {
+                    "user": "whatsapp numaranız var mı",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "en popüler model",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 7 messages"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Karma Test (3 Kategori)",
+            "messages": [
+                {
+                    "user": "transpalet neler var",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "forklift de göster",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "e-posta adresiniz",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "istif makinesi de var mı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "en son hangisini konuşmuştuk",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 9 messages"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Uzun Konuşma (Hafıza Dayanıklılık)",
+            "messages": [
+                {
+                    "user": "elektrikli transpalet var mı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "2 ton modeller",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 3 messages"
+                },
+                {
+                    "user": "çalışma saatleri",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "akü ömrü ne kadar",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 7 messages"
+                },
+                {
+                    "user": "referanslarınız var mı",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "şarj süresi",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 10 messages"
+                },
+                {
+                    "user": "ne zaman kurumunuz",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "garanti süresi",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 10 messages"
+                },
+                {
+                    "user": "servis hizmeti veriyor musunuz",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "o modelin şarj süresi ne kadardı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 10 messages"
+                }
+            ],
+            "passed": true
+        },
+        {
+            "name": "Fiyat Odaklı Test",
+            "messages": [
+                {
+                    "user": "ucuz forklift var mı",
+                    "expected": "product_show",
+                    "passed": true,
+                    "validation": "✅ PASS: Universal 'var mı' rule FOUND in system prompt"
+                },
+                {
+                    "user": "en ucuzu ne kadar",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 3 messages"
+                },
+                {
+                    "user": "adresiniz neresi",
+                    "expected": "unrelated",
+                    "passed": true,
+                    "validation": "✅ PASS: Unrelated message processed"
+                },
+                {
+                    "user": "taksit imkanı var mı",
+                    "expected": "memory",
+                    "passed": true,
+                    "validation": "✅ PASS: Conversation history has 7 messages"
+                }
+            ],
+            "passed": true
+        }
+    ]
+}

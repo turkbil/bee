@@ -385,10 +385,66 @@
             }, 50);
         });
 
+        // 🎵 Player Store Registration - ULTIMATE FIX (Proxy Pattern - auto-forward everything)
+        // Strategy: Use JavaScript Proxy to auto-forward ALL properties/methods to root $data
+        document.addEventListener('alpine:initialized', () => {
+            const htmlEl = document.querySelector('html');
+
+            // Wait for Alpine to fully initialize the root component
+            setTimeout(() => {
+                const getRootData = () => {
+                    // Try multiple ways to get root data
+                    if (htmlEl._x_dataStack && htmlEl._x_dataStack[0]) {
+                        return htmlEl._x_dataStack[0];
+                    }
+                    // Fallback: Alpine might expose it differently
+                    return window.Alpine?.$data?.(htmlEl);
+                };
+
+                // Create Proxy that forwards everything to root
+                const playerProxy = new Proxy({}, {
+                    get(target, prop) {
+                        const rootData = getRootData();
+                        if (!rootData) {
+                            console.error('Root data not accessible');
+                            return undefined;
+                        }
+
+                        const value = rootData[prop];
+
+                        // If it's a function, bind it to root context
+                        if (typeof value === 'function') {
+                            return value.bind(rootData);
+                        }
+
+                        return value;
+                    },
+                    set(target, prop, value) {
+                        const rootData = getRootData();
+                        if (rootData) {
+                            rootData[prop] = value;
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+
+                window.Alpine.store('player', playerProxy);
+                console.log('✅ Player store = Proxy to root (auto-forward all properties/methods)');
+            }, 100); // Small delay to ensure Alpine root is ready
+        });
+
         // Context menu store kontrolü
         document.addEventListener('alpine:initialized', () => {
             if (!window.Alpine.store('contextMenu')) {
                 console.error('❌ Context Menu Store not found!');
+            }
+
+            // Player store da kontrol et
+            if (!window.Alpine.store('player')) {
+                console.error('❌ Player Store not found!');
+            } else {
+                console.log('✅ Player store verified');
             }
         });
     </script>

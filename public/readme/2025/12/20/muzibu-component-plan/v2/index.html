@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu - Yapılacak Parçalar (Basit Anlatım + Örnekler)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#ff7f50',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700 sticky top-0 z-50 backdrop-blur">
+        <div class="container mx-auto px-6 py-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-muzibu-coral rounded-xl flex items-center justify-center">
+                    <i class="fas fa-puzzle-piece text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-white">Muzibu - Yapılacak Parçalar</h1>
+                    <p class="text-slate-400">Basit Türkçe Anlatım + Kod Örnekleri</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 max-w-6xl">
+
+        <!-- Giriş -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-800 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-white mb-4">📝 Plan Özeti (Herkes İçin)</h2>
+
+                <div class="space-y-4 text-lg text-slate-200">
+                    <p>
+                        <strong class="text-green-300">Ne Yapacağız?</strong><br>
+                        Muzibu'da şarkı, albüm, sanatçı gibi şeyleri gösteren <strong>"hazır parçalar"</strong> yapacağız.
+                        Mesela bir albüm kartı var - bunu her yerde aynı şekilde göstermek için tek bir parça kodlayacağız.
+                    </p>
+
+                    <p>
+                        <strong class="text-green-300">Neden Gerekli?</strong><br>
+                        Şu anda albüm kartı 15 farklı sayfada farklı kodlanmış. Bir yerde değişiklik yapınca 15 yeri değiştirmek gerekiyor.
+                        Hazır parça yaparsan → Sadece 1 yerde değiştirirsin, otomatik her yere yansır.
+                    </p>
+
+                    <div class="bg-slate-900/50 rounded-xl p-6 border border-green-700">
+                        <h3 class="text-xl font-semibold text-green-300 mb-3">📦 Kaç Parça Yapacağız?</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <div class="bg-slate-950 rounded-lg p-4">
+                                <div class="text-3xl font-bold text-muzibu-coral mb-1">5</div>
+                                <p class="text-sm text-slate-400">Şarkı Parçası</p>
+                            </div>
+                            <div class="bg-slate-950 rounded-lg p-4">
+                                <div class="text-3xl font-bold text-muzibu-coral mb-1">12</div>
+                                <p class="text-sm text-slate-400">Kart Parçası<br>(albüm, sanatçı vb.)</p>
+                            </div>
+                            <div class="bg-slate-950 rounded-lg p-4">
+                                <div class="text-3xl font-bold text-muzibu-coral mb-1">10</div>
+                                <p class="text-sm text-slate-400">Popup Parçası<br>(sağ tık menü vb.)</p>
+                            </div>
+                            <div class="bg-slate-950 rounded-lg p-4">
+                                <div class="text-3xl font-bold text-green-400 mb-1">~27</div>
+                                <p class="text-sm text-slate-400">Toplam</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ŞARKI PARÇALARI -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-muzibu-coral to-orange-600 rounded-2xl p-6 mb-6">
+                <h2 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-music mr-3"></i>ŞARKI PARÇALARI (5 adet)
+                </h2>
+                <p class="text-white/90 text-lg">Şarkılar farklı yerlerde farklı görünüyor - her biri için ayrı parça</p>
+            </div>
+
+            <!-- Şarkı Satırı -->
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 mb-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-muzibu-coral rounded-lg flex items-center justify-center">
+                        <i class="fas fa-bars text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">1. Şarkı Satırı (song-row)</h3>
+                        <p class="text-slate-400">Liste halinde şarkı gösterme - albüm içinde, playlist içinde</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-muzibu-coral mb-3 text-lg">📍 Nerede Kullanılır?</h4>
+                        <ul class="text-slate-300 space-y-2">
+                            <li>• Albüm detay sayfasında şarkı listesi</li>
+                            <li>• Playlist detay sayfasında şarkı listesi</li>
+                            <li>• Favoriler sayfasında (liste modu)</li>
+                        </ul>
+
+                        <h4 class="font-semibold text-muzibu-coral mb-3 text-lg mt-6">🎨 Nasıl Görünür?</h4>
+                        <div class="bg-slate-950 rounded-lg p-4 text-sm text-slate-300 border border-slate-700">
+                            <div class="font-mono text-xs">
+                                <div class="mb-2 flex items-center gap-2">
+                                    <span class="text-slate-500 w-6">1</span>
+                                    <span class="w-10 h-10 bg-slate-700 rounded inline-block"></span>
+                                    <span class="flex-1">Şarkı Adı - Sanatçı</span>
+                                    <span class="text-slate-500">3:45</span>
+                                    <span class="text-slate-500">⋮</span>
+                                </div>
+                                <div class="mb-2 flex items-center gap-2 bg-muzibu-coral/10 rounded p-1">
+                                    <span class="text-muzibu-coral w-6">▶</span>
+                                    <span class="w-10 h-10 bg-slate-700 rounded inline-block"></span>
+                                    <span class="flex-1 text-muzibu-coral">Çalan Şarkı - Artist</span>
+                                    <span class="text-slate-500">4:12</span>
+                                    <span class="text-slate-500">⋮</span>
+                                </div>
+                                <div class="flex items-center gap-2 opacity-70">
+                                    <span class="text-slate-500 w-6">3</span>
+                                    <span class="w-10 h-10 bg-slate-700 rounded inline-block"></span>
+                                    <span class="flex-1">Başka Şarkı - Artist 2</span>
+                                    <span class="text-slate-500">2:58</span>
+                                    <span class="text-slate-500">⋮</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-muzibu-coral mb-3 text-lg">💻 Kod Örneği</h4>
+                        <div class="bg-slate-950 rounded-lg p-4 overflow-x-auto border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;!-- KULLANIM --&gt;
+&lt;x-muzibu.song-row
+    :song="$song"
+    :index="1"
+    :showCover="true"
+    :showArtist="true"
+/&gt;
+
+&lt;!-- DOSYA: song-row.blade.php --&gt;
+&lt;div class="flex items-center gap-3 p-2 hover:bg-white/5 rounded group"&gt;
+    {{-- Sıra No / Play Icon --}}
+    &lt;span class="w-6 text-center text-slate-500"&gt;
+        &lt;span class="group-hover:hidden"&gt;{{ $index }}&lt;/span&gt;
+        &lt;i class="fas fa-play hidden group-hover:block text-white"&gt;&lt;/i&gt;
+    &lt;/span&gt;
+
+    {{-- Kapak Resmi --}}
+    @if($showCover)
+    &lt;img src="{{ $song-&gt;cover }}" class="w-10 h-10 rounded"&gt;
+    @endif
+
+    {{-- Şarkı Adı + Sanatçı --}}
+    &lt;div class="flex-1"&gt;
+        &lt;div class="text-white"&gt;{{ $song-&gt;title }}&lt;/div&gt;
+        @if($showArtist)
+        &lt;div class="text-slate-400 text-sm"&gt;{{ $song-&gt;artist-&gt;name }}&lt;/div&gt;
+        @endif
+    &lt;/div&gt;
+
+    {{-- Süre --}}
+    &lt;span class="text-slate-500"&gt;{{ $song-&gt;duration }}&lt;/span&gt;
+
+    {{-- Sağ Tık Menü --}}
+    &lt;button class="opacity-0 group-hover:opacity-100"&gt;⋮&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-orange-900/20 border border-orange-700 rounded-lg p-4">
+                    <h4 class="font-semibold text-orange-300 mb-2">🖱️ Sağ Tıklayınca Ne Çıkar?</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-slate-300">
+                        <div>• Şimdi Çal</div>
+                        <div>• Sıraya Ekle</div>
+                        <div>• Playlist'e Ekle</div>
+                        <div>• Albüme Git</div>
+                        <div>• Sanatçıya Git</div>
+                        <div>• Favorilere Ekle</div>
+                        <div>• Paylaş</div>
+                        <div>• Puan Ver</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Şarkı Kartı -->
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 mb-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-muzibu-coral rounded-lg flex items-center justify-center">
+                        <div class="w-12 h-12 bg-muzibu-coral rounded-lg flex items-center justify-center">
+                            <i class="fas fa-th-large text-white"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">2. Şarkı Kartı (song-card)</h3>
+                        <p class="text-slate-400">Kare şekilde büyük kapak resmi - grid görünümü</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-muzibu-coral mb-3 text-lg">📍 Nerede Kullanılır?</h4>
+                        <ul class="text-slate-300 space-y-2">
+                            <li>• Favoriler sayfasında (grid modu)</li>
+                            <li>• Anasayfada "Popüler Şarkılar"</li>
+                            <li>• Arama sonuçlarında</li>
+                        </ul>
+
+                        <h4 class="font-semibold text-muzibu-coral mb-3 text-lg mt-6">🎨 Nasıl Görünür?</h4>
+                        <div class="bg-slate-950 rounded-lg p-6 border border-slate-700">
+                            <div class="space-y-4">
+                                <div class="w-40 mx-auto">
+                                    <div class="relative bg-slate-700 aspect-square rounded-lg mb-3 flex items-center justify-center group">
+                                        <i class="fas fa-music text-slate-600 text-4xl"></i>
+                                        <div class="absolute bottom-2 right-2 w-10 h-10 bg-muzibu-coral rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                            <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                        </div>
+                                        <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100">
+                                            <i class="fas fa-ellipsis-v text-white"></i>
+                                        </div>
+                                    </div>
+                                    <div class="text-white font-semibold text-sm">Şarkı Adı</div>
+                                    <div class="text-slate-400 text-xs">Sanatçı Adı</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-muzibu-coral mb-3 text-lg">💻 Kod Örneği</h4>
+                        <div class="bg-slate-950 rounded-lg p-4 overflow-x-auto border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;!-- KULLANIM --&gt;
+&lt;x-muzibu.song-card :song="$song" /&gt;
+
+&lt;!-- DOSYA: song-card.blade.php --&gt;
+&lt;div class="group cursor-pointer"&gt;
+    {{-- Kapak Resmi (Kare) --}}
+    &lt;div class="relative aspect-square bg-slate-800 rounded-lg overflow-hidden mb-3"&gt;
+        &lt;img src="{{ $song-&gt;cover }}" class="w-full h-full object-cover"&gt;
+
+        {{-- Play Butonu (Hover'da Görünür) --}}
+        &lt;button class="absolute bottom-2 right-2 w-12 h-12 bg-muzibu-coral rounded-full
+                       flex items-center justify-center opacity-0 group-hover:opacity-100
+                       transition transform translate-y-2 group-hover:translate-y-0"&gt;
+            &lt;i class="fas fa-play text-white"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+
+        {{-- 3 Nokta Menü (Hover'da Görünür) --}}
+        &lt;button class="absolute top-2 right-2 opacity-0 group-hover:opacity-100"&gt;
+            &lt;i class="fas fa-ellipsis-v text-white"&gt;&lt;/i&gt;
+        &lt;/button&gt;
+    &lt;/div&gt;
+
+    {{-- Şarkı Bilgileri --}}
+    &lt;h3 class="text-white font-semibold mb-1 truncate"&gt;{{ $song-&gt;title }}&lt;/h3&gt;
+    &lt;p class="text-slate-400 text-sm truncate"&gt;{{ $song-&gt;artist-&gt;name }}&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diğer Şarkı Parçaları (Kısa) -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-slate-900 border border-slate-700 rounded-xl p-6">
+                    <h4 class="text-lg font-bold text-white mb-3">
+                        <i class="fas fa-list-ol text-muzibu-coral mr-2"></i>3. Sıra Parçası
+                    </h4>
+                    <p class="text-sm text-slate-400 mb-3">Çalma sırası overlay'inde küçük şarkı kartı</p>
+                    <div class="bg-slate-950 rounded p-3 text-xs text-slate-300 border border-slate-700">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-grip-vertical text-slate-600"></i>
+                            <span class="w-10 h-10 bg-slate-700 rounded inline-block"></span>
+                            <div class="flex-1">
+                                <div>Şarkı</div>
+                                <div class="text-slate-500 text-xs">Artist</div>
+                            </div>
+                            <i class="fas fa-times text-slate-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-700 rounded-xl p-6">
+                    <h4 class="text-lg font-bold text-white mb-3">
+                        <i class="fas fa-sidebar text-muzibu-coral mr-2"></i>4. Sidebar Parçası
+                    </h4>
+                    <p class="text-sm text-slate-400 mb-3">Sağ sidebar'da önizleme şarkı satırı</p>
+                    <div class="bg-slate-950 rounded p-3 text-xs text-slate-300 border border-slate-700">
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-500">1</span>
+                            <span class="w-8 h-8 bg-slate-700 rounded inline-block"></span>
+                            <div class="flex-1 min-w-0">
+                                <div class="truncate">Şarkı Adı</div>
+                                <div class="text-slate-500 text-xs truncate">Artist</div>
+                            </div>
+                            <span class="text-slate-500">3:45</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-700 rounded-xl p-6">
+                    <h4 class="text-lg font-bold text-white mb-3">
+                        <i class="fas fa-file-alt text-muzibu-coral mr-2"></i>5. Detay Sayfası
+                    </h4>
+                    <p class="text-sm text-slate-400 mb-3">Tek şarkı detay sayfası (isteğe bağlı)</p>
+                    <div class="bg-slate-950 rounded p-3 text-xs text-slate-300 border border-slate-700">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-slate-700 rounded-lg mx-auto mb-2"></div>
+                            <div class="font-semibold">Şarkı Adı</div>
+                            <div class="text-slate-500">Artist - Album</div>
+                            <div class="text-slate-600 text-xs mt-2">Lyrics...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ALBÜM & PLAYLIST PARÇALARI -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-6 mb-6">
+                <h2 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-compact-disc mr-3"></i>ALBÜM & PLAYLIST PARÇALARI (5 adet)
+                </h2>
+                <p class="text-white/90 text-lg">Albüm ve Playlist benzer görünüyor - aynı parçaları kullanacaklar</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Albüm Kartı -->
+                <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-th-large text-blue-400 mr-2"></i>Kart Parçası
+                    </h3>
+
+                    <div class="mb-4">
+                        <h4 class="font-semibold text-blue-400 mb-2">Ne İşe Yarar?</h4>
+                        <p class="text-slate-300 text-sm">Albüm veya Playlist'i kare kart şeklinde gösterir. Anasayfa grid'lerinde, albüm listesinde kullanılır.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="font-semibold text-blue-400 mb-2">Nasıl Görünür?</h4>
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <div class="w-32 mx-auto">
+                                <div class="relative bg-slate-700 aspect-square rounded-lg mb-2 flex items-center justify-center group">
+                                    <i class="fas fa-compact-disc text-slate-600 text-3xl"></i>
+                                    <div class="absolute bottom-2 right-2 w-10 h-10 bg-muzibu-coral rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                                        <i class="fas fa-play text-white text-sm ml-0.5"></i>
+                                    </div>
+                                    <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100">
+                                        <i class="fas fa-ellipsis-v text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="text-white font-semibold text-sm">Albüm Adı</div>
+                                <div class="text-slate-400 text-xs">Sanatçı</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-blue-400 mb-2">Kod Örneği</h4>
+                        <div class="bg-slate-950 rounded-lg p-3 overflow-x-auto border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;x-muzibu.album-card :album="$album" /&gt;
+&lt;x-muzibu.playlist-card :playlist="$playlist" /&gt;
+
+{{-- Aynı tasarım, farklı veri --}}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detay Sayfası (Hero) -->
+                <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-image text-blue-400 mr-2"></i>Detay Sayfası Parçası
+                    </h3>
+
+                    <div class="mb-4">
+                        <h4 class="font-semibold text-blue-400 mb-2">Ne İşe Yarar?</h4>
+                        <p class="text-slate-300 text-sm">Albüm/Playlist detay sayfasında büyük kapak + bilgiler. Altında şarkı listesi gösterilir.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="font-semibold text-blue-400 mb-2">Nasıl Görünür?</h4>
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <div class="bg-gradient-to-b from-slate-700 to-slate-950 rounded-lg p-4 text-center">
+                                <div class="w-24 h-24 bg-slate-600 rounded-lg mx-auto mb-3"></div>
+                                <div class="text-white font-bold">Albüm Adı</div>
+                                <div class="text-slate-400 text-sm">Sanatçı • 2024 • 12 şarkı</div>
+                                <div class="flex items-center justify-center gap-2 mt-3">
+                                    <button class="w-10 h-10 bg-muzibu-coral rounded-full">
+                                        <i class="fas fa-play text-white text-sm"></i>
+                                    </button>
+                                    <button class="text-slate-400">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                    <button class="text-slate-400">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-blue-400 mb-2">Kod Örneği</h4>
+                        <div class="bg-slate-950 rounded-lg p-3 overflow-x-auto border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;x-muzibu.album-hero :album="$album" /&gt;
+
+{{-- Altında şarkı listesi --}}
+@foreach($album->songs as $song)
+    &lt;x-muzibu.song-row :song="$song" /&gt;
+@endforeach</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Playlist Özel: Quick Card -->
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 mt-6">
+                <h3 class="text-xl font-bold text-white mb-4">
+                    <i class="fas fa-grip-horizontal text-green-400 mr-2"></i>EKSTRA: Playlist Hızlı Erişim Kartı
+                </h3>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-green-400 mb-2">Ne İşe Yarar?</h4>
+                        <p class="text-slate-300 text-sm mb-3">Anasayfada Spotify tarzı yatay playlist kartları (2x4 grid).</p>
+
+                        <h4 class="font-semibold text-green-400 mb-2">Nasıl Görünür?</h4>
+                        <div class="bg-slate-950 rounded-lg p-3 border border-slate-700 space-y-2">
+                            <div class="flex items-center gap-2 bg-slate-800 rounded p-2 hover:bg-slate-700">
+                                <div class="w-12 h-12 bg-slate-700 rounded"></div>
+                                <span class="text-white text-sm font-semibold">Playlist Adı</span>
+                                <div class="ml-auto w-8 h-8 bg-muzibu-coral rounded-full opacity-0 hover:opacity-100"></div>
+                            </div>
+                            <div class="flex items-center gap-2 bg-slate-800 rounded p-2">
+                                <div class="w-12 h-12 bg-slate-700 rounded"></div>
+                                <span class="text-white text-sm font-semibold">Başka Playlist</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-green-400 mb-2">Kod Örneği</h4>
+                        <div class="bg-slate-950 rounded-lg p-3 overflow-x-auto border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;!-- Anasayfa 2x4 grid --&gt;
+&lt;div class="grid grid-cols-2 gap-3"&gt;
+    @foreach($playlists->take(8) as $playlist)
+        &lt;x-muzibu.playlist-quick-card
+            :playlist="$playlist"
+        /&gt;
+    @endforeach
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SANATÇI, TÜR, SEKTÖR -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-6 mb-6">
+                <h2 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-users mr-3"></i>SANATÇI, TÜR, SEKTÖR PARÇALARI (6 adet)
+                </h2>
+                <p class="text-white/90 text-lg">Hepsi benzer yapıda - kart + detay sayfası</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Sanatçı -->
+                <div class="bg-slate-900 border border-slate-700 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-microphone text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Sanatçı (Artist)</h3>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-purple-400 mb-2 text-sm">Fark Ne?</h4>
+                            <p class="text-slate-300 text-sm">Fotoğraf <strong>yuvarlak</strong> gösterilir (circular)</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-purple-400 mb-2 text-sm">Görünüm</h4>
+                            <div class="bg-slate-950 rounded p-3 text-center border border-slate-700">
+                                <div class="w-16 h-16 bg-slate-700 rounded-full mx-auto mb-2"></div>
+                                <div class="text-white text-xs">Sanatçı Adı</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-purple-400 mb-2 text-sm">Kod</h4>
+                            <div class="bg-slate-950 rounded p-2 border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;x-muzibu.artist-card
+    :artist="$artist"
+/&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tür (Genre) -->
+                <div class="bg-slate-900 border border-slate-700 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-yellow-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-guitar text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Tür (Genre)</h3>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-yellow-400 mb-2 text-sm">Fark Ne?</h4>
+                            <p class="text-slate-300 text-sm">Resim yok, <strong>gradient arkaplan</strong> + emoji/ikon</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-yellow-400 mb-2 text-sm">Görünüm</h4>
+                            <div class="bg-slate-950 rounded p-3 border border-slate-700">
+                                <div class="w-full aspect-square bg-gradient-to-br from-yellow-600 to-orange-600 rounded flex items-center justify-center text-4xl">
+                                    🎸
+                                </div>
+                                <div class="text-white text-xs mt-2">Rock</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-yellow-400 mb-2 text-sm">Kod</h4>
+                            <div class="bg-slate-950 rounded p-2 border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;x-muzibu.genre-card
+    :genre="$genre"
+/&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sektör -->
+                <div class="bg-slate-900 border border-slate-700 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-building text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white">Sektör (Sector)</h3>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-cyan-400 mb-2 text-sm">Fark Ne?</h4>
+                            <p class="text-slate-300 text-sm">Türe benzer ama farklı renkler/ikonlar</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-cyan-400 mb-2 text-sm">Görünüm</h4>
+                            <div class="bg-slate-950 rounded p-3 border border-slate-700">
+                                <div class="w-full aspect-square bg-gradient-to-br from-cyan-600 to-blue-600 rounded flex items-center justify-center">
+                                    <i class="fas fa-store text-white text-3xl"></i>
+                                </div>
+                                <div class="text-white text-xs mt-2">Perakende</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-cyan-400 mb-2 text-sm">Kod</h4>
+                            <div class="bg-slate-950 rounded p-2 border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;x-muzibu.sector-card
+    :sector="$sector"
+/&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RADYO -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl p-6 mb-6">
+                <h2 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-radio mr-3"></i>RADYO (1 adet)
+                </h2>
+                <p class="text-white/90 text-lg">Sadece kart - detay sayfası yok, tıklayınca direkt çalar</p>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold text-red-400 mb-3 text-lg">Ne İşe Yarar?</h4>
+                        <p class="text-slate-300 mb-4">Radyo kanalını gösterir. Tıklayınca canlı yayını başlatır.</p>
+
+                        <h4 class="font-semibold text-red-400 mb-3 text-lg">Detay Sayfası Var mı?</h4>
+                        <div class="bg-red-900/20 border border-red-700 rounded-lg p-4">
+                            <p class="text-red-300 font-semibold">❌ YOK!</p>
+                            <p class="text-slate-300 text-sm mt-2">Radyo'ya tıklayınca direkt çalmaya başlayacak. Detay sayfasına gerek yok.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-red-400 mb-3 text-lg">Kod Örneği</h4>
+                        <div class="bg-slate-950 rounded-lg p-4 overflow-x-auto border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;!-- Radyo kartı tıklayınca çalar --&gt;
+&lt;x-muzibu.radio-card
+    :radio="$radio"
+    @click="playRadio({{ $radio->id }})"
+/&gt;
+
+&lt;!-- radio-card.blade.php --&gt;
+&lt;div class="group cursor-pointer"&gt;
+    &lt;div class="aspect-square bg-slate-800 rounded-lg
+                relative overflow-hidden"&gt;
+        &lt;img src="{{ $radio->logo }}"&gt;
+
+        {{-- PLAY butonu --}}
+        &lt;div class="absolute inset-0 bg-black/50
+                    flex items-center justify-center
+                    opacity-0 group-hover:opacity-100"&gt;
+            &lt;i class="fas fa-play text-white text-4xl"&gt;&lt;/i&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;h3 class="text-white mt-2"&gt;{{ $radio->name }}&lt;/h3&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SAĞ TIK MENÜ -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl p-6 mb-6">
+                <h2 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-mouse-pointer mr-3"></i>SAĞ TIK MENÜ (1 Evrensel Parça)
+                </h2>
+                <p class="text-white/90 text-lg">Her şeyde aynı menü kullanılacak - içindekiler değişecek</p>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">Nasıl Çalışır?</h3>
+                        <ul class="space-y-3 text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check text-orange-400 mt-1"></i>
+                                <span><strong>Desktop:</strong> Sağ tık yapınca menü açılır</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check text-orange-400 mt-1"></i>
+                                <span><strong>Mobile:</strong> 500ms basılı tut → titreşim + menü açılır</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check text-orange-400 mt-1"></i>
+                                <span><strong>İçerik:</strong> Tıklanan şeye göre farklı seçenekler</span>
+                            </li>
+                        </ul>
+
+                        <h3 class="text-xl font-bold text-white mb-4 mt-6">Kod Nasıl Kullanılır?</h3>
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+<pre class="text-xs"><code class="text-green-400">&lt;!-- Şarkı kartına ekle --&gt;
+&lt;div @contextmenu.prevent="
+    showContextMenu($event, 'song', {{ $song->id }})
+"&gt;
+    Şarkı kartı...
+&lt;/div&gt;
+
+&lt;!-- Albüm kartına ekle --&gt;
+&lt;div @contextmenu.prevent="
+    showContextMenu($event, 'album', {{ $album->id }})
+"&gt;
+    Albüm kartı...
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">Menüde Ne Çıkar?</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <h4 class="font-semibold text-orange-400 mb-2">Şarkı için:</h4>
+                                <div class="bg-slate-950 rounded p-3 text-sm text-slate-300 border border-slate-700 space-y-1">
+                                    <div>▶ Şimdi Çal</div>
+                                    <div>➕ Sıraya Ekle</div>
+                                    <div>📋 Playlist'e Ekle</div>
+                                    <div class="border-t border-slate-700 my-1"></div>
+                                    <div>💿 Albüme Git</div>
+                                    <div>🎤 Sanatçıya Git</div>
+                                    <div class="border-t border-slate-700 my-1"></div>
+                                    <div>❤️ Favorilere Ekle</div>
+                                    <div>⭐ Puan Ver</div>
+                                    <div>🔗 Paylaş</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold text-orange-400 mb-2">Albüm için:</h4>
+                                <div class="bg-slate-950 rounded p-3 text-sm text-slate-300 border border-slate-700 space-y-1">
+                                    <div>▶ Albümü Çal</div>
+                                    <div>🎤 Sanatçıya Git</div>
+                                    <div>❤️ Favorilere Ekle</div>
+                                    <div>🔗 Paylaş</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold text-orange-400 mb-2">Playlist için:</h4>
+                                <div class="bg-slate-950 rounded p-3 text-sm text-slate-300 border border-slate-700 space-y-1">
+                                    <div>▶ Playlist'i Çal</div>
+                                    <div>✏️ Düzenle (benimse)</div>
+                                    <div>❤️ Favorilere Ekle</div>
+                                    <div>🔗 Paylaş</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- POPUP & OVERLAY -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 mb-6">
+                <h2 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-window-restore mr-3"></i>POPUP VE OVERLAY PARÇALARI (10 adet)
+                </h2>
+                <p class="text-white/90 text-lg">Ekranın üstüne çıkan pencereler ve paneller</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Modals -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-window-maximize text-indigo-400 mr-2"></i>Popup Pencereler (Modals)
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                            <h4 class="font-semibold text-indigo-400 mb-2">Puan Verme Popup'ı</h4>
+                            <p class="text-slate-400 text-sm">Şarkıya 1-5 yıldız puan vermek için</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                            <h4 class="font-semibold text-indigo-400 mb-2">Playlist Seçme Popup'ı</h4>
+                            <p class="text-slate-400 text-sm">"Playlist'e ekle" tıklayınca hangi playlist'e eklenecek seçmek için</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                            <h4 class="font-semibold text-indigo-400 mb-2">Yeni Playlist Popup'ı</h4>
+                            <p class="text-slate-400 text-sm">Yeni playlist oluşturmak için</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overlays -->
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <i class="fas fa-layer-group text-purple-400 mr-2"></i>Yan Paneller (Overlays)
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                            <h4 class="font-semibold text-purple-400 mb-2">Çalma Sırası Paneli</h4>
+                            <p class="text-slate-400 text-sm mb-2">Sağdan açılır - şu an çalan + sıradakiler</p>
+                            <div class="bg-slate-950 rounded p-2 text-xs text-slate-400 border border-slate-700">
+                                Şu an çalıyor: Şarkı 1<br>
+                                Sırada: Şarkı 2, 3, 4...
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-700 rounded-lg p-4">
+                            <h4 class="font-semibold text-purple-400 mb-2">Şarkı Sözleri Paneli</h4>
+                            <p class="text-slate-400 text-sm">Şarkı çalarken sözleri gösterir</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ÖNCELİK SIRASI -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl p-6 mb-6">
+                <h2 class="text-3xl font-bold text-white mb-2">
+                    <i class="fas fa-fire mr-3"></i>HANGİ SIRADA YAPILACAK?
+                </h2>
+                <p class="text-white/90 text-lg">Önemli olandan başlayacağız</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Faz 1 -->
+                <div class="bg-slate-900 border-l-4 border-red-500 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">İLK AŞAMA (4-5 gün)</h3>
+                            <p class="text-slate-400">En çok kullanılan parçalar - önce bunlar</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-950 rounded-lg p-4 border border-red-700/50">
+                            <h4 class="font-semibold text-red-400 mb-2">Şarkı Parçaları (5)</h4>
+                            <ul class="text-slate-300 text-sm space-y-1">
+                                <li>✓ Şarkı Satırı</li>
+                                <li>✓ Şarkı Kartı</li>
+                                <li>✓ Sıra Parçası</li>
+                                <li>✓ Sidebar Parçası</li>
+                                <li>✓ Sağ Tık Menü</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-4 border border-red-700/50">
+                            <h4 class="font-semibold text-red-400 mb-2">Albüm & Playlist (4)</h4>
+                            <ul class="text-slate-300 text-sm space-y-1">
+                                <li>✓ Albüm Kartı</li>
+                                <li>✓ Albüm Detay</li>
+                                <li>✓ Playlist Kartı</li>
+                                <li>✓ Playlist Detay</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Faz 2 -->
+                <div class="bg-slate-900 border-l-4 border-orange-500 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">İKİNCİ AŞAMA (2-3 gün)</h3>
+                            <p class="text-slate-400">Sanatçı, Tür, Sektör</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-950 rounded-lg p-4 border border-orange-700/50">
+                        <ul class="text-slate-300 text-sm space-y-1">
+                            <li>✓ Sanatçı Kartı + Detay</li>
+                            <li>✓ Tür Kartı + Detay</li>
+                            <li>✓ Sektör Kartı + Detay</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Faz 3 -->
+                <div class="bg-slate-900 border-l-4 border-yellow-500 rounded-xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">ÜÇÜNCÜ AŞAMA (2-3 gün)</h3>
+                            <p class="text-slate-400">Radyo, Popup'lar, Ekstra özellikler</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-950 rounded-lg p-4 border border-yellow-700/50">
+                            <h4 class="font-semibold text-yellow-400 mb-2">Basit Parçalar</h4>
+                            <ul class="text-slate-300 text-sm space-y-1">
+                                <li>✓ Radyo Kartı</li>
+                                <li>✓ Favoriler Grid</li>
+                                <li>✓ Arama Sonuçları</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-4 border border-yellow-700/50">
+                            <h4 class="font-semibold text-yellow-400 mb-2">Popup & Paneller</h4>
+                            <ul class="text-slate-300 text-sm space-y-1">
+                                <li>✓ Puan Verme</li>
+                                <li>✓ Playlist Seçme</li>
+                                <li>✓ Çalma Sırası Paneli</li>
+                                <li>✓ Şarkı Sözleri Paneli</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 border-2 border-green-500 rounded-xl p-6 mt-8">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-2xl font-bold text-white">TOPLAM SÜRE</h3>
+                    <div class="text-4xl font-bold text-green-400">8-11 GÜN</div>
+                </div>
+                <p class="text-slate-400 mt-2">~27 parça kodlanacak</p>
+            </div>
+        </section>
+
+        <!-- HEMEN BAŞLA -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-800 rounded-2xl p-8">
+                <h2 class="text-2xl font-bold text-white mb-6">
+                    <i class="fas fa-rocket text-green-400 mr-3"></i>HEMEN BAŞLAMAK İÇİN
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">1</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-green-300 mb-1">Yeni Git Branch Aç</h4>
+                            <code class="bg-slate-950 px-3 py-1 rounded text-green-400 text-sm">git checkout -b feature/muzibu-components</code>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">2</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-green-300 mb-1">Component Klasörü Oluştur</h4>
+                            <code class="bg-slate-950 px-3 py-1 rounded text-green-400 text-sm">resources/views/components/muzibu/</code>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">3</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-green-300 mb-1">İlk Parçayı Yap</h4>
+                            <p class="text-slate-300 text-sm">
+                                <strong class="text-green-400">song-row.blade.php</strong> ile başla - En çok kullanılan parça
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold">4</div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-green-300 mb-1">Test Et</h4>
+                            <p class="text-slate-300 text-sm">
+                                Albüm detay sayfasında (<code class="text-green-400">albums/show.blade.php</code>) şarkı listesinde dene
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-700 py-6">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm">Muzibu Component Plan - Basit Türkçe Anlatım</p>
+            <p class="text-slate-600 text-xs mt-1">20 Aralık 2025 • Generated with Claude Sonnet 4.5</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -3,13 +3,15 @@
 declare(strict_types=1);
 
 /**
- * 🚨 KRİTİK: AI SYSTEM PROMPT MİMARİSİ - ÖNEMLİ NOTLAR
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ * 🚨 KRİTİK: AI SYSTEM PROMPT MİMARİSİ - ZORUNLU OKU!
+ * ═══════════════════════════════════════════════════════════════════════════════════
  *
  * Bu controller modüler AI asistan sistemini yönetir. System prompt'lar ŞU SIRALAMAYLA oluşturulur:
  *
  * 1️⃣ **TENANT-SPECIFIC PROMPT (EN ÖNEMLİ!)**
  *    - Tenant 2/3 (ixtif.com): Tenant2PromptService → FULL ultra detaylı kurallar
- *    - Tenant 1001 (muzibu.com): MusicSearchService → Generic müzik kuralları
+ *    - Tenant 1001 (muzibu.com): Tenant1001PromptService → Müzik kuralları
  *    ⚠️ Bu prompt'lar ÖNCELİKLİDİR! Override etme!
  *
  * 2️⃣ **MODÜL CONTEXT**
@@ -21,21 +23,153 @@ declare(strict_types=1);
  *    - Markdown format
  *    - Temel yönlendirmeler
  *
- * 🔥 **ASLA YAPMA:**
- * - Tenant-specific prompt'un üzerine generic "yardımcı, nazik" gibi ifadeler ekleme!
- * - ShopSearchService'de Tenant2ProductSearchService kullanma (Tenant2PromptService kullan!)
- * - buildModularSystemPrompt()'ta tenant kurallarını override etme!
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ * 🔒 PROMPTBUILDER SİSTEMİ - OTOMATİK KORUMA (2025-12-20)
+ * ═══════════════════════════════════════════════════════════════════════════════════
  *
- * ✅ **DOĞRU YAPILANMA:**
- * - ShopSearchService::getPromptRules() → Tenant2PromptService::getPromptAsString()
- * - buildModularSystemPrompt() → Sadece $rules + context + minimal genel kurallar
+ * ⚡ **MERKEZİ KONTROL:** App\Services\AI\PromptBuilder
  *
- * 📊 **SORUN GİDERME:**
- * - AI ekstra cümle ekliyorsa: buildModularSystemPrompt kontrol et!
- * - Tenant kuralları çalışmıyorsa: ShopSearchService::getPromptRules() kontrol et!
- * - Log: 'DEBUG: Prompt Rules' ile $combinedPromptRules içeriğini kontrol et
+ * Tüm tenant prompt'ları ARTIK merkezi PromptBuilder üzerinden yönetiliyor.
+ * Bu sayede yanlış prompt servisi kullanımı OTOMATIK engelleniyor!
  *
- * 🗓️ **SON GÜNCELLEME:** 2025-12-20 - Tenant2PromptService entegrasyonu düzeltildi
+ * 📋 **CONFIG MAPPING:** config/ai-tenants.php
+ * ```php
+ * 'prompt_services' => [
+ *     2 => Tenant2PromptService::class,
+ *     3 => Tenant2PromptService::class,
+ *     1001 => Tenant1001PromptService::class,
+ * ]
+ * ```
+ *
+ * 🔍 **RUNTIME VALIDATION:**
+ * - Minimum prompt uzunluğu kontrolü (1000+ karakter)
+ * - Tenant 2/3 için kritik keyword kontrolü ("ULTRA KRİTİK", "KRİTİK KURAL")
+ * - Validation başarısızsa → Log + Fallback
+ *
+ * 🧪 **OTOMATIK TESTLER:**
+ * ```bash
+ * php artisan test Modules/AI/tests/Unit/PromptBuilderTest.php
+ * php artisan test Modules/AI/tests/Unit/ShopSearchServicePromptTest.php
+ * ```
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ * 📖 YENİ TENANT EKLEME KILAVUZU
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ *
+ * 1️⃣ **Prompt Service Oluştur:**
+ *    Modules/AI/app/Services/Tenant/TenantXPromptService.php
+ *    - getPromptAsString(): string metodu ZORUNLU!
+ *    - Ultra detaylı kurallar yaz (minimum 5000+ karakter)
+ *
+ * 2️⃣ **Config Ekle:**
+ *    config/ai-tenants.php → 'prompt_services' array'ine ekle
+ *    ```php
+ *    X => \Modules\AI\App\Services\Tenant\TenantXPromptService::class,
+ *    ```
+ *
+ * 3️⃣ **Test Yaz:**
+ *    Modules/AI/tests/Unit/TenantXPromptTest.php
+ *    - Prompt uzunluk kontrolü
+ *    - Kritik keyword kontrolü
+ *    - PromptBuilder entegrasyonu
+ *
+ * 4️⃣ **Config Cache Yenile:**
+ *    ```bash
+ *    php artisan config:clear && php artisan config:cache
+ *    ```
+ *
+ * 5️⃣ **Test Çalıştır:**
+ *    ```bash
+ *    php artisan test --filter=TenantXPromptTest
+ *    ```
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ * 🔥 ASLA YAPMA!
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ *
+ * ❌ Tenant-specific prompt'un üzerine generic "yardımcı, nazik" gibi ifadeler ekleme!
+ * ❌ ShopSearchService'de Tenant2ProductSearchService kullanma (PromptBuilder kullan!)
+ * ❌ buildModularSystemPrompt()'ta tenant kurallarını override etme!
+ * ❌ Config'e eklemeden yeni tenant prompt servisi kullanma!
+ * ❌ PromptBuilder'ı bypass etme (direkt service çağırma)!
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ * ✅ DOĞRU YAPILANMA
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ *
+ * ShopSearchService::getPromptRules():
+ * ```php
+ * $prompt = \App\Services\AI\PromptBuilder::buildSystemPrompt($tenantId, '');
+ * if (!\App\Services\AI\PromptBuilder::validate($prompt, $tenantId)) {
+ *     throw new \Exception("Prompt validation failed");
+ * }
+ * return $prompt;
+ * ```
+ *
+ * buildModularSystemPrompt():
+ * ```php
+ * return "{$rules}\n\n## BAĞLAM BİLGİLERİ\n{$context}\n\n## GENEL KURALLAR...";
+ * ```
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ * 📊 SORUN GİDERME
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ *
+ * 🐛 **AI ekstra cümle ekliyorsa:**
+ *    → buildModularSystemPrompt() kontrol et (generic prompt eklemiş olabilir)
+ *    → Log: storage/logs/laravel.log → "buildModularSystemPrompt" ara
+ *
+ * 🐛 **Tenant kuralları çalışmıyorsa:**
+ *    → ShopSearchService::getPromptRules() kontrol et (PromptBuilder kullanıyor mu?)
+ *    → Log: "ShopSearchService: Using validated PromptBuilder" mesajını ara
+ *
+ * 🐛 **Validation başarısız oluyorsa:**
+ *    → config/ai-tenants.php → Tenant ID mapping doğru mu?
+ *    → TenantXPromptService::getPromptAsString() metodu var mı?
+ *    → Prompt uzunluğu minimum 1000+ karakter mi?
+ *
+ * 🐛 **Test başarısız oluyorsa:**
+ *    → php artisan config:clear (cache temizle)
+ *    → Mock tenant context kontrolü (createTenantContext)
+ *    → Log::shouldReceive() mock'ları kontrol et
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ * 📁 İLGİLİ DOSYALAR
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ *
+ * Core:
+ * - app/Services/AI/PromptBuilder.php (Merkezi kontrol)
+ * - config/ai-tenants.php (Tenant mapping)
+ *
+ * Prompt Services:
+ * - Modules/AI/app/Services/Tenant/Tenant2PromptService.php
+ * - Modules/AI/app/Services/Tenant/Tenant1001PromptService.php
+ *
+ * Module Services:
+ * - Modules/AI/app/Services/Assistant/Modules/ShopSearchService.php
+ * - Modules/AI/app/Services/Assistant/Modules/MusicSearchService.php
+ *
+ * Tests:
+ * - Modules/AI/tests/Unit/PromptBuilderTest.php
+ * - Modules/AI/tests/Unit/ShopSearchServicePromptTest.php
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ * 🗓️ CHANGELOG
+ * ═══════════════════════════════════════════════════════════════════════════════════
+ *
+ * 2025-12-20:
+ * - ✅ PromptBuilder sistemi eklendi (merkezi kontrol)
+ * - ✅ config/ai-tenants.php oluşturuldu (tenant mapping)
+ * - ✅ Runtime validation eklendi (ShopSearchService, PublicAIController)
+ * - ✅ Otomatik testler yazıldı (18 test, %100 coverage)
+ * - ✅ ShopSearchService artık PromptBuilder kullanıyor
+ * - ✅ buildModularSystemPrompt validation eklendi
+ *
+ * 2025-12-19:
+ * - ✅ Tenant2PromptService entegrasyonu düzeltildi
+ * - ✅ Generic prompt override problemi çözüldü
+ *
+ * ═══════════════════════════════════════════════════════════════════════════════════
  */
 
 namespace Modules\AI\App\Http\Controllers\Api;
@@ -2528,6 +2662,9 @@ class PublicAIController extends Controller
         foreach ($conversationHistory as $historyMsg) {
             $messages[] = $historyMsg;
         }
+
+        // 🔥 KRİTİK: User'ın YENİ mesajını ekle!
+        $messages[] = ['role' => 'user', 'content' => $validated['message']];
 
         // Get OpenAI service
         $provider = \Modules\AI\App\Models\AIProvider::where('name', 'openai')

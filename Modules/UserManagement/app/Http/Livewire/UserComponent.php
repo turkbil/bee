@@ -142,6 +142,47 @@ class UserComponent extends Component
         }
     }
 
+    public function toggleEmailVerification($id)
+    {
+        $user = User::find($id);
+
+        if ($user) {
+            // Root kullanıcıların email doğrulaması değiştirilemez
+            if ($user->hasRole('root') && !auth()->user()->hasRole('root')) {
+                $this->dispatch('toast', [
+                    'title' => 'Hata!',
+                    'message' => 'Root kullanıcıların email doğrulaması değiştirilemez.',
+                    'type' => 'error',
+                ]);
+                return;
+            }
+
+            // Email doğrulama durumunu toggle yap
+            if ($user->email_verified_at) {
+                $user->email_verified_at = null;
+                $action = 'Email doğrulaması kaldırıldı';
+                $message = "\"{$user->name}\" kullanıcısının email doğrulaması kaldırıldı.";
+            } else {
+                $user->email_verified_at = now();
+                $action = 'Email doğrulaması yapıldı';
+                $message = "\"{$user->name}\" kullanıcısının email adresi doğrulandı.";
+            }
+
+            $user->save();
+
+            log_activity($user, $action, [
+                'email_verified_at' => $user->email_verified_at,
+                'verified_by' => auth()->user()->name
+            ]);
+
+            $this->dispatch('toast', [
+                'title' => 'Başarılı!',
+                'message' => $message,
+                'type' => 'success',
+            ]);
+        }
+    }
+
     public function render()
     {
         $query = User::with('roles') // Rolleri eager loading ile yükle

@@ -256,9 +256,9 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        // Normal request: Login sayfasına redirect
+        // Normal request: Anasayfaya redirect
         // 🔥 redirect parametresi varsa onu kullan (session_terminated modal'dan geliyor olabilir)
-        $redirectUrl = $request->input('redirect', '/login?logged_out=1');
+        $redirectUrl = $request->input('redirect', '/');
 
         // Cookie'leri expire et (HttpOnly için server-side ZORUNLU)
         $sessionCookie = config('session.cookie', 'laravel_session');

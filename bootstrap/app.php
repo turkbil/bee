@@ -40,6 +40,9 @@ $app = Application::configure(basePath: dirname(__DIR__))
         // Legacy module route loading removed - now event-driven via ModuleEnabled events
     })
     ->withMiddleware(function (Middleware $middleware) {
+        // 🔥 CACHE HEADER FIXER - GLOBAL middleware olarak ekle (TÜM middleware'lerden SONRA çalışır!)
+        $middleware->append(\App\Http\Middleware\FixResponseCacheHeaders::class);
+
         // 0. TRUST PROXIES - Nginx proxy için (EN ÖNCE!)
         $middleware->trustProxies(
             at: '*',
@@ -142,15 +145,13 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
         
         // Site middleware grubu (admin olmayan rotalar için)
+        // ⚠️ 'web' middleware otomatik ekleniyor (routes/web.php için)
+        // ⚠️ FixResponseCacheHeaders GLOBAL middleware olarak eklendi (en sonda çalışır)
         $middleware->group('site', [
-            'web',
-            'locale.site', // Locale belirleme (URL parse için gerekli)
-            'frontend.auto.seo', // 🎯 Frontend Auto SEO Fill (Premium tenants) - CACHE'DEN ÖNCE ÇALIŞMALI!
-            \Spatie\ResponseCache\Middlewares\CacheResponse::class, // ✅ Response cache (URL-based, locale'den bağımsız)
+            'locale.site', // Locale belirleme
+            'frontend.auto.seo', // Frontend Auto SEO Fill
+            \Spatie\ResponseCache\Middlewares\CacheResponse::class, // Response cache
         ]);
-
-        // Prefetch Cache Headers - TÜM WEB MIDDLEWARE'LERDEN SONRA (EN SONDA!)
-        $middleware->appendToGroup('web', \App\Http\Middleware\FixResponseCacheHeaders::class);
                 
         // Module middleware grupları - her modül için yetki kontrolü
         $modules = [];

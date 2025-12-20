@@ -1,26 +1,94 @@
-🎵 HLS loadSource URL: https://muzibu.com.tr/hls/muzibu/songs/460/playlist.m3u8?v=1766147328272
-player-core.js?v=1766145792:2063 🔧 xhrSetup called for: https://muzibu.com.tr/hls/muzibu/songs/460/playlist.m3u8?v=1766147328272
-player-core.js?v=1766145792:2064 🔧 Original responseType: 
-player-core.js?v=1766145792:2066 🔧 withCredentials set to: false
-player-core.js?v=1766145792:2063 🔧 xhrSetup called for: https://muzibu.com.tr/hls/muzibu/songs/460/segment-000.ts
-player-core.js?v=1766145792:2064 🔧 Original responseType: 
-player-core.js?v=1766145792:2066 🔧 withCredentials set to: false
-player-core.js?v=1766145792:2063 🔧 xhrSetup called for: https://muzibu.com.tr/hls/muzibu/songs/460/segment-001.ts
-player-core.js?v=1766145792:2064 🔧 Original responseType: 
-player-core.js?v=1766145792:2066 🔧 withCredentials set to: false
-player-core.js?v=1766145792:2063 🔧 xhrSetup called for: https://muzibu.com.tr/hls/muzibu/songs/460/segment-002.ts
-player-core.js?v=1766145792:2064 🔧 Original responseType: 
-player-core.js?v=1766145792:2066 🔧 withCredentials set to: false
-player-core.js?v=1766145792:2063 🔧 xhrSetup called for: https://muzibu.com.tr/hls/muzibu/songs/460/segment-003.ts
-player-core.js?v=1766145792:2064 🔧 Original responseType: 
-player-core.js?v=1766145792:2066 🔧 withCredentials set to: false
-player-core.js?v=1766145792:2063 🔧 xhrSetup called for: https://muzibu.com.tr/hls/muzibu/songs/460/segment-004.ts
-player-core.js?v=1766145792:2064 🔧 Original responseType: 
-player-core.js?v=1766145792:2066 🔧 withCredentials set to: false
-player-core.js?v=1766145792:2063 🔧 xhrSetup called for: https://muzibu.com.tr/hls/muzibu/songs/460/segment-005.ts
-player-core.js?v=1766145792:2064 🔧 Original responseType: 
-player-core.js?v=1766145792:2066 🔧 withCredentials set to: false
-?plugins=forms,typography,aspect-ratio:68 [Violation] 'setInterval' handler took 93ms
-player-core.js?v=1766145792:2063 🔧 xhrSetup called for: https://muzibu.com.tr/hls/muzibu/songs/460/segment-006.ts
-player-core.js?v=1766145792:2064 🔧 Original responseType: 
-player-core.js?v=1766145792:2066 
+/var/www/vhosts/tuufi.com/httpdocs/.claude/settings.local.json
+  └ permissions
+    └ allow
+      ├ "Bash(php artisan tinker --execute="
+  tenancy()->initialize(\App\Models\Tenant::find(1001));
+  \Modules\Muzibu\App\Models\Sector::active()->searchable();
+  echo ''''Sectors imported'''';
+  ")": Empty parentheses. Either specify a pattern or use just "Bash" without parentheses. Examples: Bash, 
+  Bash(some-pattern)
+      ├ "Bash(wc -l /tmp/shop_products_restore
+      │ └ sql echo "---" grep "VALUES (" /tmp/shop_products_restore
+      │   └ sql)": Mismatched parentheses. Ensure all opening parentheses have matching closing parentheses
+      ├ "Bash(sudo -u tuufi
+      │ ├ com_ bash -c 'cat >> /var/www/vhosts/tuufi
+      │ │ └ com/httpdocs/routes/web
+      │ │   └ php << ""EOFMARKER""
+
+  // 🔍 AUTH DEBUG ENDPOINT (geçici)
+  Route::get(""/test-auth-debug"", function () {
+      return response()->json(
+      │ │     └ 
+          ""auth_check"" => Auth::check(),
+          ""user"" => Auth::check() ? 
+      │ │       └ 
+              ""id"" => Auth::user()->id,
+              ""name"" => Auth::user()->name,
+              ""email"" => Auth::user()->email,
+          
+      │ │         └  : null,
+          ""session_id"" => substr(session()->getId(), 0, 20) 
+      │ │           └  ""
+      │ │             └
+      │ │               └
+      │ │                 └ "",
+          ""session_driver"" => config(""session
+      │ │                   └ driver""),
+          ""has_session_cookie"" => request()->hasCookie(config(""session
+      │ │                     └ cookie"")),
+      
+      │ │                       └ );
+  })->middleware(""web"");
+  EOFMARKER')": Empty parentheses. Either specify a pattern or use just "Bash" without parentheses. Examples: Bash, 
+  Bash(some-pattern)
+      │ └ com_ rm -f checkout-page
+      │   └ blade
+      │     └ php
+      │       └ backup*)": Use ":*" for prefix matching, not just "*". Change to "Bash(sudo -u tuufi.com_ rm -f 
+  checkout-page.blade.php.backup:*)" for prefix matching. Examples: Bash(npm run:*), Bash(git:*)
+      ├ "Bash(git commit -m "$(cat <<''EOF''
+  ✅ Checkout: Fatura Profili Silme Otomasyonu & Form Konumu
+
+  ## Değişiklikler
+
+  ### 1
+      │ └  Otomatik Profil Değiştirme (Silme)
+  - Varsayılan (★) profil silinirse → İlk kalan profil varsayılan olur
+  - Seçili (✓) profil silinirse → İlk kalan profil seçili olur
+  - Her ikisi de silinirse → İlk kalan profil hem varsayılan hem seçili
+  - Hiç profil kalmazsa → Seçim null
+
+  ### 2
+      │   └  Form Konumu Düzeltmesi
+  - Form "Ekle" butonunun hemen altında açılıyor
+  - Varsayılan fatura bilgisinin üstünde gösteriliyor
+  - Teslimat adresi ile aynı tasarım (gri minimal buton)
+
+  ### 3
+      │     └  Ek İyileştirmeler
+  - Ana dizin temizliği (screenshot silindi)
+  - Draft HTML''ler eklendi (ekle-butonu-konum, muzibu-premium, tenant otomasyon)
+  - Tenant yönetim analiz raporları
+
+  ## Dosyalar
+  - CheckoutPage
+      │       └ php: deleteBillingProfile() otomatik atama mantığı
+  - checkout-page
+      │         └ blade
+      │           └ php: Form konumu & buton tasarımı düzeltmesi
+
+  🤖 Generated with 
+      │             └ Claude Code
+      │               └ (https://claude
+      │                 └ com/claude-code)
+
+  Co-Authored-By: Claude Sonnet 4
+      │                   └ 5 <noreply@anthropic
+      │                     └ com>
+  EOF
+  )")": Empty parentheses. Either specify a pattern or use just "Bash" without parentheses. Examples: Bash, 
+  Bash(some-pattern)
+      └ "Bash(echo "3
+        └  Console'da kırmızı error var mı?')": Unmatched " in Bash pattern. Ensure all quotes are properly paired
+
+ Files with errors are skipped entirely, not just the invalid settings.

@@ -10,6 +10,13 @@ use Modules\Page\App\Http\Controllers\Front\PageController;
 use App\Services\DynamicRouteService;
 use Modules\Search\App\Http\Controllers\SearchPageController;
 
+// 🔄 CSRF TOKEN REFRESH ENDPOINT (Login page auto-refresh için)
+Route::get('/api/csrf-token', function () {
+    return response()->json([
+        'token' => csrf_token()
+    ]);
+})->middleware('web');
+
 // 🛒 SHOP & CART PRIORITY ROUTES (Wildcard'dan önce tanımlanmalı!)
 // NOT: Bu route'lar modülde tanımlanabilirdi ama Livewire component'ler modül route'unda catch-all'dan önce olmalı
 Route::get('/cart', \Modules\Cart\App\Http\Livewire\Front\CartPage::class)->name('cart.index');
@@ -769,3 +776,8 @@ Route::get("/test-auth-debug", function () {
     ]);
 })->middleware("web");
 
+
+// 🔍 DEBUG: Test route for cache middleware
+Route::middleware(['site'])->get('/test-cache-middleware', function() {
+    return response('Cache middleware test')->header('X-Test-Route', 'yes');
+});

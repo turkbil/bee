@@ -3,13 +3,15 @@
 @section('title', 'Sifre Sifirla - Muzibu')
 
 @section('content')
-    <!-- Header -->
-    <div class="mb-8">
-        <div class="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6">
-            <i class="fas fa-shield-check text-emerald-400 text-2xl"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-white mb-2">Yeni Sifre Olusturun</h2>
-        <p class="text-dark-200">Hesabiniz icin guclu bir sifre belirleyin.</p>
+    <!-- Logo -->
+    <div class="text-center mb-10">
+        <a href="/" class="inline-flex items-center gap-3 mb-4">
+            <div class="w-14 h-14 bg-gradient-to-br from-mz-500 to-mz-600 rounded-2xl flex items-center justify-center shadow-xl shadow-mz-500/20">
+                <i class="fas fa-music text-white text-2xl"></i>
+            </div>
+        </a>
+        <h1 class="text-3xl font-bold text-white">Yeni Sifre Olusturun</h1>
+        <p class="text-dark-200 mt-2">Hesabiniz icin guclu bir sifre belirleyin.</p>
     </div>
 
     <form method="POST" action="{{ route('password.store') }}" class="space-y-5"
@@ -19,26 +21,17 @@
         <!-- Password Reset Token -->
         <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-        <!-- Email -->
+        <!-- Email (readonly) -->
         <div>
-            <label for="email" class="block text-sm font-medium text-dark-100 mb-2">
-                E-posta Adresi
-            </label>
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fas fa-envelope text-dark-300"></i>
-                </div>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{{ old('email', $request->email) }}"
-                    required
-                    readonly
-                    autocomplete="username"
-                    class="w-full pl-12 pr-4 py-3.5 bg-dark-700/30 border border-dark-600 rounded-xl text-dark-200 cursor-not-allowed"
-                >
-            </div>
+            <input
+                type="email"
+                name="email"
+                value="{{ old('email', $request->email) }}"
+                required
+                readonly
+                autocomplete="username"
+                class="w-full px-5 py-4 bg-dark-700/30 border border-dark-600 rounded-xl text-dark-200 cursor-not-allowed"
+            >
             @error('email')
                 <p class="mt-2 text-sm text-red-400 flex items-center gap-2">
                     <i class="fas fa-exclamation-circle"></i>
@@ -48,35 +41,26 @@
         </div>
 
         <!-- Password -->
-        <div>
-            <label for="password" class="block text-sm font-medium text-dark-100 mb-2">
-                Yeni Sifre
-            </label>
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fas fa-lock text-dark-300"></i>
-                </div>
-                <input
-                    :type="showPassword ? 'text' : 'password'"
-                    id="password"
-                    name="password"
-                    required
-                    autofocus
-                    autocomplete="new-password"
-                    @input="checkPasswordStrength($event.target.value)"
-                    class="w-full pl-12 pr-12 py-3.5 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('password') border-red-500/50 @enderror"
-                    placeholder="En az 8 karakter"
-                >
-                <button
-                    type="button"
-                    @click="showPassword = !showPassword"
-                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-dark-300 hover:text-white transition-colors"
-                >
-                    <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                </button>
-            </div>
+        <div class="relative">
+            <input
+                :type="showPassword ? 'text' : 'password'"
+                name="password"
+                required
+                autofocus
+                autocomplete="new-password"
+                @input="checkPasswordStrength($event.target.value)"
+                class="w-full px-5 py-4 pr-12 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all @error('password') border-red-500/50 @enderror"
+                placeholder="Yeni sifre (en az 8 karakter)"
+            >
+            <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute right-4 top-4 text-dark-300 hover:text-white transition-colors"
+            >
+                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
 
-            <!-- Password Strength Indicator -->
+            <!-- Password Strength -->
             <div class="mt-3" x-show="passwordStrength > 0" x-transition>
                 <div class="flex items-center gap-2 mb-1">
                     <div class="flex-1 h-1.5 bg-dark-600 rounded-full overflow-hidden">
@@ -99,68 +83,54 @@
         </div>
 
         <!-- Password Confirmation -->
-        <div>
-            <label for="password_confirmation" class="block text-sm font-medium text-dark-100 mb-2">
-                Sifre Tekrar
-            </label>
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="fas fa-lock text-dark-300"></i>
-                </div>
-                <input
-                    :type="showPasswordConfirm ? 'text' : 'password'"
-                    id="password_confirmation"
-                    name="password_confirmation"
-                    required
-                    autocomplete="new-password"
-                    class="w-full pl-12 pr-12 py-3.5 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all"
-                    placeholder="Sifreyi tekrar girin"
-                >
-                <button
-                    type="button"
-                    @click="showPasswordConfirm = !showPasswordConfirm"
-                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-dark-300 hover:text-white transition-colors"
-                >
-                    <i :class="showPasswordConfirm ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                </button>
-            </div>
+        <div class="relative">
+            <input
+                :type="showPasswordConfirm ? 'text' : 'password'"
+                name="password_confirmation"
+                required
+                autocomplete="new-password"
+                class="w-full px-5 py-4 pr-12 bg-dark-700/50 border border-dark-500 rounded-xl text-white placeholder-dark-300 focus:border-mz-500 focus:outline-none transition-all"
+                placeholder="Sifre tekrar"
+            >
+            <button
+                type="button"
+                @click="showPasswordConfirm = !showPasswordConfirm"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-dark-300 hover:text-white transition-colors"
+            >
+                <i :class="showPasswordConfirm ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
         </div>
 
-        <!-- Submit Button -->
+        <!-- Submit -->
         <button
             type="submit"
             :disabled="loading"
-            class="w-full py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            class="w-full py-4 bg-gradient-to-r from-mz-500 to-mz-600 hover:from-mz-400 hover:to-mz-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-mz-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-            <template x-if="!loading">
-                <span class="flex items-center gap-2">
-                    <i class="fas fa-check-circle"></i>
-                    Sifreyi Guncelle
-                </span>
-            </template>
-            <template x-if="loading">
-                <span class="flex items-center gap-2">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    Guncelleniyor...
-                </span>
-            </template>
+            <span x-show="!loading" class="flex items-center justify-center gap-2">
+                <i class="fas fa-check-circle"></i>
+                Sifreyi Guncelle
+            </span>
+            <span x-show="loading" class="flex items-center justify-center gap-2">
+                <i class="fas fa-spinner fa-spin"></i>
+                Guncelleniyor...
+            </span>
         </button>
 
-        <!-- Security Info -->
-        <div class="pt-4 border-t border-dark-600">
-            <div class="flex items-start gap-3 text-sm text-dark-300">
-                <i class="fas fa-shield-alt text-dark-400 mt-0.5"></i>
-                <p>Guclu bir sifre icin buyuk/kucuk harf, rakam ve ozel karakter kullamin.</p>
+        <!-- Info -->
+        <div class="p-4 bg-dark-700/30 rounded-xl">
+            <div class="flex items-start gap-3 text-sm text-dark-200">
+                <i class="fas fa-shield-alt text-dark-300 mt-0.5"></i>
+                <p>Guclu sifre icin buyuk/kucuk harf, rakam ve ozel karakter kullanin.</p>
             </div>
         </div>
     </form>
-@endsection
 
-@section('footer-links')
-    <p class="text-dark-300">
-        Sifrenizi hatirladin mi?
-        <a href="{{ route('login') }}" class="text-mz-400 hover:text-mz-300 font-medium transition-colors">
-            Giris Yapin
+    <!-- Back to Login -->
+    <div class="mt-8 text-center">
+        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-mz-400 hover:text-mz-300 transition-colors">
+            <i class="fas fa-arrow-left"></i>
+            Giris sayfasina don
         </a>
-    </p>
+    </div>
 @endsection

@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Component Plan - Yapılması Gerekenler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'muzibu-coral': '#ff7f50',
+                        'muzibu-gray': '#181818',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 bg-gradient-to-br from-muzibu-coral to-orange-600 rounded-xl flex items-center justify-center shadow-xl">
+                    <i class="fas fa-clipboard-list text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                        Muzibu Component Plan
+                    </h1>
+                    <p class="text-slate-400 text-lg mt-1">Yapılması Gereken Component'ler • 11 Entity • ~25 Component</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3 mt-6">
+                <span class="px-4 py-2 bg-muzibu-coral/20 border border-muzibu-coral rounded-lg text-muzibu-coral text-sm font-medium">
+                    <i class="fas fa-tasks mr-2"></i>Action Plan
+                </span>
+                <span class="px-4 py-2 bg-blue-900/30 border border-blue-700 rounded-lg text-blue-300 text-sm font-medium">
+                    <i class="fas fa-calendar mr-2"></i>20 Aralık 2025
+                </span>
+                <span class="px-4 py-2 bg-purple-900/30 border border-purple-700 rounded-lg text-purple-300 text-sm font-medium">
+                    <i class="fas fa-code mr-2"></i>Blade Components
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 max-w-7xl">
+
+        <!-- Executive Summary -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-bullseye text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Plan Özeti</h2>
+                        <p class="text-green-200 text-lg">Ne yapılacak? Neden gerekli?</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-slate-200">
+                    <div class="bg-slate-900/50 border border-green-700/50 rounded-xl p-6">
+                        <h3 class="text-xl font-semibold text-green-300 mb-4">🎯 Hedef</h3>
+                        <p class="text-lg leading-relaxed mb-4">
+                            Muzibu'daki <strong class="text-green-400">11 entity</strong> için yeniden kullanılabilir, tutarlı component'ler oluşturmak.
+                            Her entity'nin tasarımı ve sağ tıklama (context menu) davranışı kodlanacak.
+                        </p>
+                        <div class="grid md:grid-cols-3 gap-4 mt-4">
+                            <div class="bg-slate-950 rounded-lg p-4 text-center">
+                                <div class="text-3xl font-bold text-green-400 mb-2">11</div>
+                                <p class="text-slate-400 text-sm">Entity</p>
+                            </div>
+                            <div class="bg-slate-950 rounded-lg p-4 text-center">
+                                <div class="text-3xl font-bold text-green-400 mb-2">~25</div>
+                                <p class="text-slate-400 text-sm">Component</p>
+                            </div>
+                            <div class="bg-slate-950 rounded-lg p-4 text-center">
+                                <div class="text-3xl font-bold text-green-400 mb-2">1</div>
+                                <p class="text-slate-400 text-sm">Universal Context Menu</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-900/50 border border-blue-700/50 rounded-xl p-6">
+                            <h3 class="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
+                                <i class="fas fa-layer-group"></i>Entity Listesi (11 adet)
+                            </h3>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-music text-muzibu-coral text-xs"></i>
+                                    <span>Song (Şarkı)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-compact-disc text-muzibu-coral text-xs"></i>
+                                    <span>Album (Albüm)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-microphone text-muzibu-coral text-xs"></i>
+                                    <span>Artist (Şarkıcı)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-list-music text-muzibu-coral text-xs"></i>
+                                    <span>Playlist</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-guitar text-muzibu-coral text-xs"></i>
+                                    <span>Genre (Tür)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-building text-muzibu-coral text-xs"></i>
+                                    <span>Sector (Sektör)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-radio text-muzibu-coral text-xs"></i>
+                                    <span>Radio (Radyo)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-heart text-muzibu-coral text-xs"></i>
+                                    <span>Favorite (Favori)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-list-ol text-muzibu-coral text-xs"></i>
+                                    <span>Queue (Sıra)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-clock text-slate-500 text-xs"></i>
+                                    <span class="text-slate-500">Recent Played</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-search text-slate-500 text-xs"></i>
+                                    <span class="text-slate-500">Search Results</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 border border-purple-700/50 rounded-xl p-6">
+                            <h3 class="text-lg font-semibold text-purple-300 mb-3 flex items-center gap-2">
+                                <i class="fas fa-puzzle-piece"></i>Component Kategorileri
+                            </h3>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-300">Grid/List Card Components</span>
+                                    <span class="px-2 py-1 bg-purple-900/30 rounded text-purple-300 text-xs font-semibold">~12</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-300">Hero/Detail Components</span>
+                                    <span class="px-2 py-1 bg-purple-900/30 rounded text-purple-300 text-xs font-semibold">~7</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-300">Special View Components</span>
+                                    <span class="px-2 py-1 bg-purple-900/30 rounded text-purple-300 text-xs font-semibold">~3</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-300">Modals & Overlays</span>
+                                    <span class="px-2 py-1 bg-purple-900/30 rounded text-purple-300 text-xs font-semibold">~7</span>
+                                </div>
+                                <div class="border-t border-slate-700 my-2"></div>
+                                <div class="flex items-center justify-between font-bold text-purple-200">
+                                    <span>TOPLAM</span>
+                                    <span class="px-2 py-1 bg-purple-600 rounded text-white text-xs">~29</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Entity Components Matrix -->
+        <section class="mb-16">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-white mb-3">
+                    <i class="fas fa-table text-muzibu-coral mr-3"></i>Entity Component Matrix
+                </h2>
+                <p class="text-slate-400 text-lg">Her entity için yapılması gereken component'ler</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Song Components -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 border-l-4 border-muzibu-coral rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-muzibu-coral rounded-lg flex items-center justify-center">
+                                <i class="fas fa-music text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-white">Song (Şarkı)</h3>
+                                <p class="text-slate-400 text-sm">En fazla varyasyon - 5 farklı component</p>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-muzibu-coral/20 border border-muzibu-coral rounded-lg text-muzibu-coral font-bold">
+                            5 Component
+                        </span>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-muzibu-coral mb-2 flex items-center gap-2">
+                                <i class="fas fa-bars text-sm"></i>song-row
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Liste görünümü - Album/Playlist detail</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $song, $index, $showCover, $showArtist</div>
+                                <div>• Grid: Index | Cover | Title+Artist | Duration | Menu</div>
+                                <div>• Hover: Play icon (index yerine)</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-muzibu-coral mb-2 flex items-center gap-2">
+                                <i class="fas fa-th-large text-sm"></i>song-card
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Grid card - Favorites, Homepage</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $song, $size (normal|large)</div>
+                                <div>• Square cover + title + artist</div>
+                                <div>• Play button bottom-right (hover)</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-muzibu-coral mb-2 flex items-center gap-2">
+                                <i class="fas fa-list-ol text-sm"></i>song-queue-item
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Queue overlay item - Drag & drop</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $song, $isPlaying, $isDraggable</div>
+                                <div>• Compact: 56x56 thumbnail</div>
+                                <div>• Drag handle + now playing indicator</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-muzibu-coral mb-2 flex items-center gap-2">
+                                <i class="fas fa-sidebar text-sm"></i>song-sidebar-item
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Sağ sidebar preview track</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $song, $showIndex, $isActive</div>
+                                <div>• 40x40 thumbnail + title + artist</div>
+                                <div>• Play icon on hover</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-muzibu-coral mb-2 flex items-center gap-2">
+                                <i class="fas fa-file-alt text-sm"></i>song-detail
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Tek şarkı detay sayfası (optional)</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $song</div>
+                                <div>• Large cover + lyrics + metadata</div>
+                                <div>• Share, favorite, rating buttons</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-muzibu-coral/10 border border-muzibu-coral/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-muzibu-coral mb-2 flex items-center gap-2">
+                            <i class="fas fa-mouse-pointer text-sm"></i>Context Menu Actions
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-2 text-xs text-slate-300">
+                            <div>• Play Next</div>
+                            <div>• Add to Queue</div>
+                            <div>• Add to Playlist</div>
+                            <div>• Go to Album</div>
+                            <div>• Go to Artist</div>
+                            <div>• Add to Favorites</div>
+                            <div>• Share Song</div>
+                            <div>• Rate Song (modal)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Album Components -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 border-l-4 border-blue-500 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-compact-disc text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-white">Album (Albüm)</h3>
+                                <p class="text-slate-400 text-sm">Grid card + Detail hero</p>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-blue-500/20 border border-blue-500 rounded-lg text-blue-300 font-bold">
+                            2 Component
+                        </span>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-blue-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-th-large text-sm"></i>album-card
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Universal card - Grid/Homepage/Favorites</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $album, $variant ('grid'|'horizontal'|'compact')</div>
+                                <div>• Square cover (aspect-square)</div>
+                                <div>• Play button bottom-right (hover opacity-0 → 100)</div>
+                                <div>• 3-dot menu top-right (hover)</div>
+                                <div>• Title + artist below</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-blue-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-image text-sm"></i>album-hero
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Detail page header</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $album</div>
+                                <div>• Large cover (256x256+) with gradient overlay</div>
+                                <div>• Album name, artist, year, song count</div>
+                                <div>• Action buttons: Play all, Favorite, Share</div>
+                                <div>• Below: song-row list</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-blue-500/10 border border-blue-500/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-blue-400 mb-2 flex items-center gap-2">
+                            <i class="fas fa-mouse-pointer text-sm"></i>Context Menu Actions
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-2 text-xs text-slate-300">
+                            <div>• Play Album</div>
+                            <div>• Add to Favorites</div>
+                            <div>• Go to Artist</div>
+                            <div>• Share Album</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artist Components -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 border-l-4 border-purple-500 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-microphone text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-white">Artist (Şarkıcı)</h3>
+                                <p class="text-slate-400 text-sm">Circular photo pattern</p>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-purple-500/20 border border-purple-500 rounded-lg text-purple-300 font-bold">
+                            2 Component
+                        </span>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-purple-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-user-circle text-sm"></i>artist-card
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Grid card - Circular photo</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $artist, $size</div>
+                                <div>• Circular photo (aspect-square rounded-full)</div>
+                                <div>• Play button bottom-right (hover)</div>
+                                <div>• Name below center</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-purple-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-id-badge text-sm"></i>artist-hero
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Detail page header</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $artist</div>
+                                <div>• Large circular photo (200x200+)</div>
+                                <div>• Bio section</div>
+                                <div>• Albums count, songs count</div>
+                                <div>• Below: Top songs + Albums grid</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-purple-500/10 border border-purple-500/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-purple-400 mb-2">Context Menu Actions</h4>
+                        <div class="grid md:grid-cols-2 gap-2 text-xs text-slate-300">
+                            <div>• Play All Songs</div>
+                            <div>• Add to Favorites</div>
+                            <div>• Share Artist</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Playlist Components -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 border-l-4 border-green-500 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-list-music text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-white">Playlist</h3>
+                                <p class="text-slate-400 text-sm">3 varyasyon - Quick access, Grid, Hero</p>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-green-500/20 border border-green-500 rounded-lg text-green-300 font-bold">
+                            3 Component
+                        </span>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-green-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-grip-horizontal text-sm"></i>playlist-quick-card
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Homepage 2x4 quick access</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Horizontal layout</div>
+                                <div>• 64x64 cover + title</div>
+                                <div>• Play button sağ alt (hover)</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-green-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-th-large text-sm"></i>playlist-card
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Grid card</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Square cover</div>
+                                <div>• Play button + 3-dot hover</div>
+                                <div>• Edit button (if mine)</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-green-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-image text-sm"></i>playlist-hero
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Detail page</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Large cover + gradient</div>
+                                <div>• Song count, duration</div>
+                                <div>• Below: song-row list</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 bg-green-500/10 border border-green-500/50 rounded-lg p-4">
+                        <h4 class="font-semibold text-green-400 mb-2">Context Menu Actions</h4>
+                        <div class="grid md:grid-cols-2 gap-2 text-xs text-slate-300">
+                            <div>• Play Playlist</div>
+                            <div>• Edit Playlist (if mine)</div>
+                            <div>• Add to Favorites</div>
+                            <div>• Share Playlist</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Genre, Sector, Radio (Similar Pattern) -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 border-l-4 border-yellow-500 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-layer-group text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-white">Genre / Sector / Radio</h3>
+                                <p class="text-slate-400 text-sm">Benzer pattern - Her biri için 2 component</p>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-yellow-500/20 border border-yellow-500 rounded-lg text-yellow-300 font-bold">
+                            6 Component
+                        </span>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <!-- Genre -->
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-guitar text-yellow-400"></i>
+                                <h4 class="font-semibold text-yellow-400">Genre (Tür)</h4>
+                            </div>
+                            <div class="space-y-2 text-xs text-slate-400">
+                                <div class="bg-slate-900 rounded p-2">
+                                    <strong class="text-yellow-300">genre-card</strong>
+                                    <p>Gradient bg + emoji overlay</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <strong class="text-yellow-300">genre-hero</strong>
+                                    <p>Detail page header</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sector -->
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-building text-yellow-400"></i>
+                                <h4 class="font-semibold text-yellow-400">Sector (Sektör)</h4>
+                            </div>
+                            <div class="space-y-2 text-xs text-slate-400">
+                                <div class="bg-slate-900 rounded p-2">
+                                    <strong class="text-yellow-300">sector-card</strong>
+                                    <p>Icon + gradient bg</p>
+                                </div>
+                                <div class="bg-slate-900 rounded p-2">
+                                    <strong class="text-yellow-300">sector-hero</strong>
+                                    <p>Detail page header</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Radio -->
+                        <div class="bg-slate-950 rounded-lg p-4 border border-red-700">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i class="fas fa-radio text-red-400"></i>
+                                <h4 class="font-semibold text-red-400">Radio</h4>
+                                <span class="px-2 py-1 bg-red-900/30 rounded text-red-300 text-xs">EKSİK!</span>
+                            </div>
+                            <div class="space-y-2 text-xs text-slate-400">
+                                <div class="bg-slate-900 rounded p-2">
+                                    <strong class="text-yellow-300">radio-card</strong>
+                                    <p>Grid card ✅</p>
+                                </div>
+                                <div class="bg-red-900/20 border border-red-700 rounded p-2">
+                                    <strong class="text-red-300">radio-hero ❌</strong>
+                                    <p class="text-red-400">Detail page YOK - YAPILMALI!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Components -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 border-l-4 border-cyan-500 rounded-xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-cyan-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-star text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-white">Özel Component'ler</h3>
+                                <p class="text-slate-400 text-sm">Favorites, Queue, Search gibi özel durumlar</p>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-cyan-500/20 border border-cyan-500 rounded-lg text-cyan-300 font-bold">
+                            4 Component
+                        </span>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-cyan-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-heart text-sm"></i>favorites-grid
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Tab-based favorites page</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Tabs: All / Songs / Albums / Playlists</div>
+                                <div>• Mixed entity grid (polymorphic)</div>
+                                <div>• Empty state per tab</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-cyan-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-search text-sm"></i>search-results
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Search results page</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Section per entity type</div>
+                                <div>• "View all" link per section</div>
+                                <div>• Empty state</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-cyan-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-clock text-sm"></i>recent-played
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Recently played section (optional)</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Backend tracking var ✅</div>
+                                <div>• Frontend view yok ❌</div>
+                                <div>• Homepage section veya ayrı sayfa</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 rounded-lg p-4 border border-slate-700">
+                            <h4 class="font-semibold text-cyan-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-inbox text-sm"></i>empty-state
+                            </h4>
+                            <p class="text-xs text-slate-400 mb-3">Universal empty state</p>
+                            <div class="text-xs text-slate-500 space-y-1">
+                                <div>• Props: $icon, $title, $message, $cta</div>
+                                <div>• Reusable across all entity pages</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modals & Overlays -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-indigo-900/20 to-purple-900/20 border border-indigo-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-window-restore text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Modals & Overlays</h2>
+                        <p class="text-indigo-200 text-lg">Popup ve overlay component'leri</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Modals -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-indigo-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-window-maximize"></i>Modals (6 adet)
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-indigo-700/50">
+                                <h4 class="font-semibold text-indigo-400 mb-2">rating-modal</h4>
+                                <p class="text-xs text-slate-400">Şarkı puanlama - 1-5 yıldız</p>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-indigo-700/50">
+                                <h4 class="font-semibold text-indigo-400 mb-2">playlist-select-modal</h4>
+                                <p class="text-xs text-slate-400">"Add to playlist" action</p>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-indigo-700/50">
+                                <h4 class="font-semibold text-indigo-400 mb-2">create-playlist-modal</h4>
+                                <p class="text-xs text-slate-400">Yeni playlist oluştur</p>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-indigo-700/50">
+                                <h4 class="font-semibold text-indigo-400 mb-2">device-limit-modal</h4>
+                                <p class="text-xs text-slate-400">Cihaz limiti uyarısı</p>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-indigo-700/50">
+                                <h4 class="font-semibold text-indigo-400 mb-2">device-selection-modal</h4>
+                                <p class="text-xs text-slate-400">Cihaz seçimi</p>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-indigo-700/50">
+                                <h4 class="font-semibold text-indigo-400 mb-2">auth-modal</h4>
+                                <p class="text-xs text-slate-400">Login/Register popup</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overlays -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-purple-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-layer-group"></i>Overlays (4 adet)
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-purple-700/50">
+                                <h4 class="font-semibold text-purple-400 mb-2">queue-overlay</h4>
+                                <p class="text-xs text-slate-400">Sağdan açılır çalma sırası</p>
+                                <ul class="text-xs text-slate-500 mt-2 space-y-1">
+                                    <li>• Now playing section</li>
+                                    <li>• Queue list (drag & drop)</li>
+                                    <li>• Clear queue button</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-purple-700/50">
+                                <h4 class="font-semibold text-purple-400 mb-2">lyrics-overlay</h4>
+                                <p class="text-xs text-slate-400">Şarkı sözleri görünümü</p>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-purple-700/50">
+                                <h4 class="font-semibold text-purple-400 mb-2">keyboard-shortcuts-overlay</h4>
+                                <p class="text-xs text-slate-400">Klavye kısayolları rehberi</p>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-4 border border-purple-700/50">
+                                <h4 class="font-semibold text-purple-400 mb-2">loading-overlay</h4>
+                                <p class="text-xs text-slate-400">Full-screen loading indicator</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Context Menu Universal Component -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-orange-900/20 to-red-900/20 border border-orange-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-mouse-pointer text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Context Menu (Sağ Tıklama)</h2>
+                        <p class="text-orange-200 text-lg">Universal component - Entity type'a göre dinamik action'lar</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-slate-900/50 rounded-xl p-6 border border-orange-700/50">
+                        <h3 class="text-xl font-semibold text-orange-300 mb-4">Nasıl Çalışır?</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-orange-400 mb-3">Tetikleme</h4>
+                                <div class="bg-slate-950 rounded-lg p-4 text-sm text-slate-300 space-y-2">
+                                    <div><strong class="text-orange-300">Desktop:</strong> Right-click (contextmenu event)</div>
+                                    <div><strong class="text-orange-300">Mobile:</strong> Long-press 500ms + vibration</div>
+                                    <div><strong class="text-orange-300">Touch move:</strong> Cancel if moved >10px</div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-orange-400 mb-3">Alpine.js Store</h4>
+                                <div class="bg-slate-950 rounded-lg p-4">
+                                    <code class="text-xs text-green-400 block">
+                                        $store.contextMenu.openContextMenu(<br>
+                                        &nbsp;&nbsp;$event,<br>
+                                        &nbsp;&nbsp;'song', // type<br>
+                                        &nbsp;&nbsp;{ id: 123, title: '...' }<br>
+                                        )
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/50 rounded-xl p-6 border border-orange-700/50">
+                        <h3 class="text-xl font-semibold text-orange-300 mb-4">Entity Type → Action Mapping</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-700">
+                                        <th class="text-left py-2 px-3 text-orange-300">Entity Type</th>
+                                        <th class="text-left py-2 px-3 text-orange-300">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-slate-300 divide-y divide-slate-800">
+                                    <tr>
+                                        <td class="py-3 px-3 font-semibold">song</td>
+                                        <td class="py-3 px-3 text-xs">Play Next • Add to Queue • Add to Playlist • Go to Album • Go to Artist • Favorite • Share • Rate</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-3 font-semibold">album</td>
+                                        <td class="py-3 px-3 text-xs">Play • Go to Artist • Favorite • Share</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-3 font-semibold">artist</td>
+                                        <td class="py-3 px-3 text-xs">Play All • Favorite • Share</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-3 font-semibold">playlist</td>
+                                        <td class="py-3 px-3 text-xs">Play • Edit (if mine) • Favorite • Share</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-3 font-semibold">genre</td>
+                                        <td class="py-3 px-3 text-xs">Play Genre • View Genre Page</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-3 font-semibold">sector</td>
+                                        <td class="py-3 px-3 text-xs">View Sector Page</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-3 font-semibold">radio</td>
+                                        <td class="py-3 px-3 text-xs">Play Radio • View Radio Page</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-orange-900/20 border border-orange-700 rounded-lg p-5">
+                        <h4 class="font-semibold text-orange-300 mb-3 flex items-center gap-2">
+                            <i class="fas fa-code"></i>Component Kullanımı
+                        </h4>
+                        <div class="bg-slate-950 rounded-lg p-4">
+                            <code class="text-xs text-slate-300 block space-y-1">
+                                <div class="text-slate-500">// Her card/row component'inde:</div>
+                                <div class="text-green-400">&lt;div</div>
+                                <div class="ml-4 text-blue-400">@contextmenu.prevent="$store.contextMenu.openContextMenu($event, 'song', song)"</div>
+                                <div class="ml-4 text-blue-400">@touchstart="handleTouchStart"</div>
+                                <div class="ml-4 text-blue-400">@touchend="handleTouchEnd"</div>
+                                <div class="ml-4 text-blue-400">@touchmove="handleTouchMove"</div>
+                                <div class="text-green-400">&gt;</div>
+                                <div class="ml-4 text-slate-400">{{ $song->title }}</div>
+                                <div class="text-green-400">&lt;/div&gt;</div>
+                            </code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Priority Matrix -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-red-900/20 to-orange-900/20 border border-red-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-fire text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Öncelik Matrisi</h2>
+                        <p class="text-red-200 text-lg">Hangi component önce yapılmalı?</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Phase 1: Critical -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-red-300 mb-4 flex items-center gap-3">
+                            <span class="px-4 py-2 bg-red-900/30 border border-red-700 rounded-lg">
+                                FAZ 1: KRİTİK
+                            </span>
+                            <span class="text-slate-500 text-base">En çok kullanılan - Önce bunlar</span>
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-900/50 border border-red-700/50 rounded-lg p-5">
+                                <h4 class="font-semibold text-red-300 mb-3">Core Song Components (5)</h4>
+                                <ul class="space-y-2 text-sm text-slate-300">
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-red-400"></i>
+                                        <span>song-row</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-red-400"></i>
+                                        <span>song-card</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-red-400"></i>
+                                        <span>song-queue-item</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-red-400"></i>
+                                        <span>song-sidebar-item</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-red-400"></i>
+                                        <span>context-menu (song actions)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 border border-red-700/50 rounded-lg p-5">
+                                <h4 class="font-semibold text-red-300 mb-3">Album & Playlist (4)</h4>
+                                <ul class="space-y-2 text-sm text-slate-300">
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-red-400"></i>
+                                        <span>album-card</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-red-400"></i>
+                                        <span>album-hero</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-red-400"></i>
+                                        <span>playlist-card</span>
+                                    </li>
+                                    <li class="flex items-center gap-2">
+                                        <i class="fas fa-check-circle text-red-400"></i>
+                                        <span>playlist-hero</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-sm text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-clock"></i>
+                            <span>Tahmini süre: 4-5 gün</span>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2: Important -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-orange-300 mb-4 flex items-center gap-3">
+                            <span class="px-4 py-2 bg-orange-900/30 border border-orange-700 rounded-lg">
+                                FAZ 2: ÖNEMLİ
+                            </span>
+                            <span class="text-slate-500 text-base">Ana entity'ler</span>
+                        </h3>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-slate-900/50 border border-orange-700/50 rounded-lg p-4">
+                                <h4 class="font-semibold text-orange-300 mb-2">Artist (2)</h4>
+                                <ul class="text-sm text-slate-400 space-y-1">
+                                    <li>• artist-card</li>
+                                    <li>• artist-hero</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 border border-orange-700/50 rounded-lg p-4">
+                                <h4 class="font-semibold text-orange-300 mb-2">Genre (2)</h4>
+                                <ul class="text-sm text-slate-400 space-y-1">
+                                    <li>• genre-card</li>
+                                    <li>• genre-hero</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 border border-orange-700/50 rounded-lg p-4">
+                                <h4 class="font-semibold text-orange-300 mb-2">Sector (2)</h4>
+                                <ul class="text-sm text-slate-400 space-y-1">
+                                    <li>• sector-card</li>
+                                    <li>• sector-hero</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-sm text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-clock"></i>
+                            <span>Tahmini süre: 2-3 gün</span>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3: Additional -->
+                    <div>
+                        <h3 class="text-2xl font-semibold text-yellow-300 mb-4 flex items-center gap-3">
+                            <span class="px-4 py-2 bg-yellow-900/30 border border-yellow-700 rounded-lg">
+                                FAZ 3: EK ÖZELLIKLER
+                            </span>
+                            <span class="text-slate-500 text-base">Modals, overlays, eksik sayfalar</span>
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-slate-900/50 border border-yellow-700/50 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-300 mb-2">Radio (2)</h4>
+                                <ul class="text-sm text-slate-400 space-y-1">
+                                    <li>• radio-card</li>
+                                    <li>• radio-hero <span class="text-red-400">(ŞU AN YOK!)</span></li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 border border-yellow-700/50 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-300 mb-2">Modals (3)</h4>
+                                <ul class="text-sm text-slate-400 space-y-1">
+                                    <li>• rating-modal</li>
+                                    <li>• playlist-select-modal</li>
+                                    <li>• create-playlist-modal</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 border border-yellow-700/50 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-300 mb-2">Overlays (2)</h4>
+                                <ul class="text-sm text-slate-400 space-y-1">
+                                    <li>• queue-overlay</li>
+                                    <li>• lyrics-overlay</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 border border-yellow-700/50 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-300 mb-2">Favorites (1)</h4>
+                                <ul class="text-sm text-slate-400 space-y-1">
+                                    <li>• favorites-grid</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-sm text-slate-400 flex items-center gap-2">
+                            <i class="fas fa-clock"></i>
+                            <span>Tahmini süre: 2-3 gün</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="mt-8 bg-gradient-to-r from-slate-900 to-slate-800 border-2 border-red-600 rounded-xl p-6">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-2xl font-bold text-white">Toplam Süre Tahmini</h3>
+                        <div class="text-4xl font-bold text-red-400">8-11 gün</div>
+                    </div>
+                    <div class="grid md:grid-cols-4 gap-4 mt-4 text-center">
+                        <div class="bg-slate-950 rounded-lg p-3">
+                            <div class="text-2xl font-bold text-red-400">~29</div>
+                            <p class="text-slate-400 text-xs">Toplam Component</p>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-3">
+                            <div class="text-2xl font-bold text-orange-400">11</div>
+                            <p class="text-slate-400 text-xs">Entity</p>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-3">
+                            <div class="text-2xl font-bold text-yellow-400">1</div>
+                            <p class="text-slate-400 text-xs">Context Menu</p>
+                        </div>
+                        <div class="bg-slate-950 rounded-lg p-3">
+                            <div class="text-2xl font-bold text-green-400">10</div>
+                            <p class="text-slate-400 text-xs">Modals + Overlays</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Checklist -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-800 rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-clipboard-check text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Kodlama Checklist</h2>
+                        <p class="text-green-200 text-lg">Tüm component'lerin listesi - İşaretleyerek takip edin</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Song -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-green-700/50">
+                        <h3 class="text-lg font-semibold text-green-300 mb-3 flex items-center gap-2">
+                            <i class="fas fa-music"></i>Song Components (5)
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>song-row.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>song-card.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>song-queue-item.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>song-sidebar-item.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>song-detail.blade.php (optional)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Album -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-blue-700/50">
+                        <h3 class="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
+                            <i class="fas fa-compact-disc"></i>Album Components (2)
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>album-card.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>album-hero.blade.php</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Artist -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-purple-700/50">
+                        <h3 class="text-lg font-semibold text-purple-300 mb-3 flex items-center gap-2">
+                            <i class="fas fa-microphone"></i>Artist Components (2)
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>artist-card.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>artist-hero.blade.php</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Playlist -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-green-700/50">
+                        <h3 class="text-lg font-semibold text-green-300 mb-3 flex items-center gap-2">
+                            <i class="fas fa-list-music"></i>Playlist Components (3)
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>playlist-quick-card.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>playlist-card.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>playlist-hero.blade.php</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Genre, Sector, Radio -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-yellow-700/50">
+                        <h3 class="text-lg font-semibold text-yellow-300 mb-3 flex items-center gap-2">
+                            <i class="fas fa-layer-group"></i>Genre / Sector / Radio (6)
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>genre-card.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>genre-hero.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>sector-card.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>sector-hero.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>radio-card.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>radio-hero.blade.php <span class="text-red-400">(YENİ!)</span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Modals & Overlays -->
+                    <div class="bg-slate-900/50 rounded-xl p-5 border border-indigo-700/50">
+                        <h3 class="text-lg font-semibold text-indigo-300 mb-3 flex items-center gap-2">
+                            <i class="fas fa-window-restore"></i>Modals & Overlays (10)
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>rating-modal.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>playlist-select-modal.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>create-playlist-modal.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>queue-overlay.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>lyrics-overlay.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>context-menu.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>favorites-grid.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>search-results.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>empty-state.blade.php</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-2 hover:bg-slate-800 rounded cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-600">
+                                <span>loading-skeleton.blade.php</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="mb-16">
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-muzibu-coral rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 bg-muzibu-coral rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-flag-checkered text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-2">Özet & Next Steps</h2>
+                        <p class="text-slate-300 text-lg">Bu planı onayladıktan sonra yapılacaklar</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-muzibu-coral/10 border border-muzibu-coral rounded-xl p-5 text-center">
+                            <div class="text-4xl font-bold text-muzibu-coral mb-2">11</div>
+                            <p class="text-slate-400">Entity Type</p>
+                        </div>
+                        <div class="bg-muzibu-coral/10 border border-muzibu-coral rounded-xl p-5 text-center">
+                            <div class="text-4xl font-bold text-muzibu-coral mb-2">~29</div>
+                            <p class="text-slate-400">Component</p>
+                        </div>
+                        <div class="bg-muzibu-coral/10 border border-muzibu-coral rounded-xl p-5 text-center">
+                            <div class="text-4xl font-bold text-muzibu-coral mb-2">8-11</div>
+                            <p class="text-slate-400">Gün (Tahmini)</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950 rounded-xl p-6 border border-slate-700">
+                        <h3 class="text-xl font-semibold text-muzibu-coral mb-4">🎯 Hemen Başlanabilir</h3>
+                        <div class="space-y-2 text-slate-300">
+                            <div class="flex items-start gap-3">
+                                <span class="text-muzibu-coral font-bold">1.</span>
+                                <p>Git branch oluştur: <code class="bg-slate-900 px-2 py-1 rounded text-green-400">git checkout -b feature/muzibu-components</code></p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-muzibu-coral font-bold">2.</span>
+                                <p>Component klasörü oluştur: <code class="bg-slate-900 px-2 py-1 rounded text-green-400">resources/views/components/muzibu/</code></p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-muzibu-coral font-bold">3.</span>
+                                <p>İlk component: <strong>song-row.blade.php</strong> (En çok kullanılan)</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="text-muzibu-coral font-bold">4.</span>
+                                <p>Test sayfası: <strong>albums/show.blade.php</strong> track list'inde dene</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-900/20 border border-yellow-700 rounded-xl p-6">
+                        <h3 class="text-xl font-semibold text-yellow-300 mb-4 flex items-center gap-2">
+                            <i class="fas fa-exclamation-triangle"></i>Önemli Notlar
+                        </h3>
+                        <ul class="space-y-2 text-slate-300 text-sm">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-circle text-yellow-400 text-xs mt-1"></i>
+                                <span><strong>Radio Detail Page</strong> şu an yok - radio-hero component ile birlikte oluşturulmalı!</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-circle text-yellow-400 text-xs mt-1"></i>
+                                <span><strong>Context Menu</strong> universal component - tüm entity'lerde aynı component kullanılacak, sadece action'lar değişecek</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-circle text-yellow-400 text-xs mt-1"></i>
+                                <span><strong>Song component'leri</strong> öncelik - En fazla kullanılan ve en çok varyasyona sahip</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-circle text-yellow-400 text-xs mt-1"></i>
+                                <span><strong>Modals & Overlays</strong> Faz 3'te - Core component'ler tamamlandıktan sonra</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-t border-slate-700">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-robot text-white"></i>
+                    </div>
+                    <div>
+                        <p class="text-slate-400 text-sm">Generated with</p>
+                        <p class="text-white font-semibold">Claude Sonnet 4.5 AI</p>
+                    </div>
+                </div>
+
+                <div class="text-center md:text-right">
+                    <p class="text-slate-500 text-sm">Muzibu Component Plan - Yapılması Gerekenler</p>
+                    <p class="text-slate-600 text-xs mt-1">20 Aralık 2025</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

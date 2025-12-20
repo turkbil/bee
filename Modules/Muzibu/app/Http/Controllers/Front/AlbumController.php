@@ -18,6 +18,9 @@ class AlbumController extends Controller
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
             })
+            ->withCount(['songs' => function($q) {
+                $q->where('is_active', 1);
+            }])
             ->orderBy('created_at', 'desc')
             ->paginate(200);
 
@@ -58,6 +61,9 @@ class AlbumController extends Controller
             ->whereHas('songs', function($q) {
                 $q->where('is_active', 1);
             })
+            ->withCount(['songs' => function($q) {
+                $q->where('is_active', 1);
+            }])
             ->orderBy('created_at', 'desc')
             ->paginate(200);
         $html = view('themes.muzibu.partials.albums-grid', compact('albums'))->render();

@@ -157,6 +157,23 @@ function loginForm() {
                 if (emailInput?.value) this.email = emailInput.value;
                 if (passwordInput?.value) this.password = passwordInput.value;
             }, 100);
+
+            // 🔄 AUTO CSRF TOKEN REFRESH (Her 30 dakikada bir)
+            setInterval(async () => {
+                try {
+                    const response = await fetch('/api/csrf-token');
+                    if (response.ok) {
+                        const data = await response.json();
+                        const csrfInput = document.querySelector('input[name=_token]');
+                        if (csrfInput && data.token) {
+                            csrfInput.value = data.token;
+                            console.log('✅ CSRF token refreshed');
+                        }
+                    }
+                } catch (error) {
+                    console.warn('⚠️ CSRF token refresh failed:', error);
+                }
+            }, 30 * 60 * 1000); // 30 minutes
         },
 
         validateEmail() {

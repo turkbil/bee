@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Song Row v1 - Minimal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        muzibu: { coral: '#ff7f50', 'coral-light': '#ff9770', 'coral-dark': '#ff6a3d', gray: '#181818' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-black min-h-screen">
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="muzibu-playlist-card.html" class="w-12 h-12 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <a href="muzibu-song-row-v2.html" class="w-12 h-12 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg">
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="bg-gradient-to-b from-slate-900 to-black p-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="bg-green-600 px-3 py-1 rounded-full text-white text-sm font-semibold">v1</span>
+                <span class="text-slate-400 text-sm">Minimal Tasarım</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4">Song Row v1 - Minimal</h1>
+            <p class="text-slate-400 text-lg">Temiz liste görünümü, favorite her zaman görünür, NO artist name</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-8">
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6">
+            <h2 class="text-white text-2xl font-bold mb-6">Albüm: Gece Yolcuları</h2>
+
+            <div class="space-y-1">
+                <!-- Song 1 -->
+                <div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-slate-700/50 transition-all cursor-pointer">
+                    <!-- Index -->
+                    <div class="w-8 text-center">
+                        <span class="text-gray-400 group-hover:hidden">1</span>
+                        <button class="hidden group-hover:block text-white hover:scale-110 transition-transform">
+                            <i class="fas fa-play text-muzibu-coral"></i>
+                        </button>
+                    </div>
+
+                    <!-- Album Cover -->
+                    <img src="https://picsum.photos/seed/song1/48/48" class="w-12 h-12 rounded shadow-md" alt="Cover">
+
+                    <!-- Song Info -->
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-white font-semibold truncate group-hover:text-muzibu-coral-light transition-colors">Gece Gölgenin Rahatına Bak</h3>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="text-gray-400 text-sm w-16 text-right">4:32</div>
+
+                    <!-- Actions (Hover) -->
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110">
+                            <i class="far fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Song 2 (Favorited) -->
+                <div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-slate-700/50 transition-all cursor-pointer">
+                    <div class="w-8 text-center">
+                        <span class="text-gray-400 group-hover:hidden">2</span>
+                        <button class="hidden group-hover:block text-white hover:scale-110 transition-transform">
+                            <i class="fas fa-play text-muzibu-coral"></i>
+                        </button>
+                    </div>
+                    <img src="https://picsum.photos/seed/song2/48/48" class="w-12 h-12 rounded shadow-md" alt="Cover">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-white font-semibold truncate group-hover:text-muzibu-coral-light transition-colors">Bir Zamanlar</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm w-16 text-right">3:45</div>
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="w-8 h-8 flex items-center justify-center text-muzibu-coral transition-colors hover:scale-110 !opacity-100">
+                            <i class="fas fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Song 3 -->
+                <div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-slate-700/50 transition-all cursor-pointer">
+                    <div class="w-8 text-center">
+                        <span class="text-gray-400 group-hover:hidden">3</span>
+                        <button class="hidden group-hover:block text-white hover:scale-110 transition-transform">
+                            <i class="fas fa-play text-muzibu-coral"></i>
+                        </button>
+                    </div>
+                    <img src="https://picsum.photos/seed/song3/48/48" class="w-12 h-12 rounded shadow-md" alt="Cover">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-white font-semibold truncate group-hover:text-muzibu-coral-light transition-colors">Yalnızlık Paylaşılmaz</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm w-16 text-right">5:12</div>
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110">
+                            <i class="far fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Song 4 -->
+                <div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-slate-700/50 transition-all cursor-pointer">
+                    <div class="w-8 text-center">
+                        <span class="text-gray-400 group-hover:hidden">4</span>
+                        <button class="hidden group-hover:block text-white hover:scale-110 transition-transform">
+                            <i class="fas fa-play text-muzibu-coral"></i>
+                        </button>
+                    </div>
+                    <img src="https://picsum.photos/seed/song4/48/48" class="w-12 h-12 rounded shadow-md" alt="Cover">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-white font-semibold truncate group-hover:text-muzibu-coral-light transition-colors">Aşk Dediğin Bir Melodi</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm w-16 text-right">4:18</div>
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110">
+                            <i class="far fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Song 5 -->
+                <div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-slate-700/50 transition-all cursor-pointer">
+                    <div class="w-8 text-center">
+                        <span class="text-gray-400 group-hover:hidden">5</span>
+                        <button class="hidden group-hover:block text-white hover:scale-110 transition-transform">
+                            <i class="fas fa-play text-muzibu-coral"></i>
+                        </button>
+                    </div>
+                    <img src="https://picsum.photos/seed/song5/48/48" class="w-12 h-12 rounded shadow-md" alt="Cover">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-white font-semibold truncate group-hover:text-muzibu-coral-light transition-colors">Rüzgar Gibi Geçtin</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm w-16 text-right">3:58</div>
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110">
+                            <i class="far fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Song 6 -->
+                <div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-slate-700/50 transition-all cursor-pointer">
+                    <div class="w-8 text-center">
+                        <span class="text-gray-400 group-hover:hidden">6</span>
+                        <button class="hidden group-hover:block text-white hover:scale-110 transition-transform">
+                            <i class="fas fa-play text-muzibu-coral"></i>
+                        </button>
+                    </div>
+                    <img src="https://picsum.photos/seed/song6/48/48" class="w-12 h-12 rounded shadow-md" alt="Cover">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-white font-semibold truncate group-hover:text-muzibu-coral-light transition-colors">Hüzünlü Akşam</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm w-16 text-right">4:42</div>
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110">
+                            <i class="far fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Song 7 -->
+                <div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-slate-700/50 transition-all cursor-pointer">
+                    <div class="w-8 text-center">
+                        <span class="text-gray-400 group-hover:hidden">7</span>
+                        <button class="hidden group-hover:block text-white hover:scale-110 transition-transform">
+                            <i class="fas fa-play text-muzibu-coral"></i>
+                        </button>
+                    </div>
+                    <img src="https://picsum.photos/seed/song7/48/48" class="w-12 h-12 rounded shadow-md" alt="Cover">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-white font-semibold truncate group-hover:text-muzibu-coral-light transition-colors">Gecenin Sessizliği</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm w-16 text-right">5:28</div>
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110">
+                            <i class="far fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Song 8 -->
+                <div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-slate-700/50 transition-all cursor-pointer">
+                    <div class="w-8 text-center">
+                        <span class="text-gray-400 group-hover:hidden">8</span>
+                        <button class="hidden group-hover:block text-white hover:scale-110 transition-transform">
+                            <i class="fas fa-play text-muzibu-coral"></i>
+                        </button>
+                    </div>
+                    <img src="https://picsum.photos/seed/song8/48/48" class="w-12 h-12 rounded shadow-md" alt="Cover">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-white font-semibold truncate group-hover:text-muzibu-coral-light transition-colors">Yıldızlar Altında</h3>
+                    </div>
+                    <div class="text-gray-400 text-sm w-16 text-right">4:05</div>
+                    <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-muzibu-coral transition-colors hover:scale-110">
+                            <i class="far fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white transition-colors hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Özellikler -->
+        <div class="mt-8 p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+            <h3 class="text-white font-semibold mb-3">Song Row v1 Özellikleri:</h3>
+            <ul class="text-slate-300 space-y-2 text-sm">
+                <li>✅ <strong>Minimal Tasarım:</strong> Temiz liste görünümü</li>
+                <li>✅ <strong>Index + Play:</strong> Hover'da index yerine play button</li>
+                <li>✅ <strong>Album Cover:</strong> 48x48 küçük cover</li>
+                <li>✅ <strong>NO Artist Name:</strong> Sadece şarkı adı (sistem 1 artist)</li>
+                <li>✅ <strong>Favorite HER ZAMAN Görünür:</strong> Hızlı favoriye ekleme</li>
+                <li>✅ <strong>Duration:</strong> Sağ tarafta süre gösterimi</li>
+                <li>✅ <strong>Menu Button:</strong> 3-dot context menu</li>
+                <li>✅ <strong>Hover Effect:</strong> Soft background + coral renk</li>
+            </ul>
+        </div>
+
+        <!-- Context Menu Planı -->
+        <div class="mt-4 p-6 bg-blue-900/20 border border-blue-800 rounded-xl">
+            <h3 class="text-white font-semibold mb-3">🎯 Context Menu Planı (Sağ Tık / 3-Dot Menu):</h3>
+            <ul class="text-slate-300 space-y-2 text-sm">
+                <li>🎵 <strong>Şarkıyı Çal</strong> - Hemen çal</li>
+                <li>➕ <strong>Kuyruğa Ekle</strong> - Sıraya ekle</li>
+                <li>❤️ <strong>Favorilere Ekle/Çıkar</strong> - Toggle favorite</li>
+                <li>📋 <strong>Playlist'e Ekle</strong> - Mevcut playlist'lere ekle veya yeni oluştur</li>
+                <li>ℹ️ <strong>Şarkı Detayları</strong> - Şarkı bilgilerini göster</li>
+                <li>📤 <strong>Paylaş</strong> - Link kopyala, sosyal medya paylaşımı</li>
+            </ul>
+        </div>
+    </div>
+
+    <!--
+    CONTEXT MENU İÇERİĞİ (Song):
+    - Şarkıyı Çal (Play Song)
+    - Kuyruğa Ekle (Add to Queue)
+    - Favorilere Ekle/Çıkar (Toggle Favorite)
+    - Playlist'e Ekle (Add to Playlist)
+    - Şarkı Detayları (Song Details)
+    - Paylaş (Share - Link kopyala)
+    -->
+</body>
+</html>

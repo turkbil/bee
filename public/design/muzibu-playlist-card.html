@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Playlist Card - Album-card-2 Stili</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        muzibu: { coral: '#ff7f50', 'coral-light': '#ff9770', 'coral-dark': '#ff6a3d', gray: '#181818' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-black min-h-screen">
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="muzibu-album-card-2.html" class="w-12 h-12 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+    </div>
+
+    <div class="bg-gradient-to-b from-slate-900 to-black p-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="bg-muzibu-coral px-3 py-1 rounded-full text-white text-sm font-semibold">Playlist Card</span>
+                <span class="text-slate-400 text-sm">Album-card-2 Stili</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4">Playlist Card</h1>
+            <p class="text-slate-400 text-lg">Gradient background, favorite her zaman görünür, NO scale on cards</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-8">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <!-- Playlist 1 -->
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/playlist1/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Playlist">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Favori Şarkılarım</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">24 Şarkı</p>
+            </div>
+
+            <!-- Playlist 2 (Favorited) -->
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/playlist2/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Playlist">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-muzibu-coral transition-all hover:scale-110">
+                            <i class="fas fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Gece Müzikleri</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">18 Şarkı</p>
+            </div>
+
+            <!-- Playlist 3 -->
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/playlist3/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Playlist">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Çalışma Listesi</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">42 Şarkı</p>
+            </div>
+
+            <!-- Playlist 4 -->
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/playlist4/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Playlist">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Spor Müzikleri</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">31 Şarkı</p>
+            </div>
+
+            <!-- Playlist 5 -->
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/playlist5/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Playlist">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Nostalji</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">56 Şarkı</p>
+            </div>
+
+            <!-- Playlist 6 -->
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/playlist6/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Playlist">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Romantik</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">38 Şarkı</p>
+            </div>
+        </div>
+
+        <!-- Özellikler -->
+        <div class="mt-8 p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+            <h3 class="text-white font-semibold mb-3">Playlist Card Özellikleri (Album-card-2 Stili):</h3>
+            <ul class="text-slate-300 space-y-2 text-sm">
+                <li>✅ <strong>Gradient Background:</strong> from-slate-800 to-slate-900</li>
+                <li>✅ <strong>NO Scale on Card:</strong> Card yerinde durur, sadece butonlar scale olur</li>
+                <li>✅ <strong>Favorite + Menu Hover'da:</strong> opacity-0 → hover:opacity-100</li>
+                <li>✅ <strong>Play Button:</strong> Hover'da görünür, smooth translation</li>
+                <li>✅ <strong>Şarkı Sayısı:</strong> Artist name yerine şarkı sayısı gösterir</li>
+                <li>✅ <strong>Backdrop Blur:</strong> Butonlarda backdrop-blur-sm</li>
+                <li>✅ <strong>Better Shadows:</strong> hover:shadow-2xl</li>
+                <li>✅ <strong>Color Transitions:</strong> Başlık hover'da coral</li>
+            </ul>
+        </div>
+
+        <!-- Context Menu Planı -->
+        <div class="mt-4 p-6 bg-blue-900/20 border border-blue-800 rounded-xl">
+            <h3 class="text-white font-semibold mb-3">🎯 Context Menu Planı (Sağ Tık / Uzun Basma):</h3>
+            <ul class="text-slate-300 space-y-2 text-sm">
+                <li>🎵 <strong>Playlist'i Çal</strong> - Tüm şarkıları sırayla çal</li>
+                <li>➕ <strong>Kuyruğa Ekle</strong> - Playlist'i kuyruğa ekle</li>
+                <li>❤️ <strong>Favorilere Ekle/Çıkar</strong> - Toggle favorite</li>
+                <li>✏️ <strong>Düzenle</strong> - Sadece kendi playlist'leri için (şarkı ekle/çıkar, isim değiştir)</li>
+                <li>🗑️ <strong>Sil</strong> - Sadece kendi playlist'leri için</li>
+                <li>📤 <strong>Paylaş</strong> - Link kopyala, sosyal medya paylaşımı</li>
+            </ul>
+        </div>
+    </div>
+
+    <!--
+    CONTEXT MENU İÇERİĞİ (Playlist):
+    - Playlist'i Çal (Play Playlist)
+    - Kuyruğa Ekle (Add to Queue)
+    - Favorilere Ekle/Çıkar (Toggle Favorite)
+    - Düzenle (Edit - Sadece kullanıcının kendi playlist'i ise)
+    - Sil (Delete - Sadece kullanıcının kendi playlist'i ise)
+    - Paylaş (Share - Link kopyala)
+    -->
+</body>
+</html>

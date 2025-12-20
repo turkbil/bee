@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzibu Album Card v2 - İyileştirilmiş</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        muzibu: { coral: '#ff7f50', 'coral-light': '#ff9770', 'coral-dark': '#ff6a3d', gray: '#181818' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-black min-h-screen">
+    <div class="fixed bottom-8 right-8 z-50 flex gap-3">
+        <a href="muzibu-album-card-1.html" class="w-12 h-12 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <a href="muzibu-album-card-3.html" class="w-12 h-12 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg">
+            <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="bg-gradient-to-b from-slate-900 to-black p-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="bg-green-600 px-3 py-1 rounded-full text-white text-sm font-semibold">v2</span>
+                <span class="text-slate-400 text-sm">İyileştirilmiş Tasarım</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4">Album Card - İyileştirilmiş</h1>
+            <p class="text-slate-400 text-lg">Better shadows, smooth transitions, favorite icon eklendi</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-8">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <!-- Album 1 -->
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/album1/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Album">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Gece Yolcuları</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">Ajda Pekkan • 2020</p>
+            </div>
+
+            <!-- Album 2 -->
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/album2/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Album">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-muzibu-coral transition-all hover:scale-110">
+                            <i class="fas fa-heart text-sm"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Aşk Kitabı</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">Sezen Aksu • 2019</p>
+            </div>
+
+            <!-- Album 3-6 similar structure -->
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/album3/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Album">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Metamorfoz</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">Tarkan • 2018</p>
+            </div>
+
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/album4/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Album">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Yıldızlar Altında</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">Ziynet Sali • 2017</p>
+            </div>
+
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/album5/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Album">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Klasikler</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">Hüsnü Şenlendirici • 2016</p>
+            </div>
+
+            <div class="group bg-gradient-to-br from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 rounded-xl p-4 transition-all duration-300 cursor-pointer hover:shadow-2xl">
+                <div class="relative mb-4">
+                    <img src="https://picsum.photos/seed/album6/300/300" class="w-full aspect-square object-cover rounded-lg shadow-lg group-hover:shadow-2xl transition-all" alt="Album">
+                    <button class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 bg-gradient-to-br from-muzibu-coral to-muzibu-coral-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-xl hover:scale-110">
+                        <i class="fas fa-play ml-1 text-lg"></i>
+                    </button>
+                    <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="far fa-heart text-sm hover:text-muzibu-coral"></i>
+                        </button>
+                        <button class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
+                            <i class="fas fa-ellipsis-v text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="font-bold text-white mb-1 truncate group-hover:text-muzibu-coral-light transition-colors">Gönül Sayfaları</h3>
+                <p class="text-sm text-gray-400 truncate group-hover:text-gray-300 transition-colors">Müzeyyen Senar • 2015</p>
+            </div>
+        </div>
+
+        <div class="mt-8 p-6 bg-slate-800/50 rounded-xl border border-slate-700">
+            <h3 class="text-white font-semibold mb-3">İyileştirmeler:</h3>
+            <ul class="text-slate-300 space-y-2 text-sm">
+                <li>✨ <strong>Gradient Background:</strong> from-slate-800 to-slate-900</li>
+                <li>✨ <strong>Hover Scale:</strong> hover:scale-105 efekti</li>
+                <li>✨ <strong>Favorite Icon:</strong> Kalp ikonu eklendi (favorite/unfavorite)</li>
+                <li>✨ <strong>Backdrop Blur:</strong> backdrop-blur-sm butonlarda</li>
+                <li>✨ <strong>Better Shadows:</strong> shadow-2xl hover'da</li>
+                <li>✨ <strong>Yıl Bilgisi:</strong> Artist name + release year</li>
+                <li>✨ <strong>Color Transitions:</strong> Başlık hover'da coral</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

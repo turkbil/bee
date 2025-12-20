@@ -1,11 +1,10 @@
 /**
  * TENANT-SAFE TAILWIND CSS
  * Bu dosya tenant sistemde sorun çıkarmayacak şekilde yapılandırıldı
+ * Tailwind v4 syntax (updated 2025-12-21)
  */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* iXtif Theme Container Classes */
 @layer components {

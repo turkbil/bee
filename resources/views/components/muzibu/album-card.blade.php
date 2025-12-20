@@ -72,14 +72,23 @@
             <i class="fas fa-play ml-1"></i>
         </button>
 
-        {{-- 3-Dot Menu Button (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
-        <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity" x-on:click.stop.prevent>
+        {{-- Favorite + Menu Buttons (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
+        <div class="absolute top-2 right-2 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" x-on:click.stop.prevent>
+            {{-- Favorite Button --}}
+            <button x-on:click.stop="$store.favorites.toggle('album', {{ $album->id }})"
+                    class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                    x-bind:class="$store.favorites.isFavorite('album', {{ $album->id }}) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm"
+                   x-bind:class="$store.favorites.isFavorite('album', {{ $album->id }}) ? 'fas fa-heart' : 'far fa-heart hover:text-muzibu-coral'"></i>
+            </button>
+
+            {{-- 3-Dot Menu Button --}}
             <button x-on:click="$store.contextMenu.openContextMenu($event, 'album', {
                 id: {{ $album->id }},
                 title: '{{ addslashes($album->getTranslation('title', app()->getLocale())) }}',
                 artist: '{{ $album->artist ? addslashes($album->artist->getTranslation('title', app()->getLocale())) : '' }}',
                 is_favorite: {{ auth()->check() && method_exists($album, 'isFavoritedBy') && $album->isFavoritedBy(auth()->id()) ? 'true' : 'false' }}
-            })" class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all">
+            })" class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>
         </div>

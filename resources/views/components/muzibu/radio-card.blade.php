@@ -77,16 +77,23 @@
             </button>
         </div>
 
-        {{-- 3-Dot Menu (Top Right, Hover) --}}
-        <div class="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop.prevent>
-            <button
-                @click="$store.contextMenu.openContextMenu($event, 'radio', {
+        {{-- Favorite + Menu Buttons (Cover Sağ Üst) - HOVER'DA GÖRÜNÜR --}}
+        <div class="absolute top-2 right-2 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-all" @click.stop.prevent>
+            {{-- Favorite Button --}}
+            <button @click.stop="$store.favorites.toggle('radio', {{ $radio->radio_id }})"
+                    class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110"
+                    x-bind:class="$store.favorites.isFavorite('radio', {{ $radio->radio_id }}) ? 'text-muzibu-coral' : ''">
+                <i class="text-sm"
+                   x-bind:class="$store.favorites.isFavorite('radio', {{ $radio->radio_id }}) ? 'fas fa-heart' : 'far fa-heart hover:text-muzibu-coral'"></i>
+            </button>
+
+            {{-- 3-Dot Menu Button --}}
+            <button @click="$store.contextMenu.openContextMenu($event, 'radio', {
                     id: {{ $radio->radio_id }},
                     title: '{{ addslashes($radio->getTranslation('title', app()->getLocale())) }}',
                     is_favorite: {{ auth()->check() && $radio->isFavoritedBy(auth()->user()) ? 'true' : 'false' }}
                 })"
-                class="w-8 h-8 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-all"
-            >
+                    class="w-8 h-8 bg-black/70 hover:bg-black/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white transition-all hover:scale-110">
                 <i class="fas fa-ellipsis-v text-sm"></i>
             </button>
         </div>
